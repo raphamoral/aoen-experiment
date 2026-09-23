@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 1,
+  "justificativa": "A proposta descreve componentes de infraestrutura implícitos (storage de imagens médicas, fila de processamento, inferência de IA, múltiplas interfaces) em contexto puramente arquitetural, mas não há absolutamente nenhuma estimativa de custo em dólares/reais, nenhuma estratégia de otimização (scale-to-zero, instâncias spot, tiering de storage para imagens DICOM que podem ter dezenas de MB cada), e nenhuma projeção de como os custos evoluem com o crescimento da base — lacuna crítica considerando que inferência de IA por imagem e armazenamento de exames médicos são os maiores drivers de custo deste tipo de produto."
+}

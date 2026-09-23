@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "O modelo de domínio é explicitamente declarado como independente de frameworks e demonstra boas práticas de encapsulamento (políticas por merchant, abstração de carriers via carrierId, métodos de reembolso variáveis), mas a proposta expõe apenas a camada de entidades — sem evidências das camadas de aplicação, portas/adaptadores ou estratégias de infraestrutura, deixando em aberto se a inversão de dependências é aplicada de ponta a ponta ou apenas no núcleo do domínio."
+}

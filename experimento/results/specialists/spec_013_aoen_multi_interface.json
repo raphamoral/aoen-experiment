@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define seis interfaces distintas (PWA, mobile, painel de operador, white-label, API REST e kiosk), cada uma explicitamente justificada por um perfil de usuário ou segmento de mercado real, e a lógica de negócio está completamente desacoplada via Service Layer centralizada com adaptadores de protocolo — permitindo adicionar novas interfaces sem tocar nas regras de negócio."
+}

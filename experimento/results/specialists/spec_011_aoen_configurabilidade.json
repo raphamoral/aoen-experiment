@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra intenção clara de configurabilidade — pesos configuráveis no scoring, white-label configurável e MatchEnginePort abstraída — mas não explicita o modelo de tenant configuration: não descreve onde as configurações por cliente são armazenadas, qual o escopo completo do que é parametrizável (além dos pesos do algoritmo), nem confirma que o onboarding de um novo tenant (ex: rede regional de anjos) é zero-código; a menção a 'white-label configurável' é promissora mas insuficiente para garantir nota máxima sem detalhar o contrato de configuração por tenant."
+}

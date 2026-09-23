@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A camada de entidades demonstra sólida aderência a princípios de arquitetura limpa — regras de negócio puras, máquinas de estado explícitas e ausência declarada de dependências de frameworks —, mas a proposta apresenta apenas o núcleo de domínio, omitindo as camadas de portas/adaptadores, estratégias de modularização entre contextos (ex: gamificação vs. gestão de projetos vs. pagamentos) e decisões de infraestrutura reversíveis, o que impede confirmar se a independência tecnológica se sustenta além das entidades."
+}

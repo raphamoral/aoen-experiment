@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A arquitetura hexagonal com múltiplos adapters por porta (Agora/LiveKit, Google STT/AssemblyAI, DeepL/OpenAI) cria boa base para variação por cliente, mas a proposta não descreve nenhum mecanismo explícito de configuração por tenant — não há menção a tabela de configurações, feature flags, seleção de adapter via config ou modelo de onboarding zero-código, deixando a seleção de comportamento por cliente presumivelmente no nível de código ou deploy."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "A proposta mostra boas decisões de infraestrutura (vídeo externalizado, Redis separado, filas async planejadas), mas não descreve nenhuma separação de domínio no código — a lógica de negócio provavelmente dependerá diretamente do ORM e do framework Node, sem camadas de abstração (ports/adapters, repositórios), o que tornará custoso trocar tecnologias ou extrair módulos conforme o sistema cresce."
+}

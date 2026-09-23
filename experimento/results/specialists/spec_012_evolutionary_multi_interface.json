@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta menciona apenas um 'dashboard básico' como interface de usuário e referencia API via fitness functions, mas não define múltiplas interfaces por perfis de usuário (ex: operador de planta, gestor de compliance, técnico de campo), não justifica escolhas de canal por alcance de mercado, e o desacoplamento arquitetural descrito (event-driven, adapters) é focado no pipeline de dados — não na separação entre lógica de negócio e camada de apresentação para suportar expansão de canais."
+}

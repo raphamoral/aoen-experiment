@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra sólida aplicação de ports-and-adapters: a interface PricingEngine isola o núcleo de qualquer implementação de IA, o PricingService centraliza o domínio sem depender de frameworks externos, e todas as interfaces de entrega (web, API, plugin, alertas) são adaptadores sem lógica de negócio — permitindo troca ou adição de canais sem tocar o core; a nota não chega a 10 porque a proposta não endereça a evolução de infraestrutura (abstração da camada de dados, estratégia de filas/async para o pipeline de pricing sob carga, caminho de escalabilidade horizontal de 10 para 10.000 tenants), deixando decisões reversíveis incompletas no eixo operacional."
+}

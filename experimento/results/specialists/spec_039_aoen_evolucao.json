@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 39,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra intenção evolutiva sólida — interface abstrata MissionProvider permite trocar provedores de captura/IA sem alterar o fluxo central, e a ServiceLayer isola a lógica de negócio das múltiplas interfaces (web, mobile, bot) — mas perde pontos porque a 'ServiceLayer que centraliza 100% da lógica' é descrita como um único componente sem detalhamento de sua modularidade interna, criando risco de se tornar um monolito de serviço acoplado; além disso, não há menção explícita de abstração de persistência (trocar banco exigiria refatoração?), ausência de estratégia de escalabilidade horizontal (de 10 para 10.000 usuários), e nenhuma decisão de reversibilidade documentada para escolhas tecnológicas críticas como o algoritmo de match ou o mecanismo de geolocalização."
+}

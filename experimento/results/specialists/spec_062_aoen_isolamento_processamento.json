@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 62,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve um pipeline de transformação com separação lógica via adaptadores e RoyaltyService centralizada, mas não menciona em nenhum momento filas de mensagens, workers independentes, processamento assíncrono explícito, isolamento físico do motor de cálculo ou mecanismos de fallback — o fluxo de 8 etapas parece rodar de forma síncrona dentro da mesma aplicação, o que significa que um cálculo pesado ou travado bloqueia toda a stack."
+}

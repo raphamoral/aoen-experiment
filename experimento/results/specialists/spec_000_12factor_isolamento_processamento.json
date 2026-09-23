@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 9,
+  "justificativa": "O processamento pesado de IA está isolado fisicamente em serviço dedicado (ai-imaging-service) com inferência via Triton/SageMaker, execução assíncrona via Kafka/SQS e workers BullMQ/Redis, permitindo escala independente via Kubernetes; perde um ponto pela ausência de menção explícita a circuit breakers ou fallback degradado caso o serviço de inferência fique indisponível."
+}

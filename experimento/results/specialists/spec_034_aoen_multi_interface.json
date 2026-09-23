@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 34,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define seis interfaces distintas (Web App, API REST, Widget white-label, PDF, Mobile e Chatbot), cada uma com justificativa explícita de segmento de mercado e perfil de usuário; a lógica de negócio está formalmente desacoplada via SimulationService centralizado, garantindo que qualquer nova interface consuma o mesmo contrato sem reescrever regras — e as escolhas são orientadas por alcance de mercado (volume B2C, ticket B2B, alfabetização digital baixa), não por preferência técnica."
+}

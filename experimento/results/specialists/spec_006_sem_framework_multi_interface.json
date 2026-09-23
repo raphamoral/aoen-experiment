@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "O projeto prevê web (Next.js) e mobile (React Native ou PWA) com casos de uso distintos — gestão completa no web e consulta rápida no mobile — e a arquitetura assíncrona com serviço Python separado sugere algum desacoplamento da lógica de negócio, mas a justificativa de mercado para a escolha das interfaces é superficial, não há menção a canais como API para nutricionistas/parceiros, e a indefinição entre React Native e PWA indica que a decisão ainda é guiada por conveniência técnica, não por alcance real."
+}

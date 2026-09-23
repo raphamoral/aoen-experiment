@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 26,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de triagem contínua pós-operatória é claramente identificado como núcleo diferenciador, explicitamente isolado via interface RiskAnalysisProvider (extensível a múltiplos provedores de IA sem afetar o fluxo), e resolve um problema real — detecção precoce de complicações pós-alta — que agendas de teleconsulta genéricas e prontuários eletrônicos não resolvem; perde 1 ponto por não demonstrar evidência de validação clínica do modelo de classificação de risco."
+}

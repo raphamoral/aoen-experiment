@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A arquitetura conta uma história coerente do problema à solução: o domínio central (matchmaking com ciclo de vida interesse→deal e reputação) se traduz diretamente em use cases que cobrem exatamente essas etapas, os secondary ports têm justificativa clara no domínio (IDocumentStoragePort suporta due diligence, ISearchIndexPort viabiliza o match discovery, IReputationRepository fecha o loop de confiança, IEventBusPort sustenta notificações assíncronas), e as escolhas de adapters primários se complementam sem redundância indevida (REST para CRUD mobile/web, GraphQL para dashboards complexos, WebSocket para tempo real); a única fricção visível é a indecisão tecnológica no stack (FastAPI vs NestJS sinalizados juntos) e a proposta truncada nos adapters secundários, que impedem confirmar se a implementação é tão coesa quanto a interface."
+}

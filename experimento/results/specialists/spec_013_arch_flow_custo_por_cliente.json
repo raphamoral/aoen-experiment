@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente, por operação ou por tenant — lista contextos funcionais e componentes de infraestrutura (Stripe, Maps, Datadog etc.) sem qualquer mecanismo de atribuição de custo por consumo individual, e o contexto de Analytics & Reporting é voltado a receita e ocupação do proprietário, não a unit economics internos da plataforma."
+}

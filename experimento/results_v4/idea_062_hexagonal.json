@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 62,
+  "ideia": "SaaS de gestão de royalties para editoras musicais independentes",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de royalties para editoras musicais independentes: catálogo de obras (composições) e fonogramas, titularidade e splits de direitos (autores, coautores, sub-editoras), contratos e termos de repasse (taxas, recoupment de adiantamentos, territórios, vigência), ingestão e normalização de relatórios de uso/vendas (DSPs, sociedades de gestão coletiva, sincronização), matching de obras (ISWC/ISRC/IPI/título), motor de cálculo de royalties, ledger de apuração e saldos, geração de statements e pagamentos. O core contém apenas entidades, value objects, regras de negócio e casos de uso (Work, Recording, Contract, Split, Statement, RoyaltyLine, Payee, Ledger, Advance) e não conhece HTTP, banco, filas ou provedores.",
+    "primary_ports": [
+      "CatalogManagementPort (cadastrar/atualizar obras, fonogramas e splits)",
+      "ContractManagementPort (criar contratos, taxas, adiantamentos, territórios)",
+      "RoyaltyStatementIngestionPort (importar relatórios de uso de DSPs e sociedades)",
+      "WorkMatchingPort (resolver/conciliar usos não identificados)",
+      "RoyaltyCalculationPort (executar apuração por período)",
+      "StatementGenerationPort (gerar e aprovar statements por titular)",
+      "PayoutOrchestrationPort (aprovar e disparar repasses)",
+      "WriterPortalQueryPort (consulta de extratos, saldos e relatórios pelo titular)",
+      "TenantAdministrationPort (organizações, usuários, papéis, planos)",
+      "AuditAndReportingPort (relatórios financeiros, exportações, trilha de auditoria)"
+    ],
+    "secondary_ports": [
+      "CatalogRepositoryPort",
+      "ContractRepositoryPort",
+      "RoyaltyLedgerRepositoryPort (ledger imutável append-only)",
+      "UsageReportSourcePort (obtenção de relatórios de DSPs/sociedades)",
+      "FileStoragePort (arquivos brutos e PDFs)",
+      "WorkMetadataLookupPort (ISWC/ISRC/IPI, MusicBrainz, CISAC, bases de sociedades)",
+      "CurrencyExchangePort (câmbio histórico)",
+      "PaymentGatewayPort (pagamento a titulares em múltiplos países)",
+      "TaxComplianceProviderPort (retenções, W-8/W-9, NF/impostos)",
+      "BillingPort (cobrança da assinatura SaaS)",
+      "NotificationPort (email, webhooks)",
+      "IdentityProviderPort (autenticação/SSO)",
+      "EventPublisherPort (eventos de domínio)",
+      "JobSchedulerPort (apurações agendadas)",
+      "PdfRendererPort",
+      "AccountingExportPort (ERP/contabilidade)",
+      "ClockPort e IdGeneratorPort (determinismo e testabilidade)"
+    ],
+    "primary_adapters": [
+      "REST/JSON API (OpenAPI) para o front-end",
+      "GraphQL API opcional para o portal dos titulares",
+      "Web App SPA (dashboard da editora)",
+      "Portal do compositor/titular (web, somente leitura + aceite de statements)",
+      "CLI para operações e migrações em lote",
+      "Webhook receivers (DSPs, gateway de pagamento, billing)",
+      "Consumidores de fila/eventos (ingestão assíncrona)",
+      "Scheduler adapter (cron de fechamento de período)",
+      "Adaptadores de teste (test harness / fakes que acionam os mesmos casos de uso)",
+      "API pública para integrações de terceiros (chaves de API por tenant)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL adapter (repositórios, ledger append-only, multi-tenant com RLS)",
+      "In-memory adapters (testes e desenvolvimento)",
+      "S3-compatible adapter (armazenamento de arquivos)",
+      "Parsers de DSPs (Spotify, Apple Music, YouTube, Amazon, Deezer) em CSV/XLSX/DDEX",
+      "Adapter DDEX (ERN, MEAD, RDR, DSR)",
+      "Adapter de sociedades de gestão (ECAD/UBC, ASCAP, BMI, PRS, SACEM, MLC) via CWR/SFTP/API",
+      "MusicBrainz / ISWC Net / bases de metadados",
+      "Stripe Billing adapter (assinatura SaaS)",
+      "Stripe Connect / Wise / PayPal / PIX adapter (repasses)",
+      "Serviço de câmbio (ECB / Open Exchange Rates)",
+      "Provedor de identidade (Auth0 / Keycloak / Cognito)",
+      "SES / Postmark (email)",
+      "Adapter de mensageria (SQS / RabbitMQ / Kafka)",
+      "Renderizador de PDF (Playwright / WeasyPrint)",
+      "Exportadores QuickBooks / Xero / Omie / Conta Azul",
+      "Adapter de observabilidade (OpenTelemetry)"
+    ],
+    "isolation": "O core (domínio + camada de aplicação/casos de uso) fica em módulo sem dependências de framework, banco ou SDK externo, dependendo apenas de abstrações que ele próprio define (ports). A regra de dependência aponta sempre para dentro: adapters importam ports e o domínio, nunca o inverso. Dinheiro é modelado com Value Objects (Money com decimal exato e moeda explícita), tempo e IDs entram por ClockPort/IdGeneratorPort, e o cálculo de royalties é funcional e determinístico (mesma entrada, mesma saída). A injeção de dependências é feita em um composition root que monta os adapters. Dados externos são traduzidos por anti-corruption layers nos adapters (cada formato de DSP é convertido para um modelo canônico UsageLine). Testes de arquitetura (ArchUnit, dependency-cruiser ou import-linter) impedem violações. Como o mesmo caso de uso pode ser acionado por API, CLI, scheduler ou teste, a suíte principal roda contra adapters in-memory sem I/O.",
+    "interfaces": [
+      "Dashboard web da editora (catálogo, contratos, apurações, pagamentos)",
+      "Portal do compositor/titular (extratos, saldo, adiantamentos, exportações)",
+      "API REST pública versionada com OpenAPI e chaves por tenant",
+      "Webhooks de saída (statement gerado, pagamento efetuado, uso não identificado)",
+      "Importação de arquivos (CSV, XLSX, DDEX, CWR) com pré-visualização e mapeamento de colunas",
+      "CLI administrativa",
+      "Relatórios exportáveis (PDF, CSV, XLSX)",
+      "Integrações contábeis (QuickBooks, Xero, Omie, Conta Azul)",
+      "Painel de conciliação de usos não identificados",
+      "Console interno de suporte com impersonação auditada"
+    ],
+    "escalabilidade": "O maior volume está na ingestão e no cálculo (bilhões de linhas de streaming por período), enquanto a API transacional é leve. O escalonamento é feito nos adapters, sem alterar o core. (1) A API primária é stateless e escala horizontalmente atrás de load balancer. (2) A ingestão é assíncrona: upload para object storage, evento em fila, workers paralelos que fazem streaming, parsing e normalização em lotes, com idempotência por hash de arquivo/linha. (3) O cálculo é particionado por tenant, período e catálogo, com agregação prévia de usos por obra/território/DSP antes de aplicar contratos, o que reduz o volume em ordens de grandeza. (4) O ledger é append-only, particionado por tenant e mês, com projeções de leitura (CQRS) para saldos e extratos. (5) Multi-tenancy começa com schema compartilhado e RLS, com opção de isolamento em banco dedicado para clientes maiores. (6) Se a linha de uso ultrapassar o limite do Postgres, um adapter analítico (ClickHouse/DuckDB sobre Parquet) substitui o adapter de agregação sem tocar o core. (7) Cache de metadados de obras e câmbio. Fechamentos costumam ser mensais ou trimestrais, então há picos previsíveis que podem ser atendidos com workers em autoscaling.",
+    "custos": "Cargas em picos previsíveis (fechamento de período) permitem workers efêmeros ou spot e escala a zero fora deles. Os principais custos são: armazenamento de relatórios brutos (mitigado com compressão Parquet e ciclo de vida para storage frio, mantendo os arquivos para auditoria), computação de ingestão e cálculo, tarifas de pagamento (repassadas ou embutidas em taxa por transação), licenças e acesso a bases de metadados, e conformidade fiscal (retenções, W-8/W-9). Multi-tenancy compartilhado reduz o custo por cliente na fase inicial. Um monolito modular hexagonal em um único deployable no início evita custo de microsserviços, e os adapters podem ser extraídos depois. Pontos de atenção: custo de suporte à ingestão de formatos de DSP heterogêneos e à conciliação manual de usos não identificados, e a necessidade de backups, auditoria e retenção de dados financeiros por vários anos.",
+    "monetizacao": "Assinatura SaaS escalonada por tamanho de catálogo (número de obras) e de titulares ativos, com planos Starter, Growth e Enterprise. Componentes adicionais: (a) taxa por repasse processado ou percentual sobre o volume pago, (b) cobrança por volume de linhas de uso ingeridas acima da franquia, (c) módulos premium (integrações com sociedades de gestão, contabilidade, portal white-label para compositores, API avançada, SSO), (d) serviços de onboarding e migração de catálogo e de conciliação de usos não identificados, (e) plano com SLA e isolamento dedicado para clientes maiores. Um plano gratuito ou de baixo custo para editoras muito pequenas ajuda na aquisição, e a receita cresce conforme o catálogo e o volume de royalties gerenciado.",
+    "stack_sugerida": "Backend: TypeScript (NestJS usado apenas na camada de adapters, ou Fastify) ou Kotlin/Java com Spring apenas nos adapters; alternativa: Python com FastAPI e domínio puro. Organização em monolito modular com pacotes domain, application (use cases e ports) e adapters. Banco: PostgreSQL (RLS para multi-tenant, particionamento do ledger), com ClickHouse ou DuckDB/Parquet como opção para analytics de alto volume. Filas e eventos: SQS ou RabbitMQ, evoluindo para Kafka se necessário; workers com BullMQ, Celery ou Temporal para orquestração de apurações. Armazenamento: S3 compatível. Front-end: React com Next.js e TypeScript, TanStack Query, design system próprio. Autenticação: Keycloak ou Auth0. Pagamentos e cobrança: Stripe Billing e Stripe Connect, com Wise ou PIX conforme mercado. PDF: Playwright ou WeasyPrint. Observabilidade: OpenTelemetry, Grafana/Prometheus e Sentry. Infra: Docker, Terraform, AWS (ECS Fargate ou Kubernetes quando necessário), CI/CD com GitHub Actions. Qualidade: testes de domínio com adapters in-memory, testes de contrato para cada adapter, testes de arquitetura (dependency-cruiser/ArchUnit) e property-based testing no motor de cálculo."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:47:17+00:00",
+    "runner": "runner.py"
+  }
+}

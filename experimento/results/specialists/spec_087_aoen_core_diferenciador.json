@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 87,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador (motor de disponibilidade com bloqueio atômico de slot e orquestração transacional do ciclo de reserva) está claramente identificado, arquiteturalmente isolado da camada de interfaces e explicitamente extensível via adaptadores agnósticos (payment, notification, sport), mas o padrão de distributed locking para reservas concorrentes é uma solução de engenharia conhecida — não tecnologia inédita —, o que enfraquece levemente a afirmação de proposta de valor 'insubstituível' frente a alternativas de mercado que já implementam controle de concorrência similar."
+}

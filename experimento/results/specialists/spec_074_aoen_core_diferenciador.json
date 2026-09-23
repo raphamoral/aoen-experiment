@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 74,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — fluxo estruturado de ciclo de vida de PI que transforma divulgação de invenção em ativo monetizável rastreável — está claramente identificado e isolado via camada de serviços de domínio, com extensibilidade real demonstrada pelas portas de abstração (PatentSearchPort, AIClassifierPort); perde 2 pontos por não explicitar por que esse fluxo é insubstituível frente a concorrentes como Anaqua, Clarivate ou PatSnap adaptados para universidades."
+}

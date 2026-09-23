@@ -1,0 +1,58 @@
+{
+  "ideia_idx": 31,
+  "ideia": "Plataforma de mentoria online pareada por IA",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (capacidade de mudar componentes de matching e modelos de IA sem reescrever o sistema)",
+      "Testabilidade e observabilidade da qualidade do matching (métricas de resultado, não só de infraestrutura)",
+      "Modularidade com fronteiras de domínio claras (Identidade, Perfis, Matching, Sessões, Pagamentos, Feedback)",
+      "Privacidade e segurança (LGPD/GDPR, dados sensíveis de perfil, consentimento, gravações de sessão)",
+      "Confiabilidade das sessões em tempo real (vídeo/chat) com degradação graciosa",
+      "Custo-eficiência da IA (custo por match e por sessão sob controle)",
+      "Justiça e explicabilidade do matching (mitigação de viés, motivos do pareamento auditáveis)",
+      "Escalabilidade elástica, adotada de forma incremental conforme a demanda"
+    ],
+    "fitness_functions": [
+      "Arquitetura (CI): ArchUnit/dependency-cruiser bloqueia o build se um módulo acessar o banco ou as classes internas de outro módulo, ou se surgir dependência cíclica entre módulos",
+      "Acoplamento: limite máximo de instabilidade/acoplamento aferente e eferente por módulo, medido a cada PR",
+      "Contrato: testes de contrato (Pact/schema registry) entre módulos e com provedores externos; falha se houver quebra de compatibilidade retroativa",
+      "Qualidade do matching (offline): golden dataset de pares mentor-mentorado; nDCG@k e precisão@k não podem cair mais de X% entre versões do algoritmo",
+      "Qualidade do matching (online): taxa de aceitação do match, retenção na 3ª sessão e NPS pós-sessão com alerta de regressão; A/B ou shadow mode antes de promover novo modelo",
+      "Justiça: teste automatizado de paridade de taxa de match entre grupos demográficos; falha se a diferença exceder o limite definido",
+      "Latência: p95 do pareamento < 2s e p95 do sinal de entrada na sessão em tempo real < 300ms, verificados em teste de carga no pipeline e em produção",
+      "Disponibilidade: SLO de 99,9% para agendamento e sessões, com error budget monitorado e congelamento de releases ao esgotá-lo",
+      "Custo de IA: custo por match < US$ 0,05 e custo por sessão dentro do orçamento; alerta e bloqueio de deploy se o custo unitário subir mais de 20%",
+      "Portabilidade de IA: suíte de avaliação executada contra 2+ provedores/modelos via a mesma interface; falha se a troca exigir mudança fora do adaptador",
+      "Segurança e privacidade: SAST/DAST, varredura de PII em logs, teste de exclusão de dados (direito ao esquecimento) em até 30 dias, e verificação de criptografia em repouso e em trânsito",
+      "Resiliência: chaos testing mensal (queda do provedor de LLM ou de vídeo) validando o fallback para matching por regras e para chat de texto",
+      "Complexidade: complexidade ciclomática e tamanho de módulo com limites, além de teste de implantação independente para cada módulo extraído"
+    ],
+    "incremental_change": "Fase 0 (validação): monolito modular único com PostgreSQL, matching por regras e embeddings simples, vídeo de terceiros (Daily/Twilio) e pagamentos via Stripe; o objetivo é aprender com 50 a 200 pares mentor-mentorado, com pareamento parcialmente manual (Wizard of Oz). Fase 1: fitness functions no CI desde o primeiro dia, feature flags, dados de feedback por sessão e logs de decisão do matching (input, versão do modelo, score, motivo). Fase 2: matching híbrido (regras + embeddings + reranking por LLM) atrás de uma interface estável, com shadow mode e canary para novos modelos; cada versão é comparada com a anterior pela fitness function de qualidade. Fase 3: extrair para serviço separado apenas o módulo que tiver motivo mensurável (matching/ML por perfil de carga e ciclo de release próprio; sessões em tempo real por requisito de escala), usando o strangler fig pattern e eventos de domínio. Fase 4: pipeline de aprendizado contínuo com o feedback das sessões, modelos próprios ou ajustados (fine-tuning) só quando o custo ou a qualidade justificarem. Cada passo é pequeno, validado por fitness functions e tem plano de rollback.",
+    "reversibility": "Reversíveis (two-way doors): provedor de LLM e de embeddings (atrás de adaptador), algoritmo de matching, provedor de vídeo, provedor de e-mail e notificações, framework de front-end, ferramenta de observabilidade, estratégia de cache e a divisão em módulos ou serviços (extração é reversível enquanto os módulos forem independentes). Semi-reversíveis: nuvem e orquestração (mitigado com contêineres e IaC), banco vetorial (mitigado com pgvector e abstração de repositório). Difíceis de reverter (one-way doors), a decidir no último momento responsável: modelo de dados de identidade e consentimento, política de retenção e uso de dados de sessão (implicações legais e de confiança), região e residência de dados, contratos de longo prazo com provedores e o modelo de precificação já comunicado a clientes. Para esses casos: adiar até haver dados reais, documentar em ADRs com data, gatilho de revisão e alternativas descartadas.",
+    "coupling": "Monolito modular com bounded contexts (DDD) e regras de dependência impostas por ferramenta: módulos se comunicam por interfaces públicas e eventos de domínio, sem compartilhar tabelas (schema por módulo no mesmo Postgres). Integração assíncrona via outbox pattern, com evento versionado, o que permite migrar para broker (SQS/Kafka) sem alterar o contrato. Provedores externos (LLM, vídeo, pagamentos, calendário) isolados por anti-corruption layer/ports and adapters. O matching é um 'quantum arquitetural' candidato à extração futura, com entrada e saída em contrato estável. Contratos com versionamento e política de depreciação (expand/contract) para permitir mudanças em dois passos. Acoplamento estático mínimo e dinâmico explícito: chamadas síncronas apenas onde a experiência exigir resposta imediata, como o agendamento.",
+    "interfaces": [
+      "API pública REST/OpenAPI (perfis, disponibilidade, agendamento, sessões, feedback) com versionamento",
+      "MatchingPort: recommend(mentee, candidates, context) -> ranked matches + explicação + versão do modelo (implementações: regras, embeddings, LLM reranker)",
+      "LLMProviderPort / EmbeddingProviderPort (adaptadores para Anthropic, OpenAI e modelos open source)",
+      "VideoSessionPort (Daily/Twilio/LiveKit) para criar sala, emitir token e receber webhooks de eventos",
+      "PaymentPort e BillingPort (Stripe: assinaturas, cobrança por sessão, repasse ao mentor via Connect)",
+      "CalendarPort (Google/Microsoft Calendar) para disponibilidade e convites",
+      "NotificationPort (e-mail, push, WhatsApp)",
+      "Eventos de domínio versionados: ProfileUpdated, MatchProposed, MatchAccepted, SessionScheduled, SessionCompleted, FeedbackSubmitted, PaymentSettled",
+      "FeedbackPort / trilha de decisões do matching para avaliação e retreinamento",
+      "Webhooks e API para parceiros B2B (empresas, universidades) e SSO (SAML/OIDC)",
+      "Painel administrativo e de moderação (denúncias, revisão de matches, auditoria de viés)"
+    ],
+    "escalabilidade": "Escala incremental orientada por métricas. Início: monolito modular sem estado em contêineres atrás de load balancer, com autoscaling horizontal, PostgreSQL gerenciado com réplicas de leitura e Redis para cache e filas leves. Cargas pesadas (geração de embeddings, reranking por LLM, transcrição, resumos) vão para workers assíncronos com fila, de modo que a latência do usuário não dependa delas. Pré-cálculo de embeddings em lote e recuperação de candidatos em duas etapas (filtro por regras/ANN no pgvector, depois reranking apenas do top-N) mantêm o custo e a latência baixos. O tempo real é delegado ao provedor de vídeo, que escala por conta própria. Quando o pgvector ou o matching virarem gargalo medido, extrair o serviço de matching e migrar para banco vetorial dedicado (Qdrant/Pinecone) e broker gerenciado. Particionamento por tenant/região e multi-região só se houver exigência de latência ou residência de dados. Cada passo é acionado por um gatilho definido em fitness function (por exemplo, p95 acima do SLO por 7 dias).",
+    "custos": "Principais vetores: (1) inferência de LLM, mitigada por cascata de modelos (regras, depois modelo pequeno, depois modelo grande só para o top-N), cache de embeddings e de explicações, processamento em lote e limites por plano; (2) minutos de vídeo e gravação/transcrição, sendo a gravação opt-in e com retenção limitada; (3) infraestrutura, mantida enxuta com monolito modular, banco gerenciado único e serverless para picos; (4) taxas de pagamento e de Connect; (5) moderação e suporte, com triagem automatizada e escalonamento humano. Práticas: orçamento e custo unitário por match/sessão como fitness function, tags de custo por módulo (FinOps), dashboards de custo por tenant, alertas de anomalia e revisão trimestral de build vs. buy (por exemplo, modelo próprio só se o custo de API superar o custo de operar). Evitar extração precoce para microsserviços, que aumenta o custo operacional e cognitivo antes de haver necessidade.",
+    "monetizacao": "Modelo híbrido validado por etapas. (1) Freemium para mentorados: pareamento e 1 sessão gratuita por período, com upgrade para assinatura mensal (planos com número de sessões, matching prioritário, trilhas e resumos por IA). (2) Marketplace: comissão de 15 a 25% sobre sessões pagas com mentores profissionais, com repasse via Stripe Connect. (3) B2B/B2B2C: licenças por assento para empresas, universidades e programas de talentos, com painel de impacto, SSO e relatórios, sendo esta a receita mais previsível. (4) Add-ons: análise de progresso com IA, planos de desenvolvimento, certificados e mentoria em grupo. (5) Mentores: destaque e ferramentas premium (agenda inteligente, analytics). O preço é tratado como hipótese, testado por experimentos com feature flags e ajustado com base em conversão, retenção e margem por sessão (receita menos custo de IA e vídeo). O modelo já comunicado a clientes é tratado como decisão de difícil reversão, por isso os testes são feitos em coortes limitadas.",
+    "stack_sugerida": "Front-end: Next.js/React + TypeScript (PWA, com app móvel só se houver demanda). Back-end: monolito modular em TypeScript (NestJS) ou Python (FastAPI) no módulo de ML, com fronteiras impostas por ArchUnit/dependency-cruiser ou import-linter. Dados: PostgreSQL gerenciado com pgvector, Redis, S3 para objetos. Assíncrono: outbox + fila (SQS/BullMQ), com Kafka apenas se o volume justificar. IA: camada de abstração própria sobre LLMs (Anthropic Claude, com alternativas via adaptador) e modelos de embeddings, avaliação com dataset de referência e ferramentas de eval (Promptfoo/LangSmith/Ragas), guardrails para PII e moderação. Tempo real: Daily, Twilio ou LiveKit. Pagamentos: Stripe (Billing + Connect). Identidade: Auth0/Clerk/Cognito com OIDC/SAML. Infra: contêineres (ECS/Fargate ou Cloud Run) com Terraform, GitHub Actions com fitness functions como gates de pipeline, feature flags (Unleash/LaunchDarkly). Observabilidade: OpenTelemetry, Grafana/Datadog e Sentry, mais painéis de qualidade do matching e de custo de IA. Documentação: ADRs versionados no repositório."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T02:47:58+00:00",
+    "runner": "runner.py"
+  }
+}

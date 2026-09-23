@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta sustenta uma narrativa arquitetural altamente coesa: o princípio de Last Responsible Moment permeia de forma consistente o incremental_change (Modular Monolith antes de microsserviços), a reversibilidade (DB compartilhado até fitness function exigir partição) e as decisões irreversíveis (schema de tenant adiado até padrão estabilizar); as características de negócio têm fitness functions correspondentes diretas (elasticidade → simulação 10x pré-Black Friday; integrabilidade → Pact > 95%; multi-tenancy → zero cross-tenant a cada deploy; evoluibilidade → complexidade ciclomática ≤ 15); a única fissura de coerência é a característica de Segurança (PII + dados financeiros) orphanada — não há fitness function automatizada correspondente (SAST, dependency scanning, testes de autorização) — e a característica de Confiabilidade (SLA 99.9%) carece de uma função de disponibilidade medida continuamente, dependendo apenas do drill semestral de DR, o que é insuficiente para garantir o SLA declarado."
+}

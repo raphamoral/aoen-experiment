@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 92,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural descreve com riqueza o produto, o mercado-alvo e a arquitetura técnica, mas não menciona em nenhum momento o modelo de monetização — não há referência a tiers de preço, planos de assinatura, pricing por uso, métricas de negócio (MRR, churn, LTV, CAC) ou qualquer mecanismo de geração de receita."
+}

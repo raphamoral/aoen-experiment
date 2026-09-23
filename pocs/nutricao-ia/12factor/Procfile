@@ -1,0 +1,4 @@
+# Factor VI: Processos stateless e share-nothing
+# Factor VIII: Concorrência via modelo de processos
+web: gunicorn main:app -w ${APP_WORKERS:-2} -k uvicorn.workers.UvicornWorker --bind ${APP_HOST:-0.0.0.0}:${APP_PORT:-8000} --timeout 120 --graceful-timeout 30
+release: alembic upgrade head

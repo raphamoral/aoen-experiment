@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta exibe coerência sistêmica elevada: os princípios 12-factor permeiam todas as camadas de forma orgânica — processos stateless reforçam o Redis para sessões, que viabiliza escala horizontal, que justifica o Kubernetes com Helm; imagens imutáveis tagueadas por SHA reforçam a separação build/release/run, que por sua vez ancora a estratégia de rollback; presigned URLs para S3 eliminam estado local nos uploads, consistente com o share-nothing; Auth0/Keycloak com SAML é coerente com o contexto corporativo; e a fila de mensagens fecha o ciclo de eventos de gamificação (conquistas → worker → PostgreSQL/Redis) sem acoplamento síncrono — a única tensão identificável é a indecisão entre alternativas com modelos operacionais distintos (RabbitMQ autogerenciado vs. SQS managed, Auth0 SaaS vs. Keycloak self-hosted), o que indica que algumas decisões ainda não estão fechadas e poderiam gerar contradições de operação e custo se escolhidas de forma inconsistente entre si."
+}

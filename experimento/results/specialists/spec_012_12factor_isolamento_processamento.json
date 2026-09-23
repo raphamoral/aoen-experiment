@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 9,
+  "justificativa": "Processamento pesado (Report Generator, Processing Service, Ingestion Workers) roda em processos físicos separados e independentes (containers distintos no K8s), de forma assíncrona via Kafka e filas Celery, com escala independente por métricas específicas de cada workload (KEDA, HPA), garantindo que falha em um worker não afeta os demais serviços; perde um ponto pela ausência de menção explícita a circuit breakers ou fallback comportamental quando os workers falham."
+}

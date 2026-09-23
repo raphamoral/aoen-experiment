@@ -1,0 +1,89 @@
+{
+  "ideia_idx": 30,
+  "ideia": "App de controle de estoque com visão computacional para varejo",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de Estoque de Varejo (Inventory Management). O núcleo modela Produto/SKU, Localização (loja, corredor, prateleira, gôndola), Nível de Estoque, Contagem de Estoque (Stock Count), Divergência/Ruptura (out-of-stock), Planograma e Alerta de Reposição. A visão computacional NÃO faz parte do domínio: ela é uma fonte externa de 'Observações de Prateleira' (ShelfObservation: SKU, quantidade estimada, confiança, timestamp, localização), que o core reconcilia com o estoque contábil por regras de negócio (limiar de confiança, tolerância de divergência, política de reposição). Agregados principais: Item de Estoque, Sessão de Contagem, Planograma, Regra de Reposição e Loja/Tenant.",
+    "primary_ports": [
+      "IngestShelfObservationUseCase (receber observações de prateleira detectadas)",
+      "StartStockCountSessionUseCase / CloseStockCountSessionUseCase",
+      "ReconcileInventoryUseCase (comparar visão computacional x estoque contábil)",
+      "QueryStockLevelsUseCase (consultar níveis de estoque por SKU/loja/localização)",
+      "ManageProductCatalogUseCase (CRUD de produtos/SKUs)",
+      "ManagePlanogramUseCase (definir e validar planogramas)",
+      "ConfigureReplenishmentRulesUseCase (regras de ponto de pedido e alertas)",
+      "ResolveDiscrepancyUseCase (aprovar/rejeitar ajustes de divergência)",
+      "GenerateInventoryReportUseCase (relatórios de acurácia, ruptura e perdas)",
+      "ManageTenantAndSubscriptionUseCase (contas, lojas, planos)"
+    ],
+    "secondary_ports": [
+      "VisionInferencePort (detectar/contar produtos em uma imagem, retornando observações neutras ao domínio)",
+      "ImageStoragePort (guardar e recuperar imagens/frames)",
+      "InventoryRepositoryPort (persistência de itens, contagens e movimentações)",
+      "ProductCatalogRepositoryPort",
+      "PlanogramRepositoryPort",
+      "EventPublisherPort (publicar eventos de domínio: StockDiscrepancyDetected, LowStockDetected)",
+      "NotificationPort (alertas por push, e-mail, SMS, chat)",
+      "ERPIntegrationPort (sincronizar estoque, pedidos de compra e vendas com ERP/PDV)",
+      "POSSalesFeedPort (receber vendas para baixa de estoque teórico)",
+      "SupplierOrderingPort (gerar pedidos de compra automáticos)",
+      "IdentityAndAccessPort (autenticação, autorização, multi-tenancy)",
+      "BillingPort (cobrança, planos, medição de uso)",
+      "ClockPort / IdGeneratorPort (tempo e identificadores, para testes determinísticos)",
+      "AuditLogPort (trilha de auditoria)",
+      "MetricsAndTracingPort (observabilidade)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API Adapter (backoffice web e integrações de terceiros)",
+      "Mobile App Adapter (app iOS/Android para contagem com câmera do celular)",
+      "Web Dashboard Adapter (SPA para gestores)",
+      "Camera/Edge Stream Adapter (câmeras fixas de prateleira e robôs via RTSP/MQTT, enviando frames ou detecções)",
+      "Webhook Inbound Adapter (eventos de PDV/ERP)",
+      "Message Consumer Adapter (Kafka/SQS/NATS consumindo eventos de ingestão)",
+      "CLI/Script Adapter (importações em lote, migrações, operações administrativas)",
+      "Scheduler Adapter (cron para reconciliações e relatórios periódicos)",
+      "Test Driver Adapter (testes automatizados e BDD chamando as primary ports diretamente, sem UI)"
+    ],
+    "secondary_adapters": [
+      "Vision: YoloV8/YOLO11 via Triton/ONNX Runtime (self-hosted); adaptador alternativo para AWS Rekognition / Google Vertex AI Vision / Azure AI Vision; FakeVisionAdapter para testes",
+      "ImageStorage: S3/GCS/MinIO com URLs pré-assinadas e políticas de ciclo de vida; InMemory/FileSystem para testes",
+      "Repositórios: PostgreSQL (SQLAlchemy/Prisma/JPA) com RLS por tenant; InMemoryRepository para testes",
+      "Cache/estado rápido: Redis",
+      "Busca/analytics: OpenSearch/ClickHouse (opcional)",
+      "EventPublisher: Kafka / SNS+SQS / NATS; InMemoryEventBus para testes",
+      "Notification: Firebase Cloud Messaging, SES/SendGrid, Twilio, Slack/Teams webhooks",
+      "ERP: adaptadores para SAP, TOTVS, Bling, Omie, Linx; adaptador genérico via CSV/SFTP",
+      "POS: adaptadores para PDVs (Linx, VTEX, Shopify POS, Lightspeed)",
+      "SupplierOrdering: EDI/API de fornecedores, e-mail automatizado",
+      "IAM: Keycloak / Auth0 / Cognito (OIDC)",
+      "Billing: Stripe Billing (assinatura + uso medido), Pagar.me/Asaas para Brasil (Pix/boleto)",
+      "Audit: tabela append-only ou OpenTelemetry Logs",
+      "Observabilidade: OpenTelemetry + Prometheus/Grafana/Sentry",
+      "Clock/Id: SystemClock, UUIDv7/ULID; FixedClock para testes"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) reside em um módulo sem dependências de frameworks, SDKs de cloud, ORMs, protocolos de rede ou bibliotecas de visão computacional. A regra de dependência aponta sempre para dentro: adapters dependem das ports, nunca o contrário. As ports são interfaces definidas no lado do core, na linguagem do domínio (ex.: VisionInferencePort retorna ShelfObservation, não bounding boxes de um modelo específico). A tradução entre modelo externo e modelo de domínio ocorre em anti-corruption layers dentro dos adapters. A composição (injeção de dependência) acontece apenas na composition root, que decide qual adapter ligar a cada port por ambiente. O isolamento é imposto por: (1) módulos/pacotes separados (domain, application, adapters/in, adapters/out), (2) testes de arquitetura (ArchUnit/import-linter/dependency-cruiser) no CI, (3) DTOs específicos por adapter, (4) eventos de domínio em vez de chamadas diretas. Como o tratamento é simétrico, ERP, câmera, banco, fila e provedor de visão são tratados igualmente como 'lados de fora' plugáveis, e o mesmo caso de uso pode ser acionado por UI, teste, script ou câmera.",
+    "interfaces": [
+      "App mobile de contagem por câmera com overlay de detecções e correção manual",
+      "Dashboard web: mapa de calor de rupturas, acurácia de estoque, divergências pendentes",
+      "Painel de aprovação de divergências e ajustes",
+      "Editor visual de planogramas (comparação planejado x real na prateleira)",
+      "Tela de configuração de câmeras/dispositivos e zonas de prateleira",
+      "API REST/GraphQL pública documentada (OpenAPI) com API keys/OAuth2 por tenant",
+      "Webhooks de saída (ruptura detectada, divergência crítica)",
+      "Ingestão por stream (RTSP/MQTT/HTTP) a partir de edge devices",
+      "CLI administrativa para importação/exportação em lote",
+      "Portal de cobrança e gestão de assinatura",
+      "Interface de testes (fixtures de imagens + FakeVisionAdapter) para validar regras sem hardware"
+    ],
+    "escalabilidade": "Separar os caminhos de leitura/escrita e de inferência. (1) Inferência de visão é o gargalo: processar de forma assíncrona via fila (ingestão -> fila -> workers de inferência com autoscaling por profundidade da fila/GPU, ex.: KEDA), com batching e modelo quantizado. (2) Edge inference: rodar detecção leve na própria loja (Jetson/mini-PC) e enviar apenas observações (JSON) ao cloud, reduzindo banda e custo; frames só sob demanda ou em baixa confiança. (3) Core stateless, escalando horizontalmente atrás de load balancer; como os adapters são plugáveis, o mesmo core roda como monolito modular no início e é dividido em serviços (Ingestão, Inferência, Estoque, Notificações) quando necessário, sem reescrever o domínio. (4) Multi-tenancy com particionamento por tenant/loja (Postgres com RLS e particionamento por tempo; shard por tenant grande). (5) Eventos assíncronos (Kafka/SQS) com idempotência e outbox pattern para consistência. (6) Séries temporais de observações em tabela particionada/ClickHouse; estoque atual em Postgres + cache Redis. (7) Imagens com ciclo de vida (hot -> cold -> exclusão) e CDN para consulta. (8) Rate limiting e backpressure por tenant.",
+    "custos": "Principais vetores: (1) GPU/inferência (maior custo variável): mitigar com edge inference, modelos quantizados (INT8), amostragem inteligente de frames (só quando há movimento ou em horários-chave), spot instances e batching; (2) armazenamento e egress de imagens: compressão, retenção curta (ex.: 7-30 dias), armazenar apenas recortes/frames de baixa confiança, tiers frios; (3) hardware de câmeras/edge por loja (CAPEX ou aluguel embutido no plano); (4) banco e fila: começar com serviços gerenciados pequenos, migrar para autogerenciado quando o volume justificar; (5) rotulagem/treinamento contínuo (active learning com correções dos usuários para reduzir custo de anotação); (6) suporte/onboarding por loja (cadastro de SKUs, calibração de câmeras); (7) conformidade LGPD: desfocar rostos de clientes/funcionários nas imagens; (8) trocar de provedor de visão (cloud API vs self-hosted) sem tocar no core permite otimizar custo por volume: cloud API no MVP (zero CAPEX), self-hosted quando o volume passar do ponto de equilíbrio. Monitorar custo por loja/dia e por imagem processada como métrica de unit economics.",
+    "monetizacao": "SaaS por assinatura recorrente com componente de uso: (1) plano por loja/mês em tiers (Starter: contagem por app móvel; Pro: câmeras fixas + alertas de ruptura; Enterprise: multi-loja, SSO, SLA, API e integrações ERP); (2) cobrança por uso medido (imagens/SKUs processados acima da franquia) via BillingPort; (3) taxa de setup/onboarding e venda ou aluguel de kit de câmeras/edge; (4) add-ons: reposição automática com pedidos a fornecedores, análise de planograma/compliance, previsão de demanda, detecção de perdas/furtos; (5) marketplace de integrações premium (ERP/PDV); (6) modelo de valor: percentual sobre redução comprovada de ruptura/perdas para contas grandes; (7) potencial futuro de insights anonimizados para indústrias/fornecedores (compliance de planograma, share of shelf), respeitando LGPD e contratos. Trial gratuito de 14-30 dias com poucas lojas-piloto para provar ROI.",
+    "stack_sugerida": "Core: TypeScript (Node.js) ou Kotlin/Java (Spring sem vazar para o domínio) ou Python (FastAPI) com domínio puro; escolha única de linguagem para o core com testes unitários rápidos e sem I/O. Arquitetura em monolito modular com pastas domain/application/adapters. Visão computacional: Python + PyTorch, YOLO11/RT-DETR exportados para ONNX/TensorRT, servidos por NVIDIA Triton ou BentoML; edge com NVIDIA Jetson/Coral/Intel NUC + OpenVINO; OpenCV para pré-processamento; embeddings (CLIP/DINOv2) + busca vetorial para reconhecimento de SKUs novos (few-shot). Dados: PostgreSQL (RLS multi-tenant) + Redis; ClickHouse/TimescaleDB para séries temporais; S3/MinIO para imagens. Mensageria: Kafka (alto volume) ou SQS/SNS/NATS (simplicidade), com Outbox. API: REST (OpenAPI) + GraphQL opcional, gRPC entre serviços internos. Frontend: React/Next.js + TypeScript (dashboard), React Native ou Flutter (app de contagem com câmera). Infra: Docker, Kubernetes (EKS/GKE) com KEDA e nós GPU, Terraform, GitHub Actions/ArgoCD. Identidade: Keycloak/Auth0/Cognito. Billing: Stripe Billing (+ Asaas/Pagar.me para Pix/boleto no Brasil). Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki, Sentry. MLOps: MLflow/DVC, Label Studio/CVAT para anotação, pipeline de retreino com active learning. Qualidade: testes de arquitetura (ArchUnit/import-linter), testes de contrato por port, fixtures com FakeVisionAdapter, testes E2E com Playwright."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:45:22+00:00",
+    "runner": "runner.py"
+  }
+}

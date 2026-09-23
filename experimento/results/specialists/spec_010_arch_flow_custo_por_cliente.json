@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta lista custos de infraestrutura como itens 'commodity' (AWS/GCP, Stripe, SendGrid, S3) tratando-os como custo total de operação — não há nenhuma menção a rastreamento por tenant, custo por operação (ex: custo por NF emitida, custo por consulta à SEFAZ, custo por query ao Open Finance), nem conexão entre consumo por cliente e modelo de precificação; o bounded context 'Subscription & Billing' cobre cobrança do cliente, não mensuração de custo por cliente."
+}

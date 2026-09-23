@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 90,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A separação explícita entre modelo de dados estável e mecanismo de captura, combinada com a Service Layer que isola regras de negócio de todas as interfaces, demonstra arquitetura com boa extensibilidade e dependências apontando para dentro — mas a proposta não aborda independência de infraestrutura (banco, cloud, framework de IA) nem estratégia de escala de 10 para 10.000 usuários, deixando decisões de reversibilidade técnica em aberto."
+}

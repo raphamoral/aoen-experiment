@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 51,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 7,
+  "justificativa": "O mercado-alvo está bem segmentado em três camadas (PE/VC, bancos/boutiques, jurídico corporativo) e a dor central está articulada de forma concreta (semanas → horas), mas faltam três elementos críticos para nota máxima: (1) dimensionamento quantitativo do mercado (TAM/SAM/SOM ausentes), (2) análise explícita do cenário competitivo — players como Luminance, Kira Systems e Harvey AI não são mencionados, tornando a diferenciação implícita em vez de posicionada, e (3) quantificação do custo atual da dor (quanto um fundo gasta por due diligence hoje), o que enfraquece a justificativa de ROI e a urgência de adoção."
+}

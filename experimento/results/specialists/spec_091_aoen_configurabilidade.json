@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 91,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra configurabilidade parcial — currículo como dado e AIProvider injetável são sinais positivos, mas faltam mecanismos explícitos de multi-tenancy: não há modelo de configuração por tenant, sem feature flags por cliente, sem esquema de onboarding declarativo que permita que escola A, franquia B e parceiro white-label C operem com comportamentos distintos (currículo próprio, provedor de IA diferente, branding, limites de uso) apenas inserindo registros no banco, sem deploy ou código adicional."
+}

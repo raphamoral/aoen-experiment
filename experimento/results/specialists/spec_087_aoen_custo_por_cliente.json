@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 87,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona nenhuma forma de mensuração de custo por tenant: não há mecanismo de atribuição de consumo de recursos por cliente, nenhum cálculo de custo por operação/transação, nenhuma conexão entre custo e modelo de precificação — o ReportingService citado é voltado à receita do operador, não ao custo da plataforma por cliente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 51,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva consistente: o pipeline abstrato com interfaces plugáveis por estágio, o encapsulamento do LLM atrás de um contrato (DocumentAnalyzer), a inversão de dependência nas interfaces de entrega (todas delegam à DiligenceService sem lógica de negócio própria) e a substituibilidade explícita de parsers e geradores de relatório configuram um sistema onde componentes centrais podem evoluir ou ser trocados de forma independente — o que eleva a nota significativamente; a perda dos dois pontos restantes deve-se à ausência de menção explícita a mecanismos de escala horizontal (filas, workers assíncronos, event-driven processing) que seriam necessários para crescer de 10 para 10.000 usuários sem mudança arquitetural, e à falta de uma camada de abstração de persistência (repositórios/ports) que garantisse a reversibilidade do banco de dados da mesma forma que foi garantida para o LLM."
+}

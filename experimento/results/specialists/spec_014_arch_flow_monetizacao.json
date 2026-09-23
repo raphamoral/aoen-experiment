@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona um bounded context de 'Subscription & Billing' com referência a planos e consumo por minuto, sugerindo intenção de uso-based pricing, mas não detalha tiers concretos, faixas de preço, unidades de cobrança definidas, nem discute sustentabilidade econômica (LTV, CAC, churn) ou como a receita por cliente se relaciona com o custo real de inferência STT+tradução+TTS em tempo real."
+}

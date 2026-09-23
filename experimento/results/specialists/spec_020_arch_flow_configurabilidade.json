@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "O motor de gamificação com regras configuráveis por campanha e os planos de BillingSubscription indicam intenção de configurabilidade, mas a proposta não evidencia um serviço explícito de configuração por tenant, feature flags, nem um fluxo documentado de onboarding zero-código — contextos como IntegrationGateway e pipelines CI/CD muito provavelmente ainda exigiriam intervenção de desenvolvimento para cada novo cliente enterprise."
+}

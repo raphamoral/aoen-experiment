@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 68,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta é inteiramente descritiva do ponto de vista funcional e arquitetural — não há nenhuma menção a mensuração de custo por cliente, por operação ou por tenant; os provedores de KYC, pagamento e assinatura eletrônica são citados como 'adaptadores trocáveis', mas nenhum custo unitário (ex: 'cada checagem KYC custa R$X', 'cada liberação de marco consome R$Y de processamento') é calculado, estimado ou sequer referenciado, tornando impossível derivar margem por tenant ou conectar consumo de recursos ao modelo de precificação."
+}

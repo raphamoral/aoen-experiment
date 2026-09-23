@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte pensamento evolutivo — monólito modular com interfaces internas bem definidas, Strangler Fig com feature flags para extração cirúrgica de serviços, fases acionadas por métricas reais em vez de calendário, e schema registry para evolução de contratos — mas perde pontos por não explicitar inversão de dependências (ports & adapters / hexagonal) que garantiria que a lógica de negócio seja genuinamente agnóstica a frameworks e banco de dados, deixando a substituibilidade de infraestrutura implícita em vez de garantida estruturalmente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 7,
+  "justificativa": "O projeto prevê múltiplas interfaces justificadas por perfis reais (freelancers vs. donos de espaço) e canais relevantes ao mercado (web, email, WhatsApp, QR Code), mas a proposta usa Next.js para 'tudo que o usuário vê', sugerindo acoplamento frontend-backend que pode dificultar a adição de interfaces nativas mobile ou API pública sem retrabalho significativo."
+}

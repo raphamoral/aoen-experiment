@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra fundamentos sólidos de Clean Architecture — entidades sem dependências externas e casos de uso desacoplados de frameworks garantem boa substituibilidade de infraestrutura — mas a proposta está incompleta (a camada de infraestrutura/adapters não é visível), o algoritmo de matchmaking embutido em um único caso de uso pode se tornar um ponto de acoplamento difícil de evoluir independentemente, e decisões de escalabilidade (filas, cache, sharding) ainda não foram tomadas, deixando incerta a transição de 10 para 10.000 usuários sem mudança estrutural."
+}

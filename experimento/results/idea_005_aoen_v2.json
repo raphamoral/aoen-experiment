@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 5,
+  "ideia": "SaaS de automação de contratos imobiliários com assinatura digital",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de geração automática de contratos imobiliários a partir de dados estruturados (partes, imóvel, cláusulas, valor, prazo) combinado com orquestração do fluxo de assinatura digital multi-parte. Sem esse motor, o produto é apenas um editor de texto com PDF.",
+    "fase1_mercado": "Imobiliárias independentes (PMEs com 1-50 corretores), corretores autônomos (PF), incorporadoras regionais e escritórios de advocacia imobiliária. Dor primária: contratos redigidos manualmente consomem horas por transação, erros geram litígios, assinatura presencial trava o fechamento.",
+    "fase1_extensivel": "Sim. O core é dividido em dois adaptadores abstratos: (1) TemplateEngine — pode ser motor próprio de templates, LLM (OpenAI, Anthropic) ou LegalTech API; (2) SignatureProvider — adaptador que encapsula D4Sign, ClickSign, DocuSign ou Autentique. Trocar qualquer fornecedor não afeta a lógica de negócio.",
+    "fase2_interfaces": [
+      "Web App (dashboard completo para gestores de imobiliária)",
+      "Mobile App (iOS/Android para corretores de campo — coleta de dados e envio para assinatura)",
+      "API REST/Webhook (integração com CRMs imobiliários: Jetimob, CV CRM, Salesforce RE)",
+      "Embedded Widget (iframe/SDK para portais como ZAP Imóveis, Viva Real, OLX)",
+      "WhatsApp Bot (coleta de dados e link de assinatura para clientes finais sem app)"
+    ],
+    "fase2_justificativa_mercado": "Web App abre imobiliárias com operação centralizada e gerentes que precisam de visibilidade do pipeline. Mobile abre corretores autônomos e times de campo que fecham contratos no imóvel. API abre o mercado de PropTechs e CRMs que querem contratos como feature. Embedded Widget abre portais imobiliários que podem embutir o produto e monetizar por transação. WhatsApp abre o cliente final (comprador/locatário) que nunca instalaria mais um app.",
+    "fase2_service_layer": "Uma ContractService e uma SignatureService agnósticas de interface expõem métodos como createContract(params), sendForSignature(contractId, signatories) e getSignatureStatus(contractId). Cada interface (Web, Mobile, API, Widget, Bot) consome essas services via chamadas internas. Nenhuma interface contém regra de negócio — apenas apresentação e coleta de input.",
+    "fase3_fluxo_fixo": "Coleta de dados estruturados → seleção e merge de template → geração do documento (PDF/DOCX) → fila de revisão/aprovação interna → roteamento para assinatura multi-parte → monitoramento de status de cada assinante → archiving do contrato finalizado com hash de integridade.",
+    "fase3_parametros_configuraveis": [
+      "Templates de contrato por tipo (locação residencial, locação comercial, compra e venda, permuta, comodato)",
+      "Cláusulas obrigatórias e opcionais por cliente/jurisdição",
+      "Ordem e papéis dos assinantes (comprador, vendedor, fiador, testemunha, corretor, gestor)",
+      "Provedor de assinatura digital selecionado por cliente (D4Sign, ClickSign, Autentique)",
+      "Identidade visual (logo, cores, rodapé do contrato)",
+      "SLA de expiração de assinatura (ex: 48h, 7 dias)",
+      "Fluxo de aprovação interna (zero, 1 nível, 2 níveis)",
+      "Notificações configuráveis (e-mail, WhatsApp, SMS) por evento",
+      "Campos obrigatórios e validações específicas do cliente",
+      "Integrações ativas por cliente (webhooks de saída, CRM destino)"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel de configuração: (1) criar tenant com CNPJ/dados; (2) fazer upload ou selecionar templates do catálogo base; (3) configurar fluxo de signatários; (4) conectar provedor de assinatura via OAuth/API key; (5) definir notificações. Nenhum deploy, nenhuma linha de código nova. Novo cliente = novo registro de configuração no banco.",
+    "fase4_core_isolado": "Worker assíncrono de geração de contratos (PDF rendering + merge de template + LLM se aplicável) rodando em processo separado consumindo fila (ex: BullMQ/Redis). Worker de orquestração de assinatura rodando separado, responsável por polling de status nos provedores e disparo de webhooks/notificações. Ambos escaláveis horizontalmente e independentes da camada web.",
+    "fase4_custo_total_cliente": "Core: R$0,00–R$0,80/contrato (LLM opcional: ~R$0,10–0,50; PDF rendering: ~R$0,01; provedor de assinatura: R$0,20–0,60/envelope dependendo do plano). Infra proporcional: R$0,003–0,01/contrato (CPU do worker, memória). Armazenamento: R$0,002–0,008/contrato/mês (PDF ~300KB médio, S3 ou equivalente). Banda: R$0,001/contrato (download do PDF). Custo operacional total estimado: R$0,30–R$1,50/contrato. Permite precificar planos por volume com margem saudável acima de R$3,00/contrato ou assinatura mensal flat.",
+    "fase4_continuidade": "A API web responde normalmente mesmo se o worker de geração estiver fora — o contrato entra na fila com status 'pending' e o usuário é notificado quando pronto. Dead-letter queue captura falhas para reprocessamento sem perda. Circuit breaker no adaptador de assinatura: se o provedor cair, o status fica em 'awaiting_provider' sem derrubar o fluxo principal. Health checks separados por componente.",
+    "fase4_manutencao": "TemplateEngine e SignatureProvider são interfaces com adaptadores concretos. Trocar de ClickSign para D4Sign = criar novo adaptador implementando a interface SignatureProvider + atualizar configuração do tenant. Zero downtime, zero refatoração no core. Feature flags por tenant permitem migração gradual de provedores sem big-bang.",
+    "monetizacao": "Modelo híbrido: (1) Assinatura mensal por faixa de volume (ex: até 30 contratos/mês R$197, até 150 R$497, ilimitado R$997) — receita recorrente previsível; (2) Pay-per-use acima da faixa contratada (R$5–8/contrato excedente) — captura upsell natural em meses de pico; (3) Add-ons: white-label para portais (R$1.500+/mês), API access tier (R$300+/mês), armazenamento estendido, suporte prioritário. Custo de aquisição amortizado em poucos meses dado LTV alto em imobiliárias com volume constante.",
+    "stack_sugerida": "Backend: Node.js (NestJS) com TypeScript — modular, ideal para Service Layer e adaptadores. Filas: BullMQ + Redis. Banco: PostgreSQL (dados transacionais) + configurações de tenant em JSONB. Geração de PDF: Puppeteer (HTML→PDF) ou pdf-lib para merge de templates. LLM opcional: Anthropic API (claude-haiku-4-5 para geração de cláusulas, custo baixo). Assinatura: adaptadores para D4Sign/ClickSign/Autentique. Storage: S3-compatible (Cloudflare R2 para custo menor). Frontend Web: Next.js. Mobile: React Native (código compartilhado com web via monorepo). Infraestrutura: Docker + Railway/Render (início) → ECS Fargate (escala). Monitoramento: Sentry + Grafana + OpenTelemetry para custo por tenant."
+  }
+}

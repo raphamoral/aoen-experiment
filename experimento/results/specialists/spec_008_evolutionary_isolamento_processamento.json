@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta indica isolamento implícito via deploy independente de bounded contexts por GitOps e blockchain em rede privada separada (Hyperledger Fabric), sugerindo separação física parcial, mas não menciona explicitamente filas assíncronas, workers dedicados para operações pesadas (geração de hashes, transações blockchain, integrações ERP/SINIR), nem estratégias de fallback caso o processamento pesado falhe — o que deixa o isolamento de resiliência indefinido e provavelmente insuficiente para o SLA de 99,9% declarado."
+}

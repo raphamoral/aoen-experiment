@@ -1,0 +1,88 @@
+{
+  "ideia_idx": 31,
+  "ideia": "Plataforma de mentoria online pareada por IA",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Mentoria pareada por IA: o núcleo modela Mentor, Mentorado, Perfil de Competências, Objetivos de Desenvolvimento, Matching (pareamento com score explicável e regras de elegibilidade), Sessão de Mentoria (agendamento, execução, ciclo de vida), Plano de Desenvolvimento, Feedback/Avaliação, Assinatura/Plano comercial e Política de Privacidade/Consentimento. As regras de pareamento, agendamento, limites de plano, cancelamento e reputação vivem exclusivamente aqui, sem depender de nenhuma tecnologia externa.",
+    "primary_ports": [
+      "ManageProfileUseCase (criar/atualizar perfil, competências, objetivos, disponibilidade)",
+      "RequestMatchUseCase (solicitar pareamento e recomendações de mentores)",
+      "RespondToMatchUseCase (aceitar/recusar pareamento)",
+      "ScheduleSessionUseCase (agendar, remarcar, cancelar sessões)",
+      "ConductSessionUseCase (iniciar, encerrar sessão, registrar notas e ações)",
+      "SubmitFeedbackUseCase (avaliar sessão e mentor)",
+      "TrackDevelopmentPlanUseCase (metas, progresso e insights)",
+      "ManageSubscriptionUseCase (assinar, trocar plano, cancelar)",
+      "OnboardMentorUseCase (cadastro, verificação e aprovação de mentores)",
+      "ManageConsentUseCase (LGPD: consentimento, exportação e exclusão de dados)",
+      "AdminModerationUseCase (moderação, auditoria, gestão de disputas)"
+    ],
+    "secondary_ports": [
+      "MentorRepository / MenteeRepository / SessionRepository / MatchRepository (persistência)",
+      "MatchingEnginePort (geração de embeddings e ranking de compatibilidade por IA)",
+      "LLMPort (sumarização de sessões, sugestão de pauta, coaching de perguntas)",
+      "VectorSearchPort (busca semântica de perfis)",
+      "CalendarPort (disponibilidade e eventos em calendários externos)",
+      "VideoConferencePort (criação de salas e gravação/transcrição)",
+      "PaymentPort (cobrança, assinatura, repasse a mentores)",
+      "NotificationPort (e-mail, push, WhatsApp)",
+      "IdentityPort (autenticação, SSO, verificação de identidade)",
+      "EventPublisherPort (eventos de domínio)",
+      "FileStoragePort (materiais, gravações, currículos)",
+      "ClockPort / IdGeneratorPort (tempo e IDs determinísticos para testes)",
+      "AuditLogPort (trilha de auditoria)",
+      "AnalyticsPort (métricas de produto)",
+      "ModerationPort (detecção de conteúdo impróprio por IA)"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON) consumida pelo front-end",
+      "GraphQL BFF para web e mobile",
+      "Web App (Next.js) como cliente da API",
+      "App Mobile (React Native)",
+      "Webhooks de entrada (Stripe, Calendar, videoconferência)",
+      "CLI administrativa e scripts de operação",
+      "Consumers de fila/eventos (jobs agendados, lembretes)",
+      "Adapter de testes automatizados (BDD/contract tests chamando as portas diretamente)",
+      "Bot/Assistente conversacional (Slack, WhatsApp, Teams)",
+      "Servidor MCP/API pública para integrações de parceiros"
+    ],
+    "secondary_adapters": [
+      "PostgresRepositoryAdapter (Prisma/SQL) para persistência",
+      "InMemoryRepositoryAdapter (testes e desenvolvimento)",
+      "PgVectorAdapter (ou Pinecone/Qdrant) para VectorSearchPort",
+      "AnthropicLLMAdapter (Claude) / OpenAILLMAdapter, intercambiáveis para LLMPort",
+      "EmbeddingsAdapter (modelo de embeddings) para MatchingEnginePort",
+      "GoogleCalendarAdapter / OutlookCalendarAdapter",
+      "ZoomAdapter / GoogleMeetAdapter / DailyCoAdapter",
+      "StripeAdapter (Stripe Billing + Connect para repasse a mentores) / PagarmeAdapter",
+      "SESAdapter / SendGridAdapter, FCMAdapter, TwilioWhatsAppAdapter",
+      "Auth0/Cognito/Keycloak IdentityAdapter",
+      "S3Adapter (armazenamento de arquivos)",
+      "KafkaAdapter / SQS-SNS / NATS para EventPublisherPort",
+      "OpenTelemetry + Datadog/Grafana para observabilidade e AnalyticsAdapter (PostHog)",
+      "FakeAdapters/Mocks determinísticos (LLM, pagamento, relógio) para testes"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) é um módulo sem dependências de frameworks, bancos, SDKs ou HTTP: só conhece interfaces (portas) definidas por ele mesmo. A regra de dependência aponta sempre para dentro: adapters importam o core, nunca o contrário. A injeção de dependência é feita na composition root, fora do core, ligando portas a adapters por configuração. DTOs e mapeamentos ficam nas bordas (anti-corruption layer), de modo que payloads de Stripe, LLMs ou calendários nunca vazam para o domínio. Todos os sistemas externos são tratados simetricamente (LLM, pagamento e banco são adapters equivalentes e substituíveis). Isolamento reforçado por regras de lint de arquitetura (ex.: dependency-cruiser, ArchUnit), pacotes separados por camada, testes de contrato por porta e testes do core rodando 100% com adapters em memória/fakes. Chamadas ao LLM são tratadas como não determinísticas: a saída passa por validação e por regras do domínio antes de produzir efeitos.",
+    "interfaces": [
+      "Web app para mentorado (busca, matching, agenda, plano de desenvolvimento)",
+      "Web app para mentor (agenda, ganhos, mentorados, notas)",
+      "App mobile iOS/Android",
+      "Sala de sessão com vídeo, notas colaborativas e copiloto de IA",
+      "Painel administrativo (moderação, métricas, financeiro)",
+      "API REST/GraphQL documentada com OpenAPI",
+      "Webhooks de saída para integrações corporativas (RH, LMS)",
+      "Integrações com Slack/Teams/WhatsApp",
+      "Portal B2B para empresas (programas de mentoria, relatórios)"
+    ],
+    "escalabilidade": "Monolito modular hexagonal no início, com bounded contexts (Perfis, Matching, Sessões, Pagamentos, Notificações) que podem ser extraídos em serviços sem reescrever o core, pois as fronteiras já são portas. Aplicações stateless em contêineres com escalonamento horizontal (Kubernetes/ECS/Cloud Run) e autoscaling. Leitura escalada com réplicas de leitura e cache (Redis), CQRS onde fizer sentido (busca/recomendações). Cálculo de embeddings e matching em lote, assíncrono, via filas e workers separados. Arquitetura orientada a eventos (outbox pattern) para desacoplar notificações, analytics e faturamento. Multi-tenant (B2C e B2B) com isolamento por tenant. Adapters de LLM com fallback entre provedores, rate limiting, circuit breaker e cache de respostas/prompt caching. Vídeo delegado a provedor gerenciado (WebRTC/SFU), sem operar infraestrutura própria de mídia.",
+    "custos": "Principais custos: (1) inferência de LLM e embeddings, controlada por seleção de modelo por tarefa (modelos menores para classificação/moderação, maiores para sumarização), prompt caching, processamento em lote e cotas por plano; (2) vídeo e transcrição (por minuto), mitigados com gravação/transcrição opcional e apenas em planos superiores; (3) taxas de pagamento e repasse (Stripe/Connect, ~3-5% + fixo); (4) infraestrutura de banco, vetores e filas, mantida enxuta com Postgres + pgvector no início; (5) aquisição e verificação de mentores (KYC/curadoria); (6) conformidade LGPD/GDPR (criptografia, retenção, auditoria) e suporte. Como os provedores estão atrás de portas, é possível trocar por alternativas mais baratas ou self-hosted conforme o volume cresce. Observabilidade de custo por sessão/tenant (unit economics) para proteger a margem.",
+    "monetizacao": "Modelo híbrido: (1) Assinatura B2C em camadas (Free com matching básico; Pro com sessões mensais, copiloto de IA e plano de desenvolvimento; Premium com mentores sêniores e gravação/resumos ilimitados); (2) Comissão de 15-25% (take rate) sobre sessões pagas a mentores via marketplace; (3) Planos B2B/Enterprise por assento para empresas, universidades e bootcamps, com programas de mentoria, dashboards e SSO; (4) Add-ons de IA (resumos avançados, análise de progresso, preparação de sessão); (5) Pacotes de sessões avulsas e créditos; (6) Ofertas para mentores (destaque de perfil, ferramentas de IA para preparar sessões); (7) Licenciamento de API/white-label para comunidades e empresas.",
+    "stack_sugerida": "Linguagem: TypeScript (Node.js) com NestJS ou Fastify estruturado em pacotes (domain, application, adapters, bootstrap), ou Kotlin/Java com Spring seguindo o mesmo isolamento. Front-end: Next.js + React + Tailwind; mobile com React Native/Expo. Dados: PostgreSQL + pgvector, Redis para cache, S3 para arquivos. Mensageria: SQS/SNS ou Kafka/NATS com outbox pattern. IA: Claude (Anthropic) via LLMPort, com embeddings por adapter próprio e fallback para outro provedor. Vídeo: Daily.co ou Zoom SDK. Pagamentos: Stripe Billing + Connect. Autenticação: Auth0/Keycloak/Cognito. Infra: Docker, Kubernetes ou ECS/Cloud Run, Terraform, CI/CD com GitHub Actions. Observabilidade: OpenTelemetry, Grafana/Datadog, Sentry, PostHog. Qualidade: Vitest/Jest, testes de contrato por porta, dependency-cruiser para impor a arquitetura, Playwright para E2E."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:47:07+00:00",
+    "runner": "runner.py"
+  }
+}

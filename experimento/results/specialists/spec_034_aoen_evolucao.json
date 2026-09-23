@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 34,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida: SimulationEngine como interface abstrata com implementações substituíveis, adapters plugáveis para dados de mercado, regras fiscais como plugins por jurisdição carregados em runtime, e SimulationService isolando toda regra de negócio das interfaces — padrão hexagonal claro onde dependências apontam para dentro; a nota não chega a 9–10 porque o projeto não endereça explicitamente mecanismos de escala para simulações Monte Carlo CPU-intensivas (filas, workers assíncronos, cache de cenários), omissão que pode exigir mudança estrutural relevante ao cruzar limiares de carga."
+}

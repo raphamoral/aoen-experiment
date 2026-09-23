@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "Cada decisão arquitetural sustenta as anteriores em cadeia lógica contínua: o core preditivo justifica a Device Adapter Layer (diversidade de protocolos IoT reais), que justifica o Gateway como interface dedicada, que alimenta o fluxo fixo descrito na fase 3; a Service Layer centralizada justifica exatamente a multiplicidade de interfaces da fase 2 sem duplicar regras; cada interface tem seu mercado-alvo declarado, e esses mercados são coerentes com os tipos de equipamento (HVAC, elevadores, geradores) presentes no core — a única fragilidade é a ausência de decisões explícitas sobre isolamento multi-tenant para o portal white-label, que introduz requisito arquitetural não endereçado no core, mas sem contradição com o restante."
+}

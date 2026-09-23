@@ -1,0 +1,61 @@
+{
+  "ideia_idx": 84,
+  "ideia": "App de diagnóstico automotivo por OBD com recomendação de oficinas",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (mudança incremental segura, deploy independente por capacidade)",
+      "Testabilidade e deployability (CI/CD automatizado, feature flags)",
+      "Confiabilidade e tolerância a conectividade intermitente (app mobile offline-first, buffer de leituras OBD)",
+      "Interoperabilidade (adaptadores ELM327/BLE, múltiplos protocolos OBD-II/CAN, catálogos DTC de vários fabricantes)",
+      "Segurança e privacidade (LGPD: VIN, geolocalização e dados do veículo são pessoais)",
+      "Observabilidade (telemetria de acurácia do diagnóstico, funil de recomendação e conversão)",
+      "Custo-eficiência (custo por diagnóstico e por usuário ativo)",
+      "Escalabilidade elástica (picos de ingestão de telemetria e buscas geográficas)",
+      "Confiança e explicabilidade das recomendações (o diagnóstico não pode ser enganoso ou perigoso)"
+    ],
+    "fitness_functions": [
+      "Arquitetura: ArchUnit/dependency-cruiser no CI falha o build se um módulo importar o interior de outro (só via contratos públicos) ou se o domínio depender de infraestrutura",
+      "Acoplamento: limite máximo de dependências aferentes/eferentes por módulo e proibição de ciclos, verificados a cada PR",
+      "Contratos: consumer-driven contract tests (Pact/OpenAPI diff) bloqueiam breaking changes em APIs e eventos",
+      "Desempenho: p95 de POST /diagnostics < 800 ms e de GET /workshops/recommendations < 400 ms em teste de carga (k6) no pipeline",
+      "Acurácia: suíte de regressão com dataset dourado de DTCs e leituras reais; a precisão/recall do motor de diagnóstico não pode cair mais de X% entre versões",
+      "Qualidade de recomendação: métricas offline (NDCG, taxa de contato/agendamento) monitoradas com alerta em queda superior ao limiar",
+      "Segurança: SAST/DAST, varredura de dependências e segredos, e teste automatizado de que nenhum campo PII (VIN, localização) sai sem criptografia ou consentimento",
+      "Privacidade: teste que verifica retenção e exclusão (direito ao esquecimento) em até N dias",
+      "Resiliência: chaos test com falha do provedor de mapas ou do LLM; o sistema degrada para regras estáticas e cache sem indisponibilidade total",
+      "Custo: orçamento por diagnóstico (ex.: < US$ 0,02) com alerta de FinOps e teste que falha se o custo unitário estimado subir mais de 15%",
+      "Deployability: lead time < 1 dia, taxa de falha de mudança < 15%, rollback automatizado em < 10 min (métricas DORA)",
+      "Compatibilidade mobile: matriz automatizada de dispositivos/adaptadores OBD (BLE e Wi-Fi) em device farm",
+      "Dados: testes de schema evolution (compatibilidade backward/forward) nos eventos e na telemetria"
+    ],
+    "incremental_change": "Começar com um monólito modular (bounded contexts: Veículos, Diagnóstico, Oficinas, Recomendação, Usuários, Cobrança) implantado como uma unidade, com fronteiras aplicadas por fitness functions. Fase 0 (MVP): app mobile lê códigos DTC via adaptador BLE, traduz por catálogo local e mostra explicação e gravidade; oficinas vêm de um cadastro curado e de busca geográfica simples por região piloto. Fase 1: histórico do veículo, alertas e leads para oficinas. Fase 2: motor de recomendação (regras, depois ranking com sinais de avaliação, preço e especialidade) e manutenção preditiva com telemetria. Fase 3: extrair por capacidade (strangler fig) só o que a métrica justificar, por exemplo ingestão de telemetria e recomendação, usando eventos de domínio. Expansão em várias dimensões (técnica, dados, segurança, operação, domínio) com releases pequenos, feature flags, canary e dark launches. Uma retrospectiva trimestral revê as fitness functions e as características prioritárias.",
+    "reversibility": "Reversíveis (two-way doors): provedor de mapas/geocoding, provedor de LLM ou motor de regras, fila/broker, provedor de auth, gateway de pagamento atrás de porta/adaptador, framework de UI, provedor de notificação, estratégia de ranking, monólito versus serviços, adaptadores OBD. Semi-reversíveis: nuvem principal (mitigada com IaC e contêineres), banco relacional (mitigado com repository pattern e migrations versionadas). Difíceis de reverter (decidir no last responsible moment): modelo canônico de dados do veículo e dos DTCs, identificadores públicos (VIN, IDs de oficina), contratos públicos de API para parceiros, escolha de mobile nativo versus cross-platform após escala, política de consentimento e retenção de dados, e a arquitetura multi-tenant/multi-país. Para estas, usar ADRs, protótipos descartáveis e adiar até haver dados reais de uso.",
+    "coupling": "Acoplamento baixo entre bounded contexts: comunicação por contratos explícitos (APIs internas versionadas e eventos de domínio como DiagnosticCompleted, WorkshopBooked, VehicleRegistered) e nunca por acesso ao banco de outro módulo. Cada módulo tem seu schema. Arquitetura hexagonal (ports and adapters) isola integrações voláteis: OBD, mapas, pagamentos, LLM, notificações. Anti-corruption layer sobre catálogos DTC de terceiros e APIs de oficinas. Usar o Tolerant Reader e versionamento semântico em eventos. Acoplamento permitido apenas para contratos estáveis (identidade do veículo, ID do usuário). O motor de diagnóstico é uma biblioteca de domínio pura, sem I/O, reutilizável offline no app e no backend. Evitar bibliotecas compartilhadas com lógica de negócio.",
+    "interfaces": [
+      "API REST/OpenAPI pública v1 para o app (auth, veículos, diagnósticos, oficinas, agendamentos)",
+      "Porta ObdAdapter (BLE/Wi-Fi ELM327, protocolos CAN/ISO 15765, K-Line) com implementações intercambiáveis e simulador para testes",
+      "Porta DtcCatalogProvider (catálogo genérico SAE J2012, catálogos por fabricante, fontes comunitárias/licenciadas)",
+      "Porta DiagnosticEngine (regras determinísticas, ML/LLM opcional com explicabilidade)",
+      "Porta GeoSearchProvider (Google Maps/Mapbox/OSM/PostGIS)",
+      "Porta WorkshopDirectory e API de parceiros/oficinas (cadastro, serviços, preços, agenda, avaliações)",
+      "Porta RecommendationRanker (estratégias trocáveis, A/B via feature flags)",
+      "Porta PaymentGateway (Stripe/Pagar.me/Mercado Pago) para assinaturas e comissões",
+      "Porta NotificationChannel (push, e-mail, WhatsApp)",
+      "Eventos de domínio em broker (DiagnosticCompleted, LeadCreated, BookingConfirmed, TelemetryIngested)",
+      "Webhooks para oficinas e integrações de ERP de oficinas",
+      "Interface de telemetria/observabilidade (OpenTelemetry) e de consentimento/privacidade (LGPD)",
+      "Painel web da oficina (portal B2B) consumindo a mesma API"
+    ],
+    "escalabilidade": "Início: monólito modular stateless atrás de load balancer com autoscaling horizontal, Postgres gerenciado com réplicas de leitura e PostGIS para busca geográfica, cache Redis para catálogos DTC e resultados de recomendação. O app faz o processamento OBD e o diagnóstico básico no dispositivo (edge), o que reduz carga e latência no servidor. Ingestão de telemetria desacoplada por fila/stream (SQS/Kafka/Pub/Sub) com processamento assíncrono e armazenamento em série temporal ou data lake barato (Parquet em object storage) com particionamento por veículo/data. Escala em etapas guiadas por fitness functions: primeiro vertical e cache, depois réplicas de leitura, depois extração de ingestão e recomendação como serviços independentes com escala própria, e por fim sharding por região/tenant se necessário. Busca de oficinas com índice geoespacial e pré-computação por região. CDN para conteúdo estático. Filas com DLQ e idempotência para absorver picos. Multi-região só quando houver expansão internacional.",
+    "custos": "Prioridades: (1) infraestrutura serverless/gerenciada com pagamento por uso no início e escala a zero em ambientes de dev/staging; (2) processamento no dispositivo para reduzir custo de nuvem; (3) controlar custo de LLM com regras determinísticas primeiro, LLM só para explicações e casos ambíguos, cache semântico, modelos menores e limites por plano; (4) custo de mapas/geocoding (o mais imprevisível), com cache de resultados permitido pelos termos e alternativa OSM/PostGIS; (5) telemetria com retenção em camadas (quente/morna/fria) e amostragem; (6) licenciamento de bases DTC/manuais técnicos como custo fixo relevante; (7) hardware OBD: vender ou parceirizar o adaptador com margem, ou suportar adaptadores genéricos e homologar uma lista; (8) aquisição de oficinas (equipe comercial/onboarding) é o maior custo operacional real; (9) conformidade LGPD e segurança (DPO, auditorias); (10) FinOps com tags por módulo e dashboard de custo por diagnóstico, por usuário e por lead; (11) estimativa inicial enxuta: poucos milhares de dólares por mês até dezenas de milhares de usuários ativos.",
+    "monetizacao": "Modelo híbrido de dois lados. Lado consumidor: freemium (leitura e explicação básica de DTCs grátis) e assinatura premium (histórico e monitoramento contínuo do veículo, alertas preditivos, relatórios de saúde, múltiplos veículos, estimativas de custo de reparo) por R$ 15–30/mês. Lado oficina: comissão ou custo por lead qualificado/agendamento confirmado (CPL/CPA), assinatura SaaS do portal da oficina (agenda, orçamento digital, CRM) e destaque patrocinado, rotulado de forma transparente e separado do ranking orgânico, para preservar a confiança. Receitas adicionais: venda ou parceria de adaptador OBD, parcerias com seguradoras (seguro por uso, UBI), venda de peças por afiliados/marketplace, planos B2B para frotas e locadoras com API e dashboard, e dados agregados e anonimizados de falhas por modelo (com consentimento e conformidade LGPD). Evolução: validar primeiro a disposição a pagar das oficinas por lead e só depois investir na assinatura do consumidor.",
+    "stack_sugerida": "Mobile: React Native ou Flutter (BLE via react-native-ble-plx/flutter_reactive_ble), SQLite local para offline-first, motor de diagnóstico compartilhado em Kotlin Multiplatform/TypeScript. Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Spring Boot (ou Go), com arquitetura hexagonal; OpenAPI e geração de clientes. Dados: PostgreSQL + PostGIS (relacional e geoespacial), Redis (cache), object storage S3 com Parquet para telemetria, e TimescaleDB ou ClickHouse quando o volume justificar. Mensageria: SQS/SNS ou Pub/Sub no início (baixo custo operacional), migrando para Kafka/Redpanda só se o volume de streaming exigir. Busca: PostGIS primeiro, OpenSearch depois, se necessário. IA: motor de regras + ML leve (scikit-learn/XGBoost) para ranking; LLM via API Claude (com fallback para outro provedor por trás de uma porta) para explicações em linguagem natural, com guardrails. Auth: Auth0/Cognito/Keycloak. Pagamentos: Stripe (assinaturas, e Stripe Connect para comissões de oficinas) ou Pagar.me/Mercado Pago para o Brasil (PIX/boleto). Infra: AWS ou GCP com Terraform (IaC), contêineres (ECS Fargate/Cloud Run) antes de Kubernetes, CI/CD com GitHub Actions, feature flags (Unleash/LaunchDarkly), observabilidade com OpenTelemetry + Grafana/Datadog/Sentry. Qualidade: ArchUnit/dependency-cruiser, Pact, k6, testcontainers, Renovate/Dependabot. Portal web da oficina: Next.js/React. Decisões registradas em ADRs, e o roadmap revisto trimestralmente contra as fitness functions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T05:36:18+00:00",
+    "runner": "runner.py"
+  }
+}

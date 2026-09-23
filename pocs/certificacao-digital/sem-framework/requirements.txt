@@ -1,0 +1,5 @@
+flask>=3.0.0
+werkzeug>=3.0.0
+fpdf2>=2.7.9
+qrcode[pil]>=7.4.2
+Pillow>=10.0.0

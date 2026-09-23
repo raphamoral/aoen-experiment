@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "A proposta apresenta isolamento físico real via containers Docker separados (api/, worker/, anonymizer/) com desacoplamento assíncrono por filas (RabbitMQ/SQS) e escalabilidade independente via Kubernetes/ECS, mas não especifica mecanismos de fallback explícitos para falha dos workers (dead letter queues, retry policies, circuit breakers), deixando em aberto o comportamento do sistema quando o processamento pesado falha persistentemente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O único sinal de mercado é o nome do produto, que sugere um nicho (freelancers de compliance + empresas contratantes), mas a proposta não articula dor do cliente, tamanho de mercado, diferenciação frente a alternativas (consultorias tradicionais, plataformas generalistas como Workana/Toptal) nem proposta de valor explícita — o documento é integralmente técnico-arquitetural, sem qualquer análise de mercado."
+}

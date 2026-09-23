@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 89,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de fusão satelital+climática por talhão é o núcleo insubstituível, está arquiteturalmente isolado (lógica agronômica não vaza para dados nem para interfaces), é explicitamente agnóstico a fornecedor via adaptadores intercambiáveis e endereça uma lacuna real — recomendação agronômica granular por polígono que ferramentas genéricas de clima ou dashboards satelitais avulsos não entregam; perde apenas um ponto porque a proposta não contrasta diretamente com alternativas existentes no mercado para demonstrar por que elas falham nesse ponto específico."
+}

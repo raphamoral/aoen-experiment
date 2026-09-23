@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 96,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra princípios evolutivos sólidos — regras de conformidade como configurações versionadas (não código), motor de IA abstraído via interface interna, provedores externos como adaptadores intercambiáveis e uma Service Layer central que isola a lógica de negócio de todos os canais de entrega — mas perde pontos por não endereçar explicitamente a estratégia de evolução do schema de dados, por declarar o fluxo canônico como 'imutável' (o que pode tornar-se um gargalo evolutivo em jurisdições com processos atípicos) e por omitir como o sistema escala de 10 para 10.000 usuários sem mudança arquitetural (ausência de menção a particionamento, event-driven decoupling ou CQRS)."
+}

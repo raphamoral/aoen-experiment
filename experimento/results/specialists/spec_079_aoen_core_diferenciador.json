@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 79,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de grafo de propagação bidirecional (DFS/BFS sobre lotes) é claramente identificado como núcleo, separado das interfaces e da service layer, agnóstico a fornecedores de dados, e resolve o ponto cego que ERPs genéricos e planilhas não resolvem — o mapeamento instantâneo de impacto de recall — perdendo um ponto por não detalhar o diferencial frente a módulos de rastreabilidade já existentes em ERPs tier-1 (SAP, Oracle) que competem no mesmo espaço."
+}

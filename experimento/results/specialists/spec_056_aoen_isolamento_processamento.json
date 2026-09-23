@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 56,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve abstrações modulares e uma Service Layer central, mas não menciona em nenhum momento filas de mensagens, workers assíncronos, processos separados ou qualquer padrão de isolamento físico — o motor de matching em tempo real (cruzamento de demanda, estoque multi-fornecedor e capacidade logística) é computacionalmente pesado e aparentemente roda de forma síncrona na mesma camada que atende todas as interfaces, sem fallback ou escalonamento independente descrito."
+}

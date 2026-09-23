@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 78,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta não menciona custo por cliente, custo por operação, rastreamento de consumo por tenant ou conexão com precificação em nenhum ponto — a arquitetura de Service Layer e ScoreProvider cria pontos de atribuição de custo implícitos (cada chamada ao ScoreProvider é isolada e rastreável), mas isso não foi planejado com intenção de unit economics, tornando o único mérito estrutural acidental e não declarado."
+}

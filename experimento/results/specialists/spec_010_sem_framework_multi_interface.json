@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "O projeto prevê apenas uma interface web com alertas por e-mail como canal secundário passivo, sem mobile app, API pública ou outros canais justificados por perfis de uso distintos, e não há evidência de desacoplamento entre lógica de negócio e camada de apresentação."
+}

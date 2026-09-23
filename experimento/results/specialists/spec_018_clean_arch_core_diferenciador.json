@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador (motor preditivo de churn com drivers causais e retenção orientada por ROI) está presente e faz sentido no domínio, mas a arquitetura não isola esse núcleo — PredictionModel é tratado como mais uma entidade CRUD sem expor o que torna o algoritmo único, e a extensibilidade para múltiplos fornecedores de ML (ex: troca de algoritmo sem impacto no domínio) não está modelada, deixando o diferenciador implícito em vez de estruturalmente protegido."
+}

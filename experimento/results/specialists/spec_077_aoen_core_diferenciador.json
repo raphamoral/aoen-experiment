@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 77,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (pipeline IoT tempo real + detecção de anomalias + motor de regras configurável) está claramente identificado, isolado da camada de interface, extensível via adaptadores plugáveis por protocolo e fabricante, e resolve o problema real de transformar telemetria bruta em alertas acionáveis — algo que painéis estáticos e SCADAs genéricos não entregam com essa flexibilidade multi-tenant; perde um ponto por não evidenciar o que torna o motor de anomalias tecnicamente superior às soluções já existentes no mercado solar."
+}

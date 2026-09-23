@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta não menciona em nenhum momento custo por cliente, custo por operação (emissão ou verificação) ou rastreamento de consumo por tenant para fins econômicos — a observabilidade descrita (trace distribuído, log de auditoria) é puramente operacional, e o único ponto que evita nota zero é que essa infraestrutura de rastreabilidade já existente poderia ser estendida para cost attribution por tenant, mas isso não está projetado nem intencionado na arquitetura apresentada."
+}

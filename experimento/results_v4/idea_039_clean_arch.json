@@ -1,0 +1,51 @@
+{
+  "ideia_idx": 39,
+  "ideia": "Marketplace de serviços de drone para agricultura de precisão",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": "Camada mais interna, sem dependências externas. Entidades: Produtor (dono do cliente rural), Propriedade, Talhão (geometria, cultura, área), Safra, Operador de Drone (piloto certificado, com licença ANAC/MAPA e habilitações), Drone (modelo, capacidade, sensores, manutenção), Serviço (pulverização, mapeamento multiespectral/NDVI, contagem de plantas, semeadura, monitoramento), Solicitação de Serviço (RFQ), Proposta, Contrato/Ordem de Serviço, Missão de Voo (plano, janela, restrições climáticas), Resultado da Missão (dados brutos, mapas, relatório de prescrição), Pagamento/Repasse, Avaliação, Certificação/Conformidade (regras de espaço aéreo, receituário agronômico, áreas de restrição). Regras de negócio puras: um operador só aceita serviços para os quais tem habilitação, a missão respeita limites de vento e chuva, e a comissão da plataforma é calculada sobre o valor do contrato. Value objects: Coordenada, Polígono, Dinheiro, Área em hectares, Janela de tempo.",
+    "use_cases": [
+      "Cadastrar Produtor, Propriedade e Talhões (importação de KML/Shapefile)",
+      "Cadastrar Operador e validar suas habilitações e documentos",
+      "Publicar Solicitação de Serviço para um talhão",
+      "Buscar operadores compatíveis por região, serviço, disponibilidade e avaliação",
+      "Enviar, comparar e aceitar Propostas",
+      "Gerar Contrato/Ordem de Serviço",
+      "Agendar Missão de Voo, checando clima e restrições de espaço aéreo",
+      "Executar e registrar a Missão (check-in/check-out, telemetria)",
+      "Enviar e processar dados da missão (ortomosaico, NDVI)",
+      "Gerar mapa de prescrição e relatório agronômico",
+      "Processar pagamento em custódia (escrow), liberar o repasse após a aceitação e calcular a comissão",
+      "Avaliar o operador e o produtor",
+      "Abrir e mediar disputas",
+      "Notificar as partes sobre eventos do ciclo de vida",
+      "Gerir a assinatura e o plano do operador",
+      "Emitir o dashboard de histórico e produtividade por safra"
+    ],
+    "interface_adapters": "Controllers REST/GraphQL que convertem requisições HTTP em DTOs de entrada dos casos de uso. Presenters e view models que formatam as saídas para web e mobile. Gateways e repositórios que implementam as interfaces (portas) definidas em Use Cases: RepositorioDeSolicitacoes, RepositorioDeOperadores, RepositorioGeoespacial, GatewayDePagamento, GatewayDeClima, GatewayDeEspacoAereo, ArmazenamentoDeArquivos, ServicoDeNotificacao, ProcessadorDeImagens, GatewayDeFrotaDrone (telemetria). Mapeadores ORM-para-Entidade e Entidade-para-DTO. Consumidores e produtores de eventos de domínio (mensageria). Adaptadores de webhook (pagamento, KYC). Adaptadores de identidade (OAuth/OIDC) e de autorização (RBAC por papel: produtor, operador, admin).",
+    "frameworks_drivers": "Camada mais externa, substituível. Frameworks web (NestJS ou FastAPI), PostgreSQL com PostGIS, Redis, broker de mensagens (RabbitMQ ou SQS/Kafka), armazenamento de objetos (S3 ou compatível), Stripe Connect ou Pagar.me/Mercado Pago com split de pagamento, provedores de clima (INMET, OpenWeather), APIs de espaço aéreo (DECEA/SARPAS), pipeline de imagens (OpenDroneMap, GDAL, rasterio), provedor de identidade (Keycloak/Auth0/Cognito), serviços de e-mail, SMS e push (SES, Twilio, FCM), mapas (Mapbox/Leaflet), front-end em React/Next.js, app mobile em React Native/Flutter, observabilidade (OpenTelemetry, Grafana), CI/CD, Docker e Kubernetes.",
+    "dependency_rule": "As dependências de código apontam só para dentro: Frameworks e Drivers → Interface Adapters → Use Cases → Entities. Os casos de uso declaram interfaces (portas de saída) para repositórios e serviços externos. A camada externa as implementa, o que inverte a dependência (DIP). As entidades não conhecem nada acima delas. Os DTOs cruzam as fronteiras como estruturas de dados simples, sem tipos de ORM ou HTTP. A composição das dependências fica na raiz (Main/Composition Root), com injeção de dependência. Esta regra é verificada automaticamente no CI com ferramentas como ArchUnit, dependency-cruiser ou import-linter, que quebram o build se uma camada interna importar uma externa. Cada módulo (Marketplace, Missões, Pagamentos, Análise de Dados) é um bounded context com suas próprias camadas.",
+    "testability": "Entidades: testes unitários puros e rápidos, sem mocks. Casos de uso: testados com dublês em memória (fakes) das portas, sem banco, rede ou framework. Adaptadores: testes de contrato e de integração com Testcontainers (PostGIS, Redis, broker) e sandboxes de pagamento. Controllers e presenters: testes de mapeamento de entrada e saída. Testes de contrato (Pact) entre front-end e API. Testes E2E enxutos nos fluxos críticos (solicitar → propor → contratar → voar → pagar). Testes de propriedade para geometria e cálculo de comissão. Pirâmide de testes com maior peso na base. Relógio, gerador de IDs e clima são abstraídos para tornar os testes determinísticos. Dados de missão sintéticos servem para validar o pipeline de imagens.",
+    "interfaces": [
+      "Portal web do Produtor (solicitar serviço, comparar propostas, acompanhar missões, ver mapas)",
+      "App mobile do Operador (agenda, missões, check-in em campo, upload offline)",
+      "Painel administrativo (verificação de operadores, disputas, financeiro)",
+      "API REST/GraphQL pública para integrações (ERPs agrícolas, John Deere Operations Center, Climate FieldView)",
+      "Webhooks (pagamentos, KYC, status de missão)",
+      "Interfaces de eventos assíncronos (mensageria)",
+      "Interface de upload de dados de voo (arquivos de imagem grandes, uploads em partes)",
+      "Notificações (e-mail, SMS, push, WhatsApp)",
+      "Portas internas: RepositorioX, GatewayDePagamento, GatewayDeClima, ArmazenamentoDeArquivos, ProcessadorDeImagens"
+    ],
+    "escalabilidade": "Monólito modular no início, com fronteiras de Clean Architecture que permitem extrair serviços depois (pagamentos, processamento de imagens). API stateless com escala horizontal atrás de load balancer. O processamento pesado de imagens roda de forma assíncrona em workers elásticos (filas + autoscaling, com GPU/spot sob demanda). Postgres com réplicas de leitura, particionamento por região/safra e índices geoespaciais (GiST). Cache com Redis para buscas de operadores e clima. CDN e armazenamento de objetos com tiles de mapas (COG/XYZ) para grandes ortomosaicos. Dados de telemetria vão para uma base de séries temporais. Eventos de domínio permitem consistência eventual entre contextos. O produto escala geograficamente por região, com multi-tenancy lógico e sazonalidade tratada por autoscaling nos picos de safra.",
+    "custos": "Os maiores custos são armazenamento e processamento de imagens (ortomosaicos de GBs por missão): usar classes de armazenamento frias para dados antigos, instâncias spot e processamento sob demanda. A computação da API é baixa e escala conforme a demanda. Também pesam as taxas de gateway de pagamento (2,9% a 4%), o custo de KYC/verificação de operadores, APIs de clima e espaço aéreo, SMS/WhatsApp, o seguro/garantia de missões e o suporte e mediação de disputas. Reduzir custos com FinOps, compressão e geração de tiles, TTL nos dados brutos, cache e reservas de capacidade. A aquisição de operadores e produtores (efeito de rede nos dois lados do mercado) tende a ser o maior custo de negócio. Começar com monólito modular e poucas regiões mantém a infraestrutura enxuta no MVP.",
+    "monetizacao": "Comissão (take rate) de 10% a 20% sobre cada serviço contratado, via split de pagamento. Assinatura SaaS para operadores (planos com destaque nas buscas, gestão de frota, agenda e relatórios) e para produtores (plano com histórico de safra e análises avançadas). Cobrança por processamento de dados (hectares analisados, mapas de prescrição, NDVI, IA para detecção de pragas e falhas). Taxa de urgência e destaque de propostas. Serviços financeiros embutidos (antecipação de recebíveis ao operador, seguro de missão). Marketplace de insumos e parcerias com cooperativas, revendas e fabricantes de drones e defensivos (leads e afiliados). Venda de dados agregados e anonimizados de produtividade regional, respeitando a LGPD. Plano enterprise/white-label para cooperativas e grandes grupos agrícolas.",
+    "stack_sugerida": "Back-end: TypeScript com NestJS (ou Python com FastAPI), estruturado em camadas de Clean Architecture; Postgres + PostGIS; Redis; RabbitMQ/SQS. Processamento geoespacial: Python (GDAL, rasterio, OpenDroneMap) em workers containerizados. Front-end web: React/Next.js com Mapbox GL/Leaflet. Mobile: React Native ou Flutter com modo offline. Auth: Keycloak ou Auth0/Cognito (OIDC). Pagamentos: Stripe Connect ou Pagar.me/Mercado Pago, com split e custódia. Infraestrutura: AWS ou GCP com Docker, Kubernetes (ou ECS/Cloud Run no início), Terraform, S3, CloudFront. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Qualidade: Jest/Vitest ou Pytest, Testcontainers, Pact, Playwright, dependency-cruiser/import-linter no CI. CI/CD com GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "99d475cb3837",
+    "gerado_em": "2026-09-21T03:01:36+00:00",
+    "runner": "runner.py"
+  }
+}

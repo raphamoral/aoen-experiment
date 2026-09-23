@@ -1,0 +1,65 @@
+{
+  "ideia_idx": 18,
+  "ideia": "SaaS de análise preditiva de churn para operadoras de telecom",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Análise preditiva de churn: modelagem comportamental de assinantes, cálculo de score de risco de cancelamento, segmentação de clientes em risco, e recomendação de ações de retenção — tudo independente de infraestrutura, banco de dados ou framework externo.",
+    "primary_ports": [
+      "IChurnAnalysisUseCase: triggerPrediction(customerId) → ChurnRiskScore",
+      "ICustomerSegmentationUseCase: segmentAtRiskCustomers(filters) → CustomerSegment[]",
+      "IRetentionCampaignUseCase: recommendActions(customerId) → RetentionAction[]",
+      "IChurnReportUseCase: generateReport(tenantId, period) → ChurnReport",
+      "ITenantOnboardingUseCase: registerTenant(tenantData) → Tenant",
+      "IModelTrainingUseCase: triggerModelRetraining(tenantId, dataset) → TrainingJob",
+      "IAlertUseCase: configureChurnAlert(tenantId, threshold) → Alert"
+    ],
+    "secondary_ports": [
+      "ICustomerRepository: findById, findByTenant, findAtRisk, save",
+      "IChurnScoreRepository: saveScore, getLatestScore, getScoreHistory",
+      "ISubscriptionEventRepository: findEventsByCustomer, saveEvent",
+      "IMLModelPort: predict(features) → ProbabilityScore, train(dataset) → ModelArtifact",
+      "IFeatureStorePort: getFeatures(customerId) → FeatureVector, saveFeatures(vector)",
+      "INotificationPort: sendAlert(recipient, message), sendCampaignTrigger(action)",
+      "IReportExportPort: exportPDF(report), exportCSV(report)",
+      "IEventBusPort: publish(event), subscribe(eventType, handler)",
+      "IBillingPort: createSubscription(tenant, plan), checkUsageLimit(tenantId)",
+      "IAuditLogPort: logAction(tenantId, userId, action)"
+    ],
+    "primary_adapters": [
+      "REST API Adapter (FastAPI/Express): expõe endpoints HTTP para dashboards e integrações externas",
+      "GraphQL Adapter: interface flexível para clientes que precisam de queries customizadas",
+      "CLI Adapter: permite acionar análises e retraining via linha de comando (dev/ops)",
+      "Webhook Receiver Adapter: recebe eventos de sistemas externos (CRM, billing) para disparar análises",
+      "Test/Stub Adapter: adaptador de testes que dirige o core sem infraestrutura real (TDD)",
+      "gRPC Adapter: comunicação de alta performance para integração B2B com sistemas das operadoras",
+      "Scheduled Job Adapter (Cron): dispara análises batch diárias/semanais de forma autônoma"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter: implementa ICustomerRepository e IChurnScoreRepository com pgvector para features",
+      "Redis Adapter: implementa IFeatureStorePort com cache de features pré-computadas",
+      "SciKit-Learn/MLflow Adapter: implementa IMLModelPort com modelos locais e rastreamento de experimentos",
+      "AWS SageMaker Adapter: implementa IMLModelPort para inferência gerenciada em produção",
+      "Apache Kafka Adapter: implementa IEventBusPort para streaming de eventos de assinantes",
+      "SendGrid/AWS SES Adapter: implementa INotificationPort para alertas por email",
+      "Twilio Adapter: implementa INotificationPort para SMS/WhatsApp de campanhas de retenção",
+      "Stripe Adapter: implementa IBillingPort para cobrança SaaS multi-tenant",
+      "S3/GCS Adapter: implementa IReportExportPort para armazenamento de relatórios exportados",
+      "Elasticsearch Adapter: implementa busca e análise de logs de eventos de assinantes",
+      "DataDog Adapter: implementa IAuditLogPort e observabilidade operacional"
+    ],
+    "isolation": "O core domain não importa nenhuma biblioteca de infraestrutura, ORM, framework web ou SDK de ML. Todas as dependências externas são invertidas via interfaces (Ports). O core conhece apenas suas próprias entidades (Customer, ChurnScore, Subscription, RetentionAction) e casos de uso. A injeção de dependências é feita na camada de composição (main/bootstrap), que instancia os adapters concretos e os injeta nos use cases. Testes do core rodam 100% in-memory sem docker, banco ou rede.",
+    "interfaces": [
+      "Dashboard Web SPA (React/Vue): visualização de scores, segmentos e campanhas por analistas de retenção",
+      "API REST/GraphQL pública: integração com CRMs das operadoras (Salesforce, SAP)",
+      "Webhook outbound: notifica sistemas externos quando score ultrapassa threshold configurado",
+      "SDK Python/Node: permite operadoras enviarem dados de eventos de assinantes programaticamente",
+      "Portal de administração multi-tenant: gestão de planos, limites de uso e configuração de modelos",
+      "CLI de DevOps: para retraining manual, exportação de datasets e diagnóstico"
+    ],
+    "escalabilidade": "Horizontalmente via stateless API servers com load balancer. Análises batch são processadas por workers assíncronos (Celery/BullMQ) consumindo filas do Kafka, permitindo escalar workers independentemente da API. Feature computation é pré-calculada e cacheada no Redis, evitando recomputation em tempo de inferência. Multi-tenancy via tenant_id em todas as queries com row-level security no PostgreSQL. Modelos ML podem ser promovidos para SageMaker endpoints dedicados por tenant em planos enterprise. Sharding de dados por tenant em estágios avançados de crescimento.",
+    "custos": "Custo variável dominado por inferência ML (SageMaker) e volume de eventos Kafka. Mitigação via batch scoring noturno ao invés de real-time por padrão, com real-time apenas em planos premium. Feature store no Redis reduz recomputation cara. Uso de spot instances para jobs de retraining. Tier gratuito usa modelos locais (scikit-learn) sem SageMaker. Monitorar custo por tenant para detectar abuso e orientar precificação. Storage de eventos históricos migrado para S3 Glacier após 12 meses.",
+    "monetizacao": "SaaS B2B com planos por volume de assinantes monitorados: Starter (até 100k assinantes), Growth (até 1M), Enterprise (ilimitado + SLA + modelo customizado por tenant). Cobrança mensal via Stripe com trial de 14 dias. Add-ons: retraining automático mensal, integração com CRM nativo, exportação de relatórios avançados, API de alta frequência. Revenue adicional via professional services para onboarding e integração de dados históricos das operadoras.",
+    "stack_sugerida": "Core/Domain: Python puro (sem frameworks). Primary Adapters: FastAPI (REST), Strawberry (GraphQL), Click (CLI). Secondary Adapters: SQLAlchemy+Alembic (PostgreSQL), redis-py (Redis), scikit-learn+MLflow (ML local), boto3/sagemaker-sdk (AWS), confluent-kafka (Kafka), stripe-python (billing). Infra: Docker + Kubernetes (EKS), Terraform (IaC), GitHub Actions (CI/CD). Observabilidade: DataDog APM + Prometheus + Grafana. Testes: pytest com adapters in-memory, testcontainers para integração."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Análise preditiva de churn: modelagem comportamental de assinantes, cálculo de score de risco de cancelamento, segmentação de clientes em risco, e recomendação de ações de retenção — tudo independente de infraestrutura, banco de dados ou framework externo.\",\n\n  \"primary_ports\": [\n    \"IChurnAnalysisUseCase: triggerPrediction(customerId) → ChurnRiskScore\",\n    \"ICustomerSegmentationUseCase: segmentAtRiskCustomers(filters) → CustomerSegment[]\",\n    \"IRetentionCampaignUseCase: recommendActions(customerId) → RetentionAction[]\",\n    \"IChurnReportUseCase: generateReport(tenantId, period) → ChurnReport\",\n    \"ITenantOnboardingUseCase: registerTenant(tenantData) → Tenant\",\n    \"IModelTrainingUseCase: triggerModelRetraining(tenantId, dataset) → TrainingJob\",\n    \"IAlertUseCase: configureChurnAlert(tenantId, threshold) → Alert\"\n  ],\n\n  \"secondary_ports\": [\n    \"ICustomerRepository: findById, findByTenant, findAtRisk, save\",\n    \"IChurnScoreRepository: saveScore, getLatestScore, getScoreHistory\",\n    \"ISubscriptionEventRepository: findEventsByCustomer, saveEvent\",\n    \"IMLModelPort: predict(features) → ProbabilityScore, train(dataset) → ModelArtifact\",\n    \"IFeatureStorePort: getFeatures(customerId) → FeatureVector, saveFeatures(vector)\",\n    \"INotificationPort: sendAlert(recipient, message), sendCampaignTrigger(action)\",\n    \"IReportExportPort: exportPDF(report), exportCSV(report)\",\n    \"IEventBusPort: publish(event), subscribe(eventType, handler)\",\n    \"IBillingPort: createSubscription(tenant, plan), checkUsageLimit(tenantId)\",\n    \"IAuditLogPort: logAction(tenantId, userId, action)\"\n  ],\n\n  \"primary_adapters\": [\n    \"REST API Adapter (FastAPI/Express): expõe endpoints HTTP para dashboards e integrações externas\",\n    \"GraphQL Adapter: interface flexível para clientes que precisam de queries customizadas\",\n    \"CLI Adapter: permite acionar análises e retraining via linha de comando (dev/ops)\",\n    \"Webhook Receiver Adapter: recebe eventos de siste"
+}

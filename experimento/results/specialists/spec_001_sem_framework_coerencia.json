@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "A proposta conta uma história coesa e consistente — rastreamento em tempo real justifica WebSockets, Redis cobre a volatilidade de localização, PostgreSQL cuida da persistência estruturada, React/React Native compartilham ecossistema e os três perfis de usuário mapeiam diretamente para as três interfaces principais — mas há tensões não resolvidas que fragilizam a coerência: a seção de escalabilidade promete resiliência com pub/sub e filas, porém o deployment encerra em 'Docker' sem orquestração (Kubernetes/ECS), deixando a promessa sem sustentação técnica; Google Maps e OpenStreetMap aparecem como alternativas sem decisão, criando ambiguidade de custo vs. features que afeta diretamente o modelo de monetização por tier; Socket.io e WebSocket nativo coexistem sem resolução; e o MVP declara minimalismo mas a seção de interfaces especifica quatro telas completas, revelando um escopo real maior do que o assumido — as contradições não destroem a arquitetura, mas indicam que as camadas foram pensadas de forma relativamente independente em vez de totalmente integradas."
+}

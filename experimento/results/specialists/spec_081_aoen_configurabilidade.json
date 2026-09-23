@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 81,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra boa intenção arquitetural — fatores de emissão em tabelas versionadas, adapters plugáveis por padrão de certificação e CarbonService desacoplado das interfaces apontam para separação código/configuração — mas não descreve um modelo explícito de configuração por tenant (store de parâmetros por cliente, feature flags, regras de onboarding via dados), e adicionar um novo padrão de certificação ainda exige implementar um novo adapter (código), o que penaliza o critério de 'zero código para novo cliente'."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta descreve configuração robusta por ambiente (env vars, Secrets Manager, Pydantic Settings), mas não menciona nenhuma camada de configuração por tenant — sem tabela de configurações por cliente, feature flags por plano, parâmetros nutricionais customizáveis por clínica/parceiro, nem processo de onboarding sem deploy; o PostgreSQL e Redis existentes permitiriam implementar isso, mas a separação código/config é ambiente-level, não tenant-level."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 61,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (motor de matching semântico por competências) está explicitamente identificado, isolado via padrão Strategy com três camadas plugáveis e independente de fornecedor — a única lacuna é a ausência de descrição sobre o que tornará o scoring proprietariamente superior a concorrentes que usem os mesmos embeddings commoditizados (OpenAI/Cohere)."
+}

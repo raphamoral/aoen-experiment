@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A proposta sugere implicitamente múltiplas interfaces — dashboard web para proprietários, mobile via QR/push para check-in e notificações, e integração IoT/API para controle de acesso físico — mas não as declara explicitamente como decisões de design, não mapeia cada interface a um perfil de usuário ou caso de uso de mercado, e não enuncia nenhuma estratégia de desacoplamento (ex.: API-first, BFF, shared domain layer) que garanta que nova interface possa ser adicionada sem reescrita da lógica de negócio."
+}

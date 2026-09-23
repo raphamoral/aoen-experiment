@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A proposta prevê múltiplas interfaces bem diferenciadas por perfil de uso — RestAPI/GraphQL para clientes web e mobile, WebSocket para tempo real, CLI para operadores/ops, WebhookReceiver para integrações assíncronas e AgendadorTarefas para automações — todas desacopladas da lógica de domínio via ports (arquitetura hexagonal), permitindo adição de novas interfaces sem reescrever regras de negócio; perde um ponto por não explicitar justificativas de mercado ou personas associadas a cada interface (ex: por que GraphQL além de REST, qual o perfil que usa CLI)."
+}

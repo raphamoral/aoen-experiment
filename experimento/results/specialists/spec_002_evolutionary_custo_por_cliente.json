@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente/tenant — não há cálculo de custo por operação, rastreamento de consumo por tenant, nem conexão entre custo de infraestrutura e modelo de precificação; a observabilidade citada refere-se a métricas técnicas e de negócio genéricas, e a decisão sobre multi-tenancy (shared schema vs. schema-per-tenant) aborda implicações arquiteturais, não unit economics."
+}

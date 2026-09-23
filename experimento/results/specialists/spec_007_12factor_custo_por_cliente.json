@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta lista exclusivamente serviços de infraestrutura agregados (RDS, Redis, S3, CDN, SQS, etc.) sem qualquer mecanismo de atribuição de custo por tenant — não há menção a metering por cliente, tagging de recursos por tenant, cálculo de custo por operação ou conexão entre consumo individual e modelo de precificação."
+}

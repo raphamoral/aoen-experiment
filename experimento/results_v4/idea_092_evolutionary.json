@@ -1,0 +1,56 @@
+{
+  "ideia_idx": 92,
+  "ideia": "SaaS de gestão de contratos SaaS para empresas com otimização de licenças",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (capacidade de mudar modelo de dados e regras de otimização sem reescrita)",
+      "Segurança e isolamento multi-tenant (contratos e dados de uso são sensíveis)",
+      "Integrabilidade (SSO/IdP, HRIS, ERP, financeiro, marketplaces de SaaS)",
+      "Confiabilidade e precisão dos dados (exatidão do inventário de licenças e das datas de renovação)",
+      "Auditabilidade e conformidade (LGPD/GDPR, SOC 2, trilha de auditoria imutável)",
+      "Observabilidade",
+      "Escalabilidade elástica e eficiente em custo",
+      "Testabilidade e implantabilidade (CI/CD, feature flags)"
+    ],
+    "fitness_functions": [
+      "Isolamento de tenant: testes automatizados no CI que falham se qualquer query ou endpoint retornar dados de outro tenant (RLS + testes de contrato); executado a cada build",
+      "Acoplamento: ArchUnit/dependency-cruiser bloqueia dependências cíclicas e acessos entre módulos que não passem por interfaces públicas; módulos sem ciclos = 100%",
+      "Limite de modelo de dados: falha o build se uma migração não for backward compatible (expand/contract) ou se um módulo acessar tabelas de outro",
+      "Desempenho: p95 de leitura da API < 300 ms e do dashboard de otimização < 2 s com 10k contratos por tenant (teste de carga noturno)",
+      "Frescor dos dados: alerta se o atraso entre o evento de uso no provedor e sua disponibilidade no inventário > 24 h",
+      "Qualidade da extração de contratos: F1 mínimo em conjunto dourado de contratos (datas, valor, cláusula de renovação, quantidade de assentos); regressão bloqueia a troca de modelo/prompt",
+      "Precisão das recomendações: economia prevista vs. economia realizada dentro de tolerância (ex.: erro < 15%) em backtest",
+      "Segurança: SAST/DAST, varredura de dependências e de segredos no pipeline; nenhuma vulnerabilidade crítica aberta > 7 dias",
+      "Auditabilidade: teste que garante que toda mutação de contrato/licença gera evento de auditoria imutável",
+      "Confiabilidade de conectores: taxa de sucesso de sincronização por integração ≥ 99% com circuit breaker e alerta por integração",
+      "Custo: orçamento por tenant (infra + tokens de IA) monitorado; alerta se custo/tenant excede X% da receita/tenant",
+      "Implantabilidade: lead time < 1 dia, taxa de falha de mudança < 15%, rollback automático via SLO burn rate"
+    ],
+    "incremental_change": "Começar com um monolito modular (módulos: Contratos, Inventário de Licenças, Uso, Otimização, Alertas/Renovações, Faturamento, Identidade/Tenancy) em um único deploy, com fronteiras explícitas e comunicação via interfaces internas e eventos de domínio. Fase 1 (MVP): repositório de contratos, upload + extração assistida por IA com revisão humana, calendário de renovações e alertas. Fase 2: conectores de uso (SSO/IdP como Okta/Entra/Google, depois apps individuais) e inventário de licenças; relatório de licenças ociosas. Fase 3: motor de recomendações (right-sizing, consolidação, negociação de renovação) com regras primeiro e ML depois, quando houver dados suficientes. Fase 4: workflows de aprovação, integração com ERP/financeiro e benchmarking entre tenants (anonimizado). Extrair serviços apenas quando uma fitness function mostrar necessidade real (ex.: ingestão de uso e extração de documentos são candidatos naturais por perfil de carga distinto). Usar strangler fig para extrações, feature flags, canary releases e migrações expand/contract. Revisar as fitness functions trimestralmente em uma cadência de governança leve.",
+    "reversibility": "Reversíveis (two-way doors, decidir cedo e barato): provedor de nuvem dentro de contêineres, framework de front-end, provedor de e-mail/notificação, provedor de LLM/OCR (atrás de uma porta/adaptador), provedor de observabilidade, conectores individuais, algoritmos de recomendação, planos e preços, monolito vs. serviços (com fronteiras de módulo bem definidas). Difíceis de reverter (one-way doors, adiar até o último momento responsável): estratégia de multi-tenancy (row-level com tenant_id + RLS no início; schema/DB dedicado por tenant enterprise só quando exigido por contrato), modelo canônico de 'licença/assento/contrato' e identificadores de tenant, escolha do banco relacional primário (PostgreSQL é uma aposta segura), residência de dados por região, formato de trilha de auditoria e eventos publicados. Mitigação: modelo canônico versionado, eventos com schema registry e versionamento, ADRs registrando contexto e critérios de reversão.",
+    "coupling": "Acoplamento baixo entre módulos por meio de contexto delimitado (DDD): cada módulo é dono de seus dados e expõe apenas API interna/eventos. Padrão Anti-Corruption Layer / Ports & Adapters para cada integração externa (IdP, SaaS de terceiros, ERP, LLM), convertendo para o modelo canônico interno de Licença/Uso/Contrato, de forma que APIs de terceiros nunca vazem para o domínio. Comunicação assíncrona por eventos (outbox pattern) para fluxos entre Uso → Otimização → Alertas; síncrona apenas para consultas dentro do mesmo módulo. Contratos de API testados por consumer-driven contract tests. Acoplamento aceito e explícito: Tenancy/Identidade como kernel compartilhado. Preferir duplicação de dados de leitura (projeções/read models) a joins entre módulos.",
+    "interfaces": [
+      "API REST/JSON pública versionada (OpenAPI) para contratos, licenças, aplicações, recomendações e renovações",
+      "Webhooks de saída (renovação próxima, licença ociosa detectada, economia identificada)",
+      "Conectores de entrada de uso/identidade: SCIM, OIDC/SAML, APIs de Okta, Microsoft Entra, Google Workspace, Slack, Salesforce, GitHub, Atlassian etc. (interface Connector padronizada: authorize, sync, map, health)",
+      "Integração ERP/financeiro (NetSuite, SAP, Omie, Conta Azul, QuickBooks) para faturas e centros de custo",
+      "Porta de extração documental (OCR + LLM) com adaptadores intercambiáveis",
+      "Barramento interno de eventos de domínio (ContratoCriado, RenovaçãoAproximando, UsoAtualizado, RecomendaçãoGerada) com schema versionado",
+      "Interface de notificações (e-mail, Slack, Teams)",
+      "Exportação de dados (CSV/API/data warehouse) e trilha de auditoria",
+      "Console web (SPA) e painel administrativo de tenant (RBAC, SSO do cliente)",
+      "Interface de faturamento (Stripe/gateway) para planos e cobrança"
+    ],
+    "escalabilidade": "Inicialmente escala verticalmente e horizontalmente o monolito modular stateless atrás de load balancer, com PostgreSQL gerenciado (réplicas de leitura, particionamento por tenant_id nas tabelas de uso/eventos). Cargas assíncronas pesadas (sincronização de conectores, extração de documentos, cálculo de recomendações) rodam em workers separados consumindo filas, escalando por profundidade da fila e isolados do caminho de requisição. Dados de uso em série temporal são agregados (rollups diários) e os dados brutos vão para storage de objetos/colunar com retenção definida. Cache para leituras de dashboards; projeções pré-calculadas para relatórios. Rate limiting e cotas por tenant para evitar noisy neighbors. Quando necessário: extrair ingestão e extração documental como serviços independentes, sharding/células por região ou por tenant enterprise, e banco dedicado para tenants grandes. Escalar de forma guiada pelas fitness functions de desempenho, não por antecipação.",
+    "custos": "Custo dominante no início: pessoas, seguido por infraestrutura gerenciada e chamadas de LLM/OCR. Manter um deploy único e serviços gerenciados (banco, filas, storage) reduz overhead operacional; evitar Kubernetes e microsserviços até haver necessidade comprovada (usar PaaS/contêineres serverless). Controlar custo de IA com cache de extrações, modelos menores para triagem e maiores só para casos difíceis, processamento em lote e limites por tenant. Custo de conectores: chamadas às APIs de terceiros com rate limits — sincronização incremental e agendada por prioridade. Armazenamento de documentos e dados brutos de uso com ciclos de vida (tiering/expiração). Custos de conformidade (SOC 2, pentest, auditoria) devem ser previstos desde cedo pois destravam vendas enterprise. Métricas: custo por tenant, custo por contrato processado, margem bruta por plano; FinOps com tags por módulo e tenant.",
+    "monetizacao": "Assinatura B2B SaaS por camadas, com preço atrelado ao valor entregue: (1) Starter — número limitado de contratos e aplicações, repositório e alertas de renovação; (2) Growth — inventário de licenças, conectores de uso e relatórios de licenças ociosas, cobrado por faixa de gasto SaaS gerenciado ou número de colaboradores; (3) Enterprise — SSO/SCIM, trilha de auditoria avançada, workflows de aprovação, residência de dados, SLAs e suporte dedicado. Opção de componente de performance/success fee (percentual da economia comprovada em renovações), que alinha incentivos mas exige medição confiável (ligada à fitness function de precisão). Receitas adicionais: onboarding/migração de contratos (serviços profissionais), serviço de negociação assistida, benchmarking de preços entre empresas (dados anonimizados) e marketplace/parcerias com revendedores. Faturamento anual com desconto, trial curto com importação de contratos para demonstrar economia rápida (time-to-value).",
+    "stack_sugerida": "Backend: monolito modular em TypeScript (NestJS) ou Kotlin/Java (Spring Modulith) — escolha reversível conforme competência do time; workers assíncronos no mesmo código-base. Banco: PostgreSQL gerenciado com Row-Level Security, extensão pgvector para busca semântica em cláusulas; Redis para cache/filas leves; fila/streaming gerenciado (SQS/SNS, ou Kafka/Redpanda apenas quando o volume justificar); storage de objetos S3-compatível para documentos e dados brutos; OpenSearch/Postgres FTS para busca em contratos. IA/Extração: camada de adaptador para LLMs (Claude e alternativas) + OCR gerenciado, com avaliação contínua em conjunto dourado e humano no loop. Frontend: React + TypeScript (Next.js/Vite) com design system próprio, geração de cliente a partir do OpenAPI. Identidade: OIDC/SAML via provedor gerenciado (WorkOS, Auth0 ou Keycloak) e SCIM. Infra: AWS (ou equivalente) com Terraform/IaC, contêineres em ECS Fargate/Cloud Run, CI/CD com GitHub Actions, feature flags (OpenFeature/Unleash), migrações com Flyway/Prisma expand-contract. Observabilidade: OpenTelemetry + Grafana/Datadog, Sentry, SLOs e alertas. Faturamento: Stripe Billing. Qualidade/Arquitetura: ArchUnit/dependency-cruiser, Pact para contratos, k6 para carga, Semgrep/Trivy/Dependabot para segurança, ADRs no repositório."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T05:48:29+00:00",
+    "runner": "runner.py"
+  }
+}

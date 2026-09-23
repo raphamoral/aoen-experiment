@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 45,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador é explicitamente identificado (motor de conformidade regulatória com trilhas de auditoria imutáveis), claramente separado das interfaces, extensível por design (agnóstico a hardware via adaptadores plugáveis e parametrizado por framework regulatório), e resolve um problema real que dashboards de temperatura convencionais não resolvem — a geração automática de evidências prontas para inspeção regulatória; perde um ponto por não detalhar o mecanismo de imutabilidade do registro de custódia, que é a alegação técnica mais crítica e mais fácil de contestar por concorrentes."
+}

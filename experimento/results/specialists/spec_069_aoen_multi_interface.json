@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 69,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Dashboard Web, API REST, CLI, GitHub/GitLab, Browser Extension), cada uma com justificativa explícita de perfil de usuário e mercado-alvo, todas consumindo exclusivamente um AccessibilityService desacoplado que isola a lógica de negócio de qualquer camada de apresentação, permitindo adição de novas interfaces sem reescrita."
+}

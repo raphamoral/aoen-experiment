@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O modelo menciona cobrança por volume de devoluções com um tier gratuito inicial, o que demonstra alguma conexão entre valor entregue e receita, mas a proposta está incompleta (a descrição do plano pago foi cortada), não há definição de tiers paid, valores por plano, estimativa de LTV/CAC, análise de margem por cliente ou consideração de churn — tornando impossível avaliar sustentabilidade real."
+}

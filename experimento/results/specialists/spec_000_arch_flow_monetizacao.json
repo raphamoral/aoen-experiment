@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona um contexto de 'Subscription & Billing' como bounded context e team, indicando consciência de que existe um modelo de cobrança, mas não especifica nenhum detalhe sobre tiers, valores, estratégia de precificação, métricas de negócio (MRR, LTV, CAC, churn) ou conexão entre o valor entregue e o que é cobrado ao cliente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O nome do produto e referências arquiteturais (onboarding de clínicas, integração com HIS veterinários) permitem inferir um público B2B no setor veterinário, mas a proposta não articula explicitamente tamanho de mercado, dor do cliente, diferenciação competitiva nem proposta de valor — trata-se de um documento puramente técnico-arquitetural sem visão de mercado estruturada."
+}

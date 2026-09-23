@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 80,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 8,
+  "justificativa": "Mercado-alvo é preciso (plantas industriais com 50–5000 operadores em setores de alto risco), a dor está bem articulada (acidentes, erros de processo, ramp-up elevado, locais sem conectividade) e a diferenciação frente ao status quo (manuais e vídeos offline) é clara e convincente — perde dois pontos por ausência de sizing quantificado (TAM/SAM/SOM) e por não posicionar explicitamente o produto contra concorrentes diretos de AR para treinamento (Scope AR, PTC Vuforia, Talespin), o que deixa a diferenciação competitiva implícita em vez de demonstrada."
+}

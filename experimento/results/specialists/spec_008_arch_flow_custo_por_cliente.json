@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura prevê multitenancy (TenantManagement) e cobrança por volume de MTRs (Billing), o que tecnicamente habilita rastrear consumo por tenant para fins de receita, mas em nenhum momento é descrito o cálculo do custo de servir cada cliente — não há menção a custo por MTR emitido, custo por evento blockchain por tenant, custo de IA/storage por operação, nem conexão entre consumo de recursos e margem por cliente; o que existe é estrutura de precificação (quanto cobrar), não de unit economics (quanto custa servir)."
+}

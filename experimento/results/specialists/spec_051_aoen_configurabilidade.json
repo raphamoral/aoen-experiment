@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 51,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A arquitetura demonstra extensibilidade via interfaces plugáveis (DocumentAnalyzer, parsers, geradores de relatório), mas essa plugabilidade é estrutural — resolvida em tempo de código/deploy, não em tempo de configuração de runtime; não há menção a schema de configuração por tenant, feature flags, regras de risk scoring configuráveis por cliente ou templates de relatório parametrizáveis via banco — o que significa que comportamentos distintos entre tenants (ex: PE fund com limiar de risco diferente de um banco de investimento) ainda exigiriam intervenção técnica, não apenas onboarding via configuração."
+}

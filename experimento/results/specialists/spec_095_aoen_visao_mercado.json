@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 95,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo tem segmentação razoável (primário/secundário/terciário) com especificidade geográfica relevante (Brasil, LatAm, Índia, África anglófona), e as dores são mencionadas (escassez de especialistas, encaminhamentos desnecessários, acesso remoto), mas sem profundidade — faltam dados de tamanho de mercado (TAM/SAM/SOM), nenhum competidor direto é nomeado ou contrastado, e a proposta de valor é inferida pela arquitetura técnica em vez de articulada explicitamente do ponto de vista do cliente pagador."
+}

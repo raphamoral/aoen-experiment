@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 78,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra sólidos princípios evolutivos no nível de aplicação — interfaces ScoreProvider e DataSource plugáveis, Service Layer com DTOs isolando canais da lógica de negócio, e troca de modelo de IA sem refatoração — mas a proposta não endereça explicitamente a abstração da camada de persistência (ausência de padrão Repository), o caminho de escalabilidade de 10 para 10.000 usuários (monolito modular vs. serviços distribuídos fica implícito) e a reversibilidade de decisões de infraestrutura (cloud provider, banco de dados), além de estar truncada antes da fase3, impedindo avaliação completa."
+}

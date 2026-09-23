@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "A proposta demonstra consciência de custos com distribuição percentual por categoria (40% compute, 20% real-time, etc.) e cita estratégias de otimização válidas (spot instances, serverless para picos, compressão de telemetria), mas não apresenta nenhuma estimativa concreta em dólares por componente nem projeção de como os custos escalam com o crescimento da base de clientes nos tiers Freemium/Starter/Professional/Enterprise."
+}

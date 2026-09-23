@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta implica dois contextos de uso distintos (coleta anônima pelo colaborador e dashboard de relatórios pelo RH/gestor), mas não explicita nenhuma estratégia multi-canal — não há menção a mobile, API pública, integrações (Slack/Teams), perfis de usuário diferenciados, desacoplamento explícito de UI da lógica de negócio, nem justificativa de escolha de canais por alcance de mercado."
+}

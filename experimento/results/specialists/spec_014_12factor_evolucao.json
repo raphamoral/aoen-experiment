@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura demonstra forte capacidade evolutiva: serviços isolados no monorepo com deploy independente, adapter pattern explícito para provedores de IA/tradução intercambiáveis, configuração 100% externalizada, processos stateless que escalam horizontalmente sem mudança arquitetural, e pipeline de release imutável com rollback trivial — a única ressalva é que o monorepo com branches por ambiente pode criar fricção de governança ao escalar times, e a dependência de Kubernetes como runtime introduz um acoplamento de infraestrutura não trivial de substituir."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta lista custos totais de infraestrutura ('500 a 800 reais/mês') e reconhece vagamente que o custo dos avaliadores 'precisa ser repassado no preço', mas não há nenhum cálculo de custo por operação, por transação ou por tenant — não existe margem por cliente, rastreamento de consumo individual nem conexão quantitativa entre custo unitário e modelo de precificação."
+}

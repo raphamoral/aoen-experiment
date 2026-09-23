@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 1,
+  "justificativa": "A proposta é inteiramente arquitetural/técnica — o único sinal de mercado é o nome do produto ('coworking descentralizado'), sem nenhuma definição de público-alvo, articulação de dor do cliente, tamanho de mercado ou diferenciação frente a concorrentes como Coworker, Nexudus ou WeWork."
+}

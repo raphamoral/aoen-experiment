@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 63,
+  "ideia": "App de detecção de pragas agrícolas por fotografia com IA",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de inferência que recebe uma imagem agrícola e retorna: identidade da praga, nível de severidade, cultura afetada e recomendação de tratamento — tudo em segundos, sem agrônomo presencial.",
+    "fase1_mercado": "Agricultores familiares e médios produtores rurais sem acesso imediato a assistência técnica; cooperativas agrícolas que atendem centenas de produtores; revendas de insumos que precisam de diagnóstico rápido para vender defensivos corretos; seguradoras agrícolas para laudos de sinistro.",
+    "fase1_extensivel": "Sim. O core é uma interface de inferência desacoplada do modelo: pode rodar com OpenAI Vision, Google Vertex AI, modelo proprietário fine-tuned (PyTorch/ONNX), ou Hugging Face. A troca de provedor exige apenas reimplementar um único adapter — o fluxo de análise e os dados históricos permanecem intactos.",
+    "fase2_interfaces": [
+      "App mobile (iOS/Android) — captura em campo, resultado offline-first",
+      "WhatsApp Business API — bot que recebe foto e responde diagnóstico em linguagem simples",
+      "Dashboard web — painel para cooperativas, agrônomos e gestores de propriedade",
+      "REST API — integração com ERPs agrícolas, plataformas de telemetria e drones",
+      "Relatório PDF/exportação — laudo formal para seguradora ou órgão regulatório"
+    ],
+    "fase2_justificativa_mercado": "Mobile abre o mercado de produtores rurais diretos (maior volume, menor ticket). WhatsApp abre o mercado de baixa digitalização — agricultores que não instalam app mas têm smartphone; é o canal com menor fricção no campo brasileiro. Dashboard web abre o mercado B2B de cooperativas e agrônomos que gerenciam múltiplos produtores simultaneamente. REST API abre o mercado enterprise de plataformas agtech que querem terceirizar o motor de visão. PDF/laudo abre o mercado de seguradoras e crédito rural, que exigem documentação formal.",
+    "fase2_service_layer": "Todas as interfaces consomem um único PestAnalysisService que expõe métodos como analyze(image, cropType, tenantId) e getHistory(tenantId, filters). Nenhuma interface contém lógica de diagnóstico: o app mobile, o bot WhatsApp e o dashboard web são apenas renderizadores de resposta. A troca ou adição de interface não exige alterar regra de negócio — apenas criar novo controller/handler que chama o mesmo service.",
+    "fase3_fluxo_fixo": "1. Receber imagem → 2. Validar e normalizar (resize, compress, format check) → 3. Enriquecer com metadados do tenant (cultura, região, safra) → 4. Enviar para fila de inferência → 5. Executar modelo de visão → 6. Mapear resultado em taxonomia interna de pragas → 7. Buscar recomendações no catálogo configurado do tenant → 8. Persistir diagnóstico com custo de inferência → 9. Notificar via canal configurado do tenant.",
+    "fase3_parametros_configuraveis": [
+      "Catálogo de pragas habilitadas por tenant (culturas monitoradas)",
+      "Threshold mínimo de confiança para emitir alerta",
+      "Idioma e tom da resposta (técnico para agrônomo, simples para agricultor)",
+      "Canal de notificação (push, WhatsApp, e-mail, webhook)",
+      "Template de recomendação (defensivos parceiros, produtos próprios da revenda)",
+      "Limites de uso por plano (análises/mês, retenção de histórico em dias)",
+      "Região geográfica (sazonalidade, pragas endêmicas por bioma)",
+      "Integração de saída (ERP, sistema de cooperativa, plataforma de crédito)",
+      "Modelo de IA preferido por tenant (custo vs. precisão)",
+      "Logotipo e identidade visual para white-label"
+    ],
+    "fase3_novo_cliente": "Novo tenant é criado via painel de admin com: nome, plano, culturas habilitadas, região, idioma e canal de notificação. Um seed script aplica o perfil de configuração padrão do plano contratado. Nenhum deploy, nenhum código novo — o sistema já serve o novo cliente na próxima requisição.",
+    "fase4_core_isolado": "Worker de inferência de IA roda como processo assíncrono isolado (container separado, auto-scaling independente): consome jobs de uma fila (Redis/SQS), executa o modelo de visão, persiste resultado e emite evento de conclusão. É o único processo que acessa o modelo e que gera custo variável por análise — isolado para ser medido, escalado e substituído sem afetar os demais serviços.",
+    "fase4_custo_total_cliente": "Custo core: ~$0,004–$0,02 por análise (OpenAI Vision GPT-4o) ou ~$0,001 se modelo próprio em GPU spot. Custo infra proporcional: armazenamento S3 ~$0,023/GB/mês (imagens + histórico); banco RDS ~$0,10/GB/mês proporcional ao uso; CDN ~$0,01/GB servido; fila SQS negligível. Custo operacional fixo diluído: ~$80–200/mês para instância base ÷ nº de tenants ativos. Estimativa total por cliente ativo médio (200 análises/mês, plano cooperativa): $4–8/mês em custo real — viabilizando precificação a partir de $49/mês com margem acima de 80%.",
+    "fase4_continuidade": "O worker de inferência falhar não derruba a API nem as interfaces: a requisição entra na fila, o usuário recebe confirmação de 'análise em processamento', e o resultado é entregue assim que o worker se recuperar. Circuit breaker no service layer detecta falha do worker e redireciona para modelo alternativo (fallback provider) ou enfileira para retry com backoff exponencial.",
+    "fase4_manutencao": "O modelo de IA é acessado apenas pelo worker via interface InferenceAdapter. Trocar de OpenAI Vision para modelo próprio ou Vertex AI exige: 1. Implementar novo adapter (100–200 linhas). 2. Atualizar variável de ambiente MODEL_PROVIDER no worker. 3. Deploy do worker — zero downtime, sem toque nos outros serviços. O histórico de diagnósticos, configurações de tenant e interfaces permanecem inalterados.",
+    "monetizacao": "SaaS por tenant em planos por volume de análises/mês: Plano Produtor ($19/mês, 100 análises) → Plano Cooperativa ($149/mês, 2.000 análises + dashboard multi-produtor) → Plano Enterprise (sob contrato, API ilimitada + white-label + SLA). Add-ons: laudo PDF certificado ($0,50/unidade), retenção estendida de histórico, integração ERP. Receita previsível (recorrente) + receita variável (laudos, overages). Payback por cliente Cooperativa em M1 com margem líquida >75% sobre custo de IA.",
+    "stack_sugerida": "API: Node.js (Fastify) ou Python (FastAPI) — service layer stateless. Worker IA: Python (asyncio + Celery ou ARQ) com adapter para OpenAI Vision / Vertex AI / ONNX Runtime. Fila: Redis (BullMQ) para desenvolvimento, AWS SQS para produção. Banco: PostgreSQL (tenants, diagnósticos, configurações) + S3 (imagens originais e thumbs). Mobile: React Native (Expo) com câmera nativa e cache offline. Web dashboard: Next.js + TailwindCSS. WhatsApp: Twilio API for WhatsApp ou Meta Cloud API. Infra: Docker + Railway/Render para MVP; migrar para ECS Fargate + RDS quando escala exigir. Observabilidade: OpenTelemetry + Grafana para medir custo por análise por tenant em tempo real."
+  }
+}

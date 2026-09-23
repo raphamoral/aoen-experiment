@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 7,
+  "ideia": "Plataforma de microlearning gamificado para treinamento corporativo",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de aprendizagem adaptativa: pipeline que transforma conteúdo bruto (PDFs, vídeos, slides, texto) em módulos de microlearning gamificados, calibrados por objetivo de negócio, perfil do aprendiz e histórico de desempenho. Sem esse motor, o produto é apenas um LMS comum.",
+    "fase1_mercado": "Equipes de L&D (Learning & Development) e RH de empresas com 200–5000 colaboradores que precisam treinar times distribuídos, reduzir turnover e comprovar ROI de treinamento para a diretoria. Segmentos prioritários: varejo, saúde, financeiro e tecnologia.",
+    "fase1_extensivel": "Sim. O motor é abstraído atrás de uma interface ContentProcessor: suporta múltiplos provedores de IA (OpenAI, Anthropic, Google Gemini) para geração/curadoria de conteúdo, múltiplos motores de gamificação (pontos, badges, leaderboards, XP, streaks) como plug-ins, e múltiplas fontes de conteúdo via conectores (S3, Google Drive, SharePoint, YouTube). Trocar o provedor de IA não exige reescrita do produto.",
+    "fase2_interfaces": [
+      "Web App (SPA) para gestores de L&D — criação de trilhas, importação de conteúdo, dashboards de engajamento e ROI",
+      "Mobile App (iOS/Android) para colaboradores — consumo de módulos, conquistas, ranking, notificações push",
+      "Integração Slack/Microsoft Teams — entrega de pílulas de aprendizado diretamente no fluxo de trabalho",
+      "API REST/Webhooks para integração com LMS corporativos (SAP SuccessFactors, Workday, Cornerstone)",
+      "Widget embarcável (iFrame/SDK) para portais intranet e sistemas internos existentes",
+      "Relatórios automatizados via e-mail/PDF para diretoria (C-level) — sem necessidade de login"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de gestores que compram a ferramenta (decisor econômico). Mobile App abre o mercado de empresas com força de trabalho em campo (varejo, logística, saúde) onde o colaborador não tem desktop. Slack/Teams abre empresas tech-forward que rejeitam plataformas separadas. API/LMS Integration abre enterprises que já têm LMS mandatório por compliance. Widget embarcável abre empresas que não podem mudar o portal do colaborador por restrições de TI. Relatórios para diretoria eliminam o veto do C-level ao reduzir fricção de adoção.",
+    "fase2_service_layer": "Uma LearningService centraliza toda lógica de negócio: matrícula, progresso, regras de gamificação, cálculo de completion rate e geração de relatórios. As interfaces (Web, Mobile, Slack, API) chamam apenas essa service layer via contratos definidos (DTOs), nunca acessam banco de dados ou motor de IA diretamente. Isso permite adicionar nova interface sem duplicar regras e permite testar toda a lógica de negócio independente de UI.",
+    "fase3_fluxo_fixo": "1) Ingestão de conteúdo bruto → 2) Chunking e estruturação em módulos de 3–7 minutos → 3) Geração de quizzes, flashcards e desafios pelo motor de IA → 4) Aplicação das regras de gamificação (pontos, badges, streaks) → 5) Entrega ao aprendiz pela interface configurada → 6) Coleta de interações e desempenho → 7) Atualização do progresso e ranking → 8) Geração de analytics e relatórios. Esse pipeline é imutável; o que varia são os parâmetros.",
+    "fase3_parametros_configuraveis": [
+      "Identidade visual: logo, cores, domínio personalizado (white-label)",
+      "Idioma e localização (i18n por cliente)",
+      "Duração máxima de módulo (ex: 3min, 5min, 10min)",
+      "Regras de gamificação: pontos por ação, multiplicadores, validade de streaks, tipos de badges",
+      "Trilhas obrigatórias vs. opcionais por cargo/departamento",
+      "Critério de aprovação: porcentagem mínima de acertos por quiz",
+      "Frequência e canal de notificações (push, Slack, e-mail, WhatsApp)",
+      "Integrações ativas por cliente (qual LMS, qual SSO, qual storage)",
+      "Regras de expiração de conteúdo (re-certificação anual, por exemplo)",
+      "Visibilidade de leaderboard: empresa inteira, por time, anônimo",
+      "Configuração de relatórios: destinatários, frequência, métricas expostas",
+      "Limite de usuários ativos por plano (throttling por tenant)"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel de administração: criar tenant → definir parâmetros via formulário (sem código) → configurar SSO (SAML/OAuth via metadados do cliente) → importar usuários via CSV ou sync com diretório (AD/Okta) → fazer upload do primeiro conteúdo. O motor processa automaticamente. Novo cliente em produção em menos de 1 hora de trabalho operacional.",
+    "fase4_core_isolado": "O ContentProcessingWorker: processo assíncrono e independente responsável por chamar a API de IA (geração de quizzes, sumarização, tradução automática) e indexar o conteúdo processado. Roda em workers separados (ex: Celery, BullMQ ou AWS Lambda), escala horizontalmente por demanda de processamento, completamente desacoplado da camada de entrega ao usuário.",
+    "fase4_custo_total_cliente": "Custo do core (variável por uso): tokens de IA para processamento de conteúdo (~$0.002–0.01/módulo gerado, amortizado pelo número de aprendizes que consomem) + chamadas de IA para feedback personalizado ($0.001–0.005/interação). Custo de infra proporcional: servidor de aplicação (~$0.50–2.00/mês por 100 usuários ativos em instâncias compartilhadas) + banco de dados relacional ($0.10–0.30/GB/mês por tenant isolado ou schema) + storage de mídia ($0.023/GB/mês S3 + $0.01/GB transferência CDN). Estimativa consolidada: cliente com 200 usuários ativos + 50 módulos = ~$15–40/mês em custo real de infra, permitindo pricing mínimo de $200–400/mês com margem saudável.",
+    "fase4_continuidade": "A camada de entrega (exibição de módulos já processados, registro de progresso, gamificação) funciona 100% sem o ContentProcessingWorker. Módulos já processados ficam em storage e banco; o worker apenas produz novo conteúdo. Fila de processamento persiste jobs (Redis/SQS) — se o worker cair, os jobs aguardam e são reprocessados quando ele volta, sem perda. O aprendiz nunca vê indisponibilidade pelo core de IA.",
+    "fase4_manutencao": "O motor de IA é acessado exclusivamente via interface AIProviderPort (Adapter Pattern). Trocar de OpenAI para Anthropic ou modelo local requer implementar um novo adapter sem tocar no restante do sistema. Deploys do worker são independentes da aplicação principal (deploy separado, versionamento independente). Feature flags permitem testar novo provider em % do tráfego antes de migração total.",
+    "monetizacao": "SaaS B2B com pricing por faixas de usuários ativos mensais (MAU): Starter $199/mês até 50 MAU, Growth $499/mês até 200 MAU, Business $1.200/mês até 600 MAU, Enterprise custom acima disso. Add-ons: white-label +$200/mês, integrações LMS corporativas +$150/mês, relatórios avançados de ROI +$100/mês. Trial gratuito de 14 dias sem cartão. Canal de aquisição: PLG via gestores de L&D + vendas outbound para RH de médias empresas. Meta de payback: < 6 meses por cliente com LTV/CAC > 3x.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com Fastify para API principal + Python para workers de IA (ecossistema ML mais rico). Banco: PostgreSQL com schemas por tenant (isolamento leve) + Redis para cache de sessão e filas. Workers: BullMQ (Node) ou Celery (Python) com Redis como broker. Storage: AWS S3 + CloudFront CDN para mídia. IA: Anthropic Claude API (geração de conteúdo, quizzes) com fallback OpenAI via adapter. Frontend Web: Next.js (React) com Tailwind. Mobile: React Native (código compartilhado iOS/Android). Auth: Auth0 ou Clerk com suporte a SAML/SSO enterprise. Infra: Docker + AWS ECS Fargate (serverless containers) com auto-scaling por fila de jobs. Observabilidade: OpenTelemetry + Datadog ou Grafana Cloud para custo por tenant mensurável."
+  }
+}

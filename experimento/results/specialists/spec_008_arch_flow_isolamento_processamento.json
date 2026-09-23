@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "O contexto BlockchainLedger é segregado como bounded context lógico, o que demonstra consciência do problema, mas a proposta não descreve nenhum mecanismo de isolamento físico (workers separados, filas de mensagens), nenhum padrão assíncrono explícito para operações pesadas (escrita em blockchain, geração de relatórios SINIR/IBAMA, OCR) e nenhuma estratégia de fallback caso o ledger ou o compliance engine fiquem indisponíveis — processos caros permanecem acoplados ao fluxo síncrono da aplicação principal."
+}

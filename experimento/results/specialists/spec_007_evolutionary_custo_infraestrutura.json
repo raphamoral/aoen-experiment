@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta reconhece custos como preocupação operacional ao incluir uma fitness function que monitora custo por usuário ativo via AWS Cost Explorer (com alerta de desvio > 20%), e a estratégia de monólito modular no MVP implicitamente evita overhead de microserviços, mas não há nenhuma estimativa concreta de valores (USD/BRL) por componente, nenhuma estratégia explícita de otimização (scale-to-zero, instâncias spot, tiering de armazenamento, CDN pricing) e nenhuma projeção de como os custos evoluem com o crescimento da base de tenants/usuários."
+}

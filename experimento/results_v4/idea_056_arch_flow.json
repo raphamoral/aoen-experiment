@@ -1,0 +1,47 @@
+{
+  "ideia_idx": 56,
+  "ideia": "Marketplace de peças industriais com entrega expressa regional",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Cliente industrial (comprador de manutenção/suprimentos) → necessidade de peça (busca por código, aplicação ou equipamento) → descoberta e comparação no catálogo unificado → cotação/compra → pagamento e split entre fornecedor e plataforma → separação no estoque do fornecedor ou hub regional → roteirização e entrega expressa regional (mesmo dia ou D+1) → confirmação de recebimento → pós-venda (garantia, devolução, reposição recorrente). Camadas de suporte: catálogo e dados técnicos de peças, fornecedores (sellers) e onboarding, estoque distribuído, logística de última milha, pagamentos e conciliação, fiscal (NF-e), confiança e reputação.",
+    "bounded_contexts": [
+      "Catálogo e Compatibilidade de Peças (SKU, normalização, cross-reference, ficha técnica)",
+      "Busca e Descoberta (busca por código, equipamento, aplicação; recomendação)",
+      "Gestão de Fornecedores/Sellers (onboarding, KYC, contratos, SLAs, reputação)",
+      "Estoque e Disponibilidade (estoque por fornecedor e hub, reserva, sincronização ERP)",
+      "Pedidos e Cotações (carrinho, RFQ, pedido, aprovação B2B, recompra)",
+      "Precificação e Contratos B2B (tabelas por cliente, condições comerciais, crédito)",
+      "Entrega Expressa Regional (promessa de prazo, roteirização, despacho, rastreamento, prova de entrega)",
+      "Pagamentos e Split (cobrança, split, boleto/PIX/faturado, conciliação, repasse)",
+      "Fiscal e Compliance (NF-e, tributos por UF, documentos de transporte)",
+      "Pós-venda (garantia, devolução, disputas, reversa)",
+      "Identidade e Contas (empresas compradoras, usuários, papéis, alçadas)",
+      "Analytics e Dados de Demanda (demanda regional, posicionamento de estoque, indicadores de nível de serviço)"
+    ],
+    "component_evolution": "GENESIS: motor de compatibilidade e cross-reference de peças industriais com dados técnicos normalizados; algoritmo de promessa de entrega (ETA confiável por região). CUSTOM-BUILT (diferencial competitivo): busca especializada por aplicação/equipamento, orquestração de entrega expressa regional, gestão de rede de fornecedores e hubs, precificação B2B por contrato. PRODUCT: pagamentos com split (Stripe Connect, Pagar.me, Adyen), motor de busca (Elasticsearch/OpenSearch/Algolia), roteirização de última milha (Onfleet, Routific), emissão fiscal (Focus NFe, eNotas), CRM e suporte (HubSpot, Zendesk). COMMODITY: cloud (AWS/GCP), banco de dados gerenciado, mensageria, CDN, autenticação (Auth0/Keycloak/Cognito), observabilidade, e-mail/SMS, mapas e geocoding. Regra: construir apenas o que está em genesis/custom e gera diferencial; comprar ou usar como serviço o restante.",
+    "team_topology": "Stream-aligned teams por segmento do fluxo: (1) Time Descoberta e Catálogo (busca, catálogo, compatibilidade); (2) Time Compra e Pedidos (RFQ, checkout, contratos B2B, recompra); (3) Time Fornecedores e Estoque (onboarding, integração ERP, disponibilidade); (4) Time Entrega Expressa (promessa, roteirização, rastreamento, pós-entrega). Platform team: plataforma interna de desenvolvedor (CI/CD, observabilidade, IaC, self-service de ambientes, dados). Enabling teams: Arquitetura/Wardley e DDD (coaching e mapas evolutivos), e Segurança/Compliance fiscal e LGPD (temporário, transfere conhecimento). Complicated-subsystem team: Motor de Compatibilidade de Peças e ETA/Otimização de Rotas (exige ciência de dados e pesquisa operacional). Modos de interação: colaboração no início entre Descoberta e Catálogo e o subsistema de compatibilidade; X-as-a-Service da plataforma para os stream-aligned teams; facilitação dos enabling teams. Carga cognitiva limitada a 1–2 bounded contexts por time; alinhamento com a Lei de Conway inversa.",
+    "flow_optimization": "Definir fluxos de valor principais (Buscar → Comprar → Receber → Repor) e medir com métricas de fluxo e DORA: lead time da busca até a entrega, tempo de ciclo do pedido, taxa de entregas no prazo, taxa de peça encontrada (zero-result), frequência de deploy e lead time de mudança. Reduzir dependências entre times: contextos com contratos explícitos (eventos de domínio como PedidoConfirmado, EstoqueReservado, EntregaDespachada), ACL na integração com ERPs de fornecedores. Estoque pré-posicionado em hubs regionais com base em dados de demanda, para viabilizar a promessa expressa. Entrega contínua com trunk-based development, feature flags, e deploys independentes por serviço. Mapear e eliminar gargalos com Event Storming e Wardley Maps revisados a cada trimestre. Priorizar o fluxo crítico (busca até checkout) e a confiabilidade da promessa de prazo, que é o diferencial de valor.",
+    "interfaces": [
+      "API REST/GraphQL pública para portal e app do comprador (busca, catálogo, pedidos, rastreamento)",
+      "Portal e API do fornecedor (cadastro de catálogo, estoque, preços, pedidos)",
+      "Integração com ERPs de fornecedores (SAP, TOTVS, conectores EDI/CSV/API) via camada anticorrupção",
+      "Eventos assíncronos de domínio (Kafka/SNS-SQS): PedidoCriado, EstoqueReservado, PagamentoConfirmado, EntregaDespachada, EntregaConcluída",
+      "API de entregadores/transportadoras e app de motorista (tarefas, prova de entrega, geolocalização)",
+      "Webhooks de pagamentos e split (gateway/Stripe Connect)",
+      "API fiscal (emissão e consulta de NF-e/CT-e)",
+      "Punchout cataloging (cXML/OCI) e integração com sistemas de compras de grandes clientes (SAP Ariba, Coupa)",
+      "Painel administrativo e de operações (hubs, SLAs, disputas)",
+      "API de dados/analytics e exportação para BI"
+    ],
+    "escalabilidade": "Arquitetura modular evolutiva: começar com monólito modular por bounded context e extrair serviços apenas onde há necessidade de escala ou autonomia de time (busca, pedidos, logística). Busca e catálogo escalam horizontalmente com índice dedicado e cache/CDN para leituras. Pedidos e estoque usam eventos e processamento assíncrono, com reservas idempotentes e consistência eventual entre contextos (sagas para pedido-pagamento-entrega). Escala geográfica por região: replicar o modelo de hub e a operação logística região a região (células regionais), com dados de estoque e roteirização particionados por região. Autoscaling em Kubernetes ou serviços gerenciados serverless, filas para absorver picos, particionamento do banco por tenant/região. Escala de organização via novos stream-aligned teams por região ou segmento de clientes, apoiados pela plataforma interna.",
+    "custos": "Principais custos: logística de última milha (maior parcela; controlar com densidade de rotas, consolidação de pedidos, janelas de entrega e frota terceirizada/sob demanda antes de frota própria), operação de hubs e estoque (capital de giro e armazenagem), aquisição de fornecedores e clientes B2B (vendas consultivas), taxas de pagamento e split, curadoria e normalização de dados do catálogo, e infraestrutura cloud. Mitigações: modelo asset-light (estoque no fornecedor, hubs apenas em corredores de maior demanda), comprar componentes commodity/product em vez de construir, FinOps com tags de custo por time e contexto, autoscaling e uso de instâncias spot para cargas assíncronas, observabilidade com custo por pedido e por entrega, expansão por região somente com densidade mínima de demanda. Risco de inadimplência B2B tratado por análise de crédito e faturamento a prazo com seguro ou antecipação de recebíveis.",
+    "monetizacao": "Comissão sobre GMV cobrada dos fornecedores (por categoria, tipicamente 8–15%); taxa de entrega expressa cobrada do comprador (por faixa, distância e urgência) ou assinatura de frete; assinatura SaaS para fornecedores (plano premium com ferramentas de catálogo, integração ERP e analytics de demanda); assinatura para compradores corporativos (contratos, aprovação multinível, punchout, relatórios de gastos); anúncios e destaque patrocinado no resultado de busca; serviços financeiros embarcados (faturamento a prazo, antecipação de recebíveis do fornecedor, com receita de spread); serviços de dados e inteligência de demanda para fabricantes; logística como serviço (fulfillment em hubs regionais).",
+    "stack_sugerida": "Frontend: React/Next.js (portal comprador e fornecedor), app mobile do entregador em React Native/Flutter. Backend: TypeScript (NestJS) ou Java/Kotlin (Spring) em monólito modular evoluindo para serviços; Python para ML de compatibilidade e ETA; Go opcional para roteirização e serviços de alta concorrência. Dados: PostgreSQL (transacional, com PostGIS para geolocalização), OpenSearch/Elasticsearch (busca e catálogo), Redis (cache e reservas), data lake/warehouse (BigQuery ou Snowflake) com dbt para analytics. Mensageria: Kafka ou SNS/SQS para eventos de domínio; Temporal para sagas e workflows. Infra: AWS ou GCP, Kubernetes gerenciado (EKS/GKE) ou serviços serverless, Terraform/IaC, GitHub Actions + ArgoCD, feature flags (Unleash/LaunchDarkly). Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Terceiros: Stripe Connect ou Pagar.me (split), Focus NFe (fiscal), Onfleet/Routific ou OR-Tools próprio (rotas), Keycloak/Auth0 (identidade), Google Maps/Mapbox (mapas), Zendesk (suporte)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "dfd4115afd4e",
+    "gerado_em": "2026-09-21T03:36:58+00:00",
+    "runner": "runner.py"
+  }
+}

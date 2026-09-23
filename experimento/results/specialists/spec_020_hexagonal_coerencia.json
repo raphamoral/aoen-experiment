@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta apresenta coerência sistêmica notável: a arquitetura hexagonal é aplicada com rigor e disciplina — os primary ports cobrem exatamente o ciclo de vida completo do domínio (campanha → execução → submissão → validação → gamificação → recompensa), os secondary ports mapeiam precisamente as dependências externas que esse ciclo exige, e os adapters tecnológicos respondem diretamente às necessidades funcionais declaradas (Redis justificado pelo leaderboard do IGamificationUseCase, WebSocket justificado por notificações live e rankings em tempo real, IFileStorageGateway justificado pelas evidências do ITestExecutionUseCase, dual-notification via SendGrid+FCM coerente com plataforma web+mobile); a única tensão latente está no gRPC Adapter sugerindo uma decomposição em microsserviços que o núcleo do domínio não delimita explicitamente, criando uma promessa arquitetural sem resolução declarada — o que impede a nota máxima."
+}

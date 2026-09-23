@@ -1,0 +1,89 @@
+{
+  "ideia_idx": 99,
+  "ideia": "SaaS de monitoramento de reputação online com análise de sentimento para marcas",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de Reputação Online: o núcleo modela Marca (Brand), Monitor (palavras-chave, concorrentes, fontes, idiomas), Menção (Mention), Análise de Sentimento (polaridade, intensidade, emoção, tópico, idioma), Alerta (Alert com regras e limiares), Reputação/Score (índice agregado e tendência), Relatório (Report) e Tenant/Assinatura (Plano e limites de uso). Regras de negócio no core: deduplicação de menções, cálculo de score de reputação, detecção de picos e crises (variação anômala de sentimento/volume), políticas de alerta, priorização por influência/alcance, e limites de cota por plano. O core não sabe de HTTP, banco, fila, provedores de IA ou redes sociais.",
+    "primary_ports": [
+      "RegisterBrandUseCase / ManageBrandPort (criar, editar e arquivar marcas e monitores)",
+      "ConfigureMonitoringPort (definir keywords, fontes, idiomas, concorrentes)",
+      "IngestMentionsPort (receber menções coletadas, em lote ou em tempo real)",
+      "AnalyzeSentimentPort (solicitar análise ou reanálise de menções)",
+      "QueryReputationPort (consultar score, séries temporais, tópicos, comparativo com concorrentes)",
+      "ManageAlertRulesPort (criar e ajustar regras de alerta)",
+      "GenerateReportPort (gerar relatórios sob demanda ou agendados)",
+      "ManageTenantAndSubscriptionPort (contas, usuários, papéis, planos)",
+      "ReviewMentionPort (classificação manual, correção de sentimento, marcação de resolvida, feedback humano)"
+    ],
+    "secondary_ports": [
+      "MentionSourcePort (coleta em redes sociais, notícias, blogs, fóruns, reviews e app stores)",
+      "SentimentAnalyzerPort (classificação de sentimento, emoção e tópico, com suporte a múltiplos idiomas)",
+      "LanguageDetectionPort / TranslationPort",
+      "BrandRepositoryPort / MentionRepositoryPort / TenantRepositoryPort (persistência)",
+      "TimeSeriesStorePort (métricas agregadas de sentimento e volume)",
+      "SearchIndexPort (busca full-text sobre menções)",
+      "EventBusPort / JobQueuePort (mensageria e processamento assíncrono)",
+      "NotificationPort (e-mail, Slack, Teams, SMS, push)",
+      "WebhookDispatcherPort (integrações de saída para clientes)",
+      "ReportRendererPort / FileStoragePort (PDF, CSV, XLSX e armazenamento de arquivos)",
+      "BillingPort (assinaturas, cobrança por uso, faturas)",
+      "IdentityProviderPort / AuthorizationPort (SSO, OAuth, RBAC)",
+      "CachePort",
+      "ClockPort / IdGeneratorPort (determinismo em testes)",
+      "AuditLogPort / TelemetryPort (observabilidade e auditoria)"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON) com OpenAPI",
+      "GraphQL API para o dashboard",
+      "Web App (SPA) que consome a API",
+      "WebSocket/SSE para alertas e feed ao vivo",
+      "CLI administrativa",
+      "Consumidores de webhooks de entrada (por exemplo, eventos do Stripe e de provedores de coleta)",
+      "Scheduler (cron) que dispara coletas, relatórios e reanálises",
+      "Consumidores de fila/eventos que acionam casos de uso",
+      "Bots de Slack/Teams para consultas e comandos",
+      "Test Driver e Fake Client (testes de aceitação e BDD que acionam as portas primárias sem UI)",
+      "SDKs e integrações públicas para clientes (API pública com chave)"
+    ],
+    "secondary_adapters": [
+      "Conectores de fontes: X/Twitter API, Reddit, YouTube, Instagram/Meta Graph, TikTok, Google Reviews, Trustpilot, Reclame Aqui, News APIs, RSS e crawlers de fallback",
+      "Adaptadores de sentimento: LLM via API (Claude), modelo BERT/transformers local (por exemplo BERTimbau para PT-BR), serviço gerenciado (AWS Comprehend) e um adaptador de regras/léxico como fallback",
+      "PostgreSQL (repositórios relacionais)",
+      "TimescaleDB ou ClickHouse (séries temporais e agregações)",
+      "OpenSearch/Elasticsearch (busca)",
+      "Redis (cache, rate limiting, deduplicação rápida)",
+      "Kafka, RabbitMQ ou SQS/SNS (eventos e filas)",
+      "SendGrid/SES (e-mail), Slack API, Twilio (SMS), Firebase (push)",
+      "Stripe (assinaturas e cobrança por uso)",
+      "Auth0/Keycloak/Cognito (identidade e SSO)",
+      "S3 ou compatível (relatórios e anexos)",
+      "Renderizador de PDF (Puppeteer/WeasyPrint)",
+      "OpenTelemetry, Prometheus, Grafana, Sentry (observabilidade)",
+      "In-memory adapters e fakes/mocks para todas as portas (testes rápidos e determinísticos)"
+    ],
+    "isolation": "O core (domínio + casos de uso/aplicação) fica em um módulo sem dependências de frameworks ou SDKs externos. A regra de dependência aponta sempre para dentro: adapters dependem das portas, nunca o contrário. Portas primárias são interfaces implementadas pelos casos de uso; portas secundárias são interfaces definidas pelo core na linguagem do domínio, não na do fornecedor. Cada adapter traduz entre o modelo externo e o modelo de domínio (anti-corruption layer), então DTOs de terceiros não vazam para dentro. A composição é feita fora do core (composition root com injeção de dependência), e a troca de adapter é apenas configuração, por exemplo Claude por BERT local ou Twitter por Reddit. Isso vale de forma simétrica para todo sistema externo, seja banco, IA, fila ou gateway de pagamento. Como a mesma aplicação pode ser dirigida por UI, API, scheduler ou testes automatizados, todos os casos de uso são testáveis com adapters in-memory, sem infraestrutura. Fitness functions (ArchUnit, dependency-cruiser ou import-linter) no CI garantem que o core não importe código de infraestrutura. Multi-tenancy é tratada como conceito de domínio (TenantId em todos os agregados), com o isolamento de dados aplicado pelos adapters de persistência (por exemplo Row Level Security).",
+    "interfaces": [
+      "Dashboard web: visão geral de reputação, score, tendência, mapa de tópicos, nuvem de termos, comparativo com concorrentes",
+      "Feed de menções em tempo real com filtros por fonte, sentimento, idioma, influência e status",
+      "Central de alertas e gestão de crises",
+      "Configuração de marcas, monitores e regras de alerta",
+      "Construtor e agendador de relatórios (PDF/CSV/XLSX)",
+      "Painel de cobrança, planos e uso",
+      "Gestão de usuários, papéis e SSO",
+      "API REST/GraphQL pública documentada com chaves de API e webhooks de saída",
+      "Integrações com Slack/Teams e e-mail digest",
+      "CLI administrativa e suíte de testes de aceitação que aciona o core sem UI",
+      "Endpoints de saúde e métricas para operação"
+    ],
+    "escalabilidade": "Monólito modular hexagonal no início, podendo extrair serviços por bounded context depois, já que as portas definem as fronteiras. Pipeline assíncrono orientado a eventos: coleta → normalização → deduplicação → detecção de idioma → análise de sentimento → agregação → alerta, com workers independentes que escalam horizontalmente por partição/fila. Serviços de API e workers sem estado, com autoescalonamento (Kubernetes/HPA ou ECS) baseado em lag de fila. Particionamento por tenant e por tempo nas séries temporais e no índice de busca. Estágio de análise em camadas: modelo leve ou regras primeiro, e LLM só em menções ambíguas ou de alto impacto, com processamento em lote. Cache de agregações no Redis e materialized views para o dashboard. Rate limiting e backpressure por conector, respeitando as cotas das APIs de terceiros. Idempotência e reprocessamento via event log. Read replicas e separação leitura/escrita (CQRS leve) para consultas analíticas. Isolamento de tenants grandes (noisy neighbors) via filas dedicadas ou sharding.",
+    "custos": "Os maiores custos são: (1) APIs de fontes de dados (X, Meta e outras têm acesso pago e restrito, o que costuma ser o maior gargalo de custo e de risco); (2) inferência de IA, que se controla com a abordagem em camadas, cache por hash de texto, deduplicação antes da análise, lotes e modelo local open-source para volume alto; (3) armazenamento e indexação de menções, mitigados com retenção por plano, tiering (hot/warm/cold em S3/Parquet) e amostragem de conteúdo de baixo valor; (4) computação de workers de coleta contínua, reduzida com spot instances e escala a zero fora do pico; (5) observabilidade e egress. Mitigações: cotas por plano medidas no core, medição de uso por tenant (custo por menção analisada) para acompanhar margem, contratos com agregadores de dados em vez de múltiplas APIs diretas, e começar com poucas fontes de alto valor. Riscos legais e de conformidade: LGPD/GDPR, termos de uso das plataformas e scraping, com custo de compliance (DPO, política de retenção, direito ao esquecimento).",
+    "monetizacao": "Assinatura SaaS recorrente em planos escalonados (por exemplo Starter, Pro, Business, Enterprise) diferenciados por número de marcas/monitores, volume de menções/mês, fontes disponíveis, retenção de histórico, frequência de coleta (tempo real vs. horária), assentos e recursos. Cobrança híbrida: assinatura base mais excedente por uso (menções analisadas, relatórios, consultas de API). Add-ons: análise de concorrentes, alertas de crise em tempo real, relatórios white-label, análise por LLM avançada (emoção, sarcasmo, resumos executivos), SSO/SLA e suporte dedicado. Plano Agency com multi-cliente e white-label para agências de marketing e RP. Plano Enterprise com contrato anual, integrações customizadas e deploy dedicado. Acesso pago à API e a datasets/insights para terceiros. Trial de 14 dias com limite de menções e modelo freemium limitado para aquisição. Serviços profissionais (onboarding, consultoria de gestão de crise).",
+    "stack_sugerida": "Backend: TypeScript (NestJS ou Fastify) ou Kotlin/Java (Spring Boot) organizado em módulos hexagonais (domain / application / ports / adapters / bootstrap); workers de ML em Python (FastAPI) atrás de um SentimentAnalyzerPort. Frontend: React/Next.js com TanStack Query, biblioteca de gráficos (ECharts/Recharts) e Tailwind. Dados: PostgreSQL (com RLS para multi-tenancy), TimescaleDB ou ClickHouse para séries temporais, OpenSearch para busca, Redis para cache e rate limit, S3 para arquivos e cold storage. Mensageria: Kafka ou SQS/SNS (RabbitMQ como alternativa mais simples), com outbox pattern para consistência. IA: Claude via API para casos ambíguos e resumos, modelos Hugging Face (BERTimbau/XLM-R) para o volume principal. Infra: Docker, Kubernetes (EKS/GKE) ou ECS Fargate, Terraform, GitHub Actions, ArgoCD. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry, logs estruturados. Pagamentos: Stripe Billing com medição de uso. Identidade: Auth0/Keycloak/Cognito. Qualidade: testes de aceitação BDD contra portas primárias com adapters in-memory, testes de contrato para cada adapter e fitness functions de arquitetura (ArchUnit/dependency-cruiser) no CI."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T07:02:28+00:00",
+    "runner": "runner.py"
+  }
+}

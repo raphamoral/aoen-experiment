@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define bounded contexts bem delimitados e cita infraestrutura cloud, mas não menciona em nenhum momento filas, workers assíncronos, subprocessos isolados ou mecanismos de fallback para os processos sabidamente pesados — verificação de credenciais em órgãos reguladores, matching preditivo, score de risco dinâmico e due diligence automatizado —, deixando implícito que tudo pode rodar no mesmo processo síncrono, sem resiliência a falhas isoladas nem capacidade de escala independente."
+}

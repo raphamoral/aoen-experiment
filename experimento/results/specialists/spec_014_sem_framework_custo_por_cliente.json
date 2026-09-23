@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona custos variáveis implícitos (Whisper, GPT-4, DeepL por chamada de API) e cita critério de custo ao comparar STT providers, mas não há nenhum mecanismo descrito para atribuir consumo por tenant, calcular custo por minuto de reunião por cliente, ou conectar esse custo ao modelo de precificação — trata infra como FinOps agregado, não Unit Economics por cliente."
+}

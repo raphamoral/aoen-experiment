@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta reconhece a necessidade de isolar o worker de emissão de notas em processo separado, mas trata isso como ação futura condicional ('quando começar a crescer'), e o texto sobre a estratégia está truncado ('com f...'); no MVP atual, a emissão de NFS-e — processo I/O-bound, dependente de APIs externas de prefeitura com latência imprevisível — roda acoplada ao servidor principal sem filas, sem fallback explícito e sem mecanismo que evite que uma falha ou lentidão nas APIs municipais bloqueie toda a aplicação."
+}

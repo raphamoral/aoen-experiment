@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 38,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural descreve com riqueza o produto, os segmentos de mercado e as interfaces de entrega de valor, mas não menciona em nenhum momento como o produto gera receita — não há tiers de plano, valores de assinatura, modelo freemium, usage-based pricing, trial, ou qualquer consideração sobre MRR, churn, LTV ou CAC; os diferentes perfis de usuário (lojista pequeno, seller de marketplace, gestor de pricing, diretor comercial) ficaram como segmentação de ICP sem nunca se converter em uma estratégia de captura de valor diferenciada por willingness-to-pay."
+}

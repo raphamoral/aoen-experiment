@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona componentes de infraestrutura cloud (AWS/GCP serverless + managed DB, S3-compatible, etc.) mas não apresenta nenhuma estimativa concreta de custo em valores monetários, nenhuma estratégia de otimização de custos (scale-to-zero, spot instances, storage tiering) e nenhuma projeção de como os custos evoluem com o crescimento da base de MEIs."
+}

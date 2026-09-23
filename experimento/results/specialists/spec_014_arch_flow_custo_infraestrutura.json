@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista componentes de infraestrutura cloud (AWS/GCP, S3/GCS, Kafka, WebRTC) e serviços de terceiros (Deepgram, DeepL, ElevenLabs), mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia de otimização (spot instances, scale-to-zero, tiering de armazenamento) e nenhuma projeção de crescimento de custos com a escala de usuários."
+}

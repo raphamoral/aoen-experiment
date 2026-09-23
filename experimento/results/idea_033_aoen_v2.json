@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 33,
+  "ideia": "App de gestão de condomínios com votação digital e transparência financeira",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de votação com auditoria imutável + ledger financeiro transparente em tempo real. O diferenciador real é a combinação de governança verificável (ninguém contesta o resultado de uma assembleia) com rastreabilidade financeira total (cada centavo do fundo tem origem e destino público). Sem esse par, o produto é apenas mais um portal de gestão.",
+    "fase1_mercado": "Primário: síndicos profissionais que administram múltiplos condomínios e precisam de eficiência operacional e proteção jurídica. Secundário: administradoras de condomínios (empresas) que buscam escala sem ampliar equipe. Terciário: condôminos (moradores) que exigem transparência e participação sem fricção.",
+    "fase1_extensivel": "Sim. O core é modelado como interfaces abstratas: IVotingEngine (pode ser implementado com hash chain em PostgreSQL, blockchain ou serviço externo), IFinancialLedger (pode ser integrado a ERPs como Conta Azul ou Omie), INotificationGateway (troca de provedor sem afetar o fluxo). Nenhuma decisão tecnológica está hardcoded no domínio.",
+    "fase2_interfaces": [
+      "Web App — dashboard completo para síndico e administradora",
+      "PWA Mobile — app leve para condôminos (votação, extrato, comunicados)",
+      "Canal WhatsApp via API oficial — votação e notificações para condôminos sem smartphone",
+      "API REST + Webhooks — integração com sistemas contábeis e ERPs de administradoras",
+      "Portal público read-only — balanço financeiro acessível para assembleia ou auditoria externa"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de síndicos profissionais e administradoras (decisores de compra, alto LTV). PWA Mobile abre o mercado de condôminos em massa, reduz fricção de votação e aumenta quorum real. WhatsApp abre condomínios populares e de terceira idade onde download de app é barreira real. API abre administradoras com sistema legado que precisam de camada de votação/transparência sem trocar o ERP. Portal público gera confiança institucional e funciona como gatilho de venda ao síndico.",
+    "fase2_service_layer": "Uma CondominioService centraliza toda a lógica de negócio (criar assembleia, registrar voto, lançar despesa, fechar balanço). As interfaces são apenas adaptadores que traduzem input do canal para chamadas do Service. Troca ou adição de canal não toca regras de negócio. Service expõe DTOs neutros; cada interface serializa para seu formato.",
+    "fase3_fluxo_fixo": "Ciclo de assembleia: criar pauta → notificar convocados → janela de votação → contagem automática com verificação de quorum → publicar ata digital assinada → armazenar no histórico imutável. Ciclo financeiro: lançar receita/despesa → categorizar → gerar extrato periódico → publicar transparência → alertar inadimplência.",
+    "fase3_parametros_configuraveis": [
+      "Número de unidades e frações ideais por unidade",
+      "Regras de quorum por tipo de pauta (maioria simples, 2/3, unanimidade)",
+      "Duração da janela de votação (horas ou dias)",
+      "Canais de notificação habilitados por condomínio (email, SMS, WhatsApp, push)",
+      "Categorias de despesas e receitas personalizadas",
+      "Template de ata (logo, formatação, cláusulas jurídicas)",
+      "Ciclo de fechamento financeiro (mensal, bimestral)",
+      "Regras de inadimplência (prazo de tolerância, multa percentual, juros)",
+      "Permissões por papel (síndico, subsíndico, condômino, inquilino, administradora)",
+      "Integrações ativas por tenant (Conta Azul, Omie, PIX automático, boleto)"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário de configuração: síndico preenche dados do condomínio (unidades, frações, regras), importa lista de moradores via CSV ou planilha, escolhe canais e integrações ativas. Sistema cria tenant isolado com as configurações. Primeiro uso em menos de 30 minutos. Zero intervenção de engenharia.",
+    "fase4_core_isolado": "Dois workers isolados: (1) VotingProcessor — serviço assíncrono responsável por contagem de votos, cálculo de quorum e geração de hash de auditoria; roda em processo separado, falha sem derrubar o portal. (2) FinancialReporter — gera PDFs de balanço, extrato e relatórios pesados de forma assíncrona via fila; totalmente desacoplado do request-response da API principal.",
+    "fase4_custo_total_cliente": "Custo mensal estimado por condomínio médio (100 unidades): infra compartilhada proporcional ~R$8, banco de dados (armazenamento + operações) ~R$4, armazenamento de documentos/atas S3-compatible ~R$2, CDN portal público ~R$1, notificações email ~R$1, WhatsApp API por volume ~R$5 a R$15, workers assíncronos proporcionais a assembleias ~R$3. Total base: R$24–34/mês por condomínio. Custo escala apenas por volume de notificações e armazenamento, não por número de usuários.",
+    "fase4_continuidade": "VotingProcessor e FinancialReporter são workers stateless consumindo filas duráveis (Redis Streams ou SQS). Se o worker cair, as mensagens permanecem na fila e são reprocessadas quando volta. O portal principal opera normalmente durante falha dos workers. Usuário vê status 'processando' em vez de erro. Dead letter queue para falhas persistentes com alerta automático para on-call.",
+    "fase4_manutencao": "IVotingEngine e IFinancialLedger são interfaces de domínio. Trocar implementação (ex: de PostgreSQL com hash chain para blockchain) exige apenas nova classe que implementa a interface + feature flag para migração gradual por tenant. Sem parada, sem breaking change na API pública. Dados históricos migráveis via background job isolado.",
+    "monetizacao": "SaaS B2B em três camadas: (1) Por condomínio/mês — plano base até 50 unidades R$99/mês, até 200 unidades R$199/mês, acima de 200 sob consulta. (2) Plano Administradora — acesso multi-condomínio com desconto por volume (1 cliente = N condomínios, alto LTV concentrado). (3) Add-ons pagos — integração boleto/PIX automático R$49/mês, módulo jurídico de notificação de inadimplentes R$39/mês, WhatsApp API cobrado por uso. Upsell natural: administradoras concentram receita e reduzem CAC por condomínio.",
+    "stack_sugerida": "Backend: Node.js com NestJS + TypeScript (Service Layer clara, injeção de dependência nativa para interfaces abstratas). Banco principal: PostgreSQL com row-level security para multi-tenancy. Filas: Redis Streams (self-hosted) ou AWS SQS. Armazenamento: S3-compatible (MinIO self-hosted ou AWS S3). Frontend Web: Next.js (SSR para portal público de transparência + SPA para dashboard). Mobile: React Native (compartilha lógica com web via pacotes compartilhados). Notificações: SendGrid (email) + Twilio ou 360dialog (WhatsApp/SMS). Infra inicial: Railway ou Render (custo baixo no early stage), migração para ECS/Fargate quando escala justificar. Autenticação: Clerk ou Auth0 (não é o core — não construir do zero)."
+  }
+}

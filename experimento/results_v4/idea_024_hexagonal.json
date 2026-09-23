@@ -1,0 +1,89 @@
+{
+  "ideia_idx": 24,
+  "ideia": "Plataforma de gestão de licenças de software corporativo",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de licenças de software corporativo (Software Asset Management / SAM). Agregados centrais: Licença (contrato, tipo — perpétua, assinatura, concorrente, por usuário/dispositivo —, quantidade de assentos, vigência, custo), Produto/Fornecedor, Atribuição de Assento (usuário/dispositivo ↔ licença), Contrato/Renovação, Política de Conformidade e Organização/Tenant. Regras de negócio: alocação e revogação de assentos, cálculo de conformidade (compliance vs. uso real), detecção de licenças ociosas (shelfware), alertas de expiração/renovação, otimização de custos, trilha de auditoria e segregação multi-tenant.",
+    "primary_ports": [
+      "LicenseManagementPort (cadastrar, atualizar, aposentar licenças e contratos)",
+      "SeatAllocationPort (atribuir, revogar, transferir e reivindicar assentos)",
+      "CompliancePort (avaliar conformidade, gerar relatório de auditoria)",
+      "RenewalPort (consultar renovações, aprovar/recusar, simular cenários)",
+      "UsageReportingPort (relatórios de utilização, shelfware e otimização de custos)",
+      "TenantAdministrationPort (organizações, papéis, políticas, configurações)",
+      "UsageIngestionPort (recebimento de eventos de uso/telemetria de agentes e integrações)",
+      "BillingQueryPort (consulta de plano, consumo e faturas do próprio cliente)"
+    ],
+    "secondary_ports": [
+      "LicenseRepositoryPort (persistência de licenças, contratos e assentos)",
+      "AuditLogPort (registro imutável de eventos)",
+      "IdentityDirectoryPort (consulta de usuários, grupos e desligamentos — SSO/HR)",
+      "DeviceInventoryPort (inventário de dispositivos e software instalado)",
+      "VendorLicensePort (sincronização e provisionamento junto a fornecedores: Microsoft 365, Adobe, Atlassian, Salesforce etc.)",
+      "NotificationPort (e-mail, chat, push para alertas)",
+      "EventPublisherPort (publicação de eventos de domínio)",
+      "ProcurementPort (ERP/compras: pedidos, notas fiscais, centro de custo)",
+      "ITSMTicketingPort (abertura de chamados de solicitação/revogação)",
+      "PaymentGatewayPort (cobrança de assinaturas da plataforma)",
+      "ObjectStoragePort (contratos em PDF, relatórios exportados)",
+      "SearchIndexPort (busca e consultas analíticas)",
+      "ClockPort e IdGeneratorPort (tempo e identificadores determinísticos, facilitando testes)",
+      "SecretsPort (credenciais de integrações por tenant)"
+    ],
+    "primary_adapters": [
+      "REST API (OpenAPI) e GraphQL para o frontend e clientes externos",
+      "Web App SPA (portal do administrador de TI/financeiro)",
+      "CLI para administradores e automação",
+      "Webhooks de entrada (fornecedores, IdP, ITSM)",
+      "Agente de coleta/telemetria (endpoint agent) via gRPC/HTTPS",
+      "Consumidores de mensageria (eventos de RH: admissão/desligamento)",
+      "Jobs agendados (cron) para verificação de expiração e conformidade",
+      "Slack/Teams bot para solicitação e aprovação de licenças",
+      "SCIM endpoint para provisionamento de usuários",
+      "Test harness / testes de aceitação e scripts (dirigem o core sem UI, mediante as mesmas portas)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL adapter (com row-level security por tenant)",
+      "In-Memory adapter (testes e desenvolvimento)",
+      "Append-only audit store (PostgreSQL particionado ou event store)",
+      "Okta / Azure AD / Google Workspace adapters (via SCIM/Graph API)",
+      "Workday / BambooHR adapter",
+      "Microsoft Graph, Adobe Admin Console, Atlassian, Google Workspace, Salesforce adapters (VendorLicensePort)",
+      "Intune / Jamf / SCCM adapters (DeviceInventoryPort)",
+      "SAP / NetSuite / Oracle adapters (ProcurementPort)",
+      "ServiceNow / Jira Service Management adapters (ITSMTicketingPort)",
+      "SES / SendGrid (e-mail), Slack API, Microsoft Teams API (NotificationPort)",
+      "Kafka / SQS-SNS / RabbitMQ adapters (EventPublisherPort)",
+      "Stripe adapter (PaymentGatewayPort)",
+      "S3 / GCS / Azure Blob adapters (ObjectStoragePort)",
+      "OpenSearch / Elasticsearch adapter (SearchIndexPort)",
+      "HashiCorp Vault / AWS Secrets Manager adapters (SecretsPort)",
+      "System clock adapter e fixed clock (testes)",
+      "UUIDv7/ULID generator adapter"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) fica em um módulo sem dependência de frameworks, ORM, SDKs ou I/O; só conhece interfaces (ports) declaradas por ele mesmo. A regra de dependência aponta sempre para dentro: adapters dependem das ports, nunca o contrário. Objetos de domínio são POJOs/POCOs puros; DTOs e mapeamentos de transporte/persistência vivem nos adapters. Injeção de dependência é feita apenas na composition root (fora do core). Todos os sistemas externos — inclusive banco, fila e gateway de pagamento — são tratados simetricamente como adapters intercambiáveis. Isolamento reforçado por: (1) módulos/pacotes separados com verificação automática de dependências (ArchUnit / dependency-cruiser / import-linter) no CI; (2) testes do core com adapters in-memory e fakes, sem rede ou banco; (3) contract tests que cada adapter deve passar contra sua port; (4) anti-corruption layer em cada adapter de fornecedor, traduzindo modelos e erros externos para a linguagem do domínio; (5) TenantContext explícito em todas as chamadas das portas, sem dependência de estado global.",
+    "interfaces": [
+      "Portal web do administrador de TI (inventário, alocação, renovações, conformidade)",
+      "Dashboard financeiro/FinOps (custo por departamento, economia potencial, shelfware)",
+      "Portal de autoatendimento do colaborador (solicitar/devolver licença)",
+      "API pública REST/OpenAPI com autenticação OAuth2/API keys e versionamento",
+      "GraphQL para consultas analíticas",
+      "Webhooks de saída (eventos: licença expirando, limite de assentos, violação de conformidade)",
+      "CLI e SDKs (Python, TypeScript, Go)",
+      "Chatops (Slack/Teams)",
+      "Relatórios exportáveis (CSV, PDF, XLSX) para auditorias de fornecedores",
+      "Endpoint SCIM e SSO SAML/OIDC",
+      "Gateway de ingestão para agentes de endpoint"
+    ],
+    "escalabilidade": "Core stateless, com escalonamento horizontal atrás de load balancer; estado exclusivamente nos adapters. Multi-tenancy por tenant_id com row-level security, evoluindo para sharding por tenant e isolamento dedicado (schema/banco) para grandes clientes. Separação CQRS: comandos gravam no PostgreSQL; consultas e relatórios usam read replicas e/ou projeções em OpenSearch/ClickHouse alimentadas por eventos de domínio. Ingestão de telemetria assíncrona via fila/stream (Kafka/SQS) com processamento em lote e consumidores autoescaláveis. Sincronizações com fornecedores executadas por workers em fila, com rate limiting, retries com backoff exponencial, idempotência e circuit breakers por adapter. Jobs de conformidade particionados por tenant. Cache (Redis) para leituras frequentes. Como as portas são estáveis, adapters podem ser trocados ou extraídos em microsserviços conforme a carga, sem alterar o core (começar como monólito modular).",
+    "custos": "Começar como monólito modular em containers gerenciados (ECS Fargate/Cloud Run/Kubernetes) para reduzir custo operacional e complexidade. Principais custos: banco gerenciado (PostgreSQL) e armazenamento de telemetria/auditoria (aplicar retenção em camadas e compressão), mensageria, chamadas às APIs de fornecedores (respeitar rate limits, sincronização incremental) e taxas do gateway de pagamento. Otimizações: autoescalonamento com scale-to-zero em ambientes não produtivos, instâncias spot para workers, agregação de telemetria na borda, tiering de armazenamento (S3 IA/Glacier) para contratos e logs antigos, isolamento dedicado apenas para planos enterprise (repassando o custo). Custos adicionais: conformidade e segurança (SOC 2, ISO 27001, criptografia, auditorias), observabilidade (OpenTelemetry com amostragem) e suporte/onboarding de integrações. Adapters in-memory e contract tests reduzem custos de QA e o risco de regressão.",
+    "monetizacao": "SaaS por assinatura com preços por camadas, baseado no número de licenças/assentos gerenciados ou de colaboradores da organização. Planos: Starter (inventário e alertas), Business (integrações com fornecedores, conformidade, otimização) e Enterprise (SSO/SCIM, isolamento dedicado, SLA, auditoria avançada, API ilimitada). Add-ons: pacotes de integrações premium (SAP, ServiceNow, Jamf), módulo de preparação para auditoria de fornecedores, agente de endpoint, relatórios FinOps avançados e onboarding/serviços profissionais. Modelo de valor compartilhado opcional (percentual da economia comprovada com shelfware recuperado). Cobrança via Stripe (mensal/anual com desconto), teste gratuito e modelo freemium limitado para PMEs. Possíveis receitas de parceria com revendedores e marketplaces de fornecedores.",
+    "stack_sugerida": "Core: Kotlin/Java (Spring sem vazar para o domínio) ou TypeScript/NestJS com módulos separados; alternativa Go. Arquitetura: monólito modular hexagonal com verificação de dependências (ArchUnit/dependency-cruiser). Persistência: PostgreSQL com RLS, Redis para cache, OpenSearch ou ClickHouse para análises. Mensageria: Kafka ou SQS/SNS; workers para sincronização e jobs. Frontend: React + TypeScript (Next.js/Vite) com design system próprio. API: REST/OpenAPI, GraphQL opcional, gRPC para o agente. Autenticação: OIDC/SAML via Keycloak, Auth0 ou Cognito, SCIM. Infra: AWS (ECS Fargate ou EKS), Terraform, GitHub Actions, S3, Secrets Manager. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Pagamentos: Stripe. Testes: JUnit/Vitest, Testcontainers, contract tests (Pact), adapters in-memory para testes de aceitação do core."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:33:17+00:00",
+    "runner": "runner.py"
+  }
+}

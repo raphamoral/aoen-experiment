@@ -1,0 +1,49 @@
+{
+  "ideia_idx": 9,
+  "ideia": "Marketplace de equipamentos médicos usados com certificação de qualidade",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Cliente final (hospitais, clínicas, laboratórios e consultórios) precisa de equipamento médico confiável com custo menor. A cadeia começa em (1) Captação de vendedores e equipamentos (hospitais, distribuidores, leasing e revendedores) → (2) Inspeção, testes técnicos e certificação de qualidade → (3) Catálogo e descoberta (busca, comparação, rastreabilidade do histórico) → (4) Negociação e transação (pagamento em escrow, contratos, financiamento) → (5) Logística especializada (transporte, seguro, instalação e comissionamento) → (6) Conformidade regulatória (ANVISA, registros, rastreabilidade de série, descarte) → (7) Pós-venda (garantia, manutenção, calibração, peças, reputação). A diferenciação está em certificação e confiança; pagamento, logística e infraestrutura são apoio.",
+    "bounded_contexts": [
+      "Catálogo de Equipamentos (anúncio, especificações, taxonomia, histórico do ativo)",
+      "Certificação e Inspeção (laudos, checklists, inspetores, selo de qualidade, validade)",
+      "Conformidade Regulatória (registro ANVISA, normas, rastreabilidade por número de série, recalls)",
+      "Vendedores e Onboarding (KYC/KYB, verificação de legitimidade, reputação)",
+      "Compradores e Contas (perfis institucionais, aprovações internas, lista de desejos)",
+      "Busca e Descoberta (indexação, filtros, recomendação, comparação)",
+      "Negociação e Pedidos (propostas, cotações, contratos, ciclo de vida do pedido)",
+      "Pagamentos e Escrow (split de pagamento, liberação após aceite, comissão, financiamento)",
+      "Logística e Instalação (frete especializado, seguro, agendamento, comissionamento)",
+      "Garantia e Pós-venda (garantia, manutenção, peças, disputas, devoluções)",
+      "Confiança e Reputação (avaliações, score de vendedor, disputas)",
+      "Plataforma de Suporte (identidade, notificações, faturamento, observabilidade, analytics)"
+    ],
+    "component_evolution": "GENESIS: motor de certificação digital com laudo padronizado e selo verificável, além do score de confiança do equipamento (histórico, manutenção, telemetria). É o núcleo diferenciador e está em fase de exploração. CUSTOM: catálogo com taxonomia e atributos técnicos médicos, fluxo de inspeção e checklists por categoria, motor de conformidade regulatória e regras de negócio de garantia e disputa. PRODUCT: busca (Elasticsearch/OpenSearch/Algolia), CRM, ferramentas de KYC/KYB, ERP e emissão de nota fiscal, help desk, assinatura eletrônica de contratos, transporte especializado de terceiros. COMMODITY: cloud (compute, storage, banco gerenciado), CDN, autenticação (OIDC/IdP gerenciado), pagamentos e split (Stripe Connect, Pagar.me, Mercado Pago), e-mail e SMS, observabilidade, CI/CD. Estratégia: construir o custom e o genesis, comprar produtos e consumir commodities.",
+    "team_topology": "Stream-aligned teams (por fluxo de valor): (1) Time Oferta, para captação, onboarding de vendedores e catálogo; (2) Time Confiança, para certificação, inspeção e reputação (o de maior investimento); (3) Time Compra, para descoberta, negociação, pedido e checkout; (4) Time Pós-venda, para logística, instalação, garantia e disputas. Platform team: plataforma interna de desenvolvimento (IaC, CI/CD, observabilidade, identidade, pagamentos como serviço interno), que oferece self-service e reduz a carga cognitiva. Enabling team: especialistas em regulação médica/ANVISA, segurança/LGPD e dados, que apoiam os times temporariamente. Complicated-subsystem team: só se justificar, para o motor de regras de certificação/conformidade ou modelos de ML de avaliação de estado do equipamento. Modos de interação: colaboração breve entre Oferta e Confiança no início; X-as-a-Service com a plataforma; facilitação do enabling team. Cada time com 5-9 pessoas, dono de um ou dois bounded contexts, com alinhamento à Lei de Conway.",
+    "flow_optimization": "1) Mapear o fluxo ponta a ponta (anúncio → certificação → venda → entrega → garantia) e medir lead time por etapa; o gargalo esperado é a inspeção. 2) Reduzir o gargalo com checklists digitais, rede de inspetores parceiros credenciados, inspeção remota por vídeo/fotos guiadas e pré-triagem automatizada. 3) Arquitetura modular orientada a eventos (EquipamentoCertificado, PedidoConfirmado, PagamentoLiberado) para desacoplar contextos e permitir deploy independente. 4) Métricas DORA e de fluxo (lead time, frequência de deploy, taxa de falha, WIP) por time. 5) Fatiamento vertical de entregas: começar por uma categoria (ex.: monitores multiparamétricos, ultrassom) e uma região antes de expandir. 6) Plataforma self-service e contratos de API claros para reduzir dependências entre times. 7) Feature flags e trunk-based development para fluxo contínuo. 8) Automatizar conformidade (validação de registro ANVISA via API/checagem programática) para tirar o trabalho manual do caminho crítico.",
+    "interfaces": [
+      "API REST/GraphQL pública para comprador (catálogo, busca, pedidos)",
+      "API/portal de vendedor (cadastro em lote, upload de fotos e documentos, gestão de estoque)",
+      "Portal e app mobile do inspetor (checklists offline, fotos, assinatura digital, geolocalização)",
+      "Eventos de domínio via broker (Kafka/SNS+SQS/NATS) entre bounded contexts",
+      "Webhooks para parceiros (ERP hospitalar, sistemas de patrimônio, transportadoras)",
+      "Integração com gateway de pagamento e split (Stripe Connect / Pagar.me)",
+      "Integração com base ANVISA e órgãos regulatórios para validação de registro",
+      "Integração com transportadoras e seguradoras (cotação, rastreamento)",
+      "Integração com assinatura eletrônica (ICP-Brasil/DocuSign/Clicksign) e emissão de NF-e",
+      "API de verificação do selo de certificação (QR code público e verificável)",
+      "Backoffice/admin para operações, curadoria e resolução de disputas",
+      "Notificações (e-mail, SMS, WhatsApp, push)"
+    ],
+    "escalabilidade": "Início como monólito modular com fronteiras claras entre bounded contexts (evita microsserviços prematuros); extrair serviços somente onde a evolução ou a carga divergem (Busca, Certificação, Pagamentos). Banco relacional (PostgreSQL) por contexto com schemas separados; busca em índice dedicado; mídia e laudos em object storage com CDN. Comunicação assíncrona por eventos para picos e processos longos (inspeção, logística). Filas e workers autoescaláveis para processamento de imagens, geração de laudos e notificações. Cache para catálogo e leitura. Multi-região só quando houver expansão geográfica. O gargalo de negócio é a capacidade de inspeção, então escala com a rede de inspetores credenciados e ferramentas de inspeção remota, não só com infraestrutura. Escalar times conforme a carga cognitiva, criando novos stream-aligned teams por categoria ou região quando necessário.",
+    "custos": "Baixo custo de infraestrutura no início (cloud gerenciada, serverless/containers, pay-as-you-go). Principais custos: (1) operação de inspeção e certificação (inspetores, deslocamento, seguro de responsabilidade), o maior custo variável; (2) armazenamento de mídia e laudos, com política de retenção e ciclo de vida; (3) taxas de pagamento e split (2,5-4% aproximadamente); (4) KYC/KYB e assinatura eletrônica por transação; (5) conformidade regulatória e jurídica (LGPD, ANVISA, contratos); (6) seguro e garantia; (7) aquisição de vendedores e compradores (marketing B2B, vendas consultivas). Controle: FinOps com tagging por contexto/time, custo por equipamento certificado como métrica, comprar produtos prontos em vez de construir commodities, adiar microsserviços e multi-região, usar inspeção remota para reduzir custo unitário.",
+    "monetizacao": "1) Comissão sobre transação (ex.: 5-12%, variável por categoria e valor). 2) Taxa de certificação/inspeção paga pelo vendedor (ou dividida com o comprador), com camadas: básica, completa e premium. 3) Assinatura de vendedores profissionais (destaque de anúncios, ferramentas de estoque em lote, analytics). 4) Serviços agregados: frete especializado, seguro, instalação, calibração e manutenção, garantia estendida (margem sobre parceiros). 5) Financiamento e leasing com parceiros (comissão de originação). 6) Lead generation e trade-in (compra de equipamentos de hospitais que renovam parque). 7) Dados e insights de mercado (preços de referência, depreciação) para instituições e seguradoras, em fase posterior.",
+    "stack_sugerida": "Frontend: Next.js/React + TypeScript (web), React Native ou Flutter (app do inspetor com modo offline). Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Java (Spring Boot); Go ou Python para processamento e ML pontual. Dados: PostgreSQL gerenciado, Redis, OpenSearch/Elasticsearch para busca, S3-compatível + CDN para mídia e laudos, data warehouse (BigQuery/Snowflake) com dbt para analytics. Mensageria: Kafka ou SNS/SQS/EventBridge. Infra: AWS ou GCP, Kubernetes gerenciado ou ECS/Cloud Run, Terraform, GitHub Actions/ArgoCD. Identidade: Auth0/Keycloak/Cognito (OIDC, RBAC por organização). Pagamentos: Stripe Connect ou Pagar.me/Mercado Pago (split e escrow). Observabilidade: OpenTelemetry, Grafana/Prometheus, Datadog ou Sentry. Segurança: KMS, WAF, criptografia em repouso e em trânsito, trilhas de auditoria, conformidade LGPD. Certificação: laudos em PDF assinado digitalmente, selo verificável por QR code e hash (opcionalmente ancorado em registro imutável). IA (opcional): visão computacional para triagem de fotos e defeitos."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "dfd4115afd4e",
+    "gerado_em": "2026-09-21T02:00:30+00:00",
+    "runner": "runner.py"
+  }
+}

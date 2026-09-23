@@ -1,0 +1,567 @@
+{
+  "ideia_idx": 15,
+  "ideia": "SaaS de precificação dinâmica para e-commerces de moda",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio puros, sem dependência de frameworks ou infraestrutura",
+      "lista": [
+        {
+          "nome": "Product",
+          "atributos": [
+            "id",
+            "sku",
+            "name",
+            "category",
+            "basePrice",
+            "cost",
+            "brand"
+          ],
+          "regras": [
+            "Margem mínima obrigatória",
+            "Preço nunca abaixo do custo + margem_floor"
+          ]
+        },
+        {
+          "nome": "Price",
+          "atributos": [
+            "value",
+            "currency",
+            "validFrom",
+            "validUntil",
+            "priceType"
+          ],
+          "regras": [
+            "Preço deve respeitar regras de política vigente",
+            "Não pode ultrapassar teto regulatório"
+          ]
+        },
+        {
+          "nome": "PricingRule",
+          "atributos": [
+            "id",
+            "name",
+            "conditions",
+            "adjustmentType",
+            "adjustmentValue",
+            "priority"
+          ],
+          "regras": [
+            "Regras com maior prioridade sobrescrevem as de menor",
+            "Conflito entre regras lança exceção de domínio"
+          ]
+        },
+        {
+          "nome": "CompetitorPrice",
+          "atributos": [
+            "competitorId",
+            "productId",
+            "observedPrice",
+            "observedAt",
+            "confidence"
+          ],
+          "regras": [
+            "Dados com confidence abaixo de threshold são descartados"
+          ]
+        },
+        {
+          "nome": "DemandSignal",
+          "atributos": [
+            "productId",
+            "period",
+            "unitsSold",
+            "pageViews",
+            "conversionRate",
+            "elasticityIndex"
+          ],
+          "regras": [
+            "Elasticidade deve ser recalculada ao detectar outliers"
+          ]
+        },
+        {
+          "nome": "Inventory",
+          "atributos": [
+            "productId",
+            "quantity",
+            "reorderPoint",
+            "daysOfStock"
+          ],
+          "regras": [
+            "Estoque crítico dispara gatilho de precificação defensiva"
+          ]
+        },
+        {
+          "nome": "PricingStrategy",
+          "atributos": [
+            "id",
+            "name",
+            "type",
+            "parameters",
+            "targetMargin",
+            "competitivenessLevel"
+          ],
+          "regras": [
+            "Estratégia deve definir ao menos um parâmetro de ancoragem de preço"
+          ]
+        },
+        {
+          "nome": "Tenant",
+          "atributos": [
+            "id",
+            "name",
+            "plan",
+            "settings",
+            "channels"
+          ],
+          "regras": [
+            "Isolamento total de dados entre tenants",
+            "Plano define limites de SKUs e requisições"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Orquestração das regras de negócio, independente de UI e infraestrutura",
+      "lista": [
+        {
+          "nome": "CalculateDynamicPrice",
+          "descricao": "Calcula o preço ótimo para um produto dado contexto de mercado, estoque e demanda",
+          "inputs": [
+            "productId",
+            "tenantId",
+            "context"
+          ],
+          "outputs": "RecommendedPrice com justificativa",
+          "dependencias_abstratas": [
+            "ProductRepository",
+            "DemandRepository",
+            "CompetitorRepository",
+            "PricingRuleRepository"
+          ]
+        },
+        {
+          "nome": "SyncPriceToChannel",
+          "descricao": "Propaga preço calculado para canais de venda conectados",
+          "inputs": [
+            "productId",
+            "tenantId",
+            "price"
+          ],
+          "outputs": "SyncResult por canal",
+          "dependencias_abstratas": [
+            "ChannelGateway",
+            "SyncLogRepository"
+          ]
+        },
+        {
+          "nome": "IngestCompetitorData",
+          "descricao": "Processa dados coletados de concorrentes e armazena sinais de mercado",
+          "inputs": [
+            "rawCompetitorData[]"
+          ],
+          "outputs": "CompetitorPrice[] validados",
+          "dependencias_abstratas": [
+            "CompetitorRepository",
+            "DataNormalizerPort"
+          ]
+        },
+        {
+          "nome": "ForecastDemand",
+          "descricao": "Projeta demanda futura com base em histórico e sazonalidade",
+          "inputs": [
+            "productId",
+            "tenantId",
+            "forecastHorizonDays"
+          ],
+          "outputs": "DemandForecast com intervalo de confiança",
+          "dependencias_abstratas": [
+            "DemandRepository",
+            "ForecastingPort"
+          ]
+        },
+        {
+          "nome": "ConfigurePricingStrategy",
+          "descricao": "Cria ou atualiza estratégia de precificação para um tenant",
+          "inputs": [
+            "tenantId",
+            "strategyData"
+          ],
+          "outputs": "PricingStrategy salva",
+          "dependencias_abstratas": [
+            "StrategyRepository"
+          ]
+        },
+        {
+          "nome": "DetectPriceAnomaly",
+          "descricao": "Identifica desvios anômalos em preços próprios ou de concorrentes",
+          "inputs": [
+            "tenantId",
+            "productId"
+          ],
+          "outputs": "AnomalyAlert ou null",
+          "dependencias_abstratas": [
+            "PriceHistoryRepository",
+            "AlertNotifierPort"
+          ]
+        },
+        {
+          "nome": "GeneratePricingReport",
+          "descricao": "Consolida performance de precificação por período e produto",
+          "inputs": [
+            "tenantId",
+            "dateRange",
+            "filters"
+          ],
+          "outputs": "PricingReport com métricas de margem, competitividade e elasticidade",
+          "dependencias_abstratas": [
+            "AnalyticsRepository"
+          ]
+        },
+        {
+          "nome": "OnboardTenant",
+          "descricao": "Provisiona novo cliente com configurações iniciais e limites de plano",
+          "inputs": [
+            "tenantData",
+            "planId"
+          ],
+          "outputs": "Tenant criado com credenciais de integração",
+          "dependencias_abstratas": [
+            "TenantRepository",
+            "BillingPort"
+          ]
+        },
+        {
+          "nome": "SyncProductCatalog",
+          "descricao": "Importa e mantém catálogo de produtos sincronizado com plataforma do cliente",
+          "inputs": [
+            "tenantId",
+            "channelType"
+          ],
+          "outputs": "CatalogSyncSummary",
+          "dependencias_abstratas": [
+            "ChannelGateway",
+            "ProductRepository"
+          ]
+        }
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Conversores entre a linguagem do domínio e a linguagem dos sistemas externos",
+      "controllers": [
+        {
+          "nome": "PricingController",
+          "responsabilidade": "Recebe requisições HTTP REST/GraphQL e delega aos use cases",
+          "endpoints_representados": [
+            "/prices/calculate",
+            "/prices/sync",
+            "/strategies"
+          ]
+        },
+        {
+          "nome": "WebhookController",
+          "responsabilidade": "Processa eventos de plataformas externas (Shopify webhooks, VTEX events)",
+          "endpoints_representados": [
+            "/webhooks/shopify",
+            "/webhooks/vtex",
+            "/webhooks/woocommerce"
+          ]
+        },
+        {
+          "nome": "ReportController",
+          "responsabilidade": "Exposição de relatórios e dashboards analíticos",
+          "endpoints_representados": [
+            "/reports/pricing",
+            "/reports/competitors",
+            "/analytics/margin"
+          ]
+        }
+      ],
+      "presenters": [
+        {
+          "nome": "PriceRecommendationPresenter",
+          "responsabilidade": "Formata RecommendedPrice em DTO de resposta HTTP com breakdown de fatores"
+        },
+        {
+          "nome": "ReportPresenter",
+          "responsabilidade": "Serializa PricingReport para JSON, CSV ou PDF conforme Accept header"
+        }
+      ],
+      "gateways_implementacoes": [
+        {
+          "nome": "PostgresProductRepository",
+          "implementa": "ProductRepository",
+          "responsabilidade": "Persistência e consulta de produtos no PostgreSQL"
+        },
+        {
+          "nome": "RedisCompetitorCacheRepository",
+          "implementa": "CompetitorRepository",
+          "responsabilidade": "Cache de preços de concorrentes com TTL configurável"
+        },
+        {
+          "nome": "ShopifyChannelGateway",
+          "implementa": "ChannelGateway",
+          "responsabilidade": "Integração com API Admin do Shopify para leitura/escrita de preços"
+        },
+        {
+          "nome": "VTEXChannelGateway",
+          "implementa": "ChannelGateway",
+          "responsabilidade": "Integração com API VTEX IO para sincronização de catálogo e preços"
+        },
+        {
+          "nome": "WooCommerceChannelGateway",
+          "implementa": "ChannelGateway",
+          "responsabilidade": "Integração REST com WooCommerce via OAuth"
+        },
+        {
+          "nome": "ProphetForecastingAdapter",
+          "implementa": "ForecastingPort",
+          "responsabilidade": "Invoca modelo Prophet (Facebook) para previsão de demanda"
+        },
+        {
+          "nome": "ScrapingCompetitorAdapter",
+          "implementa": "CompetitorScraperPort",
+          "responsabilidade": "Orquestra coleta de preços de concorrentes via serviço de scraping"
+        },
+        {
+          "nome": "StripeGateway",
+          "implementa": "BillingPort",
+          "responsabilidade": "Gerenciamento de assinaturas, upgrades e cobranças recorrentes"
+        },
+        {
+          "nome": "SendGridNotificationAdapter",
+          "implementa": "AlertNotifierPort",
+          "responsabilidade": "Envio de alertas e relatórios por email"
+        }
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa — detalhes de implementação que podem ser trocados sem afetar o núcleo",
+      "web": {
+        "framework": "FastAPI (Python) ou NestJS (Node.js TypeScript)",
+        "justificativa": "Alto throughput, suporte nativo a async, fácil containerização"
+      },
+      "banco_de_dados": {
+        "principal": "PostgreSQL 16 com schema-per-tenant para isolamento",
+        "cache": "Redis 7 — cache de preços calculados e dados de concorrentes",
+        "timeseries": "TimescaleDB (extensão Postgres) para histórico de preços e demanda"
+      },
+      "mensageria": {
+        "broker": "Apache Kafka",
+        "topicos": [
+          "price.calculated",
+          "catalog.synced",
+          "competitor.data.ingested",
+          "anomaly.detected"
+        ],
+        "justificativa": "Desacoplamento entre cálculo de preços e sincronização com canais"
+      },
+      "ml_forecasting": {
+        "biblioteca": "Prophet (Meta) + scikit-learn",
+        "serving": "MLflow para versionamento de modelos, BentoML para serving",
+        "retreinamento": "Pipeline automático via Airflow a cada 7 dias ou ao detectar drift"
+      },
+      "scraping": {
+        "engine": "Playwright + Scrapy",
+        "proxy": "Bright Data / Oxylabs para rotação de IPs",
+        "orquestracao": "Serviço isolado em contêiner dedicado"
+      },
+      "infraestrutura": {
+        "cloud": "AWS (primário) ou GCP",
+        "containers": "Docker + Kubernetes (EKS/GKE)",
+        "iac": "Terraform",
+        "ci_cd": "GitHub Actions + ArgoCD"
+      },
+      "observabilidade": {
+        "logs": "OpenTelemetry → Datadog ou Grafana Loki",
+        "metricas": "Prometheus + Grafana",
+        "tracing": "Jaeger / Tempo para rastreamento distribuído",
+        "alertas": "PagerDuty para incidentes críticos"
+      },
+      "autenticacao": {
+        "provider": "Auth0 ou Keycloak",
+        "protocolo": "OAuth2 + JWT com tenant claim no token"
+      }
+    },
+    "dependency_rule": {
+      "descricao": "Dependências de código-fonte apontam exclusivamente de fora para dentro",
+      "fluxo": "Frameworks & Drivers → Interface Adapters → Use Cases → Entities",
+      "mecanismo_inversao": "Interfaces (Ports) são definidas na camada de Use Cases; implementações concretas residem em Interface Adapters ou Frameworks & Drivers",
+      "exemplos": [
+        "Use case CalculateDynamicPrice depende da interface abstrata ProductRepository, nunca da classe PostgresProductRepository",
+        "Entidade PricingRule não importa nenhuma biblioteca externa — é Python/TypeScript puro",
+        "Controller HTTP conhece o Use Case mas o Use Case jamais conhece o Controller",
+        "Modelo Prophet é injetado via ForecastingPort — trocar por modelo proprietário exige alterar apenas o adapter"
+      ],
+      "validacao": "Análise estática com dependency-cruiser (JS) ou import-linter (Python) no CI para rejeitar violações automaticamente"
+    },
+    "testability": {
+      "descricao": "Testabilidade total sem dependências externas graças ao isolamento por camadas",
+      "estrategias": [
+        {
+          "tipo": "Unit Tests — Entities",
+          "ferramenta": "pytest / Jest",
+          "abordagem": "Teste puro das regras de negócio sem mocks — entidades são objetos simples",
+          "exemplo": "Verificar que PricingRule com prioridade maior sobrescreve corretamente"
+        },
+        {
+          "tipo": "Unit Tests — Use Cases",
+          "ferramenta": "pytest + unittest.mock / Jest + ts-jest",
+          "abordagem": "Repositórios e gateways substituídos por In-Memory Fakes que implementam as mesmas interfaces",
+          "exemplo": "CalculateDynamicPrice testado com FakeProductRepository populado com fixtures"
+        },
+        {
+          "tipo": "Integration Tests — Adapters",
+          "ferramenta": "pytest + Testcontainers",
+          "abordagem": "PostgresProductRepository testado contra instância real de PostgreSQL em contêiner",
+          "exemplo": "Verificar persistência e queries de Product com dados reais"
+        },
+        {
+          "tipo": "Contract Tests — Channels",
+          "ferramenta": "Pact",
+          "abordagem": "Contratos consumer-driven entre ShopifyChannelGateway e API do Shopify",
+          "exemplo": "Garantir que mudanças na API Shopify são detectadas antes de chegar a produção"
+        },
+        {
+          "tipo": "E2E Tests",
+          "ferramenta": "Playwright / Cypress para UI; k6 para APIs",
+          "abordagem": "Fluxos completos em ambiente de staging com dados sintéticos",
+          "exemplo": "Fluxo: cadastrar produto → calcular preço → sincronizar para canal → verificar no e-commerce"
+        },
+        {
+          "tipo": "Property-Based Tests — Pricing Engine",
+          "ferramenta": "Hypothesis (Python)",
+          "abordagem": "Geração automática de combinações de sinais para validar invariantes de negócio",
+          "exemplo": "Para qualquer entrada válida, preço resultante nunca abaixo de custo + margem_floor"
+        }
+      ],
+      "cobertura_alvo": {
+        "entities": "100%",
+        "use_cases": ">= 95%",
+        "adapters": ">= 80%",
+        "e2e": "fluxos críticos cobertos"
+      }
+    },
+    "interfaces": [
+      "ProductRepository — CRUD e consulta de produtos por tenant",
+      "CompetitorRepository — armazenamento e recuperação de preços de concorrentes",
+      "DemandRepository — histórico de vendas, pageviews e conversão",
+      "PricingRuleRepository — CRUD de regras de precificação",
+      "StrategyRepository — persistência de estratégias de precificação",
+      "AnalyticsRepository — consultas agregadas para relatórios",
+      "PriceHistoryRepository — série temporal de preços praticados",
+      "TenantRepository — gestão de tenants e configurações",
+      "SyncLogRepository — log de sincronizações com canais",
+      "ChannelGateway — abstração para qualquer plataforma de e-commerce",
+      "ForecastingPort — contrato para modelos de previsão de demanda",
+      "CompetitorScraperPort — coleta de dados de concorrentes",
+      "AlertNotifierPort — envio de notificações e alertas",
+      "BillingPort — operações de cobrança e gestão de assinatura",
+      "DataNormalizerPort — normalização de dados brutos de fontes heterogêneas",
+      "EventPublisherPort — publicação de eventos de domínio no broker"
+    ],
+    "escalabilidade": {
+      "modelo": "Multi-tenant com isolamento por schema no PostgreSQL e namespace no Kafka",
+      "horizontal": "Serviços stateless containerizados escalam por HPA (Kubernetes Horizontal Pod Autoscaler) baseado em CPU e lag de filas Kafka",
+      "vertical_gargalo": "Pricing Engine CPU-intensiva roda em pool de workers dedicados com auto-scaling independente",
+      "caching": "Preços calculados cacheados no Redis com TTL configurável por estratégia — reduz carga no motor de precificação em até 80%",
+      "async": "Sincronização com canais de venda é assíncrona via Kafka — picos de escrita não bloqueiam cálculos",
+      "ml_scaling": "Modelos de previsão servidos via BentoML com réplicas independentes; retreinamento em batch sem impacto no serving",
+      "limites_por_plano": "Rate limiting por tenant via Redis + sliding window — protege infraestrutura compartilhada",
+      "multi_regiao": "Dados de tenant replicados em regiões AWS com roteamento por latência para clientes globais"
+    },
+    "custos": {
+      "infraestrutura_base": "EKS cluster mínimo (3 nodes t3.medium) + RDS PostgreSQL db.t3.medium + ElastiCache Redis: ~$400-600/mês",
+      "scraping": "Proxy residencial Bright Data: ~$300-800/mês dependendo de volume de coletas",
+      "ml_serving": "Instâncias dedicadas para inferência Prophet: ~$150-300/mês",
+      "observabilidade": "Datadog ou Grafana Cloud: ~$100-300/mês",
+      "kafka": "MSK (Managed Kafka AWS) ou Confluent Cloud: ~$200-400/mês",
+      "otimizacoes": [
+        "Spot Instances para workers de scraping e retreinamento de modelos (economia de 60-70%)",
+        "Cache agressivo de preços calculados reduz requisições ao motor de IA",
+        "Agendamento de scraping em horários de menor custo de energia",
+        "TimescaleDB com compressão automática reduz storage de timeseries em 90%"
+      ],
+      "custo_por_tenant": "Estimativa de $15-50/tenant/mês dependendo de SKUs e frequência de coleta — escala sublinealmente"
+    },
+    "monetizacao": {
+      "modelo": "SaaS B2B por assinatura com tiers baseados em volume e funcionalidades",
+      "planos": [
+        {
+          "nome": "Starter",
+          "preco": "R$ 499/mês",
+          "limites": "Até 500 SKUs, 1 canal, atualização de preços a cada 6h",
+          "features": [
+            "Precificação baseada em regras",
+            "1 concorrente monitorado",
+            "Relatórios básicos"
+          ]
+        },
+        {
+          "nome": "Growth",
+          "preco": "R$ 1.499/mês",
+          "limites": "Até 5.000 SKUs, 3 canais, atualização a cada 1h",
+          "features": [
+            "Motor de ML para previsão de demanda",
+            "5 concorrentes monitorados",
+            "Alertas de anomalia",
+            "API de integração"
+          ]
+        },
+        {
+          "nome": "Scale",
+          "preco": "R$ 3.999/mês",
+          "limites": "Até 50.000 SKUs, canais ilimitados, atualização em tempo real",
+          "features": [
+            "Precificação personalizada por segmento de cliente",
+            "Concorrentes ilimitados",
+            "White-label de relatórios",
+            "SLA 99,9%",
+            "Customer Success dedicado"
+          ]
+        },
+        {
+          "nome": "Enterprise",
+          "preco": "Sob consulta",
+          "limites": "Sem limites",
+          "features": [
+            "Deploy dedicado (single-tenant)",
+            "Modelos de ML customizados",
+            "Integração com ERP/BI",
+            "Contrato anual com SLA personalizado"
+          ]
+        }
+      ],
+      "receitas_adicionais": [
+        "Add-on de monitoramento de marketplace (Amazon, Mercado Livre): +R$ 299/mês",
+        "Add-on de análise de sentimento de reviews para precificação: +R$ 199/mês",
+        "Consultoria de configuração de estratégia: R$ 2.500 (one-time)",
+        "Treinamento de equipe: R$ 1.500/sessão"
+      ],
+      "metricas_saude": [
+        "MRR",
+        "Churn Rate por plano",
+        "NPS",
+        "CAC vs LTV",
+        "Expansão MRR via upsell"
+      ]
+    },
+    "stack_sugerida": {
+      "linguagem_core": "Python 3.12 (domínio + ML) com TypeScript (BFF e integrações de canal)",
+      "api": "FastAPI com Pydantic v2 para validação de DTOs na borda",
+      "orm": "SQLAlchemy 2.0 (async) — apenas na camada de adapters, nunca nas entities",
+      "banco_dados": "PostgreSQL 16 + TimescaleDB + Redis 7",
+      "ml": "Prophet, scikit-learn, pandas — servidos via BentoML, versionados com MLflow",
+      "mensageria": "Apache Kafka (MSK na AWS) com schema registry Confluent",
+      "scraping": "Playwright + Scrapy em serviço isolado, proxies Bright Data",
+      "containers": "Docker + Kubernetes (EKS), Helm charts por serviço",
+      "iac": "Terraform + Terragrunt para ambientes múltiplos",
+      "ci_cd": "GitHub Actions (build/test/lint) + ArgoCD (GitOps deploy)",
+      "monitoramento": "OpenTelemetry SDK → Grafana stack (Loki + Tempo + Prometheus)",
+      "auth": "Auth0 com tenant isolation via custom claims",
+      "billing": "Stripe Billing com webhooks para gestão de planos",
+      "frontend": "Next.js 14 (App Router) + Tailwind + shadcn/ui para dashboard",
+      "qualidade": "Ruff + mypy (Python), ESLint + Prettier (TS), dependency-cruiser (validação da Dependency Rule no CI)"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio puros, sem dependência de frameworks ou infraestrutura\",\n    \"lista\": [\n      {\n        \"nome\": \"Product\",\n        \"atributos\": [\"id\", \"sku\", \"name\", \"category\", \"basePrice\", \"cost\", \"brand\"],\n        \"regras\": [\"Margem mínima obrigatória\", \"Preço nunca abaixo do custo + margem_floor\"]\n      },\n      {\n        \"nome\": \"Price\",\n        \"atributos\": [\"value\", \"currency\", \"validFrom\", \"validUntil\", \"priceType\"],\n        \"regras\": [\"Preço deve respeitar regras de política vigente\", \"Não pode ultrapassar teto regulatório\"]\n      },\n      {\n        \"nome\": \"PricingRule\",\n        \"atributos\": [\"id\", \"name\", \"conditions\", \"adjustmentType\", \"adjustmentValue\", \"priority\"],\n        \"regras\": [\"Regras com maior prioridade sobrescrevem as de menor\", \"Conflito entre regras lança exceção de domínio\"]\n      },\n      {\n        \"nome\": \"CompetitorPrice\",\n        \"atributos\": [\"competitorId\", \"productId\", \"observedPrice\", \"observedAt\", \"confidence\"],\n        \"regras\": [\"Dados com confidence abaixo de threshold são descartados\"]\n      },\n      {\n        \"nome\": \"DemandSignal\",\n        \"atributos\": [\"productId\", \"period\", \"unitsSold\", \"pageViews\", \"conversionRate\", \"elasticityIndex\"],\n        \"regras\": [\"Elasticidade deve ser recalculada ao detectar outliers\"]\n      },\n      {\n        \"nome\": \"Inventory\",\n        \"atributos\": [\"productId\", \"quantity\", \"reorderPoint\", \"daysOfStock\"],\n        \"regras\": [\"Estoque crítico dispara gatilho de precificação defensiva\"]\n      },\n      {\n        \"nome\": \"PricingStrategy\",\n        \"atributos\": [\"id\", \"name\", \"type\", \"parameters\", \"targetMargin\", \"competitivenessLevel\"],\n        \"regras\": [\"Estratégia deve definir ao menos um parâmetro de ancoragem de preço\"]\n      },\n      {\n        \"nome\": \"Tenant\",\n        \"atributos\": [\"id\", \"name\", \"plan\", \"settings\", \"channels\"],\n        \"regras\": [\"Isolamento total de dados entre tenants\", \"Plano define limites de SKUs e requisições\"]\n      }\n   "
+}

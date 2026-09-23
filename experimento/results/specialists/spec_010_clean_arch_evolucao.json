@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A separação explícita entre entidades sem dependências externas e use cases como orquestradores evidencia Clean Architecture, permitindo trocar banco, provedor de NF-e ou framework sem tocar nas regras de negócio — porém a proposta apresentada está truncada (use_cases cortados em 'entr'), impedindo avaliar se adaptadores/ports estão formalizados, o que é crítico para reversibilidade real em integrações obrigatórias como SEFAZ e DAS."
+}

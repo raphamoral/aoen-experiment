@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A proposta demonstra maturidade evolutiva rara: Strangler Fig com fatias verticais pausáveis, Anti-Corruption Layer por provedor fiscal, adapter pattern para pagamentos, expansão de municípios via configuração (não código), e uma seção explícita de reversibilidade que classifica corretamente o que pode e o que não pode ser trocado — o único ponto de melhoria seria apresentar estratégias de mitigação para os itens reconhecidamente difíceis de reverter (modelo de dados central e estratégia de multi-tenancy), e endereçar versionamento da API pública prevista na Fase 5."
+}

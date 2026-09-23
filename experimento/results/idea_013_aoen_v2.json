@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 13,
+  "ideia": "App de reserva e gestão de espaços de coworking descentralizados",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de disponibilidade e reserva em tempo real de slots de espaço físico — coordena ocupação simultânea entre múltiplos espaços descentralizados, prevenindo conflitos de agendamento e garantindo acesso físico ao recurso reservado.",
+    "fase1_mercado": "Primário: freelancers, nômades digitais e trabalhadores remotos que precisam de espaço sob demanda sem contrato fixo. Secundário: empresas que gerenciam times híbridos distribuídos. Terciário: operadores de espaços (proprietários de coworkings, hotéis, cafés) que querem monetizar capacidade ociosa.",
+    "fase1_extensivel": "Sim. O core é modelado como uma interface abstrata de 'recurso reservável' — agnóstico ao tipo de espaço (mesa, sala, vaga, cabine). Provedores de disponibilidade, gateways de pagamento e mecanismos de acesso físico (QR, NFC, PIN) são plugins trocáveis. Nenhum fornecedor específico é hardcoded na lógica central.",
+    "fase2_interfaces": [
+      "PWA/Web para usuário final (busca, reserva, histórico)",
+      "App mobile iOS/Android para check-in, acesso por QR/NFC e reservas em mobilidade",
+      "Painel web de operador (gestão de espaços, calendário, receita, relatórios)",
+      "Portal white-label para redes de coworking (marca própria do operador)",
+      "API REST/Webhook para integração com ferramentas corporativas (HR systems, Slack, Google Workspace)",
+      "Kiosk touchscreen on-site para walk-in e check-in presencial"
+    ],
+    "fase2_justificativa_mercado": "PWA/Web abre o mercado de freelancers casuais sem comprometimento de instalação. Mobile abre o mercado de nômades digitais em movimento constante e é o canal primário de check-in físico. Painel de operador abre o mercado B2B de donos de espaço — é o canal de receita recorrente por assinatura. White-label abre redes e franquias que exigem marca própria, desbloqueando contratos enterprise. A API abre mercado corporativo com times híbridos gerenciados por RH. O kiosk abre espaços físicos que recebem walk-ins sem smartphone ou sem app instalado.",
+    "fase2_service_layer": "Uma Service Layer centralizada expõe casos de uso (ReserveSpace, CheckAvailability, CancelReservation, CheckIn, GenerateAccessToken) como funções puras independentes de protocolo. Cada interface chama a mesma Service Layer via adaptadores — HTTP REST, WebSocket, gRPC ou fila de mensagens. Nenhuma interface contém lógica de negócio: validação de conflito, cálculo de preço e regras de cancelamento vivem exclusivamente na Service Layer.",
+    "fase3_fluxo_fixo": "Busca por disponibilidade → seleção de slot → cálculo de preço → criação de reserva com lock temporário → processamento de pagamento → confirmação → geração de token de acesso → check-in → check-out → liberação do slot → registro de uso para faturamento. Este fluxo é imutável no código para todos os clientes.",
+    "fase3_parametros_configuraveis": [
+      "Tipos de espaço disponíveis e suas capacidades (mesa, sala, cabine, auditório)",
+      "Janelas de horário e fuso horário do espaço",
+      "Política de preço (por hora, por dia, por período, dinâmico por demanda)",
+      "Regras de cancelamento e reembolso (prazo, percentual de devolução)",
+      "Métodos de pagamento aceitos por operador/região",
+      "Tempo máximo de reserva antecipada e mínimo de antecedência",
+      "Mecanismo de acesso físico (QR, PIN, NFC, integração com fechadura inteligente)",
+      "Campos de perfil exigidos do usuário para reserva (CPF, CNPJ, cartão corporativo)",
+      "Notificações configuráveis (e-mail, SMS, push) por evento",
+      "Integrações ativas por operador (Stripe, PagSeguro, Google Calendar, Slack)",
+      "Regras de acesso por plano do usuário (cotas mensais, prioridade de reserva)",
+      "Idioma, moeda e formato de data por operador"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel de configuração sem deploy: operador cria conta, cadastra espaços com fotos e horários, configura política de preço e cancelamento, conecta gateway de pagamento via OAuth, define mecanismo de acesso físico e ativa o portal. Um seed de configuração JSON/YAML por operador é versionado e aplicado automaticamente — novo cliente equivale a um novo registro de tenant no banco de dados, não a novo código ou nova instância.",
+    "fase4_core_isolado": "O motor de disponibilidade e reserva (Availability & Booking Engine) roda como serviço isolado com sua própria fila de entrada (ex: RabbitMQ/SQS). Responsabilidades: lock de slot, detecção de conflito, confirmação atômica e emissão de token de acesso. É o único processo com acesso de escrita ao estado de ocupação — todos os outros serviços apenas leem ou publicam eventos.",
+    "fase4_custo_total_cliente": "Custo core por reserva: ~R$0,05–0,15 (processamento de pagamento ~2–3% do ticket, lock de banco de dados, geração de token). Custo de infra proporcional por tenant ativo: ~R$8–25/mês (parcela de compute, banco PostgreSQL multi-tenant, Redis para cache de disponibilidade). Armazenamento: ~R$0,50–2/mês (fotos de espaços ~50MB/operador, contratos, recibos). Banda/CDN: ~R$0,10–0,50/mês por usuário ativo (assets estáticos, thumbnails via CDN). Custo operacional por reserva processada: ~R$0,02 (fila de mensagens, logs, monitoramento). Custo total estimado por operador com 100 reservas/mês: R$15–45/mês — viável com plano a partir de R$149/mês.",
+    "fase4_continuidade": "O Booking Engine publica eventos de domínio (ReservationConfirmed, SlotReleased) em fila durável. Se o engine ficar offline: (1) leituras de disponibilidade servem cache read-only via Redis com TTL curto, exibindo disponibilidade aproximada; (2) novas reservas são enfileiradas em estado 'pending' e processadas quando o engine volta; (3) acessos físicos já confirmados continuam funcionando via tokens JWT com validade local, independentes do engine. O downtime do core não impede check-ins de reservas já confirmadas.",
+    "fase4_manutencao": "O Booking Engine é acessado exclusivamente via interface de contrato (IBookingEngine) com métodos checkAvailability, lockSlot, confirmReservation, releaseSlot. A implementação concreta é injetada via DI container. Para trocar a tecnologia subjacente (ex: de PostgreSQL para banco de séries temporais, ou de algoritmo de lock para CRDT distribuído): implementa-se nova classe concreta, roda-se em shadow mode com comparação de outputs, migra-se o tráfego gradualmente via feature flag por tenant. Zero downtime, zero impacto em interfaces.",
+    "monetizacao": "B2B SaaS por assinatura de operador (plano Starter R$149/mês até 1 espaço; Grow R$349/mês até 5 espaços; Scale R$799/mês ilimitado + white-label). Taxa por transação: 1,5% sobre reservas pagas via plataforma (além da taxa do gateway). Add-ons: integração com controle de acesso físico (R$99/mês), relatórios avançados (R$49/mês), API corporativa (R$199/mês). Modelo freemium para operadores com 1 espaço e até 20 reservas/mês para aquisição orgânica. Receita previsível via MRR de operadores + receita variável via take-rate de transações.",
+    "stack_sugerida": "Backend: Node.js (NestJS) com TypeScript para Service Layer e API Gateway; serviço de Booking Engine isolado em Go para performance de concorrência e lock de slots. Banco de dados: PostgreSQL com schema multi-tenant (row-level security por tenant_id); Redis para cache de disponibilidade e filas de lock temporário. Fila de mensagens: RabbitMQ (self-hosted) ou SQS (managed). Frontend web/painel: Next.js (React) com SSR para SEO e PWA. Mobile: React Native (código compartilhado iOS/Android). Autenticação: Auth0 ou Clerk (OAuth2/JWT, multi-tenant). Pagamentos: Stripe (internacional) + Asaas/Pagar.me (Brasil, PIX/boleto). Armazenamento de arquivos: S3-compatible (Cloudflare R2 para custo baixo) + CDN Cloudflare. Infraestrutura: containers Docker no Railway ou Render para início; migração para ECS/Fargate na escala. Monitoramento: Sentry (erros) + Grafana + Prometheus (métricas). IaC: Terraform."
+  }
+}

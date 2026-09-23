@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: a arquitetura stateless (processes) fundamenta o escalonamento horizontal (concurrency), que é viabilizado pela externalização de estado em Redis e SQS (backing services), que por sua vez depende da configuração via variáveis de ambiente (config), que é protegida por imagens imutáveis e pipeline Build/Release/Run separado (build_release_run) — cada camada reforça a anterior; o único ponto de tensão menor é o Aurora Serverless v2, cujos cold starts de escalonamento podem colidir com o HPA agressivo do Kubernetes em picos repentinos de carga, mas não chega a contradizer a proposta."
+}

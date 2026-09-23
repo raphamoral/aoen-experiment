@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 87,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta descreve com riqueza técnica o produto, interfaces e parametrizações, mas não menciona em nenhum momento como o produto gera receita — não há tiers, valores, modelo de cobrança (SaaS por assinatura, comissão por transação, freemium), nem qualquer consideração sobre MRR, churn, LTV ou CAC."
+}

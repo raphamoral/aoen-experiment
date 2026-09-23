@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define uma CertificationService centralizada com separação lógica de responsabilidades, mas o fase3_fluxo_fixo descreve um pipeline sequencial síncrono onde renderização de PDF, geração de hash, armazenamento e notificação rodam na mesma cadeia — sem menção a filas de mensagens, workers separados, processamento assíncrono ou isolamento físico de processo, o que significa que uma falha ou lentidão na geração do PDF trava toda a requisição e potencialmente degrada todas as interfaces simultaneamente."
+}

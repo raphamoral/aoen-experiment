@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta lista exaustivamente os componentes de infraestrutura (RDS, ElastiCache, Kafka/SQS, S3, Snowflake/BigQuery, EKS, Datadog, Auth0, etc.), mas não apresenta nenhuma estimativa de custo em valores concretos, nenhuma estratégia explícita de otimização financeira (sem menção a instâncias spot, reserved instances, scale-to-zero, storage tiers, savings plans) e nenhuma projeção de como os custos evoluem com o crescimento da base de tenants — o único indício de consciência de custo é 'GPU nodes sob demanda', que sem estratégia de spot/preemptible é na prática a opção mais cara."
+}

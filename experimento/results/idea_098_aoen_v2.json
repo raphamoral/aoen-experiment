@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 98,
+  "ideia": "Plataforma de gestão de franquias com padronização e benchmarking entre unidades",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de benchmarking operacional: coleta dados de múltiplas unidades, normaliza contra KPIs da rede, calcula rankings e desvios, e gera sinais de alerta. Sem esse motor, o produto é apenas um painel de gestão genérico — qualquer planilha substitui. O diferenciador real é transformar dados dispersos de N unidades em inteligência comparativa que o franqueador usa para intervir antes de uma unidade quebrar.",
+    "fase1_mercado": "Primário: redes de franquias com 10 a 500 unidades ativas cujo franqueador não tem visibilidade operacional consolidada. O franqueador paga porque perde royalties quando unidades operam mal. Secundário: franqueados individuais que querem entender sua posição relativa na rede para não ser surpreendidos em auditorias ou perder o contrato.",
+    "fase1_extensivel": "O core é agnóstico à fonte de dados. A interface de entrada é uma abstração DataCollector que aceita: entrada manual via formulário, webhook de POS/PDV, integração com ERP via API REST, ou upload de planilha. Trocar o provedor de dados de uma unidade não altera o motor de cálculo. O algoritmo de benchmark (média, mediana, percentil, z-score) é parametrizado por configuração de rede — pode evoluir para ML sem mudar as interfaces.",
+    "fase2_interfaces": [
+      "Dashboard Web do Franqueador (visão consolidada da rede, rankings, alertas, relatórios)",
+      "App Mobile do Franqueado (performance da própria unidade, posição no ranking, checklists)",
+      "Portal de Auditor/Consultor (checklists de campo, registro fotográfico, notas por visita)",
+      "API REST pública (integração com POS, ERP, sistemas legados de gestão)",
+      "Relatórios PDF/Excel exportáveis (para reuniões de rede, apresentações a investidores)",
+      "Painel de TV/Display (ranking em tempo real para gamificação interna nas unidades)"
+    ],
+    "fase2_justificativa_mercado": "Dashboard web abre o franqueador como cliente pagante principal — ele tem visão de 30+ unidades e precisa de consolidação. App mobile abre o franqueado como usuário recorrente — adoção da base amplia o dado coletado e cria lock-in de rede. Portal de auditor abre consultorias e auditorias terceirizadas como canal de distribuição. API REST abre redes que já têm sistemas próprios mas precisam do motor de benchmark. Relatórios exportáveis removem fricção de adoção em redes que ainda operam em planilhas. Painel de TV é vetor de visibilidade viral dentro de cada unidade.",
+    "fase2_service_layer": "Uma FranchiseService Layer expõe operações como: getNetworkBenchmark(networkId, period), getUnitRanking(unitId), getAlerts(unitId), submitAuditChecklist(unitId, checklistId, answers). Todas as interfaces consomem essa camada — o dashboard web, o app mobile e a API pública chamam os mesmos métodos. A lógica de cálculo, regras de negócio e acesso ao banco de dados vivem exclusivamente na service layer, nunca nas interfaces.",
+    "fase3_fluxo_fixo": "Coleta → Validação → Normalização → Cálculo de benchmark → Geração de alertas → Atualização de ranking → Notificação. Esse pipeline é fixo no código e executa para qualquer rede. O que varia são os parâmetros que alimentam cada etapa: quais KPIs coletar, como calcular, quais limiares disparam alertas.",
+    "fase3_parametros_configuraveis": [
+      "KPIs monitorados por rede (ex: faturamento, NPS, ticket médio, tempo de atendimento, taxa de conformidade)",
+      "Método de benchmark por KPI (média, mediana, percentil 75, meta absoluta da rede)",
+      "Limiares de alerta por KPI (ex: alerta se unidade cair abaixo do percentil 25 por 3 semanas consecutivas)",
+      "Hierarquia geográfica da rede (região, território, cluster)",
+      "Templates de checklist de auditoria por categoria (operações, atendimento, higiene, financeiro)",
+      "Pesos de scoring para ranking composto",
+      "Frequência de coleta de dados por KPI (diária, semanal, mensal)",
+      "Canais de notificação por perfil (email, WhatsApp, SMS, push)",
+      "Fontes de dados por unidade (manual, POS integrado, ERP, planilha)",
+      "Branding da rede (logo, cores, nome do painel)",
+      "Roles e permissões por usuário (franqueador, regional, franqueado, auditor, consultor)",
+      "Período de retenção histórica dos dados"
+    ],
+    "fase3_novo_cliente": "O onboarding de uma nova rede é feito via wizard de configuração: (1) cadastrar rede e unidades via import de planilha ou formulário; (2) selecionar KPIs do catálogo ou criar KPIs customizados; (3) configurar limiares e método de benchmark; (4) personalizar checklists a partir de templates; (5) convidar usuários por role. Nenhuma linha de código é necessária. A rede começa a operar com os primeiros dados no dia do onboarding.",
+    "fase4_core_isolado": "O BenchmarkWorker: processo assíncrono separado que consome uma fila de jobs e executa o pipeline de normalização + cálculo + ranking. É isolado porque: (1) é CPU/memória intensivo em redes grandes; (2) uma falha de cálculo não pode derrubar a coleta de dados ou o dashboard; (3) permite medir custo de processamento por rede individualmente via tempo de execução dos jobs.",
+    "fase4_custo_total_cliente": "Custo por rede por mês = [Core] jobs de benchmark (CPU proporcional ao número de unidades × KPIs × frequência, estimativa: $0.01–$0.10/rede/mês em infra serverless ou containers) + [Banco de dados] armazenamento proporcional a unidades × KPIs × histórico ($0.02–$0.50/rede/mês dependendo de retenção) + [Notificações] email/SMS/WhatsApp por volume de alertas ($0.01–$0.20/rede/mês) + [Armazenamento] fotos de auditoria e PDFs gerados ($0.01–$0.30/rede/mês em S3-equivalente) + [Banda] dashboard e API ($0.01–$0.10/rede/mês) + [Infra base] fração do servidor/orquestrador compartilhado proporcional ao uso. Estimativa total: $0.05–$1.20/rede/mês para redes de até 50 unidades. Permite precificar com margem segura a partir de R$300–R$800/rede/mês.",
+    "fase4_continuidade": "Coleta de dados continua funcionando independentemente do BenchmarkWorker — os dados entram na fila e no banco mesmo se o worker estiver parado. O dashboard exibe o último benchmark calculado com timestamp visível. Alertas ficam em pausa mas não são perdidos — são processados quando o worker retorna. A separação garante que a falha do core não impede que as unidades submetam dados nem que usuários acessem histórico.",
+    "fase4_manutencao": "O BenchmarkWorker é acessado pelo restante do sistema exclusivamente via contrato de fila (mensagem de entrada) e contrato de banco (tabela de resultados). Trocar o algoritmo de cálculo de médias simples para ML (ex: detecção de anomalia por LSTM) requer apenas deploy de nova versão do worker — nenhuma outra parte do sistema muda. A fila desacopla tempo de execução e versão do worker do ciclo de deploy das interfaces.",
+    "monetizacao": "SaaS por rede: plano Base (até 10 unidades) R$390/mês, plano Growth (até 50 unidades) R$890/mês, plano Scale (acima de 50 unidades) R$1.800+/mês com fee por unidade adicional. Add-ons: integração com POS/ERP específico (+R$200/mês), módulo de auditoria com geolocalização (+R$150/mês), relatórios executivos automáticos (+R$100/mês). Setup fee único de R$500–R$2.000 dependendo do plano, cobrindo onboarding e configuração. Modelo de precificação baseado em valor (o franqueador recupera o custo ao evitar uma única unidade problemática) e não em custo de infra.",
+    "stack_sugerida": "Backend: Node.js com TypeScript + Fastify para a API REST e Service Layer. BenchmarkWorker: processo Node.js separado consumindo filas BullMQ (Redis). Banco de dados principal: PostgreSQL (dados relacionais: redes, unidades, KPIs, configurações, usuários). Cache e filas: Redis. Armazenamento de arquivos: S3-compatível (Cloudflare R2 para custo menor). Frontend web: Next.js com React. App mobile: React Native (código compartilhado com web via libs de domínio). Geração de PDFs: serviço separado com Puppeteer. Infraestrutura: containers Docker orquestrados via Railway ou Render para MVP, migração para ECS/Cloud Run na escala. Observabilidade: OpenTelemetry + Grafana Cloud para medir custo por worker job por rede. CI/CD: GitHub Actions."
+  }
+}

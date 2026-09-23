@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 35,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural altamente coesa: o mercado-alvo (startups/PMEs sem time de data science) justifica o modelo SaaS, que justifica a abstração do Risk Scorer, que justifica o extensível backend plugável (regras → ML → providers externos), que justifica a FraudService centralizada, que justifica as múltiplas interfaces — cada uma mapeada explicitamente a um segmento de mercado distinto; o único ponto que impede nota máxima é a leve tensão entre o alvo declarado ('sem time dedicado') e a oferta de backends ML próprios (XGBoost/LightGBM), que exigem capacidade técnica interna — tensão real, mas mitigada pela abstração da interface."
+}

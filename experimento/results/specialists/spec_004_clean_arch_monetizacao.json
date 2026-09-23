@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não contém nenhuma menção a modelo de monetização, tiers de preço, fontes de receita, métricas de negócio (MRR, LTV, CAC, churn) ou qualquer estratégia de captura de valor — foca exclusivamente em entidades de domínio e regras de negócio técnicas."
+}

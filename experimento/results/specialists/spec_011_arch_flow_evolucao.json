@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte separação por bounded contexts com classificação explícita de maturidade (genesis/custom/product/commodity), indicando decisões conscientes sobre o que construir vs. comprar e permitindo substituição independente de componentes — ponto negativo é que o MatchingEngine em genesis ainda representa alto risco de acoplamento tecnológico (embeddings/NLP) sem evidência clara de portas/adaptadores que isolem a lógica de negócio do framework de IA subjacente."
+}

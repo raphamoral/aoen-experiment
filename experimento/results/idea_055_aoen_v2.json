@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 55,
+  "ideia": "SaaS de gestão de turnos para hospitais com otimização por IA",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de otimização de turnos hospitalares que equilibra simultaneamente: disponibilidade dos profissionais, competências exigidas por posto, restrições regulatórias trabalhistas e demanda assistencial variável — gerando escalas que minimizam custo operacional e risco de descoberta de plantão.",
+    "fase1_mercado": "Gestores de RH e operações clínicas em hospitais médios e grandes (50–2000 leitos), redes de clínicas com múltiplas unidades, e cooperativas de saúde. Dor principal: escala manual consome 40+ horas/mês, é propensa a erros regulatórios e gera insatisfação dos profissionais.",
+    "fase1_extensivel": "O motor de otimização é abstraído atrás de uma interface SchedulerEngine. A implementação padrão usa um solver de PL/CP (ex: OR-Tools) com camada de LLM para interpretação de restrições em linguagem natural. Pode ser substituída por: motor proprietário de terceiros, modelo fine-tuned, ou solver puramente baseado em regras — sem alterar o restante do sistema.",
+    "fase2_interfaces": [
+      "Web App (SPA) — painel do gestor de RH e coordenadores de escala",
+      "Mobile App (PWA/React Native) — profissionais visualizam escala, solicitam trocas e registram disponibilidade",
+      "API REST/Webhook — integração com sistemas HIS/ERP hospitalares existentes (Tasy, MV, SOUL MV)",
+      "Portal de autoatendimento do profissional — troca de plantão peer-to-peer com aprovação automática",
+      "Canal de notificações (WhatsApp Business API / e-mail / push) — confirmações, alertas de cobertura crítica"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de gestores hospitalares que hoje usam Excel ou sistemas legados. Mobile abre o mercado de retenção dos profissionais de saúde (diferencial competitivo frente a concorrentes). API abre o mercado enterprise com sistemas já implantados que não podem ser substituídos. Portal de autoatendimento reduz carga operacional do RH em 60%, tornando o produto autojustificável. Notificações por WhatsApp eliminam a barreira de adoção mobile em hospitais regionais.",
+    "fase2_service_layer": "Uma ShiftManagementService centraliza toda a lógica de negócio: geração de escala, validação de conformidade, gestão de trocas, alertas de cobertura. Cada interface consome apenas essa camada via chamadas de serviço bem definidas. Nenhuma interface contém regra de negócio — são exclusivamente camadas de apresentação e entrada de dados.",
+    "fase3_fluxo_fixo": "1. Coletar restrições do período (feriados, afastamentos, disponibilidade declarada) → 2. Carregar parâmetros de configuração do cliente → 3. Submeter ao motor de otimização → 4. Validar escala gerada contra regras regulatórias → 5. Publicar escala e notificar profissionais → 6. Processar solicitações de troca com revalidação automática.",
+    "fase3_parametros_configuraveis": [
+      "Tipos de turno (ex: 6h, 12h, 24x72, noturno)",
+      "Papéis e competências exigidas por posto/leito",
+      "Carga horária mínima e máxima por profissional por período",
+      "Intervalo mínimo entre turnos consecutivos",
+      "Regras de plantão obrigatório (país, estado, convenção coletiva)",
+      "Número mínimo de profissionais por especialidade por turno",
+      "Horizonte de geração de escala (semanal, quinzenal, mensal)",
+      "Canais de notificação preferidos por unidade",
+      "Workflow de aprovação de trocas (automático, supervisor, RH)",
+      "Unidades e setores da instituição (UTI, PS, enfermaria, CC)",
+      "Integrações ativas (HIS, ponto eletrônico, folha de pagamento)"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário de configuração multi-etapas que popula um arquivo de configuração JSON/YAML do tenant. Importação de profissionais via planilha CSV ou integração com AD/LDAP. Sem linha de código: novo tenant = novo registro no banco de configuração com os parâmetros preenchidos pelo próprio cliente ou pelo CS em até 2 horas.",
+    "fase4_core_isolado": "O motor de otimização (SchedulerEngine) roda como worker assíncrono isolado — processo separado, filas de mensagens (ex: Redis Queue / BullMQ) e container dedicado com escalonamento independente. A API principal enfileira uma solicitação de geração e retorna imediatamente; o worker processa, persiste e notifica via evento. O restante do sistema nunca espera o solver.",
+    "fase4_custo_total_cliente": "Core (por geração de escala): ~$0,02–0,15 de LLM (interpretação de restrições) + ~$0,001 de CPU do solver OR-Tools (tipicamente < 30s). Infra proporcional: ~$2–8/mês de banco (linhas de escala, logs de troca) + ~$0,50–2/mês de armazenamento (PDFs de escala, exports). Banda: negligível (JSON leve). Notificações: ~$0,005/mensagem WhatsApp. Total estimado por hospital médio (200 profissionais, 4 gerações/mês): $15–40/mês de custo variável, permitindo precificação com margem saudável a partir de $300–800/mês por unidade.",
+    "fase4_continuidade": "Se o worker do solver falhar: a escala anterior permanece ativa e visível; alertas disparam para o gestor; fallback automático ativa um agendador baseado em regras simples (round-robin com restrições básicas) para cobrir o período crítico. A API e todas as interfaces continuam operando normalmente — apenas a geração de nova escala fica degradada, não o acesso ao sistema.",
+    "fase4_manutencao": "A interface SchedulerEngine permite trocar a implementação do solver com zero impacto no restante do sistema. Deploy blue-green do worker: nova versão sobe em paralelo, recebe jobs de teste de shadow, é promovida quando validada. Banco de dados de configuração e histórico de escalas permanece intocado. Troca do provedor de LLM: apenas uma linha de configuração no adapter — sem alteração de lógica de negócio.",
+    "monetizacao": "SaaS B2B com cobrança mensal por unidade hospitalar. Tier Starter ($299/mês): 1 unidade, até 100 profissionais, geração manual de escala. Tier Pro ($699/mês): até 500 profissionais, otimização por IA, integrações API, portal de autoatendimento. Tier Enterprise (sob contrato): múltiplas unidades, SLA garantido, integração com HIS, suporte dedicado. Upsell: módulo de conformidade regulatória por estado/país ($99/mês), relatórios analíticos avançados ($149/mês), integração com folha de pagamento ($199/mês).",
+    "stack_sugerida": "Backend: Node.js (NestJS) com TypeScript — API principal e Service Layer. Worker: Python — solver OR-Tools + integração LLM (Anthropic Claude via SDK com prompt caching). Fila: Redis + BullMQ. Banco: PostgreSQL (dados transacionais) + Redis (cache de escalas ativas). Frontend Web: Next.js (React). Mobile: React Native (PWA progressivo). Infra: Railway ou Render para start; migração para ECS/Fargate quando necessário. Notificações: Twilio (WhatsApp + SMS) + Resend (e-mail). Auth: Clerk ou Auth0 com suporte multi-tenant. Observabilidade: Sentry + Grafana Cloud."
+  }
+}

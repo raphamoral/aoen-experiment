@@ -1,0 +1,69 @@
+{
+  "ideia_idx": 13,
+  "ideia": "App de reserva e gestão de espaços de coworking descentralizados",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de reservas em espaços de coworking descentralizados: disponibilidade, ocupação, precificação dinâmica, check-in/check-out e políticas de uso — sem dependência de qualquer infraestrutura externa",
+    "primary_ports": [
+      "IReservarEspaco: use case para criar uma reserva dado usuário, espaço e janela de tempo",
+      "ICancelarReserva: use case para cancelar uma reserva existente com aplicação de política de reembolso",
+      "IConsultarDisponibilidade: use case para buscar espaços disponíveis por localização, data e capacidade",
+      "IRegistrarEspaco: use case para onboarding de novo espaço por um operador/proprietário",
+      "IRealizarCheckIn: use case para validar e registrar entrada do usuário no espaço",
+      "IRealizarCheckOut: use case para encerrar sessão e calcular cobrança final",
+      "IListarReservasUsuario: use case para histórico e reservas ativas de um usuário",
+      "IGerarRelatorioOcupacao: use case para relatórios analíticos de uso por espaço ou período",
+      "IAutenticarUsuario: use case para autenticação e emissão de sessão",
+      "IGerenciarPoliticaEspaco: use case para configuração de regras, preços e horários por espaço"
+    ],
+    "secondary_ports": [
+      "IRepositorioReservas: persistência e consulta de reservas",
+      "IRepositorioEspacos: persistência e consulta de espaços e suas disponibilidades",
+      "IRepositorioUsuarios: persistência de perfis de usuários e operadores",
+      "IGatewayPagamento: autorização, captura e reembolso de pagamentos",
+      "IProvedorNotificacao: envio de notificações (email, SMS, push)",
+      "IProvedorGeolocalizacao: geocodificação e busca por proximidade",
+      "ICalendarioExterno: sincronização bidirecional com calendários de terceiros",
+      "IArmazenamentoArquivos: upload e recuperação de fotos e documentos",
+      "IProvedorAutenticacao: validação de tokens e gestão de sessões externas",
+      "IFilaEventos: publicação e consumo assíncrono de eventos de domínio",
+      "IProvedorCache: armazenamento temporário de disponibilidade e sessões"
+    ],
+    "primary_adapters": [
+      "RestApiController: endpoints HTTP/REST para clientes web e mobile",
+      "GraphQLResolver: interface flexível para queries e mutations do frontend",
+      "WebSocketHandler: atualizações em tempo real de disponibilidade e check-in",
+      "CliOperacional: comandos administrativos para ops e scripts de manutenção",
+      "SuiteDeTestesDominio: adaptador de testes unitários e de integração que dirige os use cases diretamente",
+      "WebhookReceiverPagamento: recebe callbacks assíncronos de gateways de pagamento",
+      "AgendadorTarefas: dispara use cases por cronograma (expiração de reservas, relatórios)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQLAdapter: implementa IRepositorioReservas, IRepositorioEspacos, IRepositorioUsuarios via ORM",
+      "RedisAdapter: implementa IProvedorCache para disponibilidade e sessões",
+      "StripeAdapter: implementa IGatewayPagamento com suporte a Stripe Connect para repasse a operadores",
+      "SendGridAdapter: implementa IProvedorNotificacao para emails transacionais",
+      "TwilioAdapter: implementa IProvedorNotificacao para SMS e WhatsApp",
+      "FirebaseFCMAdapter: implementa IProvedorNotificacao para push notifications mobile",
+      "GoogleMapsAdapter: implementa IProvedorGeolocalizacao para busca por proximidade",
+      "GoogleCalendarAdapter: implementa ICalendarioExterno para sincronização de reservas",
+      "AWSS3Adapter: implementa IArmazenamentoArquivos para fotos e documentos",
+      "Auth0Adapter: implementa IProvedorAutenticacao com suporte a OAuth2/OIDC",
+      "RabbitMQAdapter: implementa IFilaEventos para comunicação assíncrona entre serviços"
+    ],
+    "isolation": "O core domain contém apenas entidades de negócio (Reserva, Espaco, Usuario, Disponibilidade, Politica), value objects e use cases expressos em interfaces puras. Nenhuma dependência de framework, banco de dados ou biblioteca de infraestrutura é importada no módulo core. A inversão de dependência é garantida por injeção de dependência em todos os use cases: o core define as interfaces (ports) e os adapters as implementam. Testes de domínio rodam sem banco, sem rede e sem qualquer adapter real.",
+    "interfaces": [
+      "Web App (SPA React/Next.js): para usuários finais realizarem reservas",
+      "Mobile App (React Native): check-in por QR code, notificações push, reservas on-the-go",
+      "Painel do Operador (Web): gestão de espaços, preços, relatórios de ocupação e financeiro",
+      "API Pública REST/GraphQL: para integrações B2B e parceiros",
+      "CLI Administrativa: operações internas, migrações e manutenção",
+      "Webhooks: notificações de eventos para sistemas externos dos operadores"
+    ],
+    "escalabilidade": "O isolamento do core permite escalar adapters independentemente. A camada de disponibilidade pode ser cacheada agressivamente no Redis com TTL curto. Use cases de leitura (consulta de disponibilidade) escalam horizontalmente via réplicas de leitura no banco e cache distribuído. Eventos de domínio publicados via IFilaEventos permitem processamento assíncrono (confirmações, cobranças, notificações) sem acoplamento. A arquitetura suporta extração gradual de microserviços por domínio (Reservas, Espaços, Pagamentos, Notificações) sem refatoração do core.",
+    "custos": "Infraestrutura base estimada em USD 200-600/mês para early stage: RDS PostgreSQL t3.medium (~80), ElastiCache Redis t3.micro (~25), ECS/Fargate para API (~100), S3 + CloudFront (~20), SES + SNS (~10-50 por volume). Custos variáveis: Stripe cobra 2.9%+0.30 por transação (repassável ao operador via taxa de plataforma), Twilio por SMS (~0.0075/msg), Google Maps por requisição (~0.005). O modelo serverless para adapters de baixa frequência (relatórios, webhooks) reduz custo ocioso.",
+    "monetizacao": "1) Taxa de plataforma por reserva: 5-15% sobre cada transação processada via Stripe Connect. 2) Assinatura SaaS para operadores: plano Starter (até 3 espaços, USD 49/mês), plano Growth (até 20 espaços, USD 149/mês), plano Enterprise (ilimitado, USD 499/mês) com SLA e suporte dedicado. 3) Comissão em reservas corporativas B2B: empresas que reservam para equipes pagam taxa adicional de gestão. 4) Marketplace de serviços premium: impressão, catering, salas de reunião sob demanda com margem adicional.",
+    "stack_sugerida": "Core Domain: TypeScript puro sem frameworks (Node.js). Primary Adapters: Fastify (REST API), Apollo Server (GraphQL), Socket.IO (WebSocket). Secondary Adapters: Prisma ORM + PostgreSQL, ioredis, stripe-node, @sendgrid/mail, twilio, firebase-admin, @googlemaps/google-maps-services-js, aws-sdk S3, amqplib. Infraestrutura: AWS (ECS Fargate, RDS, ElastiCache, S3, SQS como alternativa ao RabbitMQ), Docker + Docker Compose para desenvolvimento local. CI/CD: GitHub Actions. Monitoramento: Datadog ou OpenTelemetry + Grafana. Frontend: Next.js + TailwindCSS. Mobile: React Native + Expo."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Gestão do ciclo de vida de reservas em espaços de coworking descentralizados: disponibilidade, ocupação, precificação dinâmica, check-in/check-out e políticas de uso — sem dependência de qualquer infraestrutura externa\",\n  \"primary_ports\": [\n    \"IReservarEspaco: use case para criar uma reserva dado usuário, espaço e janela de tempo\",\n    \"ICancelarReserva: use case para cancelar uma reserva existente com aplicação de política de reembolso\",\n    \"IConsultarDisponibilidade: use case para buscar espaços disponíveis por localização, data e capacidade\",\n    \"IRegistrarEspaco: use case para onboarding de novo espaço por um operador/proprietário\",\n    \"IRealizarCheckIn: use case para validar e registrar entrada do usuário no espaço\",\n    \"IRealizarCheckOut: use case para encerrar sessão e calcular cobrança final\",\n    \"IListarReservasUsuario: use case para histórico e reservas ativas de um usuário\",\n    \"IGerarRelatorioOcupacao: use case para relatórios analíticos de uso por espaço ou período\",\n    \"IAutenticarUsuario: use case para autenticação e emissão de sessão\",\n    \"IGerenciarPoliticaEspaco: use case para configuração de regras, preços e horários por espaço\"\n  ],\n  \"secondary_ports\": [\n    \"IRepositorioReservas: persistência e consulta de reservas\",\n    \"IRepositorioEspacos: persistência e consulta de espaços e suas disponibilidades\",\n    \"IRepositorioUsuarios: persistência de perfis de usuários e operadores\",\n    \"IGatewayPagamento: autorização, captura e reembolso de pagamentos\",\n    \"IProvedorNotificacao: envio de notificações (email, SMS, push)\",\n    \"IProvedorGeolocalizacao: geocodificação e busca por proximidade\",\n    \"ICalendarioExterno: sincronização bidirecional com calendários de terceiros\",\n    \"IArmazenamentoArquivos: upload e recuperação de fotos e documentos\",\n    \"IProvedorAutenticacao: validação de tokens e gestão de sessões externas\",\n    \"IFilaEventos: publicação e consumo assíncrono de eventos de domínio\",\n    \"IProvedo"
+}

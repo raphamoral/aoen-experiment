@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona implicitamente dois lados do marketplace (empresas clientes e testers) e cita 'BillingSubscription: planos, faturamento de empresas clientes e usage-based pricing' e 'RewardsPayout: bounties', sinalizando consciência de um modelo híbrido, mas não detalha tiers, faixas de preço, lógica de precificação por campanha/bug/seat, nem analisa sustentabilidade (unit economics, LTV/CAC, churn esperado ou margem após repasse de bounties)."
+}

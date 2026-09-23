@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo (MEIs) é identificável pelo nome do produto e pelo domínio técnico descrito, mas a proposta arquitetural não articula explicitamente a dor do cliente, não apresenta dados de tamanho de mercado (~15 M MEIs no Brasil), não diferencia o produto de concorrentes estabelecidos (ContaAzul, MEI Fácil, Nibo) e não enuncia uma proposta de valor — o documento descreve *o que* o sistema faz tecnicamente, não *por que* um MEI escolheria este app em vez de alternativas."
+}

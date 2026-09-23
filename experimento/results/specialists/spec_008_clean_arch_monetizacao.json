@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural menciona implicitamente multi-tenancy e planos de assinatura (atributo 'plano_assinatura' na entidade Tenant), mas não detalha tiers, valores, lógica de cobrança por uso, métricas de sustentabilidade (MRR, LTV, CAC, churn) nem conexão explícita entre o valor entregue e o modelo de receita."
+}

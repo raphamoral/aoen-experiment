@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente ou por operação — descreve componentes de infraestrutura (PostgreSQL, Redis, workers, scraping) como itens de stack técnica, sem qualquer modelagem de quanto cada tenant consome ou de como esses custos se conectam ao modelo de precificação."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A arquitetura é multi-tenant e possui `limites_uso` no Tenant, o que é pré-requisito estrutural para custeio por cliente, mas não há nenhum mecanismo de mensuração de custo por operação, por tenant ou por evento de rastreabilidade — `limites_uso` controla acesso, não atribui custo; `plano_assinatura` define plano contratado, não margem real; e nenhuma entidade instrumenta quanto cada tenant consome de blockchain, storage ou IA, tornando impossível calcular CAC, LTV ou margem por cliente a partir desta arquitetura."
+}

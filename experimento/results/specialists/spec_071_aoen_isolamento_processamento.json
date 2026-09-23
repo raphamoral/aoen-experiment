@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 71,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define separação lógica via service layer (CertificationService, DocumentService etc.) e menciona sync assíncrono no mobile, mas não há nenhuma referência a filas de mensagens, workers isolados, processos separados ou fallback para as operações computacionalmente pesadas — âncora criptográfica em blockchain e geração de certificados —, deixando implícito que tudo executa no mesmo processo síncrono da requisição HTTP."
+}

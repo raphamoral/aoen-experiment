@@ -1,0 +1,84 @@
+{
+  "ideia_idx": 16,
+  "ideia": "App de logística reversa para devoluções de e-commerce",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Elasticidade: picos de devoluções pós-promoções (Black Friday, Natal)",
+      "Confiabilidade: SLA 99.9% — falha impacta diretamente NPS do lojista",
+      "Integrabilidade: múltiplos marketplaces, transportadoras e ERPs",
+      "Multi-tenancy: isolamento de dados entre lojistas",
+      "Observabilidade: rastreabilidade end-to-end do ciclo de devolução",
+      "Evoluibilidade: núcleo da Evolutionary Architecture — sistema deve mudar sem reescritas",
+      "Auditabilidade: conformidade com CDC, LGPD e disputas de chargeback",
+      "Segurança: PII de consumidores e dados financeiros"
+    ],
+    "fitness_functions": [
+      "Automated: tempo médio de geração de etiqueta < 3s (P95); alerta se degradar",
+      "Automated: taxa de sucesso de integração com transportadoras > 98%; CI quebra abaixo disso",
+      "Automated: zero vazamento cross-tenant — testes de isolamento executados a cada deploy",
+      "Automated: cobertura de consumer-driven contract tests (Pact) > 95% para APIs de transportadoras",
+      "Automated: complexidade ciclomática por módulo <= 15; pipeline rejeita violações",
+      "Automated: latência P99 do webhook de status < 500ms sob carga simulada",
+      "Temporal: auditoria trimestral de acoplamento aferindo número de dependências entre bounded contexts",
+      "Temporal: revisão semestral de fitness functions — novas características de produto exigem novas funções",
+      "Holistic: simulação de pico (10x carga normal) antes de cada Black Friday",
+      "Holistic: drill de recuperação de desastre — RTO < 1h validado semestralmente"
+    ],
+    "incremental_change": "Modular Monolith como ponto de partida (last responsible moment para microsserviços). Bounded contexts mapeados desde o início: ReturnRequest, LabelGeneration, CarrierIntegration, MerchantPortal, NotificationHub, Analytics. Extração para serviços independentes guiada por fitness functions de latência ou escala, não por antecipação. Feature flags (Unleash/LaunchDarkly) para rollouts graduais por tenant. Strangler Fig Pattern para absorver integrações legadas de ERP. Banco de dados por contexto — compartilhado inicialmente, particionado quando fitness function de isolamento exigir. Versionamento explícito de API (v1, v2) para nunca quebrar contratos de lojistas existentes.",
+    "reversibility": {
+      "reversiveis": [
+        "Fronteira entre módulos — refatorável enquanto interfaces internas não forem publicadas",
+        "Tecnologia de banco de dados por contexto — encapsulada atrás de repositórios",
+        "Framework de UI do portal do lojista",
+        "Provedor de infraestrutura (AWS → GCP) via Terraform + abstração de filas",
+        "Mecanismo de filas (RabbitMQ → Kafka) se consumer/producer isolados por adaptadores",
+        "Estratégia de cache",
+        "Fornecedor de e-mail/SMS transacional"
+      ],
+      "irreversiveis_last_responsible_moment": [
+        "Schema do modelo de dados de tenant — migração posterior é cara; adiar até padrão estabilizar com primeiros clientes",
+        "Contratos de API pública v1 — breaking changes destroem confiança de integradores",
+        "Modelo de precificação exposto contratualmente",
+        "Estrutura de eventos de domínio publicados externamente (webhooks de status)"
+      ]
+    },
+    "coupling": "Acoplamento temporal eliminado via eventos de domínio assíncronos (ReturnRequested, LabelIssued, ItemReceived, RefundTriggered). Coreografia entre contextos internos; orquestração apenas em fluxos críticos com necessidade de compensação (Saga Pattern para reembolso + estorno). Anti-Corruption Layers obrigatórias para cada transportadora e marketplace — nenhuma estrutura externa vaza para o domínio central. Dependências entre bounded contexts somente via interfaces publicadas, nunca por banco de dados compartilhado. Fitness function de acoplamento: grafo de dependências entre contextos não pode ter ciclos; validado em CI via ArchUnit ou equivalente.",
+    "interfaces": [
+      "REST API pública v1: criação e consulta de solicitações de devolução (para lojistas e plugins)",
+      "Webhook outbound: notificações de mudança de status para sistemas do lojista",
+      "Plugin Shopify App (OAuth + REST): integração nativa sem código para lojistas Shopify",
+      "Plugin WooCommerce / VTEX: adaptadores específicos por plataforma via ACL",
+      "Portal web do lojista: SPA com dashboard de devoluções, SLA e relatórios",
+      "Portal do consumidor: tracking público de devolução (sem autenticação, via token de rastreio)",
+      "API interna de transportadoras: adaptadores por carrier (Correios, Jadlog, Total Express, Azul)",
+      "API interna de notificações: abstração de e-mail/SMS/WhatsApp",
+      "Admin interno: onboarding de novos lojistas, configuração de regras e SLAs",
+      "Data export API: relatórios e BI para planos enterprise (CSV, webhook para data warehouse)"
+    ],
+    "escalabilidade": "Escala horizontal stateless nos serviços de processamento. Queue-based load leveling (filas de mensagens) absorve picos de solicitações sem degradar banco de dados — crítico em campanhas. Lojistas de alto volume recebem particionamento de fila dedicado (tenant sharding). Leitura de relatórios e tracking via read replicas + cache Redis; escrita transacional isolada. Auto-scaling baseado em profundidade de fila (SQS/RabbitMQ metric), não apenas CPU. Multi-region ativo-passivo inicialmente; ativo-ativo quando fitness function de latência por região for violada. CDN para assets do portal. Planos enterprise mapeados para namespaces Kubernetes dedicados se isolamento de recursos for contratual.",
+    "custos": "Infraestrutura compartilhada amortiza custo base entre todos os tenants (multi-tenant SaaS). Tier gratuito e SMB em cluster compartilhado (spot instances para workers assíncronos reduzem 60-70% custo de compute). Processamento assíncrono via Fargate/Lambda para tarefas esporádicas (geração de PDF de etiqueta, relatórios). Custo de API de transportadoras é variável — repassado na precificação por devolução. Observabilidade com amostragem de traces (não 100%) para controlar custos de APM. Budget alerts por tenant em grandes contas para evitar surpresas de uso abusivo. Revisão mensal de custos como fitness function operacional.",
+    "monetizacao": {
+      "modelo_principal": "Por devolução processada (volume tiers): até 50/mês grátis, faixas progressivas acima disso",
+      "add_ons": [
+        "Integrações premium de marketplace (VTEX, Mercado Livre) como módulos pagos",
+        "Portal white-label para enterprise (custom domain, branding)",
+        "Analytics avançado e exportação para BI",
+        "SLA garantido + suporte prioritário (plano enterprise)"
+      ],
+      "modelo_alternativo": "Percentual sobre valor de mercadoria devolvida (revenue share) — alinhado com sucesso do lojista, explorável em fases posteriores",
+      "expansao": "Marketplace de transportadoras (comissão por contrato fechado via plataforma) — ativado quando base de lojistas justificar poder de negociação"
+    },
+    "stack_sugerida": {
+      "backend": "Node.js com TypeScript (familiaridade ampla de mercado, ecossistema de integrações rico) ou Go para serviços de alto throughput quando fitness function de latência exigir",
+      "banco_de_dados": "PostgreSQL como default transacional por contexto; Redis para cache e rate limiting; S3-compatible para etiquetas PDF e documentos",
+      "mensageria": "RabbitMQ inicialmente (operação simples); migração para Kafka guiada por fitness function de throughput (>50k eventos/dia por tenant)",
+      "infraestrutura": "Kubernetes (EKS/GKE) + Terraform; inicialmente single-region, multi-AZ",
+      "frontend": "Next.js (SSR para SEO do portal público de tracking; SPA para dashboard do lojista)",
+      "observabilidade": "OpenTelemetry + Grafana Stack (Loki, Tempo, Prometheus) — vendor-neutral para preservar reversibilidade",
+      "ci_cd": "GitHub Actions + ArgoCD (GitOps); fitness functions de arquitetura executadas como quality gates",
+      "segurança": "Auth0 ou Cognito para autenticação multi-tenant; Vault para secrets; WAF na borda"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Elasticidade: picos de devoluções pós-promoções (Black Friday, Natal)\",\n    \"Confiabilidade: SLA 99.9% — falha impacta diretamente NPS do lojista\",\n    \"Integrabilidade: múltiplos marketplaces, transportadoras e ERPs\",\n    \"Multi-tenancy: isolamento de dados entre lojistas\",\n    \"Observabilidade: rastreabilidade end-to-end do ciclo de devolução\",\n    \"Evoluibilidade: núcleo da Evolutionary Architecture — sistema deve mudar sem reescritas\",\n    \"Auditabilidade: conformidade com CDC, LGPD e disputas de chargeback\",\n    \"Segurança: PII de consumidores e dados financeiros\"\n  ],\n  \"fitness_functions\": [\n    \"Automated: tempo médio de geração de etiqueta < 3s (P95); alerta se degradar\",\n    \"Automated: taxa de sucesso de integração com transportadoras > 98%; CI quebra abaixo disso\",\n    \"Automated: zero vazamento cross-tenant — testes de isolamento executados a cada deploy\",\n    \"Automated: cobertura de consumer-driven contract tests (Pact) > 95% para APIs de transportadoras\",\n    \"Automated: complexidade ciclomática por módulo <= 15; pipeline rejeita violações\",\n    \"Automated: latência P99 do webhook de status < 500ms sob carga simulada\",\n    \"Temporal: auditoria trimestral de acoplamento aferindo número de dependências entre bounded contexts\",\n    \"Temporal: revisão semestral de fitness functions — novas características de produto exigem novas funções\",\n    \"Holistic: simulação de pico (10x carga normal) antes de cada Black Friday\",\n    \"Holistic: drill de recuperação de desastre — RTO < 1h validado semestralmente\"\n  ],\n  \"incremental_change\": \"Modular Monolith como ponto de partida (last responsible moment para microsserviços). Bounded contexts mapeados desde o início: ReturnRequest, LabelGeneration, CarrierIntegration, MerchantPortal, NotificationHub, Analytics. Extração para serviços independentes guiada por fitness functions de latência ou escala, não por antecipação. Feature flags (Unleash/LaunchDarkly) para rollo"
+}

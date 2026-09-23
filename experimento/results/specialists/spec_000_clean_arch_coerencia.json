@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "As entidades formam uma cadeia lógica coesa (Tutor → Animal → Consulta → ImagemDiagnostica → LaudoIA → Prontuário) com regulatório brasileiro aplicado de forma consistente em toda a camada de domínio (CPF, CRMV, LGPD, assinatura digital, DICOM), e a separação explícita entre laudoIA e laudoVet reforça coerentemente o objetivo declarado de suporte à decisão — não substituição do veterinário; porém, há uma tensão arquitetural entre armazenar urlArquivo (mutável por natureza) e garantir integridade por hash, entidades esperadas para um produto de telemedicina estão ausentes (Pagamento, Agenda, Notificação, VideoConsulta), e a proposta truncada impede avaliar se as camadas superiores sustentam as mesmas decisões que o domínio estabelece."
+}

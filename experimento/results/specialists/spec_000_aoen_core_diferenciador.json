@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador é explicitamente identificado (motor de inferência sobre imagens médico-veterinárias), corretamente isolado via interface abstrata receber_imagem→retornar_laudo, comprovadamente extensível com troca de provedor sem impacto no restante do sistema, e resolve um problema real e mensurável (>80% do mercado sem radiologista próprio) que soluções genéricas de telemedicina não endereçam — a única lacuna é a ausência de evidência ou argumento sobre por que a qualidade diagnóstica da IA supera o que um especialista humano remoto já oferece hoje, o que seria o argumento definitivo de insubstituibilidade."
+}

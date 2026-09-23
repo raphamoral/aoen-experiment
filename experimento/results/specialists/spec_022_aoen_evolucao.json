@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 22,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra princípios evolutivos sólidos — padrão adapter para fornecedores, Service Layer com contratos explícitos isolando lógica de negócio das interfaces, módulo de certificação plugável e integrações de pagamento/logística swappable via interface contratual interna — mas perde pontos por não endereçar explicitamente a estratégia de evolução da camada de dados (migrações, versionamento de schema), a possibilidade de fracionar a própria Service Layer em serviços independentes quando a escala exigir, e a direção de dependência no nível de domínio (ports & adapters / inversão de dependência explícita), lacunas que podem forçar decisões arquiteturais não-triviais na transição de dezenas para milhares de usuários simultâneos."
+}

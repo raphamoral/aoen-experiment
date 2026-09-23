@@ -1,0 +1,93 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Emissão, gestão do ciclo de vida e verificação de autenticidade de certificados digitais de cursos livres. Agregados: Instituição (Tenant), Curso, Turma, Aluno, Matrícula, Certificado (número único, hash de conteúdo, assinatura digital, status: emitido/revogado/expirado/reemitido), Modelo de Certificado (template) e Verificação. Regras de negócio: critérios de conclusão (frequência/nota mínima), unicidade e imutabilidade do certificado, assinatura criptográfica, revogação com trilha de auditoria, geração de código de verificação e política de privacidade/LGPD para exibição pública.",
+    "primary_ports": [
+      "GerenciarInstituicaoPort (onboarding, configuração de marca, domínio próprio)",
+      "GerenciarCursosPort (cadastro de cursos, turmas, critérios de conclusão)",
+      "GerenciarAlunosPort (cadastro e importação de matrículas/conclusões)",
+      "EmitirCertificadoPort (emissão individual e em lote)",
+      "RevogarCertificadoPort (revogação/reemissão com motivo)",
+      "VerificarCertificadoPort (verificação pública por código, QR Code ou hash)",
+      "ConsultarCertificadosPort (portal do aluno: listar, baixar, compartilhar)",
+      "GerenciarModelosCertificadoPort (templates e campos dinâmicos)",
+      "GerenciarAssinaturaPlanoPort (planos, cotas, faturas)",
+      "AuditoriaRelatoriosPort (relatórios de emissão e verificação)"
+    ],
+    "secondary_ports": [
+      "CertificadoRepositoryPort (persistência de agregados)",
+      "TenantRepositoryPort",
+      "GeradorPdfPort (renderização do certificado)",
+      "ArmazenamentoArquivosPort (PDFs, logos, assets)",
+      "AssinaturaDigitalPort (assinatura criptográfica / ICP-Brasil / chaves gerenciadas)",
+      "GeradorCodigoVerificacaoPort (código curto, QR Code)",
+      "NotificacaoPort (e-mail, WhatsApp)",
+      "PagamentoPort (cobrança recorrente, gateway)",
+      "IdentidadePort (autenticação, SSO, papéis)",
+      "EventPublisherPort (eventos de domínio)",
+      "FilaTrabalhosPort (emissão em lote assíncrona)",
+      "CachePort (cache de verificações públicas)",
+      "RelogioPort (tempo determinístico para testes)",
+      "AuditLogPort (trilha imutável)",
+      "IntegracaoLmsPort (importação de conclusões de LMS)",
+      "CompartilhamentoSocialPort (LinkedIn Add to Profile)",
+      "AnalyticsPort (métricas de uso)"
+    ],
+    "primary_adapters": [
+      "API REST/JSON pública (verificação, com rate limiting)",
+      "API REST autenticada para instituições (OpenAPI)",
+      "Web App SPA/SSR do painel administrativo",
+      "Portal público de verificação (página por código/QR)",
+      "Portal do aluno",
+      "Webhooks de entrada (LMS: Hotmart, Moodle, Teachable, Eduzz)",
+      "CLI para importação em massa e operações administrativas",
+      "Consumidor de CSV/planilha para lotes",
+      "Adaptador de testes automatizados (test driver / fakes acionando os ports)",
+      "Scheduler/cron (expiração, reprocessamento, relatórios)",
+      "Webhook de pagamento (eventos do gateway)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios via ORM/SQL)",
+      "In-Memory Repository (testes e desenvolvimento)",
+      "S3 / Cloudflare R2 / MinIO (armazenamento)",
+      "Renderizador PDF (Puppeteer/Chromium headless ou Gotenberg)",
+      "Assinador via KMS (AWS KMS / GCP KMS) ou HSM; adaptador ICP-Brasil (BirdID, Vidaas) para plano premium",
+      "Redis (cache e rate limiting)",
+      "SQS/RabbitMQ/NATS ou BullMQ (fila)",
+      "Outbox + Kafka/NATS (eventos)",
+      "Resend / SES / SendGrid (e-mail); Twilio / Z-API (WhatsApp)",
+      "Stripe / Pagar.me / Asaas (pagamentos, Pix e cartão)",
+      "Keycloak / Auth0 / Clerk / Cognito (identidade)",
+      "Adaptadores de LMS (Moodle, Hotmart, Teachable etc.)",
+      "LinkedIn API / URL 'Add to Profile'",
+      "PostHog / Metabase (analytics)",
+      "Adaptador de relógio de sistema e fake clock",
+      "Log imutável (tabela append-only com encadeamento de hash ou S3 Object Lock)"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) é um módulo sem dependências de frameworks, ORM, SDKs ou protocolos: só conhece as interfaces (ports) que ele mesmo define. Regra de dependência: adapters dependem do core, nunca o inverso, verificada em CI com ferramentas de arquitetura (ArchUnit, dependency-cruiser, import-linter). Value Objects e entidades ricas (CodigoVerificacao, HashCertificado, PeriodoValidade) encapsulam invariantes. DTOs e mapeadores fazem a tradução nas fronteiras (anti-corruption layer, especialmente para LMS e gateways). Injeção de dependência é feita na composition root, fora do core. Multi-tenancy é um conceito do domínio (TenantId nos comandos) e o isolamento físico (RLS, schema) fica no adapter. Todos os sistemas externos, incluindo banco, fila, e-mail e pagamento, são tratados de forma simétrica como secondary adapters intercambiáveis. Testes de unidade e de caso de uso rodam com fakes/in-memory, e testes de contrato garantem que todo adapter respeita o mesmo port.",
+    "interfaces": [
+      "Painel web da instituição (cursos, turmas, emissão, modelos, faturamento)",
+      "Página pública de verificação (/verificar/{codigo}) com QR Code, status, dados mínimos e selo de autenticidade",
+      "Portal do aluno (meus certificados, download PDF, compartilhar no LinkedIn)",
+      "API REST pública de verificação (JSON, CORS aberto, cacheável)",
+      "API REST para instituições + chaves de API + OpenAPI/SDKs",
+      "Webhooks de saída (certificado.emitido, certificado.revogado)",
+      "Widget/embed 'Verificar certificado' para sites de terceiros",
+      "Badge verificável (Open Badges 3.0 / Verifiable Credentials) como formato exportável",
+      "CLI e importação por CSV",
+      "E-mails transacionais e mensagens WhatsApp"
+    ],
+    "escalabilidade": "Serviço stateless com escala horizontal atrás de load balancer. O tráfego de verificação pública (leitura, alto volume, picos) é separado da emissão (escrita, em lote) via CQRS leve: read model otimizado e desnormalizado, cache em Redis e CDN (Cloudflare) com TTL curto e invalidação por evento de revogação. A emissão em lote é assíncrona por fila, com workers independentes que escalam por profundidade da fila e idempotência por chave (tenant + matrícula + curso). O PDF é gerado sob demanda e armazenado de forma imutável (cache por hash). Postgres com réplicas de leitura, particionamento por tenant/data e índice único no código de verificação; multi-tenancy com Row-Level Security e possibilidade de isolar tenants grandes em shard ou banco dedicado. Como o core é isolado, é possível começar como monolito modular e extrair verificação e emissão como serviços separados sem reescrever o domínio, apenas trocando adapters. Rate limiting e proteção anti-scraping na API pública.",
+    "custos": "Custos dominados por: (1) geração de PDF (Chromium é pesado; mitigar com workers spot/serverless, templates leves, geração lazy e cache por hash); (2) armazenamento, baixo com R2 (sem egress) e ciclo de vida; (3) assinatura digital, com KMS barato (~US$1/chave/mês + centavos por operação), mas ICP-Brasil custa por assinatura (repassar ao plano premium); (4) tráfego de verificação, quase zero com CDN + cache; (5) e-mail/WhatsApp, com WhatsApp sendo o mais caro (cobrar como add-on); (6) taxas de gateway (~2,9–4,99% + fixo; Pix mais barato). Começar com monolito modular em um único serviço + Postgres gerenciado + R2 mantém o custo inicial na faixa de US$50–200/mês. Custo marginal por certificado emitido tende a centavos, com margem bruta alta (80%+). Observabilidade com amostragem para controlar custo, e conformidade LGPD (retenção, direito ao esquecimento sem quebrar a integridade da verificação, usando hash e dados mínimos) como custo fixo de compliance.",
+    "monetizacao": "SaaS B2B por assinatura com planos escalonados por volume de certificados/mês: Free (ex.: até 20 certificados, marca d'água da plataforma), Starter, Pro e Enterprise (SLA, SSO, domínio próprio, white-label, ICP-Brasil, API ilimitada). Receita adicional: excedente por certificado emitido (pay-as-you-go), add-ons (assinatura ICP-Brasil, WhatsApp, modelos premium, domínio customizado, remoção de marca d'água, retenção estendida), marketplace de integrações/LMS, verificação avançada em massa para empregadores/RHs (API paga de verificação B2B), e taxa de implantação/customização para grandes instituições. Efeito de rede: cada verificação pública expõe a marca da plataforma, gerando aquisição orgânica (selo 'Verificado por ...').",
+    "stack_sugerida": "Core: TypeScript (Node.js) com NestJS usado apenas nas bordas, ou alternativamente Kotlin/Java com Spring ou Go, estruturado como monolito modular por bounded context (pastas domain/application/ports/adapters), com Zod/Valibot na fronteira. Persistência: PostgreSQL (RLS multi-tenant) com Drizzle/Prisma/Kysely no adapter, Redis para cache/rate limit. Fila: BullMQ (início) ou SQS/NATS (escala). Armazenamento: Cloudflare R2 ou S3. PDF: Gotenberg/Puppeteer em workers separados. Assinatura: AWS KMS (chaves assimétricas) + JWS/PAdES; ICP-Brasil via provedor como add-on. Front-end: Next.js (SSR/ISR para página pública de verificação com SEO e cache em CDN) + Tailwind/shadcn. Identidade: Clerk/Auth0/Keycloak. Pagamentos: Stripe ou Asaas/Pagar.me (Pix). Infra: Docker, Fly.io/Railway/Render no início; AWS ECS/Fargate ou Kubernetes na escala; Terraform; Cloudflare CDN/WAF. Observabilidade: OpenTelemetry + Grafana/Sentry. Testes: Vitest/Jest com fakes in-memory dos ports, testes de contrato para adapters, Testcontainers para integração, Playwright para E2E, dependency-cruiser em CI para impor a regra de dependência. Padrões: Open Badges 3.0/W3C Verifiable Credentials, QR Code com URL assinada, CI/CD com GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:19:43+00:00",
+    "runner": "runner.py"
+  }
+}

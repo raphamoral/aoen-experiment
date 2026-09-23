@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura declara interfaces plugáveis (ICollector, IAnonymizer, IAnalysisEngine) e service layer corretamente desacoplada — fundação necessária para configurabilidade — mas a proposta não descreve nenhum modelo concreto de configuração por tenant: não há menção a tabela de configurações por cliente, feature flags por empresa, seleção de implementação via config (ex: qual LLM usa o tenant A vs B), parâmetros de anonimização por contrato, nem processo de onboarding descrito como 'nova row no banco'; o próprio label 'fluxo_fixo' na fase 3 confirma que o comportamento ainda é hardcoded no código, e a troca das implementações plugáveis parece exigir desenvolvimento, não configuração."
+}

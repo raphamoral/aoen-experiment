@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona 'filas de certificação' no painel administrativo e usa uma máquina de estados que é compatível com processamento assíncrono, mas em nenhum momento descreve isolamento físico real (workers separados, filas de mensagens com tecnologia explícita), mecanismos de resiliência a falhas (circuit breaker, retry, DLQ) ou estratégia de escalonamento independente para os processos pesados — geração de laudo, emissão de certificado digital com hash e upload de imagens de campo — deixando implícita uma arquitetura onde esses processos provavelmente rodam acoplados à service layer principal."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "A proposta demonstra pragmatismo evolutivo em pontos específicos — dual-write blockchain/PostgreSQL desacopla a consulta da rede, filas assíncronas com BullMQ permitem crescer o processamento independentemente, e o plano de escala (single server → DB separado → horizontal scaling) é explícito e incremental — mas não há menção a camadas de abstração entre lógica de negócio e frameworks (Fastify, Next.js, BullMQ, Puppeteer aparecem como dependências diretas, não como adaptadores), o que significa que trocar qualquer tecnologia central exigiria mudanças espalhadas pelo código e não apenas na borda do sistema."
+}

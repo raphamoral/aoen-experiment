@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta lista exclusivamente componentes de infraestrutura (PostgreSQL, Redis, Kafka, S3, etc.) sem nenhum mecanismo explícito de atribuição de custo por tenant — o Prometheus/Grafana e o Jaeger mencionados são ferramentas de observabilidade genérica, não de unit economics, e embora a autenticação multi-tenant via Keycloak/Auth0 sugira consciência de isolamento por cliente, não há qualquer cálculo de custo por operação, por transação blockchain ou por consumo de recursos atribuído a cada cliente, nem conexão com modelo de precificação."
+}

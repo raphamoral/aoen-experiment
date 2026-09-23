@@ -1,0 +1,15 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "evolutionary",
+  "scores": {
+    "core_diferenciador": 5,
+    "visao_mercado": 4,
+    "multi_interface": 4,
+    "configurabilidade": 5,
+    "isolamento_processamento": 6,
+    "consideracao_custo": 7,
+    "monetizacao": 3,
+    "evolucao": 9,
+    "coerencia": 8
+  }
+}

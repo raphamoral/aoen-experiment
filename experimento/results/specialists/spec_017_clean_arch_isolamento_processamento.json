@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve apenas a camada de domínio (entidades e início dos use cases) sem qualquer menção a filas, workers, processos separados ou processamento assíncrono — operações computacionalmente custosas como assinatura RSA-4096, geração de PDF de certificado e hashing SHA-256 não têm qualquer mecanismo de isolamento descrito, sugerindo execução síncrona no processo principal com risco de cascata de falhas."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta menciona apenas uma interface explícita (API REST stateless para predições), sem considerar dashboards web para analistas de negócio, mobile para gestores em campo, CLI para times de dados ou portais self-service para tenants — e não apresenta nenhuma justificativa de mercado ou perfil de usuário para as escolhas de canal."
+}

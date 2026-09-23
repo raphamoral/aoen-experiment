@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta demonstra boa separação config/código no nível de infraestrutura (ambientes via env vars, 12-factor), mas é completamente silente sobre configurabilidade por tenant: não há menção a tabela de configuração por cliente, feature flags por tenant, fluxo de onboarding sem deploy, nem mecanismo que permita comportamento diferente entre clientes dentro do mesmo ambiente — sugerindo que a multi-tenancy no nível de aplicação ainda não foi projetada."
+}

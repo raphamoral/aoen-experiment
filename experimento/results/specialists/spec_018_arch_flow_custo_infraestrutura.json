@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — sem estimativas de valores, sem estratégia de otimização (spot instances, scale-to-zero, storage tiering) e sem projeção de como os custos escalam com o crescimento da base de operadoras/subscribers; o documento foca exclusivamente em modelagem de domínio (DDD, bounded contexts) e evolução de componentes, ignorando completamente a dimensão financeira da infraestrutura."
+}

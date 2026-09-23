@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 86,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra design explicitamente orientado a configuração — pipeline como abstração com provedores plugáveis, nichos como conjuntos de features/pesos sem novo código, e Admin Panel declarado como caminho de onboarding zero-código — mas não especifica o mecanismo concreto de configuração (schema de configuração, DSL, feature registry), deixando ambíguo se adicionar um novo adaptador de fonte externa (ex: nova API climática) ou um novo modelo de scoring exige apenas configuração ou ainda requer código do lado do vendor."
+}

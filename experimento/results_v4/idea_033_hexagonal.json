@@ -1,0 +1,81 @@
+{
+  "ideia_idx": 33,
+  "ideia": "App de gestão de condomínios com votação digital e transparência financeira",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Governança e gestão condominial: ciclo de vida de assembleias e votações (pautas, quórum, elegibilidade, apuração, ata), gestão financeira transparente (orçamento, receitas, despesas, rateio, inadimplência, prestação de contas) e cadastro de condomínios, unidades, moradores e papéis (síndico, conselho, condômino). O domínio central é a decisão coletiva auditável combinada com a prestação de contas financeira.",
+    "primary_ports": [
+      "GerenciarCondominioUseCase (cadastrar condomínio, unidades, moradores e papéis)",
+      "ConvocarAssembleiaUseCase (criar assembleia, pautas e convocação)",
+      "RegistrarVotoUseCase (votar, com regras de elegibilidade, peso por fração ideal e voto único)",
+      "ApurarVotacaoUseCase (encerrar votação, verificar quórum, apurar resultado, gerar ata)",
+      "LancarMovimentacaoFinanceiraUseCase (receitas, despesas, anexar comprovantes)",
+      "GerarCobrancaCondominialUseCase (rateio e emissão de boletos/Pix)",
+      "ConsultarPrestacaoDeContasQuery (painel de transparência, balancetes, extratos por categoria)",
+      "ConsultarAuditoriaQuery (trilha imutável de votos e lançamentos)",
+      "GerenciarComunicadosUseCase (avisos, mural, notificações)"
+    ],
+    "secondary_ports": [
+      "CondominioRepository / UnidadeRepository / MoradorRepository",
+      "AssembleiaRepository / VotoRepository",
+      "LancamentoFinanceiroRepository / CobrancaRepository",
+      "TrilhaAuditoriaPort (append-only, com hash encadeado)",
+      "GatewayPagamentoPort (boleto, Pix, cartão)",
+      "ConciliacaoBancariaPort (Open Finance / extrato bancário)",
+      "IdentidadePort (autenticação, MFA, assinatura eletrônica do voto)",
+      "NotificacaoPort (e-mail, SMS, WhatsApp, push)",
+      "ArmazenamentoDocumentosPort (atas, comprovantes, notas fiscais)",
+      "GeradorDocumentoPort (PDF de ata, balancete)",
+      "RelogioPort (tempo controlado para prazos e testes)",
+      "PublicadorEventosPort (eventos de domínio)",
+      "FaturamentoSaaSPort (cobrança de assinatura do próprio produto)"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL (controllers HTTP)",
+      "Web App SPA/PWA do condômino e do síndico",
+      "App mobile (React Native/Flutter) com push",
+      "Painel administrativo da administradora (multi-condomínio)",
+      "Bot de WhatsApp/Telegram para votação e consultas",
+      "Webhooks de entrada (pagamentos, banco)",
+      "CLI e scripts de migração/importação em lote",
+      "Jobs agendados (cron) para cobranças, lembretes e encerramento de votações",
+      "Suíte de testes automatizados (BDD/contract tests) que aciona as mesmas portas primárias"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios, com row-level security por tenant)",
+      "Armazenamento append-only/ledger para votos e auditoria (tabela imutável com hash encadeado ou QLDB/immudb)",
+      "Adapter Asaas/Pagar.me/Stripe para boleto, Pix e cartão",
+      "Adapter Open Finance / Belvo / Pluggy para conciliação bancária",
+      "Adapter Keycloak/Auth0/Cognito + gov.br / ICP-Brasil para identidade e assinatura",
+      "SES/SendGrid (e-mail), Twilio/Zenvia (SMS), WhatsApp Business API",
+      "S3/MinIO para documentos",
+      "Gerador de PDF (Puppeteer/WeasyPrint)",
+      "Broker de mensagens (SQS/SNS, RabbitMQ ou Kafka)",
+      "Redis para cache e locks",
+      "Stripe Billing para assinaturas do SaaS",
+      "Adapters em memória/fakes (repositórios, relógio, pagamento) para testes e desenvolvimento"
+    ],
+    "isolation": "O core (domínio + casos de uso/aplicação) não depende de framework, banco, HTTP ou SDKs externos. Entidades e agregados (Assembleia, Pauta, Voto, Condominio, Unidade, LancamentoFinanceiro, Cobranca) contêm as regras de negócio puras. Os casos de uso implementam as portas primárias e dependem apenas de interfaces das portas secundárias, definidas dentro do core. Os adapters ficam fora e dependem do core, nunca o contrário (inversão de dependência), com injeção feita na composition root. Dados cruzam a fronteira como DTOs/Value Objects, sem vazar modelos de ORM ou payloads de terceiros (anti-corruption layer em cada adapter). Regras de dependência são verificadas por testes de arquitetura (ArchUnit, dependency-cruiser). Toda porta tem contract tests, e o core roda 100% com adapters em memória, sem infraestrutura. Comunicação com o exterior usa eventos de domínio via PublicadorEventosPort. Multi-tenancy é um conceito do domínio (TenantId) e não da infraestrutura.",
+    "interfaces": [
+      "Web responsivo (PWA) para condôminos: votar, ver boletos, acompanhar contas",
+      "Painel do síndico/conselho: assembleias, lançamentos, cobranças, comunicados",
+      "Painel da administradora com visão multi-condomínio",
+      "App mobile iOS/Android",
+      "Portal público de transparência (somente leitura, com controle de acesso por condomínio)",
+      "Bot de WhatsApp",
+      "API pública documentada (OpenAPI) e webhooks para integrações de terceiros",
+      "Área de auditoria/fiscal para o conselho e auditores externos",
+      "Sala de assembleia híbrida (votação em tempo real, com videoconferência integrada)"
+    ],
+    "escalabilidade": "A carga é fortemente sazonal e concentrada: picos em assembleias, fechamento de mês e vencimento de boletos. O core stateless permite escalar horizontalmente os primary adapters (containers autoscaling). Votação e apuração usam fila e processamento assíncrono com idempotência (chave por unidade + pauta). Leituras pesadas de transparência são atendidas por read models/CQRS, cache e réplicas de leitura. Particionamento por tenant (condomínio) com row-level security, evoluindo para sharding por tenant, ou schema/banco dedicado para grandes clientes. Eventos de domínio desacoplam notificações, conciliação e geração de documentos. Jobs pesados (rateio, PDFs, conciliação) rodam em workers separados. Como as portas são estáveis, um módulo pode ser extraído para serviço independente trocando apenas o adapter, o que permite começar com monólito modular.",
+    "custos": "Começar com monólito modular hexagonal reduz custo de operação e complexidade. Principais custos variáveis: envio de notificações (WhatsApp/SMS são os mais caros, então priorizar e-mail e push), taxas de gateway (boleto/Pix, repassadas ou embutidas no plano), Open Finance/conciliação (por conta conectada), armazenamento de documentos com ciclo de vida (S3 Glacier para atas antigas), assinatura eletrônica ICP-Brasil (custo por certificado/assinatura, usar apenas quando exigido) e videoconferência (usar provedor terceirizado por minuto). Infra com autoscaling e escala próxima de zero fora dos picos, banco gerenciado com réplica somente quando necessário. Custos fixos de conformidade: LGPD (DPO, criptografia, backups, retenção), auditoria e seguros. Custo de suporte e onboarding costuma superar o de infra, e por isso importa investir em importação em lote e autosserviço. Adapters intercambiáveis permitem trocar provedores por custo sem tocar no core.",
+    "monetizacao": "Assinatura SaaS por condomínio, escalonada por número de unidades (ex.: Starter, Pro, Enterprise), com módulo de votação e módulo financeiro como add-ons. Plano para administradoras (white-label, preço por carteira de condomínios). Taxa por transação em boleto/Pix/cartão (take rate ou repasse com margem). Cobrança de assembleias digitais com validade jurídica (assinatura ICP-Brasil, ata certificada) por evento. Marketplace de serviços (seguros, manutenção, fornecedores homologados, antecipação de receitas condominiais) com comissão. Serviços premium: conciliação automática, cobrança de inadimplentes, auditoria e relatórios para o conselho. Freemium limitado para condomínios pequenos como canal de aquisição. Como cobra o próprio produto via FaturamentoSaaSPort, o provedor de billing é substituível.",
+    "stack_sugerida": "Backend: TypeScript (NestJS com módulos hexagonais) ou Kotlin/Spring Boot, com o core em pacote puro sem dependência de framework. Banco: PostgreSQL (RLS multi-tenant) mais tabela append-only para auditoria de votos. Cache/filas: Redis e SQS/SNS (ou RabbitMQ). Frontend: React/Next.js (PWA) com design system; mobile em React Native ou Flutter. Identidade: Keycloak ou Auth0, com gov.br/ICP-Brasil para assinatura. Pagamentos: Asaas ou Pagar.me para boleto/Pix, Stripe Billing para assinaturas SaaS. Open Finance: Pluggy ou Belvo. Documentos: S3/MinIO e geração de PDF. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Infra: Docker, Kubernetes ou ECS/Fargate, Terraform, CI/CD com GitHub Actions. Qualidade: testes de arquitetura (dependency-cruiser/ArchUnit), contract tests por porta, testes BDD acionando as portas primárias e adapters em memória."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:50:42+00:00",
+    "runner": "runner.py"
+  }
+}

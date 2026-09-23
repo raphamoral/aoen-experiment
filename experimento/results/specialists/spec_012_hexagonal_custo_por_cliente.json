@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "A arquitetura menciona IBillingPort para registrar eventos de uso por tenant, indicando consciência de rastreamento por cliente, mas não especifica cálculo de custo por operação (ex: 'cada ingestão de sensor custa R$X', 'cada predição ML custa R$Y'), nem conecta explicitamente esse rastreamento à margem por cliente — está mais próximo de billing/faturamento (lado da receita) do que de unit economics (lado do custo por cliente)."
+}

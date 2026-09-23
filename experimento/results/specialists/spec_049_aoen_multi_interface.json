@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 49,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê cinco interfaces distintas (Portal Empresa, Portal Profissional, API REST/Webhook, Wizard de Onboarding e Painel Agência), cada uma justificada por um perfil de usuário e segmento de mercado específico, com lógica de negócio completamente desacoplada em uma service layer centralizada (MatchingService, ProjectService, PaymentService) que permite adicionar novas interfaces sem reescrever o core."
+}

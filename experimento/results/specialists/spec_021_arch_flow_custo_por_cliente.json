@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura prevê multi-tenancy (Tenant & IAM) e 'metragem de sensores ativos' no contexto de Billing & Subscription — sinais de que há base estrutural para rastreamento por tenant — mas nenhum cálculo explícito de custo por operação, por sensor-leitura ou por análise preditiva é descrito, e não há conexão declarada entre consumo de infra por tenant e margem por cliente, o que mantém a proposta no nível de 'mencionou variável de uso' sem chegar a unit economics real."
+}

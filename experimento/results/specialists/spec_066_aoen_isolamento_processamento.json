@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 66,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define abstrações lógicas bem estruturadas (TranslationEngine como interface, TranslationService como camada central), mas não menciona em nenhum momento filas de processamento, workers separados, processos isolados fisicamente, mecanismos de fallback para falha do motor de matching/QA, ou estratégia de escalonamento independente para operações computacionalmente pesadas — o motor semântico e o pipeline de QA, que são os componentes mais caros da arquitetura, parecem rodar de forma síncrona e acoplada ao mesmo processo da aplicação."
+}

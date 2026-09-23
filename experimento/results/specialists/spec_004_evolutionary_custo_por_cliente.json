@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta prevê isolamento de tenant por segurança e um bounded context de Billing, mas em nenhum momento menciona rastreamento de custo por cliente, cálculo de custo por operação/transação ou conexão entre consumo de recursos por tenant e modelo de precificação — a arquitetura oferece pré-requisito técnico (isolamento), mas não há design intencional de unit economics."
+}

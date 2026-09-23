@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista corretamente os componentes de infraestrutura (AWS/GCP, S3, RDS, CDN, SendGrid, Datadog) na camada commodity, mas não apresenta nenhuma estimativa de custo em valores concretos, nenhuma estratégia de otimização (scale-to-zero, spot instances, storage tiers) e nenhuma projeção de como os custos evoluem com o crescimento da base de instituições e certificados emitidos."
+}

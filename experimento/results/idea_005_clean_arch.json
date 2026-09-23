@@ -1,0 +1,414 @@
+{
+  "ideia_idx": 5,
+  "ideia": "SaaS de automação de contratos imobiliários com assinatura digital",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio com regras críticas da empresa, sem dependências externas",
+      "lista": [
+        {
+          "nome": "Contract",
+          "atributos": [
+            "id",
+            "title",
+            "type",
+            "clauses",
+            "status",
+            "createdAt",
+            "expiresAt"
+          ],
+          "regras": [
+            "Um contrato deve ter pelo menos duas partes",
+            "Não pode ser alterado após assinatura",
+            "Expiração não pode ser retroativa"
+          ]
+        },
+        {
+          "nome": "Party",
+          "atributos": [
+            "id",
+            "name",
+            "document",
+            "email",
+            "role",
+            "signatureStatus"
+          ],
+          "regras": [
+            "CPF/CNPJ deve ser único por contrato",
+            "Papel (locador, locatário, fiador) deve ser válido"
+          ]
+        },
+        {
+          "nome": "Signature",
+          "atributos": [
+            "id",
+            "partyId",
+            "contractId",
+            "hash",
+            "timestamp",
+            "ipAddress",
+            "geolocation"
+          ],
+          "regras": [
+            "Hash deve ser imutável após criação",
+            "Timestamp é UTC e não editável"
+          ]
+        },
+        {
+          "nome": "Clause",
+          "atributos": [
+            "id",
+            "order",
+            "content",
+            "isNegotiable",
+            "acceptedBy"
+          ],
+          "regras": [
+            "Cláusulas não negociáveis não podem ser removidas",
+            "Ordem deve ser sequencial sem gaps"
+          ]
+        },
+        {
+          "nome": "Property",
+          "atributos": [
+            "id",
+            "address",
+            "registrationNumber",
+            "area",
+            "type"
+          ],
+          "regras": [
+            "Registro imobiliário deve ser único no sistema"
+          ]
+        },
+        {
+          "nome": "Template",
+          "atributos": [
+            "id",
+            "name",
+            "contractType",
+            "clauses",
+            "jurisdiction",
+            "version"
+          ],
+          "regras": [
+            "Templates publicados são imutáveis — cria-se nova versão"
+          ]
+        },
+        {
+          "nome": "AuditLog",
+          "atributos": [
+            "id",
+            "actorId",
+            "action",
+            "entityId",
+            "entityType",
+            "timestamp",
+            "metadata"
+          ],
+          "regras": [
+            "Logs são append-only, nunca deletados"
+          ]
+        },
+        {
+          "nome": "Tenant",
+          "atributos": [
+            "id",
+            "name",
+            "plan",
+            "usageLimits",
+            "billingStatus"
+          ],
+          "regras": [
+            "Tenant bloqueado não pode criar novos contratos"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Orquestram o fluxo entre entidades, contêm regras específicas da aplicação",
+      "lista": [
+        {
+          "grupo": "Gestão de Contratos",
+          "casos": [
+            "CreateContractFromTemplate",
+            "CreateContractManually",
+            "EditContractDraft",
+            "PublishContractForSigning",
+            "CancelContract",
+            "RenewContract",
+            "ArchiveContract",
+            "DuplicateContract"
+          ]
+        },
+        {
+          "grupo": "Assinatura Digital",
+          "casos": [
+            "SendSignatureInvite",
+            "ValidateSignerIdentity",
+            "RecordDigitalSignature",
+            "ValidateSignatureChain",
+            "FinalizeSignedContract",
+            "RevokeSignatureRequest"
+          ]
+        },
+        {
+          "grupo": "Templates",
+          "casos": [
+            "CreateTemplate",
+            "PublishTemplate",
+            "VersionTemplate",
+            "ListTemplatesByJurisdiction"
+          ]
+        },
+        {
+          "grupo": "Partes e Identidade",
+          "casos": [
+            "InvitePartyToContract",
+            "VerifyPartyDocument",
+            "UpdatePartyContactInfo"
+          ]
+        },
+        {
+          "grupo": "Auditoria e Compliance",
+          "casos": [
+            "GenerateAuditReport",
+            "ExportSignedContractWithProof",
+            "QueryAuditLog"
+          ]
+        },
+        {
+          "grupo": "Multi-tenancy e Billing",
+          "casos": [
+            "CreateTenant",
+            "UpgradePlan",
+            "TrackUsageQuota",
+            "SuspendTenantOnNonPayment"
+          ]
+        }
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Convertem dados entre o formato dos use cases e o mundo externo (controllers, presenters, gateways)",
+      "controllers": [
+        "ContractController — HTTP REST para operações de contrato",
+        "SignatureController — endpoints de assinatura e validação",
+        "TemplateController — CRUD de templates",
+        "WebhookController — recebe eventos de provedores externos (pagamento, assinatura)",
+        "AuthController — login, OAuth, refresh token"
+      ],
+      "presenters": [
+        "ContractPresenter — serializa Contract para JSON/PDF",
+        "SignaturePresenter — formata prova de assinatura (hash, timestamp, PDF certificado)",
+        "AuditPresenter — formata relatórios de auditoria"
+      ],
+      "gateways": [
+        "ContractRepository — interface para persistência de contratos",
+        "SignatureRepository — interface para armazenamento de assinaturas",
+        "TemplateRepository — interface para persistência de templates",
+        "NotificationGateway — interface para envio de e-mail/SMS",
+        "DigitalSignatureGateway — interface para provedor de assinatura (DocuSign, D4Sign, ClickSign)",
+        "DocumentStorageGateway — interface para armazenamento de PDFs",
+        "IdentityVerificationGateway — interface para validação de CPF/biometria",
+        "BillingGateway — interface para cobrança (Stripe, Asaas)"
+      ],
+      "mappers": [
+        "ContractMapper — entidade ↔ DTO ↔ schema de banco",
+        "PartyMapper",
+        "SignatureMapper"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa; contém implementações concretas dos gateways e drivers de infraestrutura",
+      "web_framework": "NestJS (Node.js) ou FastAPI (Python)",
+      "banco_de_dados": {
+        "principal": "PostgreSQL via Prisma ORM ou TypeORM",
+        "cache": "Redis (sessions, filas de assinatura, rate limiting)",
+        "busca": "Elasticsearch (busca full-text em cláusulas e contratos)"
+      },
+      "armazenamento": "AWS S3 / GCS para PDFs e documentos assinados",
+      "assinatura_digital": {
+        "opcoes": [
+          "D4Sign (ICP-Brasil compliant)",
+          "ClickSign",
+          "DocuSign"
+        ],
+        "fallback": "Assinatura própria com hash SHA-256 + carimbo de tempo via RFC 3161"
+      },
+      "filas": "BullMQ sobre Redis / AWS SQS para processamento assíncrono",
+      "notificacoes": "SendGrid (e-mail), Twilio (SMS), Firebase (push)",
+      "autenticacao": "Auth0 / Keycloak / JWT próprio com refresh token rotation",
+      "pdf_generation": "Puppeteer / WeasyPrint / Apache PDFBox",
+      "identidade": "Serpro CPF API, Idwall, Unico Check para biometria",
+      "infra": "Docker, Kubernetes (EKS/GKE), Terraform, GitHub Actions",
+      "monitoramento": "Datadog / New Relic, Sentry, CloudWatch"
+    },
+    "dependency_rule": {
+      "descricao": "Dependências de código-fonte apontam APENAS para dentro — nunca para fora",
+      "aplicacao": [
+        "Entities não importam nada do sistema — são POJO/dataclasses puras",
+        "Use Cases conhecem apenas Entities e interfaces abstratas (ports) — nunca implementações concretas",
+        "Interface Adapters implementam os ports definidos pelos Use Cases — a seta aponta para dentro",
+        "Frameworks & Drivers implementam os gateways e repositórios — nada nos Use Cases conhece PostgreSQL, Redis ou DocuSign diretamente",
+        "Inversão de Dependência (DIP): Use Cases definem IContractRepository; PostgresContractRepository implementa essa interface na camada externa",
+        "Crossing boundaries: dados cruzam camadas via DTOs simples (sem lógica), nunca via objetos de domínio diretamente"
+      ],
+      "exemplo_concreto": {
+        "use_case": "RecordDigitalSignature depende de ISignatureRepository (interface)",
+        "adapter": "SignatureRepositoryPostgres implementa ISignatureRepository",
+        "resultado": "O Use Case não sabe que existe PostgreSQL"
+      }
+    },
+    "testability": {
+      "descricao": "Cada camada é testável de forma isolada sem infraestrutura real",
+      "estrategia": [
+        {
+          "camada": "Entities",
+          "tipo": "Unit tests puros",
+          "ferramenta": "Jest / Pytest",
+          "detalhe": "Sem mocks — instanciar a entidade e verificar regras de negócio diretamente"
+        },
+        {
+          "camada": "Use Cases",
+          "tipo": "Unit tests com mocks/stubs dos gateways",
+          "ferramenta": "Jest mock / unittest.mock",
+          "detalhe": "Substituir IContractRepository por InMemoryContractRepository, sem banco real"
+        },
+        {
+          "camada": "Interface Adapters",
+          "tipo": "Integration tests",
+          "ferramenta": "Supertest, TestContainers",
+          "detalhe": "Testar controllers com banco em memória ou container Docker efêmero"
+        },
+        {
+          "camada": "Frameworks & Drivers",
+          "tipo": "E2E tests",
+          "ferramenta": "Playwright, Postman/Newman, Cypress",
+          "detalhe": "Fluxo completo: criar contrato → convidar partes → assinar → baixar PDF"
+        }
+      ],
+      "principios": [
+        "Regra 100% cobertura nos Use Cases — são o coração do negócio",
+        "Test doubles (fakes) preferidos a mocks para repositórios — comportamento mais fiel",
+        "CI executa unit + integration; E2E roda em pipeline noturno ou pré-release"
+      ]
+    },
+    "interfaces": [
+      "IContractRepository: create, findById, findByTenant, update, archive",
+      "ISignatureRepository: record, findByContract, validateChain",
+      "ITemplateRepository: create, findByType, publishVersion",
+      "INotificationGateway: sendEmail(to, template, vars), sendSMS(to, message)",
+      "IDigitalSignatureGateway: createEnvelope, sendForSigning, getSignatureStatus, downloadSignedDocument",
+      "IDocumentStorageGateway: upload(file, metadata), getUrl(fileId), delete(fileId)",
+      "IIdentityVerificationGateway: verifyDocument(cpfOrCnpj), verifyBiometrics(selfie, document)",
+      "IBillingGateway: createSubscription, cancelSubscription, reportUsage, getInvoice",
+      "IAuditLogger: log(actor, action, entity, metadata)",
+      "IAuthProvider: validateToken(jwt), getUserFromToken(jwt)"
+    ],
+    "escalabilidade": {
+      "horizontal": "Serviços stateless containerizados — escala adicionando pods no Kubernetes via HPA",
+      "filas_assincrono": "Operações pesadas (geração de PDF, envio de e-mail, notificações) processadas por workers isolados via BullMQ/SQS — desacoplamento de picos",
+      "multi_tenancy": "Isolamento por schema no PostgreSQL (schema-per-tenant) ou row-level security (RLS) para alta densidade",
+      "caching": "Redis para tokens de sessão, quotas de uso e resultados de validação de documentos (CPF) — reduz chamadas externas",
+      "leitura_escrita": "CQRS: comandos (write) em PostgreSQL master; queries (read) em read replicas ou projeções desnormalizadas",
+      "cdn": "PDFs e contratos assinados servidos via CloudFront/Fastly — sem carga no app server",
+      "feature_flags": "LaunchDarkly para rollout gradual de funcionalidades por tenant",
+      "limites": "Rate limiting por tenant via Redis Token Bucket — protege contra abuso e garante SLA"
+    },
+    "custos": {
+      "infra_base": "ECS Fargate ou GKE Autopilot reduz custo de gestão de cluster vs EC2 puro",
+      "armazenamento": "S3 Intelligent-Tiering move PDFs antigos para cold storage automaticamente",
+      "assinatura_digital": "D4Sign cobra por envelope assinado — modelar planos para absorver custo variável no pricing",
+      "identidade": "Verificação de CPF via Serpro tem custo por consulta — cachear resultados por 24h para reduzir chamadas",
+      "email_sms": "SendGrid gratuito até 100/dia; Twilio cobra por SMS — SMS só para assinaturas críticas",
+      "observabilidade": "Datadog pode ser caro em escala — avaliar VictoriaMetrics + Grafana self-hosted para tenants menores",
+      "banco": "RDS Postgres Multi-AZ para HA + read replica — maior custo mas necessário para SLA contratual",
+      "otimizacoes": [
+        "Geração de PDF sob demanda vs armazenamento de todas as versões intermediárias",
+        "Webhooks de provedores externos reduzem polling e custo de chamadas de API",
+        "Compressão de PDFs antes do upload no S3"
+      ]
+    },
+    "monetizacao": {
+      "modelo": "SaaS B2B com planos por volume de contratos e funcionalidades",
+      "planos": [
+        {
+          "nome": "Starter",
+          "preco": "R$ 197/mês",
+          "limites": "20 contratos/mês, 2 usuários, templates padrão, assinatura eletrônica simples"
+        },
+        {
+          "nome": "Professional",
+          "preco": "R$ 597/mês",
+          "limites": "100 contratos/mês, 10 usuários, templates customizados, assinatura ICP-Brasil, API access"
+        },
+        {
+          "nome": "Enterprise",
+          "preco": "Sob consulta (R$ 2.000+/mês)",
+          "limites": "Ilimitado, SSO/SAML, SLA 99.9%, white-label, integração ERP, suporte dedicado"
+        }
+      ],
+      "add_ons": [
+        "Verificação biométrica de identidade — R$ 5/verificação",
+        "Carimbo de tempo ICP-Brasil — R$ 2/envelope",
+        "Armazenamento adicional além de 10GB — R$ 0,15/GB/mês",
+        "Usuários adicionais — R$ 49/usuário/mês"
+      ],
+      "estrategias": [
+        "Freemium: 3 contratos/mês grátis para captura de leads",
+        "Cobrança por envelope (pay-as-you-go) para corretoras de baixo volume",
+        "Marketplace de templates jurídicos de parceiros — revenue share 30/70",
+        "API pública para integradores/construtoras — pricing por chamada de API"
+      ]
+    },
+    "stack_sugerida": {
+      "backend": {
+        "linguagem": "TypeScript (Node.js 20+)",
+        "framework": "NestJS — módulos bem separados facilitam Clean Architecture",
+        "orm": "Prisma — type-safe, migrations automáticas",
+        "validacao": "Zod (DTOs de entrada) — separado das entidades de domínio"
+      },
+      "frontend": {
+        "framework": "Next.js 14 (App Router)",
+        "ui": "shadcn/ui + Tailwind CSS",
+        "estado": "Zustand + React Query (TanStack Query)",
+        "pdf_viewer": "react-pdf / PDF.js"
+      },
+      "infra": {
+        "cloud": "AWS (RDS, S3, SQS, ECS Fargate, CloudFront)",
+        "iac": "Terraform + Terragrunt",
+        "ci_cd": "GitHub Actions",
+        "containers": "Docker + Kubernetes (EKS) para Enterprise; ECS Fargate para início"
+      },
+      "dados": {
+        "principal": "PostgreSQL 15 (RDS Multi-AZ)",
+        "cache": "Redis 7 (ElastiCache)",
+        "busca": "Elasticsearch 8 (para busca em contratos)",
+        "eventos": "Amazon SQS + SNS para event-driven entre serviços"
+      },
+      "seguranca": {
+        "autenticacao": "Auth0 (multi-tenant nativo) ou Keycloak self-hosted",
+        "secrets": "AWS Secrets Manager",
+        "criptografia": "AES-256 em repouso, TLS 1.3 em trânsito, hash SHA-256 para assinaturas",
+        "compliance": "Adequação LGPD, logs de auditoria imutáveis, data residency no Brasil"
+      },
+      "assinatura": {
+        "provider": "D4Sign (ICP-Brasil) como primário, ClickSign como fallback",
+        "sdk": "SDK oficial do provedor isolado atrás do IDigitalSignatureGateway"
+      },
+      "monitoramento": {
+        "apm": "Datadog APM",
+        "erros": "Sentry",
+        "logs": "CloudWatch Logs + Loki",
+        "metricas_negocio": "Metabase sobre PostgreSQL read replica"
+      },
+      "testes": {
+        "unit": "Jest + ts-jest",
+        "integration": "Jest + TestContainers (Postgres/Redis reais em Docker)",
+        "e2e": "Playwright",
+        "carga": "k6"
+      }
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio com regras críticas da empresa, sem dependências externas\",\n    \"lista\": [\n      {\n        \"nome\": \"Contract\",\n        \"atributos\": [\"id\", \"title\", \"type\", \"clauses\", \"status\", \"createdAt\", \"expiresAt\"],\n        \"regras\": [\"Um contrato deve ter pelo menos duas partes\", \"Não pode ser alterado após assinatura\", \"Expiração não pode ser retroativa\"]\n      },\n      {\n        \"nome\": \"Party\",\n        \"atributos\": [\"id\", \"name\", \"document\", \"email\", \"role\", \"signatureStatus\"],\n        \"regras\": [\"CPF/CNPJ deve ser único por contrato\", \"Papel (locador, locatário, fiador) deve ser válido\"]\n      },\n      {\n        \"nome\": \"Signature\",\n        \"atributos\": [\"id\", \"partyId\", \"contractId\", \"hash\", \"timestamp\", \"ipAddress\", \"geolocation\"],\n        \"regras\": [\"Hash deve ser imutável após criação\", \"Timestamp é UTC e não editável\"]\n      },\n      {\n        \"nome\": \"Clause\",\n        \"atributos\": [\"id\", \"order\", \"content\", \"isNegotiable\", \"acceptedBy\"],\n        \"regras\": [\"Cláusulas não negociáveis não podem ser removidas\", \"Ordem deve ser sequencial sem gaps\"]\n      },\n      {\n        \"nome\": \"Property\",\n        \"atributos\": [\"id\", \"address\", \"registrationNumber\", \"area\", \"type\"],\n        \"regras\": [\"Registro imobiliário deve ser único no sistema\"]\n      },\n      {\n        \"nome\": \"Template\",\n        \"atributos\": [\"id\", \"name\", \"contractType\", \"clauses\", \"jurisdiction\", \"version\"],\n        \"regras\": [\"Templates publicados são imutáveis — cria-se nova versão\"]\n      },\n      {\n        \"nome\": \"AuditLog\",\n        \"atributos\": [\"id\", \"actorId\", \"action\", \"entityId\", \"entityType\", \"timestamp\", \"metadata\"],\n        \"regras\": [\"Logs são append-only, nunca deletados\"]\n      },\n      {\n        \"nome\": \"Tenant\",\n        \"atributos\": [\"id\", \"name\", \"plan\", \"usageLimits\", \"billingStatus\"],\n        \"regras\": [\"Tenant bloqueado não pode criar novos contratos\"]\n      }\n    ]\n  },\n  \"use_cases\": {\n    \"descricao\": \"Orquestram o fluxo "
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "O projeto menciona três interfaces distintas (marketplace-web, marketplace-admin, marketplace-api) com algum desacoplamento implícito via arquitetura stateless e API separada, mas não apresenta justificativa orientada a mercado para cada interface, ausência de canal mobile (crítico para compradores de campo e técnicos), e nenhuma estratégia explícita de expansão multi-canal além das escolhas técnicas convencionais."
+}

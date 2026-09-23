@@ -1,0 +1,1 @@
+# Ports — abstract boundaries between inside (domain) and outside (infrastructure)

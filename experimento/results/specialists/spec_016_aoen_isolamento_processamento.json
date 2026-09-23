@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve apenas separação lógica via camada de serviços (ReturnService, CarrierService etc.), mas não menciona filas, workers assíncronos, processos separados nem fallback — o motor de orquestração (computacionalmente caro: seleção de transportadora, otimização de rota, consulta de histórico) aparentemente roda de forma síncrona no mesmo processo, o que significa que sobrecarga ou falha nele afeta todas as interfaces simultaneamente."
+}

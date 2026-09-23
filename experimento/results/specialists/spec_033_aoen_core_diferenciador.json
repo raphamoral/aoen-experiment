@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 33,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador é claramente identificado (par governança verificável + rastreabilidade financeira), bem isolado via interfaces abstratas extensíveis (IVotingEngine, IFinancialLedger, INotificationGateway), e resolve um problema real sem solução equivalente no mercado — perde um ponto por não demonstrar concretamente por que concorrentes existentes (Superlógica, Condomínio21) não conseguem replicar esse par."
+}

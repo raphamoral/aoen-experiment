@@ -1,0 +1,46 @@
+{
+  "ideia_idx": 31,
+  "ideia": "Plataforma de mentoria online pareada por IA",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": "Entidades puras, sem dependência de framework: Usuario (id, nome, papel), Mentor (perfil, especialidades, disponibilidade, nível de experiência, avaliação média), Mentorado (objetivos, nível atual, preferências de aprendizado), PerfilDeCompetencias (Value Object), Objetivo, Pareamento (mentor, mentorado, score de compatibilidade, status: proposto/aceito/recusado/encerrado), Sessao (data/hora, duração, status, link de reunião), PlanoDeMentoria, Feedback/Avaliacao, Assinatura (plano, status, ciclo de cobrança), Pagamento, PoliticaDeCompatibilidade (regras de negócio para pareamento), Disponibilidade (Value Object).",
+    "use_cases": "CadastrarUsuario, CriarPerfilMentor, CriarPerfilMentorado, DefinirObjetivos, GerarSugestoesDePareamento (IA), AceitarOuRecusarPareamento, AgendarSessao, ReagendarOuCancelarSessao, RealizarSessao, RegistrarFeedbackDaSessao, GerarResumoDaSessao (IA), GerarPlanoDeMentoria (IA), AcompanharProgresso, AvaliarMentor, ReavaliarPareamento, AssinarPlano, CancelarAssinatura, ProcessarPagamentoDeSessao, RepassarPagamentoAoMentor, NotificarUsuario, ModerarConteudo e ConsultarMetricasAdmin. Cada caso de uso é uma classe com Input Boundary, Output Boundary e Gateways (interfaces) definidos na própria camada.",
+    "interface_adapters": "Controllers REST/GraphQL/WebSocket que convertem requisições em Input DTOs; Presenters/ViewModels que formatam a saída dos casos de uso para web e mobile; Repositórios que implementam os gateways (UsuarioRepository, PareamentoRepository, SessaoRepository, AssinaturaRepository); Gateway de IA (MatchingEngineGateway, LLMGateway, EmbeddingGateway) que traduz o domínio para chamadas a modelos de IA; PaymentGateway (Stripe); CalendarGateway (Google/Outlook); VideoConferenceGateway (Daily/Twilio/Zoom); NotificationGateway (e-mail, push, WhatsApp); AuthGateway (OIDC); EventPublisher/EventConsumer para mensageria; Mappers entre modelo de persistência e entidades; Webhook handlers (pagamento, calendário).",
+    "frameworks_drivers": "Web: Next.js/React (UI), React Native ou Expo (mobile). API: NestJS ou Fastify, usado apenas como camada externa de entrega HTTP. Persistência: PostgreSQL com Prisma ou TypeORM, pgvector para embeddings, Redis para cache e filas. Mensageria: RabbitMQ, SQS ou Kafka. IA: APIs de LLM (Claude, entre outros) e modelos de embeddings. Pagamentos: Stripe Billing e Connect. Vídeo: Daily.co ou Twilio Video. Auth: Auth0, Clerk ou Keycloak. Observabilidade: OpenTelemetry, Grafana ou Datadog, Sentry. Infra: Docker, Kubernetes ou ECS, Terraform, GitHub Actions. Tudo isso fica na camada mais externa e é substituível.",
+    "dependency_rule": "Dependências de código-fonte apontam sempre para dentro: Frameworks & Drivers → Interface Adapters → Use Cases → Entities. Os casos de uso declaram interfaces (portas/gateways) e os adaptadores as implementam, o que é a Inversão de Dependência. Entities e Use Cases não importam nada de ORM, HTTP, SDK de IA ou Stripe. Os dados cruzam as fronteiras como DTOs simples, nunca como objetos de framework nem linhas de banco. A composição é feita em um Composition Root na camada externa, com injeção de dependência manual ou por container. Regras automatizadas (dependency-cruiser, ArchUnit-like, ESLint boundaries) rodam no CI e quebram o build se houver violação.",
+    "testability": "Entities: testes unitários puros, sem I/O. Use Cases: testes unitários com fakes e mocks in-memory dos gateways (repositórios, IA, pagamento, calendário), rápidos e determinísticos. O motor de pareamento é testado com um LLM/embedding fake e datasets fixos, mais avaliações offline (evals) de qualidade do match. Adaptadores: testes de contrato e de integração com Testcontainers (Postgres, Redis) e servidores simulados (Stripe mock, WireMock). Controllers e Presenters: testes de contrato de API (OpenAPI/Pact). E2E: poucos fluxos críticos (cadastro → pareamento → sessão → pagamento) com Playwright. A pirâmide de testes fica concentrada nas camadas internas, sem depender de rede, banco ou provedores de IA.",
+    "interfaces": [
+      "Input Boundaries (uma por caso de uso, ex.: SugerirParesUseCase)",
+      "Output Boundaries/Presenters (ex.: PareamentoPresenter)",
+      "UsuarioRepository",
+      "MentorRepository",
+      "MentoradoRepository",
+      "PareamentoRepository",
+      "SessaoRepository",
+      "AssinaturaRepository",
+      "FeedbackRepository",
+      "MatchingEngineGateway (IA de pareamento)",
+      "LLMGateway (resumos, planos, copiloto de mentoria)",
+      "EmbeddingGateway",
+      "PaymentGateway",
+      "PayoutGateway (repasse a mentores)",
+      "CalendarGateway",
+      "VideoConferenceGateway",
+      "NotificationGateway",
+      "AuthGateway",
+      "EventPublisher",
+      "Clock e IdGenerator (para determinismo em testes)",
+      "ModerationGateway"
+    ],
+    "escalabilidade": "Monólito modular inicial, com módulos alinhados aos bounded contexts (Identidade, Pareamento, Sessões, Cobrança, IA). Como as fronteiras já são limpas pelas portas, o módulo de IA/pareamento pode ser extraído em serviço próprio quando necessário. API stateless com escala horizontal atrás de load balancer. Tarefas pesadas (embeddings, geração de resumos, recálculo de matches) rodam de forma assíncrona em filas com workers com autoscaling. Read replicas do Postgres, cache de perfis e recomendações em Redis, índice vetorial (pgvector, depois um vector DB dedicado se necessário). Arquitetura orientada a eventos (SessaoConcluida, PareamentoAceito) desacopla os módulos. CDN para o front. Rate limiting e filas de prioridade para chamadas de LLM.",
+    "custos": "Os maiores custos variáveis são tokens de LLM/embeddings, vídeo (minutos de sessão) e taxas de pagamento (~2,9% + tarifa fixa, mais a taxa do Connect). Mitigações: modelos menores para tarefas simples e modelo maior só onde há ganho de qualidade, prompt caching, embeddings gerados uma vez e reutilizados, resumos em lote, cotas por plano, gravação e transcrição apenas sob opt-in. Custos fixos moderados: Postgres gerenciado, Redis, observabilidade, hospedagem. Começar com serverless ou PaaS para reduzir a operação e migrar para Kubernetes só quando o volume justificar. Monitorar o custo por sessão e o custo de IA por usuário ativo, com alertas de orçamento. Considerar também os custos de compliance (LGPD/GDPR), moderação e suporte.",
+    "monetizacao": "Modelo híbrido: (1) assinatura de mentorados, com planos Free (pareamento limitado), Pro (sessões mensais, copiloto de IA, plano de mentoria) e Premium (mentores sêniores, sessões ilimitadas); (2) comissão de 15–25% sobre sessões avulsas pagas a mentores, via marketplace com Stripe Connect; (3) plano B2B/Enterprise para empresas e universidades (programas de mentoria internos, dashboards, SSO, relatórios); (4) planos de destaque para mentores (visibilidade e ferramentas); (5) add-ons de IA (análise de sessão, trilhas personalizadas, certificados).",
+    "stack_sugerida": "TypeScript ponta a ponta com estrutura em camadas (domain/, application/, adapters/, infrastructure/) em monorepo (Turborepo ou Nx). Front: Next.js + React + Tailwind, React Native para mobile. Back-end: NestJS ou Fastify com DI, fora do domínio. Banco: PostgreSQL + pgvector, Redis. Mensageria: SQS/RabbitMQ (BullMQ no início). IA: LLM via API (Claude) atrás do LLMGateway, embeddings para pareamento, avaliação com evals. Pagamentos: Stripe Billing + Connect. Vídeo: Daily.co. Auth: Clerk/Auth0. Testes: Vitest/Jest, Testcontainers, Playwright, Pact. Infra: Docker, AWS (ECS Fargate/RDS/ElastiCache) ou Vercel + Railway no MVP, Terraform, GitHub Actions. Observabilidade: OpenTelemetry, Sentry, Grafana."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "99d475cb3837",
+    "gerado_em": "2026-09-21T02:47:01+00:00",
+    "runner": "runner.py"
+  }
+}

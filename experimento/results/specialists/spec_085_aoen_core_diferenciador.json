@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 85,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador — motor de regras multi-marca com ledger auditável por event-sourcing — está claramente isolado atrás de RulesEnginePort e LedgerPort, é substituível por fornecedores externos sem quebrar contratos, e resolve um problema real (heterogeneidade de regras entre marcas distintas com histórico auditável) que soluções genéricas de fidelidade não endereçam nativamente; perde um ponto por não explicitar o que impede um competidor de replicar a DSL de regras configuráveis em tempo razoável."
+}

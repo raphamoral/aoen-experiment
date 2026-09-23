@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura hexagonal (Ports & Adapters) está corretamente aplicada — domínio isolado de frameworks, portas abstratas para todas as dependências externas, e a presença explícita de dois adaptadores alternativos para o mesmo BlockchainLedgerPort (HyperledgerFabric + Ethereum) demonstra decisões conscientemente reversíveis; a nota não chega a 9-10 porque a camada blockchain permissionada (Hyperledger Fabric) tende a vazar complexidade operacional para o domínio via chaincode de custódia, e a ausência de um barramento de eventos explícito entre adaptadores pode forçar acoplamento temporal à medida que IoT, RegulatoryGateway e NotificationDispatch crescerem em volume e latência."
+}

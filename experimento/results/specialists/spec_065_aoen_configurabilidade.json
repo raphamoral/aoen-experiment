@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 65,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "O fluxo principal está explicitamente fixado no código e os parâmetros variáveis por tenant estão mapeados (fontes habilitadas, métricas ativas), sugerindo onboarding via configuração para integrações já existentes — mas novos SignalCollectors ainda exigem desenvolvimento de adaptadores, o que impede nota máxima."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "A proposta identifica implicitamente um diferenciador (o 'maintenance-engine' alimentado por telemetria IoT em tempo real), mas nunca articula o que esse motor de manutenção faz de singular — ausência total de descrição de algoritmos preditivos, modelos de falha, lógica de priorização ou qualquer mecanismo que justifique por que esse núcleo seria insubstituível frente a CMMs consolidados como IBM Maximo, UpKeep ou Limble CMMS; a arquitetura é tecnicamente sólida e vendor-agnostic (ponto positivo de extensibilidade), mas descreve excelente infraestrutura sem revelar a inteligência proprietária que transformaria dados IoT em vantagem competitiva real."
+}

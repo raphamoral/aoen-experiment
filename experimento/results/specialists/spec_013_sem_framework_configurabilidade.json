@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "O onboarding de novos donos de espaço é totalmente orientado a dados (cadastro via UI, sem deploy), mas o comportamento da plataforma é uniforme para todos os tenants — não há menção a camada de configuração para regras de negócio por tenant (fluxos de aprovação customizados, modelos de precificação alternativos, templates de notificação por dono, feature flags), o que significa que qualquer necessidade de comportamento diferenciado por cliente exigiria alteração de código."
+}

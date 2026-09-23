@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta define apenas entidades de domínio (Animal, LaudoIA, ImagemDiagnostica etc.) sem qualquer menção a filas, workers, processos separados ou mecanismos assíncronos para isolar o processamento pesado de inferência de IA, que roda implicitamente acoplado ao fluxo principal sem fallback ou escalabilidade independente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 5,
+  "justificativa": "Os dois segmentos-alvo estão identificados (empresas sem QA robusto e testadores individuais) e a dor básica das empresas é mencionada (testar rápido sem manter time de QA), mas faltam tamanho de mercado, análise de concorrentes diretos como BugCrowd, uTest e Testbirds, e diferenciação explícita que justifique por que a gamificação seria vantagem decisiva sobre essas alternativas já consolidadas."
+}

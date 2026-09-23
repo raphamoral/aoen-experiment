@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 67,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O motor de alertas proativos baseado em séries temporais é explicitamente identificado como núcleo insubstituível, isolado atrás de uma interface `AlertEngine` que permite trocar a implementação (regras → ML) sem afetar o restante do sistema, e resolve um problema real não endereçado por prontuários eletrônicos tradicionais: detectar deterioração clínica antes que se torne emergência."
+}

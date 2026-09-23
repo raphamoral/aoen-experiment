@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "O fluxo fixo está bem definido (fase3_fluxo_fixo) e os parâmetros configuráveis por cliente existem (floor de margem, variação máxima, fontes de concorrentes), com separação explícita entre código e configuração via PricingEngine/PricingService — mas a proposta não demonstra o mecanismo de onboarding (como a configuração de um novo tenant é persistida, isolada e ativada sem deploy), não endereça isolamento de dados multi-tenant no modelo, e o escopo dos parâmetros configuráveis foi truncado, deixando incerto se regras mais complexas (ex: estratégias por categoria, sazonalidade por cliente, fontes customizadas) são configuração pura ou ainda exigem código."
+}

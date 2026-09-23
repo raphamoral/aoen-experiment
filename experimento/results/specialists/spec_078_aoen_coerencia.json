@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 78,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta conta uma história arquitetural consistente do problema (exclusão de 40% da população) à solução (scoring alternativo) aos canais (Web/Mobile/WhatsApp mapeados diretamente aos perfis de tomadores descritos) à abstração técnica (ScoreProvider + DataSource plugáveis justificados pela necessidade de evitar lock-in em dados não-tradicionais + Service Layer justificado pela multiplicidade de canais) — cada decisão é causalmente derivada da anterior; perde dois pontos porque (1) a proposta está truncada na fase3, impedindo avaliar se o padrão de coerência se mantém nas decisões de infraestrutura/compliance, e (2) há uma tensão estratégica não resolvida entre a API B2B white-label (que entrega o motor de scoring a parceiros/concorrentes) e a plataforma direta própria, o que pode criar um conflito de canais que contradiz a vantagem competitiva declarada do score proprietário."
+}

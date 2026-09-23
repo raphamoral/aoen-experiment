@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "A proposta descreve uma infraestrutura tecnicamente sólida (12-factor, CI/CD, escala horizontal), mas o núcleo diferenciador — a automação de contratos imobiliários — nunca é isolado nem explicado: a assinatura digital é inteiramente delegada a DocuSign/D4Sign (commodity externa), não há lógica proprietária de automação contratual descrita, e o produto, como apresentado, seria substituível por qualquer combinação de Zapier + DocuSign + CRM imobiliário existente."
+}

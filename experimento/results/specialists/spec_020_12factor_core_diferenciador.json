@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador (gamificação aplicada a crowdsourced testing) está implicitamente identificado e parcialmente isolado no gamification-service, mas a proposta não articula por que esse núcleo é insubstituível frente a plataformas como uTest ou Testlio — os mecanismos de XP, badges e leaderboards descritos são genéricos e não explicam como resolvem o problema de qualidade e engajamento de testers de forma que alternativas existentes não consigam replicar."
+}

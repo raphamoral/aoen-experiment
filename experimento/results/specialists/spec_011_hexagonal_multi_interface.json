@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A arquitetura prevê múltiplas interfaces reais e justificadas por contextos distintos (REST para web/mobile, GraphQL para dashboards complexos, WebSocket para tempo real, CLI para operações internas, Webhook para integrações externas), com lógica de negócio completamente desacoplada via ports/adapters hexagonais — permitindo adicionar novos canais sem reescrever regras de domínio — perdendo apenas um ponto pela ausência explícita de justificativas de mercado/perfil de usuário documentadas para cada interface."
+}

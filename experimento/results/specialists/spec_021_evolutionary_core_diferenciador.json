@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O pipeline de ingestão IoT com alertas sub-segundo e onboarding extensível de sensores emerge como diferenciador implícito — validado pelas fitness functions quantitativas — mas nunca é nomeado explicitamente como 'núcleo insubstituível', não há argumento de por que alternativas (CMMS tradicionais, BMS existentes) falham nesse ponto específico, e no MVP ele ainda está fundido no monólito sem fronteira protetora clara."
+}

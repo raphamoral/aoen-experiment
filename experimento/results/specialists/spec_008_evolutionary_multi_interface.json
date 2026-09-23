@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta foca inteiramente em características backend (blockchain, integrações B2B com ERPs e sistemas governamentais), sem mencionar nenhuma interface voltada ao usuário final — não há referência a web app, mobile, CLI ou API consumer-facing, tampouco perfis de usuário distintos (operador de campo, gestor ambiental, auditor regulatório) ou decisão de desacoplamento UI/lógica de negócio."
+}

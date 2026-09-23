@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 8,
+  "justificativa": "O projeto prevê quatro interfaces distintas (dashboard web, app mobile, painel do cliente e admin), cada uma justificada por um perfil de usuário real com necessidades e contextos de uso claramente diferenciados; a arquitetura com backend via APIs REST/WebSocket sugere desacoplamento razoável entre lógica de negócio e apresentação, mas a proposta não explicita formalmente uma camada de domínio independente nem menciona estratégia de expansão para outros canais (ex: API pública, integrações via webhook) como vetor de mercado."
+}

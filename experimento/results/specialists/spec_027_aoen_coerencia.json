@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 27,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam um sistema coeso e auto-reforçante: o problema (eventos híbridos fragmentados) justifica o core (motor de orquestração), que justifica a Service Layer centralizada, que justifica as 6 interfaces sem duplicação de lógica, que justificam os segmentos de mercado declarados — e as portas substituíveis (streaming, notificações, pagamentos) são diretamente consistentes com a exigência enterprise de integração com stacks existentes; a pequena perda de nota se deve ao truncamento da fase 3 (parâmetros configuráveis incompletos) e a uma tensão latente entre o ciclo de vida imutável e o target de venues/hotéis em modelo white-label, que implica GTM e expectativas de customização distintas dos compradores enterprise de RH/Marketing."
+}

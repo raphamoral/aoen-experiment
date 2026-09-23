@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 50,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra consciência de extensibilidade via interfaces de provider (ITrackerProvider, IMapProvider, IPaymentProvider) e centralização de lógica na BikeFleetService Layer — o que evita código por interface —, mas não descreve nenhum modelo explícito de configuração por tenant: não há menção a tabelas de configuração por cliente, feature flags, regras de negócio configuráveis (precificação, geofences, políticas de desbloqueio, limites de corrida), nem a um processo de onboarding zero-código; um novo cliente com hardware diferente ou regras tarifárias distintas ainda exigiria desenvolvimento para instanciar os adaptadores corretos e parametrizar o fluxo canônico."
+}

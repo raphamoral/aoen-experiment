@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta identifica perfis distintos de usuário via roles (gerador, transportador, destinador, auditor, fiscal) e menciona canais de saída como e-mail, SMS e webhook em Notifications, além de integrações com SINIR/SIGA em RegulatoryReporting — sinais implícitos de multi-canal — mas não define explicitamente nenhuma interface de usuário (web, mobile, API pública, CLI), não justifica escolhas de canal por alcance de mercado ou contexto de uso de cada ator, e não declara camada de API desacoplada que permitiria adicionar novas interfaces sem reescrever lógica de domínio."
+}

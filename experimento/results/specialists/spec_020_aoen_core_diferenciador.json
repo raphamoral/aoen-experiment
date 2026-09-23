@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador — o ciclo task→execution→validation→reward com deduplicação — está claramente isolado, é extensível via interfaces abstratas (IValidationEngine, IRewardEngine) sem acoplamento a fornecedores, e resolve o problema real de cobertura de testes sem time fixo de QA; perde apenas um ponto por não articular explicitamente por que as alternativas existentes (uTest, Testbirds, Applause) falham nesse ciclo de validação/deduplicação."
+}

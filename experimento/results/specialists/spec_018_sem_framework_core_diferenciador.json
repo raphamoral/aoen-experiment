@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador (modelo preditivo de churn com explicabilidade em linguagem comum para não-cientistas) está identificado e resolve um problema real, mas não está arquiteturalmente isolado como núcleo independente — está misturado com decisões de infraestrutura genéricas, e a proposta não demonstra por que o modelo seria superior ou insubstituível frente a soluções como Salesforce Einstein, Mixpanel ou serviços de AutoML que operadoras já poderiam contratar."
+}

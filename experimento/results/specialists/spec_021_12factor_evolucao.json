@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra forte capacidade evolutiva na camada de infraestrutura — serviços desacoplados via Kafka, processos stateless, opções alternativas para backing services (TimescaleDB/InfluxDB, EMQX/AWS IoT Core, S3/MinIO) e rollback por redeployar releases imutáveis indicam decisões reversíveis e substituição independente de componentes; porém, a proposta não descreve padrões internos aos serviços (hexagonal/clean architecture, ports & adapters, anti-corruption layers) que garantiriam que a lógica de negócio de cada serviço não dependa diretamente de frameworks ou SDKs externos, deixando em aberto se um serviço pode ter seu banco ou framework trocado sem tocar no domínio."
+}

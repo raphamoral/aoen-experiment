@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona transformar o matching em job agendado (o que sugere assincronismo futuro), mas na arquitetura atual tudo roda junto no mesmo processo Next.js via API routes na Vercel — sem filas, sem workers separados, sem isolamento físico; uma tarefa pesada pode esgotar os recursos da função serverless e degradar toda a aplicação."
+}

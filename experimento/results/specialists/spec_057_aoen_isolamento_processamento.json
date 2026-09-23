@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 57,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona uma fila de ingestão (assincronicidade básica) no fluxo de eventos, o que é positivo, mas não especifica isolamento físico dos workers de análise LLM (processo separado, pod dedicado ou lambda independente), não descreve nenhum fallback caso o motor de análise falhe (o que derrubaria toda a geração de relatórios), e não aborda escalonamento independente da camada computacionalmente cara — o isolamento parece lógico/arquitetural no diagrama, não garantido operacionalmente."
+}

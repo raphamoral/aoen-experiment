@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente o modelo de domínio (entidades e regras de negócio) sem qualquer menção a interfaces de usuário, canais de acesso (web, mobile, API, CLI), perfis de usuário distintos ou estratégia de desacoplamento entre lógica de negócio e camada de apresentação."
+}

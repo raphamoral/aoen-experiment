@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "O projeto prevê cinco interfaces distintas (REST API, WebSocket, Mobile App, Admin Web, Webhook), cada uma claramente justificada por um perfil de usuário ou caso de uso de mercado real (motorista em campo, gestor de frota, integração B2B, cliente final), com lógica de negócio desacoplada via backend stateless e diretório /shared — perdendo apenas o ponto máximo por não explicitar um padrão BFF ou API Gateway que formalize a extensibilidade para novas interfaces futuras."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 22,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona 'fila de mensagens' como canal de comunicação entre interfaces e a Service Layer, sinalizando consciência de processamento assíncrono, mas não há nenhuma menção explícita a isolamento de processos computacionalmente pesados (validação de certificações em lote, geração de rastreabilidade, sincronização de catálogo via EDI, relatórios de analytics) em workers ou processos físicos separados, sem definição de fallback caso esses processos falhem, e sem estratégia de escalonamento independente para cargas pesadas."
+}

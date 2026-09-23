@@ -1,0 +1,88 @@
+{
+  "ideia_idx": 50,
+  "ideia": "App de gestão de frotas de bicicletas compartilhadas para cidades",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão operacional de frotas de bicicletas compartilhadas urbanas. Subdomínios: (1) Fleet & Asset Management (bicicletas, estações, docas, ciclo de vida, estado de bateria/manutenção); (2) Rental/Trip Management (reserva, desbloqueio, viagem, encerramento); (3) Rebalancing & Logistics (redistribuição de bicicletas entre estações/zonas com base em demanda prevista); (4) Maintenance (ordens de serviço, inspeções, vandalismo/roubo); (5) Pricing & Billing (tarifas, passes, planos, cobrança por uso e multas por estacionamento fora de zona); (6) Tenant/City Management (multi-tenancy por cidade/operadora, zonas geográficas, regras regulatórias). Entidades/agregados: Bike, Station, Dock, Trip, Reservation, Rider, Tenant, WorkOrder, Zone, Tariff, Invoice. Serviços de domínio: DemandForecastPolicy, RebalancingPlanner, PricingPolicy, ZoneComplianceChecker.",
+    "primary_ports": [
+      "RentalUseCases (ReserveBike, UnlockBike, StartTrip, EndTrip, ReportIssue)",
+      "FleetManagementUseCases (RegisterBike, DecommissionBike, AssignToStation, UpdateBikeStatus)",
+      "StationManagementUseCases (CreateStation, ConfigureDocks, GetAvailability)",
+      "RebalancingUseCases (GenerateRebalancingPlan, AssignRebalancingTask, ConfirmRelocation)",
+      "MaintenanceUseCases (OpenWorkOrder, AssignTechnician, CloseWorkOrder)",
+      "BillingUseCases (CalculateFare, IssueInvoice, PurchasePass, ApplyPenalty)",
+      "RiderAccountUseCases (RegisterRider, VerifyIdentity, ManageSubscription)",
+      "TenantAdminUseCases (ConfigureCity, DefineZones, SetTariffs, ManageOperators)",
+      "AnalyticsQueryUseCases (GetFleetUtilization, GetDemandHeatmap, GetRevenueReport)",
+      "TelemetryIngestionPort (ReceiveBikeTelemetry, ReceiveLockEvent) – driving pelo lado dos dispositivos IoT"
+    ],
+    "secondary_ports": [
+      "BikeRepository / StationRepository / TripRepository / RiderRepository / WorkOrderRepository / TenantRepository",
+      "EventPublisher (publicação de eventos de domínio: TripStarted, BikeLowBattery, BikeRelocated, etc.)",
+      "IoTDeviceGateway (comandos: unlock, lock, buzzer, modo de baixa energia)",
+      "PaymentGateway (autorização, captura, estorno, assinaturas)",
+      "GeoLocationService / MapProvider (geocoding, roteamento, geofencing)",
+      "NotificationPort (push, SMS, e-mail)",
+      "IdentityProviderPort (autenticação, KYC/verificação de documento)",
+      "DemandForecastPort (modelo preditivo de ML)",
+      "TimeSeriesStorePort (telemetria histórica)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)",
+      "InvoiceDocumentPort (nota fiscal/recibo fiscal municipal)",
+      "FileStoragePort (fotos de avarias, documentos)",
+      "AuditLogPort",
+      "CityOpenDataPort (exportação de dados GBFS/MDS para o poder público)"
+    ],
+    "primary_adapters": [
+      "REST/HTTP API Adapter (OpenAPI) para apps e painéis",
+      "GraphQL Adapter para dashboards de operação",
+      "Mobile App Adapter (BFF para iOS/Android do ciclista)",
+      "Web Admin Console Adapter (operadores e prefeitura)",
+      "Technician/Field Ops App Adapter (manutenção e rebalanceamento)",
+      "MQTT/CoAP Adapter para telemetria e eventos das bicicletas IoT",
+      "Webhook Receiver Adapter (pagamentos, KYC)",
+      "CLI/Script Adapter (operações em lote, migrações, jobs administrativos)",
+      "Scheduler/Cron Adapter (rebalanceamento periódico, faturamento, jobs de limpeza)",
+      "Test Driver Adapter (testes automatizados de aceitação, sem UI nem infraestrutura)",
+      "Message Consumer Adapter (Kafka/SQS para comandos assíncronos)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL + PostGIS Repository Adapter (dados transacionais e geoespaciais)",
+      "Redis Adapter (cache de disponibilidade de estações, locks de reserva, rate limit)",
+      "TimescaleDB/InfluxDB Adapter (telemetria)",
+      "Kafka/NATS/RabbitMQ EventPublisher Adapter",
+      "MQTT Broker IoT Adapter (EMQX/AWS IoT Core) para envio de comandos",
+      "Stripe/Adyen/Pix (Mercado Pago, Pagar.me) PaymentGateway Adapters",
+      "Google Maps/Mapbox/OSRM MapProvider Adapters",
+      "Firebase Cloud Messaging/APNs/Twilio/SES Notification Adapters",
+      "Auth0/Keycloak/Cognito Identity Adapters + provedor de KYC (Onfido/Idwall)",
+      "Python/ML Service Adapter (Prophet/XGBoost) para previsão de demanda",
+      "S3/MinIO FileStorage Adapter",
+      "Fiscal Adapter (NFS-e municipal / integração com prefeitura)",
+      "GBFS/MDS Publisher Adapter",
+      "In-Memory Adapters (fakes) para testes e desenvolvimento local",
+      "System Clock / UUID Adapters"
+    ],
+    "isolation": "O core (domínio + camada de aplicação/use cases) não possui nenhuma dependência de frameworks, bancos, protocolos ou SDKs. Regras: (1) Dependências apontam sempre para dentro (Dependency Inversion) – adapters dependem das ports, nunca o contrário; (2) Ports primárias são interfaces implementadas pelos casos de uso (application services) e chamadas pelos adapters primários; ports secundárias são interfaces declaradas no core e implementadas pelos adapters secundários; (3) DTOs/Commands/Queries do core são independentes de formatos de transporte (JSON, Protobuf, MQTT payload) – cada adapter faz o mapeamento (anti-corruption layer); (4) Exceções e erros de infraestrutura são traduzidos em erros de domínio na borda; (5) Injeção de dependência e composição ocorrem apenas na composition root, fora do core; (6) Tempo, IDs e aleatoriedade são injetados via ports para garantir determinismo; (7) Regras de arquitetura verificadas em CI (ArchUnit/dependency-cruiser/import-linter) impedindo imports de infraestrutura no core; (8) Testes do core rodam com adapters in-memory, sem I/O, e o mesmo conjunto de testes de aceitação pode ser dirigido por API, CLI ou script; (9) Todos os sistemas externos (banco, pagamento, IoT, mapas) recebem tratamento simétrico como adapters substituíveis.",
+    "interfaces": [
+      "App mobile do ciclista (iOS/Android): mapa de estações, reserva, QR code/NFC/Bluetooth para desbloqueio, pagamento, histórico",
+      "Console web de operações da frota: mapa em tempo real, alertas, KPIs, gestão de bicicletas e estações",
+      "App de campo para técnicos e equipes de rebalanceamento: tarefas, rota, checklist, fotos",
+      "Painel administrativo multi-tenant (configuração de cidade, zonas, tarifas)",
+      "Portal da prefeitura/regulador: dados abertos, conformidade, relatórios (GBFS/MDS)",
+      "API pública REST/GraphQL e webhooks para parceiros e integradores (transporte multimodal, apps de mobilidade)",
+      "Firmware/protocolo MQTT para os dispositivos IoT das bicicletas e docas",
+      "CLI para operações administrativas e automações",
+      "Widgets/kiosks em estações (totens de pagamento e informação)"
+    ],
+    "escalabilidade": "Escala horizontal com serviços stateless em containers (Kubernetes) atrás de load balancer, autoscaling por CPU/latência/tamanho de fila. Como o core é isolado, pode ser implantado como monólito modular no início e depois decomposto em serviços por bounded context (Rental, Fleet, Billing, Rebalancing, Telemetry) sem reescrever regras de negócio – bastando trocar adapters (chamada in-process por mensageria). Telemetria de alta vazão ingerida via MQTT broker + Kafka com particionamento por tenant/bikeId, processada de forma assíncrona; leituras de disponibilidade servidas por cache Redis e read models (CQRS) atualizados por eventos. Banco transacional com réplicas de leitura e particionamento por tenant/cidade; dados de telemetria em time-series com retenção e downsampling; PostGIS com índices espaciais (GiST/H3) para consultas por região. Multi-tenancy por cidade permite sharding e implantação regional para baixa latência. Jobs pesados (previsão de demanda, rebalanceamento, faturamento) executam em workers separados e escaláveis independentemente. Idempotência e outbox pattern garantem consistência em desbloqueio/pagamento sob picos (horário de pico, eventos).",
+    "custos": "Principais custos: (1) Conectividade IoT (chips SIM/NB-IoT/LTE-M por bicicleta) e hardware de cadeado/GPS; (2) Infraestrutura de nuvem – computação, banco, broker e armazenamento de telemetria (mitigar com retenção/downsampling, instâncias spot para jobs batch, monólito modular no início); (3) Taxas de gateway de pagamento (~2–4% + tarifa fixa; Pix reduz custo); (4) APIs de mapas/geocoding (mitigar com OSRM/OpenStreetMap self-hosted e cache); (5) SMS/push (preferir push, SMS só para fallback); (6) Operação de campo: rebalanceamento, manutenção e reposição de bicicletas, geralmente o maior custo operacional – reduzido por previsão de demanda e roteirização otimizada; (7) KYC e nota fiscal; (8) Suporte ao cliente, seguros, compliance (LGPD/GDPR) e segurança. A arquitetura hexagonal reduz custo de mudança e de lock-in, permitindo trocar provedores caros por alternativas mais baratas apenas substituindo adapters.",
+    "monetizacao": "Modelo B2B2C SaaS multi-tenant: (1) Assinatura mensal por operadora/cidade, escalonada por tamanho da frota (por bicicleta ativa/mês); (2) Taxa por transação/viagem processada (revenue share ou % sobre o GMV); (3) Módulos premium: previsão de demanda com ML, otimização de rebalanceamento, analytics avançado, white-label do app; (4) Taxa de setup/onboarding e integração com hardware IoT; (5) Marketplace/hardware: venda ou leasing de dispositivos IoT e docas; (6) API para parceiros e integrações de mobilidade multimodal (planos por volume de chamadas); (7) Receita para os operadores (facilitada pela plataforma): passes, assinaturas de ciclistas, tarifas por minuto, multas, publicidade e patrocínio de estações, parcerias corporativas/turismo; (8) Serviços de dados anonimizados para planejamento urbano e contratos com prefeituras (PPP).",
+    "stack_sugerida": "Core: Kotlin/Java (Spring sem vazar para o domínio) ou TypeScript/Go – linguagem escolhida com tipagem forte e domínio livre de frameworks. Estrutura: monólito modular com módulos por bounded context (domain, application, adapters-in, adapters-out, bootstrap) e verificação de arquitetura no CI. Primary adapters: REST/OpenAPI + GraphQL, MQTT (EMQX ou AWS IoT Core), Kafka consumers, cron (Quartz/K8s CronJob). Secondary adapters: PostgreSQL + PostGIS, Redis, TimescaleDB, Kafka/NATS, S3/MinIO, Stripe/Pix/Mercado Pago, Mapbox/OSRM, FCM/APNs/Twilio/SES, Keycloak/Auth0, serviço Python (Prophet/XGBoost) para previsão. Frontend: React Native ou Flutter (app do ciclista e do técnico), React/Next.js (console web) com mapas via MapLibre/Mapbox GL. Infra: Docker, Kubernetes (EKS/GKE) ou ECS, Terraform, GitHub Actions, ArgoCD. Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki, Sentry. Segurança: OAuth2/OIDC, mTLS para dispositivos IoT, secrets em Vault/KMS, criptografia em repouso, conformidade LGPD. Testes: unitários e de aceitação com adapters in-memory, contract tests para adapters (Pact/Testcontainers), testes end-to-end pontuais."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:23:52+00:00",
+    "runner": "runner.py"
+  }
+}

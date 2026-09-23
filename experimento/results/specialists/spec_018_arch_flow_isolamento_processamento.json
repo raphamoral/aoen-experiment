@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona Kafka na ingestão (sinal de processamento assíncrono) e separa contextos como Churn Intelligence e pipeline de retraining como bounded contexts distintos (isolamento lógico), mas não especifica isolamento físico real (workers/containers separados para treino de modelos, feature engineering ou serving), não descreve mecanismos de fallback caso o retraining falhe, não define filas de trabalho para desacoplar o processamento pesado do caminho crítico de serving, e não endereça políticas de escalonamento independente para as cargas computacionalmente intensas — ficando entre ausência total e implementação consciente, sem atingir resiliência de fato."
+}

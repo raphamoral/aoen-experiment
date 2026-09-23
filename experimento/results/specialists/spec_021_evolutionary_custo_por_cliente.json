@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por tenant: as fitness functions cobrem latência, isolamento de dados e observabilidade técnica (OpenTelemetry), mas nenhuma rastreia consumo de recursos por cliente; o multi-tenancy é tratado exclusivamente como requisito de segurança/LGPD, não como unidade de custo, e não há qualquer conexão entre consumo por tenant e modelo de precificação."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A separação em processos stateless, config via env vars e backing services desacoplados permite crescimento horizontal e troca de provedores com esforço razoável, mas a ausência explícita de portas/adaptadores (hexagonal/clean architecture) sugere que a lógica de negócio provavelmente acopla diretamente aos SDKs da AWS e frameworks externos, tornando substituições de componentes uma operação de código — não de configuração."
+}

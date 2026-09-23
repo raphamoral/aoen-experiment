@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura prevê explicitamente um `ISubscriptionUseCase` e um `IPaymentGatewayPort`, sinalizando intenção de modelo por assinatura, mas não há detalhamento de tiers, valores, lógica de cobrança por evento (ex: deal fechado), separação de planos para startups vs. investidores, nem qualquer menção a métricas de sustentabilidade como MRR, LTV, CAC ou churn."
+}

@@ -1,0 +1,89 @@
+{
+  "ideia_idx": 16,
+  "ideia": "App de logística reversa para devoluções de e-commerce",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de devoluções de e-commerce (logística reversa). Núcleo: Aggregate 'Devolução' (RMA) com máquina de estados (Solicitada → Aprovada → Etiqueta emitida → Em trânsito → Recebida → Inspecionada → Resolvida), motor de políticas de devolução por lojista (prazo, motivo, condição do item, frete grátis), decisão de destino do item (restock, recondicionamento, liquidação, descarte, devolução ao fornecedor) e resolução financeira (reembolso, crédito em loja, troca). Entidades e value objects: Devolução, ItemDevolvido, Política, Etiqueta, Inspeção, Resolução, Lojista (tenant), Consumidor, Money, SKU. Eventos de domínio: DevolucaoSolicitada, DevolucaoAprovada, EtiquetaEmitida, ItemRecebido, InspecaoConcluida, ReembolsoAutorizado.",
+    "primary_ports": [
+      "SolicitarDevolucao (consumidor abre RMA a partir de um pedido)",
+      "AprovarOuRejeitarDevolucao (lojista/agente ou aprovação automática por política)",
+      "EmitirEtiquetaReversa",
+      "RastrearDevolucao (consulta de status)",
+      "RegistrarRecebimentoEInspecao (operador de armazém/centro de devolução)",
+      "DecidirDestinoDoItem",
+      "AutorizarResolucaoFinanceira (reembolso, crédito ou troca)",
+      "ConfigurarPoliticasDeDevolucao",
+      "ConsultarRelatoriosEAnalytics",
+      "GerenciarTenantsEUsuarios",
+      "ProcessarEventoExternoRecebido (comando interno acionado por webhooks de transportadora, e-commerce e pagamento após tradução pelo adapter)"
+    ],
+    "secondary_ports": [
+      "DevolucaoRepository (persistência do aggregate)",
+      "PedidoGateway (consultar pedido, itens, cliente e elegibilidade na plataforma de e-commerce)",
+      "TransportadoraGateway (cotar frete, gerar etiqueta/código de postagem, agendar coleta, rastrear)",
+      "PagamentoGateway (estornar, gerar vale/crédito)",
+      "EstoqueGateway (reentrada de estoque no ERP/WMS do lojista)",
+      "NotificacaoGateway (e-mail, SMS, WhatsApp, push)",
+      "ArmazenamentoDeMidia (fotos de avarias, PDFs de etiqueta, comprovantes)",
+      "PublicadorDeEventos / EventBus (outbox)",
+      "AntifraudeGateway (score de fraude e abuso de devoluções)",
+      "RepositorioDePoliticas / ProvedorDeConfiguracao",
+      "ProvedorDeIdentidade e Autorizacao (multi-tenant)",
+      "ClassificadorDeCondicaoDoItem (IA/visão computacional, opcional)",
+      "MarketplaceRevendaGateway (canais de liquidação/revenda de itens recuperados)",
+      "FaturamentoDaPlataformaGateway (metering e cobrança do SaaS)",
+      "Relogio, GeradorDeId e Auditoria (portas utilitárias para determinismo e testes)"
+    ],
+    "primary_adapters": [
+      "REST API (OpenAPI) para integrações de lojistas e parceiros",
+      "GraphQL/BFF para o portal do consumidor e o painel do lojista",
+      "Portal web self-service do consumidor (SPA/PWA)",
+      "Painel administrativo do lojista (web)",
+      "App/PWA de operador de armazém com leitura de código de barras e câmera",
+      "Webhooks de entrada: Shopify, VTEX, Nuvemshop, WooCommerce, Magento, Correios, Loggi, Jadlog, Stripe, Mercado Pago (traduzem payload externo em comandos das portas primárias)",
+      "Consumidores de fila/eventos (SQS, Kafka) para comandos assíncronos",
+      "CLI e scripts de operação/migração em lote",
+      "Job scheduler (cron) para expirar prazos, reenviar lembretes e conciliar rastreios",
+      "Chatbot/WhatsApp Bot para abertura e acompanhamento de devoluções",
+      "Suíte de testes automatizados (unitários, contrato, BDD) e test doubles que dirigem o core sem infraestrutura, com o mesmo status dos demais adapters primários"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios via SQL/ORM) e adapter in-memory para testes",
+      "Adapters de e-commerce: Shopify, VTEX, Nuvemshop, WooCommerce, Magento, ERP via API",
+      "Adapters de transportadoras: Correios, Loggi, Jadlog, Melhor Envio, Kangu, FedEx/DHL, com um agregador de fretes como alternativa",
+      "Adapters de pagamento: Stripe, Mercado Pago, Pagar.me, Adyen, PIX (estorno)",
+      "Adapters de WMS/ERP: Bling, Tiny, TOTVS, SAP, Linx",
+      "Adapters de notificação: SES/SendGrid, Twilio, Zenvia, WhatsApp Business API, FCM",
+      "S3/GCS/MinIO para mídia e documentos",
+      "Kafka/SQS/SNS/RabbitMQ com padrão Transactional Outbox",
+      "Adapters de antifraude: Clearsale, Konduto, motor de regras interno",
+      "Adapter de IA de visão computacional (modelo próprio ou API) para classificar condição do item",
+      "Keycloak/Auth0/Cognito para identidade e multi-tenancy",
+      "Adapter de metering e billing SaaS (Stripe Billing/Lago)",
+      "Adapters de observabilidade e auditoria (OpenTelemetry, log de auditoria imutável)",
+      "Fakes, stubs e mocks de cada gateway, usados em testes e em ambiente de desenvolvimento local"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) fica em módulos sem nenhuma dependência de framework, banco, HTTP, SDK de terceiros ou serialização. A regra de dependência aponta sempre para dentro: adapters dependem das portas; o core nunca importa adapters. As portas primárias são interfaces de casos de uso que os adapters de entrada chamam. As portas secundárias são interfaces declaradas no core, na linguagem do domínio (ex.: 'TransportadoraGateway.emitirEtiqueta(Devolucao)', não 'CorreiosClient.postarSRO'), e implementadas na borda. Os adapters fazem a tradução anti-corrupção: DTOs, payloads e erros de cada fornecedor são mapeados para value objects e exceções de domínio. A injeção de dependência é feita apenas na composition root, onde os adapters são ligados às portas por configuração. Todos os sistemas externos recebem tratamento simétrico, sem distinção entre 'banco' e 'API de terceiro': todos são adapters atrás de portas. Regras aplicadas: (1) o estado só muda dentro do aggregate; (2) eventos de domínio saem via outbox; (3) idempotência e chaves de correlação em todas as portas de entrada assíncronas, pois webhooks são reentregues; (4) multi-tenancy resolvido por contexto explícito (TenantId) passado às portas, sem estado global. Testes de arquitetura (ArchUnit, dependency-cruiser, import-linter) no CI verificam que o core não importa adapters. Testes de contrato garantem que cada adapter respeita sua porta, e o core é testado com adapters fake, sem rede ou banco.",
+    "interfaces": [
+      "Portal do consumidor: solicitar devolução, escolher motivo e método (coleta, ponto de entrega, agência), imprimir/QR code da etiqueta, acompanhar status",
+      "Painel do lojista: fila de aprovações, configuração de políticas, custos de frete reverso, métricas de taxa de devolução, motivos e SKUs problemáticos",
+      "App do operador de armazém: bipar item, registrar condição com fotos, decidir destino",
+      "API REST/GraphQL pública com autenticação por API key/OAuth2 e documentação OpenAPI",
+      "Webhooks de saída para o sistema do lojista (mudança de status)",
+      "Widget/embed e plugins/apps para as plataformas de e-commerce (Shopify App, VTEX IO, Nuvemshop)",
+      "Canais conversacionais: WhatsApp e e-mail transacional",
+      "Console interno de suporte e administração da plataforma (multi-tenant)",
+      "CLI de operação"
+    ],
+    "escalabilidade": "Escala horizontal por design: o core é stateless e roda em contêineres atrás de load balancer, e o estado fica nos adapters. Multi-tenant com tenant_id em todas as tabelas e row-level security, com opção de isolamento por schema ou banco para clientes enterprise. Escrita e leitura separadas (CQRS leve): o modelo de escrita usa o aggregate no PostgreSQL, enquanto as consultas de painel e analytics usam read models/réplicas ou data warehouse. Fluxos assíncronos (emissão de etiqueta, notificações, sincronização com ERP, reembolso) passam por filas com retries, backoff, DLQ e idempotência, o que absorve picos sazonais como Black Friday e pós-Natal. Circuit breakers, timeouts e bulkheads por adapter evitam que a falha de uma transportadora afete as demais, com fallback para transportadora alternativa. Cache (Redis) para políticas e cotações. Particionamento de tabelas por tenant/data, autoscaling por profundidade de fila (KEDA) e rate limiting por tenant. Novos canais, transportadoras ou plataformas entram como novos adapters sem alterar o core. Começa como monólito modular e só extrai serviços (ex.: etiquetas, notificações) se houver necessidade real.",
+    "custos": "Principais custos variáveis: chamadas a APIs de transportadoras e frete, mensagens WhatsApp/SMS (o mais caro por unidade), armazenamento e tráfego de fotos, reprocessamento por reentregas de webhooks e computação de IA de visão. Mitigações: compressão e ciclo de vida do storage (S3 IA/Glacier), notificações priorizando e-mail e WhatsApp apenas em marcos críticos, cache de cotações, repcobrança de custos de terceiros (pass-through) ao lojista com margem, e IA opcional em plano superior. Custos fixos iniciais baixos com monólito modular em contêineres gerenciados (ECS/Cloud Run), PostgreSQL gerenciado e fila gerenciada, com custo proporcional ao uso. Custos ocultos: manutenção de integrações (as APIs de plataformas e transportadoras mudam), suporte ao lojista, conformidade com LGPD (retenção e anonimização de dados pessoais), PCI (evitando tocar dados de cartão ao delegar ao gateway) e fraude/chargeback. Estratégia FinOps: métricas de custo por devolução processada, alertas por tenant e limites de uso por plano.",
+    "monetizacao": "Modelo híbrido SaaS: (1) assinatura mensal por plano (Starter, Growth, Enterprise) com franquia de devoluções/mês e limites de integrações; (2) cobrança por devolução excedente (usage-based); (3) markup sobre frete reverso e sobre mensagens quando a plataforma intermedeia; (4) add-ons: antifraude/abuso de devoluções, IA de inspeção, analytics avançado, white-label do portal, SSO e SLA enterprise; (5) receita de recuperação de valor: comissão sobre revenda/liquidação de itens recuperados e sobre trocas que evitam reembolso (upsell de troca por crédito/produto); (6) marketplace de integrações e parceiros (transportadoras, pontos de coleta) com revenue share; (7) serviços profissionais para onboarding e integrações customizadas. A tese de valor é vender ROI ao lojista: menos custo por devolução, mais trocas e créditos que retêm a receita, e menos fraude.",
+    "stack_sugerida": "Core: Kotlin/Java (Spring sem vazar para o domínio, ou Ktor) ou TypeScript (NestJS com módulos de domínio puros), organizado em módulos/pacotes domain, application (portas), adapters-in e adapters-out. Persistência: PostgreSQL (RLS multi-tenant), Redis para cache e rate limiting, S3/GCS para mídia. Mensageria: SQS/SNS ou Kafka/Redpanda com Transactional Outbox (Debezium ou poller). Frontend: React/Next.js (portal do consumidor e painel do lojista) e PWA para o operador de armazém. API: REST com OpenAPI e GraphQL para o BFF. Identidade: Keycloak, Auth0 ou Cognito. Infra: contêineres em AWS ECS/Fargate ou GCP Cloud Run (Kubernetes + KEDA quando o volume justificar), Terraform, CI/CD com GitHub Actions. Observabilidade: OpenTelemetry, Grafana/Prometheus/Loki ou Datadog, Sentry. Qualidade: testes unitários do core com adapters fake, testes de contrato (Pact) para adapters, Testcontainers para integração, ArchUnit/dependency-cruiser para impor a arquitetura. Billing SaaS: Stripe Billing ou Lago. Analytics: dbt + BigQuery/ClickHouse ou Metabase."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:17:52+00:00",
+    "runner": "runner.py"
+  }
+}

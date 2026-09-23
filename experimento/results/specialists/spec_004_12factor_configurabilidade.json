@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta descreve excelente separação de configuração por ambiente (dev/staging/prod via env vars, Vault, K8s Secrets), mas é completamente omissa sobre configurabilidade por tenant — não há menção a tabelas de configuração por cliente, feature flags por tenant, regras de negócio parametrizáveis (ex: tempo de leilão, critérios de habilitação, fluxo de aprovação, limites de lance), nem a um processo de onboarding que resulte apenas em 'nova row no banco', o que indica que comportamentos distintos por cliente ainda exigiriam código ou deploy dedicado."
+}

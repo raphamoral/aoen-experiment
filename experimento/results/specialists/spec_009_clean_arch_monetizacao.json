@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não menciona nenhum modelo de monetização — não há referência a comissões por transação, planos de assinatura, taxas de certificação, tiers de acesso ou qualquer mecanismo de geração de receita, apesar de o campo 'platformFee' aparecer na entidade Transaction sem qualquer detalhamento sobre como é calculado ou estruturado."
+}

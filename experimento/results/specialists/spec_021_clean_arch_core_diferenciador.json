@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador existe — IoT com detecção de anomalia conduzindo manutenção preditiva (IoTDevice + SensorReading com regras de outlier e limiar) — mas não está isolado arquiteturalmente como núcleo, falta o fluxo explícito sensor→alerta→MaintenanceOrder, e não há nenhuma abstração de extensibilidade para múltiplos protocolos/fornecedores IoT, tornando o diferenciador presente porém não insubstituível."
+}

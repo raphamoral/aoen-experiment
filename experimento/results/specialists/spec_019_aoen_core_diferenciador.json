@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de agendamento inteligente é claramente identificado como núcleo, explicitamente isolado das interfaces via SchedulingService, extensível por design (troca de provedor de IA sem impacto nas interfaces), e resolve um problema real mensurável (receita perdida por ociosidade e no-show) que calendários genéricos não endereçam — perde apenas um ponto pela ausência de evidência empírica ou baseline de acurácia do modelo preditivo de no-show que sustente a afirmação de unicidade."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de precificação dinâmica é claramente identificado como núcleo, isolado atrás de uma interface estável (PricingEngine), extensível via múltiplas implementações intercambiáveis (heurísticas → ML → LLM), e resolve um problema real e recorrente para um segmento que não tem capacidade de manter pricing dedicado — a única ressalva que impede nota 10 é a ausência de evidência concreta de que o motor já supera alternativas existentes (ex: benchmarks, validação com clientes reais, ou propriedade intelectual defensável)."
+}

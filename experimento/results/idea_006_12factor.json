@@ -1,0 +1,52 @@
+{
+  "ideia_idx": 6,
+  "ideia": "App de nutrição personalizada com IA baseada em exames laboratoriais",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único no Git com múltiplos deploys (staging, production, canary). Serviços internos organizados como packages independentes (api, worker, ml-service, web) compartilhando o mesmo repositório. Cada deploy usa a mesma codebase com variáveis de ambiente distintas. CI/CD garante que nenhum deploy use código divergente do trunk.",
+    "dependencies": "Cada serviço declara dependências explicitamente e isoladas: Python services usam pyproject.toml + uv com virtualenvs; Node services usam package.json + pnpm com lockfile; containers Docker garantem isolamento total. Nenhuma dependência implícita do sistema operacional. Modelos de ML versionados via DVC ou MLflow Registry.",
+    "config": "Toda configuração sensível ou por ambiente (DATABASE_URL, OPENAI_API_KEY, STRIPE_SECRET_KEY, LAB_API_CREDENTIALS) injetada exclusivamente via variáveis de ambiente. Nunca hardcoded ou em arquivos commitados. Gerenciadas via AWS Secrets Manager ou HashiCorp Vault em produção, arquivo .env local em desenvolvimento (gitignored). Configurações validadas no startup via Pydantic Settings.",
+    "backing_services": {
+      "banco_relacional": "PostgreSQL (AWS RDS) — dados de usuários, planos, exames, histórico nutricional",
+      "banco_vetorial": "pgvector (extensão PostgreSQL) ou Pinecone — embeddings para busca semântica de nutrientes e perfis",
+      "cache": "Redis (Upstash ou ElastiCache) — sessões, rate limiting, cache de recomendações",
+      "fila_mensagens": "AWS SQS ou RabbitMQ — processamento assíncrono de exames e geração de planos",
+      "armazenamento_objetos": "AWS S3 — PDFs de exames, relatórios gerados, imagens de alimentos",
+      "ia_llm": "OpenAI API ou Anthropic API — geração de recomendações nutricionais personalizadas",
+      "email": "SendGrid ou AWS SES — notificações, relatórios semanais",
+      "observabilidade": "DataDog ou Grafana + Prometheus — métricas, logs, traces",
+      "pagamentos": "Stripe — assinaturas e cobrança recorrente",
+      "ocr_exames": "AWS Textract ou Google Document AI — extração de dados de PDFs laboratoriais"
+    },
+    "build_release_run": "Pipeline estrito em três fases separadas e imutáveis. BUILD: GitHub Actions compila assets, instala dependências, roda testes, constrói imagem Docker imutável com tag SHA do commit. RELEASE: imagem + configurações de ambiente combinadas via Helm values ou AWS Parameter Store, gerando artefato de release versionado e auditável. RUN: Kubernetes ou ECS inicia processos a partir do release sem alterações. Rollback = deploy de release anterior. Nunca modificar código em produção.",
+    "processes": "Aplicação roda como processos stateless e share-nothing. API HTTP não armazena estado em memória entre requests — toda sessão e estado persistido em Redis ou PostgreSQL. Workers de processamento de exames são processos independentes consumindo filas. Modelo de ML carregado por processo worker sem estado compartilhado. Sticky sessions proibidas — qualquer instância pode atender qualquer request.",
+    "concurrency": "Escala horizontal por tipo de workload via process model: API servers (I/O-bound) escalam em múltiplas réplicas Kubernetes com HPA baseado em CPU/RPS; ML workers (CPU/GPU-bound) escalam separadamente com pool de processos; batch workers (processamento de exames) escalam via KEDA baseado no tamanho da fila SQS. Cada tipo de processo tem profile de recurso e política de escala independente.",
+    "disposability": "Startup em menos de 5 segundos via imagens Docker otimizadas com dependências pré-instaladas. Shutdown gracioso: SIGTERM inicia draining de conexões, workers completam job atual antes de encerrar (deadline de 30s). Health checks /health e /ready separados para liveness e readiness. Filas com dead-letter queue para jobs falhos. Idempotência em todos os workers — reprocessamento seguro sem efeitos colaterais duplicados.",
+    "interfaces": [
+      "REST API (FastAPI) — backend principal com OpenAPI docs automáticos",
+      "Web App (Next.js) — dashboard do usuário, upload de exames, visualização de planos",
+      "Mobile App (React Native) — acompanhamento diário, registro de refeições, notificações",
+      "Admin Panel (interno) — gestão de usuários, revisão de planos, analytics",
+      "Webhook API — integrações com laboratórios parceiros para recebimento automático de exames",
+      "Email Reports — relatórios semanais automatizados com progresso nutricional"
+    ],
+    "escalabilidade": "Arquitetura desacoplada permite escala independente por componente. API layer escala horizontalmente via Kubernetes HPA sem limite prático. Processamento de exames e geração de planos IA desacoplados em workers assíncronos — picos absorvidos pela fila sem degradar API. PostgreSQL com read replicas para queries analíticas. Cache Redis reduz carga de banco para dados frequentes. CDN (CloudFront) para assets estáticos. Multi-region possível via Route53 latency routing sem redesenho de arquitetura.",
+    "custos": "Modelo pay-per-use via ECS Fargate ou Kubernetes spot nodes minimiza custos ociosos. Workers de ML provisionados sob demanda via KEDA — zero custo quando fila vazia. S3 + lifecycle policies arquivam exames antigos em Glacier. Chamadas LLM são o maior custo variável — cache de recomendações similares em Redis reduz chamadas repetidas. RDS com auto-pause em staging. Budget alerts no AWS Cost Explorer. Estimativa inicial: $300-800/mês para base de 1.000 usuários ativos.",
+    "monetizacao": "SaaS com assinaturas mensais/anuais via Stripe: Plano Basic ($19/mês) — análise de exames + plano nutricional básico + 1 atualização/mês; Plano Premium ($49/mês) — análise contínua + plano personalizado + suporte prioritário + integrações com apps de saúde; Plano Clínico ($199/mês) — para nutricionistas, multi-pacientes + white-label + API access. Trial gratuito de 14 dias. Possível B2B com laboratórios e planos de saúde via contrato enterprise.",
+    "stack_sugerida": {
+      "api": "Python 3.12 + FastAPI + Pydantic v2",
+      "workers": "Python + Celery ou ARQ (async) consumindo SQS",
+      "ml_ia": "LangChain + OpenAI GPT-4o ou Anthropic Claude para recomendações; scikit-learn para modelos auxiliares",
+      "ocr": "AWS Textract para extração de dados de exames laboratoriais em PDF",
+      "frontend_web": "Next.js 14 (App Router) + TypeScript + Tailwind CSS + shadcn/ui",
+      "mobile": "React Native + Expo",
+      "banco_dados": "PostgreSQL 16 com pgvector + Redis 7",
+      "infraestrutura": "AWS (ECS Fargate ou EKS) + Terraform para IaC",
+      "ci_cd": "GitHub Actions + Docker + ECR",
+      "observabilidade": "OpenTelemetry + Grafana Cloud ou DataDog",
+      "pagamentos": "Stripe Billing + webhooks",
+      "logs": "stdout/stderr estruturado em JSON coletado por CloudWatch Logs ou Loki"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único no Git com múltiplos deploys (staging, production, canary). Serviços internos organizados como packages independentes (api, worker, ml-service, web) compartilhando o mesmo repositório. Cada deploy usa a mesma codebase com variáveis de ambiente distintas. CI/CD garante que nenhum deploy use código divergente do trunk.\",\n\n  \"dependencies\": \"Cada serviço declara dependências explicitamente e isoladas: Python services usam pyproject.toml + uv com virtualenvs; Node services usam package.json + pnpm com lockfile; containers Docker garantem isolamento total. Nenhuma dependência implícita do sistema operacional. Modelos de ML versionados via DVC ou MLflow Registry.\",\n\n  \"config\": \"Toda configuração sensível ou por ambiente (DATABASE_URL, OPENAI_API_KEY, STRIPE_SECRET_KEY, LAB_API_CREDENTIALS) injetada exclusivamente via variáveis de ambiente. Nunca hardcoded ou em arquivos commitados. Gerenciadas via AWS Secrets Manager ou HashiCorp Vault em produção, arquivo .env local em desenvolvimento (gitignored). Configurações validadas no startup via Pydantic Settings.\",\n\n  \"backing_services\": {\n    \"banco_relacional\": \"PostgreSQL (AWS RDS) — dados de usuários, planos, exames, histórico nutricional\",\n    \"banco_vetorial\": \"pgvector (extensão PostgreSQL) ou Pinecone — embeddings para busca semântica de nutrientes e perfis\",\n    \"cache\": \"Redis (Upstash ou ElastiCache) — sessões, rate limiting, cache de recomendações\",\n    \"fila_mensagens\": \"AWS SQS ou RabbitMQ — processamento assíncrono de exames e geração de planos\",\n    \"armazenamento_objetos\": \"AWS S3 — PDFs de exames, relatórios gerados, imagens de alimentos\",\n    \"ia_llm\": \"OpenAI API ou Anthropic API — geração de recomendações nutricionais personalizadas\",\n    \"email\": \"SendGrid ou AWS SES — notificações, relatórios semanais\",\n    \"observabilidade\": \"DataDog ou Grafana + Prometheus — métricas, logs, traces\",\n    \"pagamentos\": \"Stripe — assinaturas e cobrança recorrente\",\n    \"ocr_exames\": "
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 24,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra sólidos princípios evolutivos — pipeline agnóstico com conectores como plugins intercambiáveis, Service Layer com contratos de domínio puros e interfaces como adaptadores de protocolo — mas perde pontos por não explicitar abstrações de infraestrutura (repositórios, camada de persistência agnóstica de banco), ausência de estratégia de escalabilidade horizontal e a proposta estar incompleta no ponto crítico onde o fluxo de ingestão começa a ser descrito."
+}

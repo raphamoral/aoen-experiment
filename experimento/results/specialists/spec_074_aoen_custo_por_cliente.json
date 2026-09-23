@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 74,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por tenant, custo por operação ou rastreamento de consumo de recursos por cliente — os serviços de domínio (InventionService, RoyaltyService, etc.) modelam fluxos de negócio, mas não há qualquer camada de metering, billing por uso ou cálculo de margem por cliente que conecte custo ao modelo de precificação."
+}

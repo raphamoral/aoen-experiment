@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 27,
+  "ideia": "Plataforma de gestão de eventos corporativos híbridos",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de eventos corporativos híbridos (presenciais + remotos): planejamento, inscrição e credenciamento de participantes, agenda e sessões, palestrantes, patrocinadores, experiência simultânea presencial/online, engajamento (Q&A, enquetes, networking), e análise de resultados/ROI. Agregados principais: Evento, Sessão, Participante, Inscrição, Ingresso, Palestrante, Patrocinador, Espaço/Local, Organização (tenant). Regras de negócio no core: capacidade por modalidade (presencial/remoto), elegibilidade de inscrição, waitlist, conflitos de agenda, políticas de cancelamento/reembolso, check-in unificado e métricas de engajamento.",
+    "primary_ports": [
+      "EventManagementPort (criar/publicar/cancelar evento, definir modalidades e capacidade)",
+      "AgendaManagementPort (sessões, trilhas, palestrantes, salas físicas e virtuais)",
+      "RegistrationPort (inscrever, escolher modalidade, cancelar, transferir ingresso, waitlist)",
+      "AttendanceCheckInPort (check-in presencial via QR/NFC e entrada em sessão virtual)",
+      "EngagementPort (Q&A, enquetes, chat, networking, agendamento de reuniões 1:1)",
+      "SponsorExhibitorPort (gestão de estandes físicos/virtuais, leads, materiais)",
+      "TicketingPort (tipos de ingresso, cupons, lotes)",
+      "AnalyticsReportingPort (consulta de métricas, ROI, relatórios)",
+      "TenantAdministrationPort (organizações, usuários, papéis, branding, planos)",
+      "BroadcastControlPort (iniciar/encerrar transmissão, moderar sessão híbrida)"
+    ],
+    "secondary_ports": [
+      "EventRepositoryPort / RegistrationRepositoryPort / TenantRepositoryPort (persistência)",
+      "PaymentGatewayPort (cobrança, reembolso, split de repasse)",
+      "VideoStreamingPort (transmissão, salas virtuais, gravação, legendas)",
+      "NotificationPort (e-mail, SMS, push, WhatsApp)",
+      "CalendarSyncPort (convites e sincronização de calendário)",
+      "IdentityProviderPort (SSO/SAML/OIDC, provisionamento SCIM)",
+      "CRMIntegrationPort (sincronização de leads e contatos)",
+      "VenueBookingPort (reserva de locais e fornecedores)",
+      "TranslationCaptioningPort (tradução simultânea e legendagem)",
+      "FileStoragePort (materiais, gravações, crachás)",
+      "BadgePrintingPort (impressão de crachás no local)",
+      "EventPublisherPort / MessageBusPort (eventos de domínio)",
+      "AnalyticsSinkPort (data warehouse)",
+      "ClockPort / IdGeneratorPort (tempo e identificadores determinísticos para testes)",
+      "InvoicingTaxPort (nota fiscal e impostos)"
+    ],
+    "primary_adapters": [
+      "REST API Adapter (OpenAPI)",
+      "GraphQL API Adapter (BFF para web e mobile)",
+      "Web App Adapter (painel do organizador e portal do participante)",
+      "Mobile App Adapter (app do participante e app de check-in)",
+      "Kiosk/Totem Adapter (autoatendimento de check-in no local)",
+      "WebSocket/SSE Adapter (interações em tempo real: Q&A, enquetes, chat)",
+      "Webhook Inbound Adapter (Stripe, provedor de vídeo, CRM)",
+      "CLI/Script Adapter (importação em massa, operações administrativas)",
+      "Scheduler/Cron Adapter (lembretes, encerramento de inscrições, liberação de waitlist)",
+      "Message Consumer Adapter (consome eventos de filas)",
+      "Test Adapter / Fake Driver (testes de aceitação sem UI, BDD)",
+      "Public API/SDK Adapter (integrações de parceiros)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter (repositórios, com RLS por tenant)",
+      "Redis Adapter (cache, sessões, contadores de capacidade e presença em tempo real)",
+      "Stripe Adapter / Pagar.me / Mercado Pago Adapter (PaymentGatewayPort)",
+      "LiveKit / Zoom SDK / Vimeo / Mux / AWS IVS Adapter (VideoStreamingPort)",
+      "SendGrid / Amazon SES / Twilio / FCM / APNs Adapter (NotificationPort)",
+      "Google Calendar / Microsoft Graph Adapter (CalendarSyncPort)",
+      "Okta / Azure AD / Auth0 / Keycloak Adapter (IdentityProviderPort)",
+      "Salesforce / HubSpot / RD Station Adapter (CRMIntegrationPort)",
+      "S3 / GCS Adapter (FileStoragePort)",
+      "Kafka / SQS+SNS / NATS Adapter (MessageBusPort)",
+      "BigQuery / ClickHouse Adapter (AnalyticsSinkPort)",
+      "DeepL / Google Translate / AWS Transcribe Adapter (TranslationCaptioningPort)",
+      "Focus NFe / eNotas / Avalara Adapter (InvoicingTaxPort)",
+      "In-Memory Adapters (repositórios e gateways falsos para testes)",
+      "Adaptador de impressora Zebra/Brother (BadgePrintingPort)"
+    ],
+    "isolation": "O core (domain + application/use cases) é um módulo sem dependências de frameworks, bibliotecas de I/O ou SDKs de terceiros. Regras: (1) a dependência aponta sempre para dentro — adapters dependem de ports, nunca o inverso; (2) ports são interfaces definidas na linguagem do domínio (ex.: 'PaymentGatewayPort.charge(Money, PaymentMethodRef)'), sem vazar tipos de Stripe, HTTP ou SQL; (3) DTOs e mapeadores ficam nos adapters (anti-corruption layer), traduzindo modelos externos para o modelo de domínio; (4) injeção de dependências composta apenas no composition root (fora do core); (5) tempo, aleatoriedade e IDs entram por ports (ClockPort, IdGeneratorPort); (6) multi-tenancy tratada como conceito do domínio (TenantContext) e não como detalhe de banco; (7) regras de arquitetura verificadas automaticamente (ArchUnit / dependency-cruiser / import-linter) no CI; (8) testes de contrato por port executados contra todos os adapters (real e fake); (9) eventos de domínio publicados via port, mantendo o core agnóstico ao broker; (10) o mesmo caso de uso é exercitado por API, CLI, testes ou scheduler sem alteração, garantindo simetria.",
+    "interfaces": [
+      "Painel Web do Organizador (criação de eventos, agenda, patrocinadores, relatórios)",
+      "Portal/Lobby do Participante (inscrição, agenda personalizada, sala virtual, networking)",
+      "App Mobile do Participante (iOS/Android, ingresso digital, notificações, mapa do local)",
+      "App/Totem de Check-in e credenciamento",
+      "Console do Moderador/Produtor de sessão híbrida (controle de palco, Q&A, transmissão)",
+      "Portal de Patrocinadores/Expositores (leads, métricas de estande)",
+      "Portal do Palestrante (upload de materiais, teste técnico, roteiro)",
+      "Console de Administração do Tenant (SSO, papéis, branding white-label, cobrança)",
+      "API pública REST/GraphQL + Webhooks + SDKs",
+      "Widgets embutíveis (página de inscrição, agenda) para sites corporativos",
+      "Interface de linha de comando para automação e importação"
+    ],
+    "escalabilidade": "Modular monolith hexagonal no início, com bounded contexts (Eventos, Inscrições, Engajamento, Streaming, Faturamento, Analytics) extraíveis em serviços à medida que a carga exigir, pois os ports já delimitam as fronteiras. Escala horizontal stateless da camada de aplicação em containers (Kubernetes/ECS/Cloud Run) com autoscaling por CPU e fila. Picos previsíveis (abertura de inscrições, início de keynote): pré-aquecimento (scheduled scaling), fila de inscrição com controle de capacidade atômico em Redis, CQRS para leituras de agenda/lobby servidas por cache e CDN, e read replicas. Tempo real (chat, Q&A, enquetes) em gateway WebSocket separado com pub/sub (Redis/NATS) e fan-out limitado; vídeo delegado a provedores/CDN especializados (SFU/HLS) para não pesar no core. Comunicação assíncrona por eventos de domínio (outbox pattern) para notificações, analytics e integrações. Multi-tenancy com RLS e particionamento por tenant/evento; tenants enterprise podem ser isolados em células/bancos dedicados. Adapters trocáveis permitem multi-região e failover de provedores (ex.: alternar de Zoom para LiveKit) sem tocar no core. Idempotência em webhooks e comandos, rate limiting e backpressure por tenant.",
+    "custos": "Principais vetores: (1) streaming de vídeo (banda, transcodificação, gravação) — maior custo variável, tipicamente cobrado por minuto de participante/hora de transmissão; mitigar com HLS/CDN para audiência grande, WebRTC apenas para interação, tiers de qualidade e gravação sob demanda; (2) tradução/legendas por IA cobradas por minuto; (3) mensageria (e-mail/SMS/WhatsApp) com custo por envio — priorizar e-mail e push, SMS/WhatsApp como add-on; (4) taxas de gateway de pagamento (~2,9% + tarifa fixa) repassadas ao organizador ou ao participante; (5) infraestrutura de compute/banco/cache dimensionada por picos — usar autoscaling, spot instances para jobs, e desligar ambientes de eventos encerrados; (6) armazenamento de gravações com lifecycle (mover para camadas frias); (7) suporte ao vivo em eventos grandes (custo humano); (8) conformidade (LGPD/GDPR, SOC 2, ISO 27001) e residência de dados. Estratégia: margem por evento controlada por unit economics (custo por participante-hora), pass-through de custos variáveis em planos, e adapters alternativos para renegociar/trocar fornecedores caros. Um monolito modular reduz custo operacional inicial de equipe e observabilidade.",
+    "monetizacao": "Modelo híbrido B2B: (1) assinatura SaaS por tenant em tiers (Starter/Pro/Enterprise) com limites de eventos ativos, participantes e armazenamento; (2) preço por evento ou por participante (pay-as-you-go) para uso esporádico; (3) taxa de serviço sobre ingressos pagos (take rate) e split de pagamento via marketplace de pagamentos; (4) add-ons: streaming premium, tradução simultânea, legendas por IA, gravação/on-demand, WhatsApp/SMS, white-label e domínio próprio, impressão de crachás e kits de hardware; (5) planos Enterprise com SSO/SCIM, SLA, residência de dados, suporte dedicado e integrações customizadas; (6) marketplace de patrocínio (pacotes de estandes e geração de leads cobrados ao patrocinador); (7) serviços profissionais (produção técnica, moderação, onboarding); (8) API/integrações premium e parceiros (revenda por agências de eventos); (9) analytics avançado/benchmarking de ROI como upsell. Free tier limitado ou trial por evento para aquisição.",
+    "stack_sugerida": "Core/back-end: TypeScript (NestJS com módulos hexagonais, ou Fastify + tsyringe) ou Kotlin/Java (Spring Boot com ArchUnit) — domínio em módulo puro sem framework. Persistência: PostgreSQL (RLS multi-tenant) + Redis; migrações via Flyway/Prisma-Migrate; outbox pattern com Debezium ou worker próprio. Mensageria: SQS/SNS ou Kafka/NATS. Tempo real: WebSocket gateway (Socket.IO/uWebSockets) com Redis pub/sub. Vídeo: LiveKit (WebRTC/SFU) para interação + Mux/AWS IVS/CloudFront (HLS) para grandes audiências, com Zoom/Teams como adapters opcionais. Front-end: React + Next.js (organizador e portal), React Native/Expo (mobile), PWA para check-in; design system compartilhado. Auth: Keycloak/Auth0/WorkOS (SSO/SCIM). Pagamentos: Stripe (Connect para split) + Pagar.me/Mercado Pago para Brasil. Infra: AWS ou GCP com Kubernetes (EKS/GKE) ou ECS/Cloud Run, Terraform, CDN (CloudFront/Cloudflare), S3/GCS. Observabilidade: OpenTelemetry, Grafana/Prometheus/Loki, Sentry. Analytics: ClickHouse/BigQuery + dbt + Metabase/Superset. Qualidade: testes de contrato por port, BDD (Cucumber) contra adaptadores primários fake, Testcontainers, dependency-cruiser/ArchUnit no CI. CI/CD: GitHub Actions, feature flags (Unleash/LaunchDarkly)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:39:20+00:00",
+    "runner": "runner.py"
+  }
+}

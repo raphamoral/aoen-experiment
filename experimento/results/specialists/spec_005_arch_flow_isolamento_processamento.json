@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta delega implicitamente alguns processos pesados a serviços externos (assinatura ICP-Brasil via Certisign/D4Sign, OCR como produto), mas não menciona nenhum mecanismo de isolamento físico real para os processos mais custosos internos (LLM de extração de cláusulas, análise preditiva de risco, geração de PDF com hash) — ausência total de filas de mensagens, workers dedicados, fallback em caso de falha do processamento pesado ou estratégia de escalonamento independente desses componentes."
+}

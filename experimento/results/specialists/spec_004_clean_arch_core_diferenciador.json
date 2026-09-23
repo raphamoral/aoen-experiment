@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "A proposta identifica elementos de um leilão reverso com scoring técnico (technicalScore, reputationScore, certifications), mas não isola um núcleo diferenciador explícito — a lógica de ranqueamento multi-critério (preço vs. técnica vs. reputação) que seria o coração do produto aparece dispersa em atributos sem uma engine de decisão definida, tornando-o indistinguível de qualquer marketplace B2B com lances decrescentes."
+}

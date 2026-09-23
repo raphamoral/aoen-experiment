@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador (cadeia de custódia imutável + certificação regulatória como bounded context isolado) está identificado e arquiteturalmente separado — com fitness functions dedicadas (audit log, mutation score) e adaptadores que evitam lock-in de infraestrutura — porém a proposta não articula por que esse mecanismo de certificação é tecnologicamente insubstituível frente a alternativas existentes (ex: laudos de terceiros, inspeção presencial por certificadoras), nem como o núcleo escala para novos tipos de equipamento ou novas jurisdições regulatórias sem redesenho do domínio."
+}

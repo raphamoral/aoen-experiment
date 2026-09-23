@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 69,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "A proposta demonstra separação explícita e intencional entre fluxo fixo (fase3_fluxo_fixo) e parâmetros configuráveis por projeto/tenant (fase3_parametros_configuraveis), com engine plugável via interface abstraída e comportamento dirigido por config (nível WCAG, cron, URLs, template de relatório, canais de notificação) — o que viabiliza onboarding sem código; a nota não atinge 10 porque a seção de regras customizadas está truncada (impedindo avaliar a extensão real da customização por tenant) e não há descrição explícita do mecanismo de isolamento de configuração entre tenants nem do fluxo de provisionamento automatizado de novos clientes."
+}

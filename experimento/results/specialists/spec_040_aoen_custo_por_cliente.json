@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 40,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural descreve componentes técnicos (TriageEngine, TriageService, interfaces) e mercados-alvo, mas não menciona nenhum mecanismo de rastreamento de custo por tenant, cálculo de custo por operação/triagem (ex: custo de chamada de API de IA por análise), nem conecta consumo de recursos ao modelo de precificação — trata a infra como um bloco monolítico, sem granularidade de unit economics por cliente."
+}

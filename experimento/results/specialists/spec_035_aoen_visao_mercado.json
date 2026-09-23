@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 35,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está bem segmentado (P2P, freelance, gig economy, temporada) com ICP claro (sem time de data science), e a dor de capacidade interna está articulada; porém faltam estimativas de tamanho de mercado (TAM/SAM/SOM), o impacto financeiro da fraude para o cliente não é quantificado, e a diferenciação frente a concorrentes diretos (Sift, Sardine, Stripe Radar — citados apenas como backends possíveis, não como competidores a superar) não é explicitada com nenhum argumento de posicionamento."
+}

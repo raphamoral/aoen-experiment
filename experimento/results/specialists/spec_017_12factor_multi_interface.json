@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta prevê um frontend-web e uma API Gateway (que viabiliza integrações externas), com lógica de negócio razoavelmente desacoplada em serviços distintos, mas não há menção explícita a interfaces para mobile, CLI ou contextos específicos de usuário (aluno, instituição, verificador público), nem justificativa de escolha de canais baseada em alcance de mercado."
+}

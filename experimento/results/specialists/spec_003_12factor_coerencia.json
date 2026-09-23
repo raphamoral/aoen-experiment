@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A arquitetura conta uma história coesa onde cada decisão reforça as outras: o serviço `anonymizer/` fisicamente isolado no monorepo + fila de mensagens (RabbitMQ/SQS) que desacopla coleta de anonimização + Elasticsearch explicitamente sem PII indexado formam uma tríade que transforma 'relatórios anônimos' de feature em propriedade arquitetural garantida; TimescaleDB para séries temporais de indicadores é a escolha natural para o domínio; Auth0/Keycloak com SAML/OIDC é coerente com o público-alvo corporativo (Azure AD, Google Workspace); as alternativas cloud/on-prem (S3 vs MinIO, SQS vs RabbitMQ, AWS SES vs SendGrid) são consistentes entre si e refletem o suporte declarado a enterprise-on-prem; a gestão de segredos via Vault/Secrets Manager com fail-fast reforça a sensibilidade dos dados de saúde mental; o único ponto que impede nota 10 é a ausência de explicitação de como o pipeline de CI/CD valida os dois caminhos tecnológicos (cloud vs on-prem) de forma simétrica, o que é uma lacuna de coerência operacional."
+}

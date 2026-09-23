@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 75,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona 'armazenamento particionado por tenant', o que cria uma base técnica para rastrear consumo por cliente, mas não há nenhum cálculo real de custo por operação, por trace ingerido, por serviço monitorado ou por tenant — a arquitetura viabiliza a mensuração futura, mas o projeto não a define, tornando o custo por cliente atualmente incalculável e desconectado de qualquer modelo de precificação."
+}

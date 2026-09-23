@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra intenção multi-tenant clara (contexto TenantManagement, templates configuráveis por setor/porte, limiares de alerta configuráveis), mas não especifica o modelo de configuração por tenant para os domínios core — não há indicação de que check-ins, parâmetros de k-anonimato ou pipelines de agregação sejam configuráveis por cliente sem toque de código, deixando lacunas que provavelmente exigiriam desenvolvimento para onboarding de clientes com requisitos fora do padrão."
+}

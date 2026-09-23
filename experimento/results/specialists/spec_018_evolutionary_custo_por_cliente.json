@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "A proposta menciona uma fitness function de custo por assinante analisado (< $0.002), o que demonstra alguma consciência de unit economics, mas permanece como um único threshold de alerta sem decomposição por operação (ML inference, pipeline, storage, API), sem rastreamento de consumo por tenant e sem conexão explícita com modelo de precificação ou cálculo de margem por cliente."
+}

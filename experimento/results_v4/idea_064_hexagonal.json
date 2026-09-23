@@ -1,0 +1,90 @@
+{
+  "ideia_idx": 64,
+  "ideia": "Plataforma de licitação eletrônica simplificada para prefeituras",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de processos licitatórios municipais conforme a Lei 14.133/2021: planejamento (DFD/ETP/termo de referência), edital, publicação, cadastro e habilitação de fornecedores, sessão pública eletrônica (pregão e dispensa eletrônica), lances, julgamento, recursos, adjudicação, homologação, contrato e atas de registro de preços. Agregados principais: Processo Licitatório, Edital, Lote/Item, Proposta, Lance, Fornecedor, Habilitação, Recurso, Contrato e Ata. Regras de negócio no core: modalidades e critérios de julgamento, prazos legais, limites de dispensa, ordem de classificação, desempate (ME/EPP), sanções e trilha de auditoria. Papéis: pregoeiro, agente de contratação, comissão de contratação, autoridade competente, fornecedor, órgão de controle e cidadão.",
+    "primary_ports": [
+      "GerenciarProcessoLicitatorio (criar, planejar, aprovar e homologar processos)",
+      "PublicarEdital (elaborar, publicar, impugnar e esclarecer)",
+      "CadastrarFornecedor (registro, habilitação e validação documental)",
+      "EnviarProposta (propostas e documentos de habilitação)",
+      "ConduzirSessaoPublica (abrir sessão, receber lances, negociar, classificar e desempatar)",
+      "AnalisarHabilitacao (julgar documentos, diligências e inabilitação)",
+      "GerenciarRecursos (registrar recursos, contrarrazões e decisões)",
+      "GerenciarContratos (formalizar contratos, aditivos, atas e empenhos)",
+      "ConsultarTransparencia (consulta pública, exportação de dados abertos)",
+      "AuditarProcesso (trilha de auditoria para TCE/CGU/controle interno)",
+      "AdministrarTenant (órgãos, usuários, perfis, planos e configurações)"
+    ],
+    "secondary_ports": [
+      "RepositorioProcessos (persistência dos agregados)",
+      "RepositorioDocumentos / ArmazenamentoObjetos (editais, propostas, anexos com hash)",
+      "PublicadorOficial (PNCP, diário oficial municipal, portal de transparência)",
+      "ProvedorIdentidade (autenticação, SSO, gov.br, MFA)",
+      "ServicoAssinaturaDigital (ICP-Brasil, carimbo do tempo)",
+      "ConsultaCadastroFornecedor (Receita Federal/CNPJ, SICAF, CEIS/CNEP, certidões negativas, Junta Comercial)",
+      "ServicoNotificacao (e-mail, SMS, WhatsApp, push)",
+      "SistemaContabilOrcamentario (dotação, empenho, ERP municipal, SIAFIC)",
+      "PublicadorEventos / BarramentoMensagens (eventos de domínio)",
+      "Relogio (tempo confiável e sincronizado, NTP/HORA legal)",
+      "GatewayPagamento (assinatura SaaS, cobrança, boleto/Pix)",
+      "ServicoBuscaIndexacao (busca de editais e itens)",
+      "ProvedorIA (assistente opcional para minutas e ETP, análise de propostas)",
+      "RepositorioAuditoria (log imutável append-only)",
+      "ServicoTempoReal (canal de lances e chat da sessão)"
+    ],
+    "primary_adapters": [
+      "API REST/JSON pública e autenticada (OpenAPI)",
+      "Web App SPA para prefeituras (pregoeiro, gestor, jurídico)",
+      "Portal do Fornecedor (web responsivo/PWA)",
+      "Portal público de transparência (SSR, SEO)",
+      "Adaptador WebSocket/SSE para sessão pública em tempo real",
+      "Webhooks de entrada (retorno de assinatura, PNCP, pagamento)",
+      "CLI e scripts administrativos (importação em lote, migração)",
+      "Adaptador de testes (test doubles e suítes BDD dirigindo os casos de uso)",
+      "Jobs agendados (prazos, encerramento automático de fases, lembretes)",
+      "Conector para integração com sistemas legados (SOAP/CSV/SFTP)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios com Row-Level Security por tenant)",
+      "S3/MinIO com Object Lock (documentos imutáveis)",
+      "Adaptador PNCP (API oficial do Portal Nacional de Contratações Públicas)",
+      "Adaptador DOM/Diário Oficial",
+      "Keycloak/Auth0 com gov.br (OIDC)",
+      "Adaptador ICP-Brasil (Lacuna, Certisign, Vidaas ou similar)",
+      "Adaptadores BrasilAPI/ReceitaWS/SICAF/CEIS/CNEP",
+      "SES/SendGrid, Twilio, WhatsApp Business API",
+      "Adaptador ERP/contabilidade municipal (REST ou SOAP por fornecedor)",
+      "Kafka/RabbitMQ/SQS-SNS (eventos)",
+      "NTP/servidor de hora legal (Observatório Nacional)",
+      "Stripe/Asaas/Pagar.me (cobrança)",
+      "OpenSearch/Meilisearch",
+      "Redis Streams/Pub-Sub (tempo real dos lances)",
+      "Adaptador de LLM (Claude API) atrás de ProvedorIA",
+      "In-memory adapters (repositórios e relógio falsos para testes e demos)"
+    ],
+    "isolation": "O core (domínio + casos de uso) é um módulo sem dependências de framework, banco, HTTP ou SDKs de terceiros. Ele expõe apenas ports (interfaces) e depende exclusivamente de abstrações. A regra de dependência aponta sempre para dentro: adapters conhecem o core, nunca o contrário. Entradas e saídas trafegam como DTOs/comandos e eventos de domínio, sem vazar entidades de ORM ou payloads externos (anti-corruption layer em cada adapter, mapeando PNCP, ERP e Receita para a linguagem ubíqua). A injeção de dependência é feita em uma composition root única, que monta os adapters conforme o ambiente (produção, teste, demo). Tempo, identidade e aleatoriedade são ports, o que torna as regras determinísticas e testáveis. Cada sistema externo recebe o mesmo tratamento simétrico: um port, um adapter, contract tests e circuit breaker/retry na borda. Testes de arquitetura (ArchUnit/dependency-cruiser) impedem imports proibidos no CI. Multi-tenancy é resolvida por um contexto de tenant passado ao core, não por lógica de infraestrutura dentro dele.",
+    "interfaces": [
+      "Painel do pregoeiro/agente de contratação (sala de sessão em tempo real)",
+      "Painel do gestor municipal (planejamento, pesquisa de preços, pipeline de processos)",
+      "Portal do fornecedor (cadastro, propostas, lances, recursos)",
+      "Portal público de transparência e busca de editais",
+      "Módulo de auditoria e controle externo (somente leitura)",
+      "API pública REST + webhooks + dados abertos (CSV/JSON)",
+      "Console de administração SaaS (tenants, planos, faturamento)",
+      "Notificações por e-mail, SMS e WhatsApp",
+      "App PWA móvel para fornecedores acompanharem disputas"
+    ],
+    "escalabilidade": "Monólito modular hexagonal no início (um deploy, módulos com limites claros por bounded context: Planejamento, Sessão/Disputa, Fornecedores, Contratos, Transparência), com extração posterior para serviços apenas onde houver ganho real. O componente crítico é a sessão de lances: picos concentrados e latência baixa, então roda como serviço stateless horizontal atrás de WebSocket gateway, com Redis para fan-out e ordenação de lances (relógio autoritativo do servidor, ordem garantida por sequência por item). Restante escala horizontalmente com containers stateless e autoscaling por CPU/conexões. Banco: PostgreSQL gerenciado com réplicas de leitura para transparência e busca, particionamento por tenant/ano, RLS para isolamento. CQRS leve: escrita no core, leitura em projeções e índice de busca alimentados por eventos. Documentos em object storage com CDN. Filas assíncronas para integrações lentas (PNCP, certidões, assinatura) com idempotência e retry. Tenants pequenos compartilham infraestrutura (pool), e tenants grandes podem ganhar schema/banco dedicado sem mudar o core, apenas o adapter de persistência. Como a demanda é sazonal (concentração no fim do exercício), usar autoscaling e recursos sob demanda.",
+    "custos": "Custo dominado por: (1) infraestrutura cloud (containers, Postgres gerenciado, Redis, storage), mantida enxuta com monólito modular, instâncias reservadas para a base e autoscaling para picos; (2) integrações pagas (certificados e assinatura ICP-Brasil, envio de SMS/WhatsApp, consultas a bases privadas), repassadas por consumo quando possível; (3) armazenamento de longo prazo, pois documentos licitatórios exigem retenção por anos (usar classes de storage frias/arquivamento); (4) conformidade e segurança (LGPD, backups, pentest, logs imutáveis, hospedagem em região Brasil), custo fixo relevante; (5) suporte e implantação, já que prefeituras exigem treinamento e atendimento; (6) IA opcional, controlada por cotas e cache. Custo marginal por tenant é baixo graças ao multi-tenant em pool. Prefeituras pequenas têm orçamento restrito, então o produto precisa de onboarding autoatendido para não elevar o custo de aquisição. Atenção ao ciclo de vendas público (dispensa de licitação para contratar o próprio SaaS, prazos longos de pagamento e empenho).",
+    "monetizacao": "Assinatura SaaS por porte do município (faixas por população ou número de processos/ano): Essencial (municípios pequenos, com limite de processos e usuários), Profissional (fluxo completo, integração com ERP e PNCP) e Enterprise (grandes municípios, SLA, ambiente dedicado, API ampliada). Receitas complementares: implantação e treinamento, taxas por uso de assinatura digital e notificações, módulos adicionais (pesquisa de preços, gestão de contratos, IA para minutas e ETP, analytics de compras), marketplace/consórcios intermunicipais e integração com sistemas legados sob demanda. Contratação pela prefeitura via dispensa ou inexigibilidade justificada, ou por ata de registro de preços/consórcio para escalar vendas. Evitar cobrar percentual do fornecedor sobre o valor contratado, já que há risco jurídico e de percepção de conflito de interesse; se for cobrado, deve ser explicitamente previsto no edital. Pagamento via empenho, com faturamento mensal ou anual antecipado.",
+    "stack_sugerida": "Backend: Java 21 com Spring Boot (ou Kotlin) ou TypeScript com NestJS, organizado em módulos hexagonais (domain, application, adapters) com testes de arquitetura (ArchUnit/dependency-cruiser). Frontend: React com Next.js (SSR para portal público, SPA para painéis), TypeScript, design system acessível (WCAG/eMAG). Tempo real: WebSocket (Socket.IO ou nativo) com Redis Pub/Sub ou Streams. Dados: PostgreSQL 16 com RLS, Redis, OpenSearch ou Meilisearch, S3/MinIO com Object Lock. Mensageria: RabbitMQ ou SQS/SNS (Kafka apenas se o volume justificar). Identidade: Keycloak com gov.br via OIDC. Infra: containers em Kubernetes gerenciado ou ECS/Fargate em região Brasil (AWS sa-east-1, Azure Brazil South ou Oracle/Locaweb), Terraform, CI/CD com GitHub Actions. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry, logs estruturados. Segurança: WAF, KMS, secrets manager, backups criptografados, conformidade LGPD. Qualidade: testes BDD dirigindo os primary ports com adapters in-memory, contract tests para cada secondary adapter, testes E2E com Playwright. Cobrança: Stripe ou Asaas (adaptador atrás do port GatewayPagamento)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:51:28+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 52,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Web App, PWA Mobile, API REST, exportação PDF/Excel e IoT), cada uma explicitamente justificada por um perfil de usuário ou caso de uso de mercado real, com lógica de negócio completamente desacoplada numa CamadaDeServiço central que torna trivial adicionar novos canais sem reescrever regras de APPCC."
+}

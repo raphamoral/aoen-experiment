@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 7,
+  "justificativa": "O projeto prevê cinco interfaces bem definidas (painel web, portal do cliente, API REST, notificações e app mobile), cada uma com contexto de uso plausível, e a presença de uma API REST sugere algum nível de desacoplamento da lógica de negócio; porém, não há evidência explícita de arquitetura em camadas que garanta esse desacoplamento, e a justificativa para o app mobile é superficial ('ver alertas e aprovar'), sem validação de que esse canal foi escolhido por demanda real de mercado e não por conveniência ou checklist de features."
+}

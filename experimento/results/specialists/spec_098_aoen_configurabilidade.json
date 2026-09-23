@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 98,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra instintos corretos de configurabilidade — algoritmo de benchmark parametrizado por rede, abstração DataCollector agnóstica à fonte, e operações da service layer baseadas em networkId — mas não especifica o modelo de configuração por tenant: quais KPIs são definíveis por rede, como thresholds de alerta são configurados por cliente, nem descreve um processo de onboarding que garanta zero código para uma nova rede, deixando incerto se novos clientes exigem apenas dados no banco ou ainda dependem de intervenção de desenvolvimento."
+}

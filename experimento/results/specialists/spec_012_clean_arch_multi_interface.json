@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 0,
+  "justificativa": "A proposta apresenta exclusivamente entidades de domínio, sem qualquer menção a interfaces, canais de acesso, perfis de usuário por contexto ou estratégia de entrega multi-canal."
+}

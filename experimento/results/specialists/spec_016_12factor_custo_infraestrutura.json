@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta lista extensamente os componentes de infraestrutura (ECS/Fargate, PostgreSQL, Redis, S3, ElasticSearch, SendGrid, Twilio, Stripe, ECR) e menciona autoscaling por demanda (API: 2–20 réplicas, Workers por tamanho de fila), o que tem impacto indireto em custo, mas não há nenhuma estimativa financeira concreta (nenhum valor em USD/BRL), nenhuma estratégia explícita de otimização de custos (sem menção a instâncias spot, reserved instances, scale-to-zero, storage tiers do S3) e nenhuma projeção de crescimento de custo com a base de usuários — o autoscaling é descrito como estratégia técnica de disponibilidade, não como ferramenta FinOps."
+}

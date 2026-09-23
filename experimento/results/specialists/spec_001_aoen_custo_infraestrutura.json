@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não faz nenhuma menção a custos de infraestrutura: não há estimativas de valores, nenhum componente cloud é nomeado (nem S3, EC2, Cloud Run ou equivalentes), não existe estratégia de otimização (scale-to-zero, spot/preemptible, tiers de armazenamento) e não há projeção de como os custos evoluem com o crescimento da base de veículos rastreados."
+}

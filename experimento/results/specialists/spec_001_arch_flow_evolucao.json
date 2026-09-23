@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A separação em bounded contexts com event streaming (Kafka) e mapeamento Wardley por evolução de componente demonstra forte modularidade e capacidade de crescimento, mas a ausência explícita de anti-corruption layers para dependências externas (Google Maps, Firebase, Twilio) e de padrões ports/adapters para isolar a lógica de negócio dos frameworks expõe riscos reais de acoplamento tecnológico que podem comprometer a substituibilidade independente de componentes ao longo do tempo."
+}

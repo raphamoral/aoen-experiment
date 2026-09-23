@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define sete interfaces distintas (web app, portal do inspetor PWA, portal do vendedor, portal do comprador, painel admin, API REST e WhatsApp/e-mail), cada uma justificada por um perfil de usuário real e estratégia de alcance de mercado explícita, com lógica de negócio centralizada na CertificationService e casos de uso isolados por canal, garantindo extensibilidade sem reescrita."
+}

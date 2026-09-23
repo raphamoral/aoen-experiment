@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta sinaliza configurabilidade nos pontos certos — workflow de aprovação configurável por empresa compradora, regras de leilão customizáveis por categoria e RBAC no contexto de Identity & Access — mas não especifica um modelo de configuração por tenant (schema, feature flags, tabela de parâmetros), e as integrações com ERPs 'via adapters' indicam que novos clientes com sistemas distintos ainda podem demandar desenvolvimento, impedindo onboarding 100% configuration-driven."
+}

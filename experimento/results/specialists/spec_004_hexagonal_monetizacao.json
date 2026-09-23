@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura menciona superficialmente dois mecanismos de receita — taxa de sucesso e assinaturas mensais (via PaymentGatewayPort/Stripe Adapter) — mas não detalha tiers de planos, valores, lógica de precificação por volume, nem apresenta análise de sustentabilidade econômica (LTV, CAC, churn), ficando muito abaixo de um modelo de monetização estruturado e viável."
+}

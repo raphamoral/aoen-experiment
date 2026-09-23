@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural descreve exclusivamente infraestrutura e pipeline de deploy — nenhuma menção a rastreamento de consumo por tenant, custo por operação (ex: por lance processado, por leilão criado), tags de custo por cliente nos recursos de cloud, ou conexão entre o que cada cliente consome e o modelo de precificação; a observabilidade listada (Datadog/Grafana) não é direcionada a unit economics por tenant."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces (Web, Mobile, API, Embedded Widget e WhatsApp Bot), cada uma justificada por um perfil de usuário e contexto de uso real e distinto, com a lógica de negócio completamente desacoplada em ContractService e SignatureService agnósticas de interface, permitindo adicionar novos canais sem reescrever regras de negócio."
+}

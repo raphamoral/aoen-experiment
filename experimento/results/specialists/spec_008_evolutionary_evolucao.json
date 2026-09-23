@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida — três horizontes incrementais, Strangler Fig com ACLs isolando ERPs legados, feature flags por tenant para novas regulações, bounded contexts deployáveis independentemente e migrações estritamente aditivas com janela de 30 dias para remoção segura — porém perde pontos pela dependência estrutural ao Hyperledger Fabric (acoplamento tecnológico relevante mesmo com a decisão de blockchain público adiada) e pela proposta de reversibilidade que aparece truncada, deixando incerto o tratamento completo dos cenários irreversíveis além do registro imutável."
+}

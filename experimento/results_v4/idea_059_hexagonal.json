@@ -1,0 +1,85 @@
+{
+  "ideia_idx": 59,
+  "ideia": "SaaS de automação de onboarding de funcionários com workflows configuráveis",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Orquestração de onboarding de funcionários: modelagem e execução de workflows configuráveis (templates, etapas, tarefas, responsáveis, prazos, condições e regras de dependência) aplicados a um colaborador durante sua entrada na empresa. Agregados principais: Tenant, WorkflowTemplate, OnboardingProcess (instância), Step/Task, Employee, Assignment, Document, Policy/Rule. Regras de negócio: transições de estado das tarefas, avaliação de condições e gatilhos, cálculo de prazos e SLAs, escalonamento e conclusão do processo.",
+    "primary_ports": [
+      "ManageWorkflowTemplatesUseCase (criar, versionar, publicar, clonar templates)",
+      "StartOnboardingUseCase (iniciar onboarding a partir de template para um funcionário)",
+      "CompleteTaskUseCase (concluir, rejeitar ou reatribuir tarefas)",
+      "TrackOnboardingProgressQuery (consultar progresso, pendências e SLAs)",
+      "ManageEmployeesUseCase (cadastro e ciclo de vida do colaborador)",
+      "SubmitDocumentUseCase (envio e aprovação de documentos)",
+      "ManageTenantAndAccessUseCase (organização, papéis e permissões)",
+      "HandleExternalEventUseCase (eventos de entrada, ex.: contratação no ATS/HRIS)",
+      "GenerateReportsQuery (relatórios e métricas de onboarding)"
+    ],
+    "secondary_ports": [
+      "WorkflowTemplateRepository",
+      "OnboardingProcessRepository",
+      "EmployeeRepository",
+      "TenantRepository",
+      "DocumentStoragePort (armazenamento de arquivos)",
+      "NotificationPort (e-mail, chat, SMS, push)",
+      "IdentityProvisioningPort (criação de contas: Google Workspace, Microsoft 365, Okta, Slack)",
+      "HRISPort (BambooHR, Workday, Gupy, etc.)",
+      "ESignaturePort (assinatura eletrônica de contratos)",
+      "PaymentBillingPort (cobrança e assinaturas)",
+      "SchedulerPort (timers, prazos, lembretes e escalonamentos)",
+      "EventPublisherPort (publicação de eventos de domínio)",
+      "WebhookDispatcherPort (webhooks de saída para clientes)",
+      "AuditLogPort",
+      "ClockPort / IdGeneratorPort",
+      "AIAssistantPort (opcional: geração de checklists, resumo e classificação de documentos)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API HTTP (consumida pela SPA web)",
+      "Web App (painel RH/gestor e portal do novo funcionário)",
+      "Webhook Inbound Adapter (ATS/HRIS, Stripe)",
+      "CLI / scripts administrativos e de migração",
+      "Consumidor de mensagens/eventos (fila)",
+      "Bot de chat (Slack/Teams)",
+      "Job runner de agendamentos (cron/timers que acionam casos de uso)",
+      "Adaptador de testes (test harness com fakes in-memory que aciona os mesmos casos de uso)",
+      "MCP/API pública para integrações e automações de clientes"
+    ],
+    "secondary_adapters": [
+      "PostgresRepositoryAdapter (com Row-Level Security por tenant)",
+      "S3/GCS DocumentStorageAdapter",
+      "SendGrid/SES/Postmark EmailAdapter; Twilio SMS; Slack/Teams NotificationAdapter",
+      "GoogleWorkspace/MicrosoftEntra/Okta ProvisioningAdapter (SCIM)",
+      "BambooHR/Workday/Gupy HRISAdapter",
+      "DocuSign/ClickSign ESignatureAdapter",
+      "StripeBillingAdapter",
+      "Temporal/BullMQ/SQS SchedulerAdapter",
+      "Kafka/SNS/Outbox EventPublisherAdapter",
+      "HTTP WebhookDispatcherAdapter com retries e assinatura HMAC",
+      "AuditLog em tabela append-only ou OpenSearch",
+      "LLM Adapter (Claude API) para AIAssistantPort",
+      "In-memory/Fake adapters para testes e desenvolvimento local"
+    ],
+    "isolation": "O core (domínio + camada de aplicação com casos de uso) não importa nenhum framework, ORM, SDK ou cliente HTTP. A dependência aponta sempre de fora para dentro (Dependency Inversion): adapters primários chamam as portas primárias; o core chama portas secundárias, definidas em termos da linguagem do domínio, não da tecnologia. DTOs e mapeadores ficam nos adapters, e o core nunca vê tipos de infraestrutura. A composição ocorre em um Composition Root que injeta os adapters. Regras de workflow (condições, gatilhos) são dados versionados interpretados por um engine puro dentro do core. Efeitos colaterais externos passam pelo padrão Outbox, garantindo consistência sem acoplar o domínio ao broker. Tenant é resolvido no adapter de entrada e propagado como contexto explícito. Testes de arquitetura (ArchUnit/dependency-cruiser) impedem violações de camada, e o core é testável com adapters fake, sem infraestrutura.",
+    "interfaces": [
+      "Painel web para RH (designer visual de workflows drag-and-drop)",
+      "Portal do novo funcionário (checklist, upload e assinatura de documentos)",
+      "Painel do gestor e dos responsáveis por tarefas (IT, financeiro, facilities)",
+      "API REST/GraphQL pública documentada com OpenAPI",
+      "Webhooks de entrada e saída",
+      "Bots Slack/Microsoft Teams",
+      "Notificações por e-mail com ações rápidas (aprovar/concluir)",
+      "CLI administrativa",
+      "Dashboards e exportação de relatórios (CSV/BI)"
+    ],
+    "escalabilidade": "Aplicação stateless com escala horizontal atrás de load balancer. Multi-tenancy com coluna tenant_id e RLS, evoluindo para sharding por tenant ou banco dedicado para clientes enterprise. Execução de workflows assíncrona e orientada a eventos (fila + workers autoscaling), com engine durável (Temporal) para timers longos e retentativas idempotentes. Leituras pesadas via read replicas e projeções CQRS para dashboards. Cache (Redis) para templates publicados, que são imutáveis por versão. Arquivos direto em object storage via URLs pré-assinadas. Como as portas isolam a infraestrutura, é possível trocar adapters (ex.: fila, banco) ou extrair adapters/workers como serviços separados sem alterar o core. Começa como monólito modular e só divide em serviços quando houver necessidade medida. Rate limiting e filas por tenant evitam o problema de noisy neighbor.",
+    "custos": "Fase inicial enxuta: monólito modular em containers gerenciados (Cloud Run/Fargate/Fly.io) + Postgres gerenciado, com custo baixo e proporcional ao uso. Principais custos variáveis: e-mail/SMS transacional, armazenamento de documentos, assinatura eletrônica (custo por envelope, repassável), chamadas de LLM (controlar com limites por plano e cache) e observabilidade. Custos fixos de compliance (LGPD/GDPR, SOC 2, criptografia, backups, retenção de dados pessoais). Integrações com HRIS/ATS exigem manutenção contínua, mitigada pelo padrão de adapter. Engine durável (Temporal Cloud ou self-hosted) adiciona custo, então usar fila simples no MVP e migrar quando necessário. Suporte e customer success para onboarding de clientes são o maior custo humano. Meta: margem bruta acima de 75% com custo de infraestrutura por funcionário onboardado muito baixo.",
+    "monetizacao": "Assinatura SaaS B2B recorrente (Stripe), com planos por faixa de funcionários onboardados por mês ou por seat de RH: Starter (poucos workflows, integrações básicas), Growth (workflows ilimitados, integrações HRIS, assinatura eletrônica) e Enterprise (SSO/SAML, SCIM, auditoria avançada, SLA, tenant dedicado, API completa). Cobrança por uso complementar para assinaturas eletrônicas, SMS e recursos de IA. Receitas adicionais: marketplace de templates de workflow por setor/país, serviços de implantação e consultoria, e conectores premium. Trial gratuito de 14 dias e modelo product-led com upsell por integrações e volume.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (módulos organizados por portas/adapters, core em TypeScript puro) ou alternativa Kotlin/Spring ou Java; Frontend: React + Next.js/Vite, TanStack Query, React Flow para o designer de workflows; Banco: PostgreSQL (RLS, JSONB para definições de workflow) + Redis; Mensageria/Workflows: BullMQ/SQS no MVP, Temporal na evolução; Storage: S3 compatível; Auth: Auth0/Clerk/Keycloak com SSO SAML/OIDC; Billing: Stripe; E-mail: AWS SES/Postmark; Infra: Docker, Terraform, AWS ECS/Fargate ou GCP Cloud Run, CI/CD com GitHub Actions; Observabilidade: OpenTelemetry, Grafana/Datadog, Sentry; Testes: Vitest/Jest, Testcontainers, dependency-cruiser para validar fronteiras hexagonais; IA opcional: Claude API via adapter."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:41:46+00:00",
+    "runner": "runner.py"
+  }
+}

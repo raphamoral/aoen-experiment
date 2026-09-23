@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 80,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "O ProcedureGraph por cliente (JSON/XML) e o TrainingOrchestrationService tenant-aware indicam configurabilidade real para o fluxo de treinamento, mas as interfaces plugáveis (IEquipmentRecognizer, IARRenderer) são abstrações de código — trocar de Azure Custom Vision para AWS Rekognition por cliente exige redeploy ou configuração de infraestrutura, não apenas uma nova row no banco; falta um modelo explícito de configuração por tenant (feature flags, provider selection, parâmetros comportamentais) que permita onboarding zero-código para clientes com requisitos diferentes."
+}

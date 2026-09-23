@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 66,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta detalha extensivamente a arquitetura técnica, os segmentos de mercado e as interfaces de acesso, mas não menciona nenhum modelo de monetização — ausência total de tiers, precificação (por palavra, por projeto, por assinatura), take rate do marketplace, estrutura de custos por cliente ou métricas como MRR, LTV ou CAC."
+}

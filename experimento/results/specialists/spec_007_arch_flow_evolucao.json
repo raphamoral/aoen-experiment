@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte modularidade via bounded contexts bem delimitados, Wardley Mapping explícito (genesis/custom/product/commodity) que permite substituição independente de componentes, e team topologies alinhadas ao fluxo — pontos que favorecem evolução sem reescrita; a nota não alcança 10 porque a proposta não evidencia mecanismos concretos de anti-corruption layers entre contextos, estratégia explícita de versionamento de APIs internas, nem contratos de integração (consumer-driven contracts) que garantiriam reversibilidade real ao trocar, por exemplo, o motor de IA ou o LMS legado sem efeitos colaterais nos contextos consumidores."
+}

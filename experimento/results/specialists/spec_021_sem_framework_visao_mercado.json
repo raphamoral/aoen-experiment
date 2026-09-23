@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "sem_framework",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 5,
+  "justificativa": "O produto identifica três perfis de usuário com clareza razoável e esboça o que cada um busca, mas não articula a dor de forma quantificada (ex: custo médio de uma manutenção corretiva vs preventiva, downtime de equipamentos), não apresenta tamanho de mercado nem segmentação geográfica ou de porte, e não faz qualquer menção a concorrentes ou alternativas existentes (ex: CMMS como Limble, UpKeep, Tractian), o que impede avaliar diferenciação e justificativa de adoção."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 77,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve um pipeline sequencial lógico e uma Service Layer com separação de domínios, mas não menciona nenhum mecanismo real de isolamento físico: não há filas (Kafka, RabbitMQ, Redis Streams), workers separados, circuit breakers, nem estratégia de fallback caso o processamento pesado (detecção de anomalias, geração de relatórios PDF/Excel, agregação de dashboards) falhe ou sobrecarregue — sugerindo que tudo provavelmente roda no mesmo processo, tornando o sistema vulnerável a falhas em cascata."
+}

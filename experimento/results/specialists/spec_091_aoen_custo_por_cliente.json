@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 91,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona nenhuma forma de mensuração de custo por cliente ou por operação — descreve componentes arquiteturais e camadas de serviço, mas trata infraestrutura (provedores de IA, service layer, storage) como bloco único, sem qualquer mecanismo de rastreamento de consumo por tenant, cálculo de custo por chamada de IA ou conexão entre custo variável e modelo de precificação."
+}

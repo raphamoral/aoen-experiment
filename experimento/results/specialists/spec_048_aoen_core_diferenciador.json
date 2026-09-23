@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 48,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O motor de previsão é explicitamente identificado como núcleo insubstituível, isolado por uma interface ModelProvider com método predict() que permite trocar implementações (Prophet, LightGBM, ARIMA, APIs externas) sem afetar camadas superiores, e resolve um gap real de mercado — supermercados regionais espremidos entre ERPs inacessíveis e planilhas imprecisas — com um componente técnico que nenhuma alternativa existente entrega nesse segmento."
+}

@@ -1,0 +1,523 @@
+{
+  "ideia_idx": 12,
+  "ideia": "SaaS de monitoramento de qualidade do ar para indústrias",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "description": "Objetos de negócio com regras e lógica intrínsecos, sem dependências externas",
+      "list": [
+        {
+          "name": "AirQualityReading",
+          "attributes": [
+            "id",
+            "sensorId",
+            "timestamp",
+            "pollutants: Map<PollutantType, Concentration>",
+            "temperature",
+            "humidity",
+            "location"
+          ],
+          "rules": [
+            "concentração não pode ser negativa",
+            "timestamp não pode ser futuro",
+            "leitura inválida se todos sensores falharem"
+          ]
+        },
+        {
+          "name": "Sensor",
+          "attributes": [
+            "id",
+            "serialNumber",
+            "type: SensorType",
+            "location: GeoCoordinates",
+            "calibrationDate",
+            "status: SensorStatus",
+            "thresholds: Map<PollutantType, Threshold>"
+          ],
+          "rules": [
+            "sensor requer recalibração após 90 dias",
+            "sensor inativo não produz leituras válidas"
+          ]
+        },
+        {
+          "name": "Industry",
+          "attributes": [
+            "id",
+            "name",
+            "cnpj",
+            "sector: IndustrySector",
+            "location",
+            "regulatoryLicenses: License[]",
+            "plan: SubscriptionPlan"
+          ],
+          "rules": [
+            "CNPJ deve ser válido",
+            "setor determina limites regulatórios aplicáveis"
+          ]
+        },
+        {
+          "name": "Alert",
+          "attributes": [
+            "id",
+            "readingId",
+            "sensorId",
+            "pollutant",
+            "measuredValue",
+            "threshold",
+            "severity: AlertSeverity",
+            "createdAt",
+            "acknowledgedAt",
+            "resolvedAt"
+          ],
+          "rules": [
+            "alerta crítico exige reconhecimento em menos de 15 minutos",
+            "severidade calculada com base no percentual acima do limite"
+          ]
+        },
+        {
+          "name": "Threshold",
+          "attributes": [
+            "pollutantType",
+            "warningLevel",
+            "criticalLevel",
+            "regulatoryLimit",
+            "measureUnit"
+          ],
+          "rules": [
+            "warningLevel < criticalLevel <= regulatoryLimit",
+            "limites variam por norma regulatória (CONAMA, EPA, OMS)"
+          ]
+        },
+        {
+          "name": "Report",
+          "attributes": [
+            "id",
+            "industryId",
+            "period: DateRange",
+            "type: ReportType",
+            "readings",
+            "violations",
+            "complianceStatus"
+          ],
+          "rules": [
+            "relatório de conformidade requer mínimo 80% de leituras válidas no período"
+          ]
+        },
+        {
+          "name": "User",
+          "attributes": [
+            "id",
+            "email",
+            "role: UserRole",
+            "industryId",
+            "preferences: NotificationPreferences"
+          ],
+          "rules": [
+            "email deve ser único por tenant",
+            "admin pode gerenciar todos os sensores do tenant"
+          ]
+        },
+        {
+          "name": "SubscriptionPlan",
+          "attributes": [
+            "id",
+            "name",
+            "maxSensors",
+            "retentionDays",
+            "features: Feature[]",
+            "priceMonthly"
+          ],
+          "rules": [
+            "número de sensores não pode exceder o plano contratado"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "description": "Casos de uso da aplicação orquestram o fluxo de dados entre entidades. Independentes de UI e banco",
+      "list": [
+        {
+          "name": "IngestSensorReading",
+          "input": "SensorReadingDTO",
+          "output": "ReadingResult",
+          "steps": [
+            "validar sensor ativo",
+            "validar leitura dentro de parâmetros físicos",
+            "persistir leitura",
+            "avaliar thresholds",
+            "disparar alertas se necessário"
+          ]
+        },
+        {
+          "name": "EvaluateThresholdViolation",
+          "input": "AirQualityReading, Sensor",
+          "output": "ViolationResult[]",
+          "steps": [
+            "comparar concentrações com thresholds do sensor",
+            "calcular severidade",
+            "criar entidade Alert se violado"
+          ]
+        },
+        {
+          "name": "GenerateComplianceReport",
+          "input": "IndustryId, DateRange, ReportType",
+          "output": "Report",
+          "steps": [
+            "buscar leituras do período",
+            "calcular estatísticas por poluente",
+            "identificar violações regulatórias",
+            "calcular índice de conformidade",
+            "montar relatório"
+          ]
+        },
+        {
+          "name": "RegisterSensor",
+          "input": "SensorRegistrationDTO",
+          "output": "Sensor",
+          "steps": [
+            "validar quota do plano",
+            "validar dados do sensor",
+            "registrar sensor no tenant",
+            "configurar thresholds padrão"
+          ]
+        },
+        {
+          "name": "ConfigureAlertThresholds",
+          "input": "SensorId, ThresholdConfig[]",
+          "output": "Sensor",
+          "steps": [
+            "validar permissão do usuário",
+            "validar que thresholds não excedem limites regulatórios",
+            "atualizar sensor"
+          ]
+        },
+        {
+          "name": "AcknowledgeAlert",
+          "input": "AlertId, UserId, Comment",
+          "output": "Alert",
+          "steps": [
+            "validar alerta ativo",
+            "validar permissão do usuário",
+            "marcar como reconhecido",
+            "registrar responsável"
+          ]
+        },
+        {
+          "name": "GetAirQualityDashboard",
+          "input": "IndustryId, TimeWindow",
+          "output": "DashboardData",
+          "steps": [
+            "buscar leituras recentes",
+            "calcular AQI agregado",
+            "listar alertas ativos",
+            "calcular tendências"
+          ]
+        },
+        {
+          "name": "ExportRegulatoryData",
+          "input": "IndustryId, DateRange, RegulatoryFormat",
+          "output": "ExportFile",
+          "steps": [
+            "gerar relatório de conformidade",
+            "serializar no formato regulatório exigido (IBAMA, CETESB)"
+          ]
+        },
+        {
+          "name": "ManageSubscription",
+          "input": "IndustryId, PlanId",
+          "output": "SubscriptionResult",
+          "steps": [
+            "validar plano existente",
+            "verificar sensores ativos vs nova quota",
+            "atualizar assinatura",
+            "ajustar limites de uso"
+          ]
+        },
+        {
+          "name": "ProvisionTenant",
+          "input": "IndustryRegistrationDTO",
+          "output": "Industry",
+          "steps": [
+            "validar CNPJ único",
+            "criar tenant isolado",
+            "configurar plano inicial",
+            "criar usuário admin"
+          ]
+        }
+      ]
+    },
+    "interface_adapters": {
+      "description": "Convertem dados entre formato conveniente para use cases/entities e formato conveniente para agentes externos",
+      "controllers": [
+        {
+          "name": "SensorReadingController",
+          "responsibility": "Recebe leituras via HTTP/MQTT, converte para DTO e chama IngestSensorReading"
+        },
+        {
+          "name": "AlertController",
+          "responsibility": "Endpoints REST para listar, reconhecer e resolver alertas"
+        },
+        {
+          "name": "ReportController",
+          "responsibility": "Gera e exporta relatórios de conformidade em múltiplos formatos"
+        },
+        {
+          "name": "SensorController",
+          "responsibility": "CRUD de sensores e configuração de thresholds"
+        },
+        {
+          "name": "DashboardController",
+          "responsibility": "Serve dados agregados para o frontend em tempo real via WebSocket"
+        },
+        {
+          "name": "WebhookController",
+          "responsibility": "Recebe eventos de pagamento do Stripe/Pagar.me para ManageSubscription"
+        }
+      ],
+      "presenters": [
+        {
+          "name": "AirQualityPresenter",
+          "responsibility": "Formata leituras brutas em AQI (Índice de Qualidade do Ar), cores e categorias visuais"
+        },
+        {
+          "name": "AlertPresenter",
+          "responsibility": "Formata alertas com severidade visual, tempo decorrido e dados de contexto"
+        },
+        {
+          "name": "ReportPresenter",
+          "responsibility": "Serializa relatórios em PDF, CSV, XML (formatos regulatórios CONAMA/CETESB)"
+        }
+      ],
+      "gateways": [
+        {
+          "name": "SensorReadingRepository",
+          "interface": "ISensorReadingRepository",
+          "responsibility": "Abstrai persistência de leituras (implementado por TimescaleDB adapter)"
+        },
+        {
+          "name": "AlertRepository",
+          "interface": "IAlertRepository",
+          "responsibility": "Abstrai persistência e query de alertas"
+        },
+        {
+          "name": "NotificationGateway",
+          "interface": "INotificationGateway",
+          "responsibility": "Abstrai envio de notificações (email, SMS, push, Slack)"
+        },
+        {
+          "name": "PaymentGateway",
+          "interface": "IPaymentGateway",
+          "responsibility": "Abstrai cobrança e gerenciamento de assinaturas"
+        },
+        {
+          "name": "FileStorageGateway",
+          "interface": "IFileStorageGateway",
+          "responsibility": "Abstrai armazenamento de relatórios exportados"
+        }
+      ]
+    },
+    "frameworks_drivers": {
+      "description": "Camada mais externa. Detalhes de implementação que podem ser trocados sem afetar o core",
+      "api": {
+        "framework": "NestJS (Node.js) ou FastAPI (Python)",
+        "transport": [
+          "REST/HTTP",
+          "WebSocket (Socket.IO)",
+          "MQTT broker (sensor ingestion)"
+        ]
+      },
+      "databases": {
+        "timeseries": "TimescaleDB (PostgreSQL extension) — leituras de sensores com compressão automática e continuous aggregates",
+        "relational": "PostgreSQL — entities de domínio (tenants, sensores, alertas, usuários)",
+        "cache": "Redis — dashboard em tempo real, rate limiting, sessões",
+        "search": "Opcional: Elasticsearch para análise exploratória de dados históricos"
+      },
+      "messaging": {
+        "broker": "MQTT (Mosquitto/HiveMQ) — ingestão de dados de sensores IoT",
+        "queue": "RabbitMQ ou AWS SQS — processamento assíncrono de alertas e notificações"
+      },
+      "notifications": {
+        "email": "SendGrid ou AWS SES",
+        "sms": "Twilio",
+        "push": "Firebase Cloud Messaging",
+        "webhook": "HTTP POST para sistemas SCADA/ERP do cliente"
+      },
+      "cloud": {
+        "provider": "AWS ou GCP",
+        "services": [
+          "ECS/Cloud Run (containers)",
+          "RDS (PostgreSQL)",
+          "ElastiCache (Redis)",
+          "S3/GCS (relatórios)",
+          "CloudWatch/Cloud Monitoring"
+        ]
+      },
+      "frontend": {
+        "framework": "React + TypeScript",
+        "ui": "Recharts/Tremor para dashboards de séries temporais",
+        "maps": "Mapbox GL — visualização geográfica de sensores e poluição"
+      },
+      "devops": {
+        "containers": "Docker + Kubernetes (EKS/GKE)",
+        "ci_cd": "GitHub Actions",
+        "iac": "Terraform",
+        "monitoring": "Grafana + Prometheus",
+        "logging": "ELK Stack ou Datadog"
+      },
+      "auth": "Auth0 ou AWS Cognito com JWT — multi-tenant com isolamento por claim"
+    },
+    "dependency_rule": {
+      "description": "A Regra de Dependência é aplicada rigorosamente em todas as camadas",
+      "rules": [
+        "Entities não importam nada de camadas externas — são Plain Objects/Classes com regras de negócio puras",
+        "Use Cases dependem apenas de Entities e de interfaces (ports) definidas dentro do core. Nunca importam NestJS, Prisma, Express, etc.",
+        "Interface Adapters implementam os ports definidos pelos Use Cases. Convertem dados mas não contêm lógica de negócio",
+        "Frameworks & Drivers implementam as interfaces dos gateways. São os únicos que conhecem TimescaleDB, Redis, MQTT, etc.",
+        "Injeção de dependência (DI Container do NestJS/tsyringe) conecta implementações concretas às interfaces no startup — sem violar a regra",
+        "Imports proibidos: Use Case nunca faz import de 'typeorm', 'express', 'mqtt'. Apenas de '../domain/interfaces/ISensorReadingRepository'"
+      ],
+      "example": "SensorReadingUseCase recebe ISensorReadingRepository via construtor. TimescaleDBSensorReadingRepository implementa essa interface na camada de Frameworks. O Use Case nunca sabe que é TimescaleDB."
+    },
+    "testability": {
+      "description": "Clean Architecture garante testabilidade intrínseca em todas as camadas",
+      "unit_tests": {
+        "target": "Entities e Use Cases",
+        "approach": "Sem mocks de framework — apenas instâncias das entidades e in-memory repository implementations",
+        "example": "IngestSensorReadingUseCase testado com InMemorySensorReadingRepository. Zero dependência de banco de dados ou rede"
+      },
+      "integration_tests": {
+        "target": "Interface Adapters e Gateways",
+        "approach": "Testcontainers para PostgreSQL/TimescaleDB/Redis reais em containers efêmeros",
+        "example": "TimescaleDBSensorReadingRepository testado com banco real. Verifica continuous aggregates e compressão"
+      },
+      "e2e_tests": {
+        "target": "Fluxos completos via API",
+        "approach": "Supertest + ambiente de staging com dados sintéticos de sensores IoT",
+        "example": "Simula 1000 leituras de sensor via MQTT, verifica criação de alertas e entrega de notificações"
+      },
+      "contract_tests": {
+        "target": "Interfaces dos gateways externos (Stripe, SendGrid, Auth0)",
+        "approach": "Pact para consumer-driven contract testing — evita quebras de integração silenciosas"
+      },
+      "coverage_targets": {
+        "entities": "100% — regras de negócio críticas",
+        "use_cases": "95%+",
+        "adapters": "80%+",
+        "frameworks": "Foco em smoke tests e integration tests"
+      }
+    },
+    "interfaces": [
+      "ISensorReadingRepository — buscar, salvar e agregar leituras por sensor/período",
+      "ISensorRepository — CRUD de sensores e thresholds",
+      "IAlertRepository — criar, listar, atualizar status de alertas",
+      "IIndustryRepository — gerenciamento de tenants/indústrias",
+      "IUserRepository — autenticação e autorização de usuários",
+      "INotificationGateway — send(notification: Notification): Promise<void>",
+      "IPaymentGateway — createSubscription, cancelSubscription, getInvoices",
+      "IFileStorageGateway — upload(file: Buffer, path: string): Promise<string>",
+      "IReportSerializer — serialize(report: Report, format: ReportFormat): Buffer",
+      "IAQICalculator — calculate(readings: AirQualityReading[]): AQIResult",
+      "IThresholdEvaluator — evaluate(reading: AirQualityReading, sensor: Sensor): ViolationResult[]",
+      "IEventPublisher — publish(event: DomainEvent): Promise<void>",
+      "ITenantContext — getCurrentTenantId(): string — para isolamento multi-tenant"
+    ],
+    "escalabilidade": {
+      "horizontal": "Stateless API pods escalam via HPA (Kubernetes) baseado em CPU/RPS. Redis centraliza sessões e cache",
+      "ingestao": "MQTT broker cluster (HiveMQ) processa milhões de mensagens/segundo. Worker pools consomem filas de forma independente da API",
+      "timeseries": "TimescaleDB chunks automáticos por tempo. Continuous Aggregates pré-computam métricas horárias/diárias. Compressão nativa reduz storage 90%+",
+      "multi_tenant": "Isolamento por schema (PostgreSQL) ou por row-level security. Tenant ID propagado via middleware em todas as queries",
+      "caching": "Redis com TTL escalonado: dashboard (30s), relatórios (5min), dados históricos (1h). Cache-aside pattern nos Use Cases via ICacheGateway",
+      "async_processing": "Avaliação de thresholds e envio de notificações são eventos assíncronos via fila — picos de ingestão não bloqueiam respostas da API",
+      "global": "CDN (CloudFront/Fastly) para assets estáticos. Multi-region deployment para clientes com exigências de soberania de dados (LGPD)"
+    },
+    "custos": {
+      "infra_base": "~$800-2000/mês para ambiente de produção inicial (ECS + RDS + ElastiCache + MQTT)",
+      "timeseries_storage": "TimescaleDB compressão reduz custo de storage em 90%+ vs PostgreSQL vanilla. Políticas de retenção automáticas por plano",
+      "ingestao": "Custo cresce linearmente com número de sensores. IoT Core (AWS) cobra por mensagem — importante para pricing dos planos",
+      "observabilidade": "Datadog ou Grafana Cloud: $200-500/mês. Crítico para SLAs industriais",
+      "otimizacoes": [
+        "Continuous Aggregates eliminam queries pesadas em dados raw — reduz CPU do banco",
+        "Compressão de chunks históricos (>7 dias) reduz storage 80%",
+        "Tiered storage para dados >90 dias em S3/GCS (x10 mais barato que RDS)",
+        "Reserved instances para componentes core (30-40% desconto)"
+      ],
+      "estimativa_por_cliente": "~$15-50/mês dependendo do número de sensores e retenção contratada"
+    },
+    "monetizacao": {
+      "modelo": "SaaS B2B com assinatura mensal/anual por tier",
+      "planos": [
+        {
+          "nome": "Starter",
+          "preco": "R$ 990/mês",
+          "limites": "Até 10 sensores, 90 dias retenção, alertas básicos, 2 usuários",
+          "target": "PMEs industriais, licenças ambientais simples"
+        },
+        {
+          "nome": "Professional",
+          "preco": "R$ 3.490/mês",
+          "limites": "Até 50 sensores, 1 ano retenção, API access, relatórios regulatórios, 10 usuários",
+          "target": "Médias indústrias com obrigações CONAMA/CETESB"
+        },
+        {
+          "nome": "Enterprise",
+          "preco": "Customizado (R$ 8.000+/mês)",
+          "limites": "Sensores ilimitados, retenção customizada, SLA 99.9%, white-label, integrações SCADA/ERP, CSM dedicado",
+          "target": "Grandes indústrias, grupos industriais, monitoramento de rede de plantas"
+        }
+      ],
+      "add_ons": [
+        "Relatórios regulatórios extras: R$ 200/relatório ou pacotes mensais",
+        "Sensores adicionais fora do plano: R$ 45/sensor/mês",
+        "API de dados históricos para BI: R$ 500/mês",
+        "Treinamento e onboarding: R$ 2.000-5.000 (one-time)"
+      ],
+      "expansao": [
+        "Marketplace de integrações com sistemas SCADA (Siemens, ABB, Rockwell)",
+        "Consultoria de conformidade regulatória como serviço",
+        "Dados anonimizados agregados para órgãos ambientais (B2G)"
+      ]
+    },
+    "stack_sugerida": {
+      "backend": {
+        "runtime": "Node.js 20+ com TypeScript 5",
+        "framework": "NestJS — DI nativo facilita Clean Architecture, suporte a MQTT, WebSocket e REST",
+        "orm": "Prisma (migrations e type safety) + TimescaleDB extension via raw queries para séries temporais",
+        "validation": "Zod — schema validation nos DTOs da camada de Interface Adapters"
+      },
+      "frontend": {
+        "framework": "Next.js 14 (App Router) + TypeScript",
+        "ui": "Tailwind CSS + shadcn/ui + Recharts para dashboards",
+        "state": "TanStack Query (React Query) para dados em tempo real + Zustand para estado local",
+        "maps": "Mapbox GL JS — visualização geoespacial de sensores"
+      },
+      "data": {
+        "primary": "PostgreSQL 16 + TimescaleDB 2.x — timeseries nativo no PostgreSQL",
+        "cache": "Redis 7 (Upstash para serverless ou ElastiCache)",
+        "search": "Opcional: pg_trgm para busca full-text sem Elasticsearch"
+      },
+      "iot": {
+        "broker": "MQTT 5 via HiveMQ Cloud ou self-hosted Mosquitto",
+        "protocol": "MQTT over TLS com autenticação por certificado X.509 por sensor",
+        "edge": "Opcional: Node-RED para processamento edge em gateways industriais"
+      },
+      "infra": {
+        "containers": "Docker + Kubernetes (EKS)",
+        "iac": "Terraform + Terragrunt",
+        "ci_cd": "GitHub Actions com staged deployments (dev → staging → prod)",
+        "secrets": "AWS Secrets Manager"
+      },
+      "observabilidade": {
+        "metrics": "Prometheus + Grafana",
+        "logs": "Loki ou OpenSearch",
+        "tracing": "OpenTelemetry + Jaeger",
+        "alerting": "PagerDuty para on-call de incidentes críticos"
+      },
+      "seguranca": {
+        "auth": "Auth0 com organizações multi-tenant ou AWS Cognito",
+        "api": "Rate limiting por tenant (Redis), API keys para integrações, mTLS para sensores",
+        "compliance": "LGPD: dados pessoais separados, logs de auditoria imutáveis, direito ao esquecimento implementado no use case DeleteTenantData"
+      }
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"description\": \"Objetos de negócio com regras e lógica intrínsecos, sem dependências externas\",\n    \"list\": [\n      {\n        \"name\": \"AirQualityReading\",\n        \"attributes\": [\"id\", \"sensorId\", \"timestamp\", \"pollutants: Map<PollutantType, Concentration>\", \"temperature\", \"humidity\", \"location\"],\n        \"rules\": [\"concentração não pode ser negativa\", \"timestamp não pode ser futuro\", \"leitura inválida se todos sensores falharem\"]\n      },\n      {\n        \"name\": \"Sensor\",\n        \"attributes\": [\"id\", \"serialNumber\", \"type: SensorType\", \"location: GeoCoordinates\", \"calibrationDate\", \"status: SensorStatus\", \"thresholds: Map<PollutantType, Threshold>\"],\n        \"rules\": [\"sensor requer recalibração após 90 dias\", \"sensor inativo não produz leituras válidas\"]\n      },\n      {\n        \"name\": \"Industry\",\n        \"attributes\": [\"id\", \"name\", \"cnpj\", \"sector: IndustrySector\", \"location\", \"regulatoryLicenses: License[]\", \"plan: SubscriptionPlan\"],\n        \"rules\": [\"CNPJ deve ser válido\", \"setor determina limites regulatórios aplicáveis\"]\n      },\n      {\n        \"name\": \"Alert\",\n        \"attributes\": [\"id\", \"readingId\", \"sensorId\", \"pollutant\", \"measuredValue\", \"threshold\", \"severity: AlertSeverity\", \"createdAt\", \"acknowledgedAt\", \"resolvedAt\"],\n        \"rules\": [\"alerta crítico exige reconhecimento em menos de 15 minutos\", \"severidade calculada com base no percentual acima do limite\"]\n      },\n      {\n        \"name\": \"Threshold\",\n        \"attributes\": [\"pollutantType\", \"warningLevel\", \"criticalLevel\", \"regulatoryLimit\", \"measureUnit\"],\n        \"rules\": [\"warningLevel < criticalLevel <= regulatoryLimit\", \"limites variam por norma regulatória (CONAMA, EPA, OMS)\"]\n      },\n      {\n        \"name\": \"Report\",\n        \"attributes\": [\"id\", \"industryId\", \"period: DateRange\", \"type: ReportType\", \"readings\", \"violations\", \"complianceStatus\"],\n        \"rules\": [\"relatório de conformidade requer mínimo 80% de leituras válidas no período\"]\n      },\n      {"
+}

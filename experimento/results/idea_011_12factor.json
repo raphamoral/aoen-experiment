@@ -1,0 +1,52 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único no Git com múltiplos ambientes de deploy (staging, production, regional). Cada região (BR-Sul, BR-Sudeste, etc.) é um deploy separado do mesmo codebase, parametrizado por variáveis de ambiente. CI/CD garante que uma única fonte de verdade alimenta todos os deploys.",
+    "dependencies": "Dependências declaradas explicitamente via package.json (Node/TypeScript) e pyproject.toml (Python workers). Isolamento via Docker containers — sem dependências implícitas do sistema operacional. Lock files (package-lock.json, poetry.lock) garantem reprodutibilidade. Dependências de sistema declaradas no Dockerfile base.",
+    "config": "Toda configuração sensível ou que varia por ambiente (DATABASE_URL, REDIS_URL, JWT_SECRET, SMTP_HOST, STRIPE_KEY, AWS_REGION, FEATURE_FLAGS) injetada via variáveis de ambiente. Uso de AWS Parameter Store ou HashiCorp Vault para secrets em produção. Nenhuma config hardcoded no codebase. Arquivo .env apenas para desenvolvimento local, jamais commitado.",
+    "backing_services": {
+      "banco_de_dados": "PostgreSQL (RDS) — perfis de startups e investidores, matchmaking scores, histórico de conexões",
+      "cache": "Redis (ElastiCache) — sessões, rate limiting, filas de jobs, cache de recomendações",
+      "fila_mensageria": "AWS SQS ou RabbitMQ — jobs assíncronos de matching, envio de e-mails, notificações",
+      "armazenamento": "AWS S3 — uploads de pitch decks, fotos de perfil, documentos de due diligence",
+      "email": "AWS SES ou SendGrid — notificações transacionais e campanhas",
+      "busca": "Elasticsearch ou pgvector — busca semântica de perfis e recomendações por embedding",
+      "pagamentos": "Stripe — assinaturas SaaS e marketplace fees",
+      "analytics": "Segment + Mixpanel — eventos de comportamento dos usuários",
+      "observabilidade": "Datadog ou Grafana Stack (Loki + Tempo + Prometheus)"
+    },
+    "build_release_run": "Pipeline em 3 estágios estritamente separados: BUILD (GitHub Actions compila assets, roda testes, gera imagem Docker imutável taggeada com SHA do commit), RELEASE (imagem combinada com config do ambiente via AWS Systems Manager, artefato de release versionado e imutável no ECR), RUN (ECS Fargate ou Kubernetes executa o release sem alterações). Rollback é simplesmente apontar para release anterior. Nenhuma alteração em runtime.",
+    "processes": "Aplicação roda como processos stateless e share-nothing. Estado persistente exclusivamente em backing services (DB, Redis, S3). Processos: (1) api-server — HTTP/REST e WebSocket para o cliente, (2) worker-matching — consome fila SQS para executar algoritmo de matchmaking, (3) worker-notifications — envia e-mails e push notifications, (4) scheduler — gera jobs recorrentes (relatórios semanais, scores de compatibilidade). Nenhum processo armazena estado local entre requisições.",
+    "concurrency": "Escala horizontal via múltiplas instâncias de cada tipo de processo. api-server escala por throughput de requisições (CPU/RPS), workers de matching escalam por profundidade de fila (CloudWatch Queue Depth), workers de notificação escalam por volume. Auto Scaling Groups no ECS com políticas baseadas em métricas. Processos leves (thread pool via Node.js cluster ou Python asyncio) para concorrência interna. Sem estado compartilhado entre instâncias.",
+    "disposability": "Startup rápido: containers otimizados inicializam em menos de 5 segundos, health checks via /healthz antes de receber tráfego. Shutdown gracioso: SIGTERM capturado, requisições em andamento completadas (grace period de 30s), conexões de DB encerradas limpa mente. Workers de fila recolocam jobs incompletos em caso de falha (visibility timeout no SQS). Deployments blue/green ou rolling no ECS garantem zero downtime.",
+    "interfaces": [
+      "REST API (JSON) — CRUD de perfis, matching, mensagens, autenticação JWT",
+      "WebSocket — notificações em tempo real de novos matches e mensagens",
+      "Web App SPA (React/Next.js) — dashboard para startups e investidores",
+      "Admin Panel (React Admin ou Retool) — gestão de usuários, moderação, métricas",
+      "Mobile App (React Native ou Flutter) — experiência mobile para founders e investidores",
+      "Webhooks — integrações com CRMs e ferramentas externas dos investidores",
+      "API Pública (v1) — para parceiros como aceleradoras e associações de startups"
+    ],
+    "escalabilidade": "Escala horizontal stateless no plano de aplicação (ECS Auto Scaling). Banco de dados escala via read replicas RDS para queries de busca e ranking, com connection pooling via PgBouncer. Cache Redis Cluster para reduzir carga no DB. Algoritmo de matching executa assincronamente em workers dedicados, desacoplado da API. Em picos regionais (eventos de pitch, demo days), workers de matching escalam automaticamente pela profundidade da fila SQS. CDN (CloudFront) para assets estáticos. Particionamento por região geográfica em fases avançadas.",
+    "custos": "Infra base estimada em USD 800-1500/mês para escala inicial: RDS t3.medium (~$60), ElastiCache t3.micro (~$25), ECS Fargate (~$200 com 2-4 tasks), SQS (~$5), S3 (~$20), SES (~$10/100k emails), ECR, CloudWatch, Route53 (~$50 total). Principais alavancas de custo: crescimento de dados no RDS (usar S3 + Athena para dados históricos frios), volume de e-mails (negociar plano SendGrid), e horas de compute nos workers de matching em eventos de alta demanda. Uso de Spot Instances para workers não-críticos reduz custo em ~70%.",
+    "monetizacao": "Modelo freemium B2B2C multi-camada: (1) Freemium para startups — perfil básico e até 3 matches/mês gratuitos, plano Growth USD 99/mês para matches ilimitados e analytics de perfil, plano Scale USD 299/mês para acesso prioritário a investidores verificados e relatórios de mercado; (2) Subscription para investidores-anjo — USD 199/mês para acesso à plataforma com filtros avançados por setor, estágio e região; (3) Success fee — 0.5-1% sobre rodadas fechadas pela plataforma (rastreado via deal room integrado); (4) B2B institucional — licença para aceleradoras, associações e fundos de VC para acesso a deal flow curado, USD 2.000-10.000/mês; (5) Eventos e Demo Days — monetização de eventos online/híbridos com ingresso pago.",
+    "stack_sugerida": {
+      "backend_api": "Node.js + TypeScript + Fastify (alta performance, schema validation nativa)",
+      "workers_matching": "Python 3.12 + asyncio (ecossistema ML/AI para scoring de compatibilidade)",
+      "algoritmo_matching": "pgvector (embeddings de perfis) + regras de negócio customizadas (setor, estágio, ticket, região)",
+      "banco_de_dados": "PostgreSQL 16 via RDS (JSONB para dados semi-estruturados de perfis)",
+      "cache_filas": "Redis 7 (ElastiCache) + AWS SQS",
+      "frontend": "Next.js 14 + TailwindCSS + shadcn/ui (SSR para SEO de perfis públicos)",
+      "mobile": "React Native + Expo",
+      "infra": "AWS (ECS Fargate + RDS + S3 + SES + CloudFront) via Terraform",
+      "ci_cd": "GitHub Actions + ECR + ECS Blue/Green Deploy",
+      "observabilidade": "OpenTelemetry + Grafana Cloud (Loki, Tempo, Prometheus)",
+      "autenticacao": "Auth0 ou Supabase Auth (OAuth2 + magic link)",
+      "pagamentos": "Stripe Billing (subscriptions) + Stripe Connect (marketplace fees)"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único no Git com múltiplos ambientes de deploy (staging, production, regional). Cada região (BR-Sul, BR-Sudeste, etc.) é um deploy separado do mesmo codebase, parametrizado por variáveis de ambiente. CI/CD garante que uma única fonte de verdade alimenta todos os deploys.\",\n\n  \"dependencies\": \"Dependências declaradas explicitamente via package.json (Node/TypeScript) e pyproject.toml (Python workers). Isolamento via Docker containers — sem dependências implícitas do sistema operacional. Lock files (package-lock.json, poetry.lock) garantem reprodutibilidade. Dependências de sistema declaradas no Dockerfile base.\",\n\n  \"config\": \"Toda configuração sensível ou que varia por ambiente (DATABASE_URL, REDIS_URL, JWT_SECRET, SMTP_HOST, STRIPE_KEY, AWS_REGION, FEATURE_FLAGS) injetada via variáveis de ambiente. Uso de AWS Parameter Store ou HashiCorp Vault para secrets em produção. Nenhuma config hardcoded no codebase. Arquivo .env apenas para desenvolvimento local, jamais commitado.\",\n\n  \"backing_services\": {\n    \"banco_de_dados\": \"PostgreSQL (RDS) — perfis de startups e investidores, matchmaking scores, histórico de conexões\",\n    \"cache\": \"Redis (ElastiCache) — sessões, rate limiting, filas de jobs, cache de recomendações\",\n    \"fila_mensageria\": \"AWS SQS ou RabbitMQ — jobs assíncronos de matching, envio de e-mails, notificações\",\n    \"armazenamento\": \"AWS S3 — uploads de pitch decks, fotos de perfil, documentos de due diligence\",\n    \"email\": \"AWS SES ou SendGrid — notificações transacionais e campanhas\",\n    \"busca\": \"Elasticsearch ou pgvector — busca semântica de perfis e recomendações por embedding\",\n    \"pagamentos\": \"Stripe — assinaturas SaaS e marketplace fees\",\n    \"analytics\": \"Segment + Mixpanel — eventos de comportamento dos usuários\",\n    \"observabilidade\": \"Datadog ou Grafana Stack (Loki + Tempo + Prometheus)\"\n  },\n\n  \"build_release_run\": \"Pipeline em 3 estágios estritamente separados: BUILD (GitHub Actions compila assets, roda t"
+}

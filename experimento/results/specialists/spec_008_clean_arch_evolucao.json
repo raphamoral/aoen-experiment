@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "O modelo de domínio é sólido e centrado em conceitos de negócio (DDD implícito), com multi-tenancy e EventoRastreabilidade como entidade separada indicando alguma consciência evolutiva, mas o hash_blockchain embutido diretamente em ManifestoTransporte sugere acoplamento à tecnologia blockchain sem abstração de porta/adaptador, e a proposta não evidencia inversão de dependências, interfaces substituíveis para infraestrutura (banco, IA, blockchain) nem estratégia de scaling horizontal — ficando no meio-termo entre separação conceitual e maturidade arquitetural real."
+}

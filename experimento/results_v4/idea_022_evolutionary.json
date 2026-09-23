@@ -1,0 +1,59 @@
+{
+  "ideia_idx": 22,
+  "ideia": "Marketplace de ingredientes orgânicos B2B para restaurantes",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (mudança incremental segura como característica primária)",
+      "Testabilidade e deployability (CI/CD com deploys diários, feature flags)",
+      "Confiabilidade transacional (pedidos, pagamentos e estoque consistentes)",
+      "Rastreabilidade e conformidade (origem e certificações orgânicas, auditoria, LGPD)",
+      "Disponibilidade nos horários de pico de compra (pré-serviço de almoço e jantar)",
+      "Escalabilidade elástica e sazonal (safras, feriados, picos de demanda)",
+      "Observabilidade",
+      "Segurança e isolamento multi-tenant (restaurantes e fornecedores)",
+      "Interoperabilidade (ERPs, POS, logística e gateways de pagamento)"
+    ],
+    "fitness_functions": [
+      "Estrutural: ArchUnit/dependency-cruiser no CI falha o build se um módulo acessar o banco ou as classes internas de outro módulo, ou se houver dependência cíclica entre módulos",
+      "Acoplamento: limite de dependências aferentes e eferentes por módulo, monitorado a cada commit",
+      "Contrato: testes de contrato (Pact/OpenAPI diff) bloqueiam breaking changes em APIs e eventos públicos",
+      "Desempenho: teste de carga automatizado no pipeline; p95 de busca de catálogo < 300ms e de checkout < 800ms, com falha do pipeline em caso de regressão maior que 10%",
+      "Disponibilidade: SLO de 99,9% em janelas de pico, com alerta de error budget e canary automático que faz rollback ao violar o SLO",
+      "Consistência: job de reconciliação diário entre pedidos, pagamentos, repasses e estoque; divergência acima de 0,1% dispara alerta",
+      "Deployability: DORA no CI (lead time < 1 dia, change failure rate < 15%, tempo de rollback < 10 min)",
+      "Segurança: SAST, SCA e scan de segredos no CI; teste automatizado de isolamento de tenant (um restaurante nunca lê dados de outro); zero vulnerabilidades críticas em produção",
+      "Conformidade: verificação automática de que todo lote listado tem certificação orgânica válida e não vencida, com bloqueio de publicação caso contrário",
+      "Dados/LGPD: teste que garante que campos pessoais estejam criptografados e que a retenção e o direito de exclusão sejam respeitados",
+      "Custo: fitness function de FinOps com custo por pedido e por tenant, alertando desvio maior que 20% mês a mês",
+      "Evolução de esquema: migrations validadas no CI com o padrão expand/contract e sem downtime"
+    ],
+    "incremental_change": "Começar com um monólito modular (modular monolith) organizado por bounded contexts do DDD: Catálogo, Fornecedores/Certificações, Pedidos, Pagamentos/Repasses, Logística, Faturamento, Identidade/Tenancy e Notificações. Fases: (1) MVP com uma região, poucos fornecedores e pedidos com pagamento manual ou via PSP; (2) recorrência (pedidos recorrentes e listas de compras), catálogo com estoque em tempo quase real e integrações de ERP/POS; (3) extração de módulos para serviços apenas quando as fitness functions e métricas mostrarem necessidade (por exemplo, Busca, Notificações, Logística), usando o Strangler Fig; (4) recursos avançados (previsão de demanda, precificação dinâmica, marketplace multirregional). Cada mudança segue o ciclo: hipótese, feature flag, canary, medição via fitness functions, e então promoção ou rollback. Mudanças orientadas por métricas, com ADRs registrando cada decisão.",
+    "reversibility": "Reversíveis (two-way doors): provedor de nuvem via IaC e contêineres; motor de busca (começar com Postgres full-text e migrar para OpenSearch/Meilisearch atrás de uma interface); broker de mensageria (usar outbox e abstração); provedor de e-mail/SMS/notificações; PSP (interface anti-corruption); frontend e framework de UI; feature flags e estratégias de deploy; monólito versus microsserviços (fronteiras modulares preservadas). Semi-reversíveis: modelo de dados de catálogo e pedidos (usar versionamento e expand/contract). Difíceis de reverter (one-way doors), adiadas ao last responsible moment: modelo de tenancy/isolamento de dados (schema-per-tenant vs banco separado, decidir só se houver exigência de clientes enterprise), modelo financeiro de marketplace (split payments e responsabilidade fiscal/KYC, que dependem de regulação e do PSP escolhido), identificadores públicos e contratos de API externos (versionar desde o início), e residência de dados por região. Todas são registradas em ADRs com gatilhos explícitos de revisão.",
+    "coupling": "Baixo acoplamento entre bounded contexts, com comunicação via APIs internas explícitas e eventos de domínio (ex.: PedidoCriado, LoteCertificado, PagamentoConfirmado), usando outbox pattern para entrega confiável. Cada módulo é dono dos seus dados (schemas separados no mesmo Postgres, sem joins entre módulos). Anti-corruption layers para integrações externas (PSP, ERPs, transportadoras, emissores de NF-e). Contratos versionados (OpenAPI/AsyncAPI/JSON Schema) e consumer-driven contract tests. Acoplamento síncrono restrito ao caminho crítico (checkout); o restante é assíncrono. Arquitetura hexagonal (ports and adapters) dentro de cada módulo para isolar o domínio da infraestrutura. Coesão alta por capacidade de negócio e times alinhados aos contextos (Conway inverso).",
+    "interfaces": [
+      "API pública REST/JSON (OpenAPI) versionada para o web app de restaurantes e fornecedores",
+      "API GraphQL/BFF opcional para o frontend de compras, se o volume de consultas justificar",
+      "Portal web de compradores (restaurantes): busca, catálogo, carrinho, pedidos recorrentes, faturas",
+      "Portal web de fornecedores: gestão de catálogo, estoque, preços, certificações, pedidos e repasses",
+      "Backoffice/admin: curadoria, verificação de certificações, disputas, moderação e suporte",
+      "Webhooks de entrada (PSP, transportadoras) e de saída (ERPs/POS dos clientes) com assinatura HMAC e retentativas",
+      "Eventos de domínio assíncronos (AsyncAPI) entre módulos e para integrações",
+      "Integração de pagamentos/split via PSP (ex.: Stripe Connect, Pagar.me, Mercado Pago) atrás de um port PaymentGateway",
+      "Integração fiscal (NF-e/NFS-e) via provedor, com adaptador substituível",
+      "Integração logística: cálculo de frete, rastreio e cadeia do frio",
+      "Importação e exportação em lote (CSV/planilhas e API) para catálogos e estoques dos fornecedores",
+      "Notificações (e-mail, WhatsApp, push) via port de mensageria"
+    ],
+    "escalabilidade": "Escala vertical primeiro e depois horizontal: aplicação stateless em contêineres com autoscaling, Postgres gerenciado com réplicas de leitura e particionamento por tenant/data em tabelas de alto volume (pedidos, eventos). Cache (Redis) para catálogo e preços, e CDN para imagens e assets. Busca desacoplada do banco transacional quando o volume exigir. Processamento assíncrono (filas e workers) para notificações, faturamento, conciliação e importações, absorvendo picos sem degradar o checkout. Como B2B tem cardinalidade moderada (milhares de restaurantes, centenas de fornecedores) e picos previsíveis (véspera de fins de semana e feriados), o escalonamento pode ser agendado. Extração seletiva de módulos quentes (busca, estoque) só quando as fitness functions de desempenho indicarem gargalo. Expansão multirregional via célula/regionalização de dados apenas com demanda comprovada. Idempotência em pedidos e pagamentos e reserva de estoque com controle de concorrência para consistência sob carga.",
+    "custos": "Priorizar custo baixo no início: monólito modular, um Postgres gerenciado, serviços gerenciados e sem Kubernetes até haver necessidade real, evitando complexidade e custo de microsserviços prematuros. Principais custos: infraestrutura de nuvem (compute, banco, observabilidade), taxas de PSP (2–4% por transação, sendo o maior custo variável), verificação de fornecedores e certificações, suporte e operações de onboarding, logística (se houver fulfillment próprio ou parcerias), emissão fiscal e observabilidade. Controles: FinOps com tags por módulo/tenant, custo por pedido como fitness function, autoscaling com limites, instâncias reservadas ou savings plans após estabilização, retenção de logs e métricas em camadas, e ambientes efêmeros de preview que se desligam sozinhos. O maior risco de custo está na operação de curadoria e onboarding, mais do que na infraestrutura, então deve ser automatizado gradualmente.",
+    "monetizacao": "Modelo híbrido: (1) comissão sobre GMV, cobrada do fornecedor (tipicamente 5–15%, escalonada por volume e categoria) como receita principal; (2) assinatura SaaS para restaurantes (planos por número de unidades, com pedidos recorrentes, integrações com ERP/POS, analytics de compras e gestão de múltiplos estabelecimentos); (3) assinatura premium para fornecedores (destaque no catálogo, analytics, ferramentas de gestão de estoque e previsão de demanda); (4) serviços financeiros (antecipação de recebíveis para fornecedores, prazo de pagamento/crédito B2B para restaurantes, com taxa); (5) taxas de logística e cadeia do frio; (6) publicidade e listagens patrocinadas de fornecedores; (7) dados e insights agregados de mercado (anonimizados). Começar apenas com comissão e um plano de assinatura simples para validar valor, adicionando as demais fontes por experimentos.",
+    "stack_sugerida": "Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Spring Boot, com arquitetura hexagonal, e possibilidade de extração futura para serviços. Banco: PostgreSQL gerenciado (RDS/Cloud SQL/Neon) com schemas por módulo, row-level security para tenancy, extensões pg_trgm/full-text para busca inicial e PostGIS para geolocalização de fornecedores. Cache e filas: Redis; mensageria com SQS/SNS ou RabbitMQ (NATS/Kafka apenas se o volume justificar), com outbox pattern. Busca: Postgres FTS inicialmente, depois OpenSearch/Meilisearch/Typesense. Frontend: React com Next.js (TypeScript) para portais web, PWA para uso mobile em campo (fornecedores). Autenticação: Auth0/Clerk/Keycloak com RBAC/ABAC e multi-tenancy por organização. Pagamentos: Stripe Connect ou PSP local com split (Pagar.me/Mercado Pago/Iugu), atrás de uma abstração. Infra: contêineres (AWS ECS Fargate/Cloud Run), Terraform/Pulumi, GitHub Actions, feature flags (Unleash/OpenFeature), canary deploys. Observabilidade: OpenTelemetry com Grafana/Prometheus/Loki ou Datadog, Sentry, alertas por SLO. Qualidade e fitness functions: ArchUnit/dependency-cruiser, Pact, k6, Trivy/Snyk, Semgrep, testes de arquitetura no CI. Armazenamento: S3 com CDN para imagens e certificados. Documentação: ADRs, C4 model e OpenAPI/AsyncAPI versionados no repositório."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T02:30:30+00:00",
+    "runner": "runner.py"
+  }
+}

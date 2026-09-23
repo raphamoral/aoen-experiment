@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 45,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra princípios evolutivos sólidos — adaptadores plugáveis para hardware, motor de conformidade parametrizado por ruleset (adicionar regulação é configuração, não reescrita) e armazenamento agnóstico ao provedor cloud —, mas a 'Service Layer central' descrita como ponto único de contratos de domínio concentra acoplamento implícito que pode exigir mudança coordenada ao escalar de dezenas para milhares de sensores simultâneos, e a ausência de detalhes sobre versionamento dos rulesets regulatórios, estratégia de eventos para o pipeline IoT de alta throughput e segregação interna dos serviços impede atingir nota máxima."
+}

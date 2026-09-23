@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente entidades de domínio puro, sem qualquer menção a filas, workers, processos separados ou processamento assíncrono — operações pesadas como geração de plano nutricional por IA e processamento de exames laboratoriais não têm isolamento arquitetural definido, o que implica execução síncrona e acoplada, onde uma falha derruba todo o sistema."
+}

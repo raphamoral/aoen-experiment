@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não faz nenhuma menção a modelos de receita, tiers de preço, estratégia de monetização ou métricas de negócio — foca exclusivamente na arquitetura técnica (ports & adapters) sem qualquer consideração comercial."
+}

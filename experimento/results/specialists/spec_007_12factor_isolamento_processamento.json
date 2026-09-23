@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "A proposta apresenta isolamento físico real — web workers e background workers são processos distintos em containers separados no Kubernetes, com filas assíncronas (SQS/RabbitMQ) desacoplando produtores de consumidores e permitindo escala independente — mas perde pontos por não mencionar mecanismos explícitos de resiliência a falha dos workers (dead letter queues, retry com backoff, circuit breaker no consumidor) nem estratégia de fallback para o caso de o worker ficar indisponível por tempo prolongado."
+}

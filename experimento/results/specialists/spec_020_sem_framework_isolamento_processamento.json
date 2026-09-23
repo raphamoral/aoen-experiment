@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona filas (Bull) para processamento assíncrono de submissões, o que demonstra consciência do gargalo, mas não especifica isolamento físico real (workers em processos/containers separados), não descreve fallback em caso de falha do worker/fila, e não aborda escalonamento independente dos consumidores — o isolamento descrito é lógico dentro do mesmo runtime Node.js, não arquitetural."
+}

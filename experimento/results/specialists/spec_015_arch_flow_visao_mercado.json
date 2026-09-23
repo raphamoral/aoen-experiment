@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O mercado-alvo ('e-commerces de moda') é mencionado com alguma especificidade de domínio (sazonalidade de coleções, trend decay, aging curve), mas a proposta carece de tamanho de mercado estimado, articulação explícita da dor do cliente em linguagem de negócio (não arquitetural), ausência de comparação direta com alternativas existentes (ex: Prisync, Wiser, Dynamic Yield) e nenhuma evidência quantitativa que torne a proposta de valor convincente para adoção."
+}

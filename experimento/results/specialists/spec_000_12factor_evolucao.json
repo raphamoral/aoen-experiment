@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "Arquitetura com separação clara de responsabilidades via monorepo multi-serviço, dependências declaradas e isoladas, configuração externalizada e processos stateless permite substituição independente de componentes (banco, modelo de IA, provedor de vídeo, pagamentos) e escala horizontal sem mudança arquitetural; perde um ponto pela dependência implícita em abstrações AWS (EKS, RDS Aurora, SageMaker, ElastiCache) que tornam a portabilidade entre clouds moderadamente custosa, embora reversível."
+}

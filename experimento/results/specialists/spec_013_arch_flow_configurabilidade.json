@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta define contextos bem separados e usa commodities nativamente multi-tenant (Stripe Connect, Auth0, Mapbox), o que dá uma base sólida, mas não descreve nenhuma camada explícita de configuração por tenant — itens como check-in com IoT, precificação dinâmica (ainda em 'genesis', portanto experimental) e regras de negócio do proprietário provavelmente exigiriam desenvolvimento ou integração customizada para cada novo cliente empresarial, sem um motor de regras ou store de configuração por tenant documentado."
+}

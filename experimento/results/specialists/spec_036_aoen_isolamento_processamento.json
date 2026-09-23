@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 36,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta oferece isolamento apenas lógico via abstração da interface PrescriptionAnalyzer (troca de provedor sem alterar a API), mas o fluxo fixo de 8 passos é descrito de forma inteiramente síncrona e monolítica — não há menção a filas, workers, processos separados, circuit breakers, nem comportamento de fallback caso o motor de análise (o componente mais pesado) falhe ou timeout; uma falha na etapa 4 (análise de interações) bloqueia ou derruba o fluxo inteiro, e não existe indicação de que esse componente possa ser escalado independentemente dos demais."
+}

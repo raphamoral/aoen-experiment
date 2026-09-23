@@ -1,0 +1,22 @@
+{
+  "ideia_idx": 92,
+  "abordagem": "sem_framework",
+  "scores": {
+    "core_diferenciador": 6,
+    "visao_mercado": 9,
+    "multi_interface": 8,
+    "configurabilidade": 4,
+    "isolamento_processamento": 7,
+    "consideracao_custo": 8,
+    "monetizacao": 9,
+    "evolucao": 8,
+    "coerencia": 9
+  },
+  "_meta": {
+    "modelo_avaliador": "claude-sonnet-5",
+    "modelo_gerador": "claude-sonnet-5",
+    "prompt_sha": "19bc6010fb58",
+    "truncagem": 0,
+    "avaliado_em": "2026-09-21T07:18:41+00:00"
+  }
+}

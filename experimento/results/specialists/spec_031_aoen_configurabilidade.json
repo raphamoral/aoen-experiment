@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 31,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta tem boas abstrações estruturais (service layer agnóstico de interface, MatchingEngine com contrato fixo), mas não descreve nenhum modelo de configuração por tenant — sem menção a tabelas de configuração, feature flags por cliente, questionários customizáveis, pesos de matching ajustáveis por contrato ou painel de onboarding administrativo; o próprio termo 'fluxo_fixo' na fase 3 sinaliza que o comportamento está hardcoded, o que significa que onboardar um novo cliente B2B com regras distintas (ex: critérios de matching diferentes para uma empresa versus uma universidade) provavelmente exigiria código novo."
+}

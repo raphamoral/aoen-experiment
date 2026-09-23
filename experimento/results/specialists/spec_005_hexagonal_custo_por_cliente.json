@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura reconhece multi-tenancy (TenantManagementPort) e cobrança por uso (PaymentGatewayPort menciona 'por uso'), mas não há nenhum mecanismo explícito de rastreamento de consumo por tenant — nenhuma porta de usage metering, nenhum cálculo de custo por operação (ex: custo por assinatura digital disparada, por PDF gerado, por GB armazenado por cliente) e nenhuma conexão entre o que cada tenant consome e a margem por cliente; o AuditRepositoryPort e ReportingPort existem para compliance, não para unit economics."
+}

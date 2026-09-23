@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 25,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma cadeia causal coesa: o core agnóstico de solver justifica o atendimento a segmentos com orçamentos radicalmente distintos; a RouteService como camada única viabiliza as 5 interfaces sem duplicar lógica; cada interface mapeia exatamente um segmento de mercado declarado (White-Label→cooperativas sem TI, API→prefeituras com legado, Mobile→motoristas como requisito não negociável); o fluxo de 8 etapas fecha o ciclo operacional de ponta a ponta, do insumo ao KPI — a única lacuna é a ausência de um mecanismo explícito de feedback (dados de execução real retroalimentando estimativas de volume e calibragem do solver), o que deixa o sistema coeso mas sem loop de aprendizado declarado."
+}

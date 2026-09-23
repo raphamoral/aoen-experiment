@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural descreve com profundidade o core técnico, os mercados-alvo e os fluxos operacionais, mas não menciona nenhum modelo de monetização — não há pricing, tiers, estrutura de receita (assinatura, usage-based, comissão por campanha), nem métricas de negócio como MRR, LTV ou CAC; a única inferência possível é que existe um cliente B2B pagante, mas como e quanto ele paga é completamente omitido."
+}

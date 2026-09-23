@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 9,
+  "justificativa": "A proposta isola explicitamente workloads pesados (emissão de certificados, ancoragem blockchain) em processos worker separados via BullMQ/SQS com escala horizontal independente e statelessness garantida — falta apenas descrição explícita de circuit breaker/fallback para falha do worker ou indisponibilidade do serviço de blockchain."
+}

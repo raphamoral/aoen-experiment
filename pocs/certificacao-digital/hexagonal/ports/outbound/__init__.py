@@ -1,0 +1,1 @@
+# Driven-side ports: define what the application needs from the outside world

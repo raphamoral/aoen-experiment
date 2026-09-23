@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "O produto menciona 'assinatura digital' no nome e possui a entidade Tenant com atributos 'plan', 'usageLimits' e 'billingStatus', sinalizando intenção de monetização por planos, mas nenhum detalhe concreto é fornecido sobre tiers, valores, métricas (MRR, LTV, CAC, churn) ou conexão entre o modelo de receita e o valor entregue ao cliente."
+}

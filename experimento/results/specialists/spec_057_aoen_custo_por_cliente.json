@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 57,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona componentes que tornam o custo por operação calculável em princípio (pipeline de eventos, chamadas LLM, storage), mas a proposta não define nenhum modelo de custo por cliente/operação — não há cálculo de 'cada análise custa R$X de IA + R$Y de storage por tenant', nem rastreamento de consumo por tenant, nem conexão entre custo unitário e modelo de precificação."
+}

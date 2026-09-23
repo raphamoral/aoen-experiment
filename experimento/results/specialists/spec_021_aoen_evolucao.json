@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra princípios sólidos de evolução: Device Adapter Layer desacopla protocolos, modelo preditivo é intercambiável sem quebrar contratos, equipment types são plugins, e a Service Layer garante que lógica de negócio não vaze para interfaces — porém a proposta não endereça explicitamente abstração de banco de dados, nem padrões de escala para ingestão IoT em alto volume (event streaming, backpressure), e o fluxo descrito na fase 3 parece síncrono, o que pode exigir mudança arquitetural relevante ao crescer de centenas para dezenas de milhares de sensores concorrentes."
+}

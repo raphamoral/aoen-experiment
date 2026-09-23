@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 96,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra os princípios corretos — rulesets versionados por jurisdição como configuração (não código), adaptadores intercambiáveis para provedores externos e fluxo canônico imutável com parâmetros variáveis — mas a proposta conflate 'configurabilidade por jurisdição' com 'configurabilidade por tenant': não há descrição explícita de uma camada de configuração no nível do cliente (overrides por tenant, campos customizados, workflows de aprovação específicos por empresa), o que significa que dois clientes no mesmo país com necessidades distintas provavelmente ainda exigiriam intervenção além de uma nova row no banco."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 8,
+  "justificativa": "A proposta apresenta múltiplas interfaces claramente justificadas por perfis reais de uso — REST API v1 direcionada a integrações com plataformas de mercado dominantes (Shopify, VTEX, Magento), Webhooks para sistemas que precisam reagir a eventos de devolução de forma assíncrona, e Portal Web para lojistas —, com arquitetura 12-factor que desacopla a lógica de negócio das interfaces (processos stateless, workers independentes, api/worker/frontend como serviços separados no monorepo), permitindo adicionar novos canais sem reescrever o core; perde 2 pontos porque o texto das interfaces está truncado (impossibilitando avaliar se há cobertura de canais mobile ou CLI para operadores de galpão) e porque o desacoplamento é inferido da estrutura geral, não explicitado como princípio de design das interfaces."
+}

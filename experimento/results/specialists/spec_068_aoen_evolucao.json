@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 68,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A proposta demonstra arquitetura hexagonal madura: serviços de domínio puros (sem HTTP/UI), adaptadores trocáveis para pagamento/KYC/assinatura, pipeline de negócio parametrizável em vez de hardcoded, e separação total entre canais e regras — permitindo substituir provedores, adicionar interfaces e crescer em escala sem tocar no núcleo; a pequena dedução reflete a ausência de menção explícita à abstração de banco de dados e estratégia de escalonamento de infraestrutura."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 81,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define separação lógica via CarbonService e CalcEngine com adapters, mas não menciona isolamento físico do processamento pesado (workers separados, filas de mensagens, subprocessos), nem processamento assíncrono explícito para cálculos de inventário, nem fallback se o motor de cálculo falhar — indicando que tudo provavelmente roda no mesmo processo da aplicação."
+}

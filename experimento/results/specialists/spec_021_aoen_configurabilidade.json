@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra intenção clara de configurabilidade — AlertRuleService sugere regras por tenant, thresholds são parâmetros avaliáveis, e o Device Adapter Layer abstrai protocolos — mas não descreve o mecanismo concreto de isolamento de configuração por cliente: não há menção a schema de tenant config, como diferentes clientes recebem thresholds distintos, nem se o registro de novo tipo de equipamento (plugin) exige código ou apenas uma nova entrada no banco, deixando ambíguo se o onboarding de um novo cliente é realmente zero-código ou ainda depende de deploy."
+}

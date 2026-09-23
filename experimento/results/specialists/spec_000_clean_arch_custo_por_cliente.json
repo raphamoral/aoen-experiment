@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma entidade, atributo ou mecanismo para rastrear custo por cliente — 'LaudoIA' registra modelo usado e confiança, mas sem custo associado; 'Consulta' tem 'valor' (receita), não custo; não existe camada de metering, billing por tenant ou cálculo de margem por operação em nenhuma parte da arquitetura."
+}

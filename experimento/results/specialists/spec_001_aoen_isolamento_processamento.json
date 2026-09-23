@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve separação lógica via camada de serviços (FleetService, TrackingService etc.), mas não menciona isolamento físico de processos pesados (cálculo de ETA contínuo, detecção de anomalias, cálculo de métricas pós-entrega) em workers separados, filas de mensagens ou mecanismos de fallback — o GPS update loop e a orquestração de estado centralizado rodando no mesmo processo que serve as interfaces é o risco implícito não endereçado."
+}

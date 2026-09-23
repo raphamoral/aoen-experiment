@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está bem identificado nos componentes 'genesis' (motor adaptativo por IA, geração de conteúdo via LLM e detecção preditiva de churn) e isolado nos contextos 'custom' (Gamification Engine e Learning Orchestration), com proposta de valor clara e extensível por não depender de fornecedor único — perde um ponto por não explicitar explicitamente como esses três componentes se integram para formar uma vantagem insubstituível, ficando ligeiramente fragmentados na apresentação."
+}

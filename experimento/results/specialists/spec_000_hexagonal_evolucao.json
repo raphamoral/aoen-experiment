@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "Arquitetura hexagonal corretamente aplicada — core agnóstico de tecnologia, todas as dependências externas invertidas via interfaces explícitas (IImageAnalyzer, IPatientRepository, etc.) com múltiplos adapters intercambiáveis já previstos (OpenAI↔CustomML, Stripe↔PagSeguro, Auth0↔Keycloak, S3↔GCS), escalabilidade endereçada estruturalmente via event-driven + Kubernetes + read replicas sem exigir mudança de core, e decisões reversíveis evidenciadas pelas alternativas duais em cada adapter secundário; desconto mínimo pela ausência de definição explícita de bounded contexts entre os microserviços que, em escala, pode gerar acoplamento temporal via message queue se os contratos de eventos não forem versionados."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta descreve apenas a camada de entidades de domínio — explicitamente independentes de framework — o que é uma base arquitetural favorável ao desacoplamento, mas nenhuma interface é mencionada, nenhum canal é justificado por perfil de usuário (tutor mobile, veterinário web, clínica via API) e não há qualquer raciocínio de alcance de mercado que oriente as escolhas de canal."
+}

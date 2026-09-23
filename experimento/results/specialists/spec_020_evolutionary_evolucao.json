@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7.5,
+  "justificativa": "A estratégia faseada com gatilhos baseados em fitness functions, Strangler Fig pattern e feature flags demonstra forte pensamento evolutivo e decisões reversíveis, mas a proposta não endereça explicitamente inversão de dependências dentro dos módulos (ex: ausência de arquitetura hexagonal/ports & adapters para isolar a lógica de negócio de LaunchDarkly, PostgreSQL e frameworks externos), e o PostgreSQL compartilhado na Fase 1 sem isolamento de schema por módulo introduz risco de acoplamento estrutural que pode dificultar extrações futuras."
+}

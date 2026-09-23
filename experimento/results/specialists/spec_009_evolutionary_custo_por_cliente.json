@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona 'custo de infra por transação monitorado' como fitness function, o que vai além de custo total, mas não há cálculo granular por cliente/tenant, nenhum mecanismo explícito de rastreamento de consumo por tenant, e nenhuma conexão entre custo operacional e modelo de precificação para derivar margem por cliente."
+}

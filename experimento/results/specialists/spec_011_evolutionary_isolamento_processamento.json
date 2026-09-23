@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta reconhece que o matching pode ser assíncrono ('matching assíncrono tolerado') e planeja extração do Matching Engine como serviço independente na Fase 3, mas sem descrever mecanismo concreto de isolamento físico na Fase 1 (monólito), sem mencionar filas/workers explícitos, sem circuit breaker ou fallback caso o processamento pesado falhe, e com a separação real condicionada a critérios futuros — o isolamento atual é apenas lógico dentro do mesmo processo."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente ou por operação — não há rastreamento de consumo por tenant, sem cálculo de custo por execução do motor de pricing (ex: chamada de scraping, inferência de IA, push de preço), sem conexão entre custo variável e modelo de precificação; a única referência a custo é qualitativa ('baixo custo' para v1 heurística), o que é um comentário de arquitetura, não unit economics."
+}

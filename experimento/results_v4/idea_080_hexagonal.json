@@ -1,0 +1,78 @@
+{
+  "ideia_idx": 80,
+  "ideia": "App de realidade aumentada para treinamento de operadores industriais",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Treinamento imersivo e certificação de operadores industriais. O core modela: Programa de Treinamento, Módulo/Procedimento (sequência de passos operacionais sobre um equipamento), Sessão de Treinamento (execução por um operador), Avaliação e Competência (regras de pontuação, critérios de aprovação, tolerância a erros, requisitos de segurança), Certificação (validade, renovação) e Tenant/Assinatura (organização cliente, planos, limites). Regras de negócio puras: progressão de passos, detecção de desvios do procedimento, cálculo de score, emissão de certificados, políticas de recertificação. O core não conhece AR, câmeras, HTTP, bancos de dados nem provedores de nuvem.",
+    "primary_ports": [
+      "ManageTrainingCatalogPort (criar/versionar programas, módulos e procedimentos)",
+      "RunTrainingSessionPort (iniciar, avançar passo, pausar, concluir sessão)",
+      "SubmitSessionEventsPort (ingestão de eventos/telemetria da sessão: gestos, tempo por passo, erros)",
+      "EvaluateOperatorPort (avaliar desempenho e calcular score)",
+      "IssueCertificationPort (emitir, renovar e revogar certificações)",
+      "ManageOperatorsPort (cadastro, times, atribuição de treinamentos)",
+      "QueryProgressReportsPort (progresso, compliance, dashboards, exportação)",
+      "ManageTenantAndSubscriptionPort (organizações, planos, uso e limites)"
+    ],
+    "secondary_ports": [
+      "TrainingRepositoryPort (persistência de programas, sessões, avaliações, certificações)",
+      "AssetStoragePort (modelos 3D, âncoras espaciais, vídeos, documentos)",
+      "IdentityProviderPort (autenticação, SSO, papéis)",
+      "EquipmentDataPort (gêmeos digitais, dados de equipamentos, manuais, CAD/PLM)",
+      "LmsIntegrationPort (LMS, HRIS, sistemas de RH/SCORM/xAPI)",
+      "PlantSystemsPort (MES/SCADA/OPC UA/CMMS para contextualizar cenários com dados reais)",
+      "NotificationPort (e-mail, push, chat corporativo)",
+      "BillingPort (cobrança, assinaturas, faturamento por assento/uso)",
+      "AnalyticsSinkPort (métricas de produto e de aprendizagem)",
+      "AiGuidancePort (instrutor virtual, geração de cenários, feedback adaptativo)",
+      "EventBusPort (publicação de eventos de domínio)",
+      "ClockPort / IdGeneratorPort (tempo e identificadores determinísticos para testes)",
+      "AuditLogPort (trilha de auditoria imutável para conformidade)"
+    ],
+    "primary_adapters": [
+      "Adaptador do app AR para headsets (HoloLens, Meta Quest, Magic Leap, Apple Vision Pro) via Unity/OpenXR",
+      "Adaptador do app AR mobile/tablet (ARKit/ARCore)",
+      "Adaptador REST/GraphQL para o portal web de administração e instrutores",
+      "Adaptador gRPC/WebSocket para streaming de eventos de sessão em tempo real",
+      "Adaptador de webhooks de entrada (LMS, RH, billing)",
+      "Adaptador CLI/scripts para operações em lote e migrações",
+      "Adaptador de testes automatizados (unitários, de contrato e de aceitação) que aciona os mesmos primary ports",
+      "Adaptador de simulador headless para testar cenários sem hardware AR"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (TrainingRepositoryPort) e adaptador in-memory para testes",
+      "S3/Azure Blob/GCS + CDN (AssetStoragePort)",
+      "Keycloak/Auth0/Azure AD/Okta via OIDC/SAML (IdentityProviderPort)",
+      "Adaptadores OPC UA, MQTT, REST para MES/SCADA e conectores PLM/CAD (EquipmentDataPort, PlantSystemsPort)",
+      "Adaptador SCORM/xAPI/LTI para LMS (Moodle, SAP SuccessFactors, Cornerstone)",
+      "SendGrid/SES, Firebase Cloud Messaging, Slack/Teams (NotificationPort)",
+      "Stripe Billing (BillingPort)",
+      "ClickHouse/BigQuery, PostHog/Mixpanel (AnalyticsSinkPort)",
+      "Adaptador de LLM (ex.: Claude API) com fallback e cache (AiGuidancePort)",
+      "Kafka/NATS/SNS-SQS (EventBusPort)",
+      "Armazenamento append-only/WORM para auditoria (AuditLogPort)",
+      "Fakes/stubs/mocks de cada porta secundária para testes"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) fica em um módulo sem dependências de frameworks ou SDKs. Os casos de uso implementam os primary ports e dependem apenas de interfaces dos secondary ports, definidas dentro do core (inversão de dependência). Adapters ficam em módulos separados, dependem do core e nunca o contrário; a regra é imposta por verificação automática de dependências no CI (ArchUnit/dependency-cruiser). A composição é feita na raiz (composition root) com injeção de dependência, escolhendo os adapters por configuração (prod, dev, teste). DTOs e mapeadores nas bordas traduzem modelos externos (JSON, OPC UA, SCORM, eventos AR) para objetos de domínio, evitando vazamento de tipos externos. Todos os sistemas externos (banco, IA, billing, LMS) são tratados de forma simétrica, atrás de portas, e podem ser trocados ou simulados sem alterar o core. A latência do AR é tratada no adapter (cache local, buffer offline e sincronização), não no domínio.",
+    "interfaces": [
+      "App AR imersivo para operadores (headset e mobile), com modo offline",
+      "Portal web para administradores/instrutores (catálogo, atribuição, relatórios)",
+      "Editor/authoring de procedimentos e cenários AR (no-code, com importação de CAD)",
+      "Dashboard de compliance e progresso para gestores e auditores",
+      "API pública REST/GraphQL e webhooks para integrações",
+      "SDK/plugin para Unity e OpenXR",
+      "Modo instrutor remoto (espelhamento da sessão e assistência ao vivo)",
+      "Console de operações/backoffice do SaaS (tenants, planos, suporte)"
+    ],
+    "escalabilidade": "Core stateless, com escala horizontal em contêineres (Kubernetes) por caso de uso. Separação de cargas: (1) API transacional (CRUD, catálogo, certificações); (2) ingestão de telemetria de sessão de alto volume via streaming (Kafka/NATS) e processamento assíncrono; (3) entrega de assets pesados via CDN com cache de borda e download progressivo. Multi-tenancy com isolamento lógico (tenant_id + row-level security), com opção de schema/instância dedicada e residência de dados por região para grandes clientes. CQRS leve: modelos de leitura/relatórios em base analítica separada. Modo offline-first no dispositivo, com sincronização eventual e idempotência. Edge/on-premise opcional para plantas com conectividade restrita, reutilizando o mesmo core com adapters diferentes. Autoscaling por fila/lag e cotas por plano.",
+    "custos": "Principais custos: (1) egress e armazenamento de assets 3D/vídeo (mitigar com CDN, compressão glTF/KTX2, LODs e cache local no dispositivo); (2) telemetria de alto volume (amostragem, agregação na borda e retenção em camadas quente/fria); (3) inferência de IA (cache, modelos menores para tarefas simples, limites por plano); (4) infraestrutura multi-tenant compartilhada para reduzir custo por cliente; (5) suporte e onboarding enterprise, integrações com MES/LMS e certificações de segurança (ISO 27001, SOC 2); (6) licenças de plataformas AR e distribuição em lojas de apps; (7) desenvolvimento e manutenção de conteúdo/autoria. Como a arquitetura é hexagonal, é possível trocar provedores de nuvem/IA/billing por opções mais baratas sem reescrever o domínio, reduzindo lock-in e custo ao longo do tempo.",
+    "monetizacao": "Assinatura SaaS B2B recorrente com planos por assento de operador ativo/mês ou por planta/site, em camadas (Starter, Professional, Enterprise) com limites de conteúdo, integrações, retenção de dados e SLA. Componentes adicionais: módulos premium (IA de instrução adaptativa, analytics avançado, integração MES/SCADA, modo instrutor remoto), cobrança por uso (horas de sessão, armazenamento, chamadas de IA), serviços profissionais (criação de conteúdo AR, digital twins, onboarding e integração), licenciamento de biblioteca de treinamentos prontos por tipo de equipamento/norma (NR, OSHA, ISO), revenue share em marketplace de conteúdo de parceiros/OEMs e planos on-premise/edge com licença anual.",
+    "stack_sugerida": "Core: Kotlin/Java (Spring sem acoplamento no domínio) ou TypeScript/Node com NestJS estruturado em módulos hexagonais; alternativa Go. Cliente AR: Unity + AR Foundation/OpenXR (C#), com MRTK para HoloLens/Quest e ARKit/ARCore. Portal web: React/Next.js + TypeScript. Banco: PostgreSQL com RLS, Redis para cache/sessões; ClickHouse/BigQuery para analytics. Mensageria: Kafka ou NATS. Storage/CDN: S3 + CloudFront (ou equivalente). Identidade: Keycloak/Auth0 (OIDC/SAML). Integrações industriais: OPC UA, MQTT, SCORM/xAPI. Billing: Stripe. IA: API de LLM via adapter (ex.: Claude). Infra: Kubernetes, Terraform, GitHub Actions, observabilidade com OpenTelemetry + Grafana/Prometheus. Qualidade: testes de contrato por porta, ArchUnit/dependency-cruiser para validar fronteiras, testes de aceitação via primary adapter headless."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T04:23:10+00:00",
+    "runner": "runner.py"
+  }
+}

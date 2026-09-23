@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona custo por consulta estimado em '$2-8 de APIs externas', o que é um esboço de custo variável por operação, mas não há cálculo real por cliente/tenant: não existe rastreamento de consumo por tenant, não há decomposição granular por operação (custo de vídeo + IA + storage separados por consulta por cliente), e o modelo de precificação não está explicitamente conectado à margem por cliente — os planos são definidos sem demonstrar que $29/mês cobre os custos variáveis de 20 consultas com margem positiva."
+}

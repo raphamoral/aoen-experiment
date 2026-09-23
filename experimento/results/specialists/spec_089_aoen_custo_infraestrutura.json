@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 89,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não faz nenhuma menção a custos de infraestrutura — não há estimativas de valores para servidores, banco de dados, armazenamento de imagens satelitais, banda ou APIs de terceiros (Planet, Tomorrow.io), nem estratégias de otimização (scale-to-zero, spot instances, tiers de S3) ou projeção de como os custos escalam com o crescimento da base de talhões e usuários."
+}

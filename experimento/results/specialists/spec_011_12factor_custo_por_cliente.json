@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta lista componentes de infraestrutura (RDS, ElastiCache, SQS, S3, etc.) como custo total de stack, sem nenhuma menção a rastreamento de consumo por tenant, tagging de recursos por cliente, cálculo de custo por operação ou conexão entre custo e modelo de precificação — é FinOps descritivo, não Unit Economics."
+}

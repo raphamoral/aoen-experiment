@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta apresenta apenas a camada de domínio (entidades e casos de uso) com arquitetura desacoplada que, implicitamente, permitiria adicionar interfaces sem reescrever a lógica — porém nenhuma interface é explicitamente prevista, nenhum perfil de usuário ou contexto de uso (web, mobile, API, CLI) é identificado, e não há qualquer justificativa de alcance de mercado para escolhas de canal."
+}

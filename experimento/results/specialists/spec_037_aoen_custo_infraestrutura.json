@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 37,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — sem estimativas de custo por componente (LLM calls, banco de dados, storage de PDFs, CDN, banda para o widget embeddável), sem estratégia de otimização (scale-to-zero, spot, tiers de armazenamento) e sem projeção de como os custos escalam com o volume de orçamentos gerados."
+}

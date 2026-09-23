@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 82,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra fundações corretas para configurabilidade: pipeline fixo no código, provider de IA abstraído por interface plugável e Service Layer agnóstico de canal — o que indica separação entre lógica fixa e variável. Porém, a proposta não articula explicitamente um modelo de configuração por tenant: não descreve quais parâmetros são configuráveis (thresholds de confiança para escalonamento, horários de atendimento, persona/tom da IA, categorias de intenção, SLAs), não menciona um schema de configuração por tenant no banco, e não afirma que onboarding de novo cliente = nova row de configuração sem deploy — essas omissões deixam incerto se o sistema atinge o nível 'comportamento totalmente dirigido por configuração' ou se ainda exigiria código para personalizar cada cliente."
+}

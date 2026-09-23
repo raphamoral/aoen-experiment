@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta menciona Integration Hub com conectores para múltiplas plataformas de e-commerce (Shopify, VTEX, WooCommerce) e uma API de integração, sugerindo mais de um ponto de contato, mas não há menção explícita a interfaces para diferentes perfis de usuário (ex: dashboard web para gestores, mobile para acompanhamento em tempo real, CLI para operações técnicas), nem evidência de desacoplamento da lógica de negócio das interfaces ou justificativa baseada em alcance de mercado."
+}

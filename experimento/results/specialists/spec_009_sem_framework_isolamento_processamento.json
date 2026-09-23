@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta menciona Bull para filas assíncronas como evolução futura, mas no MVP tudo roda junto no mesmo processo Next.js/Node.js, sem isolamento físico real, sem workers separados e sem fallback definido para falhas no processamento de laudos ou notificações."
+}

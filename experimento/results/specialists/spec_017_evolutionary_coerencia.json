@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: o monólito modular da Fase 1 com interfaces internas bem definidas é pré-requisito direto para o Strangler Fig da Fase 2; a assimetria leitura/escrita declarada nas características (verificação < 300ms vs emissão assíncrona < 10s) é o exato racional que justifica extrair o serviço de verificação como read-only; cada característica arquitetural tem um fitness function mensurável correspondente (disponibilidade → Uptime Robot, integridade → zero colisões UUID + audit log, segurança → OWASP + tenant isolation, testabilidade → Pact 100% + SonarQube gate); a introdução do event bus na Fase 3 é acionada por uma métrica real (3+ consumidores), não por antecipação especulativa, o que é coerente com a filosofia de decisões adiadas da Fase 1 — a única lacuna que impede nota 10 é a ausência de um mecanismo técnico explícito para garantir imutabilidade dos certificados (hash criptográfico, assinatura digital ou append-only store), que é o coração da característica de integridade declarada mas não materializada em nenhuma decisão concreta."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma narrativa arquitetural altamente coesa: processos stateless justificam sessões no Redis, que justifica BullMQ sobre o mesmo Redis, que justifica escala horizontal independente por workload; imagens imutáveis com digest SHA256 reforçam a separação build/release/run, que reforça o rollback determinístico; a ancoragem blockchain existe diretamente para satisfazer o requisito central do produto (verificação pública imutável), e a CDN na frente do verification-service fecha esse ciclo com performance — cada camada tecnológica serve a pelo menos uma outra decisão adjacente, com a única ressalva sendo a ambiguidade residual nas alternativas 'BullMQ ou SQS' e 'Kubernetes ou Railway', que, embora apresentadas como opções de ambiente, introduzem leve indeterminismo operacional na coerência final."
+}

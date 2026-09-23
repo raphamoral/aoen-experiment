@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 86,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta descreve um pipeline modular com provedores plugáveis (isolamento lógico), mas não menciona em nenhum momento filas de mensagens, workers separados, processamento assíncrono do motor de scoring nem mecanismos de fallback caso o enriquecimento ou scoring falhe — sugerindo que o processamento pesado roda de forma síncrona e co-localizada com a Service Layer, o que significa que uma falha no scoring pode comprometer todas as interfaces simultaneamente."
+}

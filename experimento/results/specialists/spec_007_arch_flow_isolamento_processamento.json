@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta isola fisicamente apenas a transcodificação de vídeo via AWS MediaConvert (commodity externo), mas os processos computacionalmente pesados críticos — geração de conteúdo via LLM, motor adaptativo de IA e detecção preditiva de churn — não têm nenhuma estratégia explícita de isolamento: ausência total de menção a filas de mensagens (Kafka/SQS), worker pools dedicados, circuit breakers, padrão bulkhead ou fallback em caso de falha desses componentes genesis, o que significa que uma falha ou sobrecarga no LLM de geração de conteúdo pode cascatear para o Content Studio e comprometer a entrega de aprendizado."
+}

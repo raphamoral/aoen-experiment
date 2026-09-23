@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — rastreabilidade imutável de cadeia de custódia via blockchain aplicada à conformidade regulatória brasileira (MTR/IBAMA/SINIR) — está claramente identificado, corretamente isolado atrás do BlockchainLedgerPort e demonstra extensibilidade real ao suportar dois adaptadores distintos (HyperledgerFabricAdapter para ambientes permissionados, EthereumAdapter para blockchain público), mas perde pontos por não explicitar por que um log imutável assegurado por criptografia tradicional (ex: hash-chain assinado) não resolveria o mesmo problema, enfraquecendo o argumento de insubstituibilidade do componente blockchain em si."
+}

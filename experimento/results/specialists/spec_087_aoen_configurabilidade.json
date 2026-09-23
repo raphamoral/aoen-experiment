@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 87,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "O fluxo principal é explicitamente declarado imutável no código com parâmetros variáveis por tenant (preços, horários, políticas de cancelamento, modalidades), e os adaptadores de pagamento/notificação são interfaces trocáveis — o que indica onboarding por configuração; perde pontos porque a lista de parâmetros configuráveis está truncada (não é possível verificar completude) e a proposta não deixa claro se a escolha de gateway de pagamento é configuração por tenant ou decisão de deploy global, o que pode exigir intervenção técnica para novos clientes com requisitos específicos de meio de pagamento."
+}

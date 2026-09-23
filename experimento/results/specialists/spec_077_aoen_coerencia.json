@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 77,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema coeso e auto-reforçante: a extensibilidade via adaptadores plugáveis da Fase 1 é validada pelos parâmetros configuráveis da Fase 3 (mapa de dispositivos, protocolos); a segmentação de mercado da Fase 1 drive diretamente cada interface da Fase 2 com justificativa individual; a Service Layer da Fase 2 é a consequência arquitetural natural de um core agnóstico de protocolo que serve múltiplas interfaces; o pipeline fixo da Fase 3 é coerente com a afirmação de que o fluxo é idêntico para todos os clientes enquanto só os parâmetros variam — não há contradição entre 'escalar para múltiplos clientes' e 'não hardcodar configurações' porque o mecanismo de variabilidade está explicitamente definido; o único ponto que impede nota 10 é o truncamento do texto em 'Frequência de amostragem por d...', que oculta parte dos parâmetros configuráveis e impede validação completa da coerência entre o que é fixo e o que é configurável."
+}

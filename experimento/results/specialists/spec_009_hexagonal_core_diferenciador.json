@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador existe e está arquiteturalmente representado (ICertificationUseCase, IRegulatorySyncService, IAuditLogService formam um núcleo de certificação extensível e regulatoriamente rastreável), mas o core_domain o trata como um entre seis componentes igualmente centrais, sem isolar a certificação como a razão de existir do produto — o que faz a proposta soar como 'marketplace genérico com certificação acoplada' em vez de 'motor de certificação que viabiliza um marketplace'."
+}

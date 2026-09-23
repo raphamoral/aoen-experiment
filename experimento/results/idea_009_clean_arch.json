@@ -1,0 +1,542 @@
+{
+  "ideia_idx": 9,
+  "ideia": "Marketplace de equipamentos médicos usados com certificação de qualidade",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "description": "Objetos de negócio com regras de negócio críticas, independentes de qualquer framework ou infraestrutura",
+      "list": [
+        {
+          "name": "MedicalEquipment",
+          "attributes": [
+            "id",
+            "serialNumber",
+            "manufacturer",
+            "model",
+            "category",
+            "manufactureYear",
+            "technicalSpecs",
+            "condition"
+          ],
+          "business_rules": [
+            "Equipamento deve ter número de série único",
+            "Ano de fabricação não pode ser futuro",
+            "Categoria deve ser regulamentada pela ANVISA"
+          ]
+        },
+        {
+          "name": "Certification",
+          "attributes": [
+            "id",
+            "equipmentId",
+            "status",
+            "inspectorId",
+            "inspectionDate",
+            "expirationDate",
+            "grade",
+            "defectsFound",
+            "certificateCode"
+          ],
+          "business_rules": [
+            "Certificação expira em 12 meses",
+            "Equipamento reprovado não pode ser listado",
+            "Grau mínimo A para venda aprovada"
+          ]
+        },
+        {
+          "name": "Listing",
+          "attributes": [
+            "id",
+            "equipmentId",
+            "sellerId",
+            "price",
+            "currency",
+            "condition",
+            "photos",
+            "description",
+            "status",
+            "createdAt"
+          ],
+          "business_rules": [
+            "Listing só pode ser publicado com certificação válida",
+            "Preço mínimo por categoria",
+            "Máximo de 20 fotos por anúncio"
+          ]
+        },
+        {
+          "name": "Seller",
+          "attributes": [
+            "id",
+            "companyName",
+            "cnpj",
+            "anvisaLicense",
+            "contactInfo",
+            "rating",
+            "verificationStatus"
+          ],
+          "business_rules": [
+            "Vendedor deve ter CNPJ válido",
+            "Licença ANVISA obrigatória para categorias críticas",
+            "Rating mínimo 3.0 para manter conta ativa"
+          ]
+        },
+        {
+          "name": "Buyer",
+          "attributes": [
+            "id",
+            "companyName",
+            "cnpj",
+            "healthFacilityType",
+            "contactInfo",
+            "purchaseHistory"
+          ],
+          "business_rules": [
+            "Comprador deve ser pessoa jurídica",
+            "Estabelecimentos de saúde têm acesso prioritário"
+          ]
+        },
+        {
+          "name": "Inspector",
+          "attributes": [
+            "id",
+            "name",
+            "credentials",
+            "specializations",
+            "activeRegion",
+            "certificationCount"
+          ],
+          "business_rules": [
+            "Inspector deve ter credencial técnica válida",
+            "Não pode inspecionar equipamentos de vendedores vinculados"
+          ]
+        },
+        {
+          "name": "Transaction",
+          "attributes": [
+            "id",
+            "listingId",
+            "buyerId",
+            "sellerId",
+            "amount",
+            "platformFee",
+            "status",
+            "paymentMethod",
+            "createdAt",
+            "completedAt"
+          ],
+          "business_rules": [
+            "Plataforma retém 8% do valor",
+            "Liberação ao vendedor após 7 dias da entrega",
+            "Cancelamento gratuito em até 24h"
+          ]
+        },
+        {
+          "name": "Inspection",
+          "attributes": [
+            "id",
+            "equipmentId",
+            "inspectorId",
+            "scheduledDate",
+            "location",
+            "checklist",
+            "photos",
+            "outcome",
+            "notes"
+          ],
+          "business_rules": [
+            "Inspeção deve ser presencial ou com fotos auditáveis",
+            "Checklist técnico por categoria de equipamento"
+          ]
+        },
+        {
+          "name": "Review",
+          "attributes": [
+            "id",
+            "transactionId",
+            "authorId",
+            "targetId",
+            "targetType",
+            "score",
+            "comment",
+            "createdAt"
+          ],
+          "business_rules": [
+            "Review só permitido após confirmação de entrega",
+            "Score entre 1 e 5",
+            "Um review por transação"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "description": "Regras de negócio específicas da aplicação, orquestrando o fluxo entre entidades",
+      "list": [
+        {
+          "name": "RegisterEquipmentForSale",
+          "actor": "Seller",
+          "steps": [
+            "Validar dados técnicos do equipamento",
+            "Verificar licença ANVISA do vendedor",
+            "Criar entidade Equipment",
+            "Agendar inspeção de certificação",
+            "Retornar ID do equipamento e status pendente"
+          ]
+        },
+        {
+          "name": "ConductCertificationInspection",
+          "actor": "Inspector",
+          "steps": [
+            "Verificar credencial do inspector",
+            "Executar checklist técnico por categoria",
+            "Registrar defeitos e observações",
+            "Calcular grau de certificação",
+            "Emitir ou negar certificado com validade"
+          ]
+        },
+        {
+          "name": "PublishListing",
+          "actor": "Seller",
+          "steps": [
+            "Verificar certificação válida do equipamento",
+            "Validar preço mínimo por categoria",
+            "Processar e validar fotos",
+            "Publicar anúncio no marketplace",
+            "Notificar compradores com alertas configurados"
+          ]
+        },
+        {
+          "name": "SearchAndFilterEquipment",
+          "actor": "Buyer",
+          "steps": [
+            "Receber critérios de busca",
+            "Filtrar por categoria, preço, condição, localização",
+            "Ordenar por relevância/preço/rating",
+            "Retornar listings com certificação ativa apenas"
+          ]
+        },
+        {
+          "name": "InitiatePurchase",
+          "actor": "Buyer",
+          "steps": [
+            "Verificar disponibilidade do listing",
+            "Calcular total com frete e taxas",
+            "Reservar item temporariamente (15 min)",
+            "Iniciar fluxo de pagamento",
+            "Confirmar pedido após pagamento"
+          ]
+        },
+        {
+          "name": "ProcessPayment",
+          "actor": "System",
+          "steps": [
+            "Receber confirmação do gateway de pagamento",
+            "Calcular taxa da plataforma (8%)",
+            "Criar transaction com status 'paid'",
+            "Notificar vendedor",
+            "Iniciar escrow period"
+          ]
+        },
+        {
+          "name": "ConfirmDelivery",
+          "actor": "Buyer",
+          "steps": [
+            "Registrar confirmação de recebimento",
+            "Verificar integridade do equipamento",
+            "Liberar pagamento ao vendedor após 7 dias",
+            "Solicitar review da transação"
+          ]
+        },
+        {
+          "name": "HandleDispute",
+          "actor": "Buyer | Seller",
+          "steps": [
+            "Registrar reclamação com evidências",
+            "Notificar parte contrária",
+            "Escalar para mediação humana se não resolvido em 48h",
+            "Aplicar política de reembolso ou devolução"
+          ]
+        },
+        {
+          "name": "ManageSellerOnboarding",
+          "actor": "Seller",
+          "steps": [
+            "Coletar dados empresariais e CNPJ",
+            "Verificar situação na Receita Federal",
+            "Validar licença ANVISA",
+            "Aprovar ou rejeitar cadastro",
+            "Configurar conta de recebimento"
+          ]
+        },
+        {
+          "name": "GenerateComplianceReport",
+          "actor": "Admin",
+          "steps": [
+            "Agregar dados de transações por período",
+            "Calcular métricas de certificação",
+            "Identificar equipamentos com certificações próximas do vencimento",
+            "Exportar relatório regulatório"
+          ]
+        }
+      ]
+    },
+    "interface_adapters": {
+      "description": "Convertem dados entre o formato conveniente para casos de uso/entidades e o formato conveniente para agentes externos",
+      "controllers": [
+        "EquipmentController — recebe HTTP requests, chama use cases, retorna respostas formatadas",
+        "CertificationController — endpoints para inspetores gerenciarem certificações",
+        "ListingController — CRUD de anúncios e busca",
+        "TransactionController — fluxo de compra, pagamento, entrega",
+        "UserController — onboarding de sellers e buyers",
+        "AdminController — painel administrativo e relatórios"
+      ],
+      "presenters": [
+        "ListingPresenter — formata listing com dados de certificação para exibição",
+        "TransactionPresenter — exibe status e histórico de transações",
+        "CertificationPresenter — exibe certificado com QR code verificável",
+        "SearchResultPresenter — formata resultados paginados com facets"
+      ],
+      "gateways": [
+        "EquipmentRepositoryGateway — interface para persistência de equipamentos",
+        "CertificationRepositoryGateway — interface para certificações",
+        "UserRepositoryGateway — interface para sellers, buyers, inspectors",
+        "TransactionRepositoryGateway — interface para transações e pagamentos",
+        "PaymentGateway — interface abstrata para processadores de pagamento",
+        "StorageGateway — interface para upload de fotos e documentos",
+        "NotificationGateway — interface para email, SMS, push",
+        "SearchGateway — interface para motor de busca",
+        "AnvisaVerificationGateway — interface para API de validação ANVISA",
+        "TaxGateway — interface para cálculo de impostos e emissão de NF"
+      ],
+      "dto": [
+        "CreateEquipmentDTO",
+        "CreateListingDTO",
+        "SearchEquipmentDTO",
+        "InitiatePurchaseDTO",
+        "CertificationResultDTO",
+        "SellerOnboardingDTO"
+      ]
+    },
+    "frameworks_drivers": {
+      "description": "Detalhes técnicos externos — frameworks, banco de dados, serviços de terceiros. Camada mais externa, plugável e substituível",
+      "web_framework": {
+        "choice": "NestJS (Node.js)",
+        "justification": "Arquitetura modular nativa, suporte a DI, TypeScript first, compatível com Clean Architecture"
+      },
+      "databases": {
+        "primary": "PostgreSQL — dados transacionais (equipamentos, transações, usuários)",
+        "search": "Elasticsearch — busca full-text com facets e geolocalização",
+        "cache": "Redis — sessões, rate limiting, reservas temporárias de listings",
+        "files": "AWS S3 — fotos de equipamentos, documentos de certificação, relatórios"
+      },
+      "payment": {
+        "provider": "Stripe Connect ou PagSeguro Recorrência",
+        "justification": "Suporte a marketplace com split de pagamento e escrow nativo"
+      },
+      "notifications": {
+        "email": "AWS SES ou SendGrid",
+        "sms": "Twilio",
+        "push": "Firebase Cloud Messaging"
+      },
+      "infrastructure": {
+        "cloud": "AWS (ECS Fargate ou EKS)",
+        "cdn": "CloudFront para assets estáticos",
+        "api_gateway": "AWS API Gateway ou Kong",
+        "monitoring": "Datadog ou AWS CloudWatch + X-Ray",
+        "ci_cd": "GitHub Actions + ArgoCD"
+      },
+      "external_apis": {
+        "anvisa": "API do portal ANVISA para validação de registros",
+        "receita_federal": "API de consulta CNPJ (ReceitaWS ou oficial)",
+        "correios_freight": "API dos Correios ou Frenet para cotação de frete",
+        "nf_emitter": "Focus NF-e ou Nuvem Fiscal para emissão de notas"
+      },
+      "frontend": {
+        "web": "Next.js (React) — SSR para SEO de listings",
+        "mobile": "React Native — app para vendedores e inspetores"
+      }
+    },
+    "dependency_rule": {
+      "description": "A Regra de Dependência é a lei central da arquitetura — todo código-fonte aponta apenas para dentro",
+      "principle": "Entities ← Use Cases ← Interface Adapters ← Frameworks & Drivers",
+      "application": [
+        "Entities não conhecem Use Cases, Adapters ou Frameworks — são POJOs puros com regras de negócio",
+        "Use Cases conhecem apenas Entities e interfaces abstratas (Gateway ports) — nunca implementações concretas",
+        "Interface Adapters (Controllers, Presenters, Gateways) implementam interfaces definidas pelos Use Cases",
+        "Frameworks & Drivers (Postgres, Stripe, S3) são detalhes de implementação injetados via Injeção de Dependência",
+        "PaymentGateway é uma interface no domínio — a implementação Stripe fica na camada externa",
+        "EquipmentRepository é uma interface no domínio — PostgresEquipmentRepository é o adapter externo",
+        "Inversão de Dependência usada em todas as fronteiras de camada via interfaces TypeScript"
+      ],
+      "boundary_crossing": "DTOs são usados para cruzar fronteiras sem vazar entidades de domínio para camadas externas"
+    },
+    "testability": {
+      "description": "O sistema é projetado para ser testável em todos os níveis sem dependências externas reais",
+      "unit_tests": {
+        "target": "Entities e Use Cases",
+        "approach": "Sem mocks de framework — apenas objetos JavaScript puros. Gateways são substituídos por implementações in-memory",
+        "example": "InMemoryEquipmentRepository implementa EquipmentRepositoryGateway — use case testado sem banco de dados real"
+      },
+      "integration_tests": {
+        "target": "Interface Adapters (Controllers, Repository implementations)",
+        "approach": "Banco de dados em container (Testcontainers), gateway de pagamento em modo sandbox",
+        "example": "PostgresEquipmentRepository testado contra PostgreSQL real em Docker"
+      },
+      "e2e_tests": {
+        "target": "Fluxos completos de usuário",
+        "approach": "Playwright para web, ambiente de staging com dados seed",
+        "example": "Fluxo completo: cadastro de equipamento → inspeção → listagem → compra → entrega → review"
+      },
+      "test_doubles": [
+        "InMemoryEquipmentRepository — substitui Postgres em testes de Use Cases",
+        "FakePaymentGateway — simula aprovação e falha de pagamento",
+        "FakeNotificationGateway — captura notificações sem enviar emails reais",
+        "FakeAnvisaGateway — retorna validações pré-configuradas"
+      ],
+      "coverage_targets": "90%+ em Entities e Use Cases, 70%+ em Adapters, E2E cobrindo happy paths e principais edge cases"
+    },
+    "interfaces": [
+      "IEquipmentRepository — CRUD de equipamentos médicos",
+      "ICertificationRepository — gestão de certificações e histórico",
+      "IListingRepository — anúncios com suporte a busca e filtros",
+      "ITransactionRepository — transações e histórico financeiro",
+      "IUserRepository — sellers, buyers e inspectors",
+      "IPaymentGateway — processar pagamentos, reembolsos, split",
+      "IStorageGateway — upload e gerenciamento de arquivos",
+      "INotificationGateway — email, SMS e push notifications",
+      "ISearchGateway — indexação e busca de listings",
+      "IAnvisaVerificationGateway — validação de registros ANVISA",
+      "ITaxGateway — cálculo de impostos e emissão de NF-e",
+      "IFreightGateway — cotação e rastreamento de fretes",
+      "IIdentityVerificationGateway — verificação KYB de empresas",
+      "IAuditLogGateway — registro de ações para compliance regulatório"
+    ],
+    "escalabilidade": {
+      "description": "Estratégias para suportar crescimento horizontal e vertical sem reescrever o domínio",
+      "horizontal_scaling": [
+        "Stateless API — sessão gerenciada em Redis, escalamento automático via ECS/EKS",
+        "Read replicas PostgreSQL para queries de leitura intensiva",
+        "Elasticsearch cluster com shards por categoria de equipamento",
+        "CDN para assets estáticos e fotos de equipamentos"
+      ],
+      "async_processing": [
+        "AWS SQS + Lambda para processamento de imagens após upload",
+        "Event-driven com SNS para notificações de status de certificação",
+        "Fila de jobs para geração de relatórios de compliance pesados",
+        "Webhook processing assíncrono para callbacks de pagamento"
+      ],
+      "data_partitioning": [
+        "Particionamento de transactions por data (range partitioning no Postgres)",
+        "Archiving de listings inativos após 2 anos para cold storage",
+        "Índices otimizados por categoria, preço e localização no Elasticsearch"
+      ],
+      "microservices_path": "Domínios bem definidos (Catalog, Certification, Transaction, Notification) facilitam extração futura para microservices sem reescrita do domínio"
+    },
+    "custos": {
+      "description": "Estimativa de custo operacional para escala inicial (startup) e crescimento",
+      "infrastructure_initial": {
+        "aws_compute": "~$300-500/mês (ECS Fargate 2-4 tasks)",
+        "rds_postgres": "~$150-300/mês (db.t3.medium com read replica)",
+        "elasticsearch": "~$200-400/mês (cluster 3 nós t3.small)",
+        "redis": "~$50-100/mês (cache.t3.micro)",
+        "s3_storage": "~$50-150/mês (fotos e documentos)",
+        "total_infra": "~$750-1.450/mês para até 10.000 listings ativos"
+      },
+      "third_party": {
+        "payment_gateway": "Stripe: 2,9% + $0,30 por transação + 0,25% para Stripe Connect",
+        "notifications": "SendGrid: $15-80/mês | Twilio SMS: $0,0075/mensagem",
+        "nfe_emitter": "Nuvem Fiscal: ~$99-299/mês por volume",
+        "anvisa_api": "Portal ANVISA: gratuito (acesso público)"
+      },
+      "optimization_strategies": [
+        "S3 Intelligent-Tiering para fotos antigas",
+        "Reserved Instances para economizar 40-60% em compute",
+        "Elasticsearch snapshot para índices históricos",
+        "Cache agressivo de resultados de busca populares no Redis"
+      ],
+      "cost_at_scale": "Para 100.000 listings e 10.000 transações/mês: estimativa $3.000-5.000/mês em infra"
+    },
+    "monetizacao": {
+      "description": "Estratégias de receita alinhadas ao modelo de marketplace B2B de equipamentos médicos",
+      "primary_revenue": {
+        "transaction_fee": {
+          "model": "Comissão sobre transações concluídas",
+          "rate": "6-10% do valor da venda (média 8%)",
+          "justification": "Padrão de marketplace B2B; vendedores pagam apenas ao vender"
+        }
+      },
+      "secondary_revenue": [
+        {
+          "name": "Pacote de Certificação",
+          "model": "Sellers pagam pela inspeção e emissão de certificado",
+          "price": "R$ 150-500 por equipamento dependendo da categoria e complexidade"
+        },
+        {
+          "name": "Listing Destaque",
+          "model": "Anúncios promovidos no topo das buscas",
+          "price": "R$ 50-200/mês por listing"
+        },
+        {
+          "name": "Assinatura Seller Pro",
+          "model": "Plano mensal com benefícios: analytics avançado, menor comissão, suporte prioritário",
+          "price": "R$ 299-599/mês"
+        },
+        {
+          "name": "Verificação Expressa",
+          "model": "Inspeção com prazo reduzido (48h vs 7 dias padrão)",
+          "price": "R$ 200-800 por equipamento"
+        },
+        {
+          "name": "Relatórios de Mercado",
+          "model": "Dados de precificação e demanda por categoria para distribuidores e hospitais",
+          "price": "R$ 500-2.000/relatório ou assinatura anual"
+        }
+      ],
+      "unit_economics": {
+        "average_ticket": "R$ 5.000-80.000 por equipamento médico usado",
+        "commission_per_transaction": "R$ 400-6.400 por venda",
+        "break_even": "~50 transações/mês para cobrir custos operacionais iniciais"
+      }
+    },
+    "stack_sugerida": {
+      "backend": {
+        "runtime": "Node.js 20 LTS",
+        "framework": "NestJS 10",
+        "language": "TypeScript 5",
+        "orm": "TypeORM ou Prisma (acessa Postgres na camada de adapter, nunca no domínio)",
+        "validation": "class-validator + class-transformer para DTOs",
+        "auth": "Passport.js + JWT + refresh tokens"
+      },
+      "frontend_web": {
+        "framework": "Next.js 14 (App Router)",
+        "language": "TypeScript",
+        "styling": "Tailwind CSS",
+        "state": "Zustand ou React Query para cache de server state",
+        "forms": "React Hook Form + Zod"
+      },
+      "mobile": {
+        "framework": "React Native + Expo",
+        "target": "iOS e Android — inspetores e vendedores em campo"
+      },
+      "data": {
+        "primary_db": "PostgreSQL 16",
+        "search": "Elasticsearch 8",
+        "cache": "Redis 7",
+        "storage": "AWS S3 + CloudFront"
+      },
+      "devops": {
+        "containers": "Docker + Docker Compose (local), ECS Fargate (produção)",
+        "iac": "Terraform para provisionamento AWS",
+        "ci_cd": "GitHub Actions → build, test, scan → ArgoCD → deploy",
+        "secrets": "AWS Secrets Manager",
+        "observability": "OpenTelemetry + Datadog (traces, logs, métricas)"
+      },
+      "security": {
+        "api": "OWASP Top 10 compliance, rate limiting via Kong/Redis",
+        "data": "Criptografia em repouso (AWS KMS), TLS 1.3 em trânsito",
+        "auth": "OAuth2 + MFA obrigatório para vendedores",
+        "compliance": "LGPD — anonimização, consentimento, direito ao esquecimento"
+      }
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"description\": \"Objetos de negócio com regras de negócio críticas, independentes de qualquer framework ou infraestrutura\",\n    \"list\": [\n      {\n        \"name\": \"MedicalEquipment\",\n        \"attributes\": [\"id\", \"serialNumber\", \"manufacturer\", \"model\", \"category\", \"manufactureYear\", \"technicalSpecs\", \"condition\"],\n        \"business_rules\": [\"Equipamento deve ter número de série único\", \"Ano de fabricação não pode ser futuro\", \"Categoria deve ser regulamentada pela ANVISA\"]\n      },\n      {\n        \"name\": \"Certification\",\n        \"attributes\": [\"id\", \"equipmentId\", \"status\", \"inspectorId\", \"inspectionDate\", \"expirationDate\", \"grade\", \"defectsFound\", \"certificateCode\"],\n        \"business_rules\": [\"Certificação expira em 12 meses\", \"Equipamento reprovado não pode ser listado\", \"Grau mínimo A para venda aprovada\"]\n      },\n      {\n        \"name\": \"Listing\",\n        \"attributes\": [\"id\", \"equipmentId\", \"sellerId\", \"price\", \"currency\", \"condition\", \"photos\", \"description\", \"status\", \"createdAt\"],\n        \"business_rules\": [\"Listing só pode ser publicado com certificação válida\", \"Preço mínimo por categoria\", \"Máximo de 20 fotos por anúncio\"]\n      },\n      {\n        \"name\": \"Seller\",\n        \"attributes\": [\"id\", \"companyName\", \"cnpj\", \"anvisaLicense\", \"contactInfo\", \"rating\", \"verificationStatus\"],\n        \"business_rules\": [\"Vendedor deve ter CNPJ válido\", \"Licença ANVISA obrigatória para categorias críticas\", \"Rating mínimo 3.0 para manter conta ativa\"]\n      },\n      {\n        \"name\": \"Buyer\",\n        \"attributes\": [\"id\", \"companyName\", \"cnpj\", \"healthFacilityType\", \"contactInfo\", \"purchaseHistory\"],\n        \"business_rules\": [\"Comprador deve ser pessoa jurídica\", \"Estabelecimentos de saúde têm acesso prioritário\"]\n      },\n      {\n        \"name\": \"Inspector\",\n        \"attributes\": [\"id\", \"name\", \"credentials\", \"specializations\", \"activeRegion\", \"certificationCount\"],\n        \"business_rules\": [\"Inspector deve ter credencial técnica válida\","
+}

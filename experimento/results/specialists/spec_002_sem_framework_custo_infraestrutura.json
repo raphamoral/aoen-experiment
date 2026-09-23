@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona provedores de infraestrutura (Supabase, Vercel, S3/R2, Railway) e reconhece que escalam automaticamente nos primeiros volumes, mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia explícita de otimização (scale-to-zero, tiers de armazenamento, instâncias spot) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta descreve robustamente a camada de infraestrutura (12-factor, env vars, Stripe para planos), sugerindo que tenants existem como entidades no banco (clínicas, planos), mas é completamente omissa sobre os mecanismos de configurabilidade por tenant no nível de aplicação — não há menção a tabelas de configuração por cliente, feature flags por tenant, regras de negócio configuráveis (ex: duração de consulta, políticas de cancelamento, cadência de lembretes) nem a um processo de onboarding sem deploy, o que indica configurabilidade parcial ou ainda dependente de código para comportamentos específicos por clínica."
+}

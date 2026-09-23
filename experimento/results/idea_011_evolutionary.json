@@ -1,0 +1,84 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability — núcleo da Evolutionary Architecture; algoritmo de matching deve evoluir sem reescritas",
+      "Segurança — dados financeiros e estratégicos de startups e investidores exigem proteção rigorosa",
+      "Observabilidade — decisões de produto dependem de métricas de matching e funil de conversão",
+      "Disponibilidade — SLA 99,9%; investidores e fundadores operam em janelas de tempo limitadas",
+      "Privacidade/LGPD — dados sensíveis de valuation, cap table e tese de investimento",
+      "Performance — tempo de resposta < 200ms para busca e listagem; matching assíncrono tolerado",
+      "Extensibilidade — novos critérios de matching (setor, estágio, ticket) sem quebrar contratos existentes",
+      "Testabilidade — fitness functions requerem cobertura automatizada de lógica de negócio crítica"
+    ],
+    "fitness_functions": [
+      "Match Quality Rate: % de matches que evoluem para reunião confirmada — alerta se cair abaixo de 15%",
+      "API Latency P95: respostas de listagem e busca abaixo de 200ms — quebra o build se violado em staging",
+      "LGPD Compliance Scan: auditoria automatizada de PII exposta em logs e respostas de API — bloqueia deploy",
+      "Uptime Probe: healthcheck sintético a cada 60s; alerta com SLA < 99,9% no mês corrente",
+      "Test Coverage Gate: cobertura do domínio de matching >= 80% — falha CI se regressão detectada",
+      "Dependency Vulnerability Scan: zero CVEs críticos em dependências — integrado ao pipeline CD",
+      "Onboarding Funnel Conversion: % de usuários que completam perfil após cadastro — alerta se < 40%",
+      "Time to First Match: tempo médio entre cadastro completo e primeiro match entregue < 24h",
+      "Data Model Coupling Score: número de módulos que importam entidades do núcleo — regressão proibida",
+      "Regional Concentration Index: distribuição geográfica de investidores ativos — alerta de concentração"
+    ],
+    "incremental_change": "Fase 1 — Modular Monolith: domínios (Profiles, Matching, Messaging, Billing) como módulos com fronteiras explícitas dentro de um único deploy. Sem overhead distribuído prematuro. Fase 2 — Feature Flags: novos algoritmos de matching lançados via flags para subconjunto de usuários; rollback instantâneo sem redeploy. Fase 3 — Strangler Fig: extrair Matching Engine como serviço independente somente quando fitness functions de latência ou escala justificarem. Fase 4 — Event Sourcing incremental: introduzir eventos de domínio (StartupProfileUpdated, MatchAccepted) para auditoria e replay, sem reescrever persistência existente. Cada fase tem critério objetivo de entrada baseado em fitness functions.",
+    "reversibility": {
+      "alta_reversibilidade": [
+        "Algoritmo de scoring de matching — trocável via feature flag sem mudança de contrato",
+        "Decisões de UX e onboarding flow — A/B testáveis e reversíveis por configuração",
+        "Provedores de e-mail/notificação — adapter pattern isola o contrato interno",
+        "Thresholds de fitness functions — ajustáveis sem código"
+      ],
+      "media_reversibilidade": [
+        "Esquema de banco de dados — reversível via migrações versionadas; custo cresce com volume",
+        "Provedor de autenticação — migração possível mas custosa; decisão no last responsible moment",
+        "Provedor de infraestrutura cloud — possível com Terraform mas cara em esforço"
+      ],
+      "baixa_reversibilidade": [
+        "Modelo de dados central (Startup, Investor, Match) — definir com cuidado; mudanças estruturais têm alto custo",
+        "Estratégia de multi-tenancy — decisão arquitetural com impacto profundo em segurança e escala",
+        "Modelo de monetização codificado em contratos de assinatura ativos"
+      ]
+    },
+    "coupling": "Shared Kernel mínimo: apenas entidades canônicas (StartupProfile, InvestorProfile, MatchEvent) compartilhadas entre módulos. Comunicação interna via interfaces explícitas (portas), nunca acesso direto a repositórios de outros módulos. Integrações externas (CRM, pagamentos, e-mail) isoladas por Anti-Corruption Layers. Eventos de domínio publicados internamente via bus leve (in-process na Fase 1, extraível para mensageria na Fase 3). Regra: nenhum módulo conhece a implementação de outro — apenas o contrato.",
+    "interfaces": [
+      "REST API v1 — CRUD de perfis, listagem de matches e ações (aceitar, recusar, conectar)",
+      "WebSocket — notificações em tempo real de novos matches e mensagens",
+      "Webhook Outbound — integração com CRMs de investidores (HubSpot, Pipedrive)",
+      "Admin API — gestão de plataforma, moderação, analytics operacional",
+      "GraphQL (Fase 3) — introduzido quando clients precisarem de queries flexíveis sem over-fetching",
+      "API de Eventos — stream de MatchAccepted/InvestmentClosed para parceiros e integrações futuras"
+    ],
+    "escalabilidade": "Escala horizontal stateless nos servidores de API; sessões em Redis. Read replicas no PostgreSQL para queries de busca e listagem. Elasticsearch para matching semântico e filtros compostos. Processamento de matching executado assincronamente via filas (SQS/RabbitMQ) — desacopla picos de cadastro do processamento. CDN para assets estáticos e pitch decks. Cache de perfis ativos em Redis com TTL curto. Na Fase 3, Matching Engine escala independentemente. Particionamento por região como próximo passo natural dado o foco regional do produto.",
+    "custos": "Fase 1 (0–500 usuários): managed PaaS (Railway, Render ou Fly.io) + Supabase — custo < $200/mês. Fase 2 (500–5k usuários): migração para AWS/GCP com instâncias reservadas para banco; Elasticsearch gerenciado; custo estimado $600–1.500/mês. Fase 3 (5k+ usuários): reserved instances, spot para workers de matching, S3 Intelligent-Tiering para documentos. Observabilidade desde o dia 1 com stack leve (Grafana OSS + Loki) antes de pagar por Datadog. Decisão de cloud provider adiada até Fase 2 para preservar reversibilidade.",
+    "monetizacao": {
+      "modelo_principal": "Freemium com upsell por valor entregue",
+      "camadas": [
+        "Startup Free: cadastro, até 3 matches/mês, perfil básico",
+        "Startup Growth ($49/mês): matches ilimitados, analytics de visualizações, destaque regional",
+        "Investor Basic (free): acesso ao deal flow regional filtrado",
+        "Investor Pro ($149/mês): filtros avançados, acesso antecipado a novas startups, exportação de dados",
+        "Success Fee (1–2%): cobrado sobre rodadas confirmadas via plataforma — requer integração com closing workflow"
+      ],
+      "evolucao": "Iniciar com assinaturas simples; success fee introduzido na Fase 2 quando houver volume para validar coleta. Syndicate management como feature premium na Fase 3."
+    },
+    "stack_sugerida": {
+      "backend": "Node.js com TypeScript (NestJS) — modular monolith com DI nativo, fácil extração de serviços",
+      "banco_de_dados": "PostgreSQL (dados transacionais) + Elasticsearch (matching e busca semântica)",
+      "cache": "Redis — sessões, rate limiting e cache de perfis",
+      "fila": "BullMQ sobre Redis na Fase 1; migração para SQS na Fase 3 se justificado por fitness functions",
+      "frontend": "Next.js (App Router) — SSR para SEO de perfis públicos, CSR para dashboard",
+      "autenticacao": "Supabase Auth ou Auth0 — decisão adiada; adapter isola o contrato",
+      "storage": "AWS S3 ou Supabase Storage para pitch decks e mídia",
+      "observabilidade": "OpenTelemetry para instrumentação agnóstica + Grafana OSS (Loki, Tempo, Prometheus)",
+      "infra": "Terraform para IaC desde o início; Railway/Render na Fase 1, AWS na Fase 2",
+      "ci_cd": "GitHub Actions com gates de fitness functions (testes, cobertura, SAST, lint)",
+      "racional": "Stack deliberadamente conservadora na Fase 1 para maximizar velocidade e reversibilidade; complexidade introduzida apenas quando fitness functions indicarem necessidade"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Evolvability — núcleo da Evolutionary Architecture; algoritmo de matching deve evoluir sem reescritas\",\n    \"Segurança — dados financeiros e estratégicos de startups e investidores exigem proteção rigorosa\",\n    \"Observabilidade — decisões de produto dependem de métricas de matching e funil de conversão\",\n    \"Disponibilidade — SLA 99,9%; investidores e fundadores operam em janelas de tempo limitadas\",\n    \"Privacidade/LGPD — dados sensíveis de valuation, cap table e tese de investimento\",\n    \"Performance — tempo de resposta < 200ms para busca e listagem; matching assíncrono tolerado\",\n    \"Extensibilidade — novos critérios de matching (setor, estágio, ticket) sem quebrar contratos existentes\",\n    \"Testabilidade — fitness functions requerem cobertura automatizada de lógica de negócio crítica\"\n  ],\n  \"fitness_functions\": [\n    \"Match Quality Rate: % de matches que evoluem para reunião confirmada — alerta se cair abaixo de 15%\",\n    \"API Latency P95: respostas de listagem e busca abaixo de 200ms — quebra o build se violado em staging\",\n    \"LGPD Compliance Scan: auditoria automatizada de PII exposta em logs e respostas de API — bloqueia deploy\",\n    \"Uptime Probe: healthcheck sintético a cada 60s; alerta com SLA < 99,9% no mês corrente\",\n    \"Test Coverage Gate: cobertura do domínio de matching >= 80% — falha CI se regressão detectada\",\n    \"Dependency Vulnerability Scan: zero CVEs críticos em dependências — integrado ao pipeline CD\",\n    \"Onboarding Funnel Conversion: % de usuários que completam perfil após cadastro — alerta se < 40%\",\n    \"Time to First Match: tempo médio entre cadastro completo e primeiro match entregue < 24h\",\n    \"Data Model Coupling Score: número de módulos que importam entidades do núcleo — regressão proibida\",\n    \"Regional Concentration Index: distribuição geográfica de investidores ativos — alerta de concentração\"\n  ],\n  \"incremental_change\": \"Fase 1 — Modular Monolith: domínios (Profiles,"
+}

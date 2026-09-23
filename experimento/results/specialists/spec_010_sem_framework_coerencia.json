@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "A proposta conta uma história coesa do problema à solução — foco em prestadores de serviço justifica priorizar NFS-e, JSONB reconhece a heterogeneidade real das APIs de prefeitura, Focus NFe reduz complexidade de integração, e o funil dashboard→alertas→relatório DAS mapeia diretamente as dores declaradas do MEI; porém há uma contradição arquitetural relevante: a escolha por 'JWT simples' é incoerente com o nível de sensibilidade dos dados armazenados (senhas de prefeitura, certificados digitais A1), e a seção de escalabilidade foi truncada justamente no ponto crítico de worker de filas para emissão assíncrona, deixando sem resposta como o sistema lida com a instabilidade notória das APIs municipais no MVP."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona apenas uma fitness function reativa de custo ('transação blockchain não deve exceder 110% da baseline'), mas não apresenta nenhuma estimativa concreta de valores por componente (Hyperledger Fabric nodes, armazenamento de ledger, compute para API, banco relacional, CI/CD), nenhuma estratégia de otimização (scale-to-zero, spot instances, storage tiering) e nenhuma projeção de como os custos evoluem com crescimento de tenants ou volume de manifests — a arquitetura foi desenhada sob a ótica de características técnicas, não de viabilidade econômica operacional."
+}

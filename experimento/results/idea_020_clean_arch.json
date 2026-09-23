@@ -1,0 +1,389 @@
+{
+  "ideia_idx": 20,
+  "ideia": "Plataforma de crowdsourced testing de software com gamificação",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio com regras e invariantes puras, sem dependência de frameworks",
+      "lista": [
+        {
+          "nome": "Tester",
+          "atributos": [
+            "id",
+            "username",
+            "email",
+            "skills",
+            "reputationScore",
+            "tier",
+            "totalPoints",
+            "badges"
+          ],
+          "regras": [
+            "Tier é calculado com base em reputationScore",
+            "reputationScore diminui com bugs inválidos",
+            "Tester deve ter pelo menos uma skill para participar"
+          ]
+        },
+        {
+          "nome": "Project",
+          "atributos": [
+            "id",
+            "ownerId",
+            "title",
+            "description",
+            "scope",
+            "bountyPool",
+            "status",
+            "deadline",
+            "requiredSkills",
+            "testEnvironment"
+          ],
+          "regras": [
+            "bountyPool deve ser > 0 para ativar o projeto",
+            "scope define limites de teste (URLs, módulos, plataformas)",
+            "Status segue máquina de estados: DRAFT → OPEN → IN_PROGRESS → REVIEW → CLOSED"
+          ]
+        },
+        {
+          "nome": "BugReport",
+          "atributos": [
+            "id",
+            "testerId",
+            "projectId",
+            "title",
+            "description",
+            "severity",
+            "reproducibilitySteps",
+            "evidences",
+            "status",
+            "submittedAt",
+            "validatedAt"
+          ],
+          "regras": [
+            "Severity: CRITICAL, HIGH, MEDIUM, LOW",
+            "evidences obrigatórias (screenshot/vídeo) para CRITICAL e HIGH",
+            "Status: SUBMITTED → UNDER_REVIEW → ACCEPTED | REJECTED | DUPLICATE"
+          ]
+        },
+        {
+          "nome": "Badge",
+          "atributos": [
+            "id",
+            "name",
+            "description",
+            "iconUrl",
+            "criteria",
+            "pointsValue",
+            "rarity"
+          ],
+          "regras": [
+            "criteria é uma regra de negócio pura (ex: '10 bugs CRITICAL aceitos')",
+            "Rarity: COMMON, RARE, EPIC, LEGENDARY",
+            "Badges LEGENDARY concedem bônus de reputação permanente"
+          ]
+        },
+        {
+          "nome": "Challenge",
+          "atributos": [
+            "id",
+            "projectId",
+            "title",
+            "objectives",
+            "bonusPoints",
+            "startAt",
+            "endAt",
+            "eligibleTiers"
+          ],
+          "regras": [
+            "Apenas Testers no tier elegível podem participar",
+            "Bônus expira junto com o Challenge",
+            "Objectives são avaliados automaticamente via regras"
+          ]
+        },
+        {
+          "nome": "Reward",
+          "atributos": [
+            "id",
+            "testerId",
+            "bugReportId",
+            "amount",
+            "currency",
+            "status",
+            "issuedAt"
+          ],
+          "regras": [
+            "amount calculado com base em severity e bountyPool",
+            "Status: PENDING → APPROVED → PAID | CANCELLED",
+            "Reward cancelada devolve valor ao bountyPool"
+          ]
+        },
+        {
+          "nome": "Leaderboard",
+          "atributos": [
+            "id",
+            "projectId",
+            "period",
+            "entries",
+            "updatedAt"
+          ],
+          "regras": [
+            "Entries são imutáveis após fechamento do period",
+            "Empate desempatado por tempo do primeiro bug aceito"
+          ]
+        },
+        {
+          "nome": "Subscription",
+          "atributos": [
+            "id",
+            "ownerId",
+            "plan",
+            "status",
+            "currentPeriodEnd",
+            "features"
+          ],
+          "regras": [
+            "Plan: STARTER, PRO, ENTERPRISE",
+            "Features são resolvidas pelo plano ativo",
+            "Downgrade não cancela projetos ativos"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Orquestram entidades usando interfaces abstratas (ports). Não conhecem frameworks.",
+      "tester": [
+        "RegisterTester — cria conta com validação de email único",
+        "UpdateTesterSkills — atualiza skills e recalcula matching de projetos",
+        "EnrollInProject — valida elegibilidade e inscreve tester em projeto",
+        "SubmitBugReport — valida escopo, evidências e unicidade antes de persistir",
+        "GetTesterDashboard — agrega pontos, badges, histórico e ranking",
+        "ClaimReward — inicia fluxo de pagamento para reward aprovada"
+      ],
+      "project_owner": [
+        "CreateProject — valida bountyPool, scope e publica rascunho",
+        "ActivateProject — verifica pagamento do bountyPool e abre para testers",
+        "ReviewBugReport — aceita/rejeita/marca como duplicata com justificativa",
+        "CreateChallenge — define objetivos e bonus dentro de um projeto ativo",
+        "CloseProject — consolida resultados, dispara pagamentos e gera relatório",
+        "GenerateTestReport — exporta bugs agrupados por severity e módulo"
+      ],
+      "gamificacao": [
+        "AwardPoints — calcula e credita pontos após BugReport aceito",
+        "EvaluateBadgeCriteria — verifica se tester satisfaz critérios de badges",
+        "UpdateLeaderboard — recalcula ranking do projeto após cada aceitação",
+        "ComputeTierUpgrade — verifica promoção de tier baseado em reputationScore",
+        "ProcessChallengeBonuses — distribui bônus ao fechar um Challenge"
+      ],
+      "plataforma": [
+        "ProcessSubscriptionPayment — integra com gateway de pagamento via porta",
+        "NotifyStakeholders — despacha notificações sem acoplar ao canal",
+        "DetectDuplicateBug — usa algoritmo de similaridade para sugerir duplicatas",
+        "FraudDetection — identifica padrões de abuso (flood de bugs, bug farming)"
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Convertem dados entre o formato interno dos use cases e o mundo externo",
+      "controllers": [
+        "BugReportController — recebe HTTP, monta DTO, chama use case, devolve resposta",
+        "ProjectController — CRUD de projetos via REST",
+        "TesterController — perfil, dashboard, histórico",
+        "AuthController — login, OAuth callback, refresh token",
+        "WebhookController — recebe eventos de pagamento (Stripe), normaliza e despacha"
+      ],
+      "presenters": [
+        "BugReportPresenter — formata BugReport para JSON de resposta (remove campos internos)",
+        "LeaderboardPresenter — pagina e formata entradas para exibição",
+        "DashboardPresenter — agrega múltiplos dados em ViewModel único"
+      ],
+      "gateways_repos": [
+        "TesterRepository (interface) — implementado na camada externa com ORM",
+        "BugReportRepository (interface) — queries otimizadas de busca por projeto/status",
+        "ProjectRepository (interface) — inclui filtros de matching por skill",
+        "BadgeRepository (interface)",
+        "RewardRepository (interface)",
+        "LeaderboardRepository (interface)"
+      ],
+      "portas_saida": [
+        "PaymentGateway (interface) — implementado por StripeAdapter na camada externa",
+        "NotificationPort (interface) — implementado por email/push/webhook adapters",
+        "StoragePort (interface) — upload de evidências via S3Adapter",
+        "SimilaritySearchPort (interface) — detecção de bugs duplicados",
+        "EventBusPort (interface) — publicação de domain events",
+        "AuthPort (interface) — abstrai JWT e OAuth"
+      ],
+      "mappers": [
+        "TesterMapper — converte entre entidade de domínio e modelo de persistência",
+        "BugReportMapper",
+        "ProjectMapper",
+        "RewardMapper"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa. Substituível sem afetar regras de negócio.",
+      "web": {
+        "framework": "NestJS (Node.js/TypeScript)",
+        "motivo": "Suporte nativo a injeção de dependência e modularidade alinhada à Clean Architecture"
+      },
+      "banco_de_dados": {
+        "relacional": "PostgreSQL via TypeORM — entidades estruturadas, transações",
+        "cache_ranking": "Redis — leaderboards em tempo real com Sorted Sets",
+        "busca": "pgvector (PostgreSQL extension) — similarity search para detecção de duplicatas"
+      },
+      "mensageria": {
+        "broker": "BullMQ (Redis) para jobs assíncronos leves; Kafka para eventos de alta escala",
+        "uso": "Processamento de recompensas, notificações, recálculo de rankings"
+      },
+      "autenticacao": "Passport.js + JWT + OAuth2 (GitHub, Google) via AuthAdapter",
+      "storage": "AWS S3 via SDK — evidências de bugs (imagens, vídeos, logs)",
+      "pagamentos": "Stripe Connect — marketplace payments, split automático de bounties",
+      "email_notificacoes": "SendGrid (email) + Firebase Cloud Messaging (push) + WebSockets (real-time)",
+      "infraestrutura": {
+        "containers": "Docker + Docker Compose (dev), Kubernetes (prod)",
+        "ci_cd": "GitHub Actions",
+        "observabilidade": "OpenTelemetry + Grafana + Loki",
+        "cdn": "Cloudflare para assets estáticos"
+      },
+      "frontend": "Next.js 14 (React) — apenas consome API REST/GraphQL, sem lógica de negócio"
+    },
+    "dependency_rule": {
+      "descricao": "Nenhuma camada interna conhece ou importa de uma camada externa",
+      "aplicacao": [
+        "Entities: zero imports de frameworks, ORMs, HTTP ou qualquer lib externa",
+        "Use Cases: importam apenas Entities e interfaces (ports) abstratas definidas nesta camada",
+        "Interface Adapters: implementam as interfaces dos Use Cases; importam Use Cases e Entities; nunca o inverso",
+        "Frameworks & Drivers: implementam ports com libs concretas (TypeORM, Stripe SDK); nunca são importados por camadas internas",
+        "Domain Events fluem para fora via EventBusPort — use cases publicam eventos sem saber quem consome",
+        "Inversão de Controle: NestJS DI container injeta implementações concretas nas interfaces em runtime",
+        "Regra verificada em CI: ESLint com eslint-plugin-boundaries impede imports transversais"
+      ],
+      "fluxo_de_dados": "HTTP Request → Controller (Adapter) → DTO → Use Case → Entities → Repository Port → TypeORM Adapter → PostgreSQL"
+    },
+    "testability": {
+      "descricao": "Cada camada é testável de forma isolada e determinística",
+      "estrategias": [
+        {
+          "camada": "Entities",
+          "tipo": "Unit Tests puros",
+          "ferramenta": "Jest",
+          "abordagem": "Sem mocks. Instanciar entidades, exercitar métodos e regras de negócio diretamente. Ex: testar cálculo de tier, validação de BugReport."
+        },
+        {
+          "camada": "Use Cases",
+          "tipo": "Unit Tests com mocks de ports",
+          "ferramenta": "Jest + ts-mockito",
+          "abordagem": "Substituir todos os ports (repositórios, gateways) por mocks/stubs. Testar fluxos de sucesso, falha e edge cases sem I/O real."
+        },
+        {
+          "camada": "Interface Adapters",
+          "tipo": "Integration Tests",
+          "ferramenta": "Jest + Supertest + TestContainers",
+          "abordagem": "Testar controllers com HTTP real, banco em container Docker descartável. Verificar mapeamento DTO↔Entidade."
+        },
+        {
+          "camada": "Frameworks & Drivers",
+          "tipo": "Integration / E2E Tests",
+          "ferramenta": "Playwright (E2E) + Stripe test mode",
+          "abordagem": "Testar adapters externos em modo sandbox/test. Verificar contrato com serviços externos."
+        },
+        {
+          "beneficio_clean_arch": "Regras de negócio críticas (cálculo de recompensa, detecção de fraude, upgrade de tier) são testadas sem nenhuma dependência externa, resultando em suíte de testes rápida e confiável"
+        }
+      ]
+    },
+    "interfaces": [
+      "ITesterRepository: find(id), findByEmail(email), save(tester), updateReputation(id, delta)",
+      "IBugReportRepository: save(report), findByProject(projectId, filters), findSimilar(reportId)",
+      "IProjectRepository: save(project), findOpenBySkills(skills), findByOwner(ownerId)",
+      "IPaymentGateway: createEscrow(projectId, amount), releaseFunds(rewardId), refund(projectId)",
+      "INotificationPort: send(recipientId, event, payload)",
+      "IStoragePort: upload(file, path): url, delete(path)",
+      "ISimilaritySearchPort: findDuplicates(bugReport): SimilarBug[]",
+      "IEventBusPort: publish(event: DomainEvent), subscribe(eventType, handler)",
+      "IAuthPort: generateToken(userId), validateToken(token), getOAuthUser(code)",
+      "ILeaderboardRepository: upsertEntry(entry), getTopN(projectId, n), getPosition(projectId, testerId)",
+      "IBadgeRepository: findAll(), findEligible(testerStats): Badge[]",
+      "IRewardRepository: save(reward), findPendingByProject(projectId), updateStatus(id, status)"
+    ],
+    "escalabilidade": {
+      "horizontal": "Instâncias stateless do NestJS escaladas via Kubernetes HPA baseado em CPU/RPS",
+      "dados": {
+        "leitura": "Read replicas PostgreSQL para queries de leaderboard e dashboard",
+        "escrita": "Connection pooling via PgBouncer",
+        "cache": "Redis Sorted Sets para leaderboards em tempo real; TTL-based cache para dashboards",
+        "sharding_futuro": "Projetos como aggregate root permitem sharding por project_id"
+      },
+      "eventos": "Domain Events via Kafka permitem consumidores independentes (rankings, notificações, analytics) sem acoplar use cases",
+      "uploads": "Evidências enviadas diretamente ao S3 via presigned URLs — bypassa servidores da aplicação",
+      "cqrs_eventual": "Separação de modelos de leitura (projeções Redis/ElasticSearch) e escrita (PostgreSQL) conforme crescimento de carga",
+      "multiregiao": "Cloudflare para CDN e roteamento geográfico; dados replicados com PostgreSQL logical replication"
+    },
+    "custos": {
+      "variaveis": [
+        "PostgreSQL RDS Multi-AZ: ~$200-800/mês conforme instância",
+        "Redis ElastiCache: ~$100-300/mês",
+        "S3 + CloudFront: ~$0.023/GB armazenamento + $0.085/GB transferência",
+        "Stripe: 2.9% + $0.30 por transação + Connect fee",
+        "Kubernetes (EKS): ~$150 base + custo de nós EC2",
+        "SendGrid: ~$20-90/mês por volume de e-mails",
+        "Kafka (MSK): ~$250/mês para cluster básico"
+      ],
+      "otimizacoes": [
+        "Usar SQS/BullMQ no início em vez de Kafka para reduzir custo",
+        "RDS Serverless v2 para workloads irregulares no início",
+        "Spot instances para workers de processamento assíncrono",
+        "Lifecycle policies no S3 para mover evidências antigas para Glacier"
+      ],
+      "estimativa_mvp": "$500-1200/mês para até 1000 testers ativos"
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS B2B — empresas pagam para criar projetos de teste",
+      "planos": [
+        {
+          "nome": "STARTER",
+          "preco": "$99/mês",
+          "limites": "1 projeto ativo, bountyPool até $500, até 50 testers, relatórios básicos"
+        },
+        {
+          "nome": "PRO",
+          "preco": "$499/mês",
+          "limites": "5 projetos ativos, bountyPool ilimitado, testers ilimitados, relatórios avançados, SLA de revisão"
+        },
+        {
+          "nome": "ENTERPRISE",
+          "preco": "Sob consulta",
+          "limites": "White-label, SSO, testers dedicados, SLA contratual, API privada, compliance reports"
+        }
+      ],
+      "receitas_adicionais": [
+        "Fee de plataforma: 10-15% sobre cada bountyPool (Stripe Connect facilita split)",
+        "Featured listing: projetos em destaque para atrair testers especializados",
+        "Certificações: testers pagam para obter certificação verificada por skill",
+        "Analytics premium: insights de qualidade de código, benchmarks de mercado",
+        "Bug bounty gerenciado: serviço concierge de validação por equipe interna"
+      ],
+      "freemium_testers": "Testers nunca pagam — modelo assimétrico. Receita vem de empresas. Testers recebem bounties e prestígio.",
+      "unit_economics": {
+        "ltv_target": "$2400/cliente (ARR médio PRO × 2 anos)",
+        "cac_target": "< $400 via inbound/PLG",
+        "gross_margin_target": "70-75% após custos de infra e pagamentos"
+      }
+    },
+    "stack_sugerida": {
+      "backend": "Node.js 20 + TypeScript 5 + NestJS 10",
+      "frontend": "Next.js 14 + TypeScript + Tailwind CSS + shadcn/ui",
+      "banco_principal": "PostgreSQL 16 (AWS RDS ou Neon.tech para serverless)",
+      "cache_ranking": "Redis 7 (AWS ElastiCache ou Upstash para serverless)",
+      "fila_jobs": "BullMQ (MVP) → Apache Kafka (escala)",
+      "storage": "AWS S3 + CloudFront",
+      "auth": "Auth.js v5 (ex-NextAuth) com JWT + OAuth GitHub/Google",
+      "pagamentos": "Stripe Connect (marketplace)",
+      "email": "Resend (moderno) ou SendGrid",
+      "observabilidade": "OpenTelemetry + Grafana Cloud (logs, métricas, traces)",
+      "infra": "Docker + GitHub Actions CI/CD + Railway (MVP) → AWS EKS (escala)",
+      "testes": "Jest + Supertest + TestContainers + Playwright",
+      "qualidade": "ESLint (com eslint-plugin-boundaries) + Prettier + Husky",
+      "monorepo": "Turborepo — apps/api, apps/web, packages/domain, packages/shared"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio com regras e invariantes puras, sem dependência de frameworks\",\n    \"lista\": [\n      {\n        \"nome\": \"Tester\",\n        \"atributos\": [\"id\", \"username\", \"email\", \"skills\", \"reputationScore\", \"tier\", \"totalPoints\", \"badges\"],\n        \"regras\": [\"Tier é calculado com base em reputationScore\", \"reputationScore diminui com bugs inválidos\", \"Tester deve ter pelo menos uma skill para participar\"]\n      },\n      {\n        \"nome\": \"Project\",\n        \"atributos\": [\"id\", \"ownerId\", \"title\", \"description\", \"scope\", \"bountyPool\", \"status\", \"deadline\", \"requiredSkills\", \"testEnvironment\"],\n        \"regras\": [\"bountyPool deve ser > 0 para ativar o projeto\", \"scope define limites de teste (URLs, módulos, plataformas)\", \"Status segue máquina de estados: DRAFT → OPEN → IN_PROGRESS → REVIEW → CLOSED\"]\n      },\n      {\n        \"nome\": \"BugReport\",\n        \"atributos\": [\"id\", \"testerId\", \"projectId\", \"title\", \"description\", \"severity\", \"reproducibilitySteps\", \"evidences\", \"status\", \"submittedAt\", \"validatedAt\"],\n        \"regras\": [\"Severity: CRITICAL, HIGH, MEDIUM, LOW\", \"evidences obrigatórias (screenshot/vídeo) para CRITICAL e HIGH\", \"Status: SUBMITTED → UNDER_REVIEW → ACCEPTED | REJECTED | DUPLICATE\"]\n      },\n      {\n        \"nome\": \"Badge\",\n        \"atributos\": [\"id\", \"name\", \"description\", \"iconUrl\", \"criteria\", \"pointsValue\", \"rarity\"],\n        \"regras\": [\"criteria é uma regra de negócio pura (ex: '10 bugs CRITICAL aceitos')\", \"Rarity: COMMON, RARE, EPIC, LEGENDARY\", \"Badges LEGENDARY concedem bônus de reputação permanente\"]\n      },\n      {\n        \"nome\": \"Challenge\",\n        \"atributos\": [\"id\", \"projectId\", \"title\", \"objectives\", \"bonusPoints\", \"startAt\", \"endAt\", \"eligibleTiers\"],\n        \"regras\": [\"Apenas Testers no tier elegível podem participar\", \"Bônus expira junto com o Challenge\", \"Objectives são avaliados automaticamente via regras\"]\n      },\n      {\n        \"nome\": \"Reward\",\n        \"atributos\": [\"id\", \""
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 41,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta demonstra intenção evolutiva clara — adaptadores intercambiáveis para fontes de dados, interface agnóstica de IA e PatentPortfolioService como único ponto de regras de negócio são decisões corretas de inversão de dependência — mas perde pontos por ausência de estratégia explícita de escalabilidade horizontal (de 10 a 10.000 usuários, um único PatentPortfolioService centralizado vira gargalo e potencial God Object sem particionamento de domínio ou mecanismo de escala definido) e por não abordar versionamento de API, evolução de schema canônico ou como o pipeline de enriquecimento da fase 3 se comporta sob carga crescente."
+}

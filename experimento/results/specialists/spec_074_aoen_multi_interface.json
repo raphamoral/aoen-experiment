@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 74,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (portal web do pesquisador, dashboard do ETT, painel executivo, API REST/webhook, portal público e app mobile), cada uma explicitamente justificada por perfil de usuário e caso de uso de mercado real, com uma camada de serviços de domínio completamente desacoplada das interfaces, permitindo adicionar novos canais sem alterar regras de negócio."
+}

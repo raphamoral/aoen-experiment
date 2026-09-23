@@ -1,0 +1,15 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "arch_flow",
+  "scores": {
+    "core_diferenciador": 8,
+    "visao_mercado": 8,
+    "multi_interface": 5,
+    "configurabilidade": 4,
+    "isolamento_processamento": 6,
+    "consideracao_custo": 4,
+    "monetizacao": 7,
+    "evolucao": 7,
+    "coerencia": 8
+  }
+}

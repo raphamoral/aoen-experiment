@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 43,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta demonstra consciência de segmentos com potencial de monetização diferenciada (B2C direto, API B2B, widget white-label) e menciona tangencialmente conceitos de negócio como 'ticket alto, recorrente' e 'distribuição sem CAC', mas não define nenhum modelo de receita — não há tiers de planos, valores, lógica de cobrança (por assinatura, por uso, por lead, revenue share com corretoras), nem métricas de sustentabilidade como LTV, CAC ou MRR."
+}

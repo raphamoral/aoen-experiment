@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O produto identifica como diferenciadores a orquestração do ciclo completo de devolução (elegibilidade, triagem, reembolso, reintegração) e a abstração multi-fornecedor via ports, mas não explicita qual lógica de negócio no core domain é insubstituível — a arquitetura hexagonal é excelente para extensibilidade, porém sem detalhar o motor de políticas de elegibilidade ou o algoritmo de triagem/fraude como componentes proprietários únicos, o produto ainda pode parecer um CRUD bem arquitetado em vez de um diferenciador real."
+}

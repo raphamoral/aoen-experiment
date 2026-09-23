@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 98,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (web, mobile, portal de auditor, API REST, relatórios exportáveis e painel de TV), cada uma justificada por um perfil de usuário e vetor de mercado específico, com lógica de negócio inteiramente centralizada na FranchiseService Layer — permitindo adicionar ou substituir qualquer interface sem alterar o motor de cálculo ou as regras de negócio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura não prevê nenhum mecanismo de mensuração de custo por tenant — não há port, adapter ou domínio dedicado a rastrear consumo de recursos por cliente; o IAnalyticsGateway é listado para métricas comportamentais, não para atribuição de custo; e nenhuma operação (submissão de bug, armazenamento de evidência, processamento de recompensa) tem custo unitário definido ou rastreável por tenant, tratando a infraestrutura como custo total e não como unit economics."
+}

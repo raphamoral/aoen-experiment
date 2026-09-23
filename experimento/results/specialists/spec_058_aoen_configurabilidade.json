@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 58,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra configurabilidade real no data layer (adapters intercambiáveis por DataProvider) e no motor paramétrico (triggers configuráveis por combinação de índices), com separação explícita entre código e regra de negócio na service layer — mas não descreve um sistema de configuração por tenant: não há menção a schema de configuração por cliente, tabela de parâmetros por safra/cooperativa/banco, nem ao processo de onboarding ser puramente data-driven (nova linha no banco), deixando ambíguo se adicionar um novo cliente com trigger customizado e pricing diferenciado exigiria ou não um deploy."
+}

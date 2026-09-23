@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "O nome 'agendamento inteligente' sugere um diferenciador, mas a proposta arquitetural não descreve nenhum componente técnico proprietário que justifique essa inteligência — ausentes: motor de otimização de agenda, algoritmo de predição de faltas, lógica de encaixe clínico ou qualquer núcleo separado do restante; o que está documentado é uma infraestrutura SaaS genérica e bem executada (12-factor), mas que poderia servir a qualquer vertical de agendamento sem alteração conceitual."
+}

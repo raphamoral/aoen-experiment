@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal com portas primárias/secundárias bem definidas garante que o domínio de negócio seja completamente isolado de frameworks e infraestrutura, permitindo substituição independente de qualquer adaptador (banco, pagamento, auth, notificação) sem tocar na lógica central, e suportando escala horizontal via abstrações como IEventPublisher e Redis — perde apenas um ponto pela ausência de detalhes sobre isolamento entre bounded contexts internos (ex: acoplamento entre IGamificationUseCase e IRewardDistributionUseCase), o que pode criar dependências implícitas que dificultam evolução independente desses subdomínios."
+}

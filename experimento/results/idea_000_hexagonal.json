@@ -1,0 +1,64 @@
+{
+  "ideia_idx": 0,
+  "ideia": "Plataforma de telemedicina veterinária com IA para diagnóstico por imagem",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Lógica de diagnóstico veterinário por imagem com IA, gerenciamento de consultas, análise de casos clínicos e recomendações de tratamento",
+    "primary_ports": [
+      "VetMobileApplicationPort (entrada de veterinários via app mobile)",
+      "ClinicWebDashboardPort (entrada de clínicas/gestores via web)",
+      "ExternalIntegrationAPIPort (entrada de sistemas terceiros)"
+    ],
+    "secondary_ports": [
+      "ImageAnalysisServicePort (saída para IA/ML de diagnóstico)",
+      "PatientDataRepositoryPort (saída para persistência de dados)",
+      "PaymentProcessorPort (saída para cobrança)",
+      "NotificationServicePort (saída para comunicações)",
+      "ImageStoragePort (saída para armazenamento de imagens)",
+      "AuthenticationServicePort (saída para controle de acesso)",
+      "AuditLogPort (saída para compliance e rastreabilidade)"
+    ],
+    "primary_adapters": [
+      "ReactNative/FlutterAdapter (mobile)",
+      "ReactWebAdapter (dashboard web)",
+      "RESTAPIAdapter (integrações)",
+      "WebSocketAdapter (real-time para consultas ao vivo)"
+    ],
+    "secondary_adapters": [
+      "OpenAIVisionAdapter | CustomMLModelAdapter (diagnóstico por imagem)",
+      "PostgreSQLAdapter (persistência principal)",
+      "StripeAdapter | PagSeguroAdapter (pagamentos)",
+      "SendGridAdapter | AWSSESAdapter (notificações)",
+      "S3Adapter | GoogleCloudStorageAdapter (imagens médicas)",
+      "Auth0Adapter | KeycloakAdapter (autenticação)",
+      "ElasticsearchAdapter (auditoria e compliance)"
+    ],
+    "isolation": "Core implementa use cases agnósticos de tecnologia. Todas as integrações externas (IA, BD, pagamento, armazenamento) via interfaces bem definidas. Inversão de controle via dependency injection. Testes podem usar adapters mock sem tocar infraestrutura real.",
+    "interfaces": [
+      "IImageAnalyzer { analyze(image: File): Promise<Diagnosis> }",
+      "IPatientRepository { save, fetch, query }",
+      "IPaymentProcessor { charge, refund, webhookHandler }",
+      "INotificationService { send(type, recipient, data) }",
+      "IImageStorage { upload, download, delete }",
+      "IAuthProvider { authenticate, authorize, validateToken }",
+      "IConsultationOrchestrator { startConsultation, submitImage, getReco mmendations }"
+    ],
+    "escalabilidade": "Event-driven com message queue (RabbitMQ/Kafka) para análises assíncronas. Microserviço separado para IA (pode escalar independentemente). Redis para cache de diagnósticos recorrentes. CDN para distribuir imagens. Kubernetes para orquestração de containers. Read replicas para consultas.",
+    "custos": "Processamento de imagem (OpenAI Vision ~0.03 USD/imagem ou GPU on-premise). Armazenamento S3 (~0.023 USD/GB/mês). Banda de saída (CDN). Infraestrutura cloud (compute, database). Redundância e backup (10-15% do custo total). Compliance (HIPAA/LGPD).",
+    "monetizacao": "SaaS subscription (Starter $99/mês por 50 consultas, Pro $299/mês ilimitado). Pay-per-consultation ($5-15 por análise). Premium AI (diagnóstico diferencial avançado, +$50/mês). API para integração com software veterinário existente (+$200/mês). White-label para redes de clínicas.",
+    "stack_sugerida": {
+      "backend": "Node.js + TypeScript ou Go (performance/escalabilidade)",
+      "frontend_web": "React + TypeScript + Zustand/Jotai",
+      "mobile": "React Native ou Flutter",
+      "database": "PostgreSQL (primária) + Redis (cache)",
+      "message_queue": "RabbitMQ ou AWS SQS",
+      "ml_inference": "OpenAI Vision API ou PyTorch (self-hosted com GPU)",
+      "storage": "AWS S3 ou Google Cloud Storage",
+      "observability": "DataDog ou New Relic (logs, métricas, APM)",
+      "auth": "Auth0 ou Keycloak",
+      "infra": "Docker + Kubernetes (EKS/GKE) ou serverless (Lambda + RDS Proxy)",
+      "compliance": "HashiCorp Vault (secrets), HashiCorp Sentinel (policies)"
+    }
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Lógica de diagnóstico veterinário por imagem com IA, gerenciamento de consultas, análise de casos clínicos e recomendações de tratamento\",\n  \"primary_ports\": [\n    \"VetMobileApplicationPort (entrada de veterinários via app mobile)\",\n    \"ClinicWebDashboardPort (entrada de clínicas/gestores via web)\",\n    \"ExternalIntegrationAPIPort (entrada de sistemas terceiros)\"\n  ],\n  \"secondary_ports\": [\n    \"ImageAnalysisServicePort (saída para IA/ML de diagnóstico)\",\n    \"PatientDataRepositoryPort (saída para persistência de dados)\",\n    \"PaymentProcessorPort (saída para cobrança)\",\n    \"NotificationServicePort (saída para comunicações)\",\n    \"ImageStoragePort (saída para armazenamento de imagens)\",\n    \"AuthenticationServicePort (saída para controle de acesso)\",\n    \"AuditLogPort (saída para compliance e rastreabilidade)\"\n  ],\n  \"primary_adapters\": [\n    \"ReactNative/FlutterAdapter (mobile)\",\n    \"ReactWebAdapter (dashboard web)\",\n    \"RESTAPIAdapter (integrações)\",\n    \"WebSocketAdapter (real-time para consultas ao vivo)\"\n  ],\n  \"secondary_adapters\": [\n    \"OpenAIVisionAdapter | CustomMLModelAdapter (diagnóstico por imagem)\",\n    \"PostgreSQLAdapter (persistência principal)\",\n    \"StripeAdapter | PagSeguroAdapter (pagamentos)\",\n    \"SendGridAdapter | AWSSESAdapter (notificações)\",\n    \"S3Adapter | GoogleCloudStorageAdapter (imagens médicas)\",\n    \"Auth0Adapter | KeycloakAdapter (autenticação)\",\n    \"ElasticsearchAdapter (auditoria e compliance)\"\n  ],\n  \"isolation\": \"Core implementa use cases agnósticos de tecnologia. Todas as integrações externas (IA, BD, pagamento, armazenamento) via interfaces bem definidas. Inversão de controle via dependency injection. Testes podem usar adapters mock sem tocar infraestrutura real.\",\n  \"interfaces\": [\n    \"IImageAnalyzer { analyze(image: File): Promise<Diagnosis> }\",\n    \"IPatientRepository { save, fetch, query }\",\n    \"IPaymentProcessor { charge, refund, webhookHandler }\",\n    \"INotificationService { send(type,"
+}

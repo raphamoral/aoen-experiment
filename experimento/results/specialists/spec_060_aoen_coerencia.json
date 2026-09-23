@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 60,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma cadeia causal fechada e autocoerente: a obrigação regulatória do mercado justifica o fluxo imutável, que justifica a camada única de serviço, que justifica o portfólio de interfaces, que justifica a extensibilidade das três camadas — cada escolha existe porque a anterior a exige, e o único ponto de tensão não resolvido na proposta é a afirmação de 'zero dependência tecnológica entre camadas', que é ambiciosa e contraria a realidade de que a engine AR frequentemente dita o formato e a granularidade dos dados que o checklist precisa registrar."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 68,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (portal web, dashboard do criador, painel admin, PWA mobile, API pública e widget embeddable), cada uma justificada por um segmento de mercado concreto (cidadãos, prefeituras B2G, comunidades periféricas via PIX, bancos parceiros white-label e compliance político), e o service layer com CampaignService/FundReleaseService/MilestoneVerificationService expõe contratos de domínio puros desacoplados de HTTP e UI, permitindo adicionar novos canais como WhatsApp sem tocar em regra de negócio."
+}

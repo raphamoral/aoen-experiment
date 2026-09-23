@@ -1,0 +1,76 @@
+{
+  "ideia_idx": 95,
+  "ideia": "Plataforma de telemedicina especializada em dermatologia com análise de imagem",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": "Camada mais interna, sem dependência de framework, banco ou IA. Entidades: Paciente (dados pessoais, histórico clínico, consentimento LGPD); Dermatologista (CRM, especialidades, disponibilidade); Consulta (estado: agendada, em andamento, concluída, cancelada; modalidade síncrona ou assíncrona/store-and-forward); CasoClínico (queixa, anamnese, linha do tempo de lesões); ImagemDermatológica (metadados, região corporal, qualidade, hash de integridade); AnaliseImagem (hipóteses diagnósticas, scores de confiança, versão do modelo, explicabilidade); Laudo/Parecer; Prescrição; Plano de Assinatura; Pagamento/Fatura; Consentimento; TrilhaDeAuditoria. Value objects: CPF, CRM, RegiãoCorporal, NívelDeUrgência, ScoreDeConfiança. Regras de negócio invariantes: o parecer da IA nunca substitui o médico (human-in-the-loop); lesão suspeita (ex.: suspeita de melanoma) exige triagem prioritária; consulta só inicia com consentimento válido; só o médico habilitado assina laudo e prescrição; imagens só são acessadas por profissionais vinculados ao caso.",
+    "use_cases": [
+      "CadastrarPaciente e RegistrarConsentimentoLGPD",
+      "CadastrarEValidarDermatologista (verificação de CRM)",
+      "AgendarConsulta / ReagendarConsulta / CancelarConsulta",
+      "EnviarImagensDoCaso (validação de qualidade: foco, iluminação, escala)",
+      "AnalisarImagemComIA (gera hipóteses e score de risco, via porta ImageAnalysisPort)",
+      "TriarCasoPorUrgencia (prioriza lesões suspeitas na fila médica)",
+      "IniciarTeleconsultaVídeo e EncerrarConsulta",
+      "EmitirLaudoAssinado e EmitirPrescriçãoDigital",
+      "AcompanharEvoluçãoDaLesão (comparação temporal de imagens)",
+      "SolicitarSegundaOpinião",
+      "RevisarESinalizarErroDaIA (feedback loop para retreino)",
+      "GerenciarAssinatura e ProcessarPagamento / RepasseMédico",
+      "NotificarPaciente (lembretes, resultado disponível)",
+      "ExportarProntuário / ExcluirDadosDoTitular (direitos LGPD)",
+      "AuditarAcesso a dados sensíveis"
+    ],
+    "interface_adapters": "Controllers REST/GraphQL e handlers de WebSocket/WebRTC signaling que convertem HTTP/JSON em Input DTOs dos use cases; Presenters/ViewModels que formatam Output DTOs para web e mobile; Gateways/Repositories que implementam as portas definidas nos use cases (PacienteRepository, ConsultaRepository, ImagemStorageGateway, ImageAnalysisGateway, PaymentGateway, VideoCallGateway, NotificationGateway, PrescriptionSignatureGateway, IdentityProviderGateway, AuditLogGateway, ClockPort); Mappers entre entidade de domínio, modelo de persistência e DTOs; Adaptador de IA que traduz a resposta do modelo (ex.: TorchServe/Triton/API de terceiros) para a entidade AnaliseImagem; Adaptadores de padrões de saúde (HL7 FHIR para interoperabilidade de prontuário); Anti-corruption layer para integrações legadas (convênios, laboratórios, ICP-Brasil); Consumidores e produtores de eventos de domínio (ConsultaConcluída, ImagemAnalisada).",
+    "frameworks_drivers": "Camada mais externa, substituível e sem regra de negócio. Web: React/Next.js. Mobile: React Native ou Flutter (câmera com guia de captura). API: NestJS, FastAPI ou Spring Boot, usado apenas como mecanismo de entrega. Banco relacional: PostgreSQL (com criptografia em repouso e row-level security). Objetos: S3/GCS com KMS para imagens. Cache: Redis. Mensageria: Kafka, RabbitMQ ou SQS. Vídeo: WebRTC via Twilio, Daily ou LiveKit. Inferência: PyTorch/ONNX Runtime em Triton ou SageMaker, com modelos de visão (ex.: EfficientNet ou ViT ajustados em datasets como ISIC/HAM10000 e dados próprios). Pagamentos: Stripe ou Pagar.me/Asaas com Pix. Autenticação: Auth0, Keycloak ou Cognito (OIDC, MFA). Assinatura digital: ICP-Brasil (Vidaas, BirdID, Certisign). Observabilidade: OpenTelemetry, Prometheus, Grafana, Sentry. Infra: Docker, Kubernetes, Terraform, CI/CD com GitHub Actions.",
+    "dependency_rule": "As dependências de código-fonte apontam sempre para dentro: Frameworks & Drivers → Interface Adapters → Use Cases → Entities. Use cases declaram interfaces (portas) de saída, como ImageAnalysisPort e ConsultaRepository, e os adaptadores externos as implementam (Inversão de Dependência). Dados cruzam as fronteiras como DTOs simples, nunca como entidades ORM ou objetos HTTP. A composição das dependências ocorre em um Composition Root na camada externa, via injeção de dependência. Nenhum import de framework, SDK de nuvem ou biblioteca de ML aparece em entities ou use_cases. A regra é verificada automaticamente no CI com ArchUnit, dependency-cruiser ou import-linter, que quebram o build se houver violação. Cada camada fica em um módulo/pacote separado, com regras de visibilidade.",
+    "testability": "Entities: testes unitários puros, sem I/O, cobrindo invariantes clínicas. Use cases: testes unitários com fakes/in-memory das portas (repositórios, IA, pagamento, relógio, gerador de IDs), rápidos e determinísticos, sem banco, rede ou GPU. Interface adapters: testes de contrato para cada implementação de porta (a mesma suíte roda contra o fake e o adaptador real), testes de presenters e controllers com use cases dublados. Frameworks & Drivers: testes de integração com Testcontainers (Postgres, Redis, Kafka) e LocalStack (S3). Testes de contrato de API (OpenAPI/Pact). Modelo de IA: dataset dourado versionado, métricas de sensibilidade/especificidade por tipo de lesão, testes de viés por fototipo de pele (Fitzpatrick I–VI), monitoramento de drift e testes de regressão a cada nova versão. Poucos testes E2E (Playwright/Cypress) para fluxos críticos: agendamento, envio de imagem, consulta, laudo. Testes de segurança e de conformidade LGPD automatizados no pipeline.",
+    "interfaces": [
+      "App web do paciente (agendamento, upload de imagens, teleconsulta, histórico)",
+      "App mobile do paciente com captura guiada de imagem",
+      "Portal do dermatologista (fila priorizada, visualizador de imagens com zoom/dermatoscopia, comparação temporal, laudo e prescrição)",
+      "Painel administrativo e de operações (usuários, planos, auditoria, moderação)",
+      "API pública REST/GraphQL documentada em OpenAPI",
+      "Webhooks (pagamento, assinatura digital, videochamada)",
+      "Portas de saída: ImageAnalysisPort, ImageStoragePort, PaymentPort, VideoCallPort, NotificationPort, PrescriptionSignaturePort, IdentityPort, AuditLogPort",
+      "Integração FHIR/HL7 com prontuários eletrônicos, laboratórios e convênios",
+      "API B2B/white-label para clínicas, farmácias e operadoras de saúde",
+      "Barramento de eventos de domínio (ImagemAnalisada, ConsultaConcluída, LaudoEmitido)"
+    ],
+    "escalabilidade": "O núcleo é um monólito modular fatiado por bounded contexts (Clínico, Agendamento, Análise de IA, Faturamento, Identidade), com possibilidade de extrair serviços conforme a demanda, algo facilitado pelas portas da Clean Architecture. Aplicação stateless com escala horizontal em Kubernetes e HPA. Inferência de IA em serviço separado e assíncrono (fila + workers com GPU e autoscaling, incluindo scale-to-zero e batching), com API síncrona apenas para pré-triagem leve. Upload direto ao storage por URL pré-assinada e CDN para entrega de imagens em thumbnails/derivados. PostgreSQL com réplicas de leitura, particionamento por tenant/tempo e cache em Redis. Arquitetura orientada a eventos para desacoplar análise, notificação e faturamento. Multi-tenant para clínicas parceiras com isolamento lógico e, para grandes clientes, isolamento físico. Multi-região para latência e residência de dados no Brasil (LGPD). Mídia de longo prazo em tiers frios (lifecycle policies).",
+    "custos": "Principais custos: (1) Inferência de IA com GPU, mitigável com modelos quantizados, batching, spot instances e cascata de modelos (leve primeiro, pesado só em caso de dúvida); (2) Armazenamento e tráfego de imagens de alta resolução e vídeo, mitigável com compressão sem perda clínica, tiering e CDN; (3) Vídeo em tempo real (minutos de WebRTC), com opção de P2P/SFU próprio em volume; (4) Remuneração dos dermatologistas, o maior custo variável, com modelo de repasse por consulta/laudo; (5) Conformidade: LGPD, DPO, pentests, auditorias, ISO 27001, e possível registro na ANVISA como Software as a Medical Device (SaMD) para o módulo de IA, além do cumprimento da resolução do CFM sobre telemedicina; (6) Seguro de responsabilidade civil profissional/cibernético; (7) Aquisição de clientes (CAC) e suporte; (8) Curadoria e rotulagem de dados por especialistas para treino do modelo; (9) Taxas de gateway de pagamento. Recomenda-se FinOps com tags por tenant, métricas de custo por consulta e MVP com API de IA terceirizada antes de treinar modelo próprio.",
+    "monetizacao": [
+      "Pagamento por consulta (teleconsulta síncrona) com comissão da plataforma sobre o valor do médico",
+      "Pagamento por laudo assíncrono (envio de fotos + parecer em até 24–48h)",
+      "Assinatura mensal do paciente (acompanhamento contínuo de lesões/pintas, mapeamento corporal, check-ups periódicos)",
+      "Planos B2B2C para empresas e operadoras de saúde (benefício corporativo, per capita por vida)",
+      "Licenciamento SaaS/white-label para clínicas e consultórios (triagem por IA e agenda de pacientes)",
+      "API de análise de imagem cobrada por chamada para parceiros (farmácias, clínicas, seguradoras)",
+      "Segunda opinião e serviços premium (prioridade, laudo comentado, acompanhamento com dermatologista fixo)",
+      "Parcerias com farmácias de manipulação e dermocosméticos (comissão sobre prescrições, com cautela ética e regulatória)",
+      "Dados anonimizados/agregados para pesquisa e farmacêuticas, somente com consentimento explícito e conformidade LGPD"
+    ],
+    "stack_sugerida": {
+      "linguagens": "TypeScript (backend e frontend) e Python (ML/inferência)",
+      "backend": "NestJS ou Spring Boot, estruturado em módulos por camada (domain, application, adapters, infrastructure), com DI e Composition Root",
+      "frontend_web": "Next.js + React + TypeScript + Tailwind, visualizador de imagens médicas com OpenSeadragon/Cornerstone",
+      "mobile": "React Native (Expo) ou Flutter",
+      "dados": "PostgreSQL (+ pgvector opcional para busca de casos similares), Redis, S3/GCS com KMS, OpenSearch opcional",
+      "mensageria": "Kafka ou RabbitMQ/SQS",
+      "ia": "PyTorch → ONNX, serving com Triton/KServe, MLflow para versionamento, Label Studio para rotulagem, Evidently para drift; modelos de visão (CNN/ViT) treinados em ISIC/HAM10000/Fitzpatrick17k e dados próprios com atenção a fototipos diversos",
+      "video": "LiveKit, Daily ou Twilio Video (WebRTC)",
+      "identidade_e_seguranca": "Keycloak/Auth0/Cognito (OIDC + MFA), Vault/KMS, criptografia em trânsito e em repouso, RBAC/ABAC, logs de auditoria imutáveis, ICP-Brasil para assinatura de laudos/receitas",
+      "pagamentos": "Stripe ou Pagar.me/Asaas (cartão, Pix, recorrência) com split de pagamento para repasse médico",
+      "infra": "AWS ou GCP em região São Paulo, Kubernetes (EKS/GKE), Terraform, ArgoCD, GitHub Actions",
+      "observabilidade": "OpenTelemetry, Prometheus, Grafana, Loki, Sentry",
+      "qualidade": "Jest/Vitest, pytest, Testcontainers, Pact, Playwright, ArchUnit/dependency-cruiser para validar a regra de dependência",
+      "conformidade": "LGPD, resolução CFM de telemedicina, ANVISA (SaMD, RDC 657/2022 e correlatas), ISO 27001, HL7 FHIR"
+    }
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "99d475cb3837",
+    "gerado_em": "2026-09-21T05:50:19+00:00",
+    "runner": "runner.py"
+  }
+}

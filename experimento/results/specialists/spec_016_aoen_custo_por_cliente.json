@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta é integralmente arquitetural-funcional e não contém nenhuma menção a mensuração de custo por tenant, custo por operação de devolução, rastreamento de consumo de recursos por cliente ou conexão entre custo unitário e modelo de precificação — os custos não são sequer citados na proposta avaliada."
+}

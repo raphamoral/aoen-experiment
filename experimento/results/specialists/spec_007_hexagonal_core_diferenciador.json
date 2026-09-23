@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador está identificado (engine de gamificação + aprendizado adaptativo + progressão de competências) e isolado via arquitetura hexagonal sem dependência de infraestrutura, mas a proposta de valor não demonstra por que esse núcleo é insubstituível frente a concorrentes como Docebo ou TalentLMS — falta evidenciar o algoritmo adaptativo ou a lógica de gamificação como IP proprietário que alternativas não replicam."
+}

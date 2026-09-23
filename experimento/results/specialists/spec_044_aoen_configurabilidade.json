@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 44,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "O design demonstra separação explícita entre fluxo fixo (fase3_fluxo_fixo) e parâmetros configuráveis (fase3_parametros_configuraveis), e a arquitetura plugável via IEvaluationEngine permite trocar fornecedores sem código novo — mas a proposta não descreve um tenant config store explícito, não cobre configuração de branding/white-label por tenant, não menciona feature flags por cliente, e a lista de parâmetros configuráveis está truncada, deixando incerto se casos como integrações ATS por tenant ou critérios de scoring customizados são cobertos puramente por configuração ou ainda exigiriam código."
+}

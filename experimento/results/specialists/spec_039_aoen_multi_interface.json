@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 39,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define seis interfaces distintas (web, mobile produtor, mobile operador, portal cooperativas, API REST/webhooks e WhatsApp bot), cada uma justificada por um perfil de usuário e estratégia de mercado específicos, com lógica de negócio centralizada em uma ServiceLayer desacoplada que permite adicionar novos canais sem reescrita do core."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 81,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A proposta arquitetural demonstra forte consciência de segmentos de mercado e canais de distribuição (white-label, marketplace, API para ERPs), mas não menciona nenhum modelo de precificação concreto — não há tiers definidos, valores de assinatura, modelo usage-based para créditos transacionados, split de receita no marketplace, ou qualquer métrica de negócio (MRR, LTV, CAC, churn); a estrutura técnica está bem resolvida para suportar múltiplos modelos de monetização, mas o modelo em si simplesmente não foi especificado."
+}

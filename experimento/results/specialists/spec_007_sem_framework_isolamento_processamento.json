@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta terceiriza o encoding de vídeo (Mux/Cloudflare Stream) — o processo mais pesado — e menciona filas Bull/Redis para processamento assíncrono de notificações, mas ambos são planos futuros ('quando crescer'), o sistema inicia monolítico sem nenhum isolamento físico, não há menção de fallback caso um worker falhe, e a separação de workers é descrita de forma vaga sem garantias de que uma falha no processamento não propague para o fluxo principal do usuário."
+}

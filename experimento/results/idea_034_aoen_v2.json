@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 34,
+  "ideia": "Plataforma de simulação financeira para planejamento de aposentadoria",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de simulação financeira probabilística (Monte Carlo) que projeta cenários personalizados de aposentadoria com base em renda, patrimônio, aportes, taxa de retorno, inflação e horizonte temporal — produzindo probabilidade de sucesso financeiro, déficit esperado e idade de independência financeira.",
+    "fase1_mercado": "Três segmentos primários: (1) Pessoas físicas de 30–55 anos com renda média-alta preocupadas com independência financeira; (2) Assessores e planejadores financeiros que precisam de relatórios profissionais para clientes; (3) Bancos, fintechs e seguradoras que desejam embutir ferramentas de planejamento em seus próprios produtos.",
+    "fase1_extensivel": "Sim. O motor de simulação é exposto como interface abstrata (SimulationEngine) com implementações substituíveis: Monte Carlo estatístico, simulação determinística simples ou modelo baseado em ML. Dados de mercado (inflação, retorno de ativos) são injetados via adapters externos plugáveis (Banco Central, Yahoo Finance, APIs proprietárias). Regras fiscais e previdenciárias são plugins por país/jurisdição, carregados em runtime por tenant.",
+    "fase2_interfaces": [
+      "Web App SPA (React/Next.js) — self-service para pessoa física",
+      "API REST + SDK — para fintechs e bancos integrarem como feature em seus apps",
+      "Widget embeddable (Web Component/iframe) — white-label para parceiros, bancos e seguradoras",
+      "Relatório PDF exportável — para assessores financeiros apresentarem a clientes",
+      "App mobile (React Native/Expo) — consultas rápidas e notificações de desvio de plano",
+      "Chatbot conversacional (WhatsApp/Telegram) — onboarding simplificado para mercados com baixa digitalização"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o maior volume (auto-atendimento, menor ticket, maior base). API REST abre o mercado B2B de embedding — maior ticket, menor CAC por escala. Widget white-label abre parcerias com bancos e seguradoras — receita recorrente por seat ou por uso. PDF exportável retém assessores financeiros independentes — segmento premium disposto a pagar por relatórios profissionais. Mobile alcança os 65%+ de usuários que acessam exclusivamente pelo smartphone. Chatbot abre segmentos com menor alfabetização digital via canal já familiar.",
+    "fase2_service_layer": "Uma SimulationService centraliza toda a lógica de negócio: recebe parâmetros normalizados de qualquer interface, executa o motor, persiste resultados e retorna cenários estruturados. Cada interface apenas traduz suas entradas para o contrato do SimulationService e formata a saída conforme seu contexto — nenhuma interface contém regras de negócio. Mudanças na engine, nas regras fiscais ou nos modelos afetam somente o Service Layer, não as interfaces.",
+    "fase3_fluxo_fixo": "1. Coletar perfil financeiro (renda, patrimônio, despesas, aportes, objetivo de aposentadoria). 2. Normalizar e validar entradas contra o schema do tenant. 3. Injetar parâmetros de mercado e regras fiscais do contexto do cliente. 4. Enfileirar job de simulação (assíncrono). 5. Executar motor de simulação (N iterações Monte Carlo). 6. Calcular métricas: probabilidade de sucesso, patrimônio mediano projetado, déficit esperado, idade de independência. 7. Gerar recomendações automáticas. 8. Persistir resultado, disparar evento de conclusão e notificar caller.",
+    "fase3_parametros_configuraveis": [
+      "Taxa de inflação padrão (por país e contexto do tenant)",
+      "Classes de ativos disponíveis e retornos esperados por perfil de risco",
+      "Regras fiscais e previdenciárias (INSS, IR, regime de tributação) por país e jurisdição",
+      "Idade de aposentadoria padrão e faixas permitidas",
+      "Moeda e localização (pt-BR, en-US, es-AR)",
+      "Número de iterações do Monte Carlo (trade-off precisão × custo computacional por tier)",
+      "Branding e tema visual (logo, cores, tipografia) para white-label",
+      "Template de relatório PDF por parceiro",
+      "Gatilhos de alerta (desvio de aportes, queda de projeção acima de X%)",
+      "Planos e limites de uso por tier (free, pro, enterprise)",
+      "Webhooks e endpoints de callback para integrações B2B"
+    ],
+    "fase3_novo_cliente": "Novo cliente B2B ou parceiro white-label é onboardado via painel administrativo: cadastro de tenant, upload de configurações JSON (regras fiscais, parâmetros de mercado, branding, template PDF, limites de uso, webhooks). Sem deploy de código — o sistema carrega o contexto do tenant em runtime e o SimulationService executa com os parâmetros daquele cliente. Onboarding operacional completo em menos de 1 hora.",
+    "fase4_core_isolado": "O motor de simulação Monte Carlo é executado em workers assíncronos isolados via fila de jobs (BullMQ/Redis ou AWS SQS + Lambda). Cada simulação é um job idempotente: recebe payload completo, processa de forma stateless, persiste resultado e dispara evento de conclusão. A API, as interfaces e a autenticação operam independentemente do estado dos workers.",
+    "fase4_custo_total_cliente": "Custo por simulação executada: CPU worker ~0.05–0.20 USD (instância spot ou Lambda 512MB–1GB, execução de 2–10s para 10k iterações). Armazenamento: ~2–5 KB por cenário salvo, ~0.001 USD/mês por usuário ativo. Dados de mercado: APIs de inflação/retornos ~5–50 USD/mês rateado entre tenants. Infra proporcional (API server, banco, CDN): ~0.10–0.30 USD/usuário ativo/mês. Custo total estimado: usuário free ~0.15 USD/mês; usuário ativo com 10 simulações/mês ~0.50–1.50 USD/mês — viabilizando pricing de 9–29 USD/mês com margem bruta de 85–95%.",
+    "fase4_continuidade": "Workers operam via fila desacoplada. Se o worker falhar: (1) job retorna à fila com retry automático em backoff exponencial; (2) a API responde imediatamente com status 'processando' e entrega o último resultado cacheado; (3) o usuário recebe notificação (push/email) quando o novo resultado estiver pronto. A plataforma nunca fica indisponível para leitura de projeções anteriores, mesmo com o engine de simulação offline.",
+    "fase4_manutencao": "O SimulationEngine é uma interface com injeção de dependência. Trocar de Monte Carlo puro para modelo ML ou fornecedor externo requer apenas implementar a interface e alterar a configuração do container DI — sem alterar SimulationService, APIs ou interfaces. Blue-green deployment do worker permite trocar a engine sem downtime ou perda de jobs em andamento.",
+    "monetizacao": "B2C: freemium (3 simulações/mês gratuitas) + plano Pro 19 USD/mês (simulações ilimitadas, relatórios PDF, cenários comparativos, alertas). B2B SaaS: plano API por volume (pay-per-simulation a partir de 0.05 USD/call + mensalidade mínima de 299 USD/mês). White-label Enterprise: licença anual por tenant (5.000–30.000 USD/ano dependendo de MAU). Upsell: integração com corretoras parceiras com revenue share por conversão de produto de investimento recomendado pelo simulador.",
+    "stack_sugerida": "Backend: Node.js (NestJS) para API REST; workers Node.js (BullMQ) para engine de simulação. Frontend: Next.js 14 (App Router) + Tailwind CSS. Mobile: React Native (Expo). Banco de dados: PostgreSQL (dados transacionais + configurações de tenant) + Redis (cache de resultados + filas). Engine de simulação: TypeScript nativo com ml-matrix/numeric.js para Monte Carlo. Relatórios PDF: Puppeteer ou Playwright. Infra: Railway ou Render (MVP) → AWS com Lambda para workers spot (escala). Autenticação: Clerk ou Auth.js. Observabilidade: OpenTelemetry + Grafana Cloud."
+  }
+}

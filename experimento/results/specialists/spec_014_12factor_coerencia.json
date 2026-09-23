@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: os princípios do Twelve-Factor App funcionam como fio condutor explícito que atravessa todas as camadas — processos stateless reforçam a escalabilidade horizontal que o Kubernetes executa; Redis centraliza estado de sessão, filas e cache de forma consistente com a filosofia share-nothing; imagens imutáveis com hash SHA256 completam o ciclo de builds reproduzíveis que os lockfiles e Dockerfiles iniciam; o adapter pattern para DeepL/Whisper/Azure é coerente com a filosofia de backing services intercambiáveis; e a ausência de segredos no código é reforçada em todas as camadas (build, config, release) sem exceção — a única ressalva é que a seção 'processes' está truncada, impedindo avaliação completa dessa dimensão."
+}

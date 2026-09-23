@@ -1,0 +1,62 @@
+{
+  "ideia_idx": 40,
+  "ideia": "App de triagem médica com IA para pronto-atendimento",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Segurança clínica (safety): a IA apoia a decisão e nunca decide sozinha, com escalonamento humano obrigatório",
+      "Privacidade e conformidade (LGPD, HIPAA/GDPR conforme o mercado, regulação de SaMD/ANVISA/FDA)",
+      "Auditabilidade e rastreabilidade de cada recomendação (versão do modelo, entradas, saídas, decisão humana)",
+      "Disponibilidade e confiabilidade (pronto-atendimento opera 24x7, com modo degradado offline/manual)",
+      "Baixa latência na triagem (resposta em segundos)",
+      "Evolvabilidade: trocar modelos, provedores de LLM e regras clínicas sem reescrever o sistema",
+      "Interoperabilidade (HL7 FHIR, integração com prontuários eletrônicos)",
+      "Observabilidade e monitoramento de qualidade do modelo (drift, viés, taxa de sub/sobre-triagem)",
+      "Multi-tenancy com isolamento forte de dados por hospital/rede",
+      "Explicabilidade das recomendações"
+    ],
+    "fitness_functions": [
+      "Sensibilidade da triagem em casos de alta acuidade (vermelho/laranja) >= limiar definido, executada em CI contra um conjunto-ouro clínico a cada mudança de modelo ou prompt; falha bloqueia o deploy",
+      "Taxa de sub-triagem (paciente grave classificado como baixa prioridade) monitorada continuamente em produção, com alerta e rollback automático se passar do limite",
+      "Concordância com o enfermeiro/médico (kappa) medida em shadow mode antes de qualquer promoção de modelo",
+      "Latência p95 da triagem < 3 s e disponibilidade >= 99,95%, verificadas por testes sintéticos e SLOs",
+      "Teste de arquitetura (ArchUnit/dependency-cruiser) que proíbe dependência do domínio clínico em SDKs de provedores de LLM e impede acesso direto ao banco de outro módulo",
+      "Scan automatizado que falha o build se aparecer PII/PHI em logs, traces ou prompts enviados a terceiros",
+      "Teste de isolamento multi-tenant (queries cross-tenant devem retornar vazio) executado em CI",
+      "Validação de contratos (consumer-driven contract tests) nas APIs e nos schemas FHIR/eventos",
+      "Cobertura de auditoria: 100% das recomendações têm registro imutável com versão do modelo e decisão humana",
+      "Monitoramento de drift e de viés por subgrupo demográfico, com limites de paridade",
+      "Chaos/game days: derrubar o serviço de IA e verificar que o fluxo manual de triagem por protocolo (Manchester/ESI) continua funcionando",
+      "Orçamento de custo por triagem (custo de inferência por atendimento) verificado por alerta de FinOps",
+      "Varredura de dependências e SAST/DAST a cada pipeline, com política de zero vulnerabilidades críticas"
+    ],
+    "incremental_change": "Guiada por fitness functions e em fases. Fase 0: monolito modular com fronteiras claras (Triagem, Paciente, Protocolos Clínicos, Auditoria, Integrações, Faturamento), sem microsserviços prematuros. Fase 1: motor de triagem determinístico baseado em protocolo (Manchester/ESI) com formulário estruturado, sem IA generativa, para validar fluxo e valor com 1-2 hospitais piloto. Fase 2: IA em shadow mode, que gera recomendações sem exibi-las e compara com a decisão humana. Fase 3: IA como sugestão visível ao profissional (human-in-the-loop) com feature flags por tenant, canary e rollout progressivo. Fase 4: integração FHIR com prontuários e extração da IA/inferência como serviço separado quando a carga ou o ciclo de release justificar. Fase 5: novas dimensões (triagem pré-hospitalar, telemedicina, analytics preditivo de fluxo). Cada fase só avança se as fitness functions clínicas e operacionais passarem. Usar strangler pattern para extrair serviços apenas quando houver dor real.",
+    "reversibility": "Reversíveis (two-way doors): provedor/modelo de LLM (atrás de uma interface), prompts e versões de modelo (versionados, com rollback por feature flag), framework de front-end, filas e mensageria (atrás de abstração), estratégia de cache, observabilidade, cloud provider para cargas sem estado (containers e IaC), divisão entre monolito e serviços. Semi-reversíveis: modelo de dados canônico, que se mitiga usando FHIR como formato de troca e migrações versionadas. Irreversíveis ou caras de reverter (decidir no last responsible moment): região e residência de dados, modelo de multi-tenancy (schema por tenant vs banco por tenant), classificação regulatória do software (SaMD) e o protocolo de triagem clínica adotado como base, além do formato do log de auditoria imutável. Para essas, registrar ADRs, adiar até haver dados dos pilotos e validar com jurídico e clínico antes de fixar.",
+    "coupling": "Acoplamento baixo por design orientado a domínio (bounded contexts). Comunicação síncrona só dentro do fluxo crítico de triagem; o restante é orientado a eventos (TriagemIniciada, RecomendacaoGerada, PrioridadeConfirmada, PacienteEncaminhado), o que permite adicionar consumidores (analytics, faturamento, alertas) sem alterar o produtor. Anti-corruption layer para integrações com prontuários legados e HL7 v2/FHIR. Porta/adaptador (arquitetura hexagonal) para provedores de IA, com fallback entre provedores. O motor de regras clínicas fica separado do modelo de IA: as regras de segurança (red flags como dor torácica, AVC, sepse) são determinísticas e sobrepõem a saída da IA. Cada módulo é dono dos seus dados, sem banco compartilhado entre contextos. Contratos versionados (OpenAPI, AsyncAPI, JSON Schema) com política de compatibilidade retroativa.",
+    "interfaces": [
+      "API REST/GraphQL de triagem (POST /triagens, GET /triagens/{id}, PATCH /triagens/{id}/prioridade)",
+      "Interface web/tablet para a recepção e a enfermagem (fluxo de triagem guiado, PWA com modo offline)",
+      "Painel da fila de atendimento em tempo real (WebSocket/SSE) para médicos e coordenação",
+      "Interface de IA (porta TriageAdvisor) com adaptadores para LLMs e modelos próprios",
+      "Interface de motor de regras clínicas/protocolos (Manchester, ESI, protocolos do hospital)",
+      "Integração HL7 FHIR R4 (Patient, Encounter, Observation, Condition, Triage) e HL7 v2 para sistemas legados",
+      "Barramento de eventos (AsyncAPI) para consumidores internos e externos",
+      "Webhooks para sistemas de terceiros (prontuário, ERP hospitalar, alertas)",
+      "API de auditoria e exportação para compliance (somente leitura)",
+      "Painel administrativo por tenant (protocolos, usuários, limiares, feature flags)",
+      "API de feedback clínico (o profissional confirma ou corrige a recomendação, gerando dados para reavaliação do modelo)",
+      "Interface de identidade (OIDC/SAML SSO, RBAC/ABAC por perfil clínico)",
+      "API de faturamento e métricas de uso (metering)"
+    ],
+    "escalabilidade": "Começa com um monolito modular em containers, com escala horizontal sem estado atrás de um load balancer e banco relacional gerenciado com réplicas de leitura. O tráfego é sazonal e em picos (surtos, epidemias, noites e fins de semana), então usa-se autoscaling por métricas de fila e latência. A inferência de IA é isolada em um serviço próprio, com fila, limites de taxa (rate limit), cache semântico de casos repetidos e fallback para modelos menores ou regras determinísticas sob carga. Eventos assíncronos absorvem picos de analytics, auditoria e integrações. Escala de dados: particionamento por tenant e por data, com dados quentes (atendimentos ativos) separados dos frios (histórico e auditoria em armazenamento de objetos). Escala organizacional: extração gradual de serviços quando um contexto tiver ritmo de mudança ou carga diferente. Escala geográfica: implantação por célula/região, com residência de dados por país e isolamento de falhas (bulkheads). Testes de carga periódicos validam as metas de SLO.",
+    "custos": "O maior custo variável é a inferência de IA, então é preciso medir custo por triagem e reduzi-lo com modelos menores para casos simples, cache, prompts enxutos, triagem determinística prévia (o LLM só entra onde agrega valor) e, no futuro, modelos ajustados ou self-hosted quando o volume justificar. Outros custos relevantes: conformidade e segurança (auditorias, pentests, certificações como ISO 27001/SOC 2, DPO), validação clínica e regulatória (estudos, equipe clínica consultora, seguro de responsabilidade profissional), alta disponibilidade 24x7 (redundância multi-AZ e on-call), armazenamento com retenção longa de prontuários e auditoria, e suporte e onboarding aos hospitais, com integrações customizadas. Estratégia: começar com PaaS/serviços gerenciados para reduzir a carga operacional, adotar FinOps com tags por tenant e alertas de orçamento, e só investir em infraestrutura própria (GPUs, Kubernetes) quando o volume tornar o custo unitário vantajoso.",
+    "monetizacao": "SaaS B2B por hospital, rede ou operadora. Modelos combináveis: (1) assinatura por unidade/leito ou por pronto-atendimento, com camadas (Básico: triagem por protocolo; Pro: IA assistida e analytics; Enterprise: integrações FHIR, SSO, SLA, residência de dados); (2) componente por uso, com preço por triagem realizada acima de uma franquia; (3) módulos adicionais pagos (analytics de fluxo e previsão de demanda, dashboards de qualidade, integração com prontuários, telemedicina); (4) serviços profissionais de implantação e integração; (5) contratos com operadoras e seguradoras interessadas em reduzir custos com atendimentos evitáveis e melhor encaminhamento, sujeito às restrições éticas e regulatórias. Piloto pago com preço reduzido para validar valor e coletar evidências clínicas. Métricas de valor para vender: redução do tempo até a triagem, menos eventos adversos por sub-triagem, melhor giro de leitos e menos evasão de pacientes. Faturamento via Stripe ou similar para clientes menores e contratos anuais com faturamento manual para grandes redes.",
+    "stack_sugerida": "Front-end: React/Next.js com TypeScript e PWA (offline), design system acessível. Back-end: monolito modular em TypeScript (NestJS) ou Kotlin/Java (Spring Boot), com arquitetura hexagonal; serviço de inferência em Python (FastAPI). IA: interface de provedor com adaptadores para LLMs (Claude, GPT, modelos abertos) mais motor de regras determinístico (ex.: engine de regras em código/DSL) para red flags, RAG sobre protocolos clínicos com pgvector, avaliação contínua com conjunto-ouro (harness de evals). Dados: PostgreSQL gerenciado (row-level security para multi-tenancy), Redis (cache e filas leves), armazenamento de objetos (S3) para histórico, log de auditoria append-only (tabela imutável ou ledger). Mensageria: Kafka/Redpanda ou SNS+SQS/EventBridge conforme a maturidade. Interoperabilidade: HAPI FHIR ou Azure/AWS HealthLake, HL7 v2 via Mirth/Camel. Infra: AWS/Azure/GCP com serviços gerenciados e região local (residência de dados), containers em ECS/Cloud Run e depois Kubernetes se necessário, Terraform (IaC), GitHub Actions para CI/CD com deploy canário e feature flags (Unleash/LaunchDarkly). Segurança: OIDC (Keycloak/Auth0/Cognito), KMS com criptografia em repouso e em trânsito, secrets manager, WAF, SAST/DAST, redação automática de PII/PHI antes de chamadas a terceiros. Observabilidade: OpenTelemetry, Grafana/Prometheus/Loki, Sentry, monitoramento de drift do modelo (Evidently/Arize/Langfuse). Testes: Pact (contratos), k6 (carga), ArchUnit/dependency-cruiser (fitness functions arquiteturais). Faturamento: Stripe Billing com metering por uso."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:04:48+00:00",
+    "runner": "runner.py"
+  }
+}

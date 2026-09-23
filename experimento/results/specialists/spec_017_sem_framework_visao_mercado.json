@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "sem_framework",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo está identificado em três perfis (instituições, alunos e verificadores), mas a proposta não articula a dor concreta do cliente (ex: fraude em certificados, custo de verificação manual, perda de credibilidade), não menciona tamanho de mercado, não cita nenhum concorrente ou alternativa existente (Credly, Accredible, soluções próprias de plataformas como Hotmart/Udemy), e a proposta de valor — verificação pública sem login — aparece como feature técnica, não como benefício de negócio capaz de justificar adoção e pagamento."
+}

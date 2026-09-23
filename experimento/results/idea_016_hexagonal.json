@@ -1,0 +1,60 @@
+{
+  "ideia_idx": 16,
+  "ideia": "App de logística reversa para devoluções de e-commerce",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de devoluções de e-commerce: solicitação, elegibilidade, coleta, triagem, reembolso e reintegração ao estoque. Entidades centrais: ReturnRequest, ReturnPolicy, ReturnItem, Shipment, Refund, Warehouse.",
+    "primary_ports": [
+      "IReturnRequestUseCase — iniciar, cancelar e consultar solicitações de devolução",
+      "IReturnEligibilityUseCase — avaliar se um item é elegível para devolução conforme a política",
+      "IReturnTrackingUseCase — consultar status e histórico do ciclo de devolução",
+      "IRefundProcessingUseCase — aprovar, calcular e disparar reembolsos",
+      "IReturnPolicyUseCase — criar e gerenciar regras de política por seller",
+      "IReportingUseCase — gerar relatórios operacionais e financeiros de devoluções",
+      "IWebhookIngestionUseCase — receber eventos de transportadoras e gateways externos"
+    ],
+    "secondary_ports": [
+      "IShipmentGatewayPort — solicitar coleta, rastrear encomenda, imprimir etiqueta",
+      "IPaymentGatewayPort — emitir reembolso, estornar, consultar status de pagamento",
+      "INotificationPort — enviar e-mail, SMS e push para cliente e seller",
+      "IInventoryPort — consultar e atualizar saldo de estoque ao reintegrar item",
+      "IWarehousePort — registrar recebimento e triagem de item devolvido",
+      "IPersistencePort — persistir e recuperar agregados do domínio",
+      "IEventBusPort — publicar eventos de domínio (ReturnApproved, RefundIssued, ItemReceived)",
+      "IFraudDetectionPort — avaliar risco de fraude em solicitações de devolução",
+      "IDocumentStoragePort — armazenar fotos de dano, laudos e etiquetas"
+    ],
+    "primary_adapters": [
+      "REST API Controller (FastAPI/NestJS) — interface HTTP para apps e integrações de sellers",
+      "GraphQL Resolver — interface flexível para dashboards internos",
+      "Webhook Receiver Adapter — recebe callbacks de transportadoras e gateways de pagamento",
+      "CLI Adapter — execução de scripts operacionais e migrações",
+      "gRPC Adapter — comunicação interna de alta performance entre microserviços",
+      "Test Driver Adapter — permite que testes de integração conduzam o core sem infraestrutura"
+    ],
+    "secondary_adapters": [
+      "CorreiosAdapter / FedExAdapter / MelhorEnvioAdapter — implementam IShipmentGatewayPort",
+      "StripeAdapter / PagarMeAdapter / AsaasAdapter — implementam IPaymentGatewayPort",
+      "SendGridAdapter / TwilioAdapter / FirebasePushAdapter — implementam INotificationPort",
+      "PostgreSQLAdapter (SQLAlchemy/Prisma) — implementa IPersistencePort",
+      "KafkaAdapter / RabbitMQAdapter — implementam IEventBusPort",
+      "VTEX / Shopify / MagentoAdapter — implementam IInventoryPort via API dos ERPs",
+      "S3Adapter / GCSAdapter — implementam IDocumentStoragePort",
+      "ClearSaleAdapter / KondutoAdapter — implementam IFraudDetectionPort"
+    ],
+    "isolation": "O core não importa nenhuma dependência de infraestrutura. Ports são interfaces Python/TypeScript puras definidas dentro do domínio. Injeção de dependência (DI container) resolve as implementações concretas em runtime, nunca em compile-time do domínio. O core pode ser executado em memória com adapters fake para testes unitários completos, sem banco, sem rede.",
+    "interfaces": [
+      "Portal Web Seller — configurar políticas, aprovar devoluções, visualizar relatórios",
+      "App Consumidor — solicitar devolução, acompanhar status, receber notificações",
+      "Dashboard Operacional — triagem de warehouse, gestão de SLAs e disputas",
+      "API Pública REST/GraphQL — integração nativa com plataformas de e-commerce",
+      "Webhooks de Entrada — receber eventos assíncronos de parceiros logísticos",
+      "Webhooks de Saída — notificar sistemas dos sellers sobre mudanças de estado"
+    ],
+    "escalabilidade": "Cada port pode ter seu adapter escalado independentemente. O EventBus (Kafka) desacopla produtores de consumidores, permitindo workers horizontais para processamento de reembolsos e notificações. O core stateless permite múltiplas instâncias sem coordenação. Read models separados (CQRS) evitam contenção em consultas de rastreamento de alto volume. Multi-tenancy por schema ou row-level isolation no PostgreSQL. Cache Redis para políticas de devolução de alta leitura.",
+    "custos": "Custos variáveis dominados por: chamadas às APIs de transportadoras (por etiqueta), gateway de pagamento (por reembolso processado) e infraestrutura de mensageria. Otimizações: pooling de conexões com transportadoras, retry com backoff exponencial para reduzir chamadas duplicadas, armazenamento de documentos em S3 com lifecycle policies. Modelo serverless viável para adapters de webhook com tráfego irregular.",
+    "monetizacao": "SaaS B2B com precificação em camadas: (1) Freemium até N devoluções/mês por seller; (2) Pro por volume de devoluções processadas; (3) Enterprise com SLA, suporte dedicado e integrações customizadas; (4) Revenue share sobre frete negociado com transportadoras; (5) Add-ons: módulo antifraude, analytics avançado, white-label para marketplaces.",
+    "stack_sugerida": "Backend: Python 3.12 + FastAPI (primary adapters REST) + SQLAlchemy 2.0 (secondary adapter PostgreSQL) + Pydantic para domain models. Mensageria: Apache Kafka via Confluent Cloud. Cache: Redis. Infra: Kubernetes (EKS/GKE) com Helm charts por adapter. Frontend: Next.js 14 (App Router) + TypeScript. Banco: PostgreSQL 16 (OLTP) + ClickHouse (analytics). Storage: AWS S3. CI/CD: GitHub Actions + ArgoCD. Observabilidade: OpenTelemetry + Grafana Stack."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Gestão do ciclo de vida de devoluções de e-commerce: solicitação, elegibilidade, coleta, triagem, reembolso e reintegração ao estoque. Entidades centrais: ReturnRequest, ReturnPolicy, ReturnItem, Shipment, Refund, Warehouse.\",\n  \"primary_ports\": [\n    \"IReturnRequestUseCase — iniciar, cancelar e consultar solicitações de devolução\",\n    \"IReturnEligibilityUseCase — avaliar se um item é elegível para devolução conforme a política\",\n    \"IReturnTrackingUseCase — consultar status e histórico do ciclo de devolução\",\n    \"IRefundProcessingUseCase — aprovar, calcular e disparar reembolsos\",\n    \"IReturnPolicyUseCase — criar e gerenciar regras de política por seller\",\n    \"IReportingUseCase — gerar relatórios operacionais e financeiros de devoluções\",\n    \"IWebhookIngestionUseCase — receber eventos de transportadoras e gateways externos\"\n  ],\n  \"secondary_ports\": [\n    \"IShipmentGatewayPort — solicitar coleta, rastrear encomenda, imprimir etiqueta\",\n    \"IPaymentGatewayPort — emitir reembolso, estornar, consultar status de pagamento\",\n    \"INotificationPort — enviar e-mail, SMS e push para cliente e seller\",\n    \"IInventoryPort — consultar e atualizar saldo de estoque ao reintegrar item\",\n    \"IWarehousePort — registrar recebimento e triagem de item devolvido\",\n    \"IPersistencePort — persistir e recuperar agregados do domínio\",\n    \"IEventBusPort — publicar eventos de domínio (ReturnApproved, RefundIssued, ItemReceived)\",\n    \"IFraudDetectionPort — avaliar risco de fraude em solicitações de devolução\",\n    \"IDocumentStoragePort — armazenar fotos de dano, laudos e etiquetas\"\n  ],\n  \"primary_adapters\": [\n    \"REST API Controller (FastAPI/NestJS) — interface HTTP para apps e integrações de sellers\",\n    \"GraphQL Resolver — interface flexível para dashboards internos\",\n    \"Webhook Receiver Adapter — recebe callbacks de transportadoras e gateways de pagamento\",\n    \"CLI Adapter — execução de scripts operacionais e migrações\",\n    \"gRPC Adapter — co"
+}

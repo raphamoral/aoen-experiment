@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 19,
+  "ideia": "App de agendamento inteligente para clínicas odontológicas",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão inteligente de agenda clínica odontológica. O core contém as entidades Paciente, Dentista, Procedimento, Consultório/Cadeira, Agenda, Consulta e Lista de Espera. Contém também as políticas de negócio: detecção de conflitos, duração por procedimento, buffers de higienização, regras de cancelamento e remarcação, encaixe automático a partir da lista de espera, previsão de no-show e otimização de ocupação das cadeiras. É puro, sem dependência de framework, banco de dados ou provedores externos.",
+    "primary_ports": [
+      "AgendarConsultaUseCase",
+      "RemarcarConsultaUseCase",
+      "CancelarConsultaUseCase",
+      "ConfirmarPresencaUseCase",
+      "ConsultarDisponibilidadeQuery",
+      "SugerirHorariosInteligentesUseCase",
+      "GerenciarListaEsperaUseCase",
+      "GerenciarAgendaProfissionalUseCase",
+      "CadastrarPacienteUseCase",
+      "RegistrarAtendimentoUseCase",
+      "GerarRelatorioOcupacaoQuery",
+      "GerenciarAssinaturaTenantUseCase"
+    ],
+    "secondary_ports": [
+      "AgendaRepository",
+      "PacienteRepository",
+      "ProfissionalRepository",
+      "ClinicaTenantRepository",
+      "NotificationGateway (mensagens ao paciente)",
+      "CalendarSyncGateway (sincronização de calendários)",
+      "PaymentGateway (cobrança de assinatura e sinal)",
+      "PredictionPort (previsão de no-show e duração)",
+      "SchedulingOptimizerPort (otimização de encaixes)",
+      "IdentityProviderPort (autenticação e autorização)",
+      "DomainEventPublisher",
+      "ClockPort (tempo, para testes determinísticos)",
+      "AuditLogPort (LGPD)",
+      "FileStoragePort (documentos e radiografias)",
+      "ProntuarioGateway (integração opcional com prontuário/ERP odontológico)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API Controller (web e mobile)",
+      "Web App (SPA/PWA) para recepção e dentistas",
+      "App mobile para pacientes",
+      "Webhook de WhatsApp (paciente agenda e confirma por conversa)",
+      "Chatbot/Agente de IA conversacional que chama os primary ports",
+      "Webhook Receiver (Stripe, provedores de mensagens)",
+      "CLI e scripts administrativos (migração, seed, jobs)",
+      "Scheduler/Cron Adapter (lembretes, confirmações, limpeza)",
+      "Consumer de fila (eventos assíncronos)",
+      "Test Driver (testes de aceitação sem UI e sem banco)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Repository Adapter (com Row-Level Security por tenant)",
+      "In-Memory Repository Adapter (testes e desenvolvimento)",
+      "WhatsApp Business API Adapter",
+      "Twilio/Zenvia SMS Adapter",
+      "SendGrid/SES Email Adapter",
+      "Google Calendar e Outlook Calendar Adapter",
+      "Stripe Adapter e Asaas/Pix Adapter (pagamentos no Brasil)",
+      "ML Model Adapter (previsão de no-show via serviço Python/ONNX)",
+      "Adapter de otimização (OR-Tools/heurística) para encaixes",
+      "Auth0/Keycloak/Cognito Adapter",
+      "Redis Cache Adapter",
+      "Kafka/SQS/RabbitMQ Event Publisher Adapter",
+      "S3 Adapter (documentos e imagens)",
+      "Adapters para ERP odontológico (Dental Office, Clinic Manager e similares)",
+      "Fake/Mock Adapters (WhatsApp, pagamento, relógio) para testes",
+      "Audit Log Adapter (append-only)"
+    ],
+    "isolation": "A regra de dependência aponta sempre para dentro. O core não importa nenhum pacote de infraestrutura e define os ports como interfaces (contratos) na sua própria linguagem de domínio. Os adapters implementam esses contratos e traduzem entre modelos externos (JSON do WhatsApp, linhas SQL, payloads do Stripe) e objetos de domínio, por meio de mappers e anti-corruption layers. A injeção de dependências e a composição ocorrem apenas no composition root, fora do hexágono. Módulos separados (domain, application, adapters-in, adapters-out, bootstrap) têm limites impostos por testes de arquitetura (ArchUnit, dependency-cruiser). Isso garante que o mesmo core seja dirigido por UI, API, chatbot, cron ou testes automatizados sem alteração, e que qualquer sistema externo seja trocável com o mesmo tratamento (simetria).",
+    "interfaces": [
+      "API REST/GraphQL versionada (OpenAPI)",
+      "Painel web de recepção (agenda em calendário, arrastar e soltar)",
+      "Painel do dentista (agenda diária, prontuário resumido)",
+      "App/PWA do paciente (agendar, confirmar, remarcar)",
+      "Agendamento via WhatsApp (conversacional)",
+      "Widget de agendamento incorporável no site da clínica",
+      "API pública e webhooks para integrações de terceiros",
+      "Painel administrativo multi-clínica (rede/franquia)",
+      "CLI operacional",
+      "Dashboard de métricas (ocupação, no-show, receita)"
+    ],
+    "escalabilidade": "O core é stateless, então escala horizontalmente atrás de um load balancer (containers em Kubernetes/ECS ou serverless). O multi-tenancy usa banco compartilhado com tenant_id e Row-Level Security no início, migrando clínicas grandes para schema ou banco dedicado (modelo em bridge/silo). Réplicas de leitura atendem consultas de disponibilidade e relatórios; Redis guarda cache de slots. Como os agendamentos são o ponto crítico, usa-se controle de concorrência otimista ou constraint de exclusão no banco para evitar overbooking. Notificações, previsões de ML e sincronizações rodam de forma assíncrona por fila e eventos de domínio, com workers escaláveis de forma independente. O particionamento por tenant/data cobre o histórico. Como os adapters são intercambiáveis, a infraestrutura pode ser trocada sem tocar no domínio, e o core pode ser extraído em serviços (modular monolith → microsserviços) se necessário.",
+    "custos": "Começar como monolito modular reduz o custo operacional e de infraestrutura, com um único PostgreSQL gerenciado e Redis pequeno. O maior custo variável é a mensageria: o WhatsApp Business é cobrado por conversa e o SMS por envio. Para controlá-lo, priorize WhatsApp e e-mail, use templates de utilidade, repasse ou limite mensagens por plano e ofereça pacotes de créditos. Outros custos são o gateway de pagamento (taxas por transação), o armazenamento de imagens (S3 com lifecycle), o ML (modelos leves em CPU, sem GPU) e o LLM do chatbot (cache, modelos menores para intents simples). A conformidade com a LGPD exige criptografia, backups, logs de auditoria e possivelmente um DPO. Há ainda custo de suporte e onboarding das clínicas. Use autoscaling e instâncias reservadas ou spot para workers. O custo por tenant é baixo e a margem bruta tende a 70–85% em escala.",
+    "monetizacao": "Assinatura SaaS mensal por clínica, com planos por número de dentistas/cadeiras: Starter (agenda + lembretes), Pro (WhatsApp, lista de espera inteligente, previsão de no-show, relatórios) e Enterprise/redes (multi-unidades, API, SSO, SLA). Receitas adicionais: pacotes de mensagens WhatsApp/SMS acima da franquia, taxa por transação de sinal ou pré-pagamento via Pix/cartão (take rate), marketplace de integrações e ERP, módulo de reativação de pacientes e campanhas, e onboarding/migração pago. Modelo de teste gratuito de 14 dias ou freemium para um único dentista. O ROI é vendido pela redução do no-show e pelo aumento da ocupação das cadeiras.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (módulos organizados em domain/application/adapters) ou Kotlin/Spring Boot ou Java; mantenha o core sem dependência de framework. Banco: PostgreSQL (RLS, btree_gist para constraint de exclusão de horários), Redis para cache e locks. Mensageria: SQS/SNS ou RabbitMQ (Kafka só se o volume justificar). Frontend: React/Next.js (PWA) com TanStack Query e FullCalendar; mobile via React Native ou PWA. IA/ML: serviço Python (FastAPI, scikit-learn/XGBoost) para no-show, e LLM via API para o agente conversacional, com function calling nos primary ports. Otimização: Google OR-Tools. Auth: Keycloak ou Auth0/Cognito. Pagamentos: Stripe + Asaas/Pix. Mensageria a pacientes: WhatsApp Cloud API, SES/SendGrid. Infra: Docker, Terraform, AWS (ECS Fargate/RDS/ElastiCache/S3) ou GCP, CI/CD com GitHub Actions. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Testes: Jest/Vitest com adapters in-memory, testes de contrato para adapters e testes de arquitetura (dependency-cruiser/ArchUnit)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:23:41+00:00",
+    "runner": "runner.py"
+  }
+}

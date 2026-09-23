@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "A proposta demonstra separação clara entre fluxo fixo (pipeline idêntico para todos os clientes, hardcoded) e parâmetros variáveis por tenant (poluentes, limites, severidade), com adaptadores de sensor plugáveis por protocolo e modelos de análise intercambiáveis por configuração — o que indica onboarding majoritariamente via configuração; a nota não chega a 9–10 porque os adaptadores provavelmente ainda exigem desenvolvimento para protocolos não previstos, a lista de parâmetros configuráveis está truncada (impedindo confirmar cobertura total) e não há menção explícita a um fluxo de onboarding 100% self-service sem intervenção de engenharia."
+}

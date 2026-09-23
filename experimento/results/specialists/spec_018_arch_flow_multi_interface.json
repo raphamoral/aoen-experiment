@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A proposta implica múltiplos pontos de consumo (dashboard self-service para analistas em 'Analytics & Reporting', canais de notificação em 'Alerting & Workflow', integrações com CRM/call-center/marketing automation em 'Retention Playbook'), mas nenhuma dessas superfícies é explicitamente definida como interface — são tratadas como responsabilidades de bounded contexts de domínio, sem inventário de interfaces por perfil de usuário (analista, agente de retenção, admin de tenant), sem estratégia de desacoplamento UI/lógica declarada e sem justificativa de escolha por alcance de mercado."
+}

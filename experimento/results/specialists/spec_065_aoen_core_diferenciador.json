@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 65,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador é claramente definido — privacidade como premissa arquitetural com anonimização em memória antes de qualquer persistência — está isolado na camada SignalCollector→Aggregator→InsightEngine, é extensível via adaptadores plugáveis sem dependência de fornecedor, e resolve o problema real de visibilidade operacional sem vigilância individual, que ferramentas como Teramind, Hubstaff e Monday simplesmente não endereçam por design; perde um ponto por não detalhar como o sistema impede tecnicamente que dados individuais sejam reconstruídos a partir dos agregados."
+}

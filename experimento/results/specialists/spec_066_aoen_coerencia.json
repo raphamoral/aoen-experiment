@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 66,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história linear e sem contradições — o ponto de dor (terminologia técnica errada gera passivo legal) justifica o core (matching semântico + QA regulatório), que justifica a extensibilidade via TranslationEngine (humano → híbrido → MT sem quebrar o contrato), que justifica a camada TranslationService como single source of truth para as múltiplas interfaces, que por sua vez são cada uma mapeada a um segmento de mercado distinto com lógica de aquisição própria; a única razão para não ser 10 é que o texto está truncado na descrição da service layer, impedindo avaliação da coerência do ciclo completo de faturamento e SLA."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta detalha extensamente a arquitetura técnica e a segmentação de mercado, mas não faz nenhuma menção a modelo de monetização, tiers de preço, valores de assinatura, métricas de negócio (MRR, LTV, CAC, churn) ou análise de sustentabilidade receita vs. custo — o produto é descrito como se a estratégia comercial fosse irrelevante para a avaliação."
+}

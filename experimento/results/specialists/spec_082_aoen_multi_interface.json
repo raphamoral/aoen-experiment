@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 82,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define 8 interfaces distintas, cada uma justificada por segmento de mercado ou perfil de usuário específico (e-commerce, PMEs, B2B, DTC, fintechs, integradores), com lógica de negócio completamente desacoplada via AttendanceService — qualquer nova interface exige apenas um adapter de canal sem tocar regras de domínio."
+}

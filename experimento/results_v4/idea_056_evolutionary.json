@@ -1,0 +1,59 @@
+{
+  "ideia_idx": 56,
+  "ideia": "Marketplace de peças industriais com entrega expressa regional",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (capacidade de mudar de forma guiada e incremental)",
+      "Disponibilidade e confiabilidade no fluxo de pedido e pagamento (entrega expressa não tolera indisponibilidade)",
+      "Consistência de estoque e de promessa de entrega (SLA regional confiável)",
+      "Desempenho de busca e catálogo (milhões de SKUs, busca por especificação técnica, normas e compatibilidade)",
+      "Testabilidade e deployability (CI/CD com deploys frequentes e seguros)",
+      "Observabilidade ponta a ponta (pedido, estoque, logística)",
+      "Segurança e conformidade (multi-tenant B2B, LGPD, notas fiscais, dados de pagamento)",
+      "Interoperabilidade (integração com ERPs de fornecedores, transportadoras e gateways)",
+      "Elasticidade regional (expansão para novas regiões sem reescrita)",
+      "Custo-eficiência (custo por pedido acompanhado como característica arquitetural)"
+    ],
+    "fitness_functions": [
+      "Atômica/estática: ArchUnit ou dependency-cruiser no CI bloqueia dependências entre módulos fora do contrato público e ciclos entre bounded contexts",
+      "Atômica: testes de contrato (Pact) entre serviços e entre a API pública e os consumidores; falha bloqueia o merge",
+      "Atômica: latência p95 da busca de catálogo abaixo de 300 ms sob carga de teste (k6) executada no pipeline",
+      "Sistêmica/holística: teste de carga e caos (kill de instâncias, falha de gateway de pagamento) mantendo o checkout com disponibilidade de 99,9% e sem perda de pedidos",
+      "Contínua (produção): SLO de promessa de entrega, ou seja, percentual de pedidos entregues dentro do prazo prometido por região, com alerta abaixo de 95%",
+      "Contínua: divergência entre estoque do marketplace e estoque do fornecedor abaixo de 0,5%, medida por job de reconciliação",
+      "Atômica: SAST, SCA e scan de segredos no CI; build falha em vulnerabilidade crítica",
+      "Contínua: custo de infraestrutura por pedido com teto por região; alerta e revisão quando o teto for ultrapassado",
+      "Pipeline: lead time de commit até produção abaixo de 1 dia, com taxa de falha de mudança abaixo de 15% (métricas DORA)",
+      "Atômica: teste de migração de esquema (expand/contract) garantindo compatibilidade com a versão anterior antes de cada deploy",
+      "Contínua: tempo de onboarding de um novo fornecedor por integração abaixo de N dias (mede a extensibilidade dos adaptadores)"
+    ],
+    "incremental_change": "Começar como monolito modular (modular monolith) com bounded contexts explícitos: Catálogo, Busca, Pedidos, Pagamentos, Estoque/Fornecedores, Logística/Entrega Expressa, Cotação (RFQ), Faturamento. Uma região piloto e um pequeno conjunto de categorias de peças. Fases: (1) MVP com catálogo, checkout e entrega via transportadoras parceiras; (2) integração de estoque de fornecedores por adaptadores e roteamento por região; (3) extração seletiva de serviços somente onde uma fitness function indicar necessidade (Busca, Estoque e Logística tendem a ser os primeiros, pelo perfil de carga distinto); (4) expansão regional replicando células regionais. Uso de strangler fig para extrações, feature flags, canary releases e dark launches, com deploys pequenos e frequentes. Cada mudança é guiada pelas fitness functions no pipeline. Testes de sistema legados ficam como rede de segurança antes de qualquer extração.",
+    "reversibility": "Reversíveis (two-way doors): escolha do provedor de busca (atrás de uma porta/adaptador), transportadoras e gateways de pagamento (padrão adapter), provedor de cloud para workloads stateless (contêineres), fila/broker (atrás de abstração de eventos), framework de frontend, monolito versus serviços (extração e reincorporação possíveis se as fronteiras forem bem definidas), feature flags. Semi-reversíveis: banco relacional principal (mitigado com ORM, migrações versionadas e expand/contract). Difíceis de reverter (one-way doors), adiadas até o last responsible moment: modelo de dados canônico de peças (taxonomia e atributos técnicos, com esquema flexível e versionado até o volume validar), modelo de multi-tenancy e de particionamento por região, contratos públicos de API com fornecedores e clientes (versionados desde o dia 1), e a decisão de arquitetura orientada a eventos com event sourcing, que só é adotada se a auditoria e o replay justificarem. Registro das decisões em ADRs com gatilho explícito de revisão.",
+    "coupling": "Baixo acoplamento entre bounded contexts (DDD): módulos se comunicam apenas por interfaces públicas e eventos de domínio (ex.: PedidoConfirmado, EstoqueReservado, EntregaAgendada), nunca por acesso direto a tabelas de outro contexto. Banco com schemas separados por contexto desde o monolito, o que facilita a extração futura. Anti-corruption layers nas integrações externas (ERPs de fornecedores, transportadoras, ERPs de clientes), isolando modelos de terceiros. Comunicação síncrona apenas onde há necessidade de consistência imediata (reserva de estoque no checkout); o restante é assíncrono via outbox pattern para garantir entrega de eventos. Saga orquestrada para o fluxo pedido, pagamento, reserva e despacho, com compensações. Acoplamento de dados tratado como acoplamento arquitetural: contratos de eventos versionados em schema registry. Arquitetura de plugins (ports and adapters) para fornecedores e logística, de modo que adicionar um novo integrador não altere o núcleo.",
+    "interfaces": [
+      "API REST/JSON pública (OpenAPI) para compradores: busca, catálogo, carrinho, checkout e rastreio",
+      "API de fornecedores (REST e webhooks, com importação em lote via CSV/EDI) para cadastro de peças, preços, estoque e confirmação de pedido",
+      "Adaptadores de ERP (SAP, TOTVS, Oracle e outros) para sincronizar estoque, preços e pedidos dos fornecedores",
+      "Interface de cotação (RFQ) e contratos de preço negociado para compradores B2B recorrentes",
+      "Integração com transportadoras e last-mile regional (cotação de frete, despacho, rastreio, prova de entrega)",
+      "Gateway de pagamentos (cartão, Pix, boleto, faturamento a prazo/crédito B2B) e split de pagamento para fornecedores (Stripe Connect ou equivalente local)",
+      "Integração fiscal (emissão de NF-e, cálculo de impostos regionais)",
+      "Eventos de domínio (broker com schema registry): PedidoConfirmado, EstoqueReservado, EntregaAgendada, EntregaConcluída",
+      "Webhooks de saída para clientes e fornecedores (mudança de status, alertas de estoque)",
+      "Backoffice/Admin web para curadoria de catálogo, disputas, operação logística e gestão de SLAs",
+      "Portais web (comprador e fornecedor) e app móvel para o entregador/operação de última milha",
+      "Ingestão de dados analíticos (CDC para data warehouse) e APIs de observabilidade (OpenTelemetry)"
+    ],
+    "escalabilidade": "Escala em três eixos independentes. (1) Carga: aplicação stateless em contêineres com autoscaling horizontal; busca em cluster próprio com réplicas de leitura e cache (CDN e Redis) para catálogo, que é intensivo em leitura; picos de checkout absorvidos por filas e idempotência nas operações de pedido e pagamento. (2) Dados: leitura escalada com réplicas e CQRS apenas no catálogo/busca (projeção para o índice de busca); particionamento do estoque e dos pedidos por região quando o volume exigir. (3) Geografia: o modelo de células regionais permite que cada região (estoque, logística, SLA de entrega) seja operada como uma unidade quase independente, com catálogo e identidade compartilhados globalmente; expandir é instanciar uma nova célula, limitando o raio de impacto de falhas. O roteamento de pedido escolhe o fornecedor e o hub mais próximos que cumpram o prazo. Extração de serviços só ocorre quando uma fitness function (latência, custo, taxa de deploy) comprovar o gargalo.",
+    "custos": "Custo fixo baixo no início graças ao monolito modular, banco gerenciado e busca gerenciada, evitando a complexidade e o custo de um cluster de microsserviços prematuro. Principais vetores de custo variável: busca e indexação, frete e logística de entrega expressa (o maior custo real, com margem sensível à densidade de pedidos por região), taxas de gateway e split de pagamento, integrações de ERP e suporte ao onboarding de fornecedores, e inadimplência em faturamento a prazo. Estratégias: modelo de logística assética no início (transportadoras parceiras e dark stores/hubs de fornecedores antes de frota própria), FinOps com tags por contexto e por região, custo por pedido como fitness function, autoscaling com reservas para carga base, cache agressivo de catálogo, retenção e tiering de dados de eventos e logs, e evitar lock-in caro em componentes de difícil troca. Custo de complexidade (carga cognitiva, observabilidade e operação) é considerado antes de qualquer extração de serviço.",
+    "monetizacao": "Modelo híbrido: (1) comissão (take rate) sobre o GMV de cada pedido, variável por categoria; (2) taxa de entrega expressa, precificada por janela de tempo e distância, com prêmio para prazos de 2 a 4 horas; (3) assinatura SaaS para fornecedores (planos com integração ERP, analytics, destaque e API) e para compradores (plano de compras recorrentes com frete reduzido, cotações ilimitadas e contratos de preço); (4) anúncios e listagem patrocinada de fornecedores nos resultados de busca; (5) serviços financeiros embutidos, como faturamento a prazo e crédito B2B com taxa de desconto de recebíveis; (6) monetização de dados e inteligência de mercado (benchmarks de preço e demanda), respeitando a LGPD. Começar com comissão e taxa de entrega, que validam o valor central, e adicionar assinaturas e serviços financeiros conforme a maturidade.",
+    "stack_sugerida": "Backend: monolito modular em Kotlin/Java com Spring Boot (ou .NET/NestJS, conforme o time), com módulos verificados por ArchUnit; contratos via OpenAPI e AsyncAPI. Dados: PostgreSQL gerenciado (schemas por contexto), Redis para cache e reservas temporárias de estoque, OpenSearch/Elasticsearch (ou Typesense/Algolia no início, atrás de adaptador) para busca por especificação técnica, armazenamento de objetos para fichas técnicas e imagens. Mensageria: outbox pattern com Kafka/Redpanda ou, no início, SQS/SNS ou RabbitMQ, atrás de abstração de eventos. Frontend: React com Next.js (SSR/SEO para catálogo), TypeScript; app móvel com React Native ou Flutter para a operação de entrega. Plataforma: contêineres em Kubernetes gerenciado ou, no início, serviço gerenciado mais simples (ECS/Cloud Run), Terraform para IaC, GitHub Actions ou GitLab CI com feature flags (Unleash/LaunchDarkly) e canary via Argo Rollouts. Observabilidade: OpenTelemetry, Prometheus/Grafana, Loki e Sentry, além de SLOs. Pagamentos: Stripe Connect ou Pagar.me/Mercado Pago para split e Pix, mais provedor de NF-e. Segurança: OIDC/OAuth2 (Keycloak ou Auth0), Vault/Secrets Manager, SAST/SCA (Semgrep, Trivy). Dados analíticos: CDC com Debezium para BigQuery/ClickHouse, dbt para modelagem."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:36:24+00:00",
+    "runner": "runner.py"
+  }
+}

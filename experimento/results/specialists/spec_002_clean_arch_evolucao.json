@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A camada de entidades demonstra forte aderência à arquitetura limpa — regras de negócio encapsuladas sem dependências externas, máquina de estados explícita no Project e imutabilidade contratual no Contract são decisões deliberadamente reversíveis; porém a proposta apresenta apenas o núcleo de domínio, omitindo as camadas de casos de uso, ports/adapters e infraestrutura, o que impede confirmar se o isolamento se mantém até a borda do sistema (banco, filas, frameworks de IA) e se há estratégia de escala além do modelo de entidades."
+}

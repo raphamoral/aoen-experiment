@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura demonstra consciência multi-tenant com TenantManagementPort e templates parametrizáveis, mas não descreve explicitamente um mecanismo de configuração por tenant — não há menção a feature flags, regras de negócio dirigidas por dados, configurações de workflow por tenant ou store de configurações isolado; os estados do contrato e o fluxo de assinatura parecem fixos no core domain, o que implica que comportamentos divergentes entre clientes (ex: etapas de aprovação customizadas, integrações distintas de assinatura, notificações personalizadas) provavelmente ainda exigiriam código novo."
+}

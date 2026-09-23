@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 72,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O motor de inferência preditiva é explicitamente identificado como núcleo insubstituível, isolado atrás de uma interface ModelProvider com contrato estável (predict/train), extensível para múltiplos providers (scikit-learn, ONNX, SageMaker, Vertex AI) sem ruptura de fluxo, e resolve um problema real — antecipação de falhas em ativos industriais com alto custo de parada — que dashboards genéricos, ERPs e SCADA tradicionais não resolvem nativamente."
+}

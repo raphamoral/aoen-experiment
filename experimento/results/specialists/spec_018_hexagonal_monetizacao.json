@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona um IBillingPort com createSubscription e checkUsageLimit, sugerindo consciência de multi-tenancy e controle de uso, mas não há nenhuma definição de tiers, valores, modelo de precificação, métricas de negócio (MRR, LTV, CAC) ou conexão explícita entre o valor entregue e a cobrança."
+}

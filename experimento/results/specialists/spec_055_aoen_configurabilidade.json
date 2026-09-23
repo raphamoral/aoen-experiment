@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 55,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "O fluxo principal é explicitamente fixo no código (fase3_fluxo_fixo) com parâmetros carregados por cliente (tipos de turno, competências, cargas horárias), e a ShiftManagementService centraliza a lógica sem regras nas interfaces — arquitetura sólida para onboarding por configuração; perde pontos porque a troca da implementação do SchedulerEngine parece exigir deploy (não apenas config), o texto dos parâmetros configuráveis está truncado impedindo avaliar completude, e não há menção explícita a painel de onboarding self-service nem a como restrições regulatórias de diferentes jurisdições são injetadas sem código."
+}

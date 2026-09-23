@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta menciona múltiplas interfaces (dashboard web, API REST/GraphQL, alertas via e-mail/SMS, relatórios PDF/CSV e ingestão IoT via Kafka), e a arquitetura de processos stateless com API Gateway separado sugere algum desacoplamento estrutural, mas nenhuma interface é justificada explicitamente por perfil de usuário ou alcance de mercado — a escolha parece guiada por conveniência técnica — e não há declaração intencional de que nova interface pode ser adicionada sem reescrever lógica de negócio."
+}

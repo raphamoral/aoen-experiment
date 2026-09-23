@@ -1,0 +1,48 @@
+{
+  "ideia_idx": 13,
+  "ideia": "App de reserva e gestão de espaços de coworking descentralizados",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": "Entidades de negócio puras, sem dependência de framework: Space (espaço de coworking, com endereço, capacidade e regras), Host/Operator (dono ou operador independente do espaço), Workstation/Room (unidade reservável: mesa, sala de reunião, sala privativa), Member (usuário que reserva), Booking (reserva com período, status e preço), Availability/Schedule (janelas de disponibilidade e bloqueios), PricingPlan (preço por hora, dia ou mês, e descontos), Membership/Subscription (plano recorrente do membro), Payment/Payout (cobrança e repasse ao host), Review (avaliação), AccessCredential (credencial de acesso ao espaço) e Money/TimeRange/Location (value objects). Regras invariantes ficam nas entidades: sem overbooking, prazos de cancelamento, cálculo de reembolso e cálculo da comissão da plataforma.",
+    "use_cases": "Cadastrar e verificar host (onboarding e KYC); cadastrar e editar espaço e unidades reserváveis; definir disponibilidade e preços; buscar espaços por localização, data, capacidade e comodidades; consultar disponibilidade; criar reserva com bloqueio temporário anti-conflito; confirmar e pagar reserva; cancelar ou reagendar com política de reembolso; check-in e check-out (QR code ou credencial digital); assinar, alterar e cancelar plano de membership; repassar valores aos hosts; emitir faturas e recibos; avaliar espaço; notificar usuários (lembretes, confirmações); gerar relatórios de ocupação e receita para o host; moderar e resolver disputas (admin). Cada caso de uso é uma classe de aplicação que recebe um Input DTO, orquestra entidades e portas (interfaces) e devolve um Output DTO através de um Output Boundary (Presenter).",
+    "interface_adapters": "Controllers (REST/GraphQL) que convertem requisições HTTP em Input DTOs; Presenters/ViewModels que formatam os Output DTOs para JSON ou UI; Repositories concretos que implementam as portas de persistência (SpaceRepository, BookingRepository, MemberRepository, etc.), com mappers entre entidades e modelos do ORM; Gateways de pagamento (adaptador Stripe Connect para PaymentGateway e PayoutGateway); adaptador de notificações (email, push, WhatsApp) que implementa NotificationService; adaptador de geolocalização e mapas; adaptador de controle de acesso (fechaduras inteligentes, QR) que implementa AccessControlGateway; adaptador de calendário (Google e iCal) para sincronizar disponibilidade; adaptador de identidade (OIDC) que implementa AuthService; adaptador de eventos e mensageria (publicação de domain events); adaptadores de webhook de entrada (pagamentos, KYC).",
+    "frameworks_drivers": "Camada externa e substituível: framework web (NestJS ou Fastify) apenas como mecanismo de entrega HTTP; PostgreSQL com PostGIS (busca geoespacial e constraints de exclusão para evitar overbooking) via Prisma ou TypeORM; Redis (cache, locks distribuídos e rate limiting); fila de mensagens (SQS, RabbitMQ ou Kafka) para eventos assíncronos; Stripe Connect (pagamentos e split); Auth0 ou Keycloak (identidade); OpenSearch ou Elasticsearch, opcional, para busca; S3 compatível para mídia; provedores de email e push (SES, FCM); Next.js ou React (web) e React Native ou Flutter (mobile) como UIs; Docker e Kubernetes; OpenTelemetry, Prometheus e Grafana para observabilidade.",
+    "dependency_rule": "Dependências de código apontam sempre para dentro: Frameworks e Drivers dependem de Interface Adapters, que dependem de Use Cases, que dependem de Entities. Entities e Use Cases não importam nada de ORM, HTTP ou SDKs externos. Quando um caso de uso precisa de algo externo (persistir, cobrar, notificar), ele declara uma porta (interface) na sua própria camada, e a camada externa a implementa (Inversão de Dependência). Os DTOs cruzam as fronteiras como estruturas simples, nunca como entidades do ORM nem objetos de request. A composição das dependências acontece em um único Composition Root (container de DI) na camada mais externa. Regras verificáveis em CI com ferramentas como dependency-cruiser, ArchUnit ou eslint-plugin-boundaries.",
+    "testability": "Entities: testes unitários puros, sem I/O. Use Cases: testes unitários com fakes e in-memory repositories (InMemoryBookingRepository, FakePaymentGateway, FakeClock), sem banco, rede ou framework, rodando em milissegundos. Interface Adapters: testes de integração isolados com Testcontainers (Postgres, Redis) e testes de contrato (Pact) contra os gateways externos, com Stripe em modo de teste. Frameworks: poucos testes E2E (Playwright, Cypress) cobrindo os fluxos críticos: buscar, reservar, pagar e fazer check-in. Relógio, gerador de ids e aleatoriedade são injetados para determinismo. Testes de concorrência específicos para reservas simultâneas do mesmo espaço. Pirâmide de testes: maioria unitários, camada média de integração, pouca E2E.",
+    "interfaces": [
+      "SpaceRepository",
+      "WorkstationRepository",
+      "BookingRepository",
+      "MemberRepository",
+      "HostRepository",
+      "MembershipRepository",
+      "AvailabilityService",
+      "PricingService",
+      "PaymentGateway",
+      "PayoutGateway",
+      "NotificationService",
+      "AccessControlGateway",
+      "CalendarSyncGateway",
+      "GeoSearchService",
+      "IdentityProvider / AuthService",
+      "KycGateway",
+      "EventPublisher (domain events)",
+      "Clock",
+      "IdGenerator",
+      "UnitOfWork / TransactionManager",
+      "LockManager (locks distribuídos)",
+      "FileStorage",
+      "InputBoundary / OutputBoundary (Presenter) de cada caso de uso"
+    ],
+    "escalabilidade": "Começar como monólito modular (módulos por bounded context: Catálogo, Reservas, Pagamentos, Membership, Notificações, Acesso), com as fronteiras da Clean Architecture permitindo extrair serviços depois sem reescrever o núcleo. Aplicação stateless, escalando horizontalmente atrás de load balancer. Postgres com réplicas de leitura, particionamento de bookings por data ou tenant e índices GiST/PostGIS para busca. Cache de buscas e disponibilidade em Redis, com invalidação por eventos. Processamento assíncrono (notificações, repasses, relatórios) via fila e workers independentes. Consistência de reservas com constraint de exclusão no banco e lock curto (soft hold com TTL). CQRS leve: modelo de leitura otimizado para busca (OpenSearch) alimentado por eventos. Multi-tenant por host com isolamento lógico (tenant_id) e possibilidade de sharding por região. CDN para conteúdo estático e mídia.",
+    "custos": "Custos principais: infraestrutura de nuvem (compute, Postgres gerenciado, Redis, fila, armazenamento), taxas de processamento de pagamento e Connect (cerca de 2,9% + tarifa fixa por transação, mais custos de payout e KYC), serviços de mapas e geocodificação, envio de email, SMS e push, autenticação, observabilidade e suporte. No início, manter o monólito modular e serviços gerenciados reduz custo operacional e equipe. O modelo de repasse deve embutir as taxas de pagamento na comissão. Custos de aquisição em dois lados (hosts e membros) tendem a dominar. Controlar custo com autoscaling, instâncias reservadas, cache agressivo e retenção limitada de logs. Reservar orçamento para conformidade (LGPD, PCI delegado ao Stripe), fraude e chargebacks. Integração com fechaduras inteligentes adiciona custo de hardware e suporte, e deve ser opcional ou cobrada do host.",
+    "monetizacao": "Comissão sobre cada reserva (take rate de 8% a 15%, cobrada do host e/ou do membro como taxa de serviço); assinaturas SaaS para hosts (planos com ferramentas de gestão, relatórios, multi-espaço, integrações e remoção de limites); assinaturas de membership de acesso multi-espaço para membros (passe flexível em toda a rede), com a plataforma retendo uma margem; destaque pago e anúncios patrocinados na busca; serviços adicionais (seguro, limpeza, equipamentos, café e eventos); taxa por integração premium (controle de acesso, contabilidade, white-label); planos corporativos B2B para empresas com equipes distribuídas; e, no longo prazo, dados agregados e insights de ocupação, respeitando a LGPD.",
+    "stack_sugerida": "Backend: TypeScript com Node.js (NestJS ou Fastify) estruturado em módulos por camada e Composition Root com DI (tsyringe ou Nest DI), ou alternativamente Kotlin/Spring ou Go. Banco: PostgreSQL + PostGIS, Redis. Mensageria: SQS/SNS ou RabbitMQ (Kafka se o volume justificar). Busca: OpenSearch (opcional no MVP, usando PostGIS no início). Pagamentos: Stripe Connect (Accounts v2, Checkout ou Payment Element, Billing para memberships, Stripe Tax). Identidade: Auth0, Clerk ou Keycloak. Frontend web: Next.js (React, TypeScript, Tailwind). Mobile: React Native ou Flutter. API: REST com OpenAPI, GraphQL opcional. Infra: Docker, Kubernetes ou ECS/Cloud Run, Terraform, CI/CD com GitHub Actions. Observabilidade: OpenTelemetry, Grafana, Sentry. Testes: Vitest ou Jest, Testcontainers, Pact, Playwright. Verificação arquitetural: dependency-cruiser ou eslint-plugin-boundaries."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "99d475cb3837",
+    "gerado_em": "2026-09-21T02:11:41+00:00",
+    "runner": "runner.py"
+  }
+}

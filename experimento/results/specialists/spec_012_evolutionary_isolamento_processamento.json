@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "A proposta planeja isolamento físico real a partir da Fase 3 (pipeline de ingestão separado do analítico via message broker) e Fase 4 (ML e compliance como serviços independentes), com arquitetura event-driven garantindo processamento assíncrono e escalabilidade independente — porém perde pontos por ausência explícita de padrões de resiliência (circuit breaker, bulkhead) e de fitness functions que validem especificamente que a falha do pipeline pesado (ex: ML, batch analítico) não impacta a ingestão e os alertas críticos."
+}

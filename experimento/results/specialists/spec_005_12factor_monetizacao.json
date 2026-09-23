@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona Stripe para billing de assinaturas como backing service, indicando intenção de cobrar por assinatura, mas não há nenhum detalhamento de tiers, valores, conexão com valor entregue ao cliente, ou métricas de sustentabilidade (MRR, LTV, CAC, churn)."
+}

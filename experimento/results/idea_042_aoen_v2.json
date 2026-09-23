@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 42,
+  "ideia": "SaaS de automação de relatórios ESG para empresas listadas",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de coleta, normalização e geração automatizada de relatórios ESG conformes a múltiplos frameworks regulatórios (GRI, SASB, TCFD, ESRS, B3). O coração é o pipeline: dados brutos → indicadores calculados → narrativa gerada por IA → documento final auditável.",
+    "fase1_mercado": "Empresas listadas em bolsas de valores (B3, NYSE, LSE) com obrigação regulatória ou pressão de investidores ESG para divulgar métricas ambientais, sociais e de governança. Segmentos prioritários: large caps com IR (Relações com Investidores) estruturado, seguido de mid caps em conformidade crescente.",
+    "fase1_extensivel": "Sim. O core é modelado como um orquestrador agnóstico de frameworks: cada framework ESG (GRI, SASB, TCFD) é um plugin/adaptador registrado. O motor LLM de geração de narrativa é abstraído por uma interface LanguageModelProvider, permitindo trocar OpenAI por Anthropic, Gemini ou modelo proprietário sem alterar o pipeline central. Fontes de dados (ERP, planilhas, APIs de sustentabilidade) são conectores plugáveis.",
+    "fase2_interfaces": [
+      "Dashboard Web SPA (IR teams e equipes de sustentabilidade) — coleta de dados, acompanhamento de progresso, aprovação de relatórios",
+      "API REST/GraphQL (integração com ERPs, sistemas de dados ESG, plataformas de governança corporativa)",
+      "Exportação automatizada em PDF/XBRL/Excel (submissão regulatória a CVM, SEC, bolsas de valores)",
+      "Portal do Auditor externo (acesso read-only com trilha de auditoria e evidências)",
+      "Notificações e digests por e-mail/Slack (alertas de prazo, gaps de dados, aprovações pendentes)"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de IR e ESG Officers que precisam de visibilidade operacional do processo. A API REST abre o mercado de empresas com dados já estruturados em ERP (SAP, Oracle) que querem automação sem retrabalho manual. A exportação XBRL/PDF abre o mercado regulatório obrigatório — é o gate para empresas listadas que precisam submeter à CVM ou SEC. O Portal do Auditor reduz atrito no ciclo de assurance externo, acelerando o fechamento do relatório e aumentando valor percebido. E-mail/Slack captura stakeholders periféricos sem custo de onboarding.",
+    "fase2_service_layer": "Uma ESGReportService centraliza toda a lógica: coleta de dados, cálculo de indicadores, validação de materialidade, orquestração do LLM e geração do documento. As interfaces (Web, API, exportação) são camadas finas que apenas serializam/deserializam chamadas para essa service layer. Nenhuma lógica de negócio vive no controller, na rota ou no componente de UI.",
+    "fase3_fluxo_fixo": "O pipeline é invariante: (1) Ingestão de dados brutos por fonte → (2) Normalização para modelo de dados ESG interno → (3) Cálculo de indicadores por framework → (4) Validação de completude e materialidade → (5) Geração de narrativa via LLM com contexto setorial → (6) Montagem do documento com template → (7) Exportação no formato exigido → (8) Registro de versão e trilha de auditoria.",
+    "fase3_parametros_configuraveis": [
+      "Framework(s) ESG aplicável(is): GRI, SASB, TCFD, ESRS, B3",
+      "Setor econômico da empresa (determina métricas materiais por padrão)",
+      "Período de reporte (anual, trimestral, customizado)",
+      "Jurisdição regulatória (CVM, SEC, ESMA — define formato de exportação)",
+      "Idioma(s) do relatório gerado",
+      "Identidade visual e branding (logo, paleta de cores, tipografia)",
+      "Matriz de materialidade customizada (tópicos prioritários por empresa)",
+      "Limites e benchmarks setoriais para alertas de desvio",
+      "Fontes de dados autorizadas e mapeamento de campos (ERP, planilhas, APIs)",
+      "Fluxo de aprovação: quem revisa, quem aprova, número de rodadas",
+      "Frequência de coleta automática de dados (diária, mensal, sob demanda)",
+      "Integrações ativas (Slack, e-mail, webhook de ERP)"
+    ],
+    "fase3_novo_cliente": "Onboarding via wizard de configuração no dashboard: selecionar framework, setor, jurisdição, período, importar estrutura organizacional e mapear fontes de dados. O sistema gera um ConfigProfile persistido em banco. Nenhum deploy, nenhuma linha de código nova — o pipeline existente executa com os parâmetros do novo perfil.",
+    "fase4_core_isolado": "O pipeline de processamento pesado — cálculo de indicadores ESG, chamadas ao LLM para geração de narrativa e compilação do documento final — roda em workers assíncronos isolados (filas de mensagens tipo BullMQ/SQS), separados do processo web/API. Cada job de geração de relatório é uma unidade de trabalho rastreável, retentável e precificável individualmente.",
+    "fase4_custo_total_cliente": "Custo do core por relatório: LLM tokens (geração de narrativa, ~50k-200k tokens por relatório completo, ~$0.50-$4.00 por relatório dependendo do modelo) + processamento de dados (compute do worker, ~$0.05-$0.20). Custo de infra proporcional: armazenamento de documentos gerados e evidências (S3/Blob, ~$0.023/GB/mês, ~$2-10/cliente/ano para empresas listadas típicas) + banco de dados relacional por tenant (~$5-15/mês em RDS/PlanetScale escalado) + banda de saída para downloads de PDF (~$0.09/GB). Custos operacionais: suporte, monitoramento, certificação de compliance (~15-20% da receita). Custo total estimado por cliente/ano: $200-$800 para uso médio (2-4 relatórios completos/ano + dados contínuos). Permite precificação SaaS de $2.000-$15.000/ano com margem saudável.",
+    "fase4_continuidade": "Os workers de processamento são desacoplados do servidor web via fila de mensagens. Se o worker de geração de relatório falhar, o dashboard, a API e o portal do auditor continuam operando. Jobs com falha entram em dead-letter queue com retry automático com backoff exponencial. O usuário visualiza o status 'em processamento' sem bloqueio. Alertas operacionais disparam para o time antes do cliente perceber a falha.",
+    "fase4_manutencao": "O LLM Provider é injetado via interface abstrata (LanguageModelProvider). Para trocar de OpenAI para Anthropic ou modelo fine-tuned próprio: implementar o novo adapter, rodar testes de regressão de qualidade narrativa em ambiente staging, atualizar a configuração de provider no ambiente de produção — zero downtime, zero alteração no pipeline central. O mesmo vale para conectores de dados e geradores de formato de exportação.",
+    "monetizacao": "SaaS B2B com pricing por tier baseado em porte da empresa e volume de uso: (1) Starter — até 2 frameworks, 1 relatório/ano, exportação PDF, $2.000-$4.000/ano para mid caps em conformidade inicial; (2) Professional — frameworks ilimitados, 4 relatórios/ano, XBRL, portal do auditor, API REST, $8.000-$20.000/ano para large caps; (3) Enterprise — multi-subsidiária, SLA garantido, modelo LLM dedicado/fine-tuned, integração ERP customizada, onboarding assistido, $30.000-$80.000/ano. Receita adicional: taxa de setup para onboarding enterprise ($2.000-$5.000) e módulos add-on (benchmarking setorial, scoring ESG em tempo real, relatório de due diligence para investidores).",
+    "stack_sugerida": "Backend: Node.js com TypeScript (NestJS) para API e service layer, BullMQ para filas de workers assíncronos, PostgreSQL com row-level security para multi-tenancy, Prisma ORM. IA/LLM: Anthropic Claude API (claude-opus-4-6) como provider principal para geração de narrativa ESG com prompt caching para redução de custo em relatórios recorrentes; interface abstrata para fallback para GPT-4o ou modelo fine-tuned. Frontend: Next.js 15 App Router, Tailwind CSS. Infraestrutura: Railway ou AWS ECS para workers escalonáveis independentemente, S3/CloudFront para armazenamento e entrega de relatórios, Redis para cache e filas, Vercel para frontend. Observabilidade: Sentry para erros, Datadog ou Grafana para métricas de custo por job e por cliente. Auth: Clerk ou Auth0 com SSO para enterprise. PDF/XBRL: Puppeteer para rendering de PDF, biblioteca XBRL para exportação regulatória."
+  }
+}

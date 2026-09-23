@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta descreve exclusivamente decisões arquiteturais e de infraestrutura (monorepo, CI/CD, backing services), sem qualquer menção ao mercado-alvo, tamanho de mercado, dor do cliente, diferenciação competitiva ou proposta de valor — o produto 'plataforma de microlearning gamificado para treinamento corporativo' é nomeado no título mas completamente ignorado na avaliação estratégica."
+}

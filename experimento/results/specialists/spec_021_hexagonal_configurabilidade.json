@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta sinaliza fundações para configurabilidade (ITenantAdministrator dedicado, IAlertEvaluator com regras potencialmente data-driven, IMaintenancePlanRepository com checklists e frequências no banco, limites por tenant no IBillingGateway), mas não descreve explicitamente um motor de configuração em runtime — ausência de feature flags por tenant, ausência de engine de regras configurável, e sem garantia documentada de que novos clientes sejam onboardados exclusivamente via dados sem qualquer deploy."
+}

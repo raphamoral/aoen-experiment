@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 71,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não faz nenhuma menção a custos de infraestrutura: não há estimativas de valores (compute, banco, armazenamento, CDN, gas fees de blockchain), nenhuma estratégia de otimização (scale-to-zero, spot, tiers de storage) e nenhuma projeção de como os custos evoluem com o crescimento da base de produtores/certificadores."
+}

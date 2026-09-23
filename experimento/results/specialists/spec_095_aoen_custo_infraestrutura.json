@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 95,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta descreve componentes de infraestrutura implícitos (armazenamento de imagens, APIs, múltiplas interfaces) e menciona flexibilidade de provedor de IA (AWS, GCP, Azure), mas não apresenta nenhuma estimativa concreta de custo em valores monetários, nenhuma estratégia explícita de otimização (scale-to-zero, spot instances, tiering de storage) e nenhuma projeção de como os custos escalam com o crescimento da base de usuários."
+}

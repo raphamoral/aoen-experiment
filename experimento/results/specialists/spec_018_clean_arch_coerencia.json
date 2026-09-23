@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 6,
+  "justificativa": "O núcleo narrativo é coeso — UsageMetric alimenta PredictionModel, que gera ChurnPrediction, que deveria acionar RetentionAction — mas a cadeia quebra estruturalmente porque ChurnDriver e RetentionAction não possuem atributos de ligação (customerId, predictionId) às entidades que os contextualizam, além de os use_cases estarem truncados, impedindo verificar se o design das entidades de fato suporta os fluxos de negócio declarados."
+}

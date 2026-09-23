@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta demonstra isolamento parcial: modelos ML são deployados independentemente via model registry (separação de ciclo de vida) e há fallback explícito para preço base com fitness function de chaos engineering validando resiliência em < 200ms — mas não há menção a filas de mensagens, workers assíncronos ou separação física de processo para o processamento computacionalmente pesado (inferência ML, cálculo de regras DSL), ficando implícito que a engine carrega e executa o modelo no mesmo processo da API crítica de checkout, o que compromete o isolamento real sob carga intensa."
+}

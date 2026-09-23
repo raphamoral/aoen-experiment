@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona broker de mensagens (Kafka/Redis Streams) e anti-corruption layer para o componente de áudio, sugerindo processamento assíncrono e separação lógica entre módulos — mas não especifica isolamento físico real (workers/containers dedicados para STT, TTS e tradução), não descreve comportamento de fallback quando o processamento pesado falha (ex: circuit breaker degradando para legenda sem áudio), e a escalabilidade independente dos workers de áudio vs. tradução fica implícita pela elasticidade genérica, não endereçada explicitamente como estratégia de isolamento computacional."
+}

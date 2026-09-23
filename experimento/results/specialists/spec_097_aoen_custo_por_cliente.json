@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 97,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custo por cliente, custo por operação (ex: custo por matching executado, custo por rota otimizada), rastreamento de consumo por tenant ou conexão entre custo e modelo de precificação — a descrição é inteiramente arquitetural e de mercado, sem qualquer modelagem de unit economics."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "O isolamento físico é sólido — cada reunião em processo separado, workers dedicados via BullMQ e auto-scaling independente — mas a proposta não descreve nenhum mecanismo de fallback ou resiliência para quando um worker falha (retry, dead-letter queue, degradação graciosa para legendas atrasadas), o que impede nota máxima."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "evolutionary",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 8,
+  "justificativa": "O modelo apresenta tiers bem definidos com valores específicos (Freemium, Starter $299/mês, Professional $999/mês, Enterprise custom), cobrança por uso alinhada ao valor entregue (entregas/dia e rastreamento real-time), e consciência de estrutura de custos com otimizações previstas — faltam apenas métricas explícitas de negócio (MRR, churn, LTV, CAC) e análise de unit economics para confirmar sustentabilidade por tier."
+}

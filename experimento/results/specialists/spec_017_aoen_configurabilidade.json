@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "A proposta demonstra separação explícita e intencional entre pipeline fixo e parâmetros configuráveis por tenant — o fluxo de emissão é declarado imutável no código enquanto identidade visual, segredo de hash e comportamentos por etapa variam por configuração — mas a lista de parâmetros configuráveis está truncada no documento, impedindo confirmar se casos como regras de elegibilidade, campos customizados no certificado ou integrações opcionais por tenant também estão cobertos; o onboarding de novo cliente parece exigir apenas inserção de dados no banco, mas a maturidade real da camada de configuração não pode ser verificada sem o inventário completo."
+}

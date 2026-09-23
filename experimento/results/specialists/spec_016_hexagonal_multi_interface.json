@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A proposta prevê múltiplas interfaces claramente justificadas por perfis distintos (REST para apps e sellers, GraphQL para dashboards internos, Webhook para integrações externas, gRPC para microserviços internos, CLI para operações e migrações), com lógica de negócio totalmente desacoplada via ports/adapters hexagonais, permitindo adicionar novas interfaces sem alterar o core — falta apenas evidência explícita de justificativa de alcance de mercado para cada canal escolhido."
+}

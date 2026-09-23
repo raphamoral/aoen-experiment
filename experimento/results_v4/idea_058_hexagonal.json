@@ -1,0 +1,80 @@
+{
+  "ideia_idx": 58,
+  "ideia": "Plataforma de seguro parametrizado para agricultura familiar",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Seguro paramétrico (indexado a índices) para agricultura familiar. O núcleo contém: Apólice (contratação, vigência, cobertura), Gatilho Paramétrico (regras de índice como precipitação acumulada, temperatura, NDVI e limiares por cultura e fase fenológica), Avaliação de Sinistro Automática (comparação do índice observado com o limiar), Cálculo de Prêmio (precificação atuarial por risco, região e cultura), Pagamento de Indenização, Segurado/Propriedade (georreferenciada), Subvenção (PSR e programas estaduais) e Resseguro/Carteira de Risco. Tudo isso é regra de negócio pura, sem dependência de infraestrutura.",
+    "primary_ports": [
+      "ContratarApolicePort (cotação, simulação de prêmio e emissão da apólice)",
+      "GerenciarSeguradoPort (cadastro do agricultor, da propriedade, do polígono e da cultura)",
+      "AvaliarGatilhosPort (execução periódica ou sob demanda da avaliação de índices)",
+      "ConsultarSinistroPort (acompanhamento de indenizações e histórico de eventos)",
+      "ConfigurarProdutoPort (definição de produtos, parâmetros e índices pelo ator/atuário)",
+      "RenovarCancelarApolicePort",
+      "RelatoriosRegulatoriosPort (relatórios para SUSEP/PSR e para cooperativas)",
+      "ReceberEventoClimaticoPort (entrada de eventos do mundo externo, com o mesmo tratamento dado a um usuário)"
+    ],
+    "secondary_ports": [
+      "ApoliceRepositoryPort",
+      "SeguradoRepositoryPort",
+      "ObservacaoClimaticaPort (fornece precipitação, temperatura e NDVI por coordenada e período)",
+      "GeocodificacaoPort (validação de polígono, CAR e coordenadas)",
+      "PagamentoPort (cobrança do prêmio e pagamento da indenização, incluindo PIX)",
+      "NotificacaoPort (SMS, WhatsApp e push, adequado a baixa conectividade)",
+      "IdentidadeKycPort (CPF, DAP/CAF e validação cadastral)",
+      "AssinaturaDigitalPort (apólice e termos)",
+      "ResseguroPort (cessão e repasse de risco)",
+      "SubvencaoPort (integração com programas de subsídio governamentais)",
+      "EventStorePort / AuditoriaPort (trilha imutável de decisões de sinistro)",
+      "RelogioPort e IdGeneratorPort (determinismo e testabilidade)",
+      "FilaMensagensPort (publicação de eventos de domínio)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API para o portal web e o app do agricultor",
+      "App mobile PWA offline-first",
+      "Bot de WhatsApp / USSD / SMS (canal para baixa conectividade)",
+      "Painel web de cooperativas, sindicatos e extensionistas (agentes de campo)",
+      "Painel do atuário/administrador",
+      "Scheduler/cron que aciona AvaliarGatilhosPort",
+      "Consumidor de webhooks (gateway de pagamento, provedores climáticos)",
+      "CLI e scripts de operação e backfill",
+      "Test harness / testes de aceitação BDD que dirigem o core diretamente (mesmo papel de um usuário)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL/PostGIS (repositórios de apólices e segurados, dados geoespaciais)",
+      "Event store append-only para auditoria",
+      "Adaptadores de dados climáticos: INMET, CEMADEN, NASA POWER, CHIRPS, ERA5, Sentinel-2/MODIS (NDVI)",
+      "Gateway de pagamento (Pix via PSP, boleto)",
+      "Twilio/Zenvia/Meta Cloud API (SMS e WhatsApp)",
+      "Provedor de KYC/CAF/CAR (consulta a bases governamentais)",
+      "Provedor de assinatura digital (ICP-Brasil)",
+      "API de resseguradora / SUSEP",
+      "Adaptadores de subvenção governamental (PSR/MAPA)",
+      "Broker de mensagens (Kafka/SQS/RabbitMQ)",
+      "Object storage (S3/GCS) para séries de dados e documentos",
+      "Adaptadores in-memory e fakes de todas as portas secundárias, para testes"
+    ],
+    "isolation": "O núcleo (domínio e casos de uso) é um módulo sem dependências de frameworks, banco, HTTP ou SDKs. Ele só conhece interfaces (ports) definidas por ele mesmo. Os adapters dependem do core, nunca o contrário (Dependency Inversion), e a composição ocorre na raiz (composition root) por injeção de dependência. DTOs e mapeadores ficam nos adapters, então o modelo de domínio não vaza para fora. Todo provedor externo (clima, pagamento, KYC) é tratado de forma simétrica atrás de uma porta, de modo que trocar INMET por satélite, ou um PSP por outro, é só trocar o adapter. Testes de arquitetura (ArchUnit/dependency-cruiser) impedem imports do core para a infraestrutura. Regras de gatilho são versionadas e determinísticas. O relógio e o ID são injetados. A avaliação de sinistro é idempotente e reproduzível a partir dos dados de observação guardados, o que dá auditabilidade regulatória.",
+    "interfaces": [
+      "App mobile/PWA offline-first em linguagem simples e com acessibilidade para baixa alfabetização digital",
+      "Bot de WhatsApp e USSD para contratação, consulta e alertas",
+      "Portal web de cooperativas, sindicatos e extensionistas, com contratação em lote",
+      "Painel do atuário para configurar produtos, gatilhos e limiares",
+      "Painel de operações e sinistros com mapa de eventos e trilha de auditoria",
+      "API pública documentada (OpenAPI) para parceiros: bancos, cooperativas, agtechs e governo",
+      "Webhooks de saída para parceiros (apólice emitida, gatilho disparado, indenização paga)",
+      "Relatórios regulatórios e de subvenção (exportações)",
+      "CLI e scripts de administração"
+    ],
+    "escalabilidade": "O domínio é majoritariamente stateless, então o núcleo escala horizontalmente com pouca fricção. O padrão de carga é sazonal, com picos de contratação no plantio e picos de avaliação em eventos climáticos extremos. Estratégias: (1) monolito modular hexagonal no início, extraindo serviços só quando necessário (contratação, avaliação de gatilhos, pagamentos), já que as portas facilitam a extração; (2) avaliação de gatilhos como pipeline em lote, particionada por grade geográfica/município, com workers em fila e autoescala; (3) cache e pré-agregação dos dados climáticos por célula de grade, evitando uma consulta por apólice; (4) CQRS leve, com leitura otimizada para painéis e escrita transacional para apólices; (5) arquitetura orientada a eventos com outbox pattern para consistência entre pagamento, sinistro e notificação; (6) idempotência em todos os pagamentos e avaliações; (7) réplicas de leitura, particionamento por safra/região e armazenamento frio para séries históricas; (8) multi-tenant por cooperativa ou parceiro, com isolamento lógico de dados.",
+    "custos": "Principais itens de custo: (1) dados climáticos e de satélite, que são o maior custo variável. Priorizar fontes abertas (INMET, CHIRPS, NASA POWER, Sentinel) e cachear por grade. (2) Computação sazonal, que se resolve com autoescala e instâncias spot para o processamento em lote. (3) Mensageria: WhatsApp/SMS têm custo por mensagem, então convém priorizar canais baratos e mensagens transacionais enxutas. (4) Taxas de pagamento e Pix, que são baixas. (5) KYC e consultas a bases governamentais. (6) Resseguro e capital regulatório (SUSEP), que costumam ser o maior custo estrutural do negócio, junto com a exigência de parceria com uma seguradora licenciada. (7) Conformidade com LGPD, segurança e auditoria. (8) Custo de aquisição e capilaridade de campo, mitigado por canais via cooperativas e sindicatos. Uma arquitetura hexagonal reduz o custo de troca de fornecedores e permite operar no início com poucos serviços gerenciados e baixo custo fixo.",
+    "monetizacao": "(1) Comissão ou margem sobre o prêmio, no modelo de MGA/corretora digital com uma seguradora parceira licenciada; (2) taxa de administração e de processamento por apólice; (3) SaaS B2B2C para cooperativas, bancos, fintechs de crédito rural e agtechs, com assinatura por volume de segurados; (4) white-label e API paga (por apólice emitida ou por avaliação); (5) receita ligada a programas de subvenção e a contratos com governos e ONGs (seguro subsidiado, ajuda humanitária, financiamento climático); (6) venda de dados agregados e anonimizados de risco climático e agrícola, dentro da LGPD; (7) venda cruzada de crédito rural embutido, com seguro vinculado ao crédito, em parceria com bancos.",
+    "stack_sugerida": "Core: Kotlin/Java (Spring sem acoplar ao domínio) ou TypeScript (NestJS com módulos hexagonais) ou Go, com o domínio em módulo puro e testes de arquitetura (ArchUnit ou dependency-cruiser). Persistência: PostgreSQL + PostGIS; event store (tabela append-only ou EventStoreDB); Redis para cache. Mensageria: Kafka ou SQS/SNS com outbox pattern. Processamento geoespacial e de dados: Python (xarray, rasterio, GDAL) em workers batch, com Airflow ou Dagster. Front-end: React/Next.js e PWA offline-first (Workbox); React Native ou Flutter como opção mobile. Canais: WhatsApp Cloud API, Twilio/Zenvia e USSD. Infra: Docker, Kubernetes (ou ECS/Cloud Run no início), Terraform, autoescala, object storage (S3). Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. CI/CD: GitHub Actions, com testes BDD (Cucumber) sobre as portas primárias e contract tests por adapter. Segurança e conformidade: OAuth2/OIDC (Keycloak ou Auth0), criptografia em repouso e em trânsito, gestão de segredos (Vault), trilha de auditoria e adequação à LGPD."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:39:41+00:00",
+    "runner": "runner.py"
+  }
+}

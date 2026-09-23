@@ -1,0 +1,391 @@
+{
+  "ideia_idx": 21,
+  "ideia": "SaaS de gestão de manutenção predial preventiva com IoT",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio com regras críticas, independentes de qualquer framework",
+      "lista": [
+        {
+          "nome": "Asset",
+          "atributos": [
+            "id",
+            "nome",
+            "tipo",
+            "localizacao",
+            "vidaUtilEstimada",
+            "dataInstalacao",
+            "status"
+          ],
+          "regras": [
+            "Calcular depreciação",
+            "Determinar criticidade",
+            "Validar ciclo de vida"
+          ]
+        },
+        {
+          "nome": "MaintenancePlan",
+          "atributos": [
+            "id",
+            "assetId",
+            "frequencia",
+            "tarefas",
+            "responsavel",
+            "ativo"
+          ],
+          "regras": [
+            "Validar frequência mínima por tipo de ativo",
+            "Calcular próxima execução"
+          ]
+        },
+        {
+          "nome": "MaintenanceOrder",
+          "atributos": [
+            "id",
+            "planId",
+            "assetId",
+            "status",
+            "dataProgramada",
+            "dataExecucao",
+            "tecnico",
+            "custo",
+            "observacoes"
+          ],
+          "regras": [
+            "Transicionar estados (pendente→em_execucao→concluida→aprovada)",
+            "Validar SLA"
+          ]
+        },
+        {
+          "nome": "IoTDevice",
+          "atributos": [
+            "id",
+            "assetId",
+            "tipo",
+            "modelo",
+            "ultimaLeitura",
+            "limiarAlerta",
+            "status"
+          ],
+          "regras": [
+            "Verificar limiar de alerta",
+            "Validar frequência de leitura",
+            "Detectar anomalia"
+          ]
+        },
+        {
+          "nome": "SensorReading",
+          "atributos": [
+            "id",
+            "deviceId",
+            "valor",
+            "unidade",
+            "timestamp",
+            "flagAnomalia"
+          ],
+          "regras": [
+            "Validar range físico do sensor",
+            "Detectar outlier estatístico"
+          ]
+        },
+        {
+          "nome": "Building",
+          "atributos": [
+            "id",
+            "nome",
+            "endereco",
+            "area",
+            "andares",
+            "tenantId"
+          ],
+          "regras": [
+            "Agregar assets por andar/setor",
+            "Calcular índice de saúde predial"
+          ]
+        },
+        {
+          "nome": "Technician",
+          "atributos": [
+            "id",
+            "nome",
+            "especialidades",
+            "certificacoes",
+            "disponibilidade"
+          ],
+          "regras": [
+            "Validar habilitação por tipo de manutenção",
+            "Calcular carga de trabalho"
+          ]
+        },
+        {
+          "nome": "Tenant",
+          "atributos": [
+            "id",
+            "razaoSocial",
+            "plano",
+            "limiteAssets",
+            "limiteDevices"
+          ],
+          "regras": [
+            "Verificar limites do plano",
+            "Calcular uso atual"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Casos de uso da aplicação — orquestram o fluxo entre entidades",
+      "gestao_ativos": [
+        "RegisterAsset — Cadastrar ativo predial com metadados",
+        "UpdateAssetStatus — Atualizar status operacional do ativo",
+        "CalculateAssetHealthScore — Calcular índice de saúde com base em leituras e histórico",
+        "RetireAsset — Aposentar ativo ao fim de vida útil"
+      ],
+      "manutencao": [
+        "CreateMaintenancePlan — Criar plano preventivo para um ativo",
+        "GenerateMaintenanceOrders — Gerar ordens a partir de planos ativos (job periódico)",
+        "AssignTechnician — Alocar técnico a uma ordem considerando especialidade e disponibilidade",
+        "ExecuteMaintenanceOrder — Registrar execução com checklist e evidências",
+        "ApproveMaintenanceOrder — Gestor aprova ordem concluída",
+        "EscalateOverdueOrder — Escalar ordens vencidas automaticamente"
+      ],
+      "iot": [
+        "RegisterIoTDevice — Vincular dispositivo IoT a um ativo",
+        "IngestSensorReading — Processar leitura recebida do dispositivo",
+        "DetectAnomaly — Aplicar regra de negócio para detectar anomalia",
+        "TriggerAlertFromAnomaly — Gerar alerta e (opcional) ordem corretiva automática",
+        "PredictMaintenanceFromTrend — Antecipar manutenção baseada em tendência de leituras"
+      ],
+      "relatorios": [
+        "GenerateMaintenanceReport — Relatório de ordens por período/ativo/técnico",
+        "GenerateAssetHealthDashboard — Painel de saúde agregado por building",
+        "CalculateMTBF — Calcular tempo médio entre falhas por ativo",
+        "ExportAuditLog — Exportar log de auditoria para compliance"
+      ],
+      "multitenancy": [
+        "ProvisionTenant — Criar novo tenant com limites de plano",
+        "EnforcePlanLimits — Bloquear operações que excedam o plano contratado",
+        "BillingUsageReport — Apurar uso mensal para faturamento"
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Conversores entre Use Cases/Entities e tecnologias externas",
+      "controllers": [
+        "AssetController — REST endpoints para CRUD de ativos",
+        "MaintenanceController — REST endpoints para planos e ordens",
+        "IoTIngestController — Endpoint MQTT/HTTP para receber leituras de sensores",
+        "AlertController — Gerenciar alertas e notificações",
+        "ReportController — Endpoints para geração e download de relatórios",
+        "TenantController — Endpoints de administração de tenants",
+        "WebhookController — Receber eventos de gateways IoT externos"
+      ],
+      "presenters": [
+        "MaintenanceOrderPresenter — Formatar DTO de saída para ordens de manutenção",
+        "AssetHealthPresenter — Formatar score de saúde e gráficos de tendência",
+        "AlertPresenter — Formatar payload de notificação (push, email, SMS)",
+        "ReportPresenter — Montar estrutura para PDF/Excel"
+      ],
+      "gateways": [
+        "AssetRepositoryGateway — Interface (porta) para persistência de ativos",
+        "MaintenanceOrderRepositoryGateway — Interface para persistência de ordens",
+        "SensorReadingRepositoryGateway — Interface para time-series de leituras",
+        "NotificationGateway — Interface para envio de notificações",
+        "FileStorageGateway — Interface para upload de evidências fotográficas",
+        "IoTBrokerGateway — Interface para publicar/assinar tópicos MQTT",
+        "BillingGateway — Interface para integração com sistema de cobrança"
+      ],
+      "view_models": [
+        "AssetViewModel",
+        "MaintenanceOrderViewModel",
+        "SensorReadingViewModel",
+        "DashboardViewModel",
+        "AlertViewModel"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa — detalhes de implementação, substituíveis sem afetar regras de negócio",
+      "backend": {
+        "runtime": "Node.js 22 LTS",
+        "framework": "NestJS (com inversão de dependência via decorators)",
+        "api": "REST + WebSocket (Socket.IO para dashboard em tempo real)"
+      },
+      "frontend": {
+        "framework": "Next.js 15 (App Router)",
+        "ui": "shadcn/ui + Tailwind CSS",
+        "charts": "Recharts para dashboards de tendência"
+      },
+      "mobile": "React Native (Expo) para técnicos em campo",
+      "banco_de_dados": {
+        "relacional": "PostgreSQL 16 — entidades transacionais (ordens, planos, ativos)",
+        "timeseries": "TimescaleDB (extensão Postgres) — leituras de sensores IoT",
+        "cache": "Redis — sessões, filas de jobs, pub/sub interno"
+      },
+      "iot_broker": "EMQX (MQTT broker open-source, auto-hospedado) ou AWS IoT Core",
+      "filas_jobs": "BullMQ (Redis) para geração de ordens, alertas e relatórios assíncronos",
+      "storage": "S3-compatible (MinIO self-hosted ou AWS S3) para fotos e PDFs",
+      "notificacoes": {
+        "email": "AWS SES ou Resend",
+        "push": "Firebase Cloud Messaging",
+        "sms": "Twilio ou AWS SNS"
+      },
+      "infra": {
+        "containers": "Docker + Docker Compose (dev) / Kubernetes (prod)",
+        "cloud": "AWS ou GCP",
+        "iac": "Terraform",
+        "ci_cd": "GitHub Actions"
+      },
+      "observabilidade": {
+        "logs": "Loki + Grafana",
+        "metricas": "Prometheus + Grafana",
+        "tracing": "OpenTelemetry + Jaeger",
+        "alertas_infra": "Alertmanager"
+      }
+    },
+    "dependency_rule": {
+      "descricao": "A Regra de Dependência garante que nenhuma camada interna conheça detalhes de camadas externas",
+      "aplicacao": [
+        "Entities não importam nada — são POJOs/classes puras com regras de negócio",
+        "Use Cases dependem apenas de Entities e de interfaces (portas) abstratas — nunca de implementações concretas",
+        "Interface Adapters implementam as portas definidas pelos Use Cases e traduzem DTOs — não conhecem frameworks de persistência diretamente",
+        "Frameworks & Drivers implementam as interfaces dos Gateways usando libs concretas (TypeORM, Mongoose, etc.)",
+        "Inversão de Dependência (DIP): Use Cases definem a interface IAssetRepository; PostgresAssetRepository (Frameworks layer) implementa essa interface — a dependência aponta para dentro",
+        "O contêiner de DI (NestJS IoC) injeta as implementações concretas em runtime sem que as Use Cases saibam",
+        "Eventos de domínio fluem de dentro para fora via observers/listeners registrados na camada de Adapters",
+        "O módulo MQTT broker só é conhecido pelo IoTBrokerGatewayImpl na camada mais externa"
+      ]
+    },
+    "testability": {
+      "descricao": "Cada camada é testável de forma isolada graças à inversão de dependência",
+      "unit_tests": {
+        "alvo": "Entities e Use Cases",
+        "estrategia": "Injetar mocks/stubs das interfaces de gateway — zero dependência de banco ou rede",
+        "exemplo": "GenerateMaintenanceOrdersUseCase testado com InMemoryMaintenancePlanRepository"
+      },
+      "integration_tests": {
+        "alvo": "Interface Adapters + Frameworks (repositórios, controllers)",
+        "estrategia": "Testcontainers para subir Postgres/Redis reais em Docker durante o teste",
+        "exemplo": "PostgresAssetRepository testado contra banco real efêmero"
+      },
+      "e2e_tests": {
+        "alvo": "Fluxos completos via API HTTP",
+        "estrategia": "Supertest + banco de teste dedicado, seed de dados controlado",
+        "exemplo": "Criar plano → gerar ordens → executar → aprovar — verificar estado final"
+      },
+      "iot_tests": {
+        "alvo": "Fluxo de ingestão de sensores e detecção de anomalia",
+        "estrategia": "Mock do broker MQTT; injetar leituras sintéticas no IngestSensorReadingUseCase",
+        "exemplo": "Simular leitura acima do limiar e verificar que TriggerAlertUseCase é acionado"
+      },
+      "contract_tests": "Pact para garantir contrato entre frontend e API REST"
+    },
+    "interfaces": [
+      "IAssetRepository — CRUD e queries de ativos",
+      "IMaintenancePlanRepository — Persistência de planos",
+      "IMaintenanceOrderRepository — Persistência e consultas de ordens",
+      "ISensorReadingRepository — Escrita e consulta de séries temporais",
+      "IIoTDeviceRepository — Registro de dispositivos IoT",
+      "INotificationGateway — Envio de notificações multicanal",
+      "IFileStorageGateway — Upload e recuperação de arquivos",
+      "IIoTBrokerGateway — Publicação e assinatura MQTT",
+      "IBillingGateway — Integração com sistema de cobrança/faturamento",
+      "IJobScheduler — Agendamento de jobs assíncronos (geração de ordens, relatórios)",
+      "IAnomalyDetector — Estratégia plugável de detecção de anomalia (regra simples, ML futuro)",
+      "IReportGenerator — Geração de relatórios PDF/Excel",
+      "IAuthProvider — Autenticação/autorização (JWT, OAuth2)",
+      "IAuditLogger — Registro de eventos para auditoria e compliance"
+    ],
+    "escalabilidade": {
+      "horizontal": [
+        "Serviços stateless escaláveis via réplicas Kubernetes com HPA (CPU/RPS)",
+        "Worker de ingestão IoT separado do API worker — escala independente conforme volume de mensagens",
+        "BullMQ com múltiplos workers consumindo filas Redis — paralelismo controlado por tipo de job"
+      ],
+      "vertical_dados": [
+        "TimescaleDB com particionamento automático por tempo (chunking) — queries em séries temporais não degradam com volume",
+        "Índices compostos no Postgres por tenant_id + status + data para queries multi-tenant eficientes",
+        "Retenção configurável de leituras brutas (ex: 90 dias) + agregações históricas de longa duração"
+      ],
+      "multitenancy": [
+        "Isolamento por schema Postgres por tenant (schema-per-tenant) ou row-level security (RLS) — escolha conforme número de tenants",
+        "Rate limiting por tenant no gateway de API",
+        "Filas separadas por tenant para jobs críticos evitando starvation"
+      ],
+      "iot_volume": [
+        "EMQX suporta milhões de conexões simultâneas — broker independente da API",
+        "Buffer de leituras em Redis Stream antes de persistir em batch no TimescaleDB — protege o banco de picos",
+        "CQRS opcional: escrita em TimescaleDB, leitura de agregações em cache Redis com TTL"
+      ]
+    },
+    "custos": {
+      "modelo": "Principalmente OPEX em cloud, com caminho de redução via self-hosting",
+      "componentes": [
+        "Compute (ECS/EKS): maior custo variável — dimensionar conforme tenants ativos",
+        "Banco de dados RDS Postgres + TimescaleDB Cloud: custo cresce com volume de leituras IoT — avaliar retenção de dados",
+        "Broker IoT: EMQX self-hosted em EKS reduz custo vs AWS IoT Core (cobrança por mensagem)",
+        "Storage S3: baixo custo unitário, mas volume de fotos de manutenção pode crescer — política de lifecycle/archival",
+        "Notificações: SMS é o mais caro — usar como fallback; priorizar push/email",
+        "Observabilidade: Loki/Grafana self-hosted na própria infra — sem custo adicional de SaaS de log"
+      ],
+      "otimizacoes": [
+        "Spot/Preemptible instances para workers de jobs não-críticos",
+        "Reserved instances para banco de dados (previsível)",
+        "Compressão nativa do TimescaleDB reduz storage de séries temporais em ~90%",
+        "CDN (CloudFront/Cloudflare) para assets estáticos do frontend — reduz egress"
+      ]
+    },
+    "monetizacao": {
+      "modelo": "SaaS B2B com cobrança mensal/anual por plano",
+      "planos": [
+        {
+          "nome": "Starter",
+          "perfil": "Condomínios residenciais, pequenos prédios comerciais",
+          "limites": "Até 50 ativos, 10 dispositivos IoT, 5 usuários",
+          "preco_referencia": "R$ 490/mês"
+        },
+        {
+          "nome": "Professional",
+          "perfil": "Gestoras de facility management, hospitais, shoppings",
+          "limites": "Até 500 ativos, 200 dispositivos IoT, usuários ilimitados",
+          "preco_referencia": "R$ 1.990/mês"
+        },
+        {
+          "nome": "Enterprise",
+          "perfil": "Grandes construtoras, redes hospitalares, conglomerados",
+          "limites": "Ilimitado, SLA dedicado, suporte premium, white-label opcional",
+          "preco_referencia": "Contrato anual customizado"
+        }
+      ],
+      "receitas_adicionais": [
+        "Add-on: Módulo de IA preditiva (detecção de anomalia por ML) — R$ 300-800/mês",
+        "Add-on: Relatórios avançados e BI exportável",
+        "Marketplace de técnicos certificados (comissão por ordem alocada via plataforma)",
+        "Onboarding e implantação profissional (receita de serviços)",
+        "API pública para integrações ERP/BMS (cobrada por volume de chamadas acima do tier)"
+      ],
+      "metricas_chave": [
+        "MRR",
+        "Churn rate",
+        "NPS",
+        "Ativos gerenciados por tenant",
+        "Ordens geradas/mês",
+        "Uptime do broker IoT"
+      ]
+    },
+    "stack_sugerida": {
+      "backend": "Node.js 22 + NestJS + TypeScript",
+      "frontend": "Next.js 15 + shadcn/ui + Tailwind CSS + Recharts",
+      "mobile": "React Native + Expo (iOS/Android para técnicos)",
+      "banco_relacional": "PostgreSQL 16 + TimescaleDB (extensão time-series)",
+      "cache_filas": "Redis 7 + BullMQ",
+      "iot_broker": "EMQX 5 (self-hosted) ou AWS IoT Core",
+      "storage": "AWS S3 (produção) / MinIO (dev/staging)",
+      "autenticacao": "Auth.js v5 + JWT + RBAC por tenant",
+      "orm": "Prisma (schema-first, migrations versionadas)",
+      "infra": "Docker → Kubernetes (EKS/GKE) + Terraform + GitHub Actions",
+      "observabilidade": "Prometheus + Loki + Grafana + OpenTelemetry + Jaeger",
+      "testes": "Vitest (unit) + Testcontainers (integration) + Playwright (e2e) + Pact (contract)",
+      "monorepo": "Turborepo — compartilhar tipos/DTOs entre backend, frontend e mobile"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio com regras críticas, independentes de qualquer framework\",\n    \"lista\": [\n      {\n        \"nome\": \"Asset\",\n        \"atributos\": [\"id\", \"nome\", \"tipo\", \"localizacao\", \"vidaUtilEstimada\", \"dataInstalacao\", \"status\"],\n        \"regras\": [\"Calcular depreciação\", \"Determinar criticidade\", \"Validar ciclo de vida\"]\n      },\n      {\n        \"nome\": \"MaintenancePlan\",\n        \"atributos\": [\"id\", \"assetId\", \"frequencia\", \"tarefas\", \"responsavel\", \"ativo\"],\n        \"regras\": [\"Validar frequência mínima por tipo de ativo\", \"Calcular próxima execução\"]\n      },\n      {\n        \"nome\": \"MaintenanceOrder\",\n        \"atributos\": [\"id\", \"planId\", \"assetId\", \"status\", \"dataProgramada\", \"dataExecucao\", \"tecnico\", \"custo\", \"observacoes\"],\n        \"regras\": [\"Transicionar estados (pendente→em_execucao→concluida→aprovada)\", \"Validar SLA\"]\n      },\n      {\n        \"nome\": \"IoTDevice\",\n        \"atributos\": [\"id\", \"assetId\", \"tipo\", \"modelo\", \"ultimaLeitura\", \"limiarAlerta\", \"status\"],\n        \"regras\": [\"Verificar limiar de alerta\", \"Validar frequência de leitura\", \"Detectar anomalia\"]\n      },\n      {\n        \"nome\": \"SensorReading\",\n        \"atributos\": [\"id\", \"deviceId\", \"valor\", \"unidade\", \"timestamp\", \"flagAnomalia\"],\n        \"regras\": [\"Validar range físico do sensor\", \"Detectar outlier estatístico\"]\n      },\n      {\n        \"nome\": \"Building\",\n        \"atributos\": [\"id\", \"nome\", \"endereco\", \"area\", \"andares\", \"tenantId\"],\n        \"regras\": [\"Agregar assets por andar/setor\", \"Calcular índice de saúde predial\"]\n      },\n      {\n        \"nome\": \"Technician\",\n        \"atributos\": [\"id\", \"nome\", \"especialidades\", \"certificacoes\", \"disponibilidade\"],\n        \"regras\": [\"Validar habilitação por tipo de manutenção\", \"Calcular carga de trabalho\"]\n      },\n      {\n        \"nome\": \"Tenant\",\n        \"atributos\": [\"id\", \"razaoSocial\", \"plano\", \"limiteAssets\", \"limiteDevices\"],\n        \"regras\": [\"Verificar limites do plano\", \"Calcular "
+}

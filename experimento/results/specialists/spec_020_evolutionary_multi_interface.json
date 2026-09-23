@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 1,
+  "justificativa": "A proposta não menciona nenhuma interface de usuário — nem web, mobile, CLI ou API pública — focando exclusivamente em preocupações de backend; a única concessão implícita é a característica de 'extensibilidade', que poderia acomodar novas interfaces futuramente, mas sem qualquer justificativa por perfil de usuário, alcance de mercado ou estratégia de desacoplamento de apresentação."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "O diferenciador existe implicitamente (o certification-worker que processa laudos de equipamentos médicos usados), mas a proposta o trata como mais um worker de fila SQS, sem isolar sua lógica proprietária, sem explicar por que a metodologia de certificação é insubstituível frente a concorrentes, e sem evidenciar o que impede um marketplace genérico de replicar esse componente adicionando um serviço equivalente."
+}

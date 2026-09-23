@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "O projeto lista sete interfaces com algumas justificadas por perfis reais (app mobile para técnicos de campo, gerador de relatórios para conformidade com IBAMA/CETESB, API para integração corporativa), mas não há nenhuma menção explícita ao desacoplamento da lógica de negócio das interfaces — sem referência a camadas de serviço, arquitetura hexagonal ou similar — e a escolha das interfaces parece guiada principalmente pela funcionalidade esperada, não por uma análise deliberada de alcance de mercado ou expansibilidade futura."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — nenhum componente de cloud foi citado (servidor, banco, CDN, storage, fila), não há estimativas em dólares ou reais, nenhuma estratégia de otimização (scale-to-zero, spot, tiers de armazenamento) e nenhuma projeção de como os custos escalam com usuários; a única referência a 'custo' no documento é sobre preço de equipamentos e custo zero de distribuição do PWA, ambos fora do escopo de FinOps."
+}

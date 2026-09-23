@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta é inteiramente focada em arquitetura de backend (bounded contexts, fitness functions, estratégia de extração de serviços) e não menciona, justifica ou projeta nenhuma interface de usuário — seja web, mobile, portal administrativo ou API pública — deixando completamente em aberto como diferentes perfis (colaborador aprendiz, gestor de RH, administrador de TI) acessariam a plataforma em seus respectivos contextos de uso."
+}

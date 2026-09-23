@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta lista custos de infraestrutura como commodities totais (AWS, Datadog, RDS, S3) e menciona ARPU como métrica do time de Monetization, mas ARPU é indicador de receita, não de custo — nenhum mecanismo de rastreamento de consumo por tenant, cálculo de custo por operação/transação ou conexão entre custo de infra e margem por cliente foi descrito."
+}

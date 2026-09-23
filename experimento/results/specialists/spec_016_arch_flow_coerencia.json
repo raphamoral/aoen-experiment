@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "arch_flow",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A cadeia de valor mapeia diretamente para os bounded contexts, que por sua vez justificam a topologia de times e a classificação de evolução de componentes — commodity para auth/pagamentos/notificações (não-diferenciadores), custom/genesis para PolicyEngine e DispositionDecision (vantagem competitiva real) — formando um sistema onde cada decisão reforça as demais; a única lacuna leve é a ausência explícita de infraestrutura de dados/ML para sustentar os itens genesis (fraude, roteamento preditivo) que foram elencados mas não têm plataforma de suporte declarada."
+}

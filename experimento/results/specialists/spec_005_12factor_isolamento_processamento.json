@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 8,
+  "justificativa": "Isolamento físico real e completo: workers de assinatura, notificação e scheduler correm em containers separados (ECS Fargate/K8s), processamento via filas (SQS/RabbitMQ) é genuinamente assíncrono, falha em qualquer worker não afeta a API web, e cada tipo de workload escala independentemente por métricas próprias (CPU/RPS para web, profundidade de fila para workers) — perde 2 pontos por ausência explícita de dead-letter queues, políticas de retry e circuit breakers para os backing services externos (DocuSign, D4Sign, SendGrid), que são os vetores mais prováveis de falha em cascata."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O produto menciona implicitamente clínicas odontológicas como público-alvo pelo nome, mas a proposta arquitetural não articula a dor do cliente, o tamanho do mercado, a diferenciação frente a concorrentes (Doctoralia, AgendaConsulta, etc.) nem uma proposta de valor convincente — trata-se de uma especificação técnica sem contexto estratégico de mercado."
+}

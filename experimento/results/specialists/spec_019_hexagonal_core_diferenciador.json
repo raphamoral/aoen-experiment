@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O core domain odontológico (fila de espera, controle de sala/equipamento, especialidades) está bem identificado e isolado via arquitetura hexagonal com DI em runtime, o que garante extensibilidade real — mas a proposta não demonstra o componente 'inteligente' que o nome promete (sem otimização de agenda por ML, predição de cancelamentos ou sugestão dinâmica de slots), tornando o diferenciador funcional porém substituível por qualquer SaaS de agendamento bem arquitetado."
+}

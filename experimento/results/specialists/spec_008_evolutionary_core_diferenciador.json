@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — rastreabilidade blockchain imutável integrada ao fluxo regulatório brasileiro (SINIR/SIGOR) — está claramente identificado, isolado como bounded context próprio (Hyperledger Fabric em camada separada) e é extensível (decisão de blockchain público vs. privado deliberadamente adiada, ACLs para ERPs), porém a proposta não articula por que blockchain é insubstituível frente a um ledger append-only convencional com assinatura criptográfica, deixando uma lacuna no argumento de irreversibilidade do core."
+}

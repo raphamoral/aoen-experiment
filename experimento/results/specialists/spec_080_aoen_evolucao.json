@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 80,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra design evolutivo sólido — interfaces abstratas (IEquipmentRecognizer, IARRenderer) com inversão de dependência real, camada de procedimentos agnóstica de formato e TrainingOrchestrationService como contrato único consumido por todas as interfaces garantem substituição independente de fornecedores e adição de novos canais sem reescrita; o ponto de risco está na TrainingOrchestrationService descrita como 'centralizada' sem estratégia explícita de escalabilidade horizontal, o que pode exigir refatoração estrutural na transição de dezenas para dezenas de milhares de sessões simultâneas."
+}

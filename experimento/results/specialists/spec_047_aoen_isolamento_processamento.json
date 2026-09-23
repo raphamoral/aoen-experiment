@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 47,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta centraliza toda a lógica em uma ArbitrationService síncrona com pipeline 'invariante no código', sem qualquer menção a filas, workers separados ou processamento assíncrono — o processo mais pesado (análise por IA de documentos e evidências) é apenas um passo inline do fluxo principal, de modo que uma falha ou lentidão no modelo de IA bloqueia toda a cadeia; a única concessão arquitetural é a interface ArbitrationEngine (plugabilidade de fornecedor de IA), que oferece isolamento lógico superficial mas zero isolamento físico, zero resiliência a falhas do processamento pesado e zero capacidade de escalonamento independente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 91,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador é explicitamente identificado (motor de IA adaptativa com avaliação cognitiva em tempo real), arquiteturalmente isolado na service layer com contratos de domínio independentes de protocolo, e genuinamente extensível via interface `AIProvider` que abstrai o provedor de IA — o produto perde razão de existir sem esse componente, conforme declarado; perde apenas um ponto por não demonstrar empiricamente por que competidores consolidados (Code.org, Scratch, Tynker) não conseguem replicar esse mecanismo adaptativo, o que enfraqueceria levemente o argumento de insubstituibilidade perante investidores ou clientes institucionais céticos."
+}

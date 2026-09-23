@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta é inteiramente técnico-arquitetural e não contém nenhuma análise de mercado explícita — ausentes: segmentação de clientes (empresas-alvo, porte, setor), articulação da dor (por que substituir QA interno ou plataformas como Testlio/uTest/Applause), estimativa de TAM/SAM/SOM e diferenciação competitiva; os 2 pontos refletem apenas que o nome do produto permite inferir um público genérico (empresas de software que precisam de QA), mas sem nenhum embasamento declarado."
+}

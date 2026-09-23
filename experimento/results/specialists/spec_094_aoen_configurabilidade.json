@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 94,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra extensibilidade via abstrações bem definidas (fontes de evento plugáveis, repositório agnóstico de banco, Service Layer isolada), o que é fundação necessária para configurabilidade — mas não descreve nenhum modelo de configuração por tenant: ausência de feature flags por cliente, ausência de tabela de configuração de comportamento, ausência de definição do que é parâmetro variável por obra/construtora versus o que é fixo no código; o pipeline descrito como 'fixo no código' reforça que a extensibilidade atual é via desenvolvimento (novo plugin/adapter), não via configuração, exigindo provável intervenção técnica para onboardar clientes com workflows diferentes do padrão."
+}

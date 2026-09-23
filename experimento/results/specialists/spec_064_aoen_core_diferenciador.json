@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 64,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de conformidade jurídica é claramente identificado como núcleo, está arquiteturalmente desacoplado (regras versionadas em JSON/YAML), é extensível para outros entes e fornecedores de validação (incluindo LLM jurídico), e resolve um problema real e urgente — conformidade com a Lei 14.133/2021 — que sistemas genéricos de formulários não endereçam; perde um ponto por não detalhar como o motor lida com ambiguidades interpretativas da lei, que são o principal risco de invalidação na prática."
+}

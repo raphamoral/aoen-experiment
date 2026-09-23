@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "O produto resolve um problema real (gestão de devoluções fragmentada), mas não identifica nenhum núcleo tecnológico diferenciador — o que foi descrito é essencialmente uma camada de integração sobre APIs de transportadoras existentes combinada com um painel de workflow, uma arquitetura facilmente replicável por qualquer concorrente com acesso às mesmas APIs (Correios, Jadlog, Total Express), sem qualquer componente proprietário, efeito de rede, algoritmo único ou dado exclusivo que o tornasse insubstituível."
+}

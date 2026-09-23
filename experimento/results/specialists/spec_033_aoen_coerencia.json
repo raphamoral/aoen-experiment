@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 33,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões se reforçam em cadeia coesa: o par governança+transparência financeira justifica cada canal de interface escolhido, as interfaces abstratas (IVotingEngine, IFinancialLedger, INotificationGateway) permitem que o service layer seja o único ponto de verdade sem hardcode tecnológico, e os segmentos de mercado (síndico, administradora, condômino) mapeiam diretamente para os canais priorizados — a única tensão menor é que a proposta menciona 'auditoria imutável' sem explicitar como a implementação inicial (hash chain em PostgreSQL) garante imutabilidade real contra um DBA com acesso direto, o que poderia contradizer a promessa de governança verificável em produção."
+}

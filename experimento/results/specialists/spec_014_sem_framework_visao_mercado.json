@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "sem_framework",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 5,
+  "justificativa": "O público-alvo está identificado (empresas multinacionais, comprador IT/RH, usuário final o funcionário) e há casos de uso concretos, mas a proposta carece de tamanho de mercado estimado, não articula explicitamente a dor de negócio (custo de mal-entendidos, reuniões ineficientes, barreiras de expansão global) e não menciona nenhum concorrente direto (Google Meet Live Captions, Microsoft Teams translation, Interprefy, KUDO) nem diferenciação frente a eles."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista os componentes de infraestrutura (ECS Fargate, PostgreSQL, Redis, S3, SQS, CDN, etc.) e menciona práticas que indiretamente reduzem custos (scale stateless, Docker imutável, rolling deployments), mas não apresenta nenhuma estimativa concreta de valores em dólares/reais por componente, nenhuma estratégia explícita de otimização de custos (ex: instâncias Spot, Reserved Instances, scale-to-zero, Storage Tiers no S3) e nenhuma projeção de como os custos escalam com o crescimento da base de clínicas/usuários."
+}

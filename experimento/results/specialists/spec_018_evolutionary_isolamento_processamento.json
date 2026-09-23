@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona processamento assíncrono (batch diário, retreino semanal, scoring near-real-time) e referencia um 'cluster de referência' para scoring em lote, sugerindo separação física implícita — mas não especifica isolamento explícito via filas/workers independentes, nem define comportamento de fallback quando o pipeline de ML falha (ex.: o dashboard continua servindo predições cacheadas? a API de scoring degrada graciosamente?), deixando o isolamento operacional como intenção arquitetural e não como decisão de design realizada."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 86,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê cinco interfaces distintas (Dashboard Web, API REST, Webhooks, Relatórios PDF/Excel e Admin Panel), cada uma explicitamente justificada por um perfil de usuário real e caso de uso de mercado concreto, com uma Service Layer que desacopla completamente a lógica de negócio das interfaces — permitindo adicionar novos canais sem alterar o core de risco."
+}

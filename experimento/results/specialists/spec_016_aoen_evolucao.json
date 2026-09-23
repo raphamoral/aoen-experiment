@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida: adaptadores intercambiáveis para transportadoras, camada de serviços independente de protocolo e interfaces sem lógica de negócio garantem substituição independente de componentes e adição de funcionalidades sem reescrita — mas faltam decisões explícitas sobre abstração de banco de dados, estratégia de escala do motor de decisão (regras vs. ML) e mecanismos de escalabilidade horizontal, o que impede a nota máxima."
+}

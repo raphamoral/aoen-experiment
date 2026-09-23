@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta define entidades como 'objetos de negócio puros, sem dependências externas', sinalizando implicitamente um desacoplamento que permitiria múltiplas interfaces, mas nenhuma interface concreta é mencionada, nenhum perfil de usuário por canal é definido e não há qualquer justificativa de mercado para escolhas de plataforma (web, mobile, API, etc.)."
+}

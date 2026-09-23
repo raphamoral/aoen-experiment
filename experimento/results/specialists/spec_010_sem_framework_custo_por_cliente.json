@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta menciona apenas custos totais de infraestrutura (Railway/Render, Supabase) sem nenhum cálculo de custo por cliente ou por operação — não há mensuração de quanto cada emissão de NFS-e, cada byte de storage ou cada requisição à API da prefeitura custa por tenant, e o modelo de precificação não está conectado a nenhuma margem por cliente."
+}

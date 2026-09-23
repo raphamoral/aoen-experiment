@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 51,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (pipeline Ingestion→Classification→Extraction→Risk Scoring→Report Generation), isolado atrás de interfaces plugáveis que eliminam dependência de fornecedor único, e resolve um problema real e mensurável — comprimir semanas de trabalho manual especializado em horas — de forma que plataformas genéricas de gestão de documentos ou LLMs expostos diretamente não conseguem replicar sem o domínio estruturado de risco em M&A; perde um ponto porque a proposta não detalha o que torna o modelo de Risk Scoring proprietário e defensável frente a concorrentes que repliquem o mesmo pipeline arquitetural."
+}

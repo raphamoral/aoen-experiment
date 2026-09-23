@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "A proposta identifica um público-alvo implícito (operadores industriais) e menciona normas regulatórias (CONAMA, EPA, ISO) como contexto, mas não articula a dor do cliente, não quantifica o tamanho do mercado, não apresenta diferenciação frente a concorrentes como Siemens, Honeywell ou soluções SCADA existentes, e a proposta de valor é puramente técnica — sem narrativa de negócio que justifique adoção."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta indica sinais de multi-tenancy (conceito de Tenant no contexto de Identidade, Templates em Notificações, RBAC por papel), mas não descreve explicitamente um modelo de configuração por tenant — faltam feature flags por cliente, esquema de configuração de clínica (horários de funcionamento, regras de agendamento, canais habilitados), separação formal entre código fixo e parâmetros variáveis por tenant, e fluxo de onboarding self-service; a arquitetura tem os blocos certos para chegar a 9-10, mas a configurabilidade está implícita, não projetada."
+}

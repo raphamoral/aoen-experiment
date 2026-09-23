@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente ou por operação — as fitness functions cobrem qualidade, latência, compliance e conversão, mas nenhuma rastreia consumo de recursos por tenant; o domínio 'Billing' citado refere-se a cobrança do cliente, não ao custo de servi-lo, e não há qualquer cálculo do tipo 'cada match custa R$X de IA + R$Y de storage', nem conexão entre custo unitário e modelo de precificação."
+}

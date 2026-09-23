@@ -1,0 +1,58 @@
+{
+  "ideia_idx": 79,
+  "ideia": "SaaS de gestão de recall de produtos com rastreabilidade por lote",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Rastreabilidade e integridade dos dados (genealogia lote → componente → produto → distribuição → cliente final, com trilha de auditoria imutável)",
+      "Evolvability (modificabilidade): regulamentações de recall mudam por país e setor (ANVISA, MAPA, Senacon, FDA, CPSC, UE)",
+      "Disponibilidade e tempo de resposta durante um recall (o pico de carga coincide com a crise)",
+      "Auditabilidade e conformidade (LGPD, GDPR, 21 CFR Part 11, ISO 22005, GS1)",
+      "Interoperabilidade (ERP, WMS, MES, marketplaces, GS1/EPCIS)",
+      "Multi-tenancy com isolamento de dados",
+      "Observabilidade",
+      "Segurança"
+    ],
+    "fitness_functions": [
+      "Rastreabilidade: dado um lote de teste, a consulta de genealogia direta e reversa deve retornar todos os nós esperados em p95 < 2s para grafos de 1 milhão de lotes (teste automatizado no CI e sintético em produção)",
+      "Integridade: job diário de reconciliação entre eventos de rastreio e estado projetado, com divergência = 0 (alerta se > 0)",
+      "Auditabilidade: teste de propriedade que garante que toda mutação gera um evento de auditoria append-only com hash encadeado e que a verificação da cadeia passa",
+      "Acoplamento: ArchUnit/dependency-cruiser no CI, com build quebrado se um módulo acessar o esquema ou o código interno de outro (sem dependência cíclica entre bounded contexts)",
+      "Isolamento de tenant: suíte de testes que tenta acessar dados de outro tenant (RLS) e deve falhar em 100% dos casos; roda em todo PR",
+      "Disponibilidade: SLO de 99,9% no fluxo 'abrir recall + notificar', com error budget monitorado e canary sintético a cada minuto",
+      "Desempenho sob pico: teste de carga mensal simulando um recall de 500 mil unidades e 50 mil notificações/hora, sem degradação acima de 20%",
+      "Contratos: testes de contrato (Pact/OpenAPI diff) que bloqueiam mudanças incompatíveis nas APIs públicas e nos eventos",
+      "Conformidade: política como código (OPA/Conftest) verificando criptografia em repouso, retenção e residência de dados",
+      "Custo: custo por tenant e por recall rastreado por tags, com alerta se o custo unitário subir mais de 15% mês a mês",
+      "Tempo de entrega: DORA (lead time < 1 dia, deploy diário) como fitness function de evolvability"
+    ],
+    "incremental_change": "Começar com um monólito modular (modular monolith) com bounded contexts explícitos: Catálogo de Produtos, Rastreabilidade de Lotes, Gestão de Recall, Notificações, Conformidade/Regulatório, Tenant/Billing. Fase 1 (MVP): cadastro de produtos e lotes, registro de eventos de movimentação, busca por lote, abertura de recall e notificação por e-mail. Fase 2: importação de dados de ERP/WMS, rastreabilidade reversa e direta, painel de efetividade do recall. Fase 3: integração com órgãos reguladores, portal do consumidor e do parceiro de distribuição. Fase 4: extração de módulos para serviços somente quando uma fitness function indicar necessidade (por exemplo, Notificações com escala independente, ou Rastreabilidade se o grafo exigir um armazenamento especializado). Usar o padrão Strangler Fig para extrações, feature flags, deploys canary e migrações de banco expand/contract. Cada incremento tem um critério de aceitação medido por fitness functions. Os ADRs registram cada decisão com data, contexto e gatilho de revisão.",
+    "reversibility": "Reversíveis (two-way doors): monólito vs. microsserviços (a fronteira modular permite extrair ou reincorporar), provedor de nuvem (com IaC e contêineres), provedor de e-mail/SMS/WhatsApp (atrás de porta/adaptador), framework de frontend, ferramenta de observabilidade, motor de busca, cache e fila de mensagens (abstraídos por interface). Semirreversíveis: banco relacional principal (PostgreSQL, com custo de migração moderado) e modelo de tenancy (schema/RLS, com migração planejada para tenants grandes). Difíceis de reverter (one-way doors, decidir no last responsible moment): (1) modelo de dados canônico de eventos de rastreabilidade, mitigado por adotar o padrão GS1 EPCIS como base e versionar os esquemas; (2) contratos de API públicos e identificadores de lote/GTIN expostos a clientes, mitigados por versionamento e política de depreciação; (3) região e residência dos dados, decididas conforme os primeiros clientes regulados; (4) event sourcing completo, adotado apenas para o contexto de Rastreabilidade/Auditoria e não para todo o sistema.",
+    "coupling": "Baixo acoplamento entre bounded contexts, alto acoplamento dentro deles. Comunicação entre módulos por interfaces públicas explícitas (módulo API) e eventos de domínio (RecallIniciado, LoteBloqueado, MovimentacaoRegistrada) via outbox transacional, para migrar sem reescrita do monólito para um broker (SNS/SQS, Kafka ou NATS). Cada módulo é dono do seu esquema, sem joins entre esquemas. Integrações externas ficam atrás de anti-corruption layers e adaptadores (ports & hexagonal), isolando ERP, órgãos reguladores e provedores de notificação. Contratos de eventos com schema registry e versionamento semântico. Consistência eventual entre contextos e consistência forte dentro do agregado Lote/Recall. Arquitetura de quantum: Notificações e ingestão de eventos podem escalar de forma independente do restante.",
+    "interfaces": [
+      "API REST/JSON pública (OpenAPI 3) para produtos, lotes, movimentações e recalls, com versionamento por header ou caminho (/v1)",
+      "Webhooks de saída assinados (HMAC) para eventos de recall e mudanças de status de lote",
+      "Endpoint de ingestão em lote (CSV/JSON/EPCIS 2.0) e streaming para movimentações de alto volume",
+      "Conectores/adaptadores de ERP e WMS (SAP, TOTVS, Oracle, Bling, Omie etc.) e marketplaces",
+      "Interface de notificação multicanal (e-mail, SMS, WhatsApp, push) com fallback",
+      "Integração com GS1 (GTIN, SSCC, GLN, EPCIS)",
+      "Adaptador de comunicação regulatória (ANVISA, MAPA, Senacon/Procon, FDA, RASFF) com formatos por jurisdição",
+      "Portal web para gestores de qualidade (dashboard, mapa de distribuição, linha do tempo do recall)",
+      "Portal/landing pública do consumidor para consulta de recall por lote/QR code",
+      "App/PWA móvel para operação de campo (leitura de QR/código de barras, confirmação de recolhimento)",
+      "Barramento interno de eventos de domínio com schemas versionados",
+      "SSO (SAML/OIDC), SCIM e API de gestão de tenants e permissões (RBAC/ABAC)",
+      "Exportação de relatórios de auditoria (PDF/CSV) e trilha de auditoria assinada"
+    ],
+    "escalabilidade": "Início: monólito modular em contêineres stateless, com escala horizontal atrás de um load balancer, PostgreSQL gerenciado com réplicas de leitura e cache em Redis. O tráfego de leitura é atendido por projeções (CQRS leve) e a busca por lote usa índices dedicados (OpenSearch/Postgres FTS). A ingestão de eventos é assíncrona (fila) com idempotência por chave de evento, o que absorve picos. Rastreabilidade em grafo: começar com CTEs recursivas e tabelas de fechamento no PostgreSQL; migrar para um banco de grafos (Neo4j/Neptune) apenas se a fitness function de latência da genealogia falhar. Particionamento de tabelas de eventos por tenant e tempo, com arquivamento em armazenamento frio (S3 + Parquet/Athena) conforme retenção regulatória. Isolamento de tenants grandes (noisy neighbors) por cotas, rate limiting e, se necessário, células dedicadas (cell-based architecture). Escala elástica para picos de recall com autoscaling na fila de notificações. Multi-região só quando exigido por residência de dados ou por SLA de clientes enterprise.",
+    "custos": "Custo operacional inicial baixo: monólito, um banco gerenciado e uma fila em uma única região, evitando a complexidade prematura de microsserviços e Kubernetes (usar ECS/Fargate, Cloud Run ou similar). Principais vetores de custo: armazenamento e retenção de eventos (obrigação regulatória de 5 a 10 anos, mitigada por tiering para armazenamento frio), envio de notificações (SMS/WhatsApp são os mais caros, repassados por consumo), banco de dados e observabilidade (controlar cardinalidade e amostragem de logs/traces). Custo variável ligado a picos de recall: dimensionar por autoscaling e não por capacidade fixa. FinOps: tags por tenant e por módulo, dashboards de custo unitário (por lote rastreado, por notificação) e orçamentos com alertas como fitness function. Compensar o custo de complexidade extraindo serviços apenas com ROI comprovado. Esforço de conformidade (auditorias, SOC 2/ISO 27001) planejado a partir da tração enterprise.",
+    "monetizacao": "Assinatura SaaS B2B por faixas (Starter, Growth, Enterprise), baseada em volume de lotes/SKUs rastreados e número de usuários, com módulos adicionais. Componente de uso: cobrança por notificação enviada (SMS/WhatsApp), por evento de rastreio ingerido acima da franquia e por recall executado (pacote de 'recall ativado' como seguro operacional). Add-ons: conectores premium de ERP/WMS, módulo regulatório por jurisdição, portal white-label do consumidor, SSO/SCIM, retenção estendida, SLA premium e suporte 24x7 durante recalls. Serviços profissionais: onboarding, integração e simulações/drills de recall. Segmentos iniciais: alimentos e bebidas, cosméticos, farmacêuticos e autopeças/eletrônicos. Canais: parcerias com seguradoras de recall (desconto para clientes com a plataforma), consultorias de qualidade e integradores de ERP. Cobrança recorrente via Stripe Billing (ou Asaas/Iugu para PIX e boleto no Brasil), com anual pré-pago para Enterprise. Métricas: NRR, ARPA, custo por recall e tempo até a notificação.",
+    "stack_sugerida": "Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Java (Spring Modulith) com arquitetura hexagonal; Python para pipelines de dados e ETL. Dados: PostgreSQL (RLS por tenant, JSONB para atributos variáveis, tabelas de eventos particionadas), Redis (cache e rate limiting), OpenSearch (busca), S3 + Parquet/Athena (arquivo frio e analytics). Mensageria: outbox pattern + SQS/SNS (evoluindo para Kafka/Redpanda se o volume exigir); Temporal ou Step Functions para workflows de recall (orquestração de notificações, confirmações e escalonamento). Frontend: React/Next.js com TypeScript, design system próprio, PWA para operação de campo com leitor de código de barras/QR. Identidade: Keycloak/Auth0/Cognito (OIDC/SAML). Infra: AWS (ou GCP), Terraform/OpenTofu, contêineres em ECS Fargate/Cloud Run, CDN e WAF. CI/CD: GitHub Actions com feature flags (OpenFeature/Unleash), canary/blue-green, testes de contrato (Pact), ArchUnit/dependency-cruiser e testes de carga (k6) como fitness functions no pipeline. Observabilidade: OpenTelemetry, Grafana/Prometheus/Loki/Tempo ou Datadog, com SLOs. Notificações: SES/SendGrid (e-mail), Twilio/Zenvia (SMS/WhatsApp). Cobrança: Stripe Billing (ou Asaas para o Brasil). Padrões e documentação: GS1 EPCIS 2.0, OpenAPI/AsyncAPI, ADRs versionados no repositório."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T04:22:14+00:00",
+    "runner": "runner.py"
+  }
+}

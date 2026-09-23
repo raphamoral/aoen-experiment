@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 10,
+  "ideia": "App de gestão financeira para MEIs com emissão automática de nota fiscal",
+  "abordagem": "aoen",
+  "response": {
+    "fase1_core": "Ciclo automatizado: recebimento de serviço → categorização financeira → emissão de NF na prefeitura → apuração de impostos (DAS/ISS). O diferencial é eliminar o atrito entre 'prestei o serviço' e 'estou em dia com o fisco' sem exigir conhecimento contábil do MEI.",
+    "fase1_mercado": "MEIs brasileiros (~16 milhões ativos) que prestam serviços — autônomos, freelancers, profissionais liberais. Perfil: baixa literacia financeira, sem contador, operam no celular, e temem a burocracia fiscal mais do que qualquer outra coisa.",
+    "fase1_extensivel": "Sim. O core é uma abstração 'EmissorDeDocumentoFiscal' com interface genérica (emitir, cancelar, consultar). Hoje consome APIs municipais (NFS-e) via providers como eNotas ou NFe.io. Amanhã pode suportar NF-e para MEIs que vendem produtos, CT-e, ou outros regimes — trocando o adapter sem mudar o fluxo.",
+    "fase2_interfaces": [
+      "Mobile App (iOS/Android) — emissão de NF imediata após o serviço",
+      "Web App — dashboard financeiro completo, relatórios, gestão retroativa",
+      "WhatsApp Bot — emissão conversacional para MEIs com baixa tolerância a apps",
+      "API REST — para contadores e plataformas de gestão que gerenciam múltiplos MEIs"
+    ],
+    "fase2_justificativa_mercado": "Mobile abre o MEI de campo (encanador, diarista, personal trainer) que não volta ao computador. Web abre MEIs mais organizados e contadores. WhatsApp captura o segmento digital-resistente — é o canal de maior penetração no Brasil. API abre o mercado B2B2C: escritórios de contabilidade como canal de distribuição, multiplicando clientes sem CAC direto.",
+    "fase2_service_layer": "Uma 'FinanceiraService' e uma 'FiscalService' centralizam toda lógica de negócio. As interfaces (mobile, web, WhatsApp, API) apenas formatam entrada do usuário e chamam esses services. Nenhuma interface conhece regra tributária ou protocolo de prefeitura — só recebe e exibe. Trocar o canal não toca na lógica.",
+    "fase3_fluxo_fixo": "1. Receber dados do serviço prestado → 2. Validar CNAE e limites de faturamento MEI → 3. Enfileirar emissão de NF → 4. Comunicar com API da prefeitura/provider fiscal → 5. Registrar NF emitida → 6. Atualizar saldo financeiro e apuração de DAS → 7. Notificar o usuário. Este fluxo é imutável no código.",
+    "fase3_parametros_configuraveis": [
+      "CNAE principal e secundários do MEI",
+      "Município de emissão e alíquota de ISS local",
+      "Provider fiscal preferido (eNotas, NFe.io, prefeitura direta)",
+      "Regime de apuração (MEI-Simples, MEI-CAEM)",
+      "Limite mensal de faturamento com alertas configuráveis",
+      "Integração bancária (Open Finance: Nubank, Itaú, etc.)",
+      "Template e campos customizados da NF (descrição padrão do serviço)",
+      "Canais de notificação ativos (push, WhatsApp, email)",
+      "Regras de categorização automática por valor/recorrência"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário: CNPJ → sistema consulta Receita Federal e preenche CNAE, razão social, município automaticamente → cliente confirma alíquota ISS (sugerida por geolocalização) → configura integração bancária opcional → pronto. Zero código novo. Novo cliente = novo registro de configuração no banco.",
+    "fase4_core_isolado": "O Worker de Emissão Fiscal: processo separado, assíncrono, que consome uma fila de 'NFs pendentes' e se comunica com APIs de prefeituras/providers. É o único componente que faz I/O externo fiscal. Roda em containers independentes, escaláveis horizontalmente por volume de NFs.",
+    "fase4_custo_variavel": "Por NF emitida: custo de API do provider fiscal (~R$0,05–0,15/NF) + custo de compute do worker (~frações de centavo). Custo total por NF mensurável e indexado ao uso real do cliente — base para precificação por consumo.",
+    "fase4_continuidade": "A fila (SQS/RabbitMQ) desacopla o app do worker. Se o worker cair ou a prefeitura estiver fora do ar, a NF fica na fila com retry exponencial. O app responde normalmente — o MEI vê 'NF em processamento'. Dead-letter queue captura falhas persistentes para alerta manual. O dashboard financeiro, relatórios e categorização seguem funcionando.",
+    "fase4_manutencao": "O provider fiscal é injetado via interface 'IFiscalProvider'. Trocar de eNotas para NFe.io ou implementar integração direta com prefeitura = novo adapter implementando a interface, feature flag para rollout gradual, zero downtime. O worker não sabe qual provider usa — só chama a interface.",
+    "monetizacao": "Freemium: 5 NFs/mês grátis (aquisição). Plano Solo R$29/mês: NFs ilimitadas + dashboard financeiro. Plano Pro R$59/mês: + Open Finance + relatórios de DAS + alertas de limite. Plano Contador R$199/mês: até 20 CNPJs gerenciados via API. Receita adicional: marketplace de serviços financeiros afiliados (seguros MEI, antecipação de recebíveis) com revenue share.",
+    "stack_sugerida": "Backend: Node.js (NestJS) com TypeScript — API REST + BFF por interface. Worker: processo Node.js separado consumindo SQS. Banco: PostgreSQL (dados transacionais) + Redis (cache de configurações e sessões). Fila: AWS SQS com DLQ. Mobile: React Native (código compartilhado iOS/Android). Web: Next.js. WhatsApp: Z-API ou Evolution API (self-hosted) ou Twilio. Provider Fiscal: eNotas como primário, adapter para NFe.io como fallback. Infra: Railway ou Render para início (custo zero até escala), migração para ECS/Fargate quando worker precisar escalar. Observabilidade: Sentry + Datadog ou Grafana Cloud."
+  },
+  "raw": "```json\n{\n  \"fase1_core\": \"Ciclo automatizado: recebimento de serviço → categorização financeira → emissão de NF na prefeitura → apuração de impostos (DAS/ISS). O diferencial é eliminar o atrito entre 'prestei o serviço' e 'estou em dia com o fisco' sem exigir conhecimento contábil do MEI.\",\n  \"fase1_mercado\": \"MEIs brasileiros (~16 milhões ativos) que prestam serviços — autônomos, freelancers, profissionais liberais. Perfil: baixa literacia financeira, sem contador, operam no celular, e temem a burocracia fiscal mais do que qualquer outra coisa.\",\n  \"fase1_extensivel\": \"Sim. O core é uma abstração 'EmissorDeDocumentoFiscal' com interface genérica (emitir, cancelar, consultar). Hoje consome APIs municipais (NFS-e) via providers como eNotas ou NFe.io. Amanhã pode suportar NF-e para MEIs que vendem produtos, CT-e, ou outros regimes — trocando o adapter sem mudar o fluxo.\",\n  \"fase2_interfaces\": [\n    \"Mobile App (iOS/Android) — emissão de NF imediata após o serviço\",\n    \"Web App — dashboard financeiro completo, relatórios, gestão retroativa\",\n    \"WhatsApp Bot — emissão conversacional para MEIs com baixa tolerância a apps\",\n    \"API REST — para contadores e plataformas de gestão que gerenciam múltiplos MEIs\"\n  ],\n  \"fase2_justificativa_mercado\": \"Mobile abre o MEI de campo (encanador, diarista, personal trainer) que não volta ao computador. Web abre MEIs mais organizados e contadores. WhatsApp captura o segmento digital-resistente — é o canal de maior penetração no Brasil. API abre o mercado B2B2C: escritórios de contabilidade como canal de distribuição, multiplicando clientes sem CAC direto.\",\n  \"fase2_service_layer\": \"Uma 'FinanceiraService' e uma 'FiscalService' centralizam toda lógica de negócio. As interfaces (mobile, web, WhatsApp, API) apenas formatam entrada do usuário e chamam esses services. Nenhuma interface conhece regra tributária ou protocolo de prefeitura — só recebe e exibe. Trocar o canal não toca na lógica.\",\n  \"fase3_fluxo_fixo\": \"1. Receber dados "
+}

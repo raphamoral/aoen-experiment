@@ -1,0 +1,90 @@
+{
+  "ideia_idx": 14,
+  "ideia": "Plataforma de tradução simultânea para reuniões corporativas multilíngues",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Sessão de reunião multilíngue com tradução simultânea: orquestração do fluxo fala → transcrição → tradução → entrega por participante/idioma, com baixa latência, preservação de contexto (glossários corporativos, terminologia, falantes) e regras de negócio de sessões, participantes, idiomas, permissões, políticas de retenção e faturamento por uso. O core contém as entidades (Meeting, Participant, LanguageChannel, Utterance, Transcript, Glossary, Tenant, Subscription, UsageRecord), os serviços de domínio (TranslationPipeline, LatencyBudgetPolicy, GlossaryResolver, SpeakerTurnManager, UsageMeter) e os casos de uso (application services).",
+    "primary_ports": [
+      "MeetingManagementPort (criar/agendar/iniciar/encerrar reunião, convidar participantes, definir idiomas)",
+      "AudioStreamIngestPort (receber fluxo de áudio de um falante)",
+      "TranslationSubscriptionPort (participante assina legendas/áudio traduzido em um idioma alvo)",
+      "TranscriptQueryPort (consultar/exportar transcrição e ata pós-reunião)",
+      "GlossaryManagementPort (gerir glossários e terminologia por tenant)",
+      "TenantAdminPort (usuários, papéis, SSO, políticas de retenção e privacidade)",
+      "BillingQueryPort (consultar consumo, faturas e limites do plano)",
+      "SessionControlPort (mutar, trocar idioma, ajustar qualidade/latência, ativar interpretação humana de fallback)"
+    ],
+    "secondary_ports": [
+      "SpeechToTextPort (ASR streaming)",
+      "MachineTranslationPort (tradução de texto em streaming, com glossário)",
+      "TextToSpeechPort (síntese de voz por idioma/voz)",
+      "LanguageDetectionPort",
+      "MeetingRepositoryPort / TranscriptRepositoryPort / GlossaryRepositoryPort (persistência)",
+      "AudioStoragePort (gravações e artefatos)",
+      "RealtimeMediaTransportPort (WebRTC/SFU para áudio/vídeo)",
+      "EventBusPort / MessagePublisherPort (eventos de domínio e fan-out)",
+      "SessionStatePort (estado efêmero e presença, cache)",
+      "IdentityProviderPort (autenticação, SSO, SCIM)",
+      "CalendarPort (agendamento e convites)",
+      "VideoConferencingPort (integração com Zoom/Teams/Meet)",
+      "NotificationPort (email, push, chat)",
+      "PaymentGatewayPort (cobrança e assinaturas)",
+      "UsageMeteringPort (medição e exportação de consumo)",
+      "ClockPort / IdGeneratorPort (determinismo em testes)",
+      "ObservabilityPort (logs, métricas, traces)",
+      "SecretsPort / EncryptionPort (chaves, criptografia por tenant)",
+      "HumanInterpreterPort (roteamento para intérpretes humanos, fallback)"
+    ],
+    "primary_adapters": [
+      "REST API Adapter (HTTP/OpenAPI) para gestão de reuniões, glossários, tenants e billing",
+      "GraphQL Adapter (opcional) para consultas do dashboard",
+      "WebSocket/WebRTC Gateway Adapter para ingestão de áudio e entrega de legendas/áudio traduzido em tempo real",
+      "Web App Adapter (SPA React) para participantes e administradores",
+      "Desktop/Mobile App Adapters (Electron, iOS, Android)",
+      "Plugin/App Adapters para Zoom, Microsoft Teams e Google Meet (bot participante ou app embarcado)",
+      "SIP/PSTN Dial-in Adapter para participantes por telefone",
+      "CLI/Script Adapter para automação e operações",
+      "Webhook Inbound Adapter (calendário, provedores de vídeo, gateway de pagamento)",
+      "Test Driver Adapters (testes de contrato, BDD e simulador de reunião com áudio gravado) — usam as mesmas portas primárias que a UI"
+    ],
+    "secondary_adapters": [
+      "ASR: Deepgram, Google Speech-to-Text, Azure Speech, Whisper (self-hosted) — intercambiáveis por idioma/custo",
+      "MT: DeepL, Google Translate, Azure Translator, LLM (ex.: Claude) para tradução contextual com glossário, NLLB/MarianMT self-hosted",
+      "TTS: ElevenLabs, Azure Neural TTS, Google TTS, Piper self-hosted",
+      "Persistência: PostgreSQL (metadados, transcrições), Redis (estado efêmero e presença), S3-compatível (áudio e artefatos)",
+      "Mensageria: Kafka/Redpanda ou NATS JetStream (eventos e streaming interno)",
+      "Mídia: LiveKit/mediasoup (SFU WebRTC) ou Twilio/Daily",
+      "Identidade: Auth0/Keycloak/Azure AD/Okta (OIDC, SAML, SCIM)",
+      "Calendário: Google Calendar API, Microsoft Graph",
+      "Notificações: SendGrid/SES, Slack, Teams",
+      "Pagamentos: Stripe (assinaturas e cobrança por uso) e alternativas via a mesma porta",
+      "Observabilidade: OpenTelemetry + Prometheus/Grafana/Loki/Tempo, Sentry",
+      "Segredos/Cripto: HashiCorp Vault, AWS KMS/GCP KMS",
+      "Adapters In-Memory/Fake/Stub (ASR, MT, TTS, repositórios, relógio) para testes e desenvolvimento offline",
+      "Adapters de Fallback/Composite (circuit breaker, retry, roteamento por custo/latência/qualidade entre provedores)"
+    ],
+    "isolation": "O core (domínio + casos de uso) é uma biblioteca sem dependências de frameworks, SDKs, banco, rede ou provedores de IA. Só conhece as portas, definidas como interfaces em termos da linguagem do domínio (ex.: AudioChunk, Utterance, TranslatedUtterance, e não tipos de vendor). A regra de dependência aponta sempre para dentro: adapters dependem das portas, nunca o contrário. A composição ocorre em um composition root (injeção de dependência), que escolhe os adapters por configuração/tenant/ambiente. Cada adapter traduz DTOs externos para o modelo de domínio (anti-corruption layer), de modo que trocar Deepgram por Whisper ou Stripe por outro gateway não altere uma linha do core. O tratamento é simétrico: ASR, MT, TTS, banco, fila e pagamentos são todos secundários, atrás de portas. Para o streaming, as portas usam abstrações assíncronas do domínio (streams/async iterators) e o budget de latência é uma política do domínio, não do adapter. Testes de arquitetura (ArchUnit/dependency-cruiser) impedem imports proibidos no core. Como o mesmo core é dirigido por UI, testes ou scripts, a suíte roda toda a lógica com adapters fake, sem rede.",
+    "interfaces": [
+      "Web app de reunião (painel de legendas multilíngues, seletor de idioma, áudio traduzido com mixagem do original)",
+      "Painel administrativo do tenant (usuários, SSO, glossários, políticas, consumo)",
+      "Apps desktop e mobile",
+      "Plugins/bots para Zoom, Teams e Meet",
+      "Dial-in telefônico (SIP/PSTN)",
+      "API pública REST + WebSocket + Webhooks e SDKs (JS, Python)",
+      "Página de transcrições e atas pós-reunião com busca e exportação (PDF, DOCX, SRT/VTT)",
+      "Console de operações (SRE) e dashboards de qualidade/latência",
+      "CLI e simulador de reunião para testes e demos",
+      "Overlay/streaming de legendas (OBS, telão, webinar)"
+    ],
+    "escalabilidade": "Stateless no plano de controle: instâncias do core escalam horizontalmente atrás de load balancer, com autoscaling (HPA/KEDA) por número de streams ativos. O plano de dados de tempo real é sharded por reunião/sala (afinidade de sessão): cada reunião roda um pipeline (ingest → ASR → MT → TTS/legenda) em workers dedicados, com backpressure. O fan-out é por idioma alvo, não por participante: traduz-se uma vez por par (fonte, idioma) e distribui-se a todos os assinantes daquele idioma via SFU/pub-sub, reduzindo o custo de N participantes para L idiomas. Roteamento multi-região próximo aos participantes (edge/SFU regional) para latência total abaixo de ~1–2 s. Estado efêmero em Redis, eventos em Kafka/NATS particionados por meetingId, persistência assíncrona de transcrições. Isolamento multi-tenant (limites por tenant, filas e cotas separadas). Como as portas são substituíveis, é possível escalar horizontalmente com múltiplos provedores (balanceamento e failover entre ASR/MT/TTS) ou migrar cargas para modelos self-hosted em GPU quando o volume compensar. Degradação graciosa: se o TTS estiver saturado, cai para apenas legendas.",
+    "custos": "Os principais custos variáveis são ASR (por minuto de áudio), MT (por caractere/token), TTS (por caractere; o mais caro) e a banda/SFU de mídia. Alavancas de otimização: (1) traduzir uma vez por idioma alvo e não por participante; (2) VAD/detecção de silêncio para não enviar áudio ocioso; (3) roteamento dinâmico de provedor por custo/qualidade/latência pelas portas; (4) cache de segmentos e glossários; (5) tiers: legendas apenas (barato) vs. voz sintetizada (premium); (6) modelos self-hosted (Whisper, NLLB, Piper) em GPUs reservadas/spot quando o volume for estável, com API externa como overflow; (7) processamento de LLM só para revisão/ata pós-reunião, fora do caminho crítico. Custos fixos: infraestrutura multi-região, GPUs, armazenamento e retenção de gravações (lifecycle para storage frio), observabilidade e compliance (SOC 2, LGPD/GDPR, DPAs com subprocessadores). Risco: reuniões longas com muitos idiomas fazem o custo escalar em L × minutos, o que exige cotas, limites por plano e medição precisa via UsageMeter. Meta: margem bruta de 65–75% controlando o custo por minuto-idioma.",
+    "monetizacao": "SaaS B2B multi-tenant com modelo híbrido: (a) assinatura por assento/organizador (Free/Starter/Business/Enterprise) com minutos e idiomas inclusos; (b) cobrança por uso (minuto-idioma) excedente via Stripe Billing metered; (c) add-ons premium: voz sintetizada/clonada, glossários e termos customizados, transcrição e ata com resumo por IA, retenção estendida, intérpretes humanos sob demanda como fallback; (d) Enterprise: SSO/SCIM, residência de dados, SLA, VPC/on-premise privado, auditoria, DPA; (e) marketplace/revenue share para integrações e intérpretes; (f) pacotes por evento (conferências, webinars) com preço fechado; (g) API/SDK para revenda white-label a plataformas de vídeo (cobrança por minuto). Trial gratuito limitado por minutos para aquisição via product-led growth, com expansão por venda direta em contas corporativas.",
+    "stack_sugerida": "Core: TypeScript (Node.js) ou Kotlin/Java, com DDD e sem frameworks no domínio; alternativa Go para os workers de streaming. Estrutura de monorepo com módulos domain / application (use cases + ports) / adapters-in / adapters-out / bootstrap. Frontend: React + TypeScript (Next.js para o painel), WebRTC (LiveKit SDK), Electron e React Native. Tempo real: LiveKit (SFU), WebSocket/gRPC streaming, NATS JetStream ou Kafka/Redpanda. Dados: PostgreSQL (com particionamento), Redis, S3/MinIO, ClickHouse para métricas de uso e analytics. IA: Deepgram/Azure/Whisper (ASR), DeepL/Google/LLM/NLLB (MT), ElevenLabs/Azure/Piper (TTS), atrás das portas. Infra: Kubernetes (EKS/GKE) multi-região, KEDA, Terraform, ArgoCD, nós GPU para modelos self-hosted, CDN. Identidade: Keycloak/Auth0 (OIDC/SAML/SCIM). Pagamentos: Stripe Billing. Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki, Tempo, Sentry. Qualidade: testes de contrato por porta, testes de arquitetura (ArchUnit/dependency-cruiser), BDD com adapters fake, testes de carga (k6) e simulador de reuniões. Segurança: mTLS, criptografia por tenant (KMS), secrets no Vault, auditoria, conformidade LGPD/GDPR/SOC 2."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:13:45+00:00",
+    "runner": "runner.py"
+  }
+}

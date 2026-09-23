@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Web gamificada, Dashboard B2B, API/Webhooks, App Mobile e CLI), cada uma explicitamente justificada por um perfil de usuário ou segmento de mercado específico, com a lógica de negócio completamente desacoplada em um service layer independente (CampaignService, TesterService, ValidationService, RewardService, ReportService), garantindo que novas interfaces possam ser adicionadas sem reescrever regras de negócio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta menciona implicitamente duas interfaces (api e web como packages no monorepo), sugerindo algum desacoplamento técnico, mas não justifica as interfaces por perfis de usuário ou alcance de mercado — não há menção a mobile (contexto crítico para rastreamento nutricional diário), portal para nutricionistas/médicos, ou API pública para integrações com labs e wearables, sendo a escolha claramente guiada por conveniência técnica, não por estratégia de canais."
+}

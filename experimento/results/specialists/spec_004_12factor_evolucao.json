@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte capacidade evolutiva: serviços independentes no monorepo, backing services tratados como recursos anexados substituíveis por URL/credencial, deploys imutáveis com rollback instantâneo e escalabilidade via Kubernetes — porém a proposta não descreve isolamento explícito da lógica de negócio de frameworks internos (ex: portas e adaptadores / arquitetura hexagonal) nem estratégia de versionamento de API para contratos externos, deixando risco residual de acoplamento tecnológico dentro de cada serviço."
+}

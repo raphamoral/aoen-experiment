@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "A proposta demonstra integração multi-carrier (Correios, Jadlog, Total Express) e multi-plataforma (Shopify, VTEX, Magento) como potencial diferenciador real no mercado brasileiro de logística reversa, mas o documento descreve infraestrutura técnica sólida sem nunca nomear, isolar ou explicar por que esse núcleo orquestrador é insubstituível — ausência de qualquer menção a algoritmo proprietário de roteamento, ativo de dados, efeito de rede ou razão pela qual alternativas existentes (Melhor Envio, Kangu, ou soluções nativas das plataformas) não resolvem o mesmo problema."
+}

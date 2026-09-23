@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "O padrão FiscalAdapter abstrato com implementações concretas por município/provedor e o mesmo princípio aplicado ao Open Finance demonstram configurabilidade real no nível de integrações — trocar provedor fiscal ou banco é questão de configuração, não de código; porém a proposta não descreve explicitamente o modelo de configuração por tenant (schema, feature flags, plano de onboarding por row no banco), deixando em aberto se parâmetros como CNAE, regime tributário, município do MEI e regras de DAS são de fato dirigidos por dados ou ainda hardcoded na instanciação do adapter."
+}

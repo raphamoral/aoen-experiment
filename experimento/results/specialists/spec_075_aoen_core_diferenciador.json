@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 75,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de correlação topológica em tempo real é um diferenciador claro, tecnicamente isolado via interface de Collector Adapter, extensível por design (backends e orquestradores plugáveis), e resolve especificamente a lacuna de correlação automática entre traces/métricas/logs que ferramentas como Prometheus+Jaeger+ELK não resolvem isoladamente — perde um ponto por não evidenciar barreira defensável (patente, dado proprietário ou efeito de rede) que impeça replicação direta por players como Datadog ou New Relic."
+}

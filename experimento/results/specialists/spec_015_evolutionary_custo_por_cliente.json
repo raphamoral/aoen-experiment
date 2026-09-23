@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 5,
+  "justificativa": "A proposta menciona explicitamente uma fitness function de 'custo por decisão de preço com alerta por tenant/tier', o que indica consciência de custo por operação por cliente — indo além de simples FinOps total — mas não detalha o cálculo real (ex: 'R$X de IA + R$Y de storage por decisão'), nem conecta esse custo à margem por tenant ou ao modelo de precificação adotado."
+}

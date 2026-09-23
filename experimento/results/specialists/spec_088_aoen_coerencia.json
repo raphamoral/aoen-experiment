@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 88,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural sem lacunas: o mecanismo central (risco do âncora, não do fornecedor) justifica o mercado-alvo (PMEs sem rating próprio), que justifica as múltiplas interfaces (cada canal atende um segmento de maturidade digital distinta), que são unificadas pela service layer com adapters (evitando duplicação de regras), enquanto o fluxo imutável com parâmetros configuráveis fecha o ciclo separando invariantes regulatórios de variáveis comerciais — cada decisão existe porque a anterior a exige."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona um PaymentGatewayPort para processar cobranças de assinatura e planos, indicando consciência de que haverá monetização via subscription, mas não há nenhum detalhe sobre tiers, valores, segmentação de clientes, métricas de sustentabilidade (MRR, LTV, CAC, churn) ou conexão explícita entre o valor entregue e o que é cobrado."
+}

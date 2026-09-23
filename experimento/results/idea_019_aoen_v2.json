@@ -1,0 +1,43 @@
+{
+  "ideia_idx": 19,
+  "ideia": "App de agendamento inteligente para clínicas odontológicas",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de agendamento inteligente: otimização contínua da agenda da clínica por disponibilidade de cadeira, especialidade do dentista, duração de procedimento e histórico de comportamento do paciente (predição de no-show). Sem ele, o produto é apenas um calendário glorificado.",
+    "fase1_mercado": "Clínicas odontológicas de pequeno e médio porte (1–10 dentistas) que perdem receita com horários ociosos, faltas não previstas e agendamentos via WhatsApp manual. Mercado secundário: redes de franquias odontológicas com múltiplas unidades.",
+    "fase1_extensivel": "Sim. O core é um serviço de scheduling agnóstico de canal e de modelo de IA. A predição de no-show pode usar Claude API, OpenAI, ou modelo local via ONNX. O motor de disponibilidade consome qualquer backend de calendário (Google Calendar, CalDAV, banco próprio) via adaptador. Trocar o provedor de IA não afeta as interfaces nem os dados.",
+    "fase2_interfaces": [
+      "Web app para recepcionista/gestor da clínica (visão de agenda, gestão de pacientes, relatórios)",
+      "Portal de auto-agendamento para pacientes (link público da clínica, sem login obrigatório)",
+      "Chatbot WhatsApp para agendamento por linguagem natural (canal dominante no Brasil)",
+      "API REST/Webhook para integração com softwares odontológicos legados (OdontoSoft, Clinicorp, etc.)",
+      "Agente de voz (IVR ou LLM voice) para clínicas que ainda recebem agendamento por telefone",
+      "App mobile para pacientes (histórico, lembretes, reagendamento)"
+    ],
+    "fase2_justificativa_mercado": "Web app retém o gestor da clínica como cliente pagante. Portal de auto-agendamento reduz carga da recepção e é o argumento de venda primário. WhatsApp abre o mercado brasileiro de massa (85%+ dos pacientes já usam para contato com clínicas). API abre mercado de redes e franquias que têm sistemas próprios. Voz captura clínicas de perfil mais conservador sem alterar fluxo operacional delas. Mobile fideliza o paciente final, reduzindo churn indireto.",
+    "fase2_service_layer": "Uma SchedulingService centralizada expõe métodos como `requestSlot(patientId, procedureType, preferences)`, `confirmAppointment(slotId)`, `cancelAppointment(appointmentId)` e `getAvailability(clinicId, dateRange)`. Nenhuma interface implementa regra de negócio — elas apenas traduzem entrada do usuário para chamadas da service e formatam a resposta para o canal. O WhatsApp bot converte linguagem natural em intenção estruturada antes de chamar a mesma service que o portal web usa.",
+    "fase3_fluxo_fixo": "1. Paciente expressa intenção de agendar (qualquer canal) → 2. Sistema normaliza intenção para structured request → 3. Motor consulta disponibilidade real (cadeiras, dentistas, duração do procedimento) → 4. Slots candidatos são ranqueados por score (preferência do paciente + otimização da agenda da clínica) → 5. Slot é confirmado e bloqueado atomicamente → 6. Pipeline de lembretes é agendado (D-2, D-1, H-2) → 7. Pós-consulta: coleta de feedback e atualização do perfil comportamental do paciente.",
+    "fase3_parametros_configuraveis": [
+      "Horário de funcionamento por dentista e por dia da semana",
+      "Duração padrão por tipo de procedimento (ex: limpeza = 40min, extração = 60min)",
+      "Número de cadeiras disponíveis simultaneamente",
+      "Canais de lembrete habilitados (WhatsApp, SMS, email) e intervalos (D-2, D-1, H-2)",
+      "Política de cancelamento (prazo mínimo, penalidade ou não)",
+      "Threshold de risco de no-show para acionar confirmação ativa",
+      "Idioma e tom das mensagens automáticas",
+      "Regras de overbooking permitido por dentista",
+      "Buffer de tempo entre consultas por procedimento",
+      "Integração webhook para sistema legado (URL + eventos de trigger)",
+      "Branding: nome da clínica, logo, cor primária no portal",
+      "Fuso horário da clínica",
+      "Regras de fila de espera (ativar ou não, notificar automaticamente)"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário de configuração que gera um registro de tenant no banco com todos os parâmetros acima. O sistema cria automaticamente: subdomínio `clinica.app`, número WhatsApp provisionado (ou vincula o da clínica via Cloud API), pipeline de lembretes configurado, e acesso ao web app. Zero código. Estimativa: onboarding completo em menos de 30 minutos pelo próprio gestor da clínica.",
+    "fase4_core_isolado": "O motor de IA (predição de no-show + ranqueamento de slots por LLM) roda em worker assíncrono isolado, acionado via fila de mensagens (ex: SQS ou BullMQ). O agendamento não bloqueia nesse worker — o slot é reservado com score padrão imediatamente; o score de IA é aplicado de forma assíncrona e pode acionar lembretes adicionais se o risco for alto. Se o worker de IA cair, o fluxo de agendamento continua funcionando com lógica determinística de fallback.",
+    "fase4_custo_total_cliente": "Custo estimado por clínica/mês (plano pro, ~5 dentistas, ~300 agendamentos/mês): Core IA (Claude API para WhatsApp NLU + predição de no-show): ~$8–15/mês. Notificações (WhatsApp Business API + SMS): ~$0,05–0,12/mensagem × 900 mensagens = ~$45–108/mês (repassado com margem ao cliente). Infra proporcional (fração de servidor, banco, cache): ~$3–6/mês por tenant em arquitetura multi-tenant. Armazenamento (histórico, arquivos): ~$0,50–1/mês. Banda/CDN: ~$0,50/mês. Total direto sem notificações: ~$12–22/mês. Com notificações (custo repassado): modelo de precificação clara para monetização separada.",
+    "fase4_continuidade": "O banco de dados (agendamentos confirmados) é o sistema de verdade — independente do worker de IA. Se o worker de IA falhar: agendamentos já confirmados permanecem íntegros, novos agendamentos usam fallback determinístico (primeiro slot disponível, sem score de IA), lembretes continuam sendo disparados pela fila de notificações (serviço separado). Dead letter queue captura jobs de IA com falha para reprocessamento. SLA de agendamento não depende de SLA de IA.",
+    "fase4_manutencao": "O motor de IA é acessado via interface `NoShowPredictor` e `SlotRanker` (port/adapter pattern). Hoje usa Claude API; amanhã pode usar OpenAI, Gemini, ou modelo local — sem alterar nenhum outro módulo. Versionamento do prompt centralizado em config, não hardcoded. Troca de provedor = alterar variável de ambiente + adapter concreto. Rollout com feature flag por tenant permite migração gradual sem janela de manutenção.",
+    "monetizacao": "SaaS com 3 tiers: Starter (~R$197/mês, 1–2 dentistas, portal + lembretes básicos), Pro (~R$397/mês, até 5 dentistas, WhatsApp bot + predição de no-show + relatórios), Rede (~R$197/unidade/mês com mínimo de 5 unidades, API + dashboard consolidado + SLA). Notificações WhatsApp/SMS cobradas separadamente por volume (margem de 30–40% sobre custo de operadora). Setup fee único (R$497) para onboarding assistido. Expansão de receita: marketplace de integrações com softwares odontológicos parceiros (revenue share).",
+    "stack_sugerida": "Backend: Node.js + TypeScript (Fastify) ou Python (FastAPI) — multi-tenant com Row Level Security no PostgreSQL. Fila assíncrona: BullMQ + Redis (self-hosted) ou AWS SQS. IA/LLM: Claude API (Anthropic) para NLU do WhatsApp e análise de padrões de no-show. Notificações: Twilio (SMS) + Meta WhatsApp Business Cloud API. Frontend web: Next.js 14 (App Router) + Tailwind. Mobile: React Native (Expo) ou PWA para MVP. Infra: Docker + Railway ou Render para MVP; migração para AWS ECS + RDS quando escala justificar. Auth multi-tenant: Clerk ou Supabase Auth. Observabilidade: OpenTelemetry + Grafana Cloud. Cache: Redis (compartilhado com fila)."
+  }
+}

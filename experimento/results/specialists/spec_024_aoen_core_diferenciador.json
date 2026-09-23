@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 24,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de reconciliação tridimensional (Licença × Usuário × Instalação) é explicitamente isolado como core agnóstico de fornecedor, extensível via arquitetura de plugins e resolve um gap real que planilhas e ferramentas pontuais não cobrem — perde um ponto por não detalhar qual mecanismo de descoberta de 'uso real' o diferencia de concorrentes como Snow Software ou Flexera."
+}

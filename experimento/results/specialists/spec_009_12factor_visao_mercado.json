@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O nome do produto sugere implicitamente um mercado (setor de saúde, compradores/vendedores de equipamentos usados) e insinua diferenciação via certificação de qualidade, mas toda a proposta apresentada é estritamente técnico-arquitetural — não há definição explícita de segmento-alvo (hospitais, clínicas, distribuidores?), nenhuma articulação da dor do cliente, ausência total de estimativa de tamanho de mercado e nenhuma análise competitiva frente a alternativas já existentes."
+}

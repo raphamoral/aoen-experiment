@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 47,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (motor de condução de disputas com validade legal), isolado atrás de uma interface abstraída (ArbitrationEngine), extensível via RuleSet plugável e estratégias de decisão intercambiáveis (IA/humano/múltiplos fornecedores), e resolve um problema real — arbitragem vinculante de baixo valor — que o judiciário e formulários genéricos não resolvem; perde um ponto por não detalhar como a validade legal é garantida tecnicamente (integração com câmaras homologadas, assinatura digital, registro imutável), que é o elemento mais crítico e diferenciador do ponto de vista regulatório."
+}

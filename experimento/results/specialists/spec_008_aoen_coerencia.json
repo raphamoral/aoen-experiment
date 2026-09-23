@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "O projeto conta uma história arquitetural excepcionalmente coesa: o problema central (provar conformidade regulatória sem papel) justifica a blockchain, que justifica o BlockchainAdapter (evitar lock-in sem sacrificar previsibilidade de custo com Fabric), que justifica o CustodyService como camada única de verdade, que justifica as cinco interfaces cada uma servindo exatamente um segmento de mercado identificado na fase1 — Web para decisores de compra, Mobile offline-first para campo sem conectividade, API para integrações enterprise já existentes, Portal para o canal B2G, IoT para fechar o ciclo sem erro humano; o pipeline fixo da fase3 mapeia precisamente as etapas declaradas no core da fase1, e os parâmetros configuráveis preservam o compliance sem rigidez operacional; a única tensão latente (blockchain privada Fabric vs. auditabilidade pública por reguladores) é resolvida estruturalmente pelo Portal de Auditoria com tokens temporários, tornando a escolha de rede privada coerente com o mercado B2B enterprise — a dedução de um ponto reflete apenas o truncamento do documento, que impede avaliar a completude dos parâmetros configuráveis da fase3."
+}

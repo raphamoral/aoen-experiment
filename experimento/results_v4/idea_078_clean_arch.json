@@ -1,0 +1,202 @@
+{
+  "ideia_idx": 78,
+  "ideia": "Plataforma de empréstimo entre pessoas com scoring alternativo por IA",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio puros, sem dependência de framework, banco ou IA. As regras críticas da empresa ficam aqui.",
+      "itens": [
+        "Usuario (id, tipo: Tomador | Investidor, status KYC)",
+        "PerfilFinanceiro (renda declarada, obrigações, histórico)",
+        "SolicitacaoEmprestimo (valor, prazo, finalidade, estado)",
+        "Oferta / Lance (valor, taxa, investidor)",
+        "Emprestimo (contrato, taxa, CET, cronograma, estado: Aberto | Financiado | Ativo | Quitado | Inadimplente)",
+        "Parcela (vencimento, principal, juros, multa, status)",
+        "Pagamento",
+        "Carteira / Conta (saldo, lançamentos de razão)",
+        "Lancamento (razão contábil com dupla entrada)",
+        "Score (valor, faixa de risco, versão do modelo, fatores explicativos)",
+        "FatorAlternativo (fonte, categoria, peso, consentimento associado)",
+        "Consentimento (LGPD: finalidade, escopo, validade, revogação)",
+        "Taxa e Comissao (política de precificação)",
+        "Cobranca / Renegociacao",
+        "Value Objects: Dinheiro, Taxa, Prazo, CPF, Periodo, FaixaDeRisco"
+      ],
+      "regras_de_negocio_enterprise": [
+        "Limite de exposição por tomador e por investidor",
+        "Diversificação mínima da carteira do investidor",
+        "Cálculo de juros, amortização (Price/SAC) e CET",
+        "Máquina de estados do empréstimo",
+        "Invariantes: o razão sempre fecha (débitos = créditos)",
+        "Empréstimo só é financiado com 100% do valor captado",
+        "Score expirado exige recálculo"
+      ]
+    },
+    "use_cases": {
+      "descricao": "Regras de aplicação. Cada caso de uso tem Input Boundary, Output Boundary e Gateways (portas) definidos como interfaces.",
+      "tomador": [
+        "CadastrarUsuario",
+        "RealizarKYC",
+        "RegistrarConsentimento / RevogarConsentimento",
+        "CalcularScoreAlternativo",
+        "SolicitarEmprestimo",
+        "AceitarOfertaEContratar",
+        "PagarParcela",
+        "AntecipacaoDeParcelas",
+        "RenegociarDivida"
+      ],
+      "investidor": [
+        "DepositarFundos",
+        "ListarOportunidades",
+        "OfertarEmLoteOuManual (auto-invest)",
+        "AcompanharCarteira",
+        "SacarFundos",
+        "VenderCreditoNoMercadoSecundario"
+      ],
+      "plataforma": [
+        "PrecificarRisco (taxa a partir do score)",
+        "CasarOfertasComSolicitacoes (matching)",
+        "ConciliarPagamentos",
+        "GerarCronogramaDeParcelas",
+        "ExecutarCobrancaDeInadimplentes",
+        "ReavaliarScoreDaCarteira",
+        "ExplicarDecisaoDeCredito (LGPD art. 20 / direito de revisão)",
+        "AuditarModelo (viés, drift, fairness)",
+        "GerarRelatoriosRegulatorios (BCB, COAF, Receita)",
+        "CalcularEDistribuirComissoes"
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Convertem dados entre o formato dos casos de uso e o dos agentes externos. Implementam as portas definidas na camada de Use Cases.",
+      "controllers": "Controllers REST/GraphQL/WebSocket convertem requisições em Input DTOs.",
+      "presenters_viewmodels": "Presenters convertem Output DTOs em ViewModels para web e mobile, com formatação de moeda e datas.",
+      "gateways_repositorios": [
+        "UsuarioRepository, EmprestimoRepository, LedgerRepository, ScoreRepository (implementações SQL)",
+        "ScoringGateway: adapta o serviço de ML ao contrato ScoreProvider (inferência e explicabilidade SHAP)",
+        "DataSourceGateway (Open Finance, bureaus como Serasa/Boa Vista/SCR, dados telecom, e-commerce, folha de pagamento, dados comportamentais com consentimento)",
+        "KYCGateway (biometria, liveness, validação de documento)",
+        "PaymentGateway (Pix, boleto, TED, conta de pagamento/escrow)",
+        "NotificationGateway (e-mail, SMS, push, WhatsApp)",
+        "ContractSigningGateway (assinatura eletrônica ICP-Brasil)",
+        "EventPublisher / Outbox"
+      ],
+      "mappers": "Mappers de persistência (Entity ⇄ Row/Document) e ACL (Anti-Corruption Layer) para cada provedor externo.",
+      "anti_corruption_layer": "Cada provedor externo (bureau, gateway de pagamento, KYC) é isolado atrás de um adapter, o que permite trocá-lo sem tocar nas camadas internas."
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa, com detalhes substituíveis e sem regra de negócio.",
+      "web_api": "NestJS ou FastAPI (apenas como mecanismo de entrega HTTP)",
+      "frontend": "Next.js/React (web) e React Native ou Flutter (mobile)",
+      "banco_de_dados": "PostgreSQL (transacional e razão contábil), Redis (cache, filas leves e idempotência), S3/MinIO (documentos)",
+      "mensageria": "Kafka ou RabbitMQ / SQS para eventos de domínio",
+      "ml": "Python (scikit-learn, XGBoost/LightGBM, PyTorch), MLflow para registro de modelos, Feature Store (Feast)",
+      "infra": "Docker, Kubernetes, Terraform, GitHub Actions",
+      "observabilidade": "OpenTelemetry, Prometheus, Grafana, Sentry",
+      "seguranca": "Keycloak/Auth0 (OIDC), Vault/KMS, WAF"
+    },
+    "dependency_rule": {
+      "regra": "Dependências de código-fonte apontam sempre para dentro: Frameworks → Adapters → Use Cases → Entities.",
+      "aplicacao": [
+        "Entities e Use Cases não importam nada de framework, ORM, SDK de IA ou HTTP.",
+        "Use Cases declaram interfaces (portas) como ScoreProvider, LoanRepository e PaymentGateway. As camadas externas as implementam (Dependency Inversion).",
+        "O fluxo de controle sai do controller, passa pelo use case e chega ao presenter. A dependência de código continua apontando para dentro, via Output Boundary.",
+        "Só DTOs simples e imutáveis cruzam as fronteiras. Entidades ORM ou objetos de framework nunca cruzam.",
+        "A composição de dependências (DI container) acontece na camada Main/Composition Root, a mais externa.",
+        "O modelo de IA é tratado como plugin: o domínio conhece apenas a interface ScoreProvider. Pode ser regressão logística, gradient boosting ou LLM, e a troca não afeta as camadas internas.",
+        "Regras arquiteturais são verificadas automaticamente no CI (ArchUnit, dependency-cruiser ou import-linter), e o build falha se houver violação."
+      ],
+      "estrutura_de_pastas_exemplo": "domain/ | application/(use_cases, ports, dto) | adapters/(controllers, presenters, gateways, persistence) | infrastructure/(frameworks, config, main)"
+    },
+    "testability": {
+      "estrategia": [
+        "Entities: testes unitários puros, rápidos e sem mocks (cálculo de juros, máquina de estados, invariantes do razão).",
+        "Use Cases: testados com fakes/in-memory das portas (InMemoryLoanRepository, FakeScoreProvider, FakePaymentGateway), sem banco, rede ou IA.",
+        "Adapters: testes de contrato contra cada porta, garantindo que todas as implementações (real e fake) respeitem o mesmo comportamento. Testcontainers para PostgreSQL e Kafka.",
+        "Provedores externos: consumer-driven contract tests (Pact) e sandboxes de bureau, KYC e pagamento.",
+        "IA/Scoring: testes de modelo separados (golden datasets, teste de fairness e viés, monitoramento de drift, testes de regressão do modelo entre versões, validação de explicabilidade).",
+        "Property-based testing para o motor financeiro (o razão nunca desbalanceia, a soma das parcelas é consistente).",
+        "E2E: poucos fluxos críticos (cadastro → score → solicitação → financiamento → pagamento).",
+        "Pirâmide: ~70% unitários, ~20% integração/contrato, ~10% E2E.",
+        "Relógio e gerador de ids injetáveis (Clock, IdGenerator) para testes determinísticos."
+      ]
+    },
+    "interfaces": [
+      "API REST/GraphQL pública para web e mobile",
+      "Portal do Tomador (solicitação, acompanhamento, pagamento)",
+      "Portal do Investidor (marketplace, carteira, auto-invest)",
+      "Backoffice/Admin (análise manual, cobrança, compliance, auditoria de score)",
+      "API para parceiros (embedded lending, B2B2C, white-label)",
+      "Webhooks de entrada (pagamentos, KYC, Open Finance)",
+      "Webhooks de saída (eventos para parceiros)",
+      "Portas de saída: ScoreProvider, LoanRepository, LedgerRepository, PaymentGateway, KYCGateway, DataSourceGateway, NotificationGateway, ContractSigningGateway, EventPublisher, Clock, IdGenerator",
+      "Dashboard de model risk (drift, fairness, performance do modelo)",
+      "Relatórios regulatórios (BCB, COAF, Receita, LGPD)"
+    ],
+    "escalabilidade": {
+      "abordagem": "Monólito modular inicialmente, com módulos alinhados aos bounded contexts, evoluindo para serviços apenas onde houver ganho real. A Clean Architecture facilita a extração porque as fronteiras já estão definidas.",
+      "pontos": [
+        "Bounded contexts: Identidade/KYC, Scoring, Originação, Marketplace/Matching, Ledger/Pagamentos, Cobrança, Compliance.",
+        "Scoring como serviço independente e escalável horizontalmente (GPU/CPU sob demanda), com inferência online (baixa latência) e batch (reavaliação de carteira).",
+        "Comunicação assíncrona por eventos (Kafka) com Outbox Pattern e Saga para fluxos distribuídos (financiamento, desembolso).",
+        "Idempotência em todas as operações financeiras.",
+        "PostgreSQL com réplicas de leitura, particionamento por tempo no ledger e CQRS para consultas de carteira e dashboards.",
+        "Cache de scores e de listas de oportunidades (Redis).",
+        "Autoscaling horizontal (Kubernetes HPA/KEDA), multi-AZ.",
+        "Feature Store para reuso de features entre treino e inferência.",
+        "Matching por lote (batch), sem lock global."
+      ]
+    },
+    "custos": {
+      "principais_fontes": [
+        "Dados de bureaus e Open Finance (custo por consulta): o maior custo variável. Mitigar com cache, consulta escalonada (pré-score barato antes da consulta cara) e consentimento explícito.",
+        "KYC e biometria (custo por verificação)",
+        "Processamento de pagamentos (Pix é barato, boleto e TED têm custo maior)",
+        "Cloud: computação de ML (treino e inferência), banco de dados, armazenamento de documentos",
+        "Assinatura eletrônica e armazenamento com validade jurídica",
+        "Compliance regulatório: enquadramento como SEP (Sociedade de Empréstimo entre Pessoas, Res. CMN 4.656/2018) ou parceria com IF/BaaS, capital mínimo, auditoria, jurídico, LGPD/DPO, PLD/FT",
+        "Inadimplência e cobrança (impacta a reputação da plataforma e a captação de investidores)",
+        "Segurança (pentest, SOC, certificações PCI/ISO 27001)",
+        "Equipe de dados/ML e model risk"
+      ],
+      "otimizacao": [
+        "Começar como monólito modular",
+        "Usar instâncias spot para treino de modelos",
+        "Modelos leves (gradient boosting) antes de deep learning ou LLM",
+        "Reduzir consultas pagas com pré-filtros",
+        "Fundo garantidor ou seguro para reduzir a fricção do investidor",
+        "Monitorar unit economics (CAC, custo por empréstimo originado, perda esperada)"
+      ]
+    },
+    "monetizacao": {
+      "receitas": [
+        "Taxa de originação cobrada do tomador (% do valor)",
+        "Taxa de serviço/administração cobrada do investidor (% sobre juros recebidos ou sobre o saldo)",
+        "Spread ou taxa de intermediação",
+        "Taxas de cobrança, antecipação e mercado secundário",
+        "Score como serviço (API B2B de scoring alternativo para fintechs, varejo e telecom)",
+        "Embedded lending e white-label para parceiros (comissão ou licenciamento SaaS)",
+        "Assinatura premium para investidores (auto-invest avançado, analytics, relatórios)",
+        "Produtos financeiros complementares (seguro prestamista, educação financeira, marketplace de ofertas)",
+        "Monetização de dados agregados e anonimizados, somente com base legal e conformidade LGPD"
+      ],
+      "observacao": "O modelo base é marketplace com take rate dos dois lados. O scoring por IA é o diferencial defensável e pode virar uma segunda linha de receita B2B."
+    },
+    "stack_sugerida": {
+      "backend_core": "TypeScript com NestJS ou Kotlin/Java com Spring Boot, aplicando Clean Architecture com módulos separados (domain, application, adapters, infrastructure). Alternativa: Python/FastAPI, se a equipe for centrada em dados.",
+      "ml_scoring": "Python, scikit-learn, XGBoost/LightGBM, SHAP para explicabilidade, MLflow, Feast, Airflow/Dagster para pipelines, Evidently para drift e fairness (AIF360/Fairlearn)",
+      "frontend": "Next.js (React) + TypeScript, Tailwind; mobile com React Native ou Flutter",
+      "dados": "PostgreSQL (OLTP e ledger), Redis, Kafka, S3, data warehouse (BigQuery/Snowflake/ClickHouse), dbt",
+      "infra": "AWS ou GCP (região São Paulo por conta de LGPD e latência), Kubernetes (EKS/GKE), Terraform, ArgoCD, GitHub Actions",
+      "seguranca_compliance": "Keycloak/Auth0, Vault/KMS, criptografia em repouso e em trânsito, logs de auditoria imutáveis, gestão de consentimento LGPD, PLD/FT",
+      "integracoes": "Open Finance Brasil, bureaus (Serasa, Boa Vista, SCR/BCB), gateway/BaaS de pagamentos (Pix, escrow), provedor de KYC/biometria, assinatura eletrônica ICP-Brasil",
+      "qualidade": "Jest/JUnit/pytest, Testcontainers, Pact, k6, ArchUnit/dependency-cruiser, SonarQube",
+      "observabilidade": "OpenTelemetry, Prometheus, Grafana, Loki, Sentry"
+    }
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "99d475cb3837",
+    "gerado_em": "2026-09-21T04:19:18+00:00",
+    "runner": "runner.py"
+  }
+}

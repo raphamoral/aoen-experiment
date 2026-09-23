@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 63,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "O fluxo principal é explicitamente fixo em 9 etapas genéricas, o service layer é tenant-aware (tenantId em todos os métodos), e parâmetros relevantes são configuráveis por tenant (catálogo de pragas, threshold de confiança, idioma/tom, canal de notificação) — o que sugere onboarding via configuração sem código novo; a nota não chega a 10 porque a lista de parâmetros configuráveis foi truncada (não é possível confirmar cobertura completa), e o mecanismo de onboarding em si (interface de admin, API de provisionamento, schema de tenant config) não foi descrito, deixando incerteza sobre se o zero-code é de fato garantido na prática."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "A arquitetura hexagonal é aplicada com consistência exemplar — as portas primárias cobrem exatamente as entidades do domínio core (Product, PricingRule, Segment, Campaign, Simulation), as portas secundárias endereçam todos os acoplamentos externos necessários, e os adapters implementam as portas de forma rastreável (PostgreSQL→Repository, Redis→cache de preços, Shopify/VTEX/Magento→StockDataPort+write-back); porém há duas inconsistências que quebram a coesão: (1) a ambiguidade tecnológica não resolvida entre FastAPI/SQLAlchemy (Python) e NestJS/Prisma (TypeScript) no mesmo nível de adapter implica ecossistemas conflitantes sem justificativa arquitetural declarada, e (2) o gRPC Adapter é posicionado como comunicação interna entre microserviços, mas o escopo apresentado descreve apenas um único bounded context, criando uma tensão não explicada entre topologia monolítica e microserviços."
+}

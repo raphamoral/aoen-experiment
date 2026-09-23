@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "evolutionary",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não contém nenhuma menção a modelo de monetização, tiers de preço, estratégia de receita ou métricas de negócio — o foco é exclusivamente técnico/arquitetural."
+}

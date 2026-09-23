@@ -1,0 +1,81 @@
+{
+  "ideia_idx": 47,
+  "ideia": "Plataforma de arbitragem online para disputas de pequeno valor",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Resolução online de disputas (ODR) de pequeno valor: ciclo de vida completo do caso de arbitragem — abertura da disputa, aceite/notificação da contraparte, seleção e designação de árbitros, troca de argumentos e produção de provas, deliberação, sentença arbitral, homologação/execução de acordo e custódia de valores (escrow) quando aplicável. Entidades centrais: Caso, Parte, Árbitro, Prova, Sentença, Acordo, Taxa, Prazo. Regras de negócio: elegibilidade por teto de valor, cláusula compromissória/consentimento, imparcialidade e conflito de interesses, prazos processuais, cálculo de taxas e regras de rito simplificado.",
+    "primary_ports": [
+      "AbrirDisputaPort (registrar caso, partes, valor e pretensão)",
+      "ResponderDisputaPort (aceite, contestação, proposta de acordo)",
+      "EnviarProvaPort (anexar e gerenciar evidências)",
+      "GerenciarArbitragemPort (designar árbitro, recusar/impugnar, agendar audiência)",
+      "EmitirSentencaPort (deliberação, sentença, acordo homologado)",
+      "ConsultarCasoPort (status, linha do tempo, documentos)",
+      "GerenciarContaEPlanoPort (cadastro, assinatura, faturamento de taxas)",
+      "AdministrarPlataformaPort (moderação, auditoria, configuração de regras e tarifas)",
+      "ProcessarEventoExternoPort (retornos assíncronos de pagamento, assinatura e notificação)"
+    ],
+    "secondary_ports": [
+      "RepositorioDeCasosPort (persistência do agregado Caso)",
+      "ArmazenamentoDeProvasPort (objetos/arquivos com integridade por hash)",
+      "GatewayDePagamentoPort (cobrança de taxas, escrow, repasse/estorno)",
+      "NotificacaoPort (e-mail, SMS, WhatsApp, push)",
+      "IdentidadeEKYCPort (autenticação e verificação de identidade das partes)",
+      "AssinaturaDigitalPort (assinatura de sentenças e acordos, carimbo de tempo)",
+      "VideoconferenciaPort (audiências virtuais)",
+      "RelogioPort (tempo controlado para prazos e testes)",
+      "GeradorDeIdentificadoresPort",
+      "FilaDeEventosPort (publicação de eventos de domínio)",
+      "MotorDeSelecaoDeArbitrosPort (sorteio/matching, conflito de interesses)",
+      "TraducaoETranscricaoPort (opcional, apoio por IA)",
+      "AuditoriaELogPort (trilha imutável)",
+      "CatalogoDeTarifasPort (regras de preço e planos)"
+    ],
+    "primary_adapters": [
+      "API REST/JSON (web e mobile)",
+      "Aplicação web (SPA) para partes, árbitros e administradores",
+      "App mobile",
+      "Webhooks de entrada (pagamento, assinatura digital, KYC)",
+      "CLI/scripts administrativos e de migração",
+      "Suíte de testes automatizados (BDD/contrato) que aciona as mesmas portas",
+      "Integração B2B via API pública (marketplaces e e-commerces que abrem disputas)",
+      "Adaptador de mensageria/consumidor de fila para eventos assíncronos"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (RepositorioDeCasosPort)",
+      "S3/GCS/MinIO com criptografia e hash SHA-256 (ArmazenamentoDeProvasPort)",
+      "Stripe/Pagar.me/Mercado Pago/Pix (GatewayDePagamentoPort)",
+      "SendGrid/SES, Twilio, WhatsApp Business API (NotificacaoPort)",
+      "Auth0/Keycloak e provedor de KYC, ex.: Idwall/Serpro/gov.br (IdentidadeEKYCPort)",
+      "ICP-Brasil/DocuSign/Clicksign (AssinaturaDigitalPort)",
+      "Zoom/Daily/Jitsi (VideoconferenciaPort)",
+      "Kafka/RabbitMQ/SQS (FilaDeEventosPort)",
+      "Relógio do sistema e relógio fake para testes (RelogioPort)",
+      "Adaptadores em memória/fakes de todas as portas para testes e desenvolvimento",
+      "Provedor de LLM/ASR para transcrição e tradução (TraducaoETranscricaoPort)",
+      "Log imutável append-only, ex.: tabela WORM ou OpenSearch (AuditoriaELogPort)"
+    ],
+    "isolation": "O núcleo (domínio + casos de uso/serviços de aplicação) é uma biblioteca pura, sem dependências de frameworks, banco, HTTP ou SDKs de terceiros. Toda comunicação passa por interfaces (portas) definidas dentro do núcleo; os adaptadores ficam fora e dependem do núcleo, nunca o contrário (inversão de dependência). Adaptadores primários traduzem protocolos (HTTP, CLI, fila) em comandos/queries de DTOs do domínio; adaptadores secundários implementam as portas de saída e traduzem modelos externos via camada anticorrupção. A composição é feita na raiz (composition root) por injeção de dependência. Regras de arquitetura são verificadas automaticamente (ArchUnit/dependency-cruiser) no CI. Tempo, IDs e aleatoriedade são portas para manter o domínio determinístico. Eventos de domínio são publicados via porta, e o outbox pattern garante consistência. Como o núcleo é testável com fakes, todos os sistemas externos são tratados simetricamente e podem ser trocados (ex.: Stripe por Pix) sem alterar regras de negócio.",
+    "interfaces": [
+      "Portal da parte requerente (abrir e acompanhar disputa)",
+      "Portal da parte requerida (responder, propor acordo)",
+      "Painel do árbitro (fila de casos, provas, minuta de sentença)",
+      "Painel administrativo/backoffice (moderação, financeiro, auditoria)",
+      "Sala virtual de audiência (vídeo + chat + documentos)",
+      "API pública REST com OpenAPI e webhooks de saída para integradores",
+      "App mobile e notificações por WhatsApp/e-mail",
+      "Verificador público de autenticidade de sentenças (QR code/hash)",
+      "CLI para operações e testes de aceitação"
+    ],
+    "escalabilidade": "Núcleo stateless, escalável horizontalmente atrás de balanceador (containers em Kubernetes ou serviços serverless). Começa como monólito modular hexagonal e pode evoluir para serviços por bounded context (Casos, Provas, Pagamentos, Arbitragem, Notificações) porque as portas já delimitam as fronteiras. Trabalho assíncrono (notificações, transcrição, hashing e antivírus de provas, prazos) via filas e workers com autoscaling. PostgreSQL com réplicas de leitura, particionamento por tenant/data e cache (Redis) para consultas; provas em object storage com CDN e ciclo de vida (tiering para armazenamento frio). Multi-tenancy por organização para clientes B2B. Idempotência e outbox para consistência sob retentativas. Picos previsíveis (prazos processuais) tratados com filas e limites de taxa por adaptador.",
+    "custos": "Custos variáveis dominantes: armazenamento de provas (mitigar com tiering e retenção legal), videoconferência (minutos), mensageria (WhatsApp/SMS é a mais cara), taxas de gateway de pagamento (~2–4% + tarifa fixa; Pix mais barato) e KYC por verificação. Custo humano de árbitros é o maior item: usar rito simplificado, triagem/assistência por IA e pagamento por caso. Infraestrutura inicial enxuta (monólito modular, banco gerenciado, serverless) mantém o custo fixo baixo. Automatizar negociação/mediação prévia para resolver casos sem árbitro. Considerar conformidade (LGPD, Lei de Arbitragem 9.307/96, Marco Legal), seguros, auditoria e retenção de dados como custo recorrente. Monitorar unit economics (custo por caso vs. taxa média) e trocar adaptadores por alternativas mais baratas graças às portas.",
+    "monetizacao": "Taxa por caso (fixa ou percentual do valor em disputa, com teto e piso), dividida entre as partes ou paga pelo requerente; planos de assinatura B2B (marketplaces, fintechs, e-commerces, plataformas de serviços) com cláusula compromissória embutida e volume incluído; taxa de sucesso sobre acordos homologados; serviços premium (audiência por vídeo, prazo acelerado, sentença com assinatura ICP-Brasil, tradução); API/white-label para câmaras de arbitragem e empresas; margem sobre custódia (escrow) e repasse; relatórios e analytics de disputas para clientes corporativos; marketplace de árbitros com comissão sobre honorários.",
+    "stack_sugerida": "Backend: Java 21 + Spring Boot (ou Kotlin, ou TypeScript/NestJS) organizado em módulos hexagonais (domain, application, adapters-in, adapters-out, bootstrap) com testes ArchUnit. Frontend: React/Next.js + TypeScript, app mobile em React Native. Dados: PostgreSQL (com outbox), Redis, S3-compatível para provas, OpenSearch para busca e auditoria. Mensageria: SQS/SNS ou RabbitMQ (Kafka se o volume justificar). Identidade: Keycloak/Auth0 com OIDC. Pagamentos: Stripe + Pix (Pagar.me/Mercado Pago). Assinatura: ICP-Brasil/Clicksign. Vídeo: Daily/Jitsi. Infra: AWS ou GCP com Docker, Kubernetes ou ECS/Fargate, Terraform, CI/CD com GitHub Actions. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Testes: JUnit/Testcontainers, contract testing (Pact), BDD (Cucumber) contra as portas primárias, fakes em memória para todas as portas secundárias."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:17:19+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "ideia_idx": 20,
+  "ideia": "Plataforma de crowdsourced testing de software com gamificação",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único (Git) com múltiplos serviços: api-gateway, auth-service, testing-engine, gamification-service, notification-service, reporting-service. Cada serviço tem seu próprio Dockerfile e pipeline CI/CD. Branches por ambiente (main=prod, staging, develop). Deploy independente por serviço via tags semânticas.",
+    "dependencies": "Cada serviço declara dependências explícitas e isoladas: Node.js usa package.json com lockfile (pnpm workspaces), Python usa pyproject.toml + poetry.lock. Imagens Docker multi-stage garantem isolamento total. Nenhuma dependência implícita do sistema operacional. Dependências de sistema documentadas no Dockerfile.",
+    "config": "Todas as configurações via variáveis de ambiente (DATABASE_URL, REDIS_URL, JWT_SECRET, STRIPE_KEY, etc.). Gerenciadas por Doppler ou AWS Secrets Manager por ambiente (development, staging, production). Nenhuma config hardcoded ou em arquivos versionados. Validação obrigatória de envs na inicialização de cada serviço.",
+    "backing_services": {
+      "banco_de_dados_primario": "PostgreSQL (RDS/Supabase) — usuários, projetos, tasks, rankings",
+      "cache_e_sessoes": "Redis — leaderboards em tempo real, rate limiting, filas de jobs",
+      "fila_de_mensagens": "RabbitMQ ou AWS SQS — processamento assíncrono de resultados de testes",
+      "armazenamento_de_arquivos": "S3/R2 — evidências de bugs, screenshots, relatórios",
+      "busca": "Elasticsearch/Typesense — busca em bugs reportados e projetos",
+      "email_e_notificacoes": "SendGrid (email), Firebase FCM (push), Twilio (SMS)",
+      "observabilidade": "Datadog ou Grafana+Prometheus+Loki",
+      "cdn": "Cloudflare — assets estáticos e frontend"
+    },
+    "build_release_run": "Pipeline CI/CD via GitHub Actions: (1) BUILD — testes unitários, lint, build de imagem Docker imutável com SHA do commit como tag; (2) RELEASE — imagem + config do ambiente injetada via Secrets Manager, artefato versionado no ECR/GHCR; (3) RUN — deploy no Kubernetes (EKS/GKE) via ArgoCD com rollback automático. Nenhuma alteração de código em runtime.",
+    "processes": "Todos os processos são stateless e share-nothing. Estado persistido exclusivamente em backing services (PostgreSQL, Redis). Sessões de usuário armazenadas no Redis com TTL. Uploads processados em workers assíncronos. Processos de gamificação (cálculo de XP, badges) executam como workers independentes consumindo eventos da fila.",
+    "port_binding": "Cada serviço expõe sua própria porta HTTP/gRPC e é completamente self-contained. api-gateway:3000 roteia para auth-service:4001, testing-engine:4002, gamification-service:4003. Serviços descobertos via DNS interno do Kubernetes. Frontend SPA servido via CDN, consome apenas o api-gateway.",
+    "concurrency": "Escala horizontal por tipo de workload: web workers (api-gateway, auth) escalam por CPU/requisições; background workers (processamento de resultados, notificações) escalam por profundidade de fila no Redis/SQS; cron jobs (recalcular rankings, relatórios) executam como Kubernetes CronJobs. HPA configurado por serviço com métricas customizadas.",
+    "disposability": "Containers iniciam em menos de 5 segundos. Shutdown gracioso: SIGTERM drena conexões ativas, finaliza jobs em andamento (max 30s), fecha pool de banco. Health checks liveness/readiness no Kubernetes. Idempotência garantida em todos os workers via deduplicação por event ID no Redis. Circuit breakers (resilience4j/opossum) entre serviços.",
+    "dev_prod_parity": "Docker Compose replica o stack completo localmente (PostgreSQL, Redis, RabbitMQ). Mesmas versões de backing services entre ambientes. Staging recebe deploy automático a cada merge na branch staging. Feature flags via Unleash permitem teste em produção com rollout gradual. Dados de staging anonimizados a partir de dumps de produção.",
+    "logs": "Todos os serviços escrevem logs estruturados em JSON no stdout (sem arquivos). Coletados pelo agente Fluent Bit em cada nó Kubernetes, enviados ao Loki ou Datadog Logs. Campos obrigatórios: timestamp, level, service, trace_id, user_id. Distributed tracing via OpenTelemetry + Jaeger. Alertas configurados em Grafana.",
+    "admin_processes": "Migrações de banco executam como Kubernetes Jobs antes do deploy (init containers). Scripts de backfill, recálculo de rankings e exportação de dados executam como processos pontuais com o mesmo ambiente de produção (mesmo Dockerfile). Acesso privilegiado via kubectl exec auditado, nunca SSH direto.",
+    "interfaces": [
+      "Web App (React/Next.js) — painel do tester com gamificação, leaderboard, missões e recompensas",
+      "Web App (React/Next.js) — painel da empresa cliente para gerenciar projetos, visualizar bugs e relatórios",
+      "REST API pública (api-gateway) — integração com CI/CD pipelines dos clientes",
+      "Webhooks — notificações em tempo real para sistemas externos (Jira, GitHub, Slack)",
+      "WebSocket (Socket.io) — atualizações de leaderboard e notificações em tempo real",
+      "Admin Dashboard (interno) — gestão de usuários, moderação de bugs, configuração de campanhas"
+    ],
+    "escalabilidade": "Escala horizontal stateless: api-gateway e serviços HTTP escalam por RPS via HPA; workers de processamento escalam pelo tamanho da fila (KEDA no Kubernetes); banco de dados com read replicas para queries de leaderboard e relatórios; Redis Cluster para leaderboards globais com sorted sets; sharding de dados por tenant para grandes clientes.",
+    "custos": "Modelo cloud-native com escala a zero para workers ociosos (KEDA). Ambientes de staging desligam fora do horário comercial (cronjob Kubernetes). RDS com instâncias reservadas para baseline, auto-scaling para picos. S3 Intelligent-Tiering para evidências de bugs antigas. Estimativa: $800-2000/mês para 10k usuários ativos, escala linearmente com uso.",
+    "monetizacao": "B2B SaaS: planos por volume de testes (Starter $299/mês — 100 testes, Growth $999/mês — 500 testes, Enterprise — sob contrato); marketplace de testers especializados (comissão 15-20% por campanha); relatórios avançados de qualidade como add-on ($99/mês); API access para integração CI/CD (planos Growth+); certificação de testers premium (receita direta dos testers).",
+    "stack_sugerida": {
+      "frontend": "Next.js 14 (App Router) + TypeScript + Tailwind CSS + Zustand + React Query",
+      "api_gateway": "Node.js + Fastify + JWT + Zod (validação de schema)",
+      "auth_service": "Node.js + Fastify + Passport.js + OAuth2 (GitHub, Google)",
+      "testing_engine": "Python + FastAPI — processamento e validação de relatórios de bugs",
+      "gamification_service": "Node.js + Fastify — XP, badges, leaderboards, missões",
+      "notification_service": "Node.js + BullMQ (Redis) — email, push, in-app",
+      "banco_de_dados": "PostgreSQL 16 + Prisma ORM",
+      "cache_filas": "Redis 7 (leaderboards, cache, BullMQ)",
+      "infraestrutura": "Kubernetes (EKS ou GKE) + Terraform + ArgoCD + GitHub Actions",
+      "observabilidade": "OpenTelemetry + Grafana Stack (Loki, Tempo, Prometheus) ou Datadog",
+      "pagamentos": "Stripe (subscriptions + marketplace payouts)"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único (Git) com múltiplos serviços: api-gateway, auth-service, testing-engine, gamification-service, notification-service, reporting-service. Cada serviço tem seu próprio Dockerfile e pipeline CI/CD. Branches por ambiente (main=prod, staging, develop). Deploy independente por serviço via tags semânticas.\",\n\n  \"dependencies\": \"Cada serviço declara dependências explícitas e isoladas: Node.js usa package.json com lockfile (pnpm workspaces), Python usa pyproject.toml + poetry.lock. Imagens Docker multi-stage garantem isolamento total. Nenhuma dependência implícita do sistema operacional. Dependências de sistema documentadas no Dockerfile.\",\n\n  \"config\": \"Todas as configurações via variáveis de ambiente (DATABASE_URL, REDIS_URL, JWT_SECRET, STRIPE_KEY, etc.). Gerenciadas por Doppler ou AWS Secrets Manager por ambiente (development, staging, production). Nenhuma config hardcoded ou em arquivos versionados. Validação obrigatória de envs na inicialização de cada serviço.\",\n\n  \"backing_services\": {\n    \"banco_de_dados_primario\": \"PostgreSQL (RDS/Supabase) — usuários, projetos, tasks, rankings\",\n    \"cache_e_sessoes\": \"Redis — leaderboards em tempo real, rate limiting, filas de jobs\",\n    \"fila_de_mensagens\": \"RabbitMQ ou AWS SQS — processamento assíncrono de resultados de testes\",\n    \"armazenamento_de_arquivos\": \"S3/R2 — evidências de bugs, screenshots, relatórios\",\n    \"busca\": \"Elasticsearch/Typesense — busca em bugs reportados e projetos\",\n    \"email_e_notificacoes\": \"SendGrid (email), Firebase FCM (push), Twilio (SMS)\",\n    \"observabilidade\": \"Datadog ou Grafana+Prometheus+Loki\",\n    \"cdn\": \"Cloudflare — assets estáticos e frontend\"\n  },\n\n  \"build_release_run\": \"Pipeline CI/CD via GitHub Actions: (1) BUILD — testes unitários, lint, build de imagem Docker imutável com SHA do commit como tag; (2) RELEASE — imagem + config do ambiente injetada via Secrets Manager, artefato versionado no ECR/GHCR; (3) RUN — deploy no Kubernetes (EKS/GKE) vi"
+}

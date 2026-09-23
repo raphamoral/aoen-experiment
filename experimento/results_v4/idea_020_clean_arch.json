@@ -1,0 +1,68 @@
+{
+  "ideia_idx": 20,
+  "ideia": "Plataforma de crowdsourced testing de software com gamificação",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": "Regras de negócio puras, sem dependência de framework ou banco. Entidades: Tester (perfil, nível, reputação, XP, badges), Company (contratante), Project (produto sob teste, escopo, orçamento), TestCampaign (janela, requisitos, dispositivos alvo, recompensa por severidade), BugReport (título, passos, severidade, evidências, estado), Evidence (vídeo, screenshot, log), Reward (valor monetário ou pontos), Payout, Badge, Achievement, Level, Leaderboard, ReputationScore, Dispute, Device/EnvironmentProfile. Regras de domínio: máquina de estados do BugReport (Submitted → Triaged → Accepted/Rejected/Duplicate → Rewarded), cálculo de XP e nível, política de reputação, detecção de duplicidade por regra de similaridade (abstraída por interface), regras de elegibilidade de tester por campanha, fórmula de recompensa por severidade.",
+    "use_cases": [
+      "RegisterTester / RegisterCompany",
+      "CreateProject e CreateTestCampaign",
+      "PublishCampaign (com validação de orçamento em escrow)",
+      "ApplyToCampaign / MatchTestersToCampaign (elegibilidade por dispositivo, país e reputação)",
+      "SubmitBugReport (com upload de evidências)",
+      "TriageBugReport (aceitar, rejeitar, marcar duplicado, ajustar severidade)",
+      "RewardAcceptedBug (calcula pagamento, XP e badges)",
+      "RequestPayout / ProcessPayout",
+      "OpenDispute / ResolveDispute",
+      "AwardBadge / CalculateLevelUp",
+      "GetLeaderboard (global, por campanha, por período)",
+      "GenerateCampaignReport (métricas de cobertura e severidade)",
+      "ManageSubscription / TopUpCampaignBudget",
+      "NotifyUser"
+    ],
+    "interface_adapters": "Controllers REST/GraphQL que convertem HTTP em Input DTOs dos casos de uso. Presenters/ViewModels que formatam Output DTOs para web, mobile e API pública. Gateways/repositórios que implementam as portas de saída dos casos de uso: PostgresRepository (Tester, Campaign, BugReport, Reward), RedisLeaderboardRepository, ObjectStorageEvidenceGateway, PaymentGateway (adapter para Stripe Connect), NotificationGateway (e-mail, push, in-app), IssueTrackerGateway (Jira, GitHub, Linear), DuplicateDetectionGateway (embeddings ou LLM), IdentityProvider adapter (OIDC), EventBus adapter (publicação de eventos de domínio) e Webhook dispatcher. Mappers entre modelo de persistência e entidades. Anti-corruption layers para APIs externas.",
+    "frameworks_drivers": "Camada mais externa e substituível: framework web (NestJS ou Fastify), ORM/driver SQL (Prisma ou Drizzle sobre PostgreSQL), Redis (sorted sets para ranking e cache), S3 ou R2 para evidências, Kafka, NATS ou SQS para eventos, Stripe Connect para pagamentos e payouts, Auth0 ou Keycloak para identidade, SendGrid ou SES para e-mail, FCM e APNs para push, OpenTelemetry com Grafana para observabilidade, Docker e Kubernetes, Terraform para IaC. Front-end em React/Next.js e app mobile em React Native ou Flutter, ambos apenas consumidores da API. Composition root faz a injeção de dependências e o wiring.",
+    "dependency_rule": "As dependências de código-fonte apontam apenas para dentro: Frameworks → Interface Adapters → Use Cases → Entities. Os casos de uso declaram portas (interfaces) de repositório, pagamento, notificação, storage e eventos. Os adaptadores as implementam, e a inversão de dependência (DIP) liga tudo no composition root. Entities e Use Cases não importam ORM, HTTP, SDKs ou bibliotecas de nuvem. Os dados cruzam as fronteiras como DTOs simples, nunca como objetos do ORM ou do framework. A regra é verificada em CI com dependency-cruiser, ArchUnit ou regras de lint sobre imports entre pacotes. O repositório é organizado em módulos ou pacotes separados (domain, application, adapters, infrastructure) para impor a fronteira em tempo de compilação.",
+    "testability": "Entities: testes unitários puros e rápidos, sem mocks. Use Cases: testados com fakes ou in-memory das portas (InMemoryBugReportRepository, FakePaymentGateway, FakeClock, FakeIdGenerator), sem banco, rede ou framework. Adapters: testes de contrato compartilhados entre a implementação real e o fake, mais testes de integração com Testcontainers (Postgres, Redis, LocalStack). Controllers e Presenters: testes de mapeamento entrada/saída. Frameworks: poucos testes E2E (Playwright, API smoke tests) sobre os fluxos críticos. Sandbox do Stripe e testes de contrato (Pact) para integrações externas. Pirâmide de testes: muitos unitários, alguns de integração, poucos E2E. Cobertura mínima de mutation testing nas regras de recompensa e reputação.",
+    "interfaces": [
+      "Portal Web do Tester (campanhas, submissão de bugs, perfil, ranking, conquistas)",
+      "Portal Web da Empresa (criação de campanhas, triagem, dashboards, faturamento)",
+      "Painel Admin/Moderação (disputas, fraude, gestão de tester)",
+      "App Mobile (iOS/Android) para testers",
+      "API REST/GraphQL pública para integração",
+      "Webhooks (bug aceito, campanha finalizada, payout)",
+      "Integrações com Jira, GitHub, GitLab, Linear e Slack",
+      "SDK/plugin para captura de bug in-app e extensão de navegador",
+      "CLI e plugin de CI/CD para disparar campanhas por release"
+    ],
+    "escalabilidade": "Monólito modular inicial, com módulos alinhados aos bounded contexts (Campaigns, Bugs, Gamification, Payments, Identity). Eles podem ser extraídos em serviços quando necessário, e a Clean Architecture torna essa extração barata. Serviços de aplicação stateless, escalados horizontalmente atrás de load balancer com autoscaling (HPA). Comunicação assíncrona por eventos de domínio (BugAccepted, RewardGranted): gamificação, notificações, relatórios e detecção de duplicados viram consumidores independentes. Upload direto para object storage via URLs pré-assinadas, com processamento de mídia em workers. Leaderboards em Redis sorted sets. Read replicas e CQRS com projeções de leitura para dashboards. Particionamento por campanha ou tenant, cache de consultas quentes, CDN para assets, filas com retry e idempotência nos payouts, rate limiting e proteção antifraude.",
+    "custos": "Principais custos: armazenamento e tráfego de vídeos e screenshots (mitigar com compressão, lifecycle policies e retenção limitada), pagamentos (taxas do Stripe Connect e de payout internacional, mais impostos e compliance KYC/AML), infraestrutura de nuvem (começar com pouca infraestrutura e monólito modular, usar spot instances para workers), LLM/embeddings para deduplicação e triagem assistida (cache, modelos menores e processamento em lote), suporte e moderação (custo humano relevante, reduzido por automação e testers de alta reputação como triadores), aquisição e retenção de testers (bônus, pagamentos mínimos) e observabilidade. A estrutura em camadas permite trocar provedores caros por alternativas sem reescrever o domínio. Manter unit economics monitorado: custo por bug validado versus receita por campanha.",
+    "monetizacao": [
+      "Comissão sobre as recompensas pagas aos testers (take rate de 15 a 30%)",
+      "Assinaturas SaaS para empresas em planos escalonados (Starter, Growth, Enterprise) com número de campanhas, testers e integrações",
+      "Créditos pré-pagos de campanha (escrow) com taxa de gestão",
+      "Serviços gerenciados: triagem profissional, testers curados, testes de segurança e acessibilidade",
+      "Add-ons: relatórios avançados, SLA, private crowd, NDA, API e SSO/SAML",
+      "Marketplace de treinamento e certificações para testers",
+      "Patrocínio de desafios e rankings por parceiros"
+    ],
+    "stack_sugerida": {
+      "backend": "TypeScript com Node.js e NestJS (ou Fastify), organizado em pacotes domain/application/adapters/infrastructure; alternativa: Kotlin ou Go",
+      "frontend": "Next.js/React com TypeScript, Tailwind e design system próprio; React Native ou Flutter para mobile",
+      "dados": "PostgreSQL (dados transacionais), Redis (ranking, cache, rate limit), OpenSearch (busca de bugs), S3/R2 (evidências), ClickHouse ou BigQuery (analytics)",
+      "mensageria": "Kafka, NATS ou SQS/SNS para eventos de domínio, com padrão outbox",
+      "pagamentos": "Stripe Connect (payouts e KYC), com adapter abstraindo o provedor",
+      "identidade": "Auth0 ou Keycloak (OIDC, RBAC, SSO)",
+      "ia": "Embeddings e LLM (por exemplo, API Claude) atrás de porta DuplicateDetection/TriageAssistant",
+      "infra": "Docker, Kubernetes ou ECS, Terraform, GitHub Actions, CDN",
+      "observabilidade": "OpenTelemetry, Grafana/Prometheus/Loki, Sentry",
+      "qualidade": "Jest ou Vitest, Testcontainers, Pact, Playwright, dependency-cruiser para impor a regra de dependência"
+    }
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "99d475cb3837",
+    "gerado_em": "2026-09-21T02:25:33+00:00",
+    "runner": "runner.py"
+  }
+}

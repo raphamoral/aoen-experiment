@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 6,
+  "justificativa": "A camada de entidades demonstra isolamento correto (objetos puros sem dependências externas, regras de negócio encapsuladas no domínio), sugerindo familiaridade com Clean/Hexagonal Architecture — base sólida para evolução — porém a proposta apresentada está truncada e não evidencia como as camadas superiores (use cases, adapters, infrastructure) abstraem decisões reversíveis sobre banco de dados, framework de IA e serviços externos, deixando em aberto se a inversão de dependências é aplicada de forma consistente além das entidades."
+}

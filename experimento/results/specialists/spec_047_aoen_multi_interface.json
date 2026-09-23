@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 47,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces (Portal Web, API REST, Dashboard do Árbitro, Widget Embeddable e Mobile PWA), cada uma com justificativa explícita de mercado e perfil de usuário distinto, e todas consumindo uma ArbitrationService centralizada que garante desacoplamento total — adicionar ou substituir qualquer interface não afeta a lógica de negócio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Web App empresa, Web App freelancer, API REST/Webhook GRC, portal white-label e painel administrativo), cada uma explicitamente justificada por perfil de usuário e canal de mercado (PMEs diretas, lado da oferta, enterprise via integração, parceiros consultorias), com uma ComplianceMarketplaceService como camada de negócio pura desacoplada de qualquer protocolo — permitindo adicionar novos canais (Slack-bot, SAP) sem reescrever regras de negócio."
+}

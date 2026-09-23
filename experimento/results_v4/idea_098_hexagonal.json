@@ -1,0 +1,79 @@
+{
+  "ideia_idx": 98,
+  "ideia": "Plataforma de gestão de franquias com padronização e benchmarking entre unidades",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de redes de franquias: padronização operacional (playbooks, checklists, auditorias, SLAs de conformidade) e benchmarking comparativo entre unidades (KPIs, rankings, coortes, detecção de desvios). Agregados centrais: Rede/Franqueadora, Unidade (Franquia), Padrão Operacional, Auditoria/Checklist, Indicador (KPI), Medição, Benchmark, Plano de Ação corretivo, Royalty/Repasse. Serviços de domínio: cálculo de conformidade, normalização de KPIs por coorte (porte, região, maturidade), ranking e detecção de outliers.",
+    "primary_ports": [
+      "GerenciarRedeEUnidadesUseCase (cadastro de franqueadora, franqueados, unidades, hierarquia regional)",
+      "DefinirPadraoOperacionalUseCase (criação e versionamento de playbooks, checklists e políticas)",
+      "ExecutarAuditoriaUseCase (aplicação de checklist, evidências, pontuação de conformidade)",
+      "RegistrarIndicadoresUseCase (ingestão manual ou automática de KPIs por unidade)",
+      "ConsultarBenchmarkUseCase (rankings, comparações entre unidades e coortes, séries históricas)",
+      "GerenciarPlanoDeAcaoUseCase (não conformidades, tarefas corretivas, prazos)",
+      "ApurarRoyaltiesUseCase (cálculo e conciliação de repasses)",
+      "EmitirRelatoriosUseCase (relatórios gerenciais e exportações)",
+      "GerenciarAcessoETenantUseCase (papéis, permissões, onboarding de tenants)"
+    ],
+    "secondary_ports": [
+      "RepositorioDeRede / RepositorioDeUnidade / RepositorioDeAuditoria / RepositorioDeIndicador (persistência)",
+      "SerieTemporalDeIndicadoresPort (armazenamento e consulta analítica de métricas)",
+      "FonteDeDadosOperacionaisPort (POS, ERP, faturamento e vendas das unidades)",
+      "ArmazenamentoDeEvidenciasPort (fotos, documentos e anexos de auditoria)",
+      "NotificacaoPort (e-mail, push, WhatsApp/SMS)",
+      "IdentidadeEAutenticacaoPort (SSO/IdP, MFA)",
+      "CobrancaEAssinaturaPort (billing do SaaS e split de royalties)",
+      "PublicadorDeEventosPort (mensageria e eventos de domínio)",
+      "ProvedorDeIAPort (insights, detecção de anomalias, recomendações)",
+      "GeolocalizacaoPort (localização de unidades, análise de território)",
+      "RelogioPort e GeradorDeIdPort (tempo e identificadores, para testabilidade)",
+      "AuditoriaDeAcessoPort / LogDeAuditoriaPort (trilha imutável, compliance/LGPD)"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL (backoffice web e integrações de terceiros)",
+      "Aplicativo web SPA (painel da franqueadora e do franqueado)",
+      "App mobile offline-first para auditores e gerentes de loja",
+      "Webhooks de entrada (POS/ERP enviando vendas e KPIs)",
+      "CLI/scripts de administração e migração",
+      "Jobs agendados (cron) para fechamento de período e cálculo de benchmarks",
+      "Consumidores de fila/eventos (ingestão em lote)",
+      "Bot de chat (WhatsApp/Slack/Teams) para consultas e checklists rápidos",
+      "Suíte de testes automatizados (BDD/contract tests) usando as mesmas portas primárias"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (dados transacionais, com Row-Level Security por tenant)",
+      "TimescaleDB ou ClickHouse (séries temporais e análise de benchmark)",
+      "S3/Object Storage compatível (evidências e relatórios)",
+      "Conectores de POS/ERP (TOTVS, Linx, Omie, Bling, Conta Azul etc.)",
+      "Auth0/Keycloak/Cognito (OIDC/SAML)",
+      "Stripe e/ou Asaas/Pagar.me (assinatura SaaS e split de royalties)",
+      "SendGrid/SES, Twilio/Zenvia e API oficial do WhatsApp (notificações)",
+      "Kafka/RabbitMQ/SQS+SNS (publicação de eventos)",
+      "Provedor de LLM (ex.: Claude API) para insights e resumos",
+      "Google Maps/Mapbox (geolocalização)",
+      "Adaptadores em memória/fakes (testes e demos)",
+      "OpenTelemetry + stack de logs (ELK/Loki) para trilha de auditoria e observabilidade"
+    ],
+    "isolation": "O core (domínio + casos de uso) fica em módulos sem dependência de frameworks, ORM, SDKs ou protocolos; depende apenas de interfaces (ports) definidas por ele mesmo (inversão de dependência). Adapters dependem do core, nunca o contrário. A composição (injeção de dependência) ocorre apenas na borda (composition root). DTOs e mapeadores traduzem os modelos externos para o modelo de domínio (anti-corruption layer), impedindo vazamento de formatos de POS/ERP ou de esquemas de banco. Regras de arquitetura são verificadas em CI (ArchUnit/dependency-cruiser). Todos os sistemas externos, sejam bancos, filas ou provedores, são tratados de forma simétrica como adapters substituíveis. Os testes de aceitação exercitam o core via portas primárias com adapters secundários fake, sem infraestrutura real. Multi-tenancy é uma regra do domínio (TenantId em todo agregado), imposta também na borda pelo adapter de persistência.",
+    "interfaces": [
+      "Painel web da franqueadora (visão de rede, rankings, heatmaps de conformidade)",
+      "Portal do franqueado (suas unidades, planos de ação, comparação com pares)",
+      "App mobile offline-first de auditoria com captura de fotos e geolocalização",
+      "API pública REST/OpenAPI com webhooks e API keys por tenant",
+      "Integrações (POS/ERP/BI) via conectores e exportação para Power BI/Looker",
+      "Relatórios em PDF/Excel agendados por e-mail",
+      "Bot conversacional (WhatsApp/Slack)",
+      "Console de administração da plataforma (backoffice do SaaS)"
+    ],
+    "escalabilidade": "Core stateless que escala horizontalmente atrás de balanceador (containers/Kubernetes ou serverless). Multi-tenancy com esquema compartilhado + RLS por padrão, com opção de isolamento por schema/banco dedicado para redes enterprise. Separação CQRS: escrita transacional em PostgreSQL e leitura analítica em armazenamento colunar/séries temporais com views materializadas de benchmark pré-calculadas por coorte e período. Ingestão assíncrona por filas com idempotência e back-pressure; cálculo de benchmarks em jobs incrementais e paralelos por tenant. Cache (Redis) para rankings e dashboards. Como as portas são estáveis, é possível extrair módulos (ex.: ingestão, benchmark, billing) em serviços independentes sem alterar o core, trocando apenas adapters (chamada em processo por chamada remota). CDN para front-end e storage de evidências.",
+    "custos": "Custos dominados por: (1) armazenamento e processamento analítico das séries temporais; (2) storage e tráfego de evidências (fotos/vídeos), mitigados por compressão, ciclos de vida e classes de armazenamento frias; (3) integrações com POS/ERP (manutenção de conectores e limites de APIs de terceiros); (4) mensageria WhatsApp/SMS cobrada por mensagem; (5) chamadas a LLM, controladas por cache, lotes e uso apenas em planos superiores; (6) observabilidade e conformidade (LGPD, logs de auditoria). Estratégias: começar com monólito modular hexagonal (um deploy, baixo custo operacional), usar serviços gerenciados, autoscaling com scale-to-zero em ambientes não produtivos, cálculo de benchmarks em janelas agendadas, retenção em camadas de dados (quente/morno/frio), FinOps com tags por tenant para medir margem por cliente. Custo marginal por unidade franqueada tende a ser baixo, o que sustenta precificação por unidade.",
+    "monetizacao": "Assinatura recorrente B2B (SaaS) cobrada por unidade franqueada ativa/mês, com planos escalonados: Essencial (checklists e padronização), Profissional (benchmarking, planos de ação e integrações POS/ERP) e Enterprise (SSO, isolamento dedicado, SLAs, API ampliada, IA de insights). Taxa de implantação/onboarding e serviços de customização de playbooks. Add-ons: módulo de royalties com split (percentual sobre o volume conciliado ou taxa por transação), pacotes de mensagens WhatsApp, IA preditiva/recomendações, relatórios white-label e armazenamento extra. Possível marketplace de templates de playbooks e de conectores parceiros com revenue share, e serviços de consultoria de benchmark setorial anonimizado (dados agregados entre redes, com consentimento).",
+    "stack_sugerida": "Backend: TypeScript (NestJS com módulos organizados em hexágonos, sem decorators no domínio) ou Kotlin/Java (Spring Boot com ArchUnit); alternativa Go para ingestão de alto volume. Frontend: React + Next.js/Vite com TanStack Query e biblioteca de gráficos (ECharts/Recharts). Mobile: React Native ou Flutter com armazenamento local offline e sincronização. Dados: PostgreSQL (RLS) + Redis; ClickHouse ou TimescaleDB para analytics; S3 para evidências. Mensageria: SQS/SNS ou RabbitMQ (Kafka em escala maior). Identidade: Keycloak/Auth0. Pagamentos: Stripe/Asaas. Infra: Docker, Kubernetes ou ECS/Fargate, Terraform, GitHub Actions, OpenTelemetry + Grafana/Datadog. Qualidade: testes de aceitação BDD via portas primárias com fakes, contract tests para adapters, dependency-cruiser/ArchUnit para impor as fronteiras. Comece como monólito modular e extraia serviços quando necessário."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:52:46+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está segmentado em categorias reconhecíveis (multinacionais, consultorias, eventos B2B, times remotos) e a justificativa por interface revela raciocínio estratégico sobre canais de entrada, mas a proposta não articula explicitamente a dor do cliente com dados ou evidências (ex: custo real de barreiras linguísticas, horas perdidas, deals perdidos), não apresenta estimativa de TAM/SAM/SOM, e não compara diretamente com alternativas existentes como interpretação humana profissional, Zoom AI Companion ou Microsoft Teams Translation — deixando a diferenciação implícita no stack técnico em vez de posicionada no valor percebido pelo comprador."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O produto identifica um diferenciador real — a orquestração de emissão fiscal multi-município (NF-e/NFS-e) combinada com apuração automática de DAS para MEIs — e o isola corretamente no InvoiceGatewayPort e TaxAuthorityPort com múltiplos adaptadores (SEFAZ, ABRASF, FocusNFe), demonstrando extensibilidade de fornecedor; porém, a proposta de valor insubstituível não é explicitada na arquitetura: falta um núcleo de domínio que encode as regras tributárias específicas do MEI (faixas de DAS, sublimite, DASN-SIMEI) de forma que nenhum adaptador externo substitua, e a separação entre o que é inteligência proprietária versus commodity de integração fiscal permanece ambígua."
+}

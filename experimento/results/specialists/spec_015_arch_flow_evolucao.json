@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra forte consciência evolutiva — bounded contexts bem delimitados, alinhamento equipe-domínio (Conway's Law), e classificação explícita genesis/custom/product/commodity que sinaliza quais decisões são reversíveis — mas peca por não explicitar mecanismos concretos de desacoplamento entre BCs (sem menção a event bus, portas e adaptadores, ou anti-corruption layers), deixando em aberto se o Pricing Engine depende diretamente de abstrações das plataformas de e-commerce ou dos scrapers, o que poderia criar acoplamento tecnológico oculto e dificultar substituições independentes à medida que o sistema escala."
+}

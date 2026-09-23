@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam uma narrativa arquitetural muito coesa — rastreamento real-time exige stateless processes, que habilitam horizontal scaling, sustentado por Redis Pub/Sub e containerização com CI/CD imutável, tudo reforçado pela ausência de hardcoding e config via ambiente — mas a coerência é levemente enfraquecida pelas escolhas não resolvidas apresentadas como alternativas (FastAPI vs Node.js, RabbitMQ vs SQS, ECS vs K8s), que indicam um design ainda não comprometido com um stack definitivo, e pelo campo de monetização truncado que deixa a história incompleta do lado do negócio."
+}

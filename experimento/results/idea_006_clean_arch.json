@@ -1,0 +1,603 @@
+{
+  "ideia_idx": 6,
+  "ideia": "App de nutrição personalizada com IA baseada em exames laboratoriais",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio puros, sem dependências externas, representam as regras de negócio corporativas",
+      "lista": [
+        {
+          "nome": "Patient",
+          "atributos": [
+            "id",
+            "name",
+            "dateOfBirth",
+            "gender",
+            "weight",
+            "height",
+            "healthGoals"
+          ],
+          "regras": [
+            "IMC deve ser calculado internamente",
+            "Idade derivada de dateOfBirth",
+            "Validação de dados biométricos"
+          ]
+        },
+        {
+          "nome": "LabExam",
+          "atributos": [
+            "id",
+            "patientId",
+            "collectionDate",
+            "laboratoryName",
+            "results: LabResult[]",
+            "status"
+          ],
+          "regras": [
+            "Resultado só válido se status=PROCESSED",
+            "Data de coleta não pode ser futura"
+          ]
+        },
+        {
+          "nome": "LabResult",
+          "atributos": [
+            "biomarkerId",
+            "value",
+            "unit",
+            "referenceMin",
+            "referenceMax",
+            "classification"
+          ],
+          "regras": [
+            "Classification deriva de comparação value vs referência",
+            "Enum: DEFICIENT | LOW | NORMAL | HIGH | CRITICAL"
+          ]
+        },
+        {
+          "nome": "Biomarker",
+          "atributos": [
+            "id",
+            "name",
+            "category",
+            "unit",
+            "defaultReferenceRange",
+            "nutritionalImpact"
+          ],
+          "regras": [
+            "Categorias: VITAMIN | MINERAL | HORMONE | LIPID | GLYCEMIC | HEPATIC | RENAL"
+          ]
+        },
+        {
+          "nome": "NutritionalPlan",
+          "atributos": [
+            "id",
+            "patientId",
+            "createdAt",
+            "validUntil",
+            "dailyCalories",
+            "macros: Macronutrients",
+            "meals: Meal[]",
+            "supplements: Supplement[]",
+            "restrictions"
+          ],
+          "regras": [
+            "Macros devem somar 100%",
+            "Plano expira após validUntil",
+            "Mínimo 3 refeições por dia"
+          ]
+        },
+        {
+          "nome": "Meal",
+          "atributos": [
+            "id",
+            "type",
+            "time",
+            "foods: FoodItem[]",
+            "totalNutrients"
+          ],
+          "regras": [
+            "Tipos: BREAKFAST | LUNCH | DINNER | SNACK | SUPPER",
+            "totalNutrients calculado a partir dos alimentos"
+          ]
+        },
+        {
+          "nome": "Food",
+          "atributos": [
+            "id",
+            "name",
+            "taco_id",
+            "nutrients: NutrientMap",
+            "allergens",
+            "category"
+          ],
+          "regras": [
+            "Baseado na tabela TACO/USDA",
+            "NutrientMap imutável após criação"
+          ]
+        },
+        {
+          "nome": "Supplement",
+          "atributos": [
+            "id",
+            "name",
+            "dosage",
+            "frequency",
+            "targetBiomarkers",
+            "contraindications"
+          ],
+          "regras": [
+            "Dosagem deve respeitar limites seguros por biomarker",
+            "Contraindications verificadas contra perfil do paciente"
+          ]
+        },
+        {
+          "nome": "AIRecommendation",
+          "atributos": [
+            "id",
+            "patientId",
+            "labExamId",
+            "rationale",
+            "confidence",
+            "generatedAt",
+            "reviewedBy"
+          ],
+          "regras": [
+            "Confidence entre 0 e 1",
+            "Recomendações críticas exigem revisão profissional (reviewedBy)"
+          ]
+        },
+        {
+          "nome": "HealthGoal",
+          "atributos": [
+            "id",
+            "type",
+            "targetValue",
+            "deadline",
+            "priority"
+          ],
+          "regras": [
+            "Tipos: WEIGHT_LOSS | MUSCLE_GAIN | ENERGY | IMMUNITY | LONGEVITY | DISEASE_CONTROL"
+          ]
+        },
+        {
+          "nome": "Subscription",
+          "atributos": [
+            "id",
+            "userId",
+            "plan",
+            "status",
+            "currentPeriodEnd",
+            "features"
+          ],
+          "regras": [
+            "Plans: FREE | BASIC | PROFESSIONAL | ENTERPRISE",
+            "Features desbloqueadas por plan"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Regras de negócio da aplicação, orquestram fluxos usando entidades e dependem apenas de interfaces (ports)",
+      "lista": [
+        {
+          "nome": "AnalyzeLabExam",
+          "input": "LabExamDTO (resultados brutos do laboratório)",
+          "output": "LabAnalysisResult (deficiências identificadas, criticidade)",
+          "dependencias_externas": [
+            "ILabExamRepository",
+            "IBiomarkerRepository"
+          ],
+          "descricao": "Parseia resultados, compara com referências, classifica biomarkers, detecta deficiências e interações"
+        },
+        {
+          "nome": "GenerateNutritionalPlan",
+          "input": "GeneratePlanRequest (patientId, labAnalysisId, healthGoals)",
+          "output": "NutritionalPlan",
+          "dependencias_externas": [
+            "IPatientRepository",
+            "ILabAnalysisRepository",
+            "IAIRecommendationPort",
+            "IFoodRepository"
+          ],
+          "descricao": "Usa análise laboratorial + perfil + objetivos para gerar plano personalizado via IA, com validação de segurança"
+        },
+        {
+          "nome": "ProcessLabExamUpload",
+          "input": "RawLabDocument (PDF/imagem/JSON do laboratório)",
+          "output": "LabExam processado",
+          "dependencias_externas": [
+            "IDocumentParserPort",
+            "ILabExamRepository",
+            "IOCRPort"
+          ],
+          "descricao": "Extrai dados estruturados de documentos de exames (PDF/imagem) via OCR e parsing"
+        },
+        {
+          "nome": "TrackNutritionalAdherence",
+          "input": "FoodLogEntry (patientId, data consumida)",
+          "output": "AdherenceReport",
+          "dependencias_externas": [
+            "IFoodLogRepository",
+            "INutritionalPlanRepository"
+          ],
+          "descricao": "Compara alimentação registrada com plano prescrito, calcula score de aderência"
+        },
+        {
+          "nome": "MonitorBiomarkerProgress",
+          "input": "patientId, dateRange",
+          "output": "ProgressReport com evolução temporal dos biomarkers",
+          "dependencias_externas": [
+            "ILabExamRepository",
+            "INutritionalPlanRepository"
+          ],
+          "descricao": "Analisa tendência de biomarkers ao longo de múltiplos exames"
+        },
+        {
+          "nome": "GenerateMealSuggestions",
+          "input": "patientId, mealType, restrictions",
+          "output": "MealSuggestion[]",
+          "dependencias_externas": [
+            "INutritionalPlanRepository",
+            "IFoodRepository",
+            "IAIRecommendationPort"
+          ],
+          "descricao": "Sugere refeições compatíveis com o plano ativo considerando restrições e preferências"
+        },
+        {
+          "nome": "RegisterPatient",
+          "input": "PatientRegistrationData",
+          "output": "Patient criado + credenciais",
+          "dependencias_externas": [
+            "IPatientRepository",
+            "IAuthPort",
+            "INotificationPort"
+          ],
+          "descricao": "Onboarding do paciente com validação de dados, criação de conta e envio de boas-vindas"
+        },
+        {
+          "nome": "AuthenticateUser",
+          "input": "Credentials",
+          "output": "AuthToken",
+          "dependencias_externas": [
+            "IAuthPort",
+            "IUserRepository"
+          ],
+          "descricao": "Autenticação segura, suporte a OAuth2 e MFA"
+        },
+        {
+          "nome": "ManageSubscription",
+          "input": "SubscriptionCommand (SUBSCRIBE | UPGRADE | CANCEL)",
+          "output": "Subscription atualizada",
+          "dependencias_externas": [
+            "IPaymentPort",
+            "ISubscriptionRepository",
+            "INotificationPort"
+          ],
+          "descricao": "Gerencia ciclo de vida da assinatura, integrando gateway de pagamento"
+        },
+        {
+          "nome": "SharePlanWithNutritionist",
+          "input": "patientId, planId, nutritionisteEmail",
+          "output": "ShareLink com token de acesso temporário",
+          "dependencias_externas": [
+            "INutritionalPlanRepository",
+            "INotificationPort",
+            "ITokenPort"
+          ],
+          "descricao": "Gera link seguro para nutricionista revisar e colaborar no plano"
+        },
+        {
+          "nome": "SendHealthAlert",
+          "input": "LabAnalysisResult com biomarkers críticos",
+          "output": "Alert enviado",
+          "dependencias_externas": [
+            "INotificationPort",
+            "IPatientRepository"
+          ],
+          "descricao": "Dispara alertas para biomarkers em níveis críticos, pode notificar nutricionista vinculado"
+        }
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Convertem dados entre o formato conveniente para os casos de uso/entidades e o formato conveniente para os agentes externos",
+      "controllers": [
+        {
+          "nome": "PatientController",
+          "rotas": [
+            "POST /patients",
+            "GET /patients/:id",
+            "PUT /patients/:id"
+          ],
+          "responsabilidade": "Recebe HTTP requests, valida DTOs, delega ao use case, retorna HTTP response"
+        },
+        {
+          "nome": "LabExamController",
+          "rotas": [
+            "POST /lab-exams/upload",
+            "GET /lab-exams/:id",
+            "GET /patients/:id/lab-exams"
+          ],
+          "responsabilidade": "Gerencia upload e consulta de exames"
+        },
+        {
+          "nome": "NutritionalPlanController",
+          "rotas": [
+            "POST /plans/generate",
+            "GET /plans/:id",
+            "GET /patients/:id/plans/active"
+          ],
+          "responsabilidade": "Orquestra geração e consulta de planos nutricionais"
+        },
+        {
+          "nome": "FoodLogController",
+          "rotas": [
+            "POST /food-logs",
+            "GET /food-logs/:patientId/today"
+          ],
+          "responsabilidade": "Registra refeições consumidas"
+        },
+        {
+          "nome": "SubscriptionController",
+          "rotas": [
+            "POST /subscriptions",
+            "DELETE /subscriptions/:id",
+            "POST /subscriptions/:id/upgrade"
+          ],
+          "responsabilidade": "Gerencia assinaturas e pagamentos"
+        },
+        {
+          "nome": "WebhookController",
+          "rotas": [
+            "POST /webhooks/stripe",
+            "POST /webhooks/lab-results"
+          ],
+          "responsabilidade": "Recebe eventos externos (pagamentos, resultados de laboratórios parceiros)"
+        }
+      ],
+      "presenters": [
+        "LabAnalysisPresenter — formata análise com visualizações de semáforo por biomarker",
+        "NutritionalPlanPresenter — estrutura plano para exibição em app (tabs de refeição, macros charts)",
+        "ProgressReportPresenter — serializa evolução temporal para gráficos",
+        "MealSuggestionPresenter — formata sugestões com imagens e informações nutricionais"
+      ],
+      "gateways": [
+        "PatientRepositoryGateway — implementa IPatientRepository usando ORM",
+        "LabExamRepositoryGateway — implementa ILabExamRepository",
+        "FoodRepositoryGateway — implementa IFoodRepository com cache Redis",
+        "AIRecommendationGateway — implementa IAIRecommendationPort chamando OpenAI/Gemini",
+        "OCRGateway — implementa IOCRPort usando Google Document AI ou AWS Textract",
+        "NotificationGateway — implementa INotificationPort via email/push/SMS",
+        "PaymentGateway — implementa IPaymentPort via Stripe",
+        "AuthGateway — implementa IAuthPort via JWT + OAuth2"
+      ],
+      "dtos": [
+        "LabExamUploadDTO",
+        "GeneratePlanRequestDTO",
+        "FoodLogEntryDTO",
+        "PatientRegistrationDTO",
+        "SubscriptionCommandDTO",
+        "LabResultDTO"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa — detalhes de implementação substituíveis sem afetar regras de negócio",
+      "web_framework": {
+        "backend": "FastAPI (Python) ou NestJS (TypeScript)",
+        "razao": "FastAPI para ecossistema ML nativo; NestJS para times TypeScript com injeção de dependência built-in"
+      },
+      "banco_de_dados": {
+        "principal": "PostgreSQL — dados relacionais (pacientes, planos, assinaturas)",
+        "documentos": "MongoDB — resultados de exames (schema flexível por laboratório)",
+        "cache": "Redis — cache de consultas a tabela de alimentos e sessões",
+        "busca": "Elasticsearch — busca full-text em alimentos e suplementos"
+      },
+      "ia_ml": {
+        "llm": "OpenAI GPT-4o ou Google Gemini Pro — geração de recomendações nutricionais",
+        "ocr": "Google Document AI — extração de dados de PDFs de exames",
+        "embeddings": "OpenAI text-embedding-3 — similaridade semântica entre alimentos e sintomas",
+        "orchestration": "LangChain — cadeia de prompts para análise multi-etapa"
+      },
+      "autenticacao": "Auth0 ou Keycloak (OAuth2/OIDC) + JWT",
+      "pagamentos": "Stripe (assinaturas recorrentes + gestão de planos)",
+      "notificacoes": "AWS SES (email) + Firebase Cloud Messaging (push) + Twilio (SMS)",
+      "filas": "AWS SQS ou RabbitMQ — processamento assíncrono de exames e planos",
+      "storage": "AWS S3 — armazenamento de PDFs de exames e imagens",
+      "infra": "AWS ECS/Fargate ou GCP Cloud Run (containers), Terraform (IaC)",
+      "observabilidade": "OpenTelemetry + Datadog ou AWS CloudWatch",
+      "ci_cd": "GitHub Actions + Docker"
+    },
+    "dependency_rule": {
+      "principio": "As dependências de código-fonte só apontam para dentro — nunca para fora",
+      "implementacao": {
+        "entities": "Zero dependências externas. Classes Python/TypeScript puras com lógica de domínio, sem imports de frameworks",
+        "use_cases": "Dependem APENAS de Entities e de interfaces (Ports/Repositories) definidas na própria camada. Nunca importam SQLAlchemy, FastAPI, OpenAI SDK diretamente",
+        "interface_adapters": "Implementam as interfaces definidas pelos Use Cases. Conhecem frameworks (FastAPI, SQLAlchemy) mas os Use Cases não sabem disso",
+        "frameworks_drivers": "Instanciam e conectam tudo via Injeção de Dependência (IoC Container). São os únicos que conhecem todas as camadas"
+      },
+      "inversao_de_dependencia": {
+        "exemplo": "Use Case GenerateNutritionalPlan declara interface IAIRecommendationPort. A implementação real (OpenAIGateway) fica em Frameworks & Drivers e implementa essa interface. O Use Case recebe a interface por injeção — nunca importa OpenAI SDK diretamente",
+        "ports_definidos_em": "Use Cases / Domain layer",
+        "ports_implementados_em": "Interface Adapters / Frameworks & Drivers"
+      },
+      "violacoes_proibidas": [
+        "Entity importar repository ou framework",
+        "Use Case importar SQLAlchemy, FastAPI, boto3, openai diretamente",
+        "Entity conhecer conceito de HTTP request/response",
+        "Use Case conhecer formato JSON ou estrutura de tabela de banco"
+      ]
+    },
+    "testability": {
+      "entities": {
+        "estrategia": "Unit tests puros, sem mocks. Instanciam entidades diretamente",
+        "exemplo": "Testar que NutritionalPlan rejeita macros que não somam 100%; testar classificação de LabResult como DEFICIENT",
+        "cobertura_alvo": "100% — lógica crítica de negócio"
+      },
+      "use_cases": {
+        "estrategia": "Unit tests com mocks/stubs das interfaces (Ports). Injeção de dependência permite substituir repositórios e gateways externos por fakes",
+        "exemplo": "Testar GenerateNutritionalPlan com FakeAIPort que retorna recomendação fixa, FakePatientRepository com dados de teste",
+        "cobertura_alvo": "≥90% — todos os fluxos principais e de erro"
+      },
+      "interface_adapters": {
+        "estrategia": "Integration tests com banco em memória (SQLite/TestContainers) e mocks de serviços externos",
+        "exemplo": "Testar PatientRepositoryGateway contra PostgreSQL real em container Docker",
+        "cobertura_alvo": "≥80%"
+      },
+      "frameworks_drivers": {
+        "estrategia": "E2E tests com ambiente completo (staging), contract tests para APIs externas",
+        "exemplo": "Pact para contract testing com Stripe webhook; E2E do fluxo upload de exame → geração de plano",
+        "cobertura_alvo": "Smoke tests + cenários críticos"
+      },
+      "beneficios_clean_arch": [
+        "Regras de negócio testáveis offline — sem chamar OpenAI ou banco real",
+        "Testes de Use Case rodam em milissegundos (sem I/O)",
+        "Troca de LLM (OpenAI → Gemini) não quebra testes de Use Case",
+        "CI pipeline rápido: unit tests (< 30s) → integration (< 3min) → E2E (< 15min)"
+      ]
+    },
+    "interfaces": [
+      "IPatientRepository — CRUD de pacientes",
+      "ILabExamRepository — persistência e consulta de exames laboratoriais",
+      "IBiomarkerRepository — catálogo de biomarcadores com valores de referência",
+      "IFoodRepository — base de dados de alimentos (TACO/USDA)",
+      "INutritionalPlanRepository — persistência de planos gerados",
+      "IFoodLogRepository — registro de refeições consumidas",
+      "ISubscriptionRepository — gestão de assinaturas",
+      "IAIRecommendationPort — geração de recomendações nutricionais via IA",
+      "IOCRPort — extração de texto estruturado de documentos PDF/imagem",
+      "IDocumentParserPort — parsing de resultados de exames por laboratório",
+      "INotificationPort — envio de emails, push notifications e SMS",
+      "IPaymentPort — processamento de pagamentos e assinaturas",
+      "IAuthPort — autenticação, geração e validação de tokens",
+      "ITokenPort — geração de tokens temporários (compartilhamento de plano)",
+      "IStoragePort — upload e download de arquivos (PDFs de exames)"
+    ],
+    "escalabilidade": {
+      "horizontal": "Stateless API containers escalam horizontalmente via auto-scaling (ECS/Cloud Run). Redis centraliza sessões e cache",
+      "processamento_assincrono": "Upload de exames e geração de planos enfileirados (SQS/RabbitMQ). Workers independentes processam sem bloquear API. Suporta picos de upload",
+      "banco_de_dados": "PostgreSQL com read replicas para consultas pesadas. Connection pooling (PgBouncer). Sharding por patientId em escala extrema",
+      "ia": "Rate limiting e filas para chamadas LLM. Cache de recomendações similares (embeddings + similarity search). Possibilidade de fine-tuning de modelo próprio para reduzir custos",
+      "caching": "Redis para: tabela de alimentos (raramente muda), plano ativo do paciente (TTL 1h), referências de biomarkers",
+      "cqrs": "Separação de read/write models: comandos via API principal, queries via read replicas otimizadas com views materializadas",
+      "multitenancy": "Isolamento por tenant_id em todas as tabelas. Suporta white-label para clínicas e nutricionistas"
+    },
+    "custos": {
+      "principais_drivers": [
+        "LLM (maior custo variável) — GPT-4o ~$0.01-0.03 por geração de plano completo",
+        "OCR — Google Document AI ~$0.0015/página de exame",
+        "Infraestrutura compute — ECS Fargate ~$50-200/mês por ambiente",
+        "Banco de dados — RDS PostgreSQL ~$50-150/mês (instância media)"
+      ],
+      "otimizacoes": [
+        "Cache de análises de biomarkers — mesmo exame não re-processa",
+        "Geração de plano em background (async) — evita timeout e permite batch",
+        "Modelo menor (GPT-4o-mini) para sugestões de refeições simples, GPT-4o apenas para análise crítica",
+        "Compressão e retenção de PDFs antigos em S3 Glacier após 1 ano",
+        "Spot instances para workers de processamento assíncrono (70% desconto)"
+      ],
+      "estimativa_por_usuario_mes": {
+        "free": "$0.05 — 1 exame/mês, sugestões limitadas",
+        "basic": "$0.30 — 3 exames/mês, plano completo",
+        "professional": "$0.80 — exames ilimitados, alertas, integração nutricionista"
+      }
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS B2C com freemium + planos pagos recorrentes (Stripe Subscriptions)",
+      "planos": [
+        {
+          "nome": "Free",
+          "preco": "R$0/mês",
+          "features": [
+            "1 exame/mês",
+            "Análise básica de 10 biomarkers",
+            "Plano semanal simplificado"
+          ],
+          "objetivo": "Aquisição e validação de produto"
+        },
+        {
+          "nome": "Basic",
+          "preco": "R$39,90/mês",
+          "features": [
+            "3 exames/mês",
+            "Análise completa de 50+ biomarkers",
+            "Plano personalizado mensal",
+            "Tracking de refeições",
+            "App mobile"
+          ],
+          "objetivo": "Usuário individual engajado"
+        },
+        {
+          "nome": "Professional",
+          "preco": "R$89,90/mês",
+          "features": [
+            "Exames ilimitados",
+            "IA avançada com histórico",
+            "Integração com nutricionista",
+            "Alertas críticos",
+            "Exportação para prontuário"
+          ],
+          "objetivo": "Usuário com acompanhamento profissional"
+        },
+        {
+          "nome": "Clinic (B2B)",
+          "preco": "R$299/mês por até 50 pacientes",
+          "features": [
+            "Dashboard do nutricionista",
+            "Multi-pacientes",
+            "White-label",
+            "API de integração com laboratórios",
+            "Relatórios regulatórios"
+          ],
+          "objetivo": "Clínicas e nutricionistas"
+        }
+      ],
+      "receitas_adicionais": [
+        "Marketplace de suplementos com comissão (afiliados com Netshoes Saúde/Amazon)",
+        "Integração paga com laboratórios (Fleury, DASA) para importação automática de exames",
+        "API para planos de saúde e seguradoras (prevenção de doenças crônicas)",
+        "Certificação CFN para nutricionistas (acesso a features regulatórias)"
+      ],
+      "metricas_saas": {
+        "ltv_target": "R$800 (Basic 20 meses) — R$2.000 (Professional 22 meses)",
+        "cac_target": "< R$80 (B2C via content/SEO) — < R$400 (B2B via sales)",
+        "churn_reducao": "Plano de aderência e alertas aumentam retenção — usuário vê evolução de biomarkers"
+      }
+    },
+    "stack_sugerida": {
+      "backend": {
+        "linguagem": "Python 3.12+ (ecossistema ML) ou TypeScript 5+ (times fullstack)",
+        "framework": "FastAPI (Python) — alta performance, async nativo, OpenAPI automático",
+        "injecao_dependencia": "dependency-injector (Python) ou NestJS IoC Container (TypeScript)",
+        "orm": "SQLAlchemy 2.0 (async) com Alembic para migrations"
+      },
+      "frontend": {
+        "web": "Next.js 14 (App Router) + TypeScript + Tailwind CSS",
+        "mobile": "React Native (Expo) — iOS e Android com base de código compartilhada",
+        "state": "Zustand + React Query (TanStack Query) para server state"
+      },
+      "ia_ml": {
+        "llm": "OpenAI GPT-4o via LangChain (principal) + fallback Gemini Pro",
+        "ocr": "Google Document AI para exames; fallback AWS Textract",
+        "embeddings": "pgvector (PostgreSQL extension) para similarity search de alimentos"
+      },
+      "dados": {
+        "relacional": "PostgreSQL 16 (RDS ou Cloud SQL)",
+        "cache": "Redis 7 (ElastiCache)",
+        "storage": "AWS S3 + CloudFront CDN",
+        "filas": "AWS SQS + Lambda Workers"
+      },
+      "infra_devops": {
+        "containers": "Docker + AWS ECS Fargate",
+        "iac": "Terraform + AWS",
+        "ci_cd": "GitHub Actions",
+        "observabilidade": "OpenTelemetry + Datadog APM",
+        "secrets": "AWS Secrets Manager"
+      },
+      "qualidade": {
+        "testes": "pytest (Python) / Vitest (TS) + TestContainers para integration",
+        "linting": "Ruff + Black (Python) / ESLint + Prettier (TS)",
+        "type_safety": "Pydantic v2 (validação + serialização) / Zod (TS)"
+      }
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio puros, sem dependências externas, representam as regras de negócio corporativas\",\n    \"lista\": [\n      {\n        \"nome\": \"Patient\",\n        \"atributos\": [\"id\", \"name\", \"dateOfBirth\", \"gender\", \"weight\", \"height\", \"healthGoals\"],\n        \"regras\": [\"IMC deve ser calculado internamente\", \"Idade derivada de dateOfBirth\", \"Validação de dados biométricos\"]\n      },\n      {\n        \"nome\": \"LabExam\",\n        \"atributos\": [\"id\", \"patientId\", \"collectionDate\", \"laboratoryName\", \"results: LabResult[]\", \"status\"],\n        \"regras\": [\"Resultado só válido se status=PROCESSED\", \"Data de coleta não pode ser futura\"]\n      },\n      {\n        \"nome\": \"LabResult\",\n        \"atributos\": [\"biomarkerId\", \"value\", \"unit\", \"referenceMin\", \"referenceMax\", \"classification\"],\n        \"regras\": [\"Classification deriva de comparação value vs referência\", \"Enum: DEFICIENT | LOW | NORMAL | HIGH | CRITICAL\"]\n      },\n      {\n        \"nome\": \"Biomarker\",\n        \"atributos\": [\"id\", \"name\", \"category\", \"unit\", \"defaultReferenceRange\", \"nutritionalImpact\"],\n        \"regras\": [\"Categorias: VITAMIN | MINERAL | HORMONE | LIPID | GLYCEMIC | HEPATIC | RENAL\"]\n      },\n      {\n        \"nome\": \"NutritionalPlan\",\n        \"atributos\": [\"id\", \"patientId\", \"createdAt\", \"validUntil\", \"dailyCalories\", \"macros: Macronutrients\", \"meals: Meal[]\", \"supplements: Supplement[]\", \"restrictions\"],\n        \"regras\": [\"Macros devem somar 100%\", \"Plano expira após validUntil\", \"Mínimo 3 refeições por dia\"]\n      },\n      {\n        \"nome\": \"Meal\",\n        \"atributos\": [\"id\", \"type\", \"time\", \"foods: FoodItem[]\", \"totalNutrients\"],\n        \"regras\": [\"Tipos: BREAKFAST | LUNCH | DINNER | SNACK | SUPPER\", \"totalNutrients calculado a partir dos alimentos\"]\n      },\n      {\n        \"nome\": \"Food\",\n        \"atributos\": [\"id\", \"name\", \"taco_id\", \"nutrients: NutrientMap\", \"allergens\", \"category\"],\n        \"regras\": [\"Baseado na tabela TACO/USDA\", \"NutrientMap imutável apó"
+}

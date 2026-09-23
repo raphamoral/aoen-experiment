@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador (bid engine com garantias de latência <200ms, idempotência de lances e precisão temporal de fechamento) é inferível pelas fitness functions e pelo isolamento do bounded context Bidding/Auction, e a extensibilidade está bem endereçada via abstrações de cloud e protocolos substituíveis — mas o núcleo nunca é declarado explicitamente como diferenciador estratégico, e a proposta não articula por que alternativas consolidadas (SAP Ariba, Coupa) não resolvem o mesmo problema, deixando a insubstituibilidade do produto como suposição, não como argumento."
+}

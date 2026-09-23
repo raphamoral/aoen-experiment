@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta contempla configurações por cliente em pontos isolados (limites de alerta por poluente, gestão de usuários e dispositivos por tenant), mas não descreve uma arquitetura de configuração explícita — protocolos de sensor (MQTT/HTTP/Modbus), formatos de relatório por órgão regulador (IBAMA vs CETESB) e escalonamento de notificações provavelmente exigiriam código novo para clientes com requisitos distintos, não apenas uma nova row no banco."
+}

@@ -1,0 +1,61 @@
+{
+  "ideia_idx": 29,
+  "ideia": "Marketplace de profissionais de energia solar para residências",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (capacidade de mudar de forma incremental e segura)",
+      "Confiabilidade e confiança transacional (pagamentos, escrow e contratos entre cliente e profissional)",
+      "Segurança e conformidade (LGPD, KYC do profissional, verificação de certificações como CREA/INMETRO)",
+      "Testabilidade e deployability (CI/CD com deploys frequentes e rollback rápido)",
+      "Disponibilidade e desempenho na busca e no matching (geolocalização, filtros, ranking)",
+      "Observabilidade (funil de conversão, latência, taxa de match, erros de pagamento)",
+      "Elasticidade para sazonalidade (picos de demanda em campanhas, alta de tarifa de energia e mudanças de incentivo regulatório)",
+      "Interoperabilidade (APIs de distribuidoras, dados de irradiação solar, gateways de pagamento)"
+    ],
+    "fitness_functions": [
+      "Atômica, automatizada, em CI: ArchUnit ou dependency-cruiser bloqueia o build se um módulo acessar o banco ou os internos de outro módulo (protege as fronteiras dos bounded contexts).",
+      "Atômica, automatizada: testes de contrato (Pact ou schema registry) verificam a compatibilidade retroativa de APIs e eventos a cada PR.",
+      "Holística, automatizada: teste de carga (k6) em pipeline noturno, com p95 da busca de profissionais < 300 ms com 10x o volume atual.",
+      "Atômica, automatizada: métricas DORA como gate, com lead time < 1 dia, taxa de falha de mudança < 15% e MTTR < 1 h.",
+      "Atômica, automatizada: SAST/DAST e scan de dependências (Trivy, Snyk) sem vulnerabilidades críticas para o merge.",
+      "Atômica, automatizada: teste que verifica criptografia de PII em repouso e ausência de PII em logs (LGPD).",
+      "Holística, automatizada: chaos engineering em staging (falha do gateway de pagamento ou do serviço de geocodificação) com degradação graciosa e sem perda de pedidos.",
+      "Contínua, automatizada: alerta de custo (FinOps) se o custo de infraestrutura por transação ou por lead ultrapassar o limite definido.",
+      "Atômica, automatizada: limite de complexidade ciclomática e de tamanho de módulo, mais alerta quando o acoplamento aferente/eferente passa do limite.",
+      "Contínua, automatizada: SLO de disponibilidade de 99,9% do fluxo de orçamento e pagamento, com error budget acompanhado.",
+      "Manual, periódica: revisão trimestral de arquitetura (ADRs) para reavaliar se algum módulo já justifica virar serviço."
+    ],
+    "incremental_change": "Começar com um monólito modular (Modular Monolith) organizado por bounded contexts: Identidade, Perfil e Certificação de Profissionais, Solicitação e Orçamento, Matching e Busca, Contratação e Pagamentos, Avaliações e Reputação, Notificações e Faturamento. Evoluir em fases guiadas por fitness functions. Fase 1 (MVP): um único deploy com um banco Postgres compartilhado, mas com schemas separados por módulo, e o fluxo mínimo de solicitar orçamento e receber propostas. Fase 2: eventos de domínio internos com outbox pattern, sem quebrar as fronteiras. Fase 3: extrair primeiro os módulos com maior pressão de escala ou de mudança (Busca/Matching, Notificações e Pagamentos) usando o Strangler Fig pattern, quando as métricas justificarem. Fase 4: uma camada de dados analíticos separada, além de recomendação e ranking com ML. Cada mudança entra por feature flags, canary releases e deploys pequenos e frequentes. O Anti-Corruption Layer isola integrações externas. Os ADRs registram o contexto de cada decisão para que ela possa ser revista.",
+    "reversibility": "Reversíveis (two-way doors), com decisão rápida: framework de frontend, provedor de cloud dentro de um mesmo padrão (containers), provedor de e-mail/SMS, ferramenta de observabilidade, gateway de pagamento atrás de uma interface própria, mecanismo de busca (começar com Postgres full-text e PostGIS, migrar para OpenSearch/Elasticsearch depois), cache e fila (Redis, SQS). Semi-reversíveis, com custo moderado: estrutura de módulos e contratos de eventos (versionados), modelo de autenticação (usar um IdP padrão OIDC). Difíceis de reverter, adiar até o último momento responsável: quebra em microsserviços, escolha definitiva de banco por serviço (polyglot persistence), modelo multi-região, particionamento de dados por tenant/região e o desenho do modelo de escrow/split de pagamento e das obrigações fiscais. Para estes, coletar dados reais antes de decidir e proteger com abstrações e ADRs.",
+    "coupling": "Baixo acoplamento entre bounded contexts. Os módulos se comunicam por interfaces públicas explícitas (API interna) e eventos de domínio (ex.: OrcamentoSolicitado, PropostaEnviada, ContratoFechado, InstalacaoConcluida, PagamentoLiberado), nunca por acesso direto às tabelas dos outros. Cada módulo é dono dos seus dados. Consistência eventual entre contextos, com sagas para o fluxo de contratação e pagamento. Ports & Adapters (arquitetura hexagonal) isolam o domínio de infraestrutura e de fornecedores. Anti-Corruption Layer para APIs de terceiros (distribuidoras, gateways, dados de irradiação). Contratos versionados (semver em APIs e schemas de eventos) e compatibilidade retroativa por pelo menos dois ciclos. Acoplamento intencional e aceito apenas dentro do módulo (alta coesão) e em uma biblioteca compartilhada mínima (kernel compartilhado) com tipos como Dinheiro e Endereço.",
+    "interfaces": [
+      "API REST/GraphQL pública para os apps web e mobile (BFF por tipo de cliente: proprietário e profissional)",
+      "API de busca e matching de profissionais (por região, certificação, avaliações, disponibilidade e capacidade)",
+      "API de solicitação de orçamento (upload de conta de luz, fotos do telhado e endereço)",
+      "API de propostas e comparação de orçamentos",
+      "API de contratação, pagamentos e escrow/split (webhook do gateway)",
+      "API de perfis, portfólio e verificação de certificações dos profissionais",
+      "API de avaliações e reputação",
+      "Barramento de eventos de domínio (contratos versionados em schema registry)",
+      "Webhooks de saída para integradores e CRMs dos profissionais",
+      "Integração com serviços de geocodificação e mapas, e com imagens de satélite para estimativa de telhado",
+      "Integração com bases de irradiação solar (ex.: INPE, NREL/PVGIS) para o simulador de economia e payback",
+      "Integração com dados tarifários de distribuidoras e ANEEL",
+      "Integração com provedores de financiamento solar (crédito, bancos e fintechs)",
+      "Canais de notificação (e-mail, SMS, WhatsApp, push)",
+      "Emissão de nota fiscal e integração fiscal",
+      "Interface de backoffice/admin (moderação, disputas e KYC)"
+    ],
+    "escalabilidade": "Escala em etapas. Início: monólito modular stateless em containers, com autoscaling horizontal atrás de um load balancer, Postgres gerenciado com réplicas de leitura, Redis para cache e sessões, e armazenamento de objetos com CDN para fotos e documentos. Filas assíncronas (SQS/RabbitMQ) desacoplam tarefas pesadas, como processamento de imagens, cálculo de simulação, notificações e conciliação. A busca de profissionais migra do Postgres/PostGIS para OpenSearch quando o p95 violar a fitness function. Módulos com perfil de carga distinto (Busca, Notificações, Pagamentos) são extraídos e escalam de forma independente. Para dados analíticos e ML, usar um pipeline CDC para um data warehouse, sem onerar o banco transacional. Como o mercado é regional (um profissional só atende perto do imóvel), o particionamento por região/geohash é a evolução natural para escala geográfica, adiada até haver volume que a exija. A demanda tem sazonalidade, então o autoscaling é orientado por métricas e testes de carga recorrentes validam a capacidade.",
+    "custos": "Priorizar custo variável proporcional ao uso. Começar com serviços gerenciados e poucos componentes (um monólito, um Postgres, Redis e armazenamento de objetos), que reduzem o custo operacional e de pessoal antes do product-market fit. Evitar microsserviços e Kubernetes prematuros, pois aumentam o custo cognitivo e de operação. Principais itens de custo: infraestrutura de cloud, armazenamento e CDN de imagens/documentos, taxas do gateway de pagamento (a repassar na comissão), mapas/geocodificação e imagens de satélite (APIs pagas por chamada, com cache agressivo), notificações (WhatsApp/SMS), verificação de identidade/KYC, observabilidade e conformidade jurídica. FinOps com tags por módulo, budgets, alertas de anomalia e a métrica de custo por lead e por transação como fitness function. Reservas e savings plans só depois de o consumo estabilizar. O maior custo do negócio é o de aquisição (marketing e vendas dos dois lados do mercado), então o produto deve medir CAC e LTV desde o início.",
+    "monetizacao": "Modelo de marketplace de duas pontas, com receita principal por comissão (take rate) de 5% a 12% sobre o valor dos projetos contratados e pagos pela plataforma (escrow com liberação por marcos: contratação, instalação e homologação). Receitas complementares: (1) assinatura SaaS para profissionais e integradores (planos com perfil destacado, CRM, gestão de propostas, agenda, ferramentas de orçamento e relatórios); (2) venda de leads qualificados ou pay-per-lead para profissionais que preferem esse modelo; (3) destaque pago (ads/patrocínio em buscas e categorias); (4) comissão de referência por financiamento solar, seguros e garantias estendidas; (5) serviços premium para o proprietário (análise técnica do telhado, laudo, acompanhamento do projeto e monitoramento pós-instalação); (6) parcerias com fabricantes e distribuidores de equipamentos. Começar pela comissão, com o lado da oferta (profissionais verificados) gratuito para resolver o cold start, e introduzir assinaturas quando houver massa crítica. Os experimentos de precificação ficam atrás de feature flags, o que os mantém reversíveis.",
+    "stack_sugerida": "Frontend: Next.js (React) com TypeScript para o web app e o portal do profissional, e React Native ou Flutter para mobile quando justificado. Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Spring Boot, com fronteiras de módulo verificadas por ferramentas de análise de dependências. Dados: PostgreSQL gerenciado (com PostGIS para geolocalização e schemas por módulo), Redis para cache e filas leves, S3 e CDN para arquivos, OpenSearch para busca avançada numa fase posterior. Mensageria: SQS/SNS ou RabbitMQ no início, migrando para Kafka apenas se o volume de eventos justificar. Autenticação: um IdP padrão OIDC (Auth0, Cognito ou Keycloak). Pagamentos: Stripe Connect, Mercado Pago ou Pagar.me atrás de uma interface própria, com suporte a Pix, boleto e cartão, split e escrow. Infraestrutura: containers em serviço gerenciado (AWS ECS Fargate ou Cloud Run), Terraform para IaC e migração para Kubernetes só se necessário. CI/CD: GitHub Actions com feature flags (Unleash ou LaunchDarkly), canary releases e testes de contrato (Pact). Observabilidade: OpenTelemetry com Grafana/Prometheus/Loki ou Datadog, e Sentry. Qualidade e fitness functions: ArchUnit ou dependency-cruiser, k6, Trivy, SonarQube. Analytics e dados: CDC para BigQuery ou Snowflake, dbt e Metabase. Integrações: Google Maps ou Mapbox, PVGIS/INPE para irradiação, Twilio ou a API do WhatsApp Business para notificações."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T02:44:18+00:00",
+    "runner": "runner.py"
+  }
+}

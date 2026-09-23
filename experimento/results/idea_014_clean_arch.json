@@ -1,0 +1,496 @@
+{
+  "ideia_idx": 14,
+  "ideia": "Plataforma de tradução simultânea para reuniões corporativas multilíngues",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "description": "Objetos de negócio com regras críticas, independentes de qualquer framework ou infraestrutura",
+      "list": [
+        {
+          "name": "Meeting",
+          "attributes": [
+            "id",
+            "title",
+            "scheduledAt",
+            "status",
+            "hostId",
+            "organizationId"
+          ],
+          "rules": [
+            "Só pode ser iniciada pelo host ou co-host",
+            "Duração máxima definida pelo plano da organização",
+            "Deve ter ao menos dois idiomas configurados"
+          ]
+        },
+        {
+          "name": "TranslationSession",
+          "attributes": [
+            "id",
+            "meetingId",
+            "sourceLanguage",
+            "targetLanguages",
+            "startedAt",
+            "endedAt"
+          ],
+          "rules": [
+            "Uma sessão por reunião",
+            "Não pode ser reiniciada após encerrada",
+            "Preserva histórico completo de segmentos"
+          ]
+        },
+        {
+          "name": "TranscriptionSegment",
+          "attributes": [
+            "id",
+            "sessionId",
+            "speakerId",
+            "rawText",
+            "language",
+            "timestamp",
+            "confidence"
+          ],
+          "rules": [
+            "Confiança mínima de 0.7 para publicação",
+            "Imutável após confirmação",
+            "Associado a um único falante"
+          ]
+        },
+        {
+          "name": "Translation",
+          "attributes": [
+            "id",
+            "segmentId",
+            "targetLanguage",
+            "translatedText",
+            "provider",
+            "createdAt",
+            "reviewedBy"
+          ],
+          "rules": [
+            "Deve referenciar um segmento válido",
+            "Pode ter revisão humana posterior",
+            "Uma por idioma de destino por segmento"
+          ]
+        },
+        {
+          "name": "Participant",
+          "attributes": [
+            "id",
+            "userId",
+            "meetingId",
+            "role",
+            "preferredLanguage",
+            "joinedAt",
+            "leftAt"
+          ],
+          "rules": [
+            "Papel pode ser: host, co-host, speaker, listener",
+            "Idioma preferido determina qual stream de áudio recebe"
+          ]
+        },
+        {
+          "name": "Organization",
+          "attributes": [
+            "id",
+            "name",
+            "plan",
+            "maxParticipants",
+            "allowedLanguages",
+            "monthlyMinutes"
+          ],
+          "rules": [
+            "Limites de uso definidos pelo plano contratado",
+            "Deve ter ao menos um administrador"
+          ]
+        },
+        {
+          "name": "Subscription",
+          "attributes": [
+            "id",
+            "organizationId",
+            "plan",
+            "billingCycle",
+            "usedMinutes",
+            "renewsAt"
+          ],
+          "rules": [
+            "Uso de minutos é acumulado por ciclo de faturamento",
+            "Renovação automática salvo cancelamento explícito"
+          ]
+        },
+        {
+          "name": "SpeakerProfile",
+          "attributes": [
+            "id",
+            "userId",
+            "voiceEmbedding",
+            "nativeLanguage",
+            "speakingRate"
+          ],
+          "rules": [
+            "Embedding de voz melhora acurácia da transcrição",
+            "Atualizado a cada 30 dias automaticamente"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "description": "Casos de uso da aplicação: orquestram o fluxo de negócio usando Entidades e Interfaces abstratas",
+      "list": [
+        {
+          "name": "CreateMeeting",
+          "input": "CreateMeetingRequest { title, hostId, scheduledAt, languagePairs }",
+          "output": "CreateMeetingResponse { meetingId, joinLink }",
+          "rules": "Valida limites do plano da organização antes de criar"
+        },
+        {
+          "name": "StartTranslationSession",
+          "input": "StartSessionRequest { meetingId, hostId }",
+          "output": "StartSessionResponse { sessionId, streamUrls }",
+          "rules": "Ativa pipelines de STT e MT, notifica todos os participantes"
+        },
+        {
+          "name": "ProcessAudioChunk",
+          "input": "AudioChunkRequest { sessionId, speakerId, audioData, sequence }",
+          "output": "void (evento assíncrono)",
+          "rules": "Enfileira para processamento STT, não bloqueia o caller"
+        },
+        {
+          "name": "TranscribeAndTranslate",
+          "input": "TranscriptionJob { sessionId, speakerId, audioData }",
+          "output": "TranslationBroadcastEvent { segmentId, translations }",
+          "rules": "Orquestra STTGateway → TranslationGateway → PublishGateway em pipeline"
+        },
+        {
+          "name": "JoinMeeting",
+          "input": "JoinRequest { meetingId, userId, preferredLanguage }",
+          "output": "JoinResponse { participantId, audioStreamUrl, translationStreamUrl }",
+          "rules": "Verifica capacidade máxima, registra participante, roteia stream correto"
+        },
+        {
+          "name": "EndMeeting",
+          "input": "EndMeetingRequest { meetingId, hostId }",
+          "output": "EndMeetingResponse { reportId, durationMinutes }",
+          "rules": "Encerra sessão, debita minutos da assinatura, dispara geração de relatório"
+        },
+        {
+          "name": "GenerateMeetingReport",
+          "input": "ReportRequest { meetingId, format }",
+          "output": "ReportResponse { transcriptUrl, translationsByLanguage }",
+          "rules": "Consolida todos os segmentos e traduções, exporta em PDF/DOCX/JSON"
+        },
+        {
+          "name": "ManageSubscription",
+          "input": "SubscriptionRequest { organizationId, plan, billingData }",
+          "output": "SubscriptionResponse { subscriptionId, nextBillingDate }",
+          "rules": "Delega pagamento ao PaymentGateway, ativa plano apenas após confirmação"
+        },
+        {
+          "name": "AuthenticateUser",
+          "input": "AuthRequest { email, credential }",
+          "output": "AuthResponse { accessToken, refreshToken }",
+          "rules": "Stateless JWT, não armazena sessão no servidor"
+        },
+        {
+          "name": "ReviewTranslation",
+          "input": "ReviewRequest { translationId, correctedText, reviewerId }",
+          "output": "ReviewResponse { updatedTranslation }",
+          "rules": "Apenas tradutores certificados (role=reviewer) podem revisar"
+        },
+        {
+          "name": "ConfigureLanguagePairs",
+          "input": "LanguageConfig { meetingId, sourceLang, targetLangs, provider }",
+          "output": "LanguageConfigResponse { configured }",
+          "rules": "Valida se os pares estão disponíveis no plano da organização"
+        }
+      ]
+    },
+    "interface_adapters": {
+      "description": "Convertem dados entre o formato mais conveniente para Use Cases/Entities e o formato mais conveniente para agentes externos",
+      "controllers": [
+        {
+          "name": "MeetingController",
+          "type": "REST",
+          "routes": [
+            "POST /meetings",
+            "GET /meetings/:id",
+            "DELETE /meetings/:id",
+            "POST /meetings/:id/join",
+            "POST /meetings/:id/end"
+          ]
+        },
+        {
+          "name": "TranslationWebSocketController",
+          "type": "WebSocket",
+          "events": [
+            "audio:chunk",
+            "translation:ready",
+            "participant:joined",
+            "session:started",
+            "session:ended"
+          ]
+        },
+        {
+          "name": "SubscriptionController",
+          "type": "REST",
+          "routes": [
+            "POST /subscriptions",
+            "GET /subscriptions/:orgId",
+            "PUT /subscriptions/:id",
+            "DELETE /subscriptions/:id"
+          ]
+        },
+        {
+          "name": "WebhookController",
+          "type": "REST",
+          "description": "Recebe callbacks de provedores externos (Stripe, STT providers)"
+        }
+      ],
+      "presenters": [
+        {
+          "name": "MeetingPresenter",
+          "description": "Formata Meeting entity para resposta REST ou evento WebSocket"
+        },
+        {
+          "name": "TranslationPresenter",
+          "description": "Serializa TranscriptionSegment + Translation para stream em tempo real"
+        },
+        {
+          "name": "ReportPresenter",
+          "description": "Converte dados brutos da reunião para PDF, DOCX ou JSON estruturado"
+        }
+      ],
+      "gateways": [
+        {
+          "name": "IMeetingRepository",
+          "interface": "findById, save, update, listByOrganization",
+          "description": "Abstração de persistência para Meeting"
+        },
+        {
+          "name": "ITranslationSessionRepository",
+          "interface": "findByMeetingId, save, update, findSegments",
+          "description": "Abstração de persistência para TranslationSession e TranscriptionSegments"
+        },
+        {
+          "name": "ISpeechToTextGateway",
+          "interface": "transcribe(audioChunk, language): TranscriptionResult",
+          "description": "Abstrai provedores de STT (Google, AWS, Azure, OpenAI Whisper)"
+        },
+        {
+          "name": "IMachineTranslationGateway",
+          "interface": "translate(text, sourceLang, targetLangs): TranslationResult[]",
+          "description": "Abstrai provedores de MT (DeepL, Google Translate, Azure)"
+        },
+        {
+          "name": "IAudioStreamGateway",
+          "interface": "publish(roomId, speakerId, audioData), subscribe(roomId, participantId)",
+          "description": "Abstrai infraestrutura de streaming de áudio em tempo real"
+        },
+        {
+          "name": "IPaymentGateway",
+          "interface": "createSubscription, cancelSubscription, processPayment",
+          "description": "Abstrai provedores de pagamento (Stripe, Paddle)"
+        },
+        {
+          "name": "INotificationGateway",
+          "interface": "sendEmail, sendPushNotification, broadcastEvent",
+          "description": "Abstrai canais de notificação"
+        },
+        {
+          "name": "IReportStorageGateway",
+          "interface": "upload(report, format): url, download(reportId): stream",
+          "description": "Abstrai armazenamento de relatórios gerados"
+        }
+      ]
+    },
+    "frameworks_drivers": {
+      "description": "Camada mais externa: detalhes de implementação que satisfazem as interfaces definidas nas camadas internas",
+      "web_framework": {
+        "choice": "Node.js + Fastify (API REST) + Socket.IO (WebSocket)",
+        "rationale": "Baixa latência, excelente suporte a I/O assíncrono e streaming"
+      },
+      "database": {
+        "primary": "PostgreSQL via Prisma ORM",
+        "cache": "Redis (sessões ativas, tokens, filas de segmentos pendentes)",
+        "search": "Elasticsearch (busca full-text em transcrições históricas)"
+      },
+      "message_broker": {
+        "choice": "Apache Kafka",
+        "topics": [
+          "audio.chunks",
+          "transcription.jobs",
+          "translation.results",
+          "meeting.events"
+        ],
+        "rationale": "Garante ordenação de segmentos e reprocessamento em caso de falha"
+      },
+      "stt_providers": {
+        "primary": "OpenAI Whisper (self-hosted para controle de dados)",
+        "fallback": "Google Cloud Speech-to-Text",
+        "languages": "Suporte a 100+ idiomas"
+      },
+      "mt_providers": {
+        "primary": "DeepL API (maior acurácia para idiomas europeus)",
+        "secondary": "Google Cloud Translation (cobertura máxima de idiomas)",
+        "tertiary": "Azure Cognitive Services Translator"
+      },
+      "audio_infrastructure": {
+        "choice": "WebRTC + mediasoup (SFU)",
+        "rationale": "Latência sub-200ms, suporte a múltiplos participantes sem MCU"
+      },
+      "auth": "Auth0 ou Keycloak (implementa IAuthGateway)",
+      "payments": "Stripe (implementa IPaymentGateway)",
+      "storage": "AWS S3 (implementa IReportStorageGateway)",
+      "notifications": "SendGrid (email) + Firebase FCM (push)",
+      "infrastructure": {
+        "containers": "Docker + Kubernetes (EKS/GKE)",
+        "service_mesh": "Istio para observabilidade e circuit breaking",
+        "ci_cd": "GitHub Actions + ArgoCD",
+        "monitoring": "Prometheus + Grafana + OpenTelemetry"
+      }
+    },
+    "dependency_rule": {
+      "description": "A Regra de Dependência aplicada estritamente em todas as camadas",
+      "principle": "Nenhum nome de camada externa pode ser mencionado por uma camada mais interna",
+      "application": {
+        "entities_depend_on": "Nada. Zero dependências externas. Apenas tipos primitivos e outras Entities.",
+        "use_cases_depend_on": "Somente Entities e Interfaces abstratas (ISpeechToTextGateway, IMeetingRepository, etc.) definidas na própria camada",
+        "interface_adapters_depend_on": "Use Cases (via interfaces de entrada) e Entities. NUNCA em Fastify, Prisma, Kafka, etc.",
+        "frameworks_drivers_depend_on": "Todas as camadas internas. São os únicos que conhecem Fastify, Prisma, Kafka, DeepL, Stripe."
+      },
+      "inversion_of_control": "Use Cases definem interfaces (ex: ISpeechToTextGateway). A camada Frameworks implementa WhisperSTTGateway que satisfaz essa interface. A injeção ocorre via IoC Container (Tsyringe ou InversifyJS) exclusivamente na camada mais externa.",
+      "concrete_example": "O UseCase TranscribeAndTranslate recebe ISpeechToTextGateway por injeção. Em produção, recebe WhisperSTTGateway. Em testes, recebe MockSTTGateway. O Use Case não sabe qual é qual.",
+      "anti_patterns_prevented": [
+        "Use Case importando 'import prisma from @prisma/client' — PROIBIDO",
+        "Entity importando 'import axios from axios' — PROIBIDO",
+        "Controller contendo regra de negócio — PROIBIDO"
+      ]
+    },
+    "testability": {
+      "description": "O sistema é testável em todos os níveis sem dependências externas reais graças à Regra de Dependência",
+      "unit_tests": {
+        "scope": "Entities e Use Cases isoladamente",
+        "approach": "Mocks/Stubs das interfaces de gateway injetados via construtor",
+        "example": "new TranscribeAndTranslate(mockSTT, mockMT, mockRepo, mockPublisher)",
+        "tools": "Jest + ts-jest",
+        "coverage_target": "100% das regras de negócio nas Entities, 95% nos Use Cases"
+      },
+      "integration_tests": {
+        "scope": "Interface Adapters + implementações reais de infraestrutura",
+        "approach": "Testcontainers para PostgreSQL e Redis reais em Docker",
+        "example": "Testar PrismaeMeetingRepository contra PostgreSQL real em memória",
+        "tools": "Jest + Testcontainers + Supertest"
+      },
+      "e2e_tests": {
+        "scope": "Fluxos completos da API",
+        "approach": "Ambiente de staging com provedores STT/MT em modo sandbox",
+        "tools": "Playwright + K6 (load testing)"
+      },
+      "contract_tests": {
+        "scope": "Contratos com APIs externas (DeepL, Google STT, Stripe)",
+        "approach": "Pact.io para consumer-driven contract testing",
+        "rationale": "Detecta breaking changes nos provedores antes do deploy"
+      },
+      "latency_tests": {
+        "scope": "Pipeline completo áudio → transcrição → tradução → entrega",
+        "target": "P95 < 1.5 segundos end-to-end",
+        "tools": "K6 com métricas de latência por etapa do pipeline"
+      }
+    },
+    "interfaces": [
+      "ISpeechToTextGateway — transcribe(audio, lang): Promise<TranscriptionResult>",
+      "IMachineTranslationGateway — translate(text, src, targets): Promise<TranslationResult[]>",
+      "IMeetingRepository — findById, save, update, delete, listByOrg",
+      "ITranslationSessionRepository — findByMeetingId, saveSegment, findSegments",
+      "IParticipantRepository — findByMeeting, save, updateStatus",
+      "IOrganizationRepository — findById, save, updatePlan",
+      "ISubscriptionRepository — findByOrg, save, updateUsage",
+      "IAudioStreamGateway — publish(room, speaker, data), subscribe(room, participant)",
+      "IPaymentGateway — createSubscription, processPayment, cancelSubscription",
+      "INotificationGateway — sendEmail, broadcastEvent, sendPush",
+      "IReportStorageGateway — upload(data, format): url, download(id): stream",
+      "IAuthGateway — validateToken(token): UserId, generateToken(userId): Tokens",
+      "IEventBus — publish(topic, event), subscribe(topic, handler)",
+      "ISpeakerProfileRepository — findByUser, save, updateEmbedding",
+      "IFeatureFlagGateway — isEnabled(flag, orgId): boolean"
+    ],
+    "escalabilidade": {
+      "horizontal_scaling": "Cada microsserviço escala independentemente via HPA no Kubernetes baseado em CPU/latência de fila",
+      "stateless_services": "Todos os serviços são stateless; estado compartilhado apenas via Redis e Kafka, nunca em memória local",
+      "audio_pipeline": "mediasoup SFU distribui carga de áudio entre múltiplos nós; cada nó suporta até 500 rooms simultâneas",
+      "translation_pipeline": "Workers de transcrição e tradução escalam separadamente; Kafka garante backpressure sem perda de segmentos",
+      "database_scaling": "PostgreSQL com read replicas para consultas de relatório; particionamento por organization_id e mês",
+      "caching_strategy": "Redis Cache-Aside para dados de sessão ativa; TTL curto (5min) garante consistência",
+      "geographic_distribution": "Multi-região AWS/GCP com latência reduzida para Europa, Américas e Ásia via Route53 latency-based routing",
+      "bottleneck_analysis": "Gargalo primário é o STT; mitigado com auto-scaling de workers e fallback para múltiplos provedores",
+      "capacity_planning": "10.000 participantes simultâneos com infra base; escala linear até 500.000 com ajuste de recursos"
+    },
+    "custos": {
+      "stt_cost": "OpenAI Whisper self-hosted: ~$0.006/min de áudio (GPU A10G); Google STT como fallback: $0.016/min",
+      "mt_cost": "DeepL: $25/M caracteres; cada minuto gera ~150 palavras (~900 chars); custo ~$0.023/min de reunião traduzida",
+      "infrastructure_base": "Kubernetes cluster (3 nós m5.2xlarge + 2 GPU g4dn.xlarge para Whisper): ~$3.200/mês para 0-1000 meetings/dia",
+      "storage": "S3 para relatórios + Elasticsearch para transcrições: ~$0.023/GB; crescimento linear com uso",
+      "bandwidth": "WebRTC consome ~1Mbps/participante; CDN para distribuição de streams: ~$0.085/GB transferido",
+      "payment_processing": "Stripe: 2.9% + $0.30 por transação; mitigado com cobrança mensal ao invés de por reunião",
+      "total_cogs_estimate": "~$0.15-0.25 por hora de reunião com 10 participantes em 5 idiomas",
+      "breakeven": "Com precificação a $2/hora de reunião, margem bruta ~87% em escala",
+      "optimization_levers": [
+        "Whisper self-hosted reduz custo STT em 60% vs API externa",
+        "Tradução apenas quando participante de idioma-destino está presente (lazy translation)",
+        "Cache de traduções para frases recorrentes corporativas (economiza ~15% em MT)"
+      ]
+    },
+    "monetizacao": {
+      "model": "SaaS B2B com precificação baseada em uso + planos por assentos",
+      "plans": [
+        {
+          "name": "Starter",
+          "price": "$299/mês",
+          "includes": "500 horas de reunião, até 50 participantes/reunião, 5 idiomas, relatórios básicos",
+          "target": "PMEs com times distribuídos em 2-3 países"
+        },
+        {
+          "name": "Professional",
+          "price": "$999/mês",
+          "includes": "2.000 horas, 200 participantes/reunião, 20 idiomas, API de integração, revisão humana opcional",
+          "target": "Empresas médias com operações internacionais"
+        },
+        {
+          "name": "Enterprise",
+          "price": "Sob consulta (estimado $5.000-50.000/mês)",
+          "includes": "Horas ilimitadas, participantes ilimitados, todos os idiomas, SLA 99.9%, deploy on-premise, custom STT training",
+          "target": "Multinacionais, organismos internacionais (ONU, UE), grandes consultorias"
+        }
+      ],
+      "add_ons": [
+        "Revisão humana de traduções: $0.05/segmento revisado",
+        "Integração nativa com Zoom/Teams/Meet: +$100/mês",
+        "Retenção estendida de transcrições (2 anos): +$50/mês",
+        "Custom vocabulary / domínio especializado (jurídico, médico): +$200/mês"
+      ],
+      "expansion_revenue": "Minutos adicionais além do plano: $0.40/hora para Starter, $0.30/hora para Professional",
+      "ltv_drivers": "Alta retentividade esperada (NRR >120%) por: stickiness de integrações, histórico de transcrições, treinamento de vocabulário customizado",
+      "go_to_market": "PLG via trial gratuito de 5 horas para equipes, depois Account Executives para expansão enterprise"
+    },
+    "stack_sugerida": {
+      "language": "TypeScript (backend + frontend) para consistência de tipos entre camadas",
+      "backend_framework": "Fastify (REST API) + Socket.IO (WebSocket)",
+      "frontend": "Next.js 14 (App Router) + React + TailwindCSS",
+      "mobile": "React Native (app para participantes em dispositivos móveis)",
+      "database": "PostgreSQL 16 (dados transacionais) + Redis 7 (cache/sessões) + Elasticsearch 8 (busca em transcrições)",
+      "message_broker": "Apache Kafka 3.x com Kafka Streams para processamento de pipeline de áudio",
+      "audio": "WebRTC + mediasoup 3.x (SFU) + FFmpeg (processamento de chunks de áudio)",
+      "stt": "OpenAI Whisper large-v3 (self-hosted em GPU) + Google Cloud STT (fallback)",
+      "mt": "DeepL API Pro (principal) + Google Cloud Translation (cobertura de idiomas raros)",
+      "auth": "Auth0 (gerenciamento de identidade) + JWT RS256",
+      "payments": "Stripe (subscriptions + usage-based billing)",
+      "storage": "AWS S3 (relatórios e gravações) + CloudFront (CDN)",
+      "infrastructure": "AWS EKS (Kubernetes) + Terraform (IaC) + Helm (chart deployment)",
+      "observability": "OpenTelemetry + Jaeger (tracing) + Prometheus + Grafana (métricas) + Loki (logs)",
+      "testing": "Jest (unit/integration) + Testcontainers + Playwright (E2E) + K6 (performance) + Pact.io (contract)",
+      "ioc_container": "InversifyJS ou Tsyringe para injeção de dependências respeitando Clean Architecture",
+      "ci_cd": "GitHub Actions (CI) + ArgoCD (GitOps CD) + Semantic Release (versionamento)"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"description\": \"Objetos de negócio com regras críticas, independentes de qualquer framework ou infraestrutura\",\n    \"list\": [\n      {\n        \"name\": \"Meeting\",\n        \"attributes\": [\"id\", \"title\", \"scheduledAt\", \"status\", \"hostId\", \"organizationId\"],\n        \"rules\": [\"Só pode ser iniciada pelo host ou co-host\", \"Duração máxima definida pelo plano da organização\", \"Deve ter ao menos dois idiomas configurados\"]\n      },\n      {\n        \"name\": \"TranslationSession\",\n        \"attributes\": [\"id\", \"meetingId\", \"sourceLanguage\", \"targetLanguages\", \"startedAt\", \"endedAt\"],\n        \"rules\": [\"Uma sessão por reunião\", \"Não pode ser reiniciada após encerrada\", \"Preserva histórico completo de segmentos\"]\n      },\n      {\n        \"name\": \"TranscriptionSegment\",\n        \"attributes\": [\"id\", \"sessionId\", \"speakerId\", \"rawText\", \"language\", \"timestamp\", \"confidence\"],\n        \"rules\": [\"Confiança mínima de 0.7 para publicação\", \"Imutável após confirmação\", \"Associado a um único falante\"]\n      },\n      {\n        \"name\": \"Translation\",\n        \"attributes\": [\"id\", \"segmentId\", \"targetLanguage\", \"translatedText\", \"provider\", \"createdAt\", \"reviewedBy\"],\n        \"rules\": [\"Deve referenciar um segmento válido\", \"Pode ter revisão humana posterior\", \"Uma por idioma de destino por segmento\"]\n      },\n      {\n        \"name\": \"Participant\",\n        \"attributes\": [\"id\", \"userId\", \"meetingId\", \"role\", \"preferredLanguage\", \"joinedAt\", \"leftAt\"],\n        \"rules\": [\"Papel pode ser: host, co-host, speaker, listener\", \"Idioma preferido determina qual stream de áudio recebe\"]\n      },\n      {\n        \"name\": \"Organization\",\n        \"attributes\": [\"id\", \"name\", \"plan\", \"maxParticipants\", \"allowedLanguages\", \"monthlyMinutes\"],\n        \"rules\": [\"Limites de uso definidos pelo plano contratado\", \"Deve ter ao menos um administrador\"]\n      },\n      {\n        \"name\": \"Subscription\",\n        \"attributes\": [\"id\", \"organizationId\", \"plan\", \"billingCycle\", \"usedMinutes\", \"rene"
+}

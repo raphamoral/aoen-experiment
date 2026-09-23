@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "A especialização em compliance regulatório aparece apenas como atributos de dados (regulatoryDomain, certifications, requiredCertifications) em uma estrutura CRUD de marketplace genérico — sem nenhum núcleo tecnológico isolado que seria perdido se o domínio mudasse para, por exemplo, marketing ou design, tornando o produto essencialmente um Upwork vertical sem diferenciador insubstituível."
+}

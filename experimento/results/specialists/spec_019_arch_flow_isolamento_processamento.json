@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta isola logicamente os processos pesados (motor de ML e algoritmos de otimização) em bounded contexts separados ('Inteligência de Agendamento'), mas não especifica mecanismos de isolamento físico — não há menção a filas de mensagens, workers dedicados, subprocessos independentes nem estratégias de fallback caso o motor de predição fique indisponível, tornando o isolamento apenas arquitetural/conceitual, sem garantias de resiliência operacional."
+}

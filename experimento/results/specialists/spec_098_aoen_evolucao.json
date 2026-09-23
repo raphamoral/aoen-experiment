@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 98,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A abstração DataCollector e a FranchiseService Layer criam pontos de extensão legítimos — novas interfaces e fontes de dados entram sem alterar o motor de benchmark — mas a service layer que co-localiza regras de negócio e acesso ao banco de dados acopla lógica de domínio à camada de persistência, tornando a troca de banco ou a extração de um bounded context um esforço invasivo; além disso, a proposta não endereça mecanismos de escala horizontal (filas, cache, processamento assíncrono do pipeline de benchmark), o que tornaria a migração de 10 para 10.000 unidades uma intervenção arquitetural e não apenas operacional."
+}

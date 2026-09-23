@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona componentes de infraestrutura gerenciados (AWS IoT Core, InfluxDB Cloud, Auth0, Kubernetes, Grafana Cloud) que indicam consciência sobre commodities de custo, mas não apresenta nenhuma estimativa concreta em valores monetários, nenhuma estratégia explícita de otimização (scale-to-zero, spot instances, storage tiering) e nenhuma projeção de como os custos evoluem com o crescimento da base de sensores/tenants."
+}

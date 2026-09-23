@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta nomeia componentes de infraestrutura commodity (AWS EKS, S3, Auth0/Cognito, SendGrid, Twilio, Stripe/Adyen), mas não apresenta nenhuma estimativa de custo em valores reais, nenhuma estratégia de otimização (spot instances, scale-to-zero, storage tiers, reserved capacity) e nenhuma projeção de como os custos evoluem com o crescimento da base de lojistas e volume de devoluções processadas."
+}

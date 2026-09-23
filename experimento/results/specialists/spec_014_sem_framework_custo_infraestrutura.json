@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta lista os componentes de infraestrutura (AWS/GCP, Redis, PostgreSQL, S3, workers BullMQ) e menciona auto-scaling como estratégia de escalabilidade, mas não apresenta nenhuma estimativa concreta de custo em dólares ou reais para nenhum componente — nem para as APIs de alto custo variável (Whisper, GPT-4, DeepL), nem para servidores, banda de áudio em tempo real ou armazenamento — e não há nenhuma estratégia explícita de otimização de custos como spot instances, scale-to-zero, tiering de armazenamento ou projeção de custo por reunião/usuário."
+}

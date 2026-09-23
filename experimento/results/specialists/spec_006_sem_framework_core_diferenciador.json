@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador está claramente identificado — extração + interpretação de exames laboratoriais via OCR/LLM cruzada com perfil pessoal para geração de plano alimentar — e resolve um problema real que apps de nutrição genéricos não resolvem; porém o núcleo não está arquiteturalmente isolado (o serviço Python é citado mas não tratado como componente proprietário independente), e há dependência explícita de fornecedores externos (OpenAI/Claude) sem estratégia de abstração ou fallback que garanta extensibilidade real."
+}

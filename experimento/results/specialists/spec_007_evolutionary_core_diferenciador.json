@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "O módulo de Gamification é identificado como componente central e até priorizado para extração na Fase 2, mas a proposta descreve apenas sua relevância arquitetural (alto throughput, baixo acoplamento) sem jamais explicar o que torna esse motor de gamificação único em relação a concorrentes consolidados como Docebo, TalentLMS ou Cornerstone — falta o 'porquê insubstituível': nenhum algoritmo proprietário, nenhuma mecânica adaptativa exclusiva e nenhuma comparação com alternativas existentes que justifique por que o mercado não pode simplesmente usar outra plataforma."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "A proposta descreve excelente configuração por *ambiente* (dev/staging/prod via variáveis de ambiente, Secrets Manager, ConfigMaps), mas é completamente silente sobre configuração por *tenant* — não há modelo de dados de tenant, sistema de feature flags por cliente, separação de comportamento por configuração, nem mecanismo de onboarding que seja puramente orientado a dados; um novo cliente com necessidades distintas (template de contrato diferente, provedor de assinatura alternativo, webhooks customizados) exigiria desenvolvimento de código."
+}

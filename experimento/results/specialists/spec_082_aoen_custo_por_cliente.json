@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 82,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente ou por operação — descreve fluxos funcionais e arquitetura de canais, mas trata infraestrutura implicitamente como custo total; o único sinal de consciência de custo variável é a abstração de providers de IA (OpenAI, Claude, Gemini), que implica que o custo de tokens varia por uso, mas não há qualquer mecanismo descrito para rastrear esse consumo por tenant, calcular margem por cliente ou conectar custo operacional ao modelo de precificação."
+}

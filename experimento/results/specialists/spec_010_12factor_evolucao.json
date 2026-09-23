@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura segue fielmente os princípios 12-factor com processos stateless, backing services substituíveis e pipeline imutável, permitindo troca independente de banco, fila e gateway de pagamento; perde pontos por não evidenciar isolamento explícito da lógica de negócio via portas/adaptadores (Ports & Adapters), o que pode gerar acoplamento silencioso ao ORM ou ao cliente SOAP da SEFAZ conforme o sistema cresce."
+}

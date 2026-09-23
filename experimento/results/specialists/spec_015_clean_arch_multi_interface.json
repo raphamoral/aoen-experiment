@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A arquitetura demonstra desacoplamento adequado entre lógica de negócio e interfaces (entidades e casos de uso independentes de UI/infra), e o atributo 'channels' na entidade Tenant sinaliza consciência multi-canal, mas o projeto não define explicitamente quais interfaces existem, para quais perfis de usuário cada uma se destina, nem apresenta justificativa de alcance de mercado para as escolhas de canal."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O diferenciador (correlação entre biomarcadores laboratoriais e plano nutricional via IA) está identificado e modelado nas entidades LabResult/Biomarker/NutritionalPlan, mas a proposta arquitetural não isola explicitamente um motor de inferência/recomendação como componente central — a lógica de IA que transforma exames em planos não aparece como entidade ou serviço de domínio próprio, tornando o núcleo implícito e potencialmente acoplado a um fornecedor externo de LLM sem estratégia de extensibilidade documentada."
+}

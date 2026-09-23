@@ -1,0 +1,90 @@
+{
+  "ideia_idx": 51,
+  "ideia": "Plataforma de due diligence automatizada para fusões e aquisições",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de due diligence em M&A: análise automatizada de riscos e conformidade sobre documentos e dados de uma empresa-alvo. Agregados centrais: Deal (operação), DataRoom, Document, Finding (achado), RiskAssessment, Checklist/Workstream (financeiro, jurídico, fiscal, trabalhista, compliance, ESG, TI/cibersegurança), Report e Party (compradora, vendedora, assessores). Regras de negócio no core: classificação e pontuação de risco, priorização de achados, matriz de red flags, controle de acesso por deal (Chinese walls), trilha de auditoria imutável e regras de confidencialidade/NDA.",
+    "primary_ports": [
+      "DealManagementPort (criar/encerrar deals, convidar participantes, definir escopo e workstreams)",
+      "DocumentIngestionPort (submeter documentos ao data room, iniciar a análise)",
+      "DueDiligenceAnalysisPort (executar análises por workstream, reanalisar, consultar status)",
+      "FindingReviewPort (revisar, aceitar, rejeitar e comentar achados; atribuição a assessores)",
+      "RiskAssessmentQueryPort (consultar score de risco, matriz de red flags, comparativos)",
+      "ReportGenerationPort (solicitar relatórios de DD e sumários executivos)",
+      "QuestionAnsweringPort (perguntas em linguagem natural sobre o data room, com citação das fontes)",
+      "AccessAdministrationPort (papéis, permissões, tenants, políticas de retenção)",
+      "AuditQueryPort (consulta à trilha de auditoria e a evidências)"
+    ],
+    "secondary_ports": [
+      "DealRepositoryPort",
+      "DocumentStoragePort (armazenamento de objetos com criptografia)",
+      "DocumentParsingPort (OCR e extração de texto e tabelas)",
+      "LanguageModelPort (extração, classificação e sumarização por LLM)",
+      "EmbeddingPort e VectorSearchPort (busca semântica e RAG)",
+      "CompanyRegistryPort (juntas comerciais, CNPJ/Receita Federal, registros societários)",
+      "LitigationDataPort (tribunais e processos judiciais)",
+      "SanctionsAndAdverseMediaPort (listas de sanções, PEP, mídia negativa)",
+      "CreditAndFinancialDataPort (bureaus de crédito, dados de mercado, ERPs e contabilidade)",
+      "ExternalDataRoomPort (integração com VDRs de terceiros)",
+      "IdentityProviderPort (SSO/SAML/OIDC)",
+      "NotificationPort (e-mail, Slack, Teams)",
+      "ReportRenderingPort (PDF, DOCX, PPTX)",
+      "EventPublisherPort (mensageria de eventos de domínio)",
+      "BillingPort (medição de uso e cobrança)",
+      "AuditLogPort (armazenamento append-only)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)"
+    ],
+    "primary_adapters": [
+      "REST API (OpenAPI) para clientes e integrações",
+      "GraphQL API para o dashboard",
+      "Web App SPA (React) usado por advogados, analistas financeiros e M&A teams",
+      "Adaptador de CLI/SDK (Python e TypeScript) para automação",
+      "Adaptador de webhooks de entrada (eventos de VDR e ERP)",
+      "Adaptador de jobs agendados (cron) para reanálises e monitoramento contínuo",
+      "Adaptador de agente/MCP para assistentes de IA",
+      "Adaptador de testes (test harness com fakes/BDD) que aciona os mesmos primary ports sem UI"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter (DealRepositoryPort, com Row-Level Security por tenant)",
+      "S3/GCS/Azure Blob Adapter com KMS (DocumentStoragePort)",
+      "Adaptador de Textract/Azure Document Intelligence ou Tesseract (DocumentParsingPort)",
+      "Adaptadores de LLM: Anthropic Claude, OpenAI ou modelo self-hosted (LanguageModelPort), intercambiáveis e com fallback",
+      "pgvector, OpenSearch ou Qdrant (VectorSearchPort)",
+      "Adaptadores para Receita Federal/BrasilAPI, OpenCorporates e Junta Comercial (CompanyRegistryPort)",
+      "Adaptadores para DataJud/CNJ e Jusbrasil (LitigationDataPort)",
+      "Adaptadores para OFAC, UE, ONU, CEIS/CNEP e Dow Jones/LexisNexis (SanctionsAndAdverseMediaPort)",
+      "Adaptadores para Serasa, Boa Vista, SAP, TOTVS e Conta Azul (CreditAndFinancialDataPort)",
+      "Adaptadores para Intralinks, Datasite e Ansarada (ExternalDataRoomPort)",
+      "Adaptadores Okta, Azure AD e Keycloak (IdentityProviderPort)",
+      "SES/SendGrid, Slack e Teams (NotificationPort)",
+      "Renderizadores com WeasyPrint, docx-templater e python-pptx (ReportRenderingPort)",
+      "Kafka, SQS/SNS ou NATS (EventPublisherPort)",
+      "Stripe Billing (BillingPort)",
+      "Ledger append-only (S3 Object Lock ou QLDB/Immudb) (AuditLogPort)",
+      "Adaptadores in-memory/fakes de todos os secondary ports para testes"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não importa nenhum framework, SDK ou driver; depende apenas das interfaces (ports) que ele mesmo define. A regra de dependência aponta sempre de fora para dentro: adapters dependem de ports, nunca o contrário. A composição ocorre em um composition root (injeção de dependência) que liga adapters a ports na inicialização. Modelos de transporte (DTOs, schemas SQL, respostas de LLM ou de APIs externas) são traduzidos por anti-corruption layers dentro dos adapters, e o core só manipula entidades e value objects do domínio. Como o LLM é tratado como qualquer outro sistema externo (LanguageModelPort), prompts e parsing de saída ficam no adapter, e o core valida as respostas por invariantes de domínio, sem depender de um fornecedor específico. Testes de arquitetura (ArchUnit/import-linter/dependency-cruiser) impedem violações no CI. Toda a lógica de negócio é testável com fakes, sem rede, banco ou LLM.",
+    "interfaces": [
+      "Dashboard web do deal (visão de workstreams, red flags e score de risco)",
+      "Data room virtual com upload em lote e controle de permissões por pasta",
+      "Painel de revisão de achados com citação de trechos e páginas de origem",
+      "Chat com o data room (Q&A com fontes)",
+      "Gerador de relatórios (executivo, técnico, por workstream)",
+      "Console de administração (tenants, papéis, retenção, auditoria)",
+      "API pública REST/GraphQL com webhooks de saída",
+      "CLI/SDK para automação",
+      "Integração com Slack/Teams e e-mail",
+      "Exportação para Excel/PowerPoint para comitês de investimento"
+    ],
+    "escalabilidade": "Cada adapter escala de forma independente, sem afetar o core. A ingestão e a análise são assíncronas e orientadas a eventos: upload gera evento, filas distribuem o trabalho e workers stateless escalam horizontalmente (Kubernetes + KEDA por profundidade de fila), com paralelismo por documento e por workstream. O LanguageModelPort permite balancear entre provedores e modelos (modelos menores para triagem, maiores para análise crítica) e aplicar rate limiting, batching e retries com backoff. Multi-tenancy com isolamento lógico (RLS) e opção de isolamento físico (single-tenant) para clientes enterprise, o que permite sharding por tenant. Leitura escala com réplicas e cache (CQRS opcional para consultas e relatórios), e o índice vetorial é particionado por deal. Como o core é stateless e as ports são estáveis, é possível começar como monólito modular e extrair adapters ou serviços (parsing, IA) conforme a carga.",
+    "custos": "Os principais custos são: (1) inferência de LLM e embeddings, que dominam o custo por deal e são reduzidos com roteamento por modelo, cache semântico, chunking eficiente, triagem por modelos menores e processamento em lote; (2) OCR e parsing de grandes volumes de PDFs escaneados; (3) armazenamento e criptografia de documentos sensíveis, com retenção e descarte definidos por contrato; (4) licenças de dados de terceiros (sanções, litígios, crédito), que pesam por consulta e podem ser repassadas ao cliente; (5) segurança e conformidade (SOC 2, ISO 27001, LGPD/GDPR, pentests, auditoria, residência de dados), com custo fixo relevante; (6) infraestrutura de compute com picos por deal, que pode usar spot/autoscaling e reserva para a base. Como o custo é altamente variável por deal, é essencial medir por deal via BillingPort e ter margem por unidade (custo por documento/página analisada) monitorada.",
+    "monetizacao": "Modelo híbrido: (1) assinatura por plano (Starter, Professional, Enterprise) com número de usuários, deals ativos e workstreams incluídos; (2) cobrança por uso (páginas/documentos analisados, consultas a bases externas e créditos de IA acima da franquia); (3) preço por deal para clientes ocasionais, como boutiques de M&A e escritórios de advocacia; (4) módulos adicionais, como ESG, cibersegurança, sanções/adverse media e integrações com VDRs; (5) plano Enterprise com single-tenant, SSO, SLAs, residência de dados e private LLM; (6) serviços profissionais (onboarding, templates de checklist customizados, revisão humana assistida) e marketplace de templates e playbooks por setor ou jurisdição. Público-alvo: bancos de investimento, private equity/venture capital, escritórios de advocacia, consultorias Big Four e áreas de corporate development.",
+    "stack_sugerida": "Backend: Python 3.12 (FastAPI) ou TypeScript (NestJS), organizado em módulos hexagonais (domain, application, ports, adapters), com Pydantic/Zod nas bordas. Dados: PostgreSQL (RLS) + pgvector ou Qdrant, Redis para cache, S3 com KMS e Object Lock para documentos e auditoria. Mensageria e workflows: Kafka ou SQS/SNS, Temporal para orquestração de pipelines de análise. IA: LLMs via LanguageModelPort (Claude, com fallback para outros modelos), RAG com reranking, avaliações automatizadas (evals) e guardrails, e citação obrigatória de fontes. OCR: Azure Document Intelligence/Textract e Tesseract. Frontend: React + TypeScript (Next.js), TanStack Query, design system próprio. Infra: Kubernetes (EKS/GKE) com KEDA, Terraform, ArgoCD, observabilidade com OpenTelemetry, Grafana/Prometheus e Sentry. Segurança: Keycloak/Okta (SSO), Vault/KMS, criptografia em repouso e em trânsito, DLP, logs de auditoria imutáveis. Qualidade: pytest/Vitest com fakes de ports, testes de contrato para adapters, BDD para casos de uso, import-linter/dependency-cruiser no CI. Pagamentos: Stripe Billing."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:25:43+00:00",
+    "runner": "runner.py"
+  }
+}

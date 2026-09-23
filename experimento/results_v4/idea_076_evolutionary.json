@@ -1,0 +1,59 @@
+{
+  "ideia_idx": 76,
+  "ideia": "Marketplace de serviços de reabilitação pós-COVID com teleconsulta",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Privacidade e conformidade (LGPD, dados sensíveis de saúde, CFM/Resolução 2.314/2022 sobre telessaúde, COFFITO para fisioterapia)",
+      "Segurança (criptografia em trânsito e em repouso, controle de acesso por papel, trilha de auditoria)",
+      "Disponibilidade e confiabilidade da teleconsulta (qualidade de vídeo, degradação graciosa para áudio)",
+      "Evolutividade (modularidade, baixo acoplamento, capacidade de substituir componentes)",
+      "Testabilidade e observabilidade",
+      "Escalabilidade elástica e sob demanda",
+      "Interoperabilidade (HL7 FHIR, integrações com prontuários, laboratórios e operadoras)",
+      "Acessibilidade e usabilidade para pacientes com fadiga, dispositivos simples e baixa conectividade",
+      "Eficiência de custo (FinOps)"
+    ],
+    "fitness_functions": [
+      "Conformidade: pipeline de CI falha se dado pessoal de saúde for gravado sem criptografia, sem base legal registrada ou fora da região de dados aprovada (ex.: verificação com OPA/Conftest sobre IaC)",
+      "Segurança: SAST, DAST e varredura de dependências em cada commit; build falha com vulnerabilidade crítica; teste automatizado garante que um paciente nunca lê dados de outro (teste de autorização por tenant e por papel)",
+      "Arquitetura: testes com ArchUnit/dependency-cruiser que impedem dependência cíclica entre módulos e acesso direto ao banco de outro módulo",
+      "Desempenho: latência p95 da API de busca e agendamento < 300 ms em teste de carga contínuo (k6)",
+      "Teleconsulta: taxa de sessões concluídas com sucesso ≥ 99%, tempo de entrada na sala < 5 s e monitoramento sintético a cada minuto",
+      "Disponibilidade: SLO de 99,9% para agendamento e 99,5% para vídeo, com error budget acompanhado e política de bloqueio de releases ao estourar",
+      "Resiliência: chaos experiments mensais (queda do provedor de vídeo, do gateway de pagamento e de uma zona de disponibilidade) validando fallback",
+      "Contratos: testes de contrato (Pact) e verificação de compatibilidade de schema (OpenAPI/AsyncAPI) entre módulos e integrações externas",
+      "Interoperabilidade: validação automática de recursos FHIR contra perfis definidos",
+      "Custo: alerta quando custo por consulta realizada ultrapassar limite definido e verificação de tags de custo por módulo",
+      "Acessibilidade: auditoria automática WCAG 2.2 AA (axe) no CI e teste de usabilidade em rede 3G simulada",
+      "Evolutividade: métricas DORA (lead time, frequência de deploy, MTTR, taxa de falha de mudança) com metas mínimas"
+    ],
+    "incremental_change": "Começar como monólito modular (modular monolith) com fronteiras baseadas em bounded contexts (Identidade, Catálogo de Profissionais, Agenda, Teleconsulta, Prontuário/Plano de Reabilitação, Pagamentos, Notificações). Fase 1 (MVP): busca de profissionais, agendamento, teleconsulta via provedor de vídeo terceirizado, pagamento e prontuário básico, para uma especialidade (ex.: fisioterapia respiratória) e uma região. Fase 2: planos de reabilitação com exercícios guiados, acompanhamento remoto de sintomas e adesão, avaliações e reputação. Fase 3: equipes multidisciplinares (fisioterapia, fonoaudiologia, psicologia, neurologia), integração com convênios e wearables. Fase 4: extração de serviços somente onde as fitness functions mostrarem necessidade (ex.: Teleconsulta e Notificações primeiro, por perfis de carga distintos), usando strangler fig. Cada mudança entra por pequenos incrementos com feature flags, releases canário e revisão de ADRs; os ciclos de fitness function são revisados trimestralmente, e novas funções são adicionadas conforme surgem riscos regulatórios ou de escala.",
+    "reversibility": "Reversíveis (two-way doors): escolha de provedor de vídeo, gateway de pagamento, serviço de e-mail/SMS/WhatsApp e ferramenta de observabilidade (todos atrás de ports/adapters); framework de front-end; decisões de UI e de precificação; extração de módulos em serviços; uso de feature flags. Custosas mas mitigáveis: provedor de nuvem (mitigado por contêineres, IaC e Postgres padrão); modelo de dados de prontuário (mitigado por versionamento de schema e mapeamento FHIR). Praticamente irreversíveis (one-way doors), a decidir no last responsible moment e com ADR: modelo de tenancy e de consentimento de dados de saúde, região e residência dos dados, chaves e estratégia de criptografia, identificadores públicos de paciente e profissional, e formato de retenção do prontuário exigido por lei. Antes de decidi-las, adiar tudo o que for possível: por exemplo, não construir vídeo próprio, não adotar Kubernetes nem event streaming até haver evidência de necessidade.",
+    "coupling": "Baixo acoplamento entre módulos, com comunicação por interfaces públicas explícitas (APIs internas) e eventos de domínio (ex.: ConsultaAgendada, ConsultaConcluida, PagamentoConfirmado) publicados via outbox transacional, com consumo assíncrono. Cada módulo é dono do próprio schema (sem joins entre módulos). Integrações externas isoladas por anti-corruption layers e adapters (hexagonal). Contratos versionados e retrocompatíveis (expand/contract) para permitir evolução independente. Acoplamento intencional e aceito: Identidade e Consentimento são dependências transversais de todos os módulos, portanto expostos como plataforma estável. Quantum arquitetural inicial único (um deploy), com cada módulo preparado para virar quantum independente.",
+    "interfaces": [
+      "API pública REST/OpenAPI (BFF) para web e mobile de pacientes e profissionais",
+      "API administrativa para operação do marketplace, moderação, suporte e auditoria",
+      "Eventos de domínio assíncronos (AsyncAPI) entre módulos, via outbox",
+      "Porta de Videoconferência (adapter para Twilio, Daily, Zoom SDK ou Vonage, e opção WebRTC própria no futuro)",
+      "Porta de Pagamentos e split (adapter para Stripe Connect, Pagar.me ou Mercado Pago), com onboarding e KYC de profissionais",
+      "Porta de Notificações (e-mail, SMS, push, WhatsApp Business)",
+      "Interface FHIR para prontuário e troca com hospitais, laboratórios e sistemas de saúde",
+      "Integração com validação de registro profissional (CREFITO, CRM, CRP, CREFONO) e assinatura digital ICP-Brasil",
+      "Integração com convênios e operadoras (TISS/TUSS) em fase posterior",
+      "Integração com wearables e oxímetros (Apple Health, Google Health Connect) mediante consentimento",
+      "Webhooks para parceiros (empresas, planos de saúde, clínicas)",
+      "Interface de consentimento e direitos do titular LGPD (acesso, portabilidade, exclusão)"
+    ],
+    "escalabilidade": "Início com monólito modular sem estado, em contêineres com autoscaling horizontal e Postgres gerenciado com réplicas de leitura. Cache (Redis) para buscas e catálogo, e busca de profissionais em OpenSearch/Postgres FTS conforme volume. Filas e workers para tarefas assíncronas (notificações, lembretes, relatórios). A mídia de vídeo escala por conta do provedor terceirizado (SFU gerenciado), evitando operar infraestrutura em tempo real. Armazenamento de arquivos (exames, vídeos de exercícios) em object storage com CDN. Quando as fitness functions indicarem gargalo, extrair Teleconsulta, Notificações e Busca como serviços independentes, particionar por região/tenant e adotar streaming de eventos (Kafka/Pub/Sub). Modelo multi-tenant com isolamento lógico (row-level security) e caminho para isolamento físico para clientes corporativos ou hospitalares. Picos previsíveis (horário comercial, campanhas) tratados com autoscaling programado e testes de carga contínuos.",
+    "custos": "Principais vetores: minutos de vídeo do provedor (maior custo variável, cerca de US$ 0,004 por participante-minuto, valor a confirmar no provedor), taxas de pagamento (~3–5% + tarifa fixa), armazenamento e retenção de prontuário e mídia, SMS/WhatsApp, conformidade e segurança (auditorias, pentest, DPO, seguro cibernético), suporte clínico e operacional. Estratégias: monólito modular em um único deploy reduz custo de infraestrutura e de operação no início; serviços gerenciados no lugar de operar infraestrutura própria; FinOps com tags por módulo e métrica de custo por consulta; camadas de armazenamento (hot/cold) alinhadas à retenção legal; áudio como fallback quando a banda for baixa; notificações por push/e-mail antes de SMS/WhatsApp; reserva de capacidade só após estabilizar a carga; revisão do build vs. buy do vídeo apenas quando o custo de minutos justificar (ponto de decisão explícito via ADR).",
+    "monetizacao": "Modelo de marketplace com múltiplas fontes: (1) comissão sobre cada consulta/pacote de sessões (take rate de 10–20%) com split automático via gateway; (2) assinatura SaaS para profissionais e clínicas (planos por número de pacientes/agenda, prontuário, plano de reabilitação, marca própria) ; (3) planos de acompanhamento para pacientes (assinatura mensal com monitoramento remoto e exercícios guiados); (4) contratos B2B com empresas, planos de saúde e operadoras (programas de reabilitação pós-COVID e de condições crônicas, pagos por membro ou por resultado); (5) destaque pago de profissionais no catálogo, com regras claras de transparência; (6) serviços de dados agregados e anonimizados para pesquisa, somente com consentimento e base legal adequada. Estratégia de entrada: começar com comissão + assinatura de profissionais para validar a liquidez de ambos os lados; expandir para B2B quando houver volume e evidências de resultado clínico. Observação: a demanda específica por reabilitação pós-COVID tende a diminuir ao longo do tempo, então a arquitetura e o posicionamento devem permitir expandir para reabilitação de condições crônicas e pós-virais (COVID longa, fadiga, respiratórias, cardíacas, neurológicas).",
+    "stack_sugerida": "Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Spring Boot, com arquitetura hexagonal. Banco: PostgreSQL gerenciado (com row-level security e criptografia), Redis para cache e filas leves; outbox + broker gerenciado (SQS/SNS ou Pub/Sub) no início. Front-end: Next.js/React (PWA) para web e React Native ou Flutter para mobile, com foco em acessibilidade. Vídeo: provedor gerenciado WebRTC (Twilio Video, Daily ou Vonage) atrás de adapter. Pagamentos: Stripe Connect ou Pagar.me/Mercado Pago para split e KYC. Identidade: Keycloak, Auth0 ou Cognito, com MFA e gestão de consentimento. Infra: AWS ou GCP (região no Brasil, ex.: São Paulo), contêineres em ECS Fargate/Cloud Run (Kubernetes só quando justificado), Terraform, GitHub Actions com CI/CD e implantação canário. Observabilidade: OpenTelemetry, Grafana/Prometheus ou Datadog, Sentry. Segurança e conformidade: KMS, Secrets Manager, WAF, OPA/Conftest, trilha de auditoria imutável, SAST/DAST (Semgrep, ZAP, Trivy). Dados de saúde: modelo interno com mapeamento FHIR (HAPI FHIR quando necessário). Qualidade: Pact, k6, Playwright, axe, ArchUnit/dependency-cruiser."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T04:15:49+00:00",
+    "runner": "runner.py"
+  }
+}

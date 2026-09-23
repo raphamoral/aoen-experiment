@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra intenção de configurabilidade (Template Engine parametrizável por jurisdição, permissões por papel, fluxos multi-parte no Signature Orchestration), mas não define explicitamente um modelo de configuração por tenant — o Integration Gateway exige desenvolvimento de novos conectores por cliente, o Compliance Engine parece orientado a código para novas normas, e nenhum artefato descreve uma camada de configuração isolada que permita onboarding de novo cliente via dados, sem deploy."
+}

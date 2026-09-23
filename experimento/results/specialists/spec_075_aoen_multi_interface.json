@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 75,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Dashboard, CLI, REST API/Webhooks, SDK, Slack/Teams Bot), cada uma explicitamente justificada por um perfil de usuário real e estratégia de penetração de mercado, com lógica de negócio totalmente desacoplada numa camada de serviços (OrchestrationService, ObservabilityService, etc.) consumida igualmente por todas as interfaces — permitindo adicionar novos canais sem duplicar regras de negócio."
+}

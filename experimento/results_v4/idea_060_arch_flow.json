@@ -1,0 +1,47 @@
+{
+  "ideia_idx": 60,
+  "ideia": "App de inspeção predial com realidade aumentada e checklist digital",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Cliente (síndico, construtora, administradora predial, perito) → precisa de laudos de inspeção confiáveis e rastreáveis → Planejamento da inspeção (modelos de checklist, agendamento, atribuição) → Execução em campo (checklist digital + AR para ancorar achados no espaço 3D, fotos, medições, voz) → Registro de não conformidades (severidade, localização, evidências) → Geração de laudo/relatório (PDF assinado, versionado) → Ação corretiva (ordens de serviço, prazos, acompanhamento) → Histórico e analytics do ativo (recorrência, risco, conformidade). Infraestrutura de suporte: captura de mídia, SLAM/ancoragem espacial, armazenamento, identidade, notificações.",
+    "bounded_contexts": [
+      "Gestão de Ativos e Edificações (imóvel, pavimento, ambiente, sistemas prediais)",
+      "Modelos de Inspeção e Checklists (templates, normas ABNT/NBR, versionamento)",
+      "Execução de Inspeção (campo, offline-first, sessões, respostas, sincronização)",
+      "Captura Espacial e AR (ancoragem de anotações, medições, plantas, ambientes 3D)",
+      "Não Conformidades e Ações Corretivas (achados, severidade, planos de ação, prazos)",
+      "Laudos e Conformidade (geração, assinatura digital, evidências, auditoria)",
+      "Agenda e Alocação (planejamento, roteirização, equipes de inspetores)",
+      "Identidade, Organizações e Multi-tenancy (usuários, papéis, permissões, contas)",
+      "Assinatura e Billing (planos, medição de uso, faturamento)",
+      "Analytics e Insights (tendências, risco, benchmarking, IA de detecção de patologias)",
+      "Notificações e Integrações (e-mail, push, webhooks, ERPs e sistemas de manutenção)"
+    ],
+    "component_evolution": "GENESIS: detecção automática de patologias construtivas por visão computacional (diferencial competitivo, alta incerteza). CUSTOM: motor de checklists dinâmicos com regras de negócio por norma, ancoragem de achados em AR ligada ao modelo de edificação, geração de laudos com regras de conformidade, sincronização offline-first com resolução de conflitos. PRODUCT: frameworks AR (ARKit/ARCore/WebXR, Vision), autenticação (Auth0/Clerk/Keycloak), assinatura digital de documentos, plataformas de mapeamento e plantas, ferramentas de BI, observabilidade. COMMODITY: computação em nuvem, armazenamento de objetos, bancos de dados gerenciados, CDN, filas, e-mail/SMS/push, billing (Stripe/Pagar.me), geração de PDF, CI/CD. Estratégia: construir apenas o que é Custom/Genesis e ligado ao diferencial; comprar ou usar como serviço tudo que é Product/Commodity.",
+    "team_topology": "Stream-aligned teams: (1) Inspeção em Campo (app mobile, AR, checklist, offline), (2) Laudos e Ações Corretivas (relatórios, não conformidades, conformidade), (3) Gestão e Planejamento (ativos, agenda, portal web do gestor). Enabling team: Discovery/Compliance (normas técnicas, pesquisa de usuário, experimentação de IA/AR e mentoria de práticas). Complicated-subsystem team: Visão Computacional/Spatial (SLAM, ancoragem AR, detecção de patologias), que exige especialização profunda. Platform team: Plataforma Interna (CI/CD, observabilidade, multi-tenancy, sync, armazenamento, identidade, billing) oferecendo capacidades como produto self-service. Interações: colaboração temporária com o time Spatial durante a evolução do AR; X-as-a-Service com a Plataforma; facilitação do time Enabling. Carga cognitiva limitada, cada time dono de 1 a 3 bounded contexts. Fase inicial (startup): 1 a 2 stream-aligned teams e 1 plataforma mínima, evoluindo com o crescimento.",
+    "flow_optimization": "Times alinhados ao fluxo inspeção → laudo → ação corretiva, cada um entregando valor ponta a ponta sem handoffs. Monólito modular por bounded context no início, com fronteiras claras que permitem extração futura para serviços conforme a necessidade de escala ou de autonomia dos times. Comprar/usar SaaS em componentes commodity reduz carga cognitiva. Offline-first elimina bloqueios em campo (subsolos, obras sem sinal). Feature flags, trunk-based development e deploy contínuo encurtam o lead time. Métricas DORA e de fluxo (tempo do agendamento ao laudo entregue, tempo de fechamento de não conformidades) guiam a melhoria contínua. Eventos de domínio (InspecaoConcluida, NaoConformidadeRegistrada, LaudoEmitido) desacoplam contextos. Modelos de checklist reutilizáveis e pré-preenchimento reduzem o tempo de inspeção. Wardley Maps revisados a cada trimestre para reavaliar decisões de build vs buy conforme os componentes evoluem.",
+    "interfaces": [
+      "App mobile nativo/híbrido para inspetores (iOS/Android) com modo AR e offline",
+      "Portal web para gestores, síndicos e clientes (dashboards, laudos, ações)",
+      "API pública REST/GraphQL com OpenAPI, versionada e por tenant",
+      "Webhooks e eventos de domínio (inspeção concluída, NC criada, laudo emitido)",
+      "API de sincronização offline (delta sync, resolução de conflitos)",
+      "Integrações com ERPs, CMMS/sistemas de manutenção e gestão de facilities",
+      "Importação de plantas e modelos (PDF, DWG, IFC/BIM)",
+      "Assinatura digital de laudos (ICP-Brasil e provedores como Clicksign/DocuSign)",
+      "Notificações (push, e-mail, WhatsApp)",
+      "Portal de administração e billing self-service",
+      "Contratos de serviço internos entre times (plataforma como produto)"
+    ],
+    "escalabilidade": "Arquitetura multi-tenant com isolamento lógico (tenant_id + row-level security) e opção de isolamento dedicado para clientes enterprise. Camada de API stateless em containers com autoscaling horizontal. Mídia (fotos, vídeo, nuvens de pontos) enviada direto do dispositivo para object storage via URLs pré-assinadas, fora do caminho crítico da API. Processamento assíncrono (filas e workers) para geração de laudos, processamento de imagens e inferência de IA. Leitura escalada com réplicas e cache; CQRS onde houver analytics pesado. Processamento AR e parte da inferência no dispositivo (edge) reduzem custo e latência de servidor. Extração de bounded contexts para serviços independentes só quando métricas de fluxo ou carga justificarem. Particionamento por tenant/região e CDN para entrega de relatórios e mídia.",
+    "custos": "Principais vetores: armazenamento e transferência de mídia (fotos/vídeo/3D), inferência de IA/visão computacional, geração de laudos e processamento assíncrono, e licenças/SaaS de terceiros. Mitigações: compressão e processamento no dispositivo, ciclo de vida de armazenamento (tiering para cold storage após o encerramento da inspeção), inferência on-device quando possível, serverless/spot para workers, cotas por plano, monitoramento de custo por tenant (FinOps) com unit economics (custo por inspeção). Usar serviços gerenciados reduz custo de operação e headcount. Evitar over-engineering de microsserviços no início. Custos de app stores, suporte de dispositivos AR e conformidade (LGPD) devem ser considerados. Margem sensível ao volume de mídia por inspeção, por isso a precificação deve acompanhar o consumo.",
+    "monetizacao": "SaaS por assinatura em camadas: Starter (poucos inspetores, checklists básicos), Pro (AR, laudos personalizados, integrações) e Enterprise (SSO, SLA, isolamento dedicado, API, BIM). Cobrança híbrida: assento por inspetor + consumo por inspeção/laudo emitido/GB de mídia armazenada. Add-ons: detecção de patologias por IA, biblioteca de checklists normativos (ABNT/NBR), assinatura digital, white-label de laudos. Marketplace de modelos de checklist e de inspetores certificados (comissão). Serviços profissionais de onboarding e customização de checklists. Trial gratuito com limite de inspeções. Receita adicional por analytics/benchmarking de portfólio de imóveis.",
+    "stack_sugerida": "Mobile: Flutter ou React Native com módulos nativos ARKit/ARCore (Swift/Kotlin para o núcleo AR), armazenamento local SQLite/WatermelonDB/PowerSync para offline-first. Web: React/Next.js + TypeScript. Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Java (Spring Boot), evoluindo para serviços por contexto; Python para pipelines de IA/visão computacional (PyTorch, ONNX/Core ML/TFLite para inferência on-device). Dados: PostgreSQL gerenciado (RLS multi-tenant) + PostGIS para geometria espacial, Redis para cache, object storage S3-compatível para mídia, OpenSearch para busca. Mensageria: SQS/SNS, Kafka ou NATS conforme a escala. Identidade: Auth0/Clerk/Keycloak. Billing: Stripe/Pagar.me. Laudos: geração de PDF (Puppeteer/WeasyPrint) + assinatura digital. Infra: AWS/GCP com Kubernetes ou ECS/Cloud Run, Terraform, GitHub Actions, feature flags. Observabilidade: OpenTelemetry, Grafana/Datadog, Sentry. Padrões: eventos de domínio, OpenAPI, ADRs, Wardley Maps versionados junto com o código."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "dfd4115afd4e",
+    "gerado_em": "2026-09-21T03:44:25+00:00",
+    "runner": "runner.py"
+  }
+}

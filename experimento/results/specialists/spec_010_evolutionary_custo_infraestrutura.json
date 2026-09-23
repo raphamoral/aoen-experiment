@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — nenhum componente foi estimado em valores monetários, não há estratégia de otimização de custos (scale-to-zero, spot, tiers de storage) e não existe qualquer projeção de como os custos evoluem com o crescimento da base de MEIs; a única referência tangencial é 'decisões de infra são adiadas para o último momento responsável', que trata de flexibilidade arquitetural, não de FinOps."
+}

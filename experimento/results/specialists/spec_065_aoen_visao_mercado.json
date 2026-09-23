@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 65,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 7,
+  "justificativa": "O público-alvo está precisamente segmentado (empresas 10–500 funcionários, CTOs/heads de engineering com times remotos), a dor central — necessidade de visibilidade operacional sem ferramentas invasivas — está bem articulada e o diferenciador arquitetural (privacidade como premissa, não feature) é genuinamente distinto; a nota não chega a 9–10 porque faltam dados de tamanho de mercado (TAM/SAM), benchmarking explícito contra concorrentes como Microsoft Viva Insights ou Humanyze, e evidências quantitativas que reforcem a urgência da dor para sustentar a proposta de valor perante investidores ou compradores enterprise."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura tem boas fundações — ConfigureCompanyUseCase cobre CNPJ/regime/certificado por tenant, o FocusNFeAdapter abstrai multi-município sem código novo, e o CertificateVaultPort isola credenciais por cliente — mas a proposta não descreve um modelo de configuração de tenant explícito (tabela de features, planos, feature flags, estratégia de roteamento de adapter por tenant), deixando em aberto se a seleção do adapter correto (SEFAZ vs Prefeitura vs Focus, alíquotas municipais, limites de plano) é resolvida por dados ou ainda exige código/deploy para casos não previstos."
+}

@@ -1,0 +1,60 @@
+{
+  "ideia_idx": 51,
+  "ideia": "Plataforma de due diligence automatizada para fusões e aquisições",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Segurança e confidencialidade (dados sensíveis de M&A, isolamento por deal/tenant, criptografia, zero-trust)",
+      "Auditabilidade e rastreabilidade (cadeia de custódia, proveniência de cada achado, logs imutáveis)",
+      "Acurácia e explicabilidade da IA (citações da fonte para cada achado, human-in-the-loop, controle de alucinação)",
+      "Evolvabilidade (modelos de IA, extratores e regras regulatórias trocáveis sem reescrever o núcleo)",
+      "Conformidade (LGPD/GDPR, SOC 2, ISO 27001, residência de dados por jurisdição)",
+      "Escalabilidade elástica (picos de milhares de documentos por data room)",
+      "Interoperabilidade (VDRs, ERPs, CRMs, fontes públicas de dados)",
+      "Observabilidade e testabilidade",
+      "Disponibilidade, com prazos de deal como restrição crítica"
+    ],
+    "fitness_functions": [
+      "Isolamento de tenant: teste automatizado no CI que tenta acessar dados de outro tenant/deal e deve falhar sempre; roda também em produção, de forma sintética e contínua",
+      "Acoplamento: ArchUnit/import-linter/dependency-cruiser bloqueia o merge se um módulo depender de outro fora das interfaces públicas ou se surgir ciclo entre módulos",
+      "Acurácia da IA: golden dataset de documentos anotados; o pipeline falha se precision/recall de extração cair mais de X% entre versões de modelo ou prompt",
+      "Groundedness: 100% dos achados devem ter citação (documento, página, trecho) verificável; a checagem automática reprova o release se houver achado sem fonte",
+      "Auditoria: teste de integridade do log append-only (hash encadeado) executado diariamente; qualquer quebra dispara alerta",
+      "Desempenho: p95 de ingestão e classificação por documento abaixo de N segundos e throughput mínimo de páginas/hora em teste de carga semanal",
+      "Custo: custo de inferência por documento e por deal monitorado; alerta e falha de pipeline se ultrapassar o orçamento definido",
+      "Segurança: SAST/DAST, varredura de dependências e de segredos no CI; verificação de que todo storage está criptografado (policy-as-code com OPA/Checkov)",
+      "Conformidade: verificação automática de residência de dados por região e de expiração/retenção de dados de deals encerrados",
+      "Contratos entre módulos: consumer-driven contract tests (Pact) e verificação de compatibilidade de schema de eventos",
+      "Trocabilidade de modelo: suíte de avaliação que executa o mesmo benchmark em qualquer provedor de LLM por trás da porta de abstração; a troca só é liberada se o benchmark passar",
+      "Resiliência: chaos tests mensais e verificação de RTO/RPO em restauração de backup",
+      "Deploy: DORA metrics (frequência de deploy, lead time, change failure rate) com metas mínimas"
+    ],
+    "incremental_change": "Começar com um monólito modular bem particionado por bounded contexts (Ingestão de Documentos, Extração e Análise, Achados e Risco, Relatórios, Colaboração, Identidade e Tenancy). Evoluir por etapas. Fase 1 (MVP): uma vertical de due diligence, como contratos e cláusulas de change-of-control, para um tipo de deal, com revisão humana. Fase 2: adicionar as verticais financeira, jurídica e de compliance como novos módulos de análise plugáveis. Fase 3: extrair para serviços independentes só os módulos que precisarem de escala ou ciclo de release próprio (ingestão/OCR e inferência de IA são os primeiros candidatos), usando strangler fig e feature flags. Fase 4: integrações com VDRs e ERPs, marketplace de playbooks e API pública. Cada fase é guiada por fitness functions no pipeline de CI/CD, com deploy contínuo, canary releases e ADRs (Architecture Decision Records) revisados a cada trimestre. Avaliar dimensões além da técnica (dados, segurança, operação, equipe) em cada incremento.",
+    "reversibility": "Reversíveis (two-way doors): provedor de LLM e modelos (atrás de uma porta de abstração), framework de OCR, vector store (pgvector hoje, dedicado depois), broker de mensageria, framework de frontend, granularidade dos serviços (monólito modular ↔ serviços), ferramenta de observabilidade e provedor de e-mail/notificações. Semi-reversíveis: nuvem (mitigada com IaC, contêineres e abstrações de storage) e formato de eventos (mitigado com versionamento de schema). Difíceis de reverter, portanto adiadas até o last responsible moment: modelo de tenancy e isolamento de dados (começar com isolamento lógico forte via RLS e chaves por tenant, com caminho para schema ou banco dedicado a clientes enterprise), modelo de residência de dados por região, e o formato canônico do modelo de dados de achados/evidências, que precisa ser projetado com cuidado desde o início. Use feature flags, expand/contract em migrações de banco e ADRs para registrar o que foi decidido e por quê.",
+    "coupling": "Baixo acoplamento entre bounded contexts. A comunicação é síncrona por contratos explícitos (APIs internas versionadas) para consultas, e assíncrona por eventos de domínio (DocumentoIngerido, DocumentoClassificado, AchadoGerado, RevisaoConcluida) para o fluxo de processamento. Cada módulo é dono dos seus dados, sem joins entre schemas de módulos diferentes. Uso de ports & adapters (arquitetura hexagonal) nas fronteiras externas: LLM, OCR, VDR, storage, provedores de dados. O pipeline de análise é orientado a plugins: cada analisador (contratos, financeiro, trabalhista, IP, compliance) implementa o mesmo contrato e é registrado sem alterar o núcleo. Acoplamento aferente/eferente monitorado como fitness function. Evitar um modelo de dados compartilhado e um orquestrador central que conheça detalhes dos analisadores; usar coreografia leve por eventos com um workflow engine apenas para processos longos e com estado.",
+    "interfaces": [
+      "API REST/JSON pública e versionada (OpenAPI) para deals, documentos, achados e relatórios",
+      "Webhooks e eventos de saída para sistemas de clientes (por exemplo, conclusão de análise, achado crítico)",
+      "Conectores de entrada para Virtual Data Rooms (Intralinks, Datasite, Box, SharePoint, Google Drive), via adapters",
+      "Upload direto seguro (URLs pré-assinadas, com varredura antivírus e checagem de tipo)",
+      "Interface de baixo nível (SPI) para plugins de analisadores e extratores",
+      "Porta de abstração para LLM/embeddings/OCR, com suporte a múltiplos provedores e modelos privados",
+      "Conectores de dados externos: registros societários, processos judiciais, sanções/PEP, mídia adversa, dados financeiros",
+      "SSO (SAML/OIDC) e SCIM para provisionamento de usuários",
+      "Exportação de relatórios (PDF, DOCX, XLSX) e integração com ferramentas de deal management/CRM",
+      "Interface web com visualização lado a lado achado ↔ trecho do documento, e fluxo de revisão e aprovação",
+      "Barramento de eventos interno (schemas versionados em registry)",
+      "API de auditoria e exportação de logs para o SIEM do cliente"
+    ],
+    "escalabilidade": "Escala horizontal e elástica, com a carga separada por perfil. O caminho de ingestão e processamento é assíncrono, baseado em filas: cada documento é uma unidade de trabalho idempotente, processada por workers stateless com autoscaling (KEDA) por profundidade de fila. Armazenamento de objetos para os documentos e Postgres para o modelo transacional, com particionamento por tenant/deal; leitura pesada vai para réplicas e índices de busca (OpenSearch e pgvector). A inferência de IA usa batching, cache semântico, roteamento entre modelos pequenos e grandes conforme a complexidade da tarefa, e limites de taxa por tenant para evitar noisy neighbors. Um deal é um ciclo de vida finito, o que permite mover dados frios para camadas mais baratas e arquivar depois do encerramento. Multi-região quando a residência de dados exigir, com células (cell-based architecture) que isolam clientes grandes. A extração de serviços acontece apenas quando as métricas de fitness function mostrarem gargalo real.",
+    "custos": "Os principais custos são inferência de LLM e OCR (variável, proporcional ao volume de páginas), armazenamento e processamento de documentos, e compliance (certificações SOC 2/ISO 27001, pentests, auditorias). Mitigações: roteamento de modelos por complexidade, cache de resultados por hash de documento, pré-filtragem e classificação barata antes de usar modelos caros, processamento em batch fora de pico, autoscaling até zero para workers, tiering de armazenamento e política de retenção após o deal. Começar com monólito modular e poucos componentes gerenciados mantém o custo fixo baixo no início. Rastrear custo por deal, por tenant e por documento (FinOps) como métrica de primeira classe, com margem bruta por plano como fitness function. Custos de humanos no ciclo (revisores e suporte) devem ser considerados nos planos de maior toque. Considerar modelos hospedados em VPC/privados para clientes com requisitos rígidos, com preço maior para cobrir o custo.",
+    "monetizacao": "Modelo híbrido. (1) Assinatura por plataforma (tiers Starter, Professional, Enterprise), com número de usuários, módulos de análise habilitados e recursos como SSO, residência de dados e SLAs. (2) Cobrança por uso: por deal ativo ou por volume de páginas/documentos processados, com pacotes de créditos e excedente. (3) Módulos adicionais pagos: playbooks setoriais (fintech, saúde, energia), checagens de compliance/ESG, integração com bases de dados premium, com repasse de custo e margem. (4) Enterprise: implantação dedicada ou em VPC do cliente, modelos privados, suporte premium e serviços profissionais. (5) Canais: parcerias com escritórios de advocacia, bancos de investimento, consultorias Big Four e fundos de private equity, além de um marketplace de playbooks de terceiros com revenue share. Preço alinhado ao valor: o custo de um deal é alto, e a economia de horas de advogados e analistas justifica preço por deal ou por projeto.",
+    "stack_sugerida": "Backend: Python (FastAPI) para os pipelines de IA/extração e TypeScript (NestJS) ou Kotlin/Java para o núcleo transacional, organizados como monólito modular. Frontend: React/Next.js com TypeScript e um visualizador de documentos (PDF.js) com destaque de trechos. Dados: PostgreSQL (RLS por tenant, pgvector), OpenSearch para busca textual, armazenamento de objetos S3-compatível com criptografia e chaves por tenant (KMS/BYOK), Redis para cache. Mensageria e workflow: SQS/SNS ou Kafka/Redpanda para eventos, Temporal para fluxos longos e com estado. IA: camada de abstração própria (ports & adapters) sobre provedores de LLM (Claude e outros) e modelos privados, OCR/layout (Textract, Azure Document Intelligence ou open source), RAG com citações, framework de avaliação (evals) com golden datasets e human-in-the-loop. Infra: AWS (ou multi-nuvem com Terraform/OpenTofu), Kubernetes (EKS) com KEDA ou ECS/Fargate no início, GitOps (Argo CD), CI/CD com GitHub Actions. Segurança: Keycloak/Auth0 (SAML/OIDC/SCIM), Vault/KMS, OPA para policy-as-code, WAF, varredura de malware. Observabilidade: OpenTelemetry, Prometheus/Grafana, Loki, Sentry. Fitness functions: ArchUnit/import-linter, Pact, k6, Checkov, Trivy, testes de evals no pipeline. Governança: ADRs versionados no repositório e feature flags (Unleash/LaunchDarkly)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:26:42+00:00",
+    "runner": "runner.py"
+  }
+}

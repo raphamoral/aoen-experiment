@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta conta uma história coesa do problema à solução: os índices no banco respondem ao padrão de query declarado, o BullMQ justifica-se pelos lembretes pesados em I/O, o Redis de cache conecta-se à alta frequência de consulta de disponibilidade, a monetização por dentistas ativos espelha o custo variável por mensagens enviadas, e o 'start simple + regras antes de ML' é consistente com a filosofia de validação precoce com clínica real — as únicas lacunas de coerência são o conflito de sala/equipamento mencionado no objetivo mas ausente no modelo de dados, a isolação multi-tenant implícita (clinic_id como índice) sem estratégia explícita, e a seção de monetização truncada que impede avaliar se o modelo de preço fecha com o custo estimado."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O público-alvo é identificável pela nomenclatura do produto (startups + investidores-anjo regionais), mas o documento é essencialmente arquitetural: não há market sizing, a dor do cliente é apenas implícita (fricção no acesso a capital regional), não existe menção a concorrentes ou diferenciação, e a proposta de valor nunca é articulada — só os mecanismos técnicos que a suportariam."
+}

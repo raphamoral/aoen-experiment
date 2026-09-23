@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 85,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema coeso e auto-reforçante: o mercado-alvo (redes regionais B2B2C sem escala tech) justifica a abstração via ports (RulesEnginePort, ledger abstraído), que por sua vez justifica a camada LoyaltyService centralizada como único ponto de lógica de negócio, que por sua vez torna cada interface de fase 2 um canal intercambiável sem risco de divergência — cada escolha técnica deriva diretamente de uma restrição de mercado declarada, com a única lacuna sendo a ausência de menção explícita a estratégia de consistência transacional entre o ledger e os múltiplos canais simultâneos."
+}

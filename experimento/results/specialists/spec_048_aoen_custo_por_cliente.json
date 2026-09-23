@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 48,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente a arquitetura técnica (motor de previsão, camada de serviço, interfaces, parâmetros configuráveis) sem qualquer menção a rastreamento de consumo por tenant, custo por operação (ex: 'cada chamada ao ModelProvider custa R$X') ou conexão entre custo operacional e modelo de precificação — custos por cliente simplesmente não existem na proposta."
+}

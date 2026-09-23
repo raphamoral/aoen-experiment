@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma narrativa arquitetural sólida e auto-reforçante: processos stateless exigem Redis/PostgreSQL para estado externo, que por sua vez viabiliza o share-nothing e o rollback por release imutável; o monorepo com isolamento via Docker resolve o paradoxo de código compartilhado com runtimes independentes; a fila SQS/workers desacopla o processamento assíncrono de exames da API síncrona, coerente com o modelo stateless; a config via env vars + Vault fecha o ciclo do build imutável sem hardcoding — a única tensão menor são as escolhas em aberto (pgvector *ou* Pinecone, SQS *ou* RabbitMQ) que indicam decisões arquiteturais ainda não finalizadas, mas não constituem contradições."
+}

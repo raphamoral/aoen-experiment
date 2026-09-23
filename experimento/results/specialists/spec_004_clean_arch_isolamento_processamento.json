@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente entidades de domínio e suas regras de negócio, sem qualquer menção a filas, workers, processos separados ou mecanismos assíncronos — não há isolamento de processamento pesado definido na arquitetura."
+}

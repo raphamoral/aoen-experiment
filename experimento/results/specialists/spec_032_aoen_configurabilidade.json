@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 32,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra configurabilidade parcial — thresholds de alerta configuráveis por cliente e interfaces plugáveis (SentimentAnalyzer, ReviewSource) são boas fundações — mas não descreve uma camada explícita de configuração por tenant (tabela de settings, schema de config por cliente, gestão de quais fontes/categorias cada tenant ativa), e o campo 'fase3_fluxo_fixo' truncado sugere que o fluxo principal ainda é fixo no código; onboarding de novo cliente sem código não está endereçado na proposta."
+}

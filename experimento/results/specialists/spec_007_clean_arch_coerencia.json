@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 6,
+  "justificativa": "O núcleo gamificado é coeso (XP flui de Module → Quiz → Achievement → User.level → desbloqueio de conteúdo, e a imutabilidade do Progress evita farming), mas há contradições internas que quebram a coerência: Course.xpReward coexiste com Module.xpReward sem regra de composição (risco de dupla contagem); Module.contentType inclui 'quiz' enquanto Quiz é entidade separada (sobreposição estrutural); Progress.attempts e Quiz.maxAttempts controlam tentativas em camadas distintas sem reconciliação; e User.badges é um array primitivo enquanto Achievement é entidade rica, sugerindo uma relação UserAchievement ausente — lacunas que fragmentam o que seria um sistema quase coeso."
+}

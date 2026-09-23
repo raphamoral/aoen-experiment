@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 90,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Web App, Mobile, Portal do Paciente, API REST e WhatsApp/SMS), cada uma com perfil de usuário e argumento de mercado explícitos, e a Service Layer centraliza toda a lógica de negócio garantindo que qualquer nova interface consuma as regras existentes sem reescrita."
+}

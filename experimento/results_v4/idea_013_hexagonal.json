@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 13,
+  "ideia": "App de reserva e gestão de espaços de coworking descentralizados",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Reserva e gestão de espaços de coworking descentralizados (rede de múltiplos operadores independentes). Subdomínios: Catálogo de Espaços/Recursos (salas, mesas, cabines), Disponibilidade e Reservas (regras de conflito, overbooking, cancelamento, check-in/out), Membros e Organizações (perfis, planos, permissões), Precificação e Faturamento (tarifas por operador, créditos, splits/repasses entre operadores da rede), Políticas de Acesso (credenciais digitais, janelas de uso) e Reputação/Confiança entre participantes. Agregados principais: Space, Resource, Booking, Member, Membership/Plan, Invoice, Payout, AccessGrant. Regras de negócio puras (sem I/O) vivem aqui: validação de conflitos de horário, cálculo de preço e comissão, políticas de cancelamento, elegibilidade de plano.",
+    "primary_ports": [
+      "SearchSpacesUseCase (buscar espaços/recursos por localização, horário, comodidades)",
+      "BookResourceUseCase (criar, alterar e cancelar reservas)",
+      "ManageBookingLifecycleUseCase (check-in, check-out, no-show, extensão)",
+      "ManageMembershipUseCase (assinar planos, comprar créditos, gerenciar equipe/organização)",
+      "OnboardOperatorUseCase (cadastrar operador, espaços, recursos, regras e tarifas)",
+      "ManageAvailabilityUseCase (calendários, bloqueios, manutenção)",
+      "BillingAndPayoutUseCase (faturas, conciliação, repasses aos operadores)",
+      "AccessControlUseCase (emitir/revogar credenciais de acesso)",
+      "ReviewAndReputationUseCase (avaliações e reputação)",
+      "AdminReportingUseCase (métricas de ocupação, receita, auditoria)"
+    ],
+    "secondary_ports": [
+      "BookingRepository / SpaceRepository / MemberRepository / InvoiceRepository (persistência)",
+      "AvailabilityCachePort (leitura rápida de disponibilidade)",
+      "PaymentGatewayPort (cobrança, assinaturas, reembolsos)",
+      "PayoutPort (split e repasse multi-operador)",
+      "NotificationPort (e-mail, push, SMS, WhatsApp)",
+      "IdentityProviderPort (autenticação, SSO, KYC)",
+      "AccessControlHardwarePort (fechaduras inteligentes, QR, NFC, BLE)",
+      "CalendarSyncPort (Google/Outlook/iCal)",
+      "GeoSearchPort (busca geoespacial e geocodificação)",
+      "EventPublisherPort (eventos de domínio / mensageria)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)",
+      "TaxAndInvoicingPort (emissão fiscal por jurisdição)",
+      "FileStoragePort (fotos, contratos, documentos)",
+      "DecentralizedLedgerPort (opcional: registro imutável de reservas/reputação e liquidação, se a descentralização exigir confiança sem intermediário)",
+      "AuditLogPort (trilha de auditoria)",
+      "FeatureFlagPort e ConfigPort"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON) para web e mobile",
+      "GraphQL API (BFF para apps de cliente)",
+      "Web App (SPA/SSR) para membros",
+      "Mobile App (iOS/Android) com QR/NFC check-in",
+      "Portal do Operador (backoffice web)",
+      "Painel Admin da plataforma",
+      "Webhooks de entrada (pagamentos, fechaduras, calendários)",
+      "Consumidores de fila/eventos (workers de fundo)",
+      "Agendadores (cron: expiração de reservas, faturamento recorrente, repasses)",
+      "CLI e scripts operacionais (migração, importação em lote)",
+      "Chatbot/Assistente (WhatsApp/Slack) e API pública para parceiros/integradores",
+      "Test Adapters (testes automatizados de aceitação e contrato, direcionando o core sem UI)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL + PostGIS Adapter (repositórios e geo)",
+      "Redis Adapter (cache de disponibilidade, locks de reserva)",
+      "In-Memory Adapters (testes e desenvolvimento local)",
+      "Stripe Connect Adapter (pagamentos, assinaturas, split)",
+      "Pix/Mercado Pago/Pagar.me Adapter (mercado brasileiro)",
+      "Auth0/Keycloak/Cognito Adapter (identidade e SSO)",
+      "SendGrid/SES + Twilio/FCM/APNs Adapter (notificações)",
+      "Google Calendar/Microsoft Graph Adapter (sincronização de agenda)",
+      "Fabricantes de fechadura (Nuki, Salto, Kisi, Igloo) Adapter",
+      "Kafka/RabbitMQ/SNS+SQS Adapter (eventos)",
+      "S3/GCS Adapter (arquivos)",
+      "Mapbox/Google Maps Adapter (geocodificação)",
+      "Provedores fiscais (NFS-e, Avalara) Adapter",
+      "Blockchain/Smart Contract Adapter (Polygon/Ethereum L2, opcional) para ledger descentralizado",
+      "OpenTelemetry/Sentry Adapter (observabilidade e auditoria)",
+      "Fakes/Stubs/Mocks (contract tests dos adapters)"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não possui dependências de frameworks, banco, HTTP, SDKs ou blockchain. Toda comunicação passa por interfaces (ports) definidas dentro do core; adapters ficam fora e dependem do core, nunca o contrário (Dependency Inversion). Adapters primários traduzem protocolos externos (HTTP, CLI, filas) em chamadas de use case usando DTOs/comandos próprios; adapters secundários implementam os ports traduzindo para APIs de terceiros através de anti-corruption layers. Tempo, IDs e aleatoriedade são injetados via ports. A composição acontece somente na composition root (injeção de dependência), e regras de dependência são verificadas em CI (ArchUnit/dependency-cruiser). Como cada porta pode ser acionada por usuário, teste ou script, o core é testado com adapters in-memory sem infraestrutura, e cada adapter secundário é validado por contract tests compartilhados. Tratamento simétrico: pagamento, fechadura, ledger e notificação são todos 'sistemas externos' atrás de ports equivalentes, trocáveis por configuração.",
+    "interfaces": [
+      "App web para membros (busca, reserva, mapa, pagamento)",
+      "App mobile com QR/NFC/BLE para acesso e check-in",
+      "Portal do operador (gestão de espaços, preços, calendário, repasses)",
+      "Painel administrativo da plataforma (rede, compliance, disputas)",
+      "API pública REST/GraphQL documentada (OpenAPI) com SDKs para parceiros",
+      "Webhooks de saída para integrações de terceiros",
+      "Widget embarcável de reserva para sites dos operadores",
+      "Integrações de calendário e mensageria (Slack, WhatsApp)",
+      "CLI para administração e automação"
+    ],
+    "escalabilidade": "Escala horizontal com serviços stateless por trás de load balancer, já que o estado fica nos adapters secundários. Estratégia evolutiva: começar como monólito modular (um módulo por bounded context: Catálogo, Reservas, Cobrança, Acesso) e extrair serviços apenas quando necessário, pois a fronteira das ports permite trocar chamada in-process por chamada remota sem alterar o core. Leituras pesadas (busca/disponibilidade) usam cache Redis, read replicas e CQRS leve com índices de busca (Postgres/PostGIS ou OpenSearch). Escritas críticas (reserva) usam locks otimistas/constraints de exclusão de intervalo no banco para evitar dupla reserva. Processos assíncronos (notificações, faturamento, repasses, sincronização de calendário) via fila com idempotência, retries e outbox pattern. Multi-tenancy por operador (tenant_id com row-level security), particionamento por região/tenant conforme crescimento, CDN para conteúdo estático, e deploy multi-região quando houver demanda geográfica. Eventos de domínio permitem federar operadores independentes sem acoplamento.",
+    "custos": "Fase inicial enxuta: monólito modular em PaaS/containers gerenciados (Fly.io/Render/Cloud Run), Postgres gerenciado e Redis pequeno, mantendo custo fixo baixo (~US$ 100–400/mês). Principais custos variáveis: taxas de gateway de pagamento (~2,9% + fixo; Pix mais barato), notificações SMS/WhatsApp (o mais caro por unidade, priorizar push/e-mail), mapas/geocodificação (cachear resultados), armazenamento e egress de mídia (CDN), e hardware/licenças de fechaduras inteligentes (idealmente por conta do operador). Blockchain só se houver ganho claro, pois adiciona custo de gas, complexidade e risco regulatório; preferir L2 ou ledger append-only em Postgres com ancoragem periódica. Custos de compliance (LGPD/GDPR, PCI delegado ao gateway, fiscal por jurisdição), suporte e observabilidade crescem com a escala. A arquitetura hexagonal reduz lock-in e permite trocar provedores caros por alternativas mais baratas apenas substituindo adapters. Cachear disponibilidade e usar filas com batch reduz custo por reserva.",
+    "monetizacao": "Modelo de marketplace em duas pontas: (1) comissão/take rate sobre cada reserva (5–15%) via split automático do pagamento; (2) assinatura SaaS mensal para operadores (tiers por número de espaços/recursos, com portal, relatórios, integrações de acesso e white-label do widget); (3) assinatura de membros/empresas para plano de acesso à rede com créditos multiuso (passe flex/hot desk em qualquer espaço); (4) taxas de serviço ao usuário final em reservas pontuais; (5) upsells: destaque de anúncios/listagem patrocinada, seguro, add-ons (café, impressão, salas de reunião premium), integração de controle de acesso premium, API para parceiros/empresas (B2B enterprise com faturamento consolidado, SSO e relatórios); (6) receita de float/serviços financeiros (antecipação de repasses) em estágio posterior; (7) taxas de emissão de credenciais/hardware revendido em parceria.",
+    "stack_sugerida": "Backend: TypeScript (NestJS com módulos hexagonais ou Fastify puro) ou Kotlin/Java (Spring Boot) ou Go, com o core em módulos sem dependência de framework; validação com Zod/Valibot. Persistência: PostgreSQL + PostGIS (constraints de exclusão para intervalos de reserva, RLS para multi-tenancy), Redis (cache/locks), OpenSearch opcional para busca; ORM leve (Drizzle/Prisma/jOOQ) restrito aos adapters. Mensageria: SQS/SNS, RabbitMQ ou Kafka + outbox pattern; workflows com Temporal para sagas (reserva → pagamento → acesso). Frontend: React/Next.js (web e portal do operador) e React Native/Expo ou Flutter (mobile); design system compartilhado. API: REST com OpenAPI e/ou GraphQL. Identidade: Keycloak/Auth0/Cognito. Pagamentos: Stripe Connect + Pix (Mercado Pago/Pagar.me). Infra: Docker, Terraform, Kubernetes ou serviços gerenciados (Cloud Run/ECS), CI/CD com GitHub Actions, CDN Cloudflare. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Testes: unitários e de aceitação no core com adapters in-memory, contract tests para adapters, testes e2e com Playwright, verificação de regras arquiteturais (dependency-cruiser/ArchUnit). Descentralização opcional: L2 (Polygon/Base) com smart contracts para liquidação/reputação, isolada atrás de DecentralizedLedgerPort."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:11:37+00:00",
+    "runner": "runner.py"
+  }
+}

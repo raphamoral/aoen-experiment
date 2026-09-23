@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 95,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte intenção evolutiva: o core de análise de imagem é uma abstração explícita com contrato estável (recebe/retorna) que permite troca de provedor de IA sem impacto em outras camadas, a Service Layer centraliza regras de negócio mantendo interfaces consumidoras desacopladas, e os múltiplos canais (mobile, web, API, telemedicina assíncrona) foram projetados para crescer independentemente — a nota não alcança 9-10 porque a proposta está incompleta (texto cortado na definição da Service Layer), não há menção explícita de abstração da camada de dados (trocar banco exigiria o quê?), e a capacidade de escalar de 10 para 10.000 usuários sem mudança fundamental não é endereçada arquiteturalmente (sem menção a filas, cache, ou estratégia de escalonamento horizontal da própria Service Layer, que pode se tornar gargalo centralizado)."
+}

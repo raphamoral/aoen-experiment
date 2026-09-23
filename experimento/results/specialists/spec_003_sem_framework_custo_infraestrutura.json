@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "Há uma estimativa inicial agregada ($50-150/mês) e reconhecimento de que banco e armazenamento de PDFs crescem com o uso, mas faltam valores por componente (servidor, RDS/Supabase, Redis, SendGrid por volume), ausência total de técnicas de otimização (scale-to-zero, spot instances, storage tiers para relatórios frios) e nenhuma projeção quantitativa de custo por faixa de clientes (ex: 10 empresas vs. 100 vs. 1.000)."
+}

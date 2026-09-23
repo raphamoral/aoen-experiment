@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 72,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define uma abstração lógica (ModelProvider com predict/train) e uma service layer, mas não menciona em nenhum momento filas de mensagens, workers separados, processamento assíncrono real ou qualquer mecanismo de fallback caso a inferência falhe — o método triggerManualInference sugere execução síncrona acoplada, e o pipeline de ingestão→feature engineering→inferência parece rodar em processo único, sem isolamento físico que proteja o restante do sistema de falhas ou sobrecarga do modelo."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta tem boa separação código/config em nível de ambiente (env vars, Vault, Secrets Manager) e menciona feature flags (LaunchDarkly/Unleash), que permitem toggles por tenant, mas não descreve nenhum mecanismo explícito de configuração por cliente: ausência de schema de tenant config, tenant registry, regras de negócio parametrizáveis por tenant (ex: fluxos de diagnóstico, integrações, preços, notificações customizadas) ou processo de onboarding self-service — sugerindo que novos clientes ainda dependeriam de código ou deploy para comportamentos diferenciados."
+}

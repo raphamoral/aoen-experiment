@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 54,
+  "ideia": "Plataforma de criação de chatbots customizados sem código para PMEs",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Criação, configuração e execução de conversas automatizadas (chatbots) por tenant. O núcleo contém as entidades Tenant/Workspace, Bot, Fluxo de Conversa (nós, gatilhos, condições, ações), Base de Conhecimento, Conversa/Sessão, Mensagem, Canal, Plano/Assinatura e Métricas de uso. Contém também o motor de execução de fluxos, as regras de versionamento e publicação de bots, e as políticas de cota e limites por plano. Nada aqui conhece HTTP, banco de dados, WhatsApp ou um provedor de LLM específico.",
+    "primary_ports": [
+      "ManageBotsUseCase (criar, editar, versionar, publicar e arquivar bots)",
+      "DesignConversationFlowUseCase (montar e validar fluxos no editor visual)",
+      "ManageKnowledgeBaseUseCase (ingerir documentos, URLs e FAQs)",
+      "HandleIncomingMessageUseCase (receber mensagem de qualquer canal e devolver resposta)",
+      "TestBotSandboxUseCase (simular conversas antes da publicação)",
+      "ManageChannelsUseCase (conectar e desconectar canais)",
+      "HandoffToHumanUseCase (transferir para atendente e devolver ao bot)",
+      "ManageTenantAndTeamUseCase (workspaces, membros, papéis, permissões)",
+      "ManageSubscriptionUseCase (planos, upgrade, cancelamento)",
+      "QueryAnalyticsUseCase (métricas, transcrições, exportações)",
+      "ManageIntegrationsUseCase (configurar webhooks, CRM e planilhas)"
+    ],
+    "secondary_ports": [
+      "BotRepository, FlowRepository e ConversationRepository (persistência)",
+      "TenantRepository e SubscriptionRepository",
+      "LanguageModelPort (geração de respostas, classificação de intenção, embeddings)",
+      "VectorStorePort (busca semântica na base de conhecimento)",
+      "DocumentStoragePort (arquivos enviados)",
+      "DocumentParserPort (PDF, DOCX, HTML, crawler de URL)",
+      "MessagingChannelPort (envio e recebimento por canal: WhatsApp, Instagram, Telegram, web widget)",
+      "PaymentGatewayPort (cobrança recorrente, faturas, webhooks de pagamento)",
+      "IdentityProviderPort (autenticação, SSO, MFA)",
+      "NotificationPort (e-mail, push, alertas)",
+      "OutboundIntegrationPort (CRM, ERP, planilhas, HTTP genérico)",
+      "EventBusPort (publicação de eventos de domínio)",
+      "JobSchedulerPort (tarefas assíncronas e agendadas, como reindexação e relatórios)",
+      "CachePort e SessionStatePort (estado de conversa de baixa latência)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)",
+      "AuditLogPort e UsageMeteringPort (auditoria e medição de consumo)",
+      "SecretsVaultPort (credenciais dos clientes para canais e integrações)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API (usada pelo painel web)",
+      "SPA do painel web com editor visual drag-and-drop",
+      "Webhooks de entrada dos canais (WhatsApp Cloud API, Meta, Telegram)",
+      "WebSocket/SSE para o widget de chat embarcável",
+      "CLI e SDK para automação e scripts",
+      "Test harness / testes automatizados (dirigem o core sem UI nem rede)",
+      "Consumidores de fila (mensagens assíncronas)",
+      "Jobs agendados (cron)",
+      "Webhook de entrada do gateway de pagamento",
+      "Servidor MCP/API pública para parceiros e agências"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios), com Row-Level Security por tenant",
+      "Redis (cache e estado de sessão)",
+      "pgvector, Qdrant ou Pinecone (vector store)",
+      "Adapters de LLM: Anthropic Claude, OpenAI e modelos open source via vLLM, com roteamento e fallback",
+      "S3 ou GCS (armazenamento de documentos)",
+      "Unstructured, Apache Tika ou parsers próprios (parsing de documentos)",
+      "WhatsApp Cloud API, Instagram/Messenger Graph API, Telegram Bot API, widget web",
+      "Stripe e Mercado Pago/Pagar.me (pagamentos, incluindo Pix e boleto)",
+      "Auth0, Keycloak ou Cognito (identidade)",
+      "SES, SendGrid ou Resend (e-mail)",
+      "Kafka, SQS ou NATS (event bus e filas)",
+      "Temporal ou BullMQ (jobs e workflows duráveis)",
+      "HubSpot, RD Station, Google Sheets e Zapier/Make (integrações de saída)",
+      "HashiCorp Vault ou AWS Secrets Manager (segredos)",
+      "OpenTelemetry com Prometheus/Grafana (observabilidade e medição)",
+      "Adapters in-memory e fakes de todas as portas (testes e demo)"
+    ],
+    "isolation": "O core é uma biblioteca pura, sem dependências de framework, de I/O ou de SDKs externos. Ele expõe apenas interfaces (portas) e recebe as implementações por injeção de dependência na composition root. A regra de dependência é imposta na build: adapters dependem do core, nunca o contrário (ArchUnit, dependency-cruiser ou módulos separados, com verificação no CI). DTOs e mapeadores ficam na borda, então tipos de WhatsApp, Stripe ou OpenAI nunca entram no domínio. Cada porta tem um contrato testável (contract tests) que todo adapter precisa passar, e o core é testado com fakes in-memory, sem rede nem banco. Trocar o LLM, o canal ou o gateway de pagamento é só trocar o adapter, e o tratamento é simétrico entre todos os sistemas externos. O tenant_id é parte do contexto de todas as portas, o que garante isolamento multi-tenant.",
+    "interfaces": [
+      "Painel web responsivo com editor visual de fluxos (drag-and-drop) e simulador de conversa",
+      "Widget de chat embarcável (JS snippet) para sites das PMEs",
+      "Canais de mensageria: WhatsApp, Instagram, Messenger, Telegram",
+      "Inbox de atendimento humano (handoff)",
+      "Dashboard de analytics e transcrições",
+      "API pública REST e webhooks, com SDKs",
+      "CLI para automação",
+      "Marketplace de templates de bots por segmento (varejo, clínicas, restaurantes)",
+      "Painel administrativo interno (suporte, billing, moderação)"
+    ],
+    "escalabilidade": "Serviços de aplicação stateless atrás de load balancer, escalados horizontalmente (Kubernetes com HPA ou containers serverless). O estado da conversa fica no Redis e a persistência no PostgreSQL, com réplicas de leitura e particionamento por tenant_id. A ingestão de mensagens passa por fila (SQS/Kafka), o que absorve picos e desacopla o recebimento do webhook do processamento. Cargas pesadas, como indexação de documentos e embeddings, rodam em workers separados, escalados por profundidade da fila. As chamadas a LLM usam rate limiting por tenant, circuit breaker, fallback entre provedores e streaming. Um cache semântico de respostas frequentes reduz as chamadas ao LLM. Clientes grandes podem ter pool dedicado (bulkhead) contra o efeito de vizinho barulhento. Como o core está isolado, é possível extrair o motor de execução de fluxos em microsserviço próprio quando o volume justificar, começando como monólito modular.",
+    "custos": "O maior custo variável são os tokens de LLM. Para controlá-lo: roteamento de modelos (modelo pequeno para intenção e FAQ, modelo maior só quando necessário), prompt caching, cache semântico, limites de contexto e cotas por plano. Em seguida vêm as taxas de mensagens do WhatsApp (por conversa/template), que devem ser repassadas ou cobradas à parte. Há também custos de infraestrutura (banco, vector store, Redis, filas), armazenamento e egress, além das taxas do gateway de pagamento. Recomendações: começar com monólito modular e poucos serviços gerenciados para reduzir o custo operacional, medir o consumo por tenant (UsageMeteringPort) para calcular margem por cliente, usar instâncias spot para workers assíncronos e definir hard limits para evitar prejuízo com uso abusivo. Somam-se ainda suporte, compliance (LGPD/GDPR, DPA com provedores de LLM) e observabilidade.",
+    "monetizacao": "Assinatura SaaS recorrente em camadas: Free/Trial (1 bot, poucas conversas, marca d'água), Starter, Pro e Business, diferenciadas por número de bots, conversas ou mensagens/mês, canais, tamanho da base de conhecimento, membros da equipe e acesso a API. Cobrança por excedente de uso (pay-as-you-go) sobre a franquia incluída. Add-ons pagos: canais adicionais (WhatsApp), handoff humano/inbox, remoção de marca, SSO, SLA e suporte premium. Marketplace de templates com revenue share. Plano white-label para agências e revendedores. Serviços de onboarding e criação de bots sob demanda. Cobrança em BRL, com Pix, boleto e cartão, e preços ancorados no valor entregue (leads e atendimentos economizados).",
+    "stack_sugerida": "Backend: TypeScript (NestJS ou Fastify com módulos hexagonais) ou Kotlin/Java com Spring, em monólito modular evoluindo para serviços. Frontend: React/Next.js com React Flow para o editor visual, Tailwind e shadcn/ui. Dados: PostgreSQL com RLS e pgvector, Redis, S3. Mensageria e jobs: SQS ou NATS mais Temporal ou BullMQ. IA: adapters para Claude e OpenAI, com embeddings e um camada de roteamento e avaliação de prompts. Infra: AWS ou GCP com containers (ECS/Fargate ou GKE), Terraform, CI/CD com GitHub Actions e verificação de regras de arquitetura. Observabilidade: OpenTelemetry, Grafana, Sentry. Autenticação: Auth0 ou Keycloak. Pagamentos: Stripe mais Mercado Pago ou Pagar.me. Testes: contract tests por porta, fakes in-memory, testes E2E dos canais com sandboxes."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:31:28+00:00",
+    "runner": "runner.py"
+  }
+}

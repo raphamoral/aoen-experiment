@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta menciona apenas um único frontend (SPA via CDN), sem considerar interfaces distintas para diferentes perfis (ex: mobile para testers em campo, CLI para integrações CI/CD, portal dedicado para gestores de projetos); o api-gateway e a arquitetura de microsserviços criam desacoplamento técnico implícito que permitiria adicionar novas interfaces sem reescrever a lógica de negócio, mas essa capacidade não foi explorada como estratégia de mercado nem justificada por casos de uso reais de usuários distintos."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 49,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 7,
+  "justificativa": "O mercado-alvo está bem segmentado (fintechs, healthtechs, EdTechs, órgãos públicos, empresas sujeitas a auditoria enterprise) e a dor é articulada de forma crível — pressão regulatória real (LBI, WCAG 2.2) combinada com escassez e dispersão de profissionais especializados; há diferenciação relevante (grafo de confiança, wizard para empresas sem maturidade, integração CI/CD via API), mas a proposta carece de dados quantitativos de mercado (TAM/SAM/SOM), não nomeia nem compara com alternativas/concorrentes existentes, e não evidencia o ticket médio ou ciclo de vendas esperado por segmento — elementos que elevariam a nota ao máximo."
+}

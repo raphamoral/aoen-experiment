@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 36,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra separação explícita e intencional entre fluxo fixo (fase3_fluxo_fixo, 8 passos hardcoded para todos) e parâmetros configuráveis (fase3_parametros_configuraveis), com interface PrescriptionAnalyzer abstraindo provedores de dados por tenant — mas a lista de parâmetros configuráveis está truncada no JSON enviado, impedindo avaliar se cobrem casos críticos como regras de notificação por canal, thresholds de severidade por especialidade médica ou customizações do widget white-label; além disso, nenhuma menção a um tenant configuration store, schema de configuração versionado ou processo de onboarding self-service sugere que partes do setup ainda dependem de intervenção técnica manual, colocando o produto em patamar de configuração parcial — sólido para o estágio atual, mas não totalmente dirigido por configuração."
+}

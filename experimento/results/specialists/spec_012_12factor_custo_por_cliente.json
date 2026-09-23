@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A arquitetura é explicitamente multi-tenant (evidenciado pelo TENANT_ID nas variáveis de ambiente), o que é pré-requisito técnico para rastreamento por cliente, mas nenhum mecanismo de custo por tenant é definido — o stack de observabilidade (Prometheus + Grafana) é descrito apenas para métricas de infraestrutura, não há cálculo de custo por operação, por leitura de sensor ou por relatório gerado, e o modelo de precificação não é conectado a qualquer métrica de consumo por cliente."
+}

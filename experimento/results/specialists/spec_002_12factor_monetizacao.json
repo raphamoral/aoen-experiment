@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a modelo de monetização, tiers de planos, valores cobrados, métricas de receita (MRR, LTV, CAC, churn) ou qualquer estratégia de como o marketplace gera receita — a descrição é exclusivamente arquitetural e técnica."
+}

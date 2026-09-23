@@ -1,0 +1,93 @@
+{
+  "ideia_idx": 53,
+  "ideia": "App de rastreamento de hábitos sustentáveis com gamificação corporativa",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão e gamificação de hábitos sustentáveis em contexto corporativo. O núcleo contém: agregados Organização/Tenant, Colaborador, Equipe, Hábito (catálogo), Registro de Hábito (check-in com evidência), Desafio/Campanha, Pontuação, Conquista/Badge, Ranking/Leaderboard, Recompensa e Métrica de Impacto (CO₂ evitado, água/energia/resíduo economizados). Regras de negócio: validação e antifraude de registros, cálculo de pontos e níveis, regras de streak, elegibilidade de desafios, apuração de rankings por equipe/departamento e conversão de hábitos em impacto ambiental. Tudo isso é puro código de domínio, sem dependência de framework, banco de dados ou provedor externo.",
+    "primary_ports": [
+      "RegistrarHabitoUseCase (registrar check-in de hábito com evidência opcional)",
+      "GerenciarCatalogoDeHabitosUseCase (criar, editar e arquivar hábitos por tenant)",
+      "CriarDesafioUseCase / EntrarEmDesafioUseCase (campanhas individuais e por equipe)",
+      "ConsultarRankingUseCase (individual, equipe, departamento)",
+      "ConsultarPerfilEConquistasUseCase",
+      "ResgatarRecompensaUseCase",
+      "ConsultarImpactoAmbientalUseCase (dashboard ESG)",
+      "GerarRelatorioESGUseCase",
+      "GerenciarOrganizacaoEColaboradoresUseCase (onboarding, equipes, convites)",
+      "ModerarRegistrosUseCase (revisão de evidências suspeitas)",
+      "ApurarEncerramentoDeDesafioUseCase (acionada por agendador)"
+    ],
+    "secondary_ports": [
+      "HabitRepository / RegistroRepository / DesafioRepository / ColaboradorRepository / OrganizacaoRepository (persistência)",
+      "RankingStore (leitura/escrita otimizada de leaderboards)",
+      "EvidenceStoragePort (armazenamento de fotos/comprovantes)",
+      "IdentityProviderPort (SSO/SAML/OIDC, provisionamento SCIM)",
+      "NotificationPort (push, e-mail, mensagens corporativas)",
+      "ChatPlatformPort (Slack/Microsoft Teams)",
+      "HRSystemPort (sincronização de estrutura organizacional e colaboradores)",
+      "RewardCatalogPort (gift cards, doações, benefícios, marketplace de recompensas)",
+      "ImpactCalculatorPort (fatores de emissão e equivalências ambientais)",
+      "FraudDetectionPort (análise de imagem, geolocalização, padrões anômalos)",
+      "IntegrationDataPort (transporte, energia, bike-sharing, wearables)",
+      "BillingPort (assinatura, faturamento, limites por plano)",
+      "EventPublisherPort (eventos de domínio)",
+      "ClockPort / IdGeneratorPort (determinismo em testes)",
+      "AuditLogPort (trilha de auditoria e conformidade LGPD)",
+      "ReportExportPort (PDF/CSV/XLSX)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API HTTP (web e mobile)",
+      "Web App SPA para colaboradores",
+      "Painel administrativo web (RH/Sustentabilidade)",
+      "App mobile (iOS/Android)",
+      "Bot Slack/Microsoft Teams (comandos e check-in por chat)",
+      "Webhooks de entrada (wearables, sistemas de mobilidade, IoT)",
+      "Scheduler/Cron (fechamento de desafios, resumos semanais, streaks)",
+      "Consumidor de filas/eventos (processamento assíncrono)",
+      "CLI e scripts de administração/migração",
+      "Suíte de testes automatizados (unitários, contrato e aceitação, usando fakes dos secondary ports)",
+      "API pública para integrações de clientes (API keys / OAuth2)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios, multi-tenant com RLS)",
+      "Redis (sorted sets para ranking, cache, rate limiting)",
+      "S3/GCS/Azure Blob (evidências) com URLs pré-assinadas",
+      "Auth0/Keycloak/Azure AD/Okta (SAML/OIDC/SCIM)",
+      "SendGrid/SES (e-mail), FCM/APNs (push)",
+      "Slack API / Microsoft Graph API",
+      "Workday/SAP SuccessFactors/BambooHR/TOTVS (HRIS)",
+      "Tremendous/Tango/Giftbit e ONGs parceiras (recompensas e doações)",
+      "Climatiq/DEFRA/EPA/GHG Protocol (fatores de emissão) com fallback para tabela local",
+      "AWS Rekognition/Google Vision (validação de evidências) e serviços de geolocalização",
+      "Strava/Google Fit/Apple Health/APIs de bike-sharing e transporte público",
+      "Stripe Billing (assinaturas)",
+      "Kafka/SQS/RabbitMQ/NATS (eventos)",
+      "OpenTelemetry + Loki/CloudWatch (auditoria e observabilidade)",
+      "Adaptadores em memória/fake (SQLite, InMemory, stubs) para testes e desenvolvimento local",
+      "Geradores de relatório (WeasyPrint/Puppeteer, exportadores CSV/XLSX)"
+    ],
+    "isolation": "O core (domínio + casos de uso) fica em um módulo próprio sem dependências de framework, ORM, SDKs ou protocolos de transporte. Ele expõe apenas os primary ports (interfaces de casos de uso) e declara os secondary ports como interfaces. A regra de dependência aponta sempre para dentro: adapters dependem de ports, nunca o contrário. Dados cruzam a fronteira como DTOs/Commands/Queries, e o domínio não conhece JSON, SQL, HTTP, SAML nem formatos de fornecedores. Um Anti-Corruption Layer em cada adapter traduz modelos externos (HRIS, Strava, Slack) para a linguagem do domínio. A composição (injeção de dependências) ocorre apenas na composition root, na borda. Regras de arquitetura (ArchUnit, dependency-cruiser ou import-linter) rodam no CI para impedir imports proibidos. Tenant, relógio e ID entram por ports/contexto explícito. Testes de contrato garantem que adapters reais e fakes se comportem igualmente, permitindo que a aplicação seja dirigida por UI, testes ou scripts com o mesmo resultado.",
+    "interfaces": [
+      "App mobile do colaborador (check-in rápido, feed, desafios, ranking, recompensas)",
+      "Web app do colaborador",
+      "Painel admin RH/ESG (campanhas, moderação, gestão de equipes, catálogo de recompensas)",
+      "Dashboard executivo de impacto ambiental e engajamento",
+      "Bot Slack/Teams",
+      "API REST/GraphQL pública documentada (OpenAPI) com webhooks de saída",
+      "Widget/intranet embutido (iframe/SDK)",
+      "Relatórios ESG exportáveis (PDF/CSV/XLSX)",
+      "CLI para administração e operações",
+      "Portal de billing e configuração de SSO/integrações (self-service)"
+    ],
+    "escalabilidade": "Core stateless, escalável horizontalmente atrás de load balancer. Escala por tenant: multi-tenancy com RLS no início e sharding/schema dedicado para grandes contas. Separação de leitura e escrita (CQRS leve): check-ins escritos de forma síncrona e curta, enquanto pontos, badges, rankings e impacto são calculados de forma assíncrona via eventos de domínio. Rankings servidos por Redis (sorted sets) com reconstrução a partir do banco. Picos previsíveis (início/fim de desafios, segunda-feira) tratados com filas, autoscaling e rate limiting por tenant. Processamento de evidências e integrações externas em workers isolados, com retries, idempotência e circuit breakers. Materialized views/tabelas agregadas para dashboards; particionamento de registros por data/tenant. CDN para assets e evidências. Como os adapters são intercambiáveis, é possível migrar de modular monolith para microsserviços (ex.: ranking, notificações, integrações) sem alterar o core. Fronteiras de contexto: Hábitos, Gamificação, Impacto e Integrações.",
+    "custos": "Começar como modular monolith em containers gerenciados, com PostgreSQL gerenciado e Redis pequeno, mantendo custo fixo baixo. Principais custos variáveis: armazenamento e análise de imagens (mitigar com compressão, thumbnails, lifecycle para cold storage/expiração e análise de imagem apenas quando houver sinal de risco), notificações push/e-mail, APIs pagas de fatores de emissão (cachear e usar tabelas locais), egress/CDN e taxas de gateway de pagamento. Recompensas devem ser pré-pagas ou repassadas ao cliente para não comprometer a margem. Controlar custo por tenant com métricas (FinOps), quotas por plano e retenção configurável de dados. Custos de conformidade: LGPD/GDPR, auditoria, criptografia, SSO/SCIM e certificações (SOC 2/ISO 27001) conforme o mercado enterprise. Adapters trocáveis evitam lock-in e permitem negociar ou substituir fornecedores caros. Suporte e customer success para onboarding B2B são um custo relevante.",
+    "monetizacao": "B2B SaaS por assinatura, precificada por colaborador ativo/mês (PEPM) com faixas por porte: (1) Starter, com hábitos e desafios básicos, ranking e badges; (2) Business, com SSO, integração Slack/Teams, campanhas personalizadas e dashboards de impacto; (3) Enterprise, com SCIM/HRIS, API, relatórios ESG auditáveis (CSRD/GRI), white-label, SLA e suporte dedicado. Receitas adicionais: setup e onboarding, campanhas temáticas premium (Dia da Terra, Semana da Mobilidade), marketplace de recompensas (comissão ou fee de curadoria), doações e compensações de carbono com fee de intermediação, parcerias com marcas sustentáveis, consultoria de engajamento e pacotes de relatórios de sustentabilidade. Contratos anuais com desconto por volume e piloto de 30–60 dias para reduzir fricção de entrada.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (usado apenas nos adapters e na composition root; core em TypeScript puro) ou alternativamente Kotlin/Spring ou Go, com Node 22 LTS. Persistência: PostgreSQL com RLS (Drizzle/Prisma/Kysely restritos ao adapter) e Redis. Mensageria: SQS/SNS ou NATS (Kafka apenas em grande escala) com padrão Outbox. Storage: S3 com CloudFront. Auth: Keycloak ou Auth0 (OIDC/SAML/SCIM). Frontend: React com Next.js e TanStack Query no web app/admin; mobile em React Native/Expo ou Flutter; bots com Bolt SDK (Slack) e Bot Framework (Teams). API: REST com OpenAPI, GraphQL opcional para dashboards. Testes: Vitest/Jest, Testcontainers, testes de contrato de ports e dependency-cruiser para impor a arquitetura. Infra: AWS ECS Fargate (ou Cloud Run) com Terraform, GitHub Actions, OpenTelemetry + Grafana/CloudWatch e Sentry. Pagamentos: Stripe Billing. Analytics: PostHog e, se necessário, ClickHouse/BigQuery para métricas de impacto. Organização em monorepo (pnpm/Turborepo) com pacotes core, adapters-primary, adapters-secondary e composition-root."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:29:35+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal (ports & adapters) é implementada com rigor exemplar: as portas primárias e secundárias são interfaces puras que isolam o core de qualquer tecnologia externa, permitindo trocar PostgreSQL por outro banco, substituir o IMLAnomalyDetector por um provedor diferente de IA, ou migrar de AWS S3 para Azure Blob sem tocar na lógica de negócio; o Test Driver in-process confirma que o core é acionável sem infraestrutura; a separação entre TimescaleDB para séries temporais e PostgreSQL para domínio transacional demonstra decisões técnicas conscientes e reversíveis — o único ponto que impede nota 10 é a ausência de evidências explícitas sobre limites de módulos internos ao core (subdomínios/bounded contexts) que garantam que o próprio domínio cresça sem acoplamento interno conforme o produto escala."
+}

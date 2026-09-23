@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O público-alvo (clínicas odontológicas) é mencionado implicitamente pelo contexto do produto, mas a proposta não articula a dor do cliente, não apresenta tamanho de mercado, não demonstra diferenciação frente a concorrentes existentes (Clinicorp, iMedicina, etc.) nem constrói uma proposta de valor convincente — a descrição é puramente arquitetural/técnica, sem perspectiva de mercado."
+}

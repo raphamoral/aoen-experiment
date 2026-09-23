@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista os componentes de infraestrutura (PostgreSQL, Redis, S3, filas Bull, WebSockets) e menciona estratégias de performance como cache de leaderboard e processamento assíncrono, mas não apresenta nenhuma estimativa concreta de custo em dólares ou reais, nenhuma estratégia explícita de otimização financeira (scale-to-zero, instâncias spot/preemptible, tiers de armazenamento S3, reserved instances) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários e volume de uploads de evidências."
+}

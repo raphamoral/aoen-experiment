@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A arquitetura menciona Kafka (IEventBusPort) e AWS SageMaker (IMLModelPort) — que sugerem isolamento físico para streaming e inferência gerenciada — e o retorno 'TrainingJob' em IModelTrainingUseCase indica intenção assíncrona para retraining; porém, o adaptador SciKit-Learn/MLflow local implica que inferência pesada pode rodar no mesmo processo da API, não há menção explícita de circuit breakers, fallback se o SageMaker estiver indisponível, filas para desacoplar requisições de predição do path síncrono, nem padrão Bulkhead/worker-pool — o isolamento físico existe potencialmente para treinamento, mas não está garantido para o caminho crítico de scoring em tempo real."
+}

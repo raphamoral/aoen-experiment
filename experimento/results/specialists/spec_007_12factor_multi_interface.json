@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A arquitetura stateless com API REST/GraphQL implicitamente viabiliza múltiplas interfaces, mas a proposta não explicita nenhuma interface além da camada de API — não há menção a web app, mobile, painel administrativo ou dashboard gerencial, nem justificativa de perfis de usuário (aprendiz, gestor, admin) ou escolhas orientadas a alcance de mercado."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva exemplar: o Strangler Fig aliado a Feature Toggles e bounded contexts com deploy independente permite crescimento incremental sem reescrita; a reversibilidade é tratada como cidadã de primeira classe (banco, mensageria e canais de notificação todos com caminhos de migração explícitos); o princípio Last Responsible Moment evita over-engineering prematuro; as fitness functions automatizadas no pipeline transformam evolvability de intenção em invariante verificável — o único ponto de atenção é garantir que as abstrações de interface (especialmente para integrações externas como WhatsApp e prontuários) sejam implementadas com rigor de Anti-Corruption Layer, pois o acoplamento tende a vazar na prática mesmo quando bem planejado."
+}

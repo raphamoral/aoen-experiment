@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 94,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (motor de sincronização bidirecional físico-financeiro em tempo real), isolado como contrato abstrato plugável, extensível por design (fontes de eventos e motor de projeção substituíveis sem quebrar a interface), e resolve uma dor real que ERPs inacessíveis e planilhas fragmentadas não endereçam para PMEs — perde apenas um ponto por não detalhar como o motor lida com conflitos de concorrência ou inconsistências de dados em campo, o que poderia ser o verdadeiro diferencial técnico defensável."
+}

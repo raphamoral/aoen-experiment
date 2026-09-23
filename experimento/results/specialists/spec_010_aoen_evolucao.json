@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida — o padrão FiscalAdapter abstrai provedores fiscais de forma reversível, a service layer desacoplada permite múltiplas interfaces sem duplicação de regras, e o monólito modular posterga complexidade distribuída sem impedi-la; perde pontos por não especificar estratégia de escala (ex: filas, cache, sharding) e por deixar implícita a separação entre domínio e infraestrutura nos serviços internos."
+}

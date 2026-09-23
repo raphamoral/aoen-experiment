@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta prevê duas interfaces (web-app e admin-panel) com separação arquitetural via api-gateway e padrão BFF sugerido, indicando algum desacoplamento da lógica de negócio, mas não apresenta justificativa de mercado para as escolhas, não contempla canal mobile (relevante para freelancers em campo) nem acesso API para integrações B2B com equipes de compliance corporativo, limitando o alcance sem fundamentação estratégica."
+}

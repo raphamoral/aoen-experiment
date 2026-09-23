@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 42,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra uma arquitetura extensível sólida (plugins de frameworks, conectores plugáveis, abstração de LLM), mas descreve configurabilidade a nível de sistema — adicionar novos frameworks ou provedores — e não configurabilidade a nível de tenant: não há menção a um modelo de configuração por cliente, seleção de frameworks por tenant, parâmetros de onboarding config-only, nem garantia explícita de que novo cliente = nova row no banco sem deploy."
+}

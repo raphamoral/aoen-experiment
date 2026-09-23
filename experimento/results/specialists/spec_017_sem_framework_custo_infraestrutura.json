@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 6,
+  "justificativa": "O projeto apresenta estimativas concretas iniciais ($20-50/mês servidor, ~$20 banco gerenciado, S3 'quase nada'), identifica corretamente os principais vetores de custo variável (email e armazenamento de PDF crescente), e esboça uma estratégia de escalonamento progressivo (fila com BullMQ, cache Redis, réplica de leitura), mas falta projeção de custos em cenários de crescimento (ex: 10k, 100k certificados), ausência de estratégias explícitas de otimização como scale-to-zero, instâncias spot ou lifecycle policies no S3, e não quantifica custos de banda/CDN ou de serviços gerenciados de fila e cache."
+}

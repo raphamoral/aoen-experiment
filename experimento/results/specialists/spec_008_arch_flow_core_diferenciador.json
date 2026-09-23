@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (rastreabilidade imutável via blockchain entre geração e destinação final, isolado no contexto ChainOfCustody + BlockchainLedger), resolve um problema real e regulatório sem alternativa equivalente no mercado brasileiro, e é extensível por abstrair o protocolo blockchain — perde apenas um ponto pela dependência implícita em integrações legadas SINIR/SOAP que podem fragilizar a proposta se não evoluírem."
+}

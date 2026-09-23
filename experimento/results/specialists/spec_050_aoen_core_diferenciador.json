@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 50,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (rastreamento em tempo real + redistribuição preditiva) está claramente identificado, isolado via interfaces abstratas (ITrackerProvider, IMapProvider, IPaymentProvider) e resolve um problema operacional real que soluções genéricas de localização não endereçam — a pontuação não chega a 10 porque a proposta não detalha o que torna o algoritmo de redistribuição preditiva genuinamente único frente a concorrentes já estabelecidos como Bcycle ou Vulog."
+}

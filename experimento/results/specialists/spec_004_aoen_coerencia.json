@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta apresenta forte coerência sistêmica — os pontos de dor do mercado (lentidão, opacidade, favorecimento) mapeiam diretamente para as decisões técnicas (real-time auction, auditoria imutável, regras configuráveis), o padrão ports-and-adapters do core habilita exatamente a extensibilidade declarada, e cada interface da fase 2 é justificada por um segmento de mercado específico; a única tensão menor é uma ambiguidade sobre o que é o 'verdadeiro core' (matching intelligence vs. engine de regras), mencionados como complementares mas sem hierarquia clara, além do texto de justificativa de mercado estar truncado, impedindo avaliar a coerência completa das últimas interfaces."
+}

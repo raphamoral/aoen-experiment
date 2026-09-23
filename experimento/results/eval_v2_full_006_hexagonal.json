@@ -1,0 +1,16 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "hexagonal",
+  "scores": {
+    "core_diferenciador": 8,
+    "visao_mercado": 5,
+    "multi_interface": 9,
+    "configurabilidade": 3,
+    "isolamento_processamento": 6,
+    "custo_infraestrutura": 5,
+    "custo_por_cliente": 2,
+    "monetizacao": 6,
+    "evolucao": 8,
+    "coerencia": 7
+  }
+}

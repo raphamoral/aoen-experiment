@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 87,
+  "ideia": "App de gestão de quadras esportivas com reserva e pagamento integrado",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de reservas de quadras esportivas (Booking & Facility Management). O núcleo contém os agregados Quadra (Court), Estabelecimento/Arena (Venue), Reserva (Booking), Agenda/Disponibilidade (Schedule/Slot), Preço/Tarifa (Pricing Rule), Pagamento (Payment) e Cliente/Jogador (Player). Regras de negócio centrais: prevenção de conflito de horários (sem overbooking), políticas de cancelamento e reembolso, precificação por horário/dia/esporte, reservas recorrentes (mensalistas), bloqueios de manutenção, lista de espera e ciclo de vida da reserva (Pendente → Paga → Confirmada → Concluída/Cancelada/No-show). Contextos delimitados: Reservas, Catálogo de Quadras, Pagamentos/Cobrança e Notificações.",
+    "primary_ports": [
+      "ReservarQuadraUseCase (criar reserva com bloqueio temporário do slot)",
+      "CancelarReservaUseCase (aplica política de cancelamento e reembolso)",
+      "ConsultarDisponibilidadeQuery (busca de slots por esporte, data, local e preço)",
+      "ConfirmarPagamentoUseCase (processa resultado de pagamento recebido)",
+      "GerenciarQuadrasUseCase (CRUD de arenas, quadras, horários e tabelas de preço)",
+      "BloquearHorarioUseCase (manutenção, eventos, aulas)",
+      "GerenciarReservaRecorrenteUseCase (mensalistas e turmas fixas)",
+      "EntrarListaEsperaUseCase",
+      "RegistrarCheckInUseCase (presença / no-show)",
+      "GerarRelatoriosGerenciaisQuery (ocupação, receita, inadimplência)",
+      "GerenciarUsuariosEPermissoesUseCase (jogadores, gestores, staff, multi-tenant)"
+    ],
+    "secondary_ports": [
+      "ReservaRepository",
+      "QuadraRepository",
+      "AgendaRepository (com controle de concorrência/lock de slot)",
+      "UsuarioRepository",
+      "TenantRepository",
+      "PaymentGatewayPort (cobrança, Pix, cartão, estorno, split para o dono da arena)",
+      "NotificationPort (e-mail, SMS, WhatsApp, push)",
+      "ClockPort (tempo, para testes determinísticos)",
+      "IdGeneratorPort",
+      "EventPublisherPort (eventos de domínio: ReservaCriada, PagamentoConfirmado, ReservaCancelada)",
+      "IdentityProviderPort (autenticação/SSO)",
+      "CalendarSyncPort (Google/Apple Calendar)",
+      "FileStoragePort (fotos das quadras, comprovantes)",
+      "InvoicePort (emissão de nota fiscal / recibo)",
+      "CachePort",
+      "AccessControlPort (integração com catracas, iluminação e fechaduras inteligentes)",
+      "AuditLogPort"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API HTTP (consumida por web e mobile)",
+      "Aplicativo web (SPA/PWA) para jogadores",
+      "Aplicativo mobile (React Native/Flutter) para jogadores",
+      "Painel administrativo web para gestores de arenas",
+      "Webhook Controller (callbacks do gateway de pagamento)",
+      "Bot de WhatsApp/Telegram para reservas conversacionais",
+      "CLI / scripts administrativos (importação em lote, migrações)",
+      "Scheduler/Cron Adapter (expiração de reservas pendentes, lembretes, cobrança recorrente)",
+      "Consumer de fila/eventos (mensageria como driver)",
+      "Suíte de testes automatizados (unitários, contrato e E2E) usando as mesmas portas primárias",
+      "API pública/parceiros (agregadores, Google Reserve)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter (repositórios, com lock otimista/constraint de exclusão de intervalos de tempo)",
+      "In-Memory Adapter (testes e desenvolvimento)",
+      "Redis Adapter (cache, lock distribuído de slot, rate limit)",
+      "Stripe / Mercado Pago / Pagar.me / Asaas Adapter (PaymentGatewayPort; Pix, cartão, boleto, split)",
+      "SendGrid/SES Adapter (e-mail)",
+      "Twilio / WhatsApp Business API Adapter (mensagens)",
+      "Firebase Cloud Messaging / APNs Adapter (push)",
+      "Auth0 / Keycloak / Cognito Adapter (identidade)",
+      "Google Calendar API Adapter",
+      "S3 / Cloud Storage Adapter (arquivos)",
+      "Kafka / RabbitMQ / SQS Adapter (EventPublisherPort)",
+      "Provedor de NF-e/NFS-e Adapter (ex.: eNotas, Focus NFe)",
+      "IoT/MQTT Adapter (controle de acesso e iluminação)",
+      "System Clock Adapter / Fake Clock Adapter",
+      "Fake/Sandbox Payment Adapter (testes)"
+    ],
+    "isolation": "O core (domínio + casos de uso na camada de aplicação) não importa nenhum framework, ORM, SDK ou biblioteca de I/O; depende apenas de interfaces (ports) definidas por ele mesmo. A regra de dependência aponta sempre de fora para dentro: adapters dependem das ports, nunca o contrário (Dependency Inversion). Os adapters primários traduzem HTTP/eventos/CLI em comandos e DTOs do domínio; os secundários implementam as portas de saída e traduzem modelos externos (ex.: payloads do gateway) para o modelo do domínio via anti-corruption layer. A composição (injeção de dependência) ocorre em um composition root fora do core. Todos os sistemas externos (banco, pagamento, notificação) são tratados simetricamente como adapters substituíveis. O isolamento é imposto por módulos/pacotes separados e verificado por testes de arquitetura (ArchUnit/dependency-cruiser) no CI. Os testes do core rodam com adapters In-Memory/Fake, sem rede ou banco, e testes de contrato garantem que cada adapter real respeite a mesma port.",
+    "interfaces": [
+      "App mobile do jogador (busca, reserva, pagamento Pix/cartão, histórico)",
+      "Web app/PWA do jogador",
+      "Painel web do gestor (agenda visual, preços, relatórios, financeiro, repasses)",
+      "App/tela de check-in para recepção ou staff",
+      "API REST/GraphQL pública documentada (OpenAPI) e webhooks de saída",
+      "Bot conversacional (WhatsApp)",
+      "Widget embarcável de reserva para sites das arenas (white-label)",
+      "Notificações (e-mail, push, WhatsApp)",
+      "CLI/scripts administrativos"
+    ],
+    "escalabilidade": "Arquitetura inicial como monólito modular hexagonal (um módulo por bounded context), facilitando a extração posterior de serviços sem reescrever o core, pois as portas já delimitam as fronteiras. Aplicação stateless com escala horizontal atrás de load balancer. Multi-tenancy por tenant_id (schema ou linha, com Row-Level Security). Leituras de disponibilidade escaladas com cache Redis e read replicas; escritas de reserva protegidas por lock de slot e constraint de exclusão no banco para evitar overbooking. Processamento assíncrono (fila) para notificações, conciliação de pagamentos, emissão de NF e relatórios. Idempotency keys em pagamentos e webhooks. Particionamento da tabela de agenda por data/tenant. Picos (noites e finais de semana) tratados com autoscaling e filas. Quando necessário, extrair Pagamentos e Notificações como serviços independentes, trocando apenas o adapter (chamada local → chamada remota/evento).",
+    "custos": "Fase inicial enxuta: monólito modular em PaaS ou container único (Fly.io, Render, Railway ou ECS/Cloud Run), PostgreSQL gerenciado e Redis pequeno, com custo baixo (aprox. US$ 50–300/mês para MVP). Principais custos variáveis: taxas do gateway de pagamento (Pix costuma ser bem mais barato que cartão, então incentivar Pix), mensagens WhatsApp/SMS (cobradas por conversa/mensagem; priorizar push e e-mail), emissão de NF por nota e armazenamento/CDN de mídia. Como as portas permitem trocar provedores, é possível negociar ou migrar de fornecedor para reduzir custo. Custos de observabilidade (logs, métricas, tracing) controlados por amostragem e retenção. Suporte e onboarding das arenas podem ser o maior custo humano; mitigar com autoatendimento e importação em lote. Custos de compliance (LGPD, PCI, delegado ao gateway via tokenização/checkout hospedado para reduzir o escopo PCI).",
+    "monetizacao": "Modelo híbrido: (1) assinatura SaaS mensal para arenas por plano (Básico, Pro, Enterprise) segundo número de quadras, usuários e recursos (relatórios, recorrência, white-label, integrações); (2) take rate/comissão sobre cada reserva paga via plataforma (ex.: 2–5% além da taxa do gateway) com split automático no gateway; (3) taxa de conveniência cobrada do jogador; (4) add-ons pagos: WhatsApp bot, emissão fiscal, controle de acesso IoT, domínio/app white-label; (5) marketplace de descoberta com destaque pago (ads/listagem premium) para arenas; (6) receitas secundárias: aulas, torneios, aluguel de equipamentos, parcerias com marcas esportivas e seguros. Plano gratuito ou trial limitado para aquisição de arenas pequenas.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (módulos como fronteiras de contexto, ports como interfaces/tokens de DI) ou Java/Kotlin com Spring Boot; alternativa Go. Estrutura de pastas: /domain, /application (use cases + ports), /adapters/in, /adapters/out, /bootstrap (composition root). Banco: PostgreSQL (com btree_gist e exclusion constraint em intervalos de tempo, RLS para multi-tenant), Redis (cache e lock), fila SQS/RabbitMQ/BullMQ. Frontend: Next.js/React (web e painel admin) e React Native ou Flutter (mobile), com PWA. Pagamentos: Stripe Connect ou Mercado Pago/Asaas/Pagar.me (Pix + split), atrás da PaymentGatewayPort. Autenticação: Keycloak/Auth0/Cognito via OIDC. Infra: Docker, Terraform, GitHub Actions, deploy em AWS/GCP (ECS/Cloud Run), CDN (CloudFront/Cloudflare). Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Testes: Jest/Vitest, testcontainers, testes de contrato (Pact) e testes de arquitetura (dependency-cruiser/ArchUnit). API: OpenAPI/GraphQL com geração de clientes."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:41:16+00:00",
+    "runner": "runner.py"
+  }
+}

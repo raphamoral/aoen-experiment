@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura descreve infraestrutura por serviço (RDS, Redis, S3, SQS, etc.) e menciona processos stateless escaláveis, mas não prevê nenhum mecanismo de rastreamento de consumo por tenant — não há menção a tagging de recursos por cliente, metering de operações individuais, nem cálculo de custo marginal por transação ou certificação, o que impede qualquer cálculo real de unit economics por cliente."
+}

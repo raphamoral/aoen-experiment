@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 36,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de detecção de interações medicamentosas é claramente identificado como núcleo, isolado atrás de uma interface PrescriptionAnalyzer, extensível via múltiplos provedores de dados (ANVISA, FDA, DrugBank, LLM), e resolve um problema real que sistemas genéricos de prescrição não endereçam — perde um ponto porque a proposta não evidencia o que torna o algoritmo de classificação/rankeamento de severidade proprietário ou defensável frente a provedores de dados que já expõem interações diretamente."
+}

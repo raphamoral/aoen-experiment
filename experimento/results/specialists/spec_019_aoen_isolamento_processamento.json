@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta não menciona filas, workers separados, circuit breakers nem fallback para falha do modelo de IA — o único indício de isolamento é o uso de APIs externas (Claude, OpenAI) que, por natureza, rodam fora do processo, e a menção vaga de 'pipeline de lembretes agendado'; não há isolamento físico descrito, nenhuma estratégia de degradação graciosa se a predição de no-show falhar, e nenhuma menção a escalabilidade independente do processamento pesado."
+}

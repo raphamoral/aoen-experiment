@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 9,
+  "justificativa": "A proposta demonstra configurabilidade madura: estratégia de precificação editável em runtime sem código, regras de negócio externalizadas em DSL configurável, algoritmos trocáveis por tenant via feature flag e modelo ML swappable via registry — novos tenants são essencialmente configuração pura; desconto de 1 ponto pela decisão de multi-tenancy storage (shared DB vs schema-per-tenant) ainda em aberto no 'last responsible moment', o que pode impactar o isolamento e o modelo de configuração em produção antes de estar completamente resolvido."
+}

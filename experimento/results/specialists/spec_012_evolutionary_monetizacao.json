@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "evolutionary",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 1,
+  "justificativa": "A proposta arquitetural não menciona nenhum modelo de monetização, tiers de preço, métricas de negócio (MRR, LTV, CAC, churn) ou conexão entre valor entregue e receita gerada — a única referência econômica é um threshold de custo por sensor/mês nas fitness functions, o que indica consciência de custo operacional, mas não constitui um modelo de receita."
+}

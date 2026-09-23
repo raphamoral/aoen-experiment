@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "A arquitetura conta uma história coerente e bem articulada — o padrão hexagonal se aplica consistentemente, os ports primários mapeiam diretamente os fluxos regulatórios reais (MTR, custódia, conformidade IBAMA), os adapters secundários (PostgreSQL com RLS, Hyperledger Fabric, S3, IoT) foram escolhidos com propósito claro para cada necessidade do domínio, e o suporte offline no MobileAppAdapter reconhece corretamente a realidade operacional de campo — porém há duas tensões não resolvidas que comprometem a coesão: (1) a dualidade Hyperledger Fabric + Ethereum cria semânticas de consistência incompatíveis (canal permissionado vs. chain pública) que o BlockchainLedgerPort precisa abstrair sem que o design explique como preservar as garantias de imutabilidade em ambos os casos; (2) o requisito de offline no app móvel entra em conflito direto com a rastreabilidade blockchain imutável em tempo real, e a proposta não apresenta o mecanismo de reconciliação (event sourcing, fila de pendências, assinatura criptográfica offline) que tornaria essa combinação viável sem comprometer a integridade do ledger."
+}

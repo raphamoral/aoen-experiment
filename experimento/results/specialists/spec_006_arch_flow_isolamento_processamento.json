@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta apresenta separação lógica via bounded contexts (LabIngestion, BiomarkerAnalysis, NutritionEngine), mas não menciona em nenhum momento filas de mensagens, workers assíncronos, processos separados, fallback em caso de falha de OCR/LLM, nem estratégia de escalonamento independente para as operações computacionalmente caras — o isolamento é apenas arquitetural no papel, sem garantias físicas de contenção de falha."
+}

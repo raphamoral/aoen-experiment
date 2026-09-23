@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 57,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define seis interfaces distintas (app mobile, dashboard web, agente no dispositivo filho, extensão de navegador, bot WhatsApp/Telegram e API B2B), cada uma justificada por perfil de usuário ou segmento de mercado específico, com lógica de negócio centralizada em uma Service Layer que desacopla completamente os casos de uso das interfaces — permitindo adicionar novos canais sem duplicar regras de negócio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta demonstra separação lógica via padrão ports-and-adapters (notificações como saídas plugáveis), mas não menciona em nenhum momento filas, workers independentes, processos separados ou mecanismos de fallback para os processos computacionalmente pesados do próprio core — matching de fornecedores, execução do engine de regras e escrita no registro de auditoria imutável rodam conceitualmente no mesmo monobloco orquestrador, sem isolamento físico declarado."
+}

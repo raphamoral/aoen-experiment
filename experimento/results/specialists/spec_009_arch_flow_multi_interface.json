@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A proposta menciona implicitamente múltiplos perfis de usuário (vendedor, comprador, inspetor) e contextos distintos via bounded contexts e stream-aligned teams, mas não especifica explicitamente as interfaces (web, mobile, API, portal do inspetor, etc.), não demonstra desacoplamento intencional de UI da lógica de negócio, e as escolhas de canal não são justificadas por alcance de mercado ou comportamento do usuário final."
+}

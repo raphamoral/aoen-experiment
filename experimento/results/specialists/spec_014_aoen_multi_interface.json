@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define 6 interfaces distintas (Web App, SDK para Zoom/Meet/Teams, Mobile, Dashboard, API/Webhooks e modo Kiosk), cada uma justificada por um perfil de usuário e vetor de mercado específico, com a lógica de negócio completamente isolada em uma Translation Session Service Layer que expõe contratos padronizados — permitindo adicionar novas interfaces sem tocar no core."
+}

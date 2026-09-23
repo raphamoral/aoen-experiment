@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "Cada característica arquitetural encontra contrapartida direta nas fitness functions (LGPD → compliance scan, Evolvabilidade → modular monolith + Strangler Fig, Auditabilidade → event sourcing fase 3, Escalabilidade → trigger mensurável de extração), os gatilhos de migração de fase são quantitativos e consistentes com os objetivos declarados, e o princípio guia (nunca big-bang) permeia todas as decisões — com única tensão menor: a fitness function de latência P99 síncrona precisará ser redefinida quando a fila assíncrona da fase 2 for introduzida, mudança implícita no modelo mas não explicitada na função de aptidão correspondente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "A proposta descreve parâmetros configuráveis por leilão (prazo, orçamento, requisitos mínimos), mas não há nenhuma menção a configuração por tenant — sem tabela de config por cliente, sem feature flags, sem separação código/configuração, sem modelo de onboarding; um cliente com regras de leilão, fluxo de homologação ou notificações diferentes exigiria alteração de código."
+}

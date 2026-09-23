@@ -1,0 +1,91 @@
+{
+  "ideia_idx": 48,
+  "ideia": "SaaS de previsão de demanda para supermercados regionais",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Previsão de demanda de varejo alimentar (grocery demand forecasting) para supermercados regionais. O núcleo (inside) contém: agregados Loja, SKU/Produto, Categoria, Série Temporal de Vendas, Calendário Comercial (feriados, sazonalidade regional, promoções), Previsão (Forecast) com intervalos de confiança, Política de Reposição (estoque de segurança, ponto de pedido, shelf life de perecíveis) e Métricas de Acurácia (MAPE, WAPE, viés). Regras de negócio: tratamento de rupturas (vendas censuradas), canibalização entre SKUs, efeito de promoções, produtos novos (cold start) e perecíveis. Serviços de domínio: ForecastingService (orquestra a geração de previsões), ReplenishmentAdvisor (sugere pedidos) e AccuracyEvaluator (compara previsto x realizado). Multi-tenant é conceito do domínio (Rede/Tenant > Loja > SKU).",
+    "primary_ports": [
+      "GenerateForecastUseCase — gera previsão por loja/SKU/horizonte",
+      "IngestSalesDataUseCase — importa vendas, estoque e preços históricos",
+      "ManagePromotionsUseCase — cadastra promoções e eventos que afetam a demanda",
+      "GetReplenishmentSuggestionsUseCase — retorna sugestões de pedido de compra",
+      "EvaluateForecastAccuracyUseCase — mede acurácia e viés do modelo",
+      "OverrideForecastUseCase — ajuste manual pelo comprador, com trilha de auditoria",
+      "ManageTenantAndCatalogUseCase — gestão de redes, lojas, SKUs e hierarquia de categorias",
+      "TrainModelUseCase — dispara retreino e backtesting de modelos",
+      "ManageSubscriptionUseCase — planos, limites de uso e faturamento"
+    ],
+    "secondary_ports": [
+      "SalesHistoryRepository — persistência de séries temporais de vendas",
+      "ForecastRepository — persistência de previsões, versões e overrides",
+      "CatalogRepository — produtos, lojas, categorias e tenants",
+      "ForecastModelPort — contrato para motores de previsão (treinar/prever/explicar)",
+      "ERPGatewayPort — extração de vendas, estoque e cadastro dos sistemas do cliente",
+      "PurchaseOrderPort — envio de sugestões/pedidos ao ERP ou ao fornecedor",
+      "WeatherProviderPort — clima e previsão do tempo por região",
+      "HolidayCalendarPort — feriados nacionais/regionais e eventos locais",
+      "CompetitorPricePort — preços de concorrentes (opcional)",
+      "NotificationPort — alertas de ruptura, excesso de estoque e desvio de acurácia",
+      "ModelArtifactStorePort — armazenamento de modelos treinados e versões",
+      "EventPublisherPort — publicação de eventos de domínio (ForecastGenerated, ModelRetrained)",
+      "ClockPort e IdGeneratorPort — tempo e identificadores determinísticos para testes",
+      "BillingGatewayPort — cobrança e assinaturas",
+      "IdentityPort — autenticação, autorização e resolução de tenant",
+      "AuditLogPort — registro imutável de ações e overrides"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON, OpenAPI) para o frontend e integrações de clientes",
+      "GraphQL/BFF para o dashboard web",
+      "Web App SPA (dashboard do comprador/gerente) que consome a API",
+      "CLI para operações administrativas e reprocessamentos",
+      "Scheduler/Cron (jobs noturnos de ingestão, previsão e retreino) que aciona os casos de uso",
+      "Consumidor de filas/eventos (mensagens de ingestão em lote e webhooks)",
+      "Upload de arquivos CSV/XLSX (adaptador de entrada para clientes sem ERP integrável)",
+      "Webhooks de entrada (billing, ERP)",
+      "Test Harness / suíte de testes automatizados que dirige a aplicação com fakes (mesmo nível dos demais adaptadores primários)",
+      "Bot/Integração com mensageria (WhatsApp/Slack) para consultar sugestões e alertas"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL + TimescaleDB adapter (SalesHistoryRepository, ForecastRepository, CatalogRepository)",
+      "Adapter de Data Warehouse/Parquet em S3 para históricos longos e treino",
+      "Adapters de ERP (TOTVS, Linx, SAP B1, Senior, Consinco, VR, Zeus) e adapter genérico SFTP/CSV",
+      "Adapter de motor estatístico (Prophet/ETS/ARIMA via statsforecast) — ForecastModelPort",
+      "Adapter de ML (LightGBM/XGBoost, N-BEATS/TFT) — ForecastModelPort, intercambiável por configuração",
+      "Adapter de ensemble/seleção automática de modelos por SKU",
+      "Adapter INMET / OpenWeather (WeatherProviderPort)",
+      "Adapter de calendário (BrasilAPI + calendário regional interno)",
+      "Adapter S3/MinIO/MLflow Registry (ModelArtifactStorePort)",
+      "Adapter Kafka/SQS/RabbitMQ (EventPublisherPort)",
+      "Adapters de notificação: SES/SendGrid (e-mail), Twilio/WhatsApp Business, Slack",
+      "Adapter Stripe/Asaas/Pagar.me (BillingGatewayPort), incluindo PIX e boleto",
+      "Adapter Keycloak/Auth0/Cognito (IdentityPort)",
+      "Adapters in-memory/fake de todos os repositórios e gateways (testes e demo)",
+      "Adapter de auditoria append-only (tabela imutável ou S3 Object Lock)",
+      "SystemClock / FixedClock e UUID/ULID generator"
+    ],
+    "isolation": "O core (domain + application) é um módulo sem dependências de frameworks, banco, HTTP ou bibliotecas de ML: só depende de tipos da linguagem e das interfaces (ports) que ele próprio define. Regra de dependência: adapters -> ports -> core, nunca o inverso, reforçada por testes de arquitetura (ArchUnit/import-linter/dependency-cruiser) e por pacotes/módulos separados no build (domain, application, adapters-in, adapters-out, bootstrap). Ports são definidos na linguagem do domínio (ex.: ForecastModelPort.predict(series, calendar, horizon)), não da tecnologia (nada de 'SQL' ou 'DataFrame' vazando). DTOs e mapeadores ficam nos adapters; o core usa entidades e value objects próprios (Money, Quantity, DateRange, SKU). Composição e injeção de dependências acontecem apenas na camada de bootstrap (composition root). Tratamento simétrico: ERP, clima, banco, fila e cobrança são todos tratados como 'outside' via ports, e o motor de ML é só mais um adapter substituível. Resultado: toda a lógica roda em testes com fakes in-memory, sem infraestrutura, e a troca de banco, provedor de clima ou modelo não afeta o core. Contract tests garantem que cada adapter cumpre o contrato do port.",
+    "interfaces": [
+      "Dashboard web: previsão por loja/SKU/categoria, intervalos de confiança, comparativo previsto x realizado",
+      "Tela de sugestão de compras/reposição com aprovação e override do comprador",
+      "Painel de alertas de ruptura, excesso e perecíveis em risco de perda",
+      "Tela de calendário promocional e eventos locais",
+      "Painel de acurácia do modelo (WAPE/MAPE/viés) por categoria",
+      "Assistente de onboarding e mapeamento de dados (upload CSV / conexão ERP)",
+      "API pública REST (OpenAPI) com autenticação por API key/OAuth2 e webhooks de saída",
+      "Exportação de relatórios (XLSX/PDF) e integração com BI (Power BI/Metabase)",
+      "CLI administrativa",
+      "Notificações por e-mail e WhatsApp",
+      "Console de administração multi-tenant e de faturamento (self-service)"
+    ],
+    "escalabilidade": "Escala horizontal por tenant e por partição de loja/SKU. O core é stateless, então a API e os workers escalam em réplicas atrás de load balancer com autoscaling (HPA/KEDA por tamanho de fila). Previsões são embaraçosamente paralelas: cada (loja, SKU) ou grupo de SKUs vira um job independente em fila, processado por workers elásticos (spot/preemptible). Separação CQRS: escrita/ingestão vs. leitura de previsões pré-computadas e servidas a partir de cache (Redis) e read replicas. Hipertabelas particionadas por tempo e tenant (TimescaleDB) com compressão e retenção em camadas (quente/morno/frio em Parquet no S3). Treino em lote noturno com modelos globais por categoria/cluster de lojas (em vez de um modelo por SKU) para reduzir custo, com retreino incremental e gatilho por deriva de acurácia. Como o motor de previsão é um adapter, é possível migrar de processo em contêiner para serviço dedicado (GPU/serverless) sem alterar o core. Evolução por estágios: monólito modular hexagonal -> extração de adapters pesados (ingestão e ML) para serviços separados quando houver necessidade, sem reescrever o domínio. Isolamento de tenants (schema/linha com RLS) e limites por plano evitam vizinho ruidoso.",
+    "custos": "Custos dominantes: computação de treino/inferência, armazenamento de séries históricas e engenharia de integração com ERPs. Mitigações: (1) previsões em lote noturno (não em tempo real) com instâncias spot; (2) modelos estatísticos e gradient boosting (baratos, CPU) como padrão, deep learning só onde houver ganho comprovado de acurácia; (3) modelos globais por cluster em vez de por SKU; (4) tiering de storage e compressão de séries; (5) começar como monólito modular em poucos containers (ex.: 1 app + 1 worker + Postgres gerenciado) antes de Kubernetes; (6) cache de resultados e recálculo apenas de SKUs com dados novos ou deriva; (7) cotas de API de clima e cache regional compartilhado entre tenants; (8) custo de suporte/onboarding reduzido com conectores ERP reutilizáveis e importação CSV; (9) monitoramento de custo por tenant (FinOps) para validar margem por plano; (10) conformidade LGPD (dados de vendas são dados comerciais, mas exigem contrato de tratamento, criptografia em repouso/trânsito e residência no Brasil). Ordem de grandeza: infraestrutura tende a ser pequena por cliente (dezenas a poucas centenas de dólares/mês para uma rede regional), sendo o custo de integração e customer success o principal fator de CAC/margem.",
+    "monetizacao": "SaaS por assinatura recorrente (B2B) com planos escalonados por número de lojas e/ou SKUs ativos: Starter (1-5 lojas, previsão semanal, upload CSV), Growth (até ~30 lojas, integração ERP, sugestão de reposição, alertas), Enterprise (lojas ilimitadas, API, SLA, modelos customizados, SSO). Complementos: módulo de otimização de perecíveis/redução de perdas, módulo de promoções (previsão de lift), conectores premium de ERP, taxa única de onboarding/integração e serviços profissionais (consultoria de categorias). Modelo de valor: preço atrelado ao ROI comprovado (redução de ruptura e desperdício, tipicamente margem do supermercado é baixa, então cada ponto percentual de perda evitada é relevante) - possível componente variável (success fee sobre perda evitada) após pilotos. Cobrança em BRL via PIX/boleto/cartão, contratos anuais com desconto, piloto gratuito de 30-60 dias com backtesting sobre os dados do próprio cliente para provar acurácia. Canais: associações regionais de supermercados (ex.: ABRAS e associações estaduais), parceiros de ERP e redes de compras/centrais de negócios.",
+    "stack_sugerida": "Linguagem/core: Python 3.12 (facilita o ecossistema de ML e mantém core e adapters no mesmo runtime) com core em Python puro (dataclasses/pydantic apenas nas bordas) e ports como typing.Protocol/ABC; alternativa: Kotlin/Java para o core + serviço Python de ML atrás do ForecastModelPort. API: FastAPI (adapter primário), Typer (CLI). Persistência: PostgreSQL + TimescaleDB (SQLAlchemy/psycopg nos adapters), S3 + Parquet (DuckDB/Polars para análises e treino), Redis (cache). ML: statsforecast/Prophet, LightGBM/XGBoost, opcionalmente PyTorch Forecasting/Darts; MLflow para registro de modelos e experimentos. Orquestração: Prefect ou Dagster (ou Airflow) para pipelines de ingestão/treino/previsão; filas SQS ou RabbitMQ (Kafka só se o volume justificar); Celery/Arq ou KEDA workers. Frontend: React/Next.js + TypeScript, TanStack Query, biblioteca de gráficos (Recharts/ECharts). Auth: Keycloak ou Auth0/Cognito. Billing: Stripe ou Asaas/Pagar.me. Infra: Docker, Terraform, AWS (ECS Fargate/ECS + RDS + S3 + SQS) ou GCP equivalente, região sa-east-1 (São Paulo); evoluir para Kubernetes só quando necessário. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry; monitoramento de deriva de dados/modelo (Evidently). Qualidade: pytest com fakes in-memory, contract tests por port, import-linter para impor a regra de dependência, testcontainers para adapters, CI/CD com GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:19:48+00:00",
+    "runner": "runner.py"
+  }
+}

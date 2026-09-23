@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta detalha bem os componentes de infraestrutura (EKS/GKE, PostgreSQL, Redis, S3, TURN/STUN, APIs externas) e menciona boas práticas arquiteturais (imagens imutáveis, stateless, filas), mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia explícita de otimização de custos (spot instances, scale-to-zero, storage tiering, reserved instances) e nenhuma projeção de como os custos escalam com o crescimento de usuários ou volume de minutos traduzidos."
+}

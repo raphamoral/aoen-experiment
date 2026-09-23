@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona nenhuma mensuração de custo por cliente ou por operação — as entidades e casos de uso modelam exclusivamente o domínio de negócio (matchmaking, propostas, reuniões), sem qualquer atributo, métrica ou mecanismo de rastreamento de consumo de recursos por tenant, tornando impossível calcular margem por cliente ou conectar custo à precificação."
+}

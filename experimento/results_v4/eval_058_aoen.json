@@ -1,0 +1,22 @@
+{
+  "ideia_idx": 58,
+  "abordagem": "aoen",
+  "scores": {
+    "core_diferenciador": 9,
+    "visao_mercado": 9,
+    "multi_interface": 9,
+    "configurabilidade": 9,
+    "isolamento_processamento": 9,
+    "consideracao_custo": 9,
+    "monetizacao": 8,
+    "evolucao": 9,
+    "coerencia": 9
+  },
+  "_meta": {
+    "modelo_avaliador": "claude-sonnet-5",
+    "modelo_gerador": "claude-sonnet-5",
+    "prompt_sha": "19bc6010fb58",
+    "truncagem": 0,
+    "avaliado_em": "2026-09-21T07:12:29+00:00"
+  }
+}

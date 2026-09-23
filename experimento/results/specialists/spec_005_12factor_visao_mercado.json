@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O nome do produto implica um segmento (imobiliário), mas a proposta é inteiramente técnico-arquitetural — ausência total de definição de persona, tamanho de mercado (TAM/SAM/SOM), dor do cliente articulada, análise competitiva ou proposta de valor diferenciada."
+}

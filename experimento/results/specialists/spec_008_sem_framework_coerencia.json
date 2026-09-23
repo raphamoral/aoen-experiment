@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões se reforçam consistentemente: o uso de BullMQ para filas é explicitamente justificado pelo comportamento assíncrono das gravações blockchain; a dupla persistência (PostgreSQL + blockchain) equilibra performance de consulta com imutabilidade; as 6 interfaces mapeiam diretamente os 3 perfis principais e os usuários secundários; o stack JavaScript unificado (Next.js + Node.js) é coerente com a diretriz de velocidade de desenvolvimento do MVP; e a estratégia 'começar simples, escalar depois' é consistente com as escolhas de infraestrutura — a única tensão não resolvida é a bifurcação Polygon vs Hyperledger Besu, que permanece em aberto e cria uma incerteza arquitetural real sobre modelo de governança, custo operacional e experiência do cliente que deveria ser endereçada como decisão antes da construção, não deixada para o cliente escolher sem um posicionamento da plataforma."
+}

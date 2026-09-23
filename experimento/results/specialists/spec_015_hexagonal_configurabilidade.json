@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A arquitetura demonstra boa base de configurabilidade via entidades de domínio (PricingRule, Segment, Campaign como dados, não código) e ports dedicados (RuleManagementPort, SegmentationPort, CampaignPort) que permitem parametrização por tenant, além de adapters pré-construídos para as principais plataformas; porém a proposta não explicita nenhuma camada de gerenciamento de tenant (TenantConfigurationPort, isolamento de dados por tenant, templates de onboarding, feature flags por cliente), deixando em aberto se um novo cliente realmente se resume a inserir rows no banco ou ainda exige configuração de infraestrutura/deploy."
+}

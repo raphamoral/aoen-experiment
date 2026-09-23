@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 6,
+  "justificativa": "A proposta apresenta valores concretos por componente (Vercel ~$20/mês, Supabase ~$25/mês, R2 ≈ gratuito, total abaixo de $50/mês), o que a coloca claramente acima do nível 5, mas faltam projeções numéricas de crescimento (ex: custo estimado a 1k, 5k ou 10k usuários) e uma estratégia explícita de otimização — o uso de free tiers e serviços serverless é uma boa escolha, mas não é articulado como decisão arquitetural de custo, sendo tratado apenas como conveniência de estágio inicial."
+}

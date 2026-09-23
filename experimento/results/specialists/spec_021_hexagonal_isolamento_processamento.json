@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta demonstra consciência parcial do problema: o IMLAnomalyDetector é modelado como secondary port (isolamento lógico possível) e o MQTT Broker Listener sugere ingestão assíncrona de IoT, mas não há menção explícita a filas de mensagens (Kafka/SQS/RabbitMQ) para desacoplar o processamento pesado, ausência de workers físicos separados para inferência ML e analytics export, nenhuma estratégia de fallback caso o IMLAnomalyDetector falhe, e nenhuma indicação de que esses workers possam escalar independentemente do core da aplicação."
+}

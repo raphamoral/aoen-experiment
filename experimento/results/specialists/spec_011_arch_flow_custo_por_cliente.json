@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura possui componentes com custos claramente variáveis por uso (embedding NLP sobre pitch decks, armazenamento de data room, infraestrutura cloud), mas em nenhum momento descreve mecanismo de rastreamento de consumo por tenant — o contexto 'Billing' trata apenas do lado da receita (planos, success fee, pagamentos), e 'Analytics' foca em métricas de plataforma/performance, não em custo de servir cada cliente; a distinção entre FinOps (custo total) e Unit Economics (custo por cliente/operação) é completamente ignorada."
+}

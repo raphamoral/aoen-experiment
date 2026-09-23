@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte pensamento evolutivo: interfaces abstratas (IValidationEngine, IRewardEngine, matching engine) tornam os componentes-chave substituíveis independentemente, o service layer isola a lógica de negócio dos adaptadores externos, e o fluxo fixo com parâmetros configuráveis permite extensão sem reescrita — porém perde pontos por não endereçar explicitamente a reversibilidade de decisões de infraestrutura (banco de dados, mensageria) nem estratégias de escala horizontal, o que pode forçar revisões arquiteturais ao crescer além de milhares de usuários concorrentes."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O público-alvo é mencionado de forma genérica ('e-commerces de moda'), mas a proposta não articula a dor específica do cliente, não estima o tamanho de mercado, não apresenta diferenciação frente a soluções existentes (como Prisync, Omnia ou precificação nativa de plataformas) e não formula uma proposta de valor além do que a arquitetura técnica implicitamente sugere."
+}

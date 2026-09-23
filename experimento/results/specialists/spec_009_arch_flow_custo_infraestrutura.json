@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista componentes de infraestrutura (EKS, S3, CloudFront, Elasticsearch, Datadog) mas não apresenta nenhuma estimativa concreta de custos em valores monetários, nenhuma estratégia de otimização (spot instances, scale-to-zero, storage tiering) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

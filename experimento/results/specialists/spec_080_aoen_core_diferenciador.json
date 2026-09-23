@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 80,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O motor de sobreposição contextual em tempo real é explicitamente identificado como o núcleo insubstituível, está arquiteturalmente isolado em três camadas abstratas e plugáveis (IEquipmentRecognizer, IARRenderer, grafo de procedimentos), não amarra a solução a nenhum fornecedor específico de IA ou plataforma AR, e resolve um problema que manuais, vídeos e LMS convencionais não resolvem: sincronizar instrução procedimental com o estado físico do equipamento no momento exato da ação."
+}

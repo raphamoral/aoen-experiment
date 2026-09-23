@@ -1,0 +1,4 @@
+# 12-factor VIII: Concorrência — escala via tipos de processos independentes
+web: uvicorn main:app --host 0.0.0.0 --port $PORT --workers ${WEB_CONCURRENCY:-2}
+worker: python -m app.worker
+release: alembic upgrade head

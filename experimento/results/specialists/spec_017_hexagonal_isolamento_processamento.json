@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A presença do Worker/Queue Consumer como adaptador primário separado indica isolamento físico real para emissão em massa assíncrona, e o RegistroBlockchainPort é marcado como opcional — o que protege o fluxo principal; porém, operações pesadas individuais como geração de PDF via Puppeteer e assinatura criptográfica não têm isolamento explícito do caminho síncrono de EmitirCertificadoUseCase, e a proposta não menciona fallbacks, DLQs, políticas de retry nem circuit breakers para falhas nesses adaptadores pesados."
+}

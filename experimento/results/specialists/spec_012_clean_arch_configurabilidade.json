@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "clean_arch",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura demonstra configurabilidade parcial: a entidade Threshold separada com warningLevel/criticalLevel/regulatoryLimit por poluente é um sinal positivo, assim como SubscriptionPlan em Industry e NotificationPreferences em User — mas várias regras de negócio críticas estão hardcoded nas entidades (15 minutos para ACK de alerta crítico, 90 dias para recalibração, 80% de leituras válidas para relatório de conformidade), e não há entidade explícita de TenantConfiguration nem mecanismo de feature flags, o que ainda exigiria alteração de código para customizar comportamento entre clientes com requisitos distintos."
+}

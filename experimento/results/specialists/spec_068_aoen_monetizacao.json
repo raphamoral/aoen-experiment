@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 68,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural descreve segmentos de mercado (B2G, B2C, B2B white-label) e interfaces que sugerem potencial de monetização diferenciada, mas não especifica nenhum modelo de receita concreto — não há menção a preços, tiers, taxas de transação, SaaS fee, ou qualquer métrica de sustentabilidade financeira (MRR, LTV, CAC, churn)."
+}

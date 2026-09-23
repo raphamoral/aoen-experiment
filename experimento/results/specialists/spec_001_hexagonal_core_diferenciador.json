@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador (orquestração de entregas last-mile com otimização de rotas em tempo real) está identificado e tecnicamente isolado via interfaces (IRouteOptimizer, ILocationTracker), e é extensível por não depender de um único fornecedor de mapas, mas a proposta arquitetural não articula por que esse núcleo é insubstituível frente a concorrentes como Onfleet ou Circuit — falta evidenciar qual inteligência proprietária (algoritmo de alocação, aprendizado de padrões de entrega, predição de atrasos) tornaria o produto único além de ser uma camada de integração bem estruturada."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 24,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura de conectores como plugins intercambiáveis sugere configurabilidade por vendor, e o pipeline fixo (Ingestão → Normalização → Enriquecimento) indica boa separação entre fluxo genérico e dados variáveis — mas a proposta não explicita um modelo de configuração por tenant: não há menção a parâmetros configuráveis por cliente (thresholds de compliance, regras de alerta, conectores habilitados por tenant, SLAs de renovação), nem a um processo de onboarding baseado exclusivamente em configuração, deixando em aberto se um novo cliente exigiria apenas rows no banco ou ainda dependeria de deploy/desenvolvimento de conectores."
+}

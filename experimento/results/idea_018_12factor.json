@@ -1,0 +1,52 @@
+{
+  "ideia_idx": 18,
+  "ideia": "SaaS de análise preditiva de churn para operadoras de telecom",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único com múltiplos serviços versionados no Git (ex: GitHub/GitLab). Branches por ambiente (main → prod, develop → staging). Cada deploy (prod, staging, sandbox por tenant) origina do mesmo codebase com configurações distintas por variável de ambiente. Sem fork por cliente — customizações via feature flags e config.",
+    "dependencies": "Cada serviço declara dependências explicitamente: Python via pyproject.toml + pip-compile (lockfile determinístico), Node via package.json + package-lock.json. Ambientes isolados com Docker (sem dependências do sistema operacional do host). Bibliotecas de ML (scikit-learn, xgboost, pandas) pinadas por versão. Nenhuma dependência implícita no ambiente de execução.",
+    "config": "Zero config hardcoded. Toda configuração injetada via variáveis de ambiente: DATABASE_URL, REDIS_URL, SECRET_KEY, MODEL_STORAGE_BUCKET, FEATURE_FLAGS, TENANT_ID. Segredos gerenciados via AWS Secrets Manager ou HashiCorp Vault, injetados no runtime. Ambientes (dev/staging/prod) diferem apenas nas variáveis — não no código.",
+    "backing_services": {
+      "banco_transacional": "PostgreSQL (RDS) — dados de clientes e eventos de churn",
+      "cache_e_filas": "Redis (ElastiCache) — cache de predições e broker de tarefas",
+      "fila_de_mensagens": "Apache Kafka ou AWS SQS — ingestão de eventos de telecom em stream",
+      "armazenamento_de_modelos": "AWS S3 — artefatos de modelos ML treinados",
+      "data_warehouse": "Snowflake ou BigQuery — análises históricas e features de ML",
+      "feature_store": "Feast ou Tecton — features reutilizáveis entre modelos",
+      "monitoramento": "Datadog ou Prometheus + Grafana",
+      "email_e_notificacoes": "SendGrid ou AWS SES",
+      "identidade": "Auth0 ou AWS Cognito"
+    },
+    "build_release_run": "Pipeline CI/CD com três estágios estritos e imutáveis: (1) BUILD — Docker image construída com hash do commit como tag, assets compilados, dependências instaladas; (2) RELEASE — imagem build + config do ambiente combinados, artefato imutável registrado no ECR com versão semântica; (3) RUN — Kubernetes (EKS) executa o release via Helm chart. Rollback = redeploy do release anterior. Nunca alterar código em produção sem novo ciclo completo.",
+    "processes": "Todos os processos são stateless e share-nothing. Estado persistido exclusivamente em backing services (PostgreSQL, Redis, S3). Sessão de usuário via JWT stateless. Workers de ML consomem tarefas do Kafka/SQS sem estado local. Treinamento de modelos executado como job isolado (Kubernetes Job). Predições em tempo real via API REST stateless. Nenhum dado em disco local — tudo em S3 ou banco.",
+    "concurrency": "Escala horizontal por tipo de workload: (a) API de predição — múltiplas réplicas stateless via HPA no Kubernetes, escala por CPU/latência; (b) Ingestão de eventos — Kafka consumer groups, escala adicionando partições e consumers; (c) Treinamento de modelos — Kubernetes Jobs paralelos por tenant, GPU nodes sob demanda; (d) Relatórios assíncronos — Celery workers escaláveis independentemente. Cada tipo de processo é uma unidade de escala independente.",
+    "disposability": "Startup em menos de 5 segundos (imagens Docker otimizadas, lazy loading de modelos via S3). Shutdown gracioso: API drena requests em andamento (SIGTERM → grace period 30s), workers finalizam tarefa atual antes de encerrar. Health checks liveness e readiness no Kubernetes. Circuit breakers (tenacity) para backing services. Modelos carregados em cache quente no startup. Reprocessamento idempotente via IDs únicos de evento no Kafka.",
+    "interfaces": [
+      "REST API (FastAPI) — predições em tempo real, CRUD de clientes e campanhas",
+      "WebSocket — dashboard de alertas em tempo real para analistas",
+      "Dashboard Web (React + Next.js) — visualizações de churn risk score, coortes, segmentação",
+      "Webhooks — notificações push para CRMs externos (Salesforce, HubSpot)",
+      "API de Ingestão de Dados — recebe CDRs e eventos de uso das operadoras (batch e stream)",
+      "CLI Admin — tarefas de manutenção, retreinamento e migração (fator 12)",
+      "SDK Python/JS — integração programática para clientes enterprise"
+    ],
+    "escalabilidade": "Escala multi-dimensional: (1) Horizontal — réplicas stateless via Kubernetes HPA com base em métricas customizadas (predições/segundo, profundidade da fila); (2) Dados — Kafka com particionamento por tenant_id, PostgreSQL com read replicas e sharding por operadora; (3) ML — treinamento distribuído com Ray ou Spark para grandes datasets; (4) Multi-tenant — isolamento por namespace Kubernetes ou cluster dedicado para enterprise (tier premium). Escala de 10 a 10.000 operadoras sem redesenho arquitetural.",
+    "custos": "Modelo de custo variável alinhado ao uso: (a) Compute — Kubernetes com mix de On-Demand + Spot instances (70% spot para workers de treino, economia ~65%); (b) Dados — Snowflake com créditos pay-per-query, S3 com lifecycle policies (glacier para modelos antigos); (c) Kafka MSK — dimensionado por throughput de eventos; (d) Cache Redis — instância compartilhada com namespace por tenant em tiers básicos; (e) Principais drivers de custo: GPU para treino (job-based, não 24/7), egress de dados, armazenamento histórico. Estimativa baseline: USD 3-8k/mês para 10 operadoras médias.",
+    "monetizacao": "SaaS B2B com modelo híbrido: (1) Assinatura mensal por tier — Starter (até 500k assinantes monitorados, USD 2k/mês), Growth (até 5M, USD 8k/mês), Enterprise (ilimitado, contrato anual, preço sob consulta); (2) Add-ons — modelos customizados por operadora (+USD 1.5k/mês), SLA premium com suporte dedicado, integração com CRM proprietário; (3) Consumo — cobrança por predição batch acima do limite do plano (USD 0.002/predição); (4) Métricas de valor entregue: churn reduzido em X%, campanhas de retenção com ROI mensurável, relatórios de NPS preditivo — base para expansão de conta (land & expand).",
+    "stack_sugerida": {
+      "api_e_backend": "Python 3.12 + FastAPI + Pydantic v2",
+      "ml_e_analytics": "scikit-learn, XGBoost, LightGBM, pandas, Ray (treino distribuído), MLflow (experiment tracking), Feast (feature store)",
+      "ingestao_de_dados": "Apache Kafka (MSK), Apache Spark (EMR) para batch, Flink para streaming",
+      "banco_de_dados": "PostgreSQL 16 (RDS), Redis 7 (ElastiCache), Snowflake (DW)",
+      "armazenamento": "AWS S3 com versionamento de modelos",
+      "frontend": "React 18 + Next.js 14 + TailwindCSS + Recharts/D3.js",
+      "infraestrutura": "AWS (EKS, RDS, MSK, S3, ECR, Secrets Manager), Terraform (IaC), Helm (K8s packaging)",
+      "ci_cd": "GitHub Actions → Docker Build → ECR Push → Helm Upgrade",
+      "observabilidade": "OpenTelemetry + Datadog (APM, logs, traces), PagerDuty (alertas)",
+      "autenticacao": "Auth0 (OAuth2/OIDC), JWT para API stateless",
+      "tarefas_assincronas": "Celery + Redis broker",
+      "admin_processes": "Click CLI + Alembic (migrations DB) executados como Kubernetes Jobs one-off"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único com múltiplos serviços versionados no Git (ex: GitHub/GitLab). Branches por ambiente (main → prod, develop → staging). Cada deploy (prod, staging, sandbox por tenant) origina do mesmo codebase com configurações distintas por variável de ambiente. Sem fork por cliente — customizações via feature flags e config.\",\n\n  \"dependencies\": \"Cada serviço declara dependências explicitamente: Python via pyproject.toml + pip-compile (lockfile determinístico), Node via package.json + package-lock.json. Ambientes isolados com Docker (sem dependências do sistema operacional do host). Bibliotecas de ML (scikit-learn, xgboost, pandas) pinadas por versão. Nenhuma dependência implícita no ambiente de execução.\",\n\n  \"config\": \"Zero config hardcoded. Toda configuração injetada via variáveis de ambiente: DATABASE_URL, REDIS_URL, SECRET_KEY, MODEL_STORAGE_BUCKET, FEATURE_FLAGS, TENANT_ID. Segredos gerenciados via AWS Secrets Manager ou HashiCorp Vault, injetados no runtime. Ambientes (dev/staging/prod) diferem apenas nas variáveis — não no código.\",\n\n  \"backing_services\": {\n    \"banco_transacional\": \"PostgreSQL (RDS) — dados de clientes e eventos de churn\",\n    \"cache_e_filas\": \"Redis (ElastiCache) — cache de predições e broker de tarefas\",\n    \"fila_de_mensagens\": \"Apache Kafka ou AWS SQS — ingestão de eventos de telecom em stream\",\n    \"armazenamento_de_modelos\": \"AWS S3 — artefatos de modelos ML treinados\",\n    \"data_warehouse\": \"Snowflake ou BigQuery — análises históricas e features de ML\",\n    \"feature_store\": \"Feast ou Tecton — features reutilizáveis entre modelos\",\n    \"monitoramento\": \"Datadog ou Prometheus + Grafana\",\n    \"email_e_notificacoes\": \"SendGrid ou AWS SES\",\n    \"identidade\": \"Auth0 ou AWS Cognito\"\n  },\n\n  \"build_release_run\": \"Pipeline CI/CD com três estágios estritos e imutáveis: (1) BUILD — Docker image construída com hash do commit como tag, assets compilados, dependências instaladas; (2) RELEASE — imagem build + config do ambi"
+}

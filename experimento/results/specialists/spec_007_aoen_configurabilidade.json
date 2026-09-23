@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra extensibilidade via plug-ins e interfaces abstratas (ContentProcessor, motores de gamificação intercambiáveis, múltiplos provedores de IA), o que é positivo, mas essa flexibilidade opera no nível de código/deploy — não há menção a um TenantConfig store, feature flags por tenant, regras de gamificação configuráveis por cliente em runtime, nem a um processo de onboarding exclusivamente via configuração; o próprio termo 'fluxo_fixo' sinaliza que o pipeline principal está hardcoded, e a adaptatividade descrita é comportamental (perfil do aprendiz) e não estrutural (comportamento do produto por tenant), deixando implícito que adicionar um cliente com branding, regras ou integrações distintas ainda exigiria intervenção técnica."
+}

@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 73,
+  "ideia": "App de coaching de comunicação com análise de voz por IA",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de análise de voz por IA que extrai métricas objetivas de comunicação (ritmo, tom, clareza, pausas, confiança, vocabulário) e gera feedback personalizado e acionável em ciclos curtos de prática.",
+    "fase1_mercado": "Profissionais que dependem de comunicação de alto impacto: executivos em ascensão, SDRs/Account Executives, candidatos a emprego, líderes técnicos promovidos a gestão, não-nativos do idioma em ambientes corporativos. Mercado secundário: plataformas de RH e L&D (B2B2C).",
+    "fase1_extensivel": "Sim. O core é uma pipeline de análise: (1) transcrição de áudio → (2) extração de features de voz → (3) scoring por critérios → (4) geração de feedback. Cada etapa é um adaptador trocável: transcrição pode ser Whisper, Google STT ou AWS Transcribe; análise de features pode ser modelo proprietário ou Hume AI; geração de feedback pode ser GPT-4o, Claude ou modelo fine-tunado. Nenhum fornecedor é hardcoded.",
+    "fase2_interfaces": [
+      "Web App (SPA) — sessões de prática guiadas com gravação no browser",
+      "Mobile App (iOS/Android) — prática em mobilidade, notificações de streak e microcoaching",
+      "API REST + Webhooks — integração com plataformas de LMS (Moodle, Cornerstone), HRTechs e videocall coaches",
+      "Plugin para videoconferência (Chrome Extension) — análise em tempo real durante reuniões no Google Meet/Zoom",
+      "Chatbot conversacional (WhatsApp/Telegram) — onboarding e sessões rápidas para mercados com alta adoção de mensageiros"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de PLG (product-led growth) com profissionais individuais e trials self-service. Mobile abre o mercado de hábito diário e retém usuários via gamificação/streak. API abre o mercado B2B enterprise — vender para 1 empresa = N usuários pagantes. Plugin de videoconferência abre o mercado de coaches e consultores que já faturam por sessão e querem diferencial competitivo. Chatbot abre mercados emergentes (Brasil, LatAm, SEA) onde o smartphone é o dispositivo primário.",
+    "fase2_service_layer": "Uma CommunicationCoachingService centraliza toda lógica de negócio: SubmitPracticeSession(), GetSessionAnalysis(), GetUserProgress(), GetCoachingPlan(). As interfaces (Web, Mobile, API, Plugin) chamam apenas esta service layer via contratos tipados. Nenhuma interface contém regra de negócio — somente apresentação e captura de entrada. Troca de interface = zero impacto na lógica de análise.",
+    "fase3_fluxo_fixo": "Captura de áudio → Upload para storage → Enfileiramento para análise → Transcrição (STT) → Extração de métricas de voz (prosódia, ritmo, pausas, frequência fundamental) → Scoring contra critérios configurados → Geração de feedback em linguagem natural → Persistência de resultado → Atualização do plano de desenvolvimento do usuário → Notificação de conclusão.",
+    "fase3_parametros_configuraveis": [
+      "idioma_alvo (pt-BR, en-US, es-MX...)",
+      "criterios_avaliados e seus pesos relativos (clareza: 40%, ritmo: 30%, confiança: 30%)",
+      "persona_do_coach (tom: encorajador, direto, executivo)",
+      "objetivo_do_usuario (entrevistas, apresentações, vendas, liderança)",
+      "duracao_minima_e_maxima_de_sessao",
+      "frequencia_de_pratica_recomendada",
+      "template_de_relatorio (verboso, resumido, só pontuação)",
+      "idioma_do_feedback (separado do idioma analisado)",
+      "limites_de_uso_por_plano (minutos de áudio/mês, sessões/dia)",
+      "integracao_webhook_url (para clientes B2B)",
+      "branding_whitelabel (logo, cores, nome do coach)"
+    ],
+    "fase3_novo_cliente": "Novo cliente (individual ou B2B) = criação de um registro Tenant com seu conjunto de parâmetros. Operação de backoffice: preencher formulário de configuração → sistema gera tenant_id + API key → cliente acessa com suas configurações ativas imediatamente. Zero deploy, zero código novo. Planos pré-definidos são templates de configuração reutilizáveis.",
+    "fase4_core_isolado": "O worker de análise de voz é isolado em processo assíncrono dedicado: recebe jobs de uma fila (SQS ou BullMQ), executa STT + análise de features + chamada ao LLM, persiste resultado e emite evento de conclusão. Roda em container separado, escalável horizontalmente, sem compartilhar processo com a API principal.",
+    "fase4_custo_total_cliente": "Custo por sessão de 3 min: STT (Whisper API) ≈ $0.018 | Análise de features (modelo próprio em GPU spot) ≈ $0.005 | LLM feedback (Claude Haiku) ≈ $0.004 | Storage áudio (S3, 90 dias) ≈ $0.001 | Banda CDN ≈ $0.002 | Infra proporcional (API, DB, fila) ≈ $0.003 → Custo total por sessão ≈ $0.033. Usuário no plano básico (20 sessões/mês) = ~$0.66/mês de custo. Preço sugerido $19/mês → margem bruta ~96.5% em escala.",
+    "fase4_continuidade": "A API principal nunca chama o worker diretamente — publica job na fila e responde 202 Accepted imediatamente. Se o worker estiver down, os jobs ficam na fila (dead-letter após 3 retentativas). O usuário vê status 'análise em processamento' mas continua navegando e fazendo novas gravações. Zero downtime percebido no frontend por falha no core de IA.",
+    "fase4_manutencao": "A pipeline de análise usa o padrão Adapter/Strategy: STTAdapter, FeatureExtractorAdapter, LLMFeedbackAdapter. Trocar de Whisper para Google STT = implementar novo STTAdapter + alterar configuração do tenant ou do sistema. Sem parar o serviço. Rollout gradual: novo adapter em canary (5% dos jobs) → validação de qualidade → promoção para 100%.",
+    "monetizacao": "B2C: Freemium (3 sessões/mês grátis) → Individual $19/mês (ilimitado) → Professional $39/mês (relatórios avançados + plano personalizado). B2B: Seat-based $12/usuário/mês com mínimo de 10 seats, incluindo whitelabel e webhooks. B2B2C: Revenue share com plataformas de LMS que embedam via API (20% do MRR gerado). Upsell: pacotes de sessões com coaches humanos agendadas via plataforma.",
+    "stack_sugerida": "API: Node.js (Fastify) ou Python (FastAPI) | Fila: BullMQ (Redis) ou AWS SQS | STT: OpenAI Whisper API (troca fácil via adapter) | Análise de features: librosa + modelo leve em Python | LLM Feedback: Claude claude-haiku-4-5-20251001 via Anthropic SDK com prompt caching para templates recorrentes | Storage: AWS S3 + CloudFront | DB: PostgreSQL (dados estruturados) + Redis (sessões/cache) | Worker: Python container (GPU spot para modelos próprios) | Frontend Web: Next.js | Mobile: React Native (Expo) | Infra: Railway ou Render (early stage) → ECS Fargate (escala) | Auth: Clerk ou Auth0 | Observabilidade: OpenTelemetry + Grafana"
+  }
+}

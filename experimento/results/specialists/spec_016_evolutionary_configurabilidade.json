@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra consciência de multi-tenancy (isolamento de dados, fitness function de cross-tenant, feature flags por tenant via Unleash/LaunchDarkly), mas não endereça um modelo de configuração comportamental — não há menção a motor de regras, configurações de fluxo por tenant, perfis de carrier/marketplace configuráveis ou um schema de onboarding que permita novo lojista = nova row no banco; o schema de dados de tenant é explicitamente adiado como decisão irreversível, sinalizando que o modelo de configurabilidade ainda não está definido."
+}

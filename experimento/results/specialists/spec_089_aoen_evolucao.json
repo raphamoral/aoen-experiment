@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 89,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra sólidos princípios evolutivos — adaptadores intercambiáveis para provedores de dados, service layer isolando toda lógica agronômica das interfaces, e modelo substituível (regras → ML) sem quebra de contratos — mas perde pontos por não explicitar abstração de banco de dados (nenhum repositório pattern ou port mencionado), ausência de estratégia de escala horizontal (ex: filas para processamento do motor agronômico com 10k usuários simultâneos), e o fluxo fixo de 7 etapas pode se tornar um gargalo evolutivo se a orquestração precisar de ramificações, paralelismo ou composição dinâmica."
+}

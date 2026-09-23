@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 53,
+  "ideia": "App de rastreamento de hábitos sustentáveis com gamificação corporativa",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de transformação comportamental: converte registros de hábitos individuais em métricas de impacto ambiental/social quantificado, e traduz esse impacto em pontuação gamificada coletiva. Sem esse motor de transformação (hábito → impacto → score), o produto é apenas um to-do list.",
+    "fase1_mercado": "B2B: gestores de RH e líderes de ESG em empresas mid-market (200–5000 colaboradores) com metas de sustentabilidade corporativa, pressão regulatória ESG (CSRD, GRI) e necessidade de engajamento cultural mensurável. Mercado secundário: consultorias ESG que revendem o produto como plataforma white-label.",
+    "fase1_extensivel": "Sim. O motor de impacto é abstraído atrás de uma interface ImpactCalculator — pode consumir bases de carbono próprias, APIs externas (Climatiq, EPA), ou modelos customizados por setor. A camada de gamificação é abstraída atrás de GamificationEngine — regras de pontos, rankings e conquistas são configuráveis, não hardcoded. Nenhum fornecedor é obrigatório.",
+    "fase2_interfaces": [
+      "Web App (dashboard corporativo) — para gestores de RH e ESG",
+      "Mobile App iOS/Android — para colaboradores registrarem hábitos no dia a dia",
+      "Bot Slack / Microsoft Teams — para registro de hábitos sem sair do ambiente de trabalho",
+      "API REST pública — para integração com sistemas de RH (Workday, SAP SuccessFactors, BambooHR)",
+      "Dashboard TV/Totem (modo quiosque read-only) — para gamificação visível em escritórios e fábricas",
+      "Relatórios exportáveis PDF/CSV — para prestação de contas ESG e auditorias"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de gestores ESG que precisam de visão consolidada e relatórios. Mobile abre o mercado de colaboradores em campo ou remoto — sem mobile, a adesão individual cai para zero. Bot Slack/Teams abre empresas tech-first onde o mobile é subutilizado e o fluxo de trabalho vive no chat. API abre integrações com plataformas de RH enterprise — canal de venda indireta via parceiros. Dashboard TV abre indústrias e varejo com colaboradores sem smartphone corporativo. Cada interface é um segmento, não uma preferência técnica.",
+    "fase2_service_layer": "Uma HabitService Layer centraliza toda a lógica: registrar hábito, calcular impacto, atualizar score, verificar conquistas, disparar notificações. Cada interface (mobile, bot, web, API) chama a mesma HabitService via contrato definido — nunca acessa banco diretamente nem replica lógica. Trocar ou adicionar uma interface não toca nas regras de negócio.",
+    "fase3_fluxo_fixo": "Fluxo imutável no código: (1) colaborador registra ação → (2) sistema valida elegibilidade (hábito ativo para aquele tenant) → (3) ImpactCalculator converte ação em unidade de impacto → (4) GamificationEngine atualiza score individual e de equipe → (5) verifica triggers de conquistas/badges → (6) publica evento de notificação → (7) persiste log auditável. Esse pipeline nunca muda — apenas os parâmetros de cada etapa variam por cliente.",
+    "fase3_parametros_configuraveis": [
+      "Catálogo de hábitos habilitados (lista + ícone + descrição)",
+      "Peso de impacto por hábito (kg CO2e, litros de água, etc.)",
+      "Regra de pontuação (pontos por hábito, bônus por sequência, multiplicador de equipe)",
+      "Estrutura de equipes e hierarquia organizacional",
+      "Período de ranking (semanal, mensal, trimestral)",
+      "Badges e recompensas customizados (nome, critério, imagem)",
+      "Meta coletiva de impacto (ex: 10 toneladas de CO2 até dezembro)",
+      "Frequência e canal de notificações (email, push, Slack, Teams)",
+      "Idioma e fuso horário",
+      "Formato de relatório ESG (GRI, CSRD, interno)",
+      "Branding (logo, cores, domínio white-label)",
+      "Integrações ativas (Slack, Teams, API de RH)"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro de tenant com seu arquivo de configuração (JSON/YAML) definindo catálogo de hábitos, regras de pontos, estrutura de equipes, branding e integrações. Um wizard de onboarding de 5 passos gera esse config sem código. Provisionamento automático cria schema isolado no banco (multi-tenant), aplica o config e envia convite para o admin. Zero engenharia envolvida.",
+    "fase4_core_isolado": "O ImpactCalculator e o GamificationEngine rodam como workers assíncronos isolados (processos separados, filas dedicadas). O registro do hábito é imediato e síncrono (só persiste o evento bruto). O cálculo de impacto e atualização de score acontecem de forma assíncrona — desacoplados do fluxo de resposta ao usuário. São os únicos componentes com custo variável por uso (CPU intensiva, chamadas a APIs externas de carbono).",
+    "fase4_custo_total_cliente": "Custo core por cliente/mês: chamadas à API de cálculo de impacto (~$0.002/hábito registrado × média 20 hábitos/colaborador/mês) + processamento worker (EC2 t3.small compartilhado, ~$0.30/cliente em plano base). Custo infra proporcional: banco PostgreSQL schema isolado (~$0.50/cliente), armazenamento S3 para logs e exports (~$0.10/GB), CDN CloudFront para assets estáticos (~$0.05/cliente), banda de notificações push/email (~$0.20/cliente). Custo operacional: suporte nível 1 amortizado (~$1.00/cliente). Total estimado: $2.50–$5.00/empresa/mês (independente do número de colaboradores no plano base). Com esse número, o preço mínimo de breakeven fica claro antes de precificar.",
+    "fase4_continuidade": "Se o worker de ImpactCalculator falhar, os eventos de hábito continuam sendo aceitos e enfileirados (fila durável com Redis Streams ou SQS). O usuário vê confirmação imediata de registro — score atualiza quando o worker recupera. Dashboard e mobile nunca ficam bloqueados por falha de cálculo. Dead-letter queue captura eventos não processados para reprocessamento sem perda de dados.",
+    "fase4_manutencao": "ImpactCalculator implementa interface contratual (calculateImpact(habitId, context) → ImpactResult). Trocar a fonte de dados de carbono (ex: de Climatiq para base própria) exige apenas nova implementação da interface — zero mudança no pipeline principal. Feature flags no config de tenant permitem ativar nova implementação para clientes piloto antes do rollout geral. Deploy do worker é independente do deploy da API principal.",
+    "monetizacao": "B2B SaaS por assento: plano Starter ($4/colaborador/mês, até 100 colaboradores, hábitos padrão, ranking básico), plano Growth ($7/colaborador/mês, até 500 colaboradores, gamificação completa, relatórios ESG), plano Enterprise (preço negociado, colaboradores ilimitados, white-label, API, integrações customizadas, SLA). Receita adicional: módulo de Certificação ESG ($500/relatório gerado), setup fee de onboarding enterprise ($2.000–$5.000), revenda por consultorias ESG com margem de 30% (canal indireto). Margem bruta alvo: >75% em escala.",
+    "stack_sugerida": "API: Node.js (Fastify) ou Python (FastAPI) — contratos OpenAPI gerados automaticamente. Banco: PostgreSQL com schema-per-tenant para isolamento de dados. Workers assíncronos: BullMQ (Redis) para filas de impacto e gamificação. Frontend web: Next.js (React) com TailwindCSS + shadcn/ui. Mobile: React Native (Expo) — codebase único iOS/Android. Bot: Slack Bolt SDK + Microsoft Bot Framework. Infra: AWS (ECS Fargate para API e workers independentemente escaláveis, RDS PostgreSQL, ElastiCache Redis, S3, CloudFront, SES para email). CI/CD: GitHub Actions. Observabilidade: OpenTelemetry + Grafana Cloud. IaC: Terraform."
+  }
+}

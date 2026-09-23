@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "O projeto menciona uma fitness function de 'custo por reserva processada' com alarme por sprint, o que demonstra consciência de custo por operação — acima de zero —, mas não há cálculo desagregado por tenant, sem rastreamento de consumo de recursos por cliente, sem decomposição de componentes de custo (infra, gateway, notificações etc.) e sem conexão com modelo de precificação ou margem por cliente; é um alarme de FinOps operacional, não unit economics por tenant."
+}

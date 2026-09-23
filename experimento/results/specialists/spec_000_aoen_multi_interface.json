@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Web App, API REST, Mobile/PWA, Portal de Telemedicina e Dashboard Administrativo), cada uma justificada por um segmento de mercado específico com perfil e disposição de pagamento diferenciados, com lógica de negócio centralizada na ClinicalService — garantindo desacoplamento total e expansibilidade sem reescrita."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não faz nenhuma menção a modelo de monetização, tiers de preço, comissões de marketplace, assinaturas ou qualquer mecanismo de geração de receita — foca exclusivamente em decisões técnicas de infraestrutura."
+}

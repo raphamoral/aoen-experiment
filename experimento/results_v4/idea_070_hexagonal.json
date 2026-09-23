@@ -1,0 +1,86 @@
+{
+  "ideia_idx": 70,
+  "ideia": "App de gestão de pet shops com agendamento e prontuário veterinário",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão operacional e clínica de pet shops e clínicas veterinárias: Agendamento (serviços de banho, tosa, consultas, vacinas), Prontuário Veterinário (histórico clínico, prescrições, vacinação, exames), Cadastro de Tutores e Pets, Catálogo de Serviços e Profissionais, Faturamento/Cobrança e Estoque básico. Agregados principais: Tenant (pet shop), Tutor, Pet, Agendamento, Atendimento, Prontuário, Serviço, Profissional, Cobrança. O domínio contém regras puras como: conflito de horários e capacidade por profissional/recurso, política de cancelamento e no-show, imutabilidade e assinatura do prontuário (com retificação por adendo), carência entre vacinas, e cálculo de preços e comissões.",
+    "primary_ports": [
+      "AgendamentoUseCases (agendar, reagendar, cancelar, confirmar, consultar disponibilidade, registrar no-show)",
+      "ProntuarioUseCases (abrir atendimento, registrar anamnese/diagnóstico/prescrição/vacina/exame, assinar, adicionar adendo, consultar histórico do pet)",
+      "CadastroUseCases (gerir tutores, pets, serviços, profissionais e agenda de trabalho)",
+      "FaturamentoUseCases (gerar cobrança, registrar pagamento, emitir recibo/nota, fechar caixa)",
+      "EstoqueUseCases (movimentar insumos e medicamentos, alertar estoque mínimo)",
+      "NotificacaoUseCases (processar lembretes e campanhas de retorno/vacina, acionados por agendador)",
+      "TenantAdminUseCases (onboarding do pet shop, usuários, papéis, plano e assinatura)",
+      "RelatoriosQueries (ocupação, receita, retorno de clientes, serviços mais vendidos)"
+    ],
+    "secondary_ports": [
+      "AgendamentoRepository, TutorRepository, PetRepository, ProntuarioRepository, ServicoRepository, ProfissionalRepository, CobrancaRepository, EstoqueRepository (persistência)",
+      "ProntuarioAnexoStorage (imagens, exames e laudos em PDF)",
+      "GatewayPagamento (cobrança PIX, cartão e assinatura recorrente)",
+      "EmissorFiscal (NFS-e/NF-e)",
+      "NotificadorPort (WhatsApp, e-mail, SMS e push)",
+      "CalendarioExternoPort (Google/Outlook Calendar)",
+      "IdentidadePort (autenticação, autorização e SSO)",
+      "AssinaturaDigitalPort (assinatura ICP-Brasil/CRMV do prontuário)",
+      "RelogioPort e GeradorIdPort (tempo e identificadores, para determinismo em testes)",
+      "EventBusPort/OutboxPort (publicação de eventos de domínio)",
+      "AuditoriaLogPort (trilha de auditoria de acesso e alteração de dados clínicos)",
+      "BillingSaaSPort (cobrança do próprio SaaS aos tenants)",
+      "RelatorioReadModelPort (consultas analíticas)",
+      "IAAssistentePort (opcional: transcrição e resumo de consulta)"
+    ],
+    "primary_adapters": [
+      "REST/HTTP API (controllers com validação e DTOs)",
+      "GraphQL API (opcional, para o app e o dashboard)",
+      "Web App SPA/PWA para recepção e gestão",
+      "App mobile do tutor (agendamento, carteira de vacinação, histórico)",
+      "Webhooks de entrada (gateway de pagamento, WhatsApp)",
+      "Chatbot de WhatsApp para agendamento",
+      "CLI/scripts administrativos (migração e seed)",
+      "Scheduler/Cron worker (lembretes, no-show, campanhas)",
+      "Consumidores de fila/eventos",
+      "Test drivers (testes de aceitação e contrato chamando os use cases sem UI)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios, com Row-Level Security por tenant)",
+      "Adapter em memória/fakes (testes e desenvolvimento)",
+      "S3-compatible/MinIO (anexos do prontuário)",
+      "Stripe ou Asaas/Pagar.me (pagamento, com PIX e boleto)",
+      "Provedor NFS-e (eNotas, Focus NFe ou PlugNotas)",
+      "WhatsApp Business API (Meta Cloud API ou Twilio), SES/SendGrid para e-mail, Twilio para SMS",
+      "Google Calendar/Microsoft Graph",
+      "Keycloak, Auth0 ou Cognito (OIDC)",
+      "Provedor de assinatura digital (Certisign, BirdID ou Vidaas)",
+      "Relógio do sistema e gerador de UUID/ULID",
+      "Kafka, RabbitMQ ou SQS/SNS (eventos)",
+      "Logger/OpenTelemetry e armazenamento de auditoria append-only",
+      "Redis (cache e locks de agenda)",
+      "Stripe Billing (assinatura do SaaS)",
+      "Read replica ou ClickHouse (relatórios)",
+      "LLM API (transcrição e resumo, opcional)"
+    ],
+    "isolation": "O core (domínio + camada de aplicação/use cases) não depende de nenhum framework, ORM, SDK ou protocolo. Regras: (1) a dependência aponta sempre para dentro: adapters -> ports -> core; (2) as portas primárias são interfaces implementadas pelos serviços de aplicação, e as secundárias são interfaces declaradas no core e implementadas fora; (3) o core só trabalha com tipos do domínio (Value Objects, Entities e Domain Events) e DTOs próprios, nunca com tipos HTTP, SQL ou de SDK; (4) a injeção de dependência fica em um composition root fora do core, que faz a fiação dos adapters; (5) o tempo, os IDs e a aleatoriedade entram por portas; (6) o tenant e o usuário chegam por um contexto explícito de execução (TenantContext), sem estado global; (7) regras de dependência são verificadas automaticamente (ArchUnit, dependency-cruiser ou import-linter) no CI; (8) testes de contrato compartilhados garantem que fake e adapter real se comportam igual; (9) o modelo de persistência é separado do modelo de domínio, com mappers nos adapters; (10) o anti-corruption layer traduz payloads externos (gateway, WhatsApp, fiscal) para o domínio. Assim, o mesmo core é dirigido igualmente por UI, API, teste, script ou bot.",
+    "interfaces": [
+      "Dashboard web da recepção e gestão (agenda, caixa, estoque, relatórios)",
+      "Interface clínica do veterinário (prontuário, prescrição, vacinas, anexos)",
+      "App/PWA do tutor (agendar, ver carteira de vacinação, histórico e pagamentos)",
+      "Chatbot de WhatsApp",
+      "API pública REST versionada (/v1) com OpenAPI, para integrações e parceiros",
+      "Webhooks de saída (agendamento criado, pagamento confirmado, etc.)",
+      "Portal de auto-agendamento embutível (widget/link público por pet shop)",
+      "Painel de administração do SaaS (tenants, planos, suporte)",
+      "CLI operacional"
+    ],
+    "escalabilidade": "Começa como monólito modular (bounded contexts: Agendamento, Clínico, Financeiro, Estoque, Notificações, Tenant), com o hexágono permitindo extrair módulos para serviços depois sem reescrever o core. Aplicação stateless com escala horizontal atrás de load balancer. Multi-tenancy com coluna tenant_id e Row-Level Security no PostgreSQL, evoluindo para schema ou banco dedicado por tenant grande. Read replicas e read models (CQRS leve) para relatórios e agenda. Redis para cache de disponibilidade e locks otimistas contra dupla reserva. Tarefas assíncronas (lembretes, NFS-e, campanhas) por fila com workers escaláveis separadamente e outbox para consistência. Anexos em object storage com CDN. Particionamento de tabelas de agendamento e auditoria por data. Autoscaling por CPU, latência e profundidade de fila. Rate limiting e idempotency keys nas APIs. Como todos os externos estão atrás de portas, é possível trocar de provedor ou replicar por região sem tocar no domínio.",
+    "custos": "Fase inicial: cerca de 100 a 400 USD/mês (1 a 2 instâncias de app, PostgreSQL gerenciado pequeno, Redis, object storage, observabilidade básica). Custos variáveis dominantes: mensagens de WhatsApp (cobradas por conversa/template, que tendem a ser o maior custo por tenant, então convém limitar por plano e priorizar e-mail/push), NFS-e (por nota), taxas do gateway de pagamento (repassadas ou embutidas), armazenamento de anexos (imagens e exames) e IA, se usada. Custos de conformidade: LGPD (DPO, criptografia, backups, retenção do prontuário conforme normas do CFMV), certificado digital e auditoria. Ganho de custo: arquitetura hexagonal permite trocar provedores caros e testar sem infraestrutura paga. Boas práticas: managed services no início, reservas/savings plans depois, retenção com tiers de storage (cold storage para prontuários antigos), monitorar custo por tenant (unit economics) e cobrar excedentes de mensagens. Meta: margem bruta acima de 75%.",
+    "monetizacao": "Assinatura recorrente SaaS por tenant em planos escalonados: (1) Starter (1 profissional, agenda e cadastro), (2) Pro (multi-profissional, prontuário completo, lembretes, financeiro), (3) Enterprise/Redes (multi-unidade, relatórios avançados, API, SSO, SLA). Cobrança por número de profissionais/unidades e por volume de agendamentos. Add-ons: pacote de mensagens WhatsApp, emissão fiscal, assinatura digital do prontuário, chatbot de agendamento, IA de resumo clínico, app com marca própria (white-label). Receita transacional: take rate ou taxa reduzida em pagamentos processados (split via gateway) e agendamento online pago/sinal. Marketplace opcional: comissão sobre leads e agendamentos vindos de tutores, e parcerias com distribuidoras de insumos, planos de saúde pet e seguradoras. Serviços: onboarding e migração de dados pagos. Trial de 14 dias e desconto anual.",
+    "stack_sugerida": "Backend: TypeScript (NestJS usado apenas nos adapters, com o core em TS puro) ou Kotlin/Java (Spring nos adapters) ou Go; estrutura de módulos por bounded context com pastas domain/application/ports/adapters. Banco: PostgreSQL 16 (RLS, JSONB, particionamento) + Redis. Filas/eventos: SQS/SNS ou RabbitMQ (Kafka só em grande escala) com padrão outbox. Storage: S3 ou MinIO. Auth: Keycloak, Auth0 ou Cognito (OIDC, RBAC por tenant). Frontend: React + Next.js (PWA) com TanStack Query; mobile: React Native ou Flutter; UI com Tailwind e shadcn/ui. API: REST com OpenAPI (e GraphQL opcional), contratos gerados. Pagamentos: Stripe/Asaas; fiscal: Focus NFe/eNotas; mensageria: WhatsApp Cloud API. Infra: Docker, AWS ECS Fargate ou Kubernetes, Terraform, CI/CD com GitHub Actions, CDN CloudFront. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Testes: Vitest/JUnit, testes de contrato para portas, Testcontainers para adapters, Playwright para E2E, ArchUnit/dependency-cruiser para regras de dependência. Segurança/compliance: criptografia em repouso e em trânsito, KMS, audit log, backups PITR, LGPD."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T04:03:18+00:00",
+    "runner": "runner.py"
+  }
+}

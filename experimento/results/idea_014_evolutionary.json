@@ -1,0 +1,70 @@
+{
+  "ideia_idx": 14,
+  "ideia": "Plataforma de tradução simultânea para reuniões corporativas multilíngues",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Latência ultra-baixa (< 400ms end-to-end) — fitness function primária e não-negociável",
+      "Disponibilidade durante horário comercial global (SLA 99.9% em janelas de reunião)",
+      "Evoluibilidade do motor de tradução — modelos de IA evoluem rapidamente",
+      "Elasticidade — picos de sessões simultâneas são imprevisíveis e sazonais",
+      "Segurança e privacidade — conversas corporativas são dados sensíveis",
+      "Observabilidade — degrades silenciosos de qualidade de tradução são invisíveis sem métricas"
+    ],
+    "fitness_functions": [
+      "Latência P95 < 400ms: pipeline STT → Tradução → TTS medido por sessão ativa; quebra build se violado em canary deploy",
+      "Acurácia de tradução: BLEU score ≥ 0.72 ou MOS ≥ 3.8 em domínio corporativo; avaliado em pipeline CI com dataset golden",
+      "Disponibilidade de sessão: taxa de reconexão forçada < 0.5% das sessões; alerta imediato via health-check sintético",
+      "Escala horizontal: provisionar 500 sessões novas em < 90s; testado mensalmente via chaos/load test automatizado",
+      "Zero persistência de áudio: auditoria automatizada de logs e storage confirma ausência de raw audio após sessão encerrada",
+      "Cobertura de idiomas: ≥ 95% dos pares de idiomas contratados com latência dentro do SLA; verificado em suite de smoke tests multilíngues",
+      "Drift arquitetural: ArchUnit/Deptrac no CI impedindo acoplamento direto entre módulo de billing e pipeline de áudio"
+    ],
+    "incremental_change": "Fase 1 (MVP): tradução de texto em tempo real via integração com provedores externos (Deepl/OpenAI) — valida product-market fit sem infraestrutura de áudio própria. Fase 2: STT via Whisper API + TTS nativo, substituindo digitação manual — componente de áudio isolado por anti-corruption layer. Fase 3: modelo de tradução fine-tuned em domínio corporativo para pares de idioma de maior volume — swap transparente por abstração do motor. Fase 4: processamento de áudio no edge (CDN/WebRTC SFU regional) para reduzir latência intercontinental. Fase 5: modelo próprio on-prem para clientes enterprise com requisito de soberania de dados. Cada fase é deployável independentemente, com feature flags por tenant.",
+    "reversibility": {
+      "altamente_reversiveis": [
+        "Provedor de tradução (Deepl, OpenAI, AWS Translate, Azure Cognitive) — oculto atrás de TranslationPort interface",
+        "Provedor STT/TTS — mesma estratégia de port/adapter",
+        "Modelo de precificação — configurável por tenant sem mudança de código",
+        "Integrações com plataformas de videoconferência (Zoom, Teams, Meet) — adaptadores independentes"
+      ],
+      "parcialmente_reversiveis": [
+        "Escolha de broker de mensagens (Kafka vs Redis Streams) — reversível mas requer migração de consumers",
+        "Schema de eventos de sessão — reversível com versioning de schema (Avro/Protobuf)",
+        "Provedor de cloud — reversível com custo alto de migração de estado"
+      ],
+      "decisoes_last_responsible_moment": [
+        "Modelo de dados de billing e contratos — adiar até Product-Market Fit confirmado",
+        "Infraestrutura de áudio própria (SFU/MCU) vs terceirizado — decidir quando volume justificar CAPEX",
+        "Modelo de ML proprietário — adiar até volume de dados de treinamento ser suficiente"
+      ]
+    },
+    "coupling": "Arquitetura orientada a eventos com três domínios fracamente acoplados: SessionOrchestration (WebRTC signaling, controle de sessão), TranslationPipeline (STT → NMT → TTS como estágios independentes conectados por stream de eventos) e TenantManagement (billing, configuração, idiomas contratados). Comunicação inter-domínio exclusivamente via eventos no broker; sem chamadas síncronas cross-domain em runtime. Dentro de TranslationPipeline, cada estágio expõe uma interface Port com múltiplos Adapters (padrão hexagonal) para trocar provedores sem impacto no orquestrador. Acoplamento temporal eliminado via buffers de stream com backpressure.",
+    "interfaces": [
+      "WebRTC DataChannel + MediaStream — transporte de áudio com baixa latência entre cliente e SFU",
+      "WebSocket (per-session) — entrega de legendas traduzidas em tempo real ao cliente",
+      "REST API /sessions — lifecycle de reuniões (criar, encerrar, listar participantes, configurar idiomas)",
+      "REST API /tenants — provisionamento, billing e configuração de pares de idioma por plano",
+      "Webhook API — notificações de eventos (sessão iniciada, erro de tradução, limite de minutos atingido)",
+      "SDK JavaScript/TypeScript — integração embed em plataformas de videoconferência existentes",
+      "Admin gRPC interno — comunicação entre serviços de infraestrutura (baixa latência, tipagem forte)",
+      "Plugin SDK — extensibilidade para glossários corporativos e vocabulário de domínio customizado"
+    ],
+    "escalabilidade": "Eixo de escala primário: horizontal nos workers de TranslationPipeline — stateless, escalam independentemente por idioma-alvo de maior demanda. SFU (Selective Forwarding Unit) escala por região geográfica com roteamento de sessão por proximidade. Session state mantido em Redis Cluster (in-memory, TTL = duração da sessão) para permitir failover sem estado em disco. Auto-scaling baseado em métricas de negócio (sessões ativas) ao invés de CPU, pois o gargalo é latência de I/O de IA. Sharding de sessões por tenant evita noisy neighbor entre clientes enterprise. Capacidade de degradar graciosamente: se latência de STT exceder threshold, sistema oferece tradução com delay aceitável em vez de falhar.",
+    "custos": "Principal driver de custo: inferência de IA (STT + NMT + TTS) — estimativa inicial de 60-70% do COGS. Estratégias de otimização: cache semântico de frases corporativas recorrentes (ROI alto em reuniões de mesmo cliente); batching de requests de TTS para segmentos não-críticos; modelo tier por idioma (idiomas de alto volume com modelo self-hosted, idiomas raros via API externa); reservas de capacidade em cloud para workloads base com spot instances para picos. Monitorar custo por minuto de sessão por idioma-par como fitness function econômica — alerta se ultrapassar margem mínima configurada.",
+    "monetizacao": "Modelo primário: por minuto de sessão × número de participantes (alinha receita com uso real e escala naturalmente com adoção). Tier freemium: 60 minutos/mês, 2 idiomas, máximo 5 participantes — reduz fricção de adoção. Plano Team: por assento mensal com pool de minutos compartilhado. Plano Enterprise: contrato anual com SLA customizado, idiomas ilimitados, suporte a glossários corporativos e opção on-prem. Add-ons monetizáveis: transcrição multilíngue pós-reunião, API de integração, domínios especializados (jurídico, médico, financeiro). Pricing por idioma-par premium para pares raros com custo de inferência elevado.",
+    "stack_sugerida": {
+      "audio_pipeline": "Go (latência previsível, goroutines para concorrência de streams) + WebRTC via Pion",
+      "translation_workers": "Python (ecossistema ML) com FastAPI; Celery para tarefas assíncronas de TTS",
+      "session_state": "Redis Cluster (TTL-based, sem persistência em disco para dados de sessão)",
+      "event_broker": "Kafka (durabilidade de eventos de billing e auditoria) + Redis Streams (eventos de sessão de baixa latência)",
+      "api_gateway": "Kong ou AWS API Gateway (rate limiting por tenant, autenticação JWT)",
+      "frontend_sdk": "TypeScript + WebRTC nativo + React para dashboard",
+      "infra": "Kubernetes com HPA baseado em métricas customizadas (sessões ativas); multi-region ativo-ativo em AWS/GCP",
+      "observabilidade": "OpenTelemetry → Grafana + Tempo + Loki; alertas de latência por par de idioma",
+      "ci_cd": "GitHub Actions + ArgoCD; fitness functions de latência e acurácia executadas em cada PR como testes de arquitetura",
+      "stt_tts_providers": "OpenAI Whisper (STT) + ElevenLabs/Azure TTS; ocultos por adapters — substituíveis sem downtime"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Latência ultra-baixa (< 400ms end-to-end) — fitness function primária e não-negociável\",\n    \"Disponibilidade durante horário comercial global (SLA 99.9% em janelas de reunião)\",\n    \"Evoluibilidade do motor de tradução — modelos de IA evoluem rapidamente\",\n    \"Elasticidade — picos de sessões simultâneas são imprevisíveis e sazonais\",\n    \"Segurança e privacidade — conversas corporativas são dados sensíveis\",\n    \"Observabilidade — degrades silenciosos de qualidade de tradução são invisíveis sem métricas\"\n  ],\n  \"fitness_functions\": [\n    \"Latência P95 < 400ms: pipeline STT → Tradução → TTS medido por sessão ativa; quebra build se violado em canary deploy\",\n    \"Acurácia de tradução: BLEU score ≥ 0.72 ou MOS ≥ 3.8 em domínio corporativo; avaliado em pipeline CI com dataset golden\",\n    \"Disponibilidade de sessão: taxa de reconexão forçada < 0.5% das sessões; alerta imediato via health-check sintético\",\n    \"Escala horizontal: provisionar 500 sessões novas em < 90s; testado mensalmente via chaos/load test automatizado\",\n    \"Zero persistência de áudio: auditoria automatizada de logs e storage confirma ausência de raw audio após sessão encerrada\",\n    \"Cobertura de idiomas: ≥ 95% dos pares de idiomas contratados com latência dentro do SLA; verificado em suite de smoke tests multilíngues\",\n    \"Drift arquitetural: ArchUnit/Deptrac no CI impedindo acoplamento direto entre módulo de billing e pipeline de áudio\"\n  ],\n  \"incremental_change\": \"Fase 1 (MVP): tradução de texto em tempo real via integração com provedores externos (Deepl/OpenAI) — valida product-market fit sem infraestrutura de áudio própria. Fase 2: STT via Whisper API + TTS nativo, substituindo digitação manual — componente de áudio isolado por anti-corruption layer. Fase 3: modelo de tradução fine-tuned em domínio corporativo para pares de idioma de maior volume — swap transparente por abstração do motor. Fase 4: processamento de áudio no edge (CDN/WebRTC S"
+}

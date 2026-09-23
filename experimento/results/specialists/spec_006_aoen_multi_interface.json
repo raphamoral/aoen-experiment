@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê cinco interfaces distintas (Web App, Mobile, Dashboard B2B, API REST e WhatsApp Bot), cada uma justificada por segmento de mercado e perfil de usuário específicos, com lógica de negócio desacoplada em uma camada NutritionService agnóstica ao canal, permitindo adição de novas interfaces sem reescrita da lógica de domínio."
+}

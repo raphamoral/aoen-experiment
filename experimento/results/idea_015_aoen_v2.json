@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 15,
+  "ideia": "SaaS de precificação dinâmica para e-commerces de moda",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de precificação dinâmica: coleta sinais de mercado (preços de concorrentes, estoque próprio, sazonalidade, demanda histórica, tendências de moda) e recalcula o preço ótimo por SKU para maximizar margem sem perder conversão. Sem esse motor, o produto é apenas um dashboard de BI.",
+    "fase1_mercado": "E-commerces de moda de médio porte (R$500k–R$50M/ano de GMV) que operam com margens apertadas, alta rotatividade de coleção e pressão competitiva de marketplaces. Não conseguem manter equipe dedicada de pricing, mas sentem o custo de precificar errado todos os dias.",
+    "fase1_extensivel": "Sim. O motor é abstraído por uma interface PricingEngine: { computeOptimalPrice(sku, signals) => PriceResult }. A implementação pode ser trocada: regras heurísticas (v1, baixo custo), modelo ML próprio (v2), LLM com contexto de mercado (v3), ou fornecedor externo de IA. O cliente não sente a troca; o contrato da interface é estável.",
+    "fase2_interfaces": [
+      "Dashboard Web SPA — gestores e donos de loja acompanham preços, aprovam regras e visualizam impacto no GMV",
+      "API REST/Webhook — integração direta com plataformas (Shopify, VTEX, WooCommerce, Magento, Nuvemshop) para push automático de preços",
+      "Integração nativa por plugin/app — instalação zero-code para lojas Shopify e VTEX via marketplace de apps",
+      "Alertas via WhatsApp/Email — operadores sem acesso ao dashboard recebem notificações de anomalia de preço ou oportunidade crítica",
+      "API pública para agências e parceiros — revenda white-label e integração em ERPs de clientes enterprise"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de gestores operacionais que precisam de controle e visibilidade. API REST abre lojas com time técnico próprio e integrações customizadas. Plugin nativo elimina fricção de adoção para o segmento SMB (90% do mercado) que não tem desenvolvedor. WhatsApp/Email abre micro-lojas onde o dono é o único operador. API white-label abre o canal de agências digitais que gerenciam múltiplos clientes — efeito multiplicador de receita.",
+    "fase2_service_layer": "Uma PricingService camada centraliza toda lógica: calcular preço, aplicar regras de negócio, registrar histórico, disparar atualizações. As interfaces (web, API, plugin, alertas) são apenas adaptadores que chamam PricingService — nenhuma delas contém lógica de domínio. Trocar ou adicionar uma interface não exige alterar o núcleo.",
+    "fase3_fluxo_fixo": "Coletar sinais (scraping de concorrentes + dados próprios do cliente) → normalizar e enriquecer dados → executar motor de pricing → aplicar regras de guarda (floor de margem, teto legal, limites de variação) → persistir resultado → publicar preço na plataforma do cliente → registrar log para auditoria e retreino.",
+    "fase3_parametros_configuraveis": [
+      "Margem mínima por categoria ou SKU (floor de preço)",
+      "Percentual máximo de variação diária (ex: máx 15% de alta ou queda por dia)",
+      "Fontes de concorrentes a monitorar (URLs, marketplaces, frequência)",
+      "Estratégia de pricing por segmento: penetração, paridade, premium, liquidação",
+      "Gatilhos automáticos: estoque abaixo de X unidades → ativar escassez pricing",
+      "Calendário de eventos: datas de coleção nova, Black Friday, liquidação — regras temporárias",
+      "Canais de publicação: quais plataformas e com qual delay",
+      "Notificações: quem recebe alertas, por qual canal, com qual threshold",
+      "Moeda, timezone e formato de preço (arredondamento, psicológico: R$99,90)",
+      "Peso relativo entre variáveis do motor (dar mais peso a concorrente vs. histórico próprio)"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro na tabela tenants com seu conjunto de parâmetros (JSON de configuração). A equipe de onboarding preenche um formulário de configuração que gera o payload. Um job de provisionamento cria o pipeline de coleta, conecta à plataforma via OAuth, e o motor começa a rodar. Zero código novo — apenas configuração declarativa.",
+    "fase4_core_isolado": "O motor de pricing (PricingWorker) roda como processo assíncrono separado, consumindo uma fila de jobs (ex: Bull/Redis ou SQS). É acionado por schedule (ex: a cada 30 min por tenant) ou por evento (gatilho de estoque, chegada de dado de concorrente). O resultado é persistido no banco e publicado via evento — a aplicação principal apenas lê o resultado, não depende do worker estar de pé para funcionar.",
+    "fase4_custo_total_cliente": "Core por tenant/mês: scraping de concorrentes (Bright Data ou proxy próprio) ~$15–40 dependendo do volume de SKUs; chamadas ao modelo de pricing (se LLM) ~$5–20; armazenamento de histórico de preços ~$2–5 (S3/blob). Infra proporcional: fração do servidor de API (~$3), banco de dados (~$4), CDN para dashboard (~$1), fila de jobs (~$1). Custo total estimado por tenant: $31–74/mês. Margem saudável começa no plano a partir de $199/mês.",
+    "fase4_continuidade": "Se o PricingWorker falhar, os preços da última execução bem-sucedida permanecem ativos na plataforma do cliente — o e-commerce continua vendendo com o último preço calculado. O dashboard e a API do cliente continuam funcionando (leem do banco, não do worker). Alertas automáticos notificam a equipe de operação. Dead-letter queue preserva os jobs falhos para reprocessamento. Degradação graciosa: sem novo cálculo, sem preço errado.",
+    "fase4_manutencao": "A interface PricingEngine isola a implementação. Para trocar o motor (ex: de regras heurísticas para ML): (1) implementar nova classe satisfazendo o contrato da interface, (2) rodar ambas em paralelo com feature flag por tenant, (3) comparar outputs em shadow mode, (4) migrar tenants gradualmente via configuração. Nenhum downtime, nenhuma alteração nas camadas acima do worker.",
+    "monetizacao": "SaaS por assinatura mensal tiered baseado em volume de SKUs gerenciados e GMV: Starter ($199/mês — até 500 SKUs, 1 plataforma), Growth ($499/mês — até 5.000 SKUs, 3 plataformas, alertas), Scale ($1.200/mês — SKUs ilimitados, multi-plataforma, API, white-label). Revenue share opcional em planos enterprise: 0,3% do GMV incremental gerado acima da baseline do cliente — alinha incentivo e elimina objeção de ROI. Complementar: setup fee único ($300–800) para onboarding enterprise.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) + Fastify para API de alta performance; Python para workers de ML/pricing (ecossistema de dados). Filas: BullMQ + Redis para jobs assíncronos. Banco: PostgreSQL (dados transacionais e histórico de preços com TimescaleDB extension). Cache: Redis para preços calculados e rate-limiting. Scraping: Playwright headless + proxy residencial (Bright Data). Frontend: Next.js + Tailwind + Recharts. Infra: Railway ou Render (simplicidade inicial) → migração gradual para AWS ECS + RDS conforme escala. Integrações: Shopify Partner App, VTEX IO App, webhooks REST para demais plataformas. Observabilidade: Sentry + Grafana + OpenTelemetry."
+  }
+}

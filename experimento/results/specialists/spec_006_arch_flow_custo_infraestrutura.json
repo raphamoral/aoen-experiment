@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista componentes de infraestrutura (S3, AWS/GCP, Auth0, SendGrid, Firebase) mas trata todos como commodities sem nenhuma estimativa de custo em valores concretos, sem estratégia de otimização (scale-to-zero, spot instances, storage tiers) e sem projeção de crescimento de custos com a base de usuários."
+}

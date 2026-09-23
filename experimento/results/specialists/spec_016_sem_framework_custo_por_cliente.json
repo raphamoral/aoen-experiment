@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "O projeto lista custos totais de infra (AWS ~$200/mês, APIs de transportadoras) mas não há nenhum cálculo de custo por tenant, por etiqueta gerada ou por operação — não é possível derivar margem por cliente nem conectar consumo de recursos ao modelo de precificação por faixas de devoluções."
+}

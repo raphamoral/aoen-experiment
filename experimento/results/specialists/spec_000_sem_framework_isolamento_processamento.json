@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona explicitamente processamento assíncrono de IA via job queue (Bull/Celery) e infraestrutura Docker/Kubernetes que viabiliza isolamento físico, mas não descreve workers como containers separados e escaláveis independentemente, e não define nenhum mecanismo de fallback caso a fila ou o serviço de IA falhe (ex: degraded mode, circuit breaker, resposta parcial ao veterinário), ficando no nível de intenção sem garantia real de resiliência."
+}

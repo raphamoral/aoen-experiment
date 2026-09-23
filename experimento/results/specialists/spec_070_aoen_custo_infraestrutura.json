@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 70,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — não há estimativas de valores, nenhuma estratégia de otimização (scale-to-zero, spot instances, tiers de armazenamento) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários; os componentes de infra são citados apenas como opções de troca tecnológica (PostgreSQL vs MongoDB, Twilio vs Z-API, OpenAI vs Gemini), sem qualquer análise financeira associada."
+}

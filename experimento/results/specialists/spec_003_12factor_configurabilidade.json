@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra excelente configurabilidade em nível de deploy (env vars, Vault, feature flags), mas não endereça configurabilidade em nível de tenant: FEATURE_FLAGS e ANONYMIZATION_THRESHOLD são variáveis de ambiente por deployment, não por cliente; não há menção a tabela de configuração por tenant, limiares de anonimização por empresa, ou fluxo de onboarding baseado apenas em banco de dados — e o modelo enterprise-on-prem (deploy separado por cliente) é o oposto de multi-tenancy configurável, exigindo operação de infraestrutura para cada novo cliente enterprise."
+}

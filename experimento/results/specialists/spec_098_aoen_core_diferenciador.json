@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 98,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de benchmarking operacional é claramente identificado como núcleo diferenciador, isolado via abstração DataCollector, agnóstico a fornecedor de dados e algoritmo parametrizável, resolvendo o problema real de visibilidade comparativa que planilhas e painéis genéricos não entregam — perde um ponto por não detalhar como o cálculo de benchmark endereça especificidades do setor (ex: sazonalidade por tipo de franquia) que poderiam torná-lo ainda mais insubstituível."
+}

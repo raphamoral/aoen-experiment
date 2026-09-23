@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 36,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma cadeia causal sólida e autoexplicativa: a abstração PrescriptionAnalyzer na fase 1 habilita diretamente os múltiplos provedores de dados; o mapeamento mercado→interface na fase 2 é preciso e sem sobreposição; a camada PrescriptionService garante que a multiplicidade de interfaces não fragmente a lógica de negócio; o fluxo fixo da fase 3 satisfaz o requisito de auditabilidade declarado para planos de saúde; e os parâmetros configuráveis completam o ciclo ao viabilizar o modelo multi-tenant sem alterar o core — a única deduction vem da proposta truncada em fase3_parametros_configuraveis, que impede validação completa da coerência entre configurabilidade declarada e sua implementação."
+}

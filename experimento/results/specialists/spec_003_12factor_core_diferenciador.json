@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador (pipeline de anonimização) está identificado e isolado como serviço próprio (anonymizer/) com desacoplamento via fila de mensagens e configuração de threshold, e a arquitetura é extensível sem lock-in de fornecedor — mas a proposta não descreve o mecanismo técnico da anonimização (k-anonimato? privacidade diferencial? simples remoção de PII?), o que impede avaliar se o núcleo é genuinamente insubstituível ou apenas um serviço de sanitização de dados convencional."
+}

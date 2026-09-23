@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 71,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "Cinco interfaces distintas (Portal Web, Dashboard Auditor, API B2B, App Mobile offline-first, QR de Verificação) cada uma mapeada a um segmento de mercado e perfil de usuário explícitos, com lógica de negócio totalmente isolada em quatro services — nenhuma interface contém regra de negócio, permitindo adicionar ou trocar canais sem reescrever o core."
+}

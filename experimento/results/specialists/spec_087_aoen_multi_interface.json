@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 87,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define seis interfaces distintas (PWA, painel admin, app mobile, bot WhatsApp, widget embeddável e API B2B), cada uma com justificativa explícita de segmento de mercado, e a camada de serviços internos com contratos tipados garante desacoplamento total — adicionar ou substituir qualquer interface não toca a lógica de negócio."
+}

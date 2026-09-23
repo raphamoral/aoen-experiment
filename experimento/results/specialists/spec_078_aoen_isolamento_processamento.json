@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 78,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta define uma Service Layer e uma interface ScoreProvider plugável, o que representa isolamento lógico da computação pesada de IA, mas não menciona em nenhum momento filas de mensagens, workers assíncronos, processos separados, circuit breakers ou estratégias de fallback caso o motor de scoring falhe — deixando implícito que uma falha ou sobrecarga no scoring bloqueia sincronamente o fluxo de empréstimo e potencialmente derruba as interfaces de usuário junto."
+}

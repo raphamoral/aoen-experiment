@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "A proposta não menciona nenhum mecanismo de configurabilidade por tenant: não há contexto de 'Tenant Management', nenhuma camada de feature flags, sem modelo de configurações variáveis por cliente (janelas de entrega, regras de notificação, parâmetros de rota, branding) e nenhum fluxo de onboarding — onboarding de novo cliente provavelmente exigiria desenvolvimento ou deploy manual."
+}

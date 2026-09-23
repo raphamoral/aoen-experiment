@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 79,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não menciona em nenhum momento mensuração de custo por cliente, custo por operação/transação, rastreamento de consumo por tenant ou conexão entre custo unitário e modelo de precificação — os custos são tratados exclusivamente como decisões de infraestrutura geral (Service Layer, grafo de propagação, interfaces), sem qualquer granularidade de unit economics por cliente."
+}

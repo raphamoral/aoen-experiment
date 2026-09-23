@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta descreve apenas o fluxo de pagamento entre empresas e testadores como mecanismo operacional, mas não define nenhum modelo de monetização da plataforma em si — não há menção a comissões, taxas de serviço, planos de assinatura, tiers por volume, markup sobre recompensas, nem qualquer métrica de sustentabilidade do negócio (MRR, LTV, CAC, churn)."
+}

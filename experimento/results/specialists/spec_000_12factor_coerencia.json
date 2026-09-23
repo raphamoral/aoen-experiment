@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: processos stateless justificam o Redis para sessões, imagens Docker imutáveis tornam o rollback trivial no Kubernetes, modelos ML versionados como artefatos completam a rastreabilidade do pipeline de IA, e a injeção de config via Vault fecha o ciclo 12-factor — a única fricção é a multiplicidade de alternativas não resolvidas (Kafka vs SQS, Triton vs SageMaker, Datadog vs Grafana) que deixa a arquitetura final ligeiramente ambígua em pontos críticos."
+}

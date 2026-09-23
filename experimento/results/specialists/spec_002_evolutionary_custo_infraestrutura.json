@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não contém nenhuma menção a custos de infraestrutura — nem estimativas de valores, nem estratégias de otimização (scale-to-zero, spot instances, storage tiers), nem projeção de crescimento de custos com a base de usuários."
+}

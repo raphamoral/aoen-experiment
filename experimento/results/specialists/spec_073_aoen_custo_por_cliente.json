@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 73,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta descreve uma pipeline com etapas discretas e fornecedores intercambiáveis (Whisper, Hume AI, GPT-4o, Claude), o que torna o custo por operação tecnicamente calculável a partir da arquitetura — mas o documento não calcula, não menciona, não estima e não planeja rastrear custo por cliente/tenant em nenhum momento; não há referência a margem por usuário, custo por sessão de análise, instrumentação de consumo por tenant, nem conexão entre custos variáveis e o modelo de precificação."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "O projeto prevê múltiplas interfaces bem justificadas por perfis reais (RestAPI para dashboards web, WebSocket para tempo real, GraphQL para clientes com necessidades compostas, gRPC para edge/sistemas internos, CLI para DevOps, WebhookReceiver para integração SCADA/DCS), com lógica de negócio claramente desacoplada via ports hexagonais — permitindo adicionar novas interfaces sem reescrever o domínio; perde um ponto por não explicitar adaptadores mobile nativos, relevantes para operadores industriais em campo."
+}

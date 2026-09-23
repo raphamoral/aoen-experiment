@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta é exclusivamente técnico-arquitetural: os únicos indícios de público-alvo são os nomes das entidades (Tutor, Veterinario), mas não há definição explícita de mercado, tamanho de mercado, dor do cliente articulada, diferenciação frente a concorrentes nem proposta de valor declarada."
+}

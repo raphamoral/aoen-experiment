@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 54,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona 'custo por período' no Dashboard Analytics, o que sugere alguma visibilidade de custo, e a arquitetura possui identificadores de tenant (botId/sessionId) que viabilizariam rastreamento por cliente — mas em nenhum momento há cálculo explícito de custo por operação (ex: 'cada chamada LLM custa R$X por token, cada embedding custa R$Y'), nenhum modelo de atribuição de custo por tenant, e nenhuma conexão entre custo unitário e modelo de precificação ou margem por cliente; o 'custo por período' descrito é agregado de infra, não unit economics."
+}

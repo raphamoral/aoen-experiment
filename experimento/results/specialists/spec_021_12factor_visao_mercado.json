@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O nome do produto sugere implicitamente um público-alvo (gestores de facilities/edificações), mas a proposta é integralmente técnica e não articula dor do cliente, tamanho de mercado, diferenciação frente a concorrentes (ex: Máximo, IBM Maximo, UpKeep, Fracttal) nem proposta de valor que justifique adoção — ausência total de visão de mercado explícita."
+}

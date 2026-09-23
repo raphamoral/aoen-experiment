@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 99,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (Dashboard Web, API REST+Webhooks, Alertas Push, Relatórios PDF/CSV, Widget white-label e Mobile PWA), cada uma justificada por um perfil de usuário ou contexto de uso real e específico, com lógica de negócio centralizada em uma BrandReputationService desacoplada das camadas de apresentação, permitindo adicionar novas interfaces sem reescrever o core."
+}

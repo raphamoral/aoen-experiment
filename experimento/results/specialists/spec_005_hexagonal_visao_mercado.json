@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta é inteiramente técnica-arquitetural; o único indício de mercado-alvo está implícito no domínio ('imobiliárias, construtoras' citadas em um port técnico), sem qualquer articulação da dor do cliente, tamanho de mercado, diferenciação frente a concorrentes como ClickSign ou DocuSign, ou proposta de valor explícita."
+}

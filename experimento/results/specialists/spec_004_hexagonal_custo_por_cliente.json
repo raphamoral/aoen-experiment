@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não menciona nenhum mecanismo de mensuração de custo por cliente ou tenant — há um PaymentGatewayPort para cobrar o cliente e um ReportQueryPort para relatórios de negócio, mas nenhum dos ports ou adapters contempla rastreamento de consumo de recursos por tenant, cálculo de custo por operação (ex: custo de um leilão processado, custo de storage por buyer, custo de notificação por supplier) ou qualquer instrumento de unit economics; os custos de infraestrutura (PostgreSQL, Redis, Kafka, S3, SendGrid etc.) são listados como componentes tecnológicos, não como grandezas mensuráveis por cliente."
+}

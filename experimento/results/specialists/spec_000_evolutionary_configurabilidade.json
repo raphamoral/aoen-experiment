@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta menciona feature flags (Unleash/LaunchDarkly) e uma fitness function de onboarding em 48h, sinalizando consciência de configurabilidade, mas nenhum mecanismo explícito de tenant configuration é descrito — sem menção a config store por tenant, sem separação código/configuração declarada, e os feature flags citados servem a rollout de modelos de IA (escopo de deploy), não a comportamento diferenciado por clínica, deixando aberta a dúvida se novo cliente exige apenas dados ou também desenvolvimento."
+}

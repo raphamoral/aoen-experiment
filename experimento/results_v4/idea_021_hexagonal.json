@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 21,
+  "ideia": "SaaS de gestão de manutenção predial preventiva com IoT",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de manutenção preventiva e preditiva de edificações. O núcleo (inside) contém: Ativos Prediais (HVAC, elevadores, bombas, geradores, quadros elétricos), Planos de Manutenção (por tempo, uso ou condição), Ordens de Serviço (ciclo de vida: aberta, atribuída, em execução, concluída, verificada), Regras de Alerta e Limiares, Leituras de Sensores (como conceito de domínio, independente de protocolo), SLAs, Conformidade Normativa (ex.: NBR 5674, PMOC, NR-10, NR-13) e Custos de Manutenção. Regras centrais: gerar OS automaticamente por calendário, horímetro ou anomalia; escalonar por criticidade e SLA; evitar OS duplicadas; calcular MTBF/MTTR e saúde do ativo. Multi-tenant é conceito de domínio (Organização > Edifício > Pavimento > Sistema > Ativo).",
+    "primary_ports": [
+      "GerenciarAtivos (cadastrar, hierarquizar, vincular sensores, desativar)",
+      "GerenciarPlanosManutencao (criar, versionar, ativar, pausar)",
+      "GerenciarOrdensServico (abrir, atribuir, iniciar, registrar execução, concluir, verificar, cancelar)",
+      "IngerirTelemetria (receber leituras normalizadas de dispositivos)",
+      "GerenciarRegrasAlerta (definir limiares, janelas e severidades)",
+      "ConsultarPainelSaudeAtivos (KPIs, MTBF, MTTR, disponibilidade, backlog)",
+      "GerarRelatoriosConformidade (laudos, PMOC, auditoria)",
+      "GerenciarUsuariosEPermissoes (RBAC por tenant/edifício)",
+      "GerenciarAssinaturaEUso (planos, cotas de dispositivos, faturamento)",
+      "ExecutarJobsAgendados (disparar geração de OS preventivas, avaliação de regras, fechamento de períodos)"
+    ],
+    "secondary_ports": [
+      "RepositorioAtivos / RepositorioOrdensServico / RepositorioPlanos (persistência)",
+      "RepositorioSeriesTemporais (armazenamento e consulta de telemetria)",
+      "PublicadorEventosDominio (outbox/mensageria)",
+      "NotificadorUsuarios (push, e-mail, SMS, WhatsApp)",
+      "GatewayDispositivos (comandos, configuração e provisionamento de dispositivos IoT)",
+      "ArmazenamentoArquivos (fotos, laudos, manuais, checklists assinados)",
+      "ProvedorIdentidade (autenticação, SSO, MFA)",
+      "GatewayPagamento (cobrança recorrente, notas fiscais)",
+      "ProvedorRelogio (tempo controlado, essencial para testes de agendamento)",
+      "GeradorIdentificadores",
+      "ProvedorPrevisaoAnomalias (modelos de ML/manutenção preditiva)",
+      "IntegracaoERP (compras, estoque de peças, contabilidade)",
+      "IntegracaoBMS (sistemas de automação predial legados)",
+      "CalendarioAgenda (agendas de técnicos)",
+      "RepositorioAuditoria (trilha de auditoria imutável)",
+      "ProvedorGeolocalizacao (opcional, atendimento em campo)"
+    ],
+    "primary_adapters": [
+      "API REST/OpenAPI (web e integrações de clientes)",
+      "API GraphQL (dashboards e consultas flexíveis)",
+      "Adapter MQTT/AMQP consumer (telemetria vinda de brokers IoT)",
+      "Adapter HTTP/LoRaWAN webhook (network servers como TTN/ChirpStack)",
+      "Adapter gRPC (comunicação com gateways de borda)",
+      "Adapter WebSocket/SSE (atualizações em tempo real)",
+      "Adapter de Webhooks de entrada (ERP, BMS, provedores de pagamento)",
+      "Adapter CLI/Admin (operações e migrações)",
+      "Adapter de Scheduler (cron/Temporal/EventBridge disparando ExecutarJobsAgendados)",
+      "Adapter de testes (suítes automatizadas e BDD dirigindo os mesmos ports, com fakes em memória)",
+      "Adapter de Chatbot/WhatsApp (abertura e atualização de OS por mensagem)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios transacionais, RLS por tenant)",
+      "TimescaleDB ou InfluxDB (séries temporais)",
+      "Adapter em memória (fakes para testes e desenvolvimento local)",
+      "Kafka/NATS/RabbitMQ + Outbox pattern (publicação de eventos)",
+      "S3/MinIO (arquivos)",
+      "Keycloak/Auth0/Cognito (identidade)",
+      "SendGrid/SES (e-mail), Twilio/Zenvia (SMS/WhatsApp), Firebase Cloud Messaging (push)",
+      "AWS IoT Core/Azure IoT Hub/EMQX (gateway de dispositivos e provisionamento)",
+      "Stripe/Asaas/Pagar.me (pagamentos e cobrança recorrente)",
+      "Adapter SAP/TOTVS/Omie (ERP)",
+      "Adapter BACnet/Modbus/OPC-UA via gateway de borda (BMS)",
+      "Adapter ML: serviço de inferência (SageMaker/Vertex/serviço próprio Python)",
+      "Google Calendar/Microsoft Graph (agenda)",
+      "Relógio do sistema (produção) e relógio fixo/simulado (testes)",
+      "UUID/ULID generator",
+      "Armazenamento append-only/WORM (auditoria)"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não possui dependência de frameworks, drivers, SDKs ou protocolos: ele só conhece ports (interfaces) declaradas por ele mesmo, seguindo a Inversão de Dependência (adapters dependem do core, nunca o contrário). Cada protocolo IoT (MQTT, LoRaWAN, BACnet, Modbus) é traduzido por um adapter para um DTO/comando canônico 'LeituraSensor' antes de entrar no core. Eventos de domínio são publicados via port e nunca expõem formatos de broker. Regras de arquitetura são verificadas automaticamente (ArchUnit/dependency-cruiser/import-linter) no CI, quebrando o build se o core importar de adapters. Todos os sistemas externos recebem tratamento simétrico: banco, fila, e-mail, pagamento e sensores são igualmente 'outside', trocáveis sem alterar o core. Multi-tenancy é resolvido no contexto da requisição e injetado no core, com RLS aplicada no adapter de persistência. O mesmo core roda dirigido por UI, API, mensagem IoT, scheduler ou teste automatizado, com secondary adapters reais ou fakes. Testes: unitários e de contrato no core com fakes, testes de contrato por adapter (Testcontainers), e2e mínimos.",
+    "interfaces": [
+      "Web app responsivo para gestores e síndicos (dashboard de saúde predial, calendário de manutenções, relatórios)",
+      "App mobile/PWA offline-first para técnicos (checklists, QR code de ativos, fotos, assinatura, execução de OS)",
+      "Portal de fornecedores/terceirizados",
+      "Portal do condômino/ocupante (abertura de chamados)",
+      "API pública REST + webhooks para integrações de clientes",
+      "Notificações multicanal (push, e-mail, SMS, WhatsApp)",
+      "Painel de operações/NOC para telemetria em tempo real",
+      "Console de administração multi-tenant e de provisionamento de dispositivos",
+      "Interface de linha de comando para operação e migração",
+      "Modo de teste/simulador de sensores para demonstração e homologação"
+    ],
+    "escalabilidade": "Escala horizontal por separação de fluxos: (1) plano de ingestão de telemetria (alto volume, write-heavy) desacoplado do plano transacional (OS, cadastros) via fila/stream particionado por tenant/dispositivo; (2) consumidores stateless com autoscaling por lag de fila; (3) pré-agregação (downsampling, continuous aggregates) e retenção em camadas (quente/morno/frio) para séries temporais; (4) processamento de borda: gateways filtram, agregam e detectam limiares localmente, enviando só exceções e resumos; (5) PostgreSQL com read replicas, particionamento por tenant e cache (Redis) para dashboards; (6) monólito modular hexagonal no início, com extração posterior de contextos (telemetria, notificações, faturamento) em serviços, viável porque as fronteiras são ports; (7) idempotência e deduplicação por ID de mensagem para tolerar reentregas; (8) isolamento de vizinhos ruidosos com rate limit e cotas por tenant; (9) opção de células/regiões para clientes grandes.",
+    "custos": "Principais vetores: ingestão e armazenamento de telemetria (mitigar com amostragem por variação, agregação na borda, compressão e retenção escalonada); conectividade de dispositivos (preferir LoRaWAN/NB-IoT de baixo consumo ou Wi-Fi/Ethernet existente; custo de mensagens no IoT Core pode superar computação, logo avaliar EMQX/Mosquitto self-hosted); hardware de sensores e gateways (modelo de comodato, revenda com margem ou BYOD/integração com BMS existente); mensageria WhatsApp/SMS cobrada por mensagem (priorizar push e e-mail, WhatsApp só para críticos); ML (inferência em lote em vez de tempo real, quando possível); suporte e onboarding (implantação e cadastro de ativos por QR/importação em massa); observabilidade e conformidade LGPD. Começar com monólito modular em poucos serviços gerenciados reduz custo operacional e equipe necessária; usar instâncias spot/serverless para consumidores de telemetria; monitorar custo por tenant e por dispositivo (unit economics) para garantir margem.",
+    "monetizacao": "Assinatura SaaS recorrente (B2B) com precificação híbrida: (a) por edifício ou por unidade/m² gerenciado; (b) por ativo monitorado ou dispositivo IoT conectado; (c) tiers (Essencial: OS e planos preventivos; Profissional: IoT, alertas e relatórios de conformidade; Enterprise: multi-edifício, API, SSO, SLA, ERP/BMS, manutenção preditiva com ML). Receitas adicionais: hardware (venda, comodato ou aluguel de sensores/gateways), implantação e onboarding, marketplace de prestadores de serviço com comissão, add-ons (relatórios normativos, WhatsApp, armazenamento extra, retenção estendida), white-label para administradoras e empresas de facilities, e API/uso excedente. Trial gratuito curto e piloto em um edifício com ROI mensurável (redução de corretivas, multas evitadas, vida útil estendida dos ativos).",
+    "stack_sugerida": "Backend: monólito modular hexagonal em TypeScript (NestJS com módulos estritos, ou Fastify) ou Kotlin/Java (Spring Boot) ou Go, com core em módulos sem dependência de framework; serviço Python (FastAPI) para ML preditivo. Persistência: PostgreSQL (RLS, particionamento) + TimescaleDB para séries temporais; Redis para cache e rate limit. Mensageria/IoT: EMQX ou AWS IoT Core (MQTT), NATS JetStream ou Kafka/Redpanda, ChirpStack para LoRaWAN; gateways de borda com Node-RED/Rust e conversores BACnet/Modbus. Orquestração de jobs: Temporal ou BullMQ/Quartz. Frontend: React/Next.js + TypeScript para web; PWA offline-first (Workbox, IndexedDB) ou React Native/Flutter para técnicos; gráficos com ECharts/Grafana embarcado. API: OpenAPI + GraphQL (opcional). Identidade: Keycloak ou Auth0/Cognito. Arquivos: S3/MinIO. Pagamentos: Stripe ou Asaas/Pagar.me (mercado BR, com emissão de NFS-e). Infra: Docker, Kubernetes gerenciado (EKS/GKE) ou ECS/Cloud Run no início, Terraform, GitHub Actions, GitOps (Argo CD). Observabilidade: OpenTelemetry, Prometheus/Grafana, Loki, Sentry. Qualidade: testes com fakes em memória, Testcontainers, testes de contrato (Pact), verificação de arquitetura no CI (dependency-cruiser/ArchUnit), Playwright para e2e. Segurança/compliance: mTLS e certificados por dispositivo, OTA assinado, criptografia em repouso e trânsito, auditoria, LGPD."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:27:35+00:00",
+    "runner": "runner.py"
+  }
+}

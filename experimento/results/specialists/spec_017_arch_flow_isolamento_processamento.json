@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta estabelece separação lógica via bounded contexts (ex: 'Certification Issuance' e 'Notification & Delivery' distintos) e insinua algum processamento assíncrono pela existência do contexto de entrega, mas não menciona explicitamente nenhum mecanismo de isolamento físico — sem filas (SQS/RabbitMQ/Kafka), sem workers separados, sem fallback para falhas no pipeline de geração de PDF/SVG ou assinatura digital, e sem estratégia de escalabilidade independente para esses processos computacionalmente intensos."
+}

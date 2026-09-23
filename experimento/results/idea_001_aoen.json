@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 1,
+  "ideia": "SaaS de gestão de frotas para entregas last-mile com rastreamento em tempo real",
+  "abordagem": "aoen",
+  "response": {
+    "fase1_core": "Engine de rastreamento em tempo real + otimização dinâmica de rotas. O coração é a capacidade de processar localizações GPS e converter em decisões de roteamento que reduzem custo operacional e tempo de entrega.",
+    "fase1_mercado": "Empresas de delivery last-mile, pequenas e médias (5-500 veículos). Mercado inicial: marketplaces de delivery, pizzarias com frota, logísticas urbanas de small packages.",
+    "fase1_extensivel": "Sim. O core deve ser agnóstico quanto a: (1) Fonte de dados GPS (Teltonika, Samsara, custom), (2) Algoritmo de otimização (pode ser substituído por melhor versão sem quebrar resto), (3) Provedor de mapas/rotas (Google Maps, OSRM, Vroom).",
+    "fase2_interfaces": [
+      "App Mobile (motorista): rastreamento em tempo real, checklist de entregas, notificações",
+      "Dashboard Web (gerente): visualização de frotas, análise de desempenho, relatórios",
+      "API REST (integrações): para clientes integrar com seus ERPs/WMS",
+      "Portal Web (cliente final): rastreamento do pedido em tempo real (proof of delivery)"
+    ],
+    "fase2_justificativa_mercado": "App mobile atrai operadores que querem suporte em tempo real. Dashboard web atrai gestores que medem eficiência. API atrai grandes clientes (marketplaces, redes de varejo) que precisam integrar. Portal atrai varejistas que usam o SaaS para dar experiência melhor ao cliente final.",
+    "fase2_service_layer": "Service Layer centralizada expõe: (1) TrackingService (recebe GPS, armazena, notifica), (2) OptimizationService (calcula rotas), (3) DeliveryService (gerencia ciclo de vida da entrega), (4) AnalyticsService (computa KPIs). Todas as interfaces chamam essas, não o core diretamente.",
+    "fase3_fluxo_fixo": "Motorista logado → GPS enviado a cada 30s → Sistema otimiza fila de entregas → Motorista segue indicações → Chegada confirmada → Foto/assinatura capturada → Cliente notificado. Este fluxo nunca muda.",
+    "fase3_parametros_configuraveis": [
+      "Intervalo de envio de GPS (10s-5m)",
+      "Algoritmo de otimização (faster, cheaper, eco)",
+      "Capacidade de veículos (kg, volume, unidades)",
+      "Janelas de entrega permitidas (09:00-17:00)",
+      "Raio máximo de rota por motorista (km)",
+      "Custo por km de combustível",
+      "Regras de priorização (urgent, regular, low)",
+      "Campos customizados na entrega (código cliente, referência)",
+      "Webhook URLs para eventos"
+    ],
+    "fase3_novo_cliente": "Onboarding: (1) Criar workspace, (2) Clonar config padrão do segmento (delivery/logística/varejo), (3) Motorista baixa app, faz login, (4) Sistema começa a processar entregas com parâmetros do cliente. Sem uma linha de código.",
+    "fase4_core_isolado": "Engine de otimização de rotas. Será um microserviço separado, assíncrono. Recebe fila de entregas → retorna rotas otimizadas em 2-10s. Se cair, rastreamento em tempo real continua funcionando, rotas ficam em \"manual\" (FIFO).",
+    "fase4_custo_variavel": "R$ por km processado (a otimização tem custo computacional). Ou R$ por entrega otimizada. O cliente paga por uso real, não por veículos/usuários.",
+    "fase4_continuidade": "Rastreamento roda em serviço separado. Otimização é assíncrona e opcional. Se engine de otimização falha, motoristas seguem rota manual (fila simples). Sistema continua operacional, só menos eficiente.",
+    "fase4_manutencao": "Trocar algoritmo (ex: de Google OR-Tools para algoritmo in-house) sem parar: (1) Deploy nova versão do OptimizationService, (2) Tráfego gradual (canary), (3) Se ruim, rollback em 5min. Rastreamento não é afetado.",
+    "monetizacao": "Modelo freemium: (1) Até 5 veículos: free (rastreamento básico), (2) Acima disso: R$ por veículo/mês + R$ por km otimizado, (3) Add-ons: API calls extras, relatórios customizados, integrações premium (WMS, ERP).",
+    "stack_sugerida": "Backend: Node.js/Python (FastAPI) + PostgreSQL + Redis. Rastreamento: WebSocket/gRPC. Otimização: microserviço em Python (OSRM/Vroom). Mobile: React Native. Web: React. Maps: Google Maps API. Infra: Kubernetes no cloud (AWS/GCP) com auto-scaling no OptimizationService."
+  },
+  "raw": "```json\n{\n  \"fase1_core\": \"Engine de rastreamento em tempo real + otimização dinâmica de rotas. O coração é a capacidade de processar localizações GPS e converter em decisões de roteamento que reduzem custo operacional e tempo de entrega.\",\n  \"fase1_mercado\": \"Empresas de delivery last-mile, pequenas e médias (5-500 veículos). Mercado inicial: marketplaces de delivery, pizzarias com frota, logísticas urbanas de small packages.\",\n  \"fase1_extensivel\": \"Sim. O core deve ser agnóstico quanto a: (1) Fonte de dados GPS (Teltonika, Samsara, custom), (2) Algoritmo de otimização (pode ser substituído por melhor versão sem quebrar resto), (3) Provedor de mapas/rotas (Google Maps, OSRM, Vroom).\",\n  \"fase2_interfaces\": [\n    \"App Mobile (motorista): rastreamento em tempo real, checklist de entregas, notificações\",\n    \"Dashboard Web (gerente): visualização de frotas, análise de desempenho, relatórios\",\n    \"API REST (integrações): para clientes integrar com seus ERPs/WMS\",\n    \"Portal Web (cliente final): rastreamento do pedido em tempo real (proof of delivery)\"\n  ],\n  \"fase2_justificativa_mercado\": \"App mobile atrai operadores que querem suporte em tempo real. Dashboard web atrai gestores que medem eficiência. API atrai grandes clientes (marketplaces, redes de varejo) que precisam integrar. Portal atrai varejistas que usam o SaaS para dar experiência melhor ao cliente final.\",\n  \"fase2_service_layer\": \"Service Layer centralizada expõe: (1) TrackingService (recebe GPS, armazena, notifica), (2) OptimizationService (calcula rotas), (3) DeliveryService (gerencia ciclo de vida da entrega), (4) AnalyticsService (computa KPIs). Todas as interfaces chamam essas, não o core diretamente.\",\n  \"fase3_fluxo_fixo\": \"Motorista logado → GPS enviado a cada 30s → Sistema otimiza fila de entregas → Motorista segue indicações → Chegada confirmada → Foto/assinatura capturada → Cliente notificado. Este fluxo nunca muda.\",\n  \"fase3_parametros_configuraveis\": [\n    \"Intervalo de envio de GPS (10s-5m"
+}

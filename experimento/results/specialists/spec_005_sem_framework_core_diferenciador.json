@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "O produto identifica a geração de PDF + assinatura digital como core, mas na prática é um CRUD com integração a fornecedores commoditizados (DocuSign, D4Sign) — o núcleo real é terceirizado, não proprietário, e sem esses serviços o produto perde a razão de existir; falta isolar e descrever um diferenciador próprio que seja insubstituível."
+}

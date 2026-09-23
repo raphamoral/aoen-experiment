@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 75,
+  "ideia": "SaaS de orquestração de microsserviços com observabilidade integrada",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de correlação topológica em tempo real: ingere telemetria (traces, métricas, logs) de microsserviços heterogêneos, mapeia automaticamente o grafo de dependências e correlaciona anomalias com causas-raiz no grafo de serviços — sem configuração manual de dependências",
+    "fase1_mercado": "Times de Platform Engineering e SRE em empresas com 10+ microsserviços em produção; estágio de adoção: pós-Kubernetes, pré-caos-total; dor real: visibilidade fragmentada entre ferramentas (Prometheus + Jaeger + ELK separados) sem correlação automática entre elas",
+    "fase1_extensivel": "Sim. O core é abstraído via interface de Collector Adapter — o sistema não depende de nenhum backend específico. Adapters plugáveis para: ingestão (OpenTelemetry, Prometheus remote write, Fluent Bit), backends de storage (ClickHouse, TimescaleDB, Grafana Mimir) e orquestradores (Kubernetes, Nomad, ECS). Trocar o backend de storage não altera o motor de correlação.",
+    "fase2_interfaces": [
+      "Web Dashboard: mapa de topologia interativo com drill-down de traces e alertas contextualizados",
+      "CLI (aoen-cli): inspeção de serviços, disparo de alertas manuais e deploy de configurações — para SRE em terminal",
+      "REST API + Webhooks: integração com pipelines CI/CD, ferramentas de ITSM (PagerDuty, OpsGenie) e automações internas",
+      "SDK (Go, Python, Node.js): instrumentação nativa para times que controlam o código dos serviços",
+      "Integração Slack/Teams Bot: alertas contextualizados e comandos de diagnóstico direto no canal de incidentes"
+    ],
+    "fase2_justificativa_mercado": "Dashboard abre o mercado de gestores e times que precisam de visibilidade executiva e operacional sem contexto de terminal. CLI captura SREs e DevOps que vivem no terminal e resistem a UIs. REST API/Webhooks tornam o produto integrável em qualquer stack existente, desbloqueando clientes enterprise que já têm tooling proprietário. SDK abre o mercado de empresas que desenvolvem internamente e querem instrumentação de baixo atrito. Slack/Teams Bot penetra organizações com cultura de DevOps colaborativo onde incidentes são gerenciados em canais.",
+    "fase2_service_layer": "Uma camada de serviços (OrchestrationService, ObservabilityService, AlertingService, TopologyService) expõe contratos internos via interfaces Go/gRPC. Nenhuma interface (Web, CLI, API, Bot) contém lógica de negócio — todas consomem os mesmos services. Isso permite: adicionar nova interface sem duplicar regras, testar lógica de negócio isolada de transporte, e versionar a API sem alterar o core.",
+    "fase3_fluxo_fixo": "Ingestão de telemetria → Normalização para modelo canônico interno → Enriquecimento com metadados do grafo de serviços → Avaliação de regras de alerta → Agregação e armazenamento particionado por tenant → Notificação via canais configurados → Atualização do mapa topológico",
+    "fase3_parametros_configuraveis": [
+      "Definição dos serviços monitorados (nome, tags, SLO targets)",
+      "Regras de alerta por serviço (threshold de latência, taxa de erro, saturação)",
+      "Janelas de retenção de dados por tipo (traces: 7d, métricas: 90d, logs: 30d)",
+      "Canais de notificação (Slack webhook URL, PagerDuty routing key, e-mail)",
+      "Fontes de ingestão habilitadas (OpenTelemetry endpoint, Prometheus scrape targets)",
+      "Orquestrador alvo (Kubernetes cluster endpoint, namespace filter)",
+      "Fuso horário e idioma do dashboard",
+      "Limites de volume de ingestão por tier de plano",
+      "Políticas de sampling de traces (probabilístico, baseado em erro, adaptativo)"
+    ],
+    "fase3_novo_cliente": "Provisionamento via arquivo YAML de tenant: define serviços, regras, canais e limites. Pipeline de onboarding cria namespace isolado no banco, gera endpoint exclusivo de ingestão OpenTelemetry, e aplica configuração sem deploy de código. Novo cliente = novo registro de tenant + YAML aplicado via API interna.",
+    "fase4_core_isolado": "O Motor de Correlação e Ingestão roda como processo assíncrono isolado (worker pool separado): recebe eventos via fila (Kafka ou NATS JetStream), processa correlação de traces/métricas/topologia, e persiste resultados. É separado do processo de API/Dashboard por design — a falha no motor não derruba as interfaces.",
+    "fase4_custo_total_cliente": "Core (IA/processamento): $0 se rule-based; se ML para detecção de anomalia, ~$15-40/mês por cliente médio em GPU spot ou inferência serverless. Ingestão e fila (Kafka gerenciado): proporcional ao volume — ~$0.10/GB ingerido. Storage (ClickHouse ou TimescaleDB): ~$0.02-0.05/GB/mês comprimido; cliente médio com 50 serviços ≈ 200-500GB/mês = $4-25/mês. Computa do worker (k8s): 0.5-2 vCPU + 1-4GB RAM por tenant ativo = ~$8-30/mês. API/Dashboard (shared): custo compartilhado, ~$2-5/cliente. CDN/banda: ~$0.01/GB outbound. Total estimado por cliente médio: $30-100/mês de custo real, viabilizando planos a partir de $149/mês com margem saudável.",
+    "fase4_continuidade": "Padrão Circuit Breaker entre Motor de Correlação e interfaces: se o worker cai, o dashboard exibe último estado conhecido (cache Redis com TTL) e indica degradação parcial. Ingestão continua via fila durável (Kafka com retenção de 24h) — nenhum dado é perdido durante falha do motor. Alertas críticos têm fallback direto (regras simples avaliadas no processo da API, sem depender do motor).",
+    "fase4_manutencao": "O Motor de Correlação é encapsulado por interface interna CorrelationEngine. Para trocar a implementação (ex: de rule-based para ML-based): deploy da nova implementação como worker paralelo, roteamento gradual de tráfego via feature flag por tenant, rollback instantâneo redirecionando fila para implementação anterior — sem downtime, sem afetar clientes não migrados.",
+    "monetizacao": "SaaS por assinatura mensal baseado em volume: Starter ($149/mês: até 10 serviços, 7d retenção, 1 orquestrador) → Growth ($499/mês: até 50 serviços, 30d retenção, multi-cluster, alertas avançados) → Enterprise ($1.500+/mês: serviços ilimitados, 90d retenção, SSO, SLA, suporte dedicado, on-premise option). Add-ons: detecção de anomalia por ML ($99/mês), retenção estendida ($0.05/GB adicional), usuários extras acima do tier. Enterprise tem contrato anual com desconto de 20%. Modelo de trials: 14 dias grátis sem cartão no tier Growth.",
+    "stack_sugerida": "Ingestão: OpenTelemetry Collector (agente no cliente) → NATS JetStream (fila durável, leve) | Motor de Correlação: Go (worker pool, alta performance, baixo custo de memória) | Storage: ClickHouse (métricas e traces, compressão excelente, queries analíticas rápidas) + PostgreSQL (metadados de tenants, configurações, topologia) + Redis (cache de estado para dashboard) | API: Go + gRPC interno + REST/JSON externo | Dashboard: Next.js + React Flow (mapa de topologia) + Recharts | Infraestrutura: Kubernetes (EKS/GKE) com HPA por tenant, Helm charts parametrizados por tenant | Observabilidade do próprio produto: OpenTelemetry auto-instrumentado + Grafana Cloud (dog-fooding) | CI/CD: GitHub Actions + ArgoCD | Auth: Auth0 ou Keycloak com RBAC multi-tenant"
+  }
+}

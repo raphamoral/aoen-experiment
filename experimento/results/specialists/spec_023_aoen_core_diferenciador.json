@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 23,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O núcleo diferenciador (motor de raciocínio jurídico) está explicitamente identificado, isolado via 'LegalReasoningProvider' abstrato, independente de fornecedor de IA e resolve um gap real — escritórios pequenos sem acesso a LegalTech enterprise —, tornando o produto insubstituível sem esse componente."
+}

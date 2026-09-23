@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra intenção clara de configurabilidade — motor de regras configurável por tenant, workflow de OS adaptável e Tenant & IAM dedicado — mas deixa lacunas críticas: modelos preditivos por tipo de equipamento (genesis) e conectores ERP (custom) são explicitamente sinalizados como desenvolvimento por cliente, e nenhum artefato da arquitetura descreve o repositório de configuração, schema de metadados por tenant ou UI de self-service que viabilizariam onboarding zero-código."
+}

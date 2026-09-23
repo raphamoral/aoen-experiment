@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta menciona que o 'modelo de precificação é configurável por tenant' (lado da receita), mas não há nenhum mecanismo de rastreamento de custo por tenant: nenhuma fitness function mede consumo de recursos por sessão/cliente, a observabilidade descrita monitora qualidade de tradução (BLEU/MOS, latência), não custo por operação, e as fases incrementais não incluem instrumentação de cost attribution por tenant — o projeto trata custos implicitamente como infra total, não como unit economics calculável."
+}

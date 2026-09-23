@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal está aplicada com rigor: portas primárias e secundárias isolam completamente o domínio de precificação de qualquer framework ou tecnologia externa, os adaptadores (Shopify, VTEX, Magento, Prophet/SageMaker, PostgreSQL, Redis) são substituíveis de forma independente sem tocar na lógica de negócio, e a presença do MLModelPort e do Test Harness Adapter indica decisões deliberadamente reversíveis; o único ponto de atenção é a ausência explícita de padrões de segregação de leitura/escrita (CQRS/Event Sourcing) que podem exigir refinamento arquitetural — não reescrita — na transição para escala com dezenas de milhares de usuários simultâneos."
+}

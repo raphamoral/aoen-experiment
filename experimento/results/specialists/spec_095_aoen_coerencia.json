@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 95,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta forma uma cadeia decisional coesa e auto-reforçante: o problema (escassez de especialistas) justifica o core (IA como suporte ao médico, não substituto), que justifica a abstração de provedor (operar em múltiplos mercados com infraestruturas distintas), que justifica a Service Layer centralizada (lógica única para múltiplas interfaces), que justifica cada interface por um segmento de mercado com modelo de negócio próprio (B2C mobile → B2C2B, web médico → SaaS individual, portal clínica → B2B ticket alto, API HIS → volume hospitalar, assíncrono → mercados remotos, dashboard → lado pagador) — cada parte do sistema explica e sustenta as outras, sem contradições visíveis; perde um ponto apenas porque a descrição da Service Layer está truncada, impedindo avaliação completa do contrato interno entre camadas."
+}

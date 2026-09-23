@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta estrutura bem o domínio com Clean Architecture (entidades puras, use cases desacoplados de infraestrutura), o que cria base para isolamento futuro, mas não menciona nenhum mecanismo concreto de isolamento físico: o CalculateDynamicPrice — use case computacionalmente pesado que agrega sinais de demanda, preços de concorrentes, regras e estoque — aparentemente roda de forma síncrona no mesmo processo, sem filas, workers separados, fallback em caso de falha do motor de cálculo, ou estratégia de escalonamento independente."
+}

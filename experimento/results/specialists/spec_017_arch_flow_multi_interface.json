@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "A proposta prevê múltiplas interfaces implícitas (portal público de verificação, carteira digital do estudante, painel institucional, API para terceiros, e-mail/webhooks/push), com perfis de usuário distintos identificados na cadeia de valor (estudante, instituição, empregador/verificador), e o desacoplamento é sugerido estruturalmente pela topologia de times e bounded contexts — mas a arquitetura não declara explicitamente uma estratégia API-first ou separação de camada de apresentação, e as escolhas de interface não são justificadas por análise de alcance de mercado, apenas inferidas pelos casos de uso descritos."
+}

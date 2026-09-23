@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado e isolado na camada 'genesis' — modelos de ML por vertical industrial (petroquímica, mineração, papel) combinados com correlação causal meteorológica — separado explicitamente de commodities e produtos de prateleira, extensível a novas regulações e indústrias, e resolve lacunas reais que plataformas genéricas de IoT/monitoramento não cobrem; perde 2 pontos por não articular explicitamente a barreira de entrada (dados históricos de treinamento por setor como moat) nem o argumento de por que um concorrente não consegue replicar o motor de conformidade multi-regulação em tempo razoável."
+}

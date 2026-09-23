@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta menciona infraestrutura de filas (RabbitMQ/Kafka) e bounded contexts (Analytics, LabelGeneration) que sugerem processamento assíncrono latente, mas parte de um Modular Monolith onde tudo roda no mesmo processo — sem isolamento físico real, sem menção explícita a workers separados, bulkheads ou circuit breakers para cargas pesadas, e sem estratégia de fallback caso LabelGeneration ou CarrierIntegration saturem e degradem o núcleo da aplicação."
+}

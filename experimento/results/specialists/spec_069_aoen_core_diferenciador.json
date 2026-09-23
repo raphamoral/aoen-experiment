@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 69,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (motor WCAG com interface AccessibilityEngine abstraída) está claramente identificado, isolado via contrato scan(url, config) => Report, extensível por design (axe-core, Pa11y, IBM Equal Access ou motor proprietário são implementações intercambiáveis), e resolve um problema real de conformidade legal com arquitetura que nenhum concorrente commodity oferece; perde um ponto por não evidenciar o que torna o motor proprietário com IA genuinamente superior às engines open-source existentes — sem isso, o diferenciador é arquitetural mas não tecnologicamente insubstituível."
+}

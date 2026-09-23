@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "arch_flow",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta conta uma história arquitetural consistente — a cadeia de valor mapeia diretamente nos bounded contexts, a evolução Wardley posiciona corretamente os diferenciais competitivos (certificação e compliance como custom-built, infraestrutura como commodity), e as escolhas tecnológicas reforçam os objetivos declarados (Stripe Connect para split, Elasticsearch para discovery, escrow para o contexto de transação); a coerência é ligeiramente comprometida pela topologia de times truncada no input e por uma ambiguidade entre o escrow declarado como 'product' na evolução e como contexto próprio (OrderTransaction), sugerindo indefinição sobre build vs. buy nesse ponto crítico."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura Hexagonal com ports e adapters múltiplos por interface (ex: três gateways de shipment, três de pagamento, dois de event bus) garante substituição independente de qualquer tecnologia sem tocar o core; o domínio explicitamente livre de dependências externas e o IEventBusPort para eventos de domínio permitem crescimento e adição de funcionalidades por extensão — a nota não é 10 pois a proposta não evidencia estratégias explícitas de escalabilidade de leitura (CQRS/read models) nem versionamento de API, que seriam necessários na transição para cargas maiores sem mudança arquitetural."
+}

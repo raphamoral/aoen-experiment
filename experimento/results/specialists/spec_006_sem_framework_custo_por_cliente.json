@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 5,
+  "justificativa": "O projeto menciona custo variável por operação ('cada processamento de exame pode custar entre R$0,10 e R$0,50'), o que é um ponto de partida, mas não apresenta cálculo real por cliente — falta decomposição completa (IA + storage + compute + fila), ausência de mecanismo de rastreamento de consumo por tenant, e nenhuma conexão explícita entre custo por operação e margem por cliente no modelo de precificação."
+}

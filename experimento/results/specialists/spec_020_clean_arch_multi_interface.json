@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta descreve apenas a camada de entidades de domínio puras ('sem dependência de frameworks'), o que é um pré-requisito arquitetural para desacoplamento, mas não menciona nenhuma interface concreta (web, mobile, CLI, API), não identifica perfis de usuário distintos por canal, e não apresenta qualquer justificativa de mercado para escolhas de interface."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O documento menciona implicitamente um público-alvo ('entregas last-mile', 'B2B2C') e um segmento (gestão de frotas), mas trata-se de uma proposta puramente arquitetural — não há articulação da dor do cliente, estimativa de tamanho de mercado, diferenciação frente a concorrentes como Onfleet, Routific ou OptimoRoute, nem proposta de valor expressa em termos de resultado de negócio para o comprador."
+}

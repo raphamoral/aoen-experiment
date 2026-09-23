@@ -1,0 +1,47 @@
+{
+  "ideia_idx": 46,
+  "ideia": "App de personal trainer virtual com IA e visão computacional",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Usuário (objetivo de saúde/performance) → Onboarding e avaliação inicial → Plano de treino personalizado (IA) → Execução do treino com câmera (visão computacional em tempo real) → Feedback instantâneo de postura e repetições → Registro de progresso e histórico → Adaptação do plano (loop de aprendizado) → Engajamento e retenção (gamificação, metas, notificações) → Cobrança e assinatura. Infraestrutura de suporte: inferência de ML, streaming de vídeo/pose, armazenamento de dados biométricos, identidade e pagamentos.",
+    "bounded_contexts": [
+      "Identidade & Perfil do Atleta (conta, consentimento LGPD/GDPR, dados físicos, limitações e lesões)",
+      "Planejamento de Treino (catálogo de exercícios, periodização, geração e adaptação de planos por IA)",
+      "Execução de Treino (sessão ao vivo, contagem de repetições, ritmo, descanso)",
+      "Análise de Movimento / Visão Computacional (estimativa de pose, detecção de erros de forma, score de execução)",
+      "Progresso & Métricas (histórico, evolução, PRs, relatórios)",
+      "Coaching Conversacional (assistente LLM, motivação, dúvidas, ajuste por linguagem natural)",
+      "Engajamento & Gamificação (streaks, metas, desafios, notificações)",
+      "Conteúdo (biblioteca de exercícios, vídeos demonstrativos, curadoria de profissionais)",
+      "Assinatura & Cobrança (planos, trial, faturamento, impostos)",
+      "Integrações de Saúde (Apple Health, Google Fit, wearables)",
+      "Plataforma de ML (treinamento, avaliação, versionamento e monitoramento de modelos)"
+    ],
+    "component_evolution": "GENESIS: modelos proprietários de avaliação de qualidade do movimento por exercício (diferencial competitivo central) e o loop de adaptação do plano com base em feedback biomecânico. CUSTOM: motor de planejamento de treino, lógica de contagem de repetições e detecção de erros de forma, experiência de sessão ao vivo, gamificação e pipeline de dados de treino para melhoria contínua dos modelos. PRODUCT: estimativa de pose de base (MediaPipe/MoveNet/BlazePose), LLMs via API para coaching conversacional, feature store e plataforma de experimentação, analytics de produto, envio de notificações. COMMODITY: cloud (compute, storage, CDN), autenticação/identidade, pagamentos e assinaturas (Stripe/lojas de apps), banco de dados gerenciado, observabilidade, CI/CD, e-mail e push. Regra: investir engenharia em genesis/custom, comprar produto e consumir commodity.",
+    "team_topology": "Stream-aligned teams (alinhadas ao fluxo de valor): (1) Time Treino & Sessão ao Vivo (execução, feedback em tempo real, app mobile/web); (2) Time Planejamento & Personalização (plano, adaptação, coaching conversacional); (3) Time Engajamento & Progresso (métricas, gamificação, retenção, onboarding); (4) Time Growth & Monetização (assinatura, paywall, experimentos). Complicated-subsystem team: Visão Computacional & Biomecânica (modelos de pose e qualidade de movimento, que exigem especialização rara em ML/CV). Platform team: Plataforma de Desenvolvimento e ML (CI/CD, infraestrutura, MLOps, observabilidade, dados, segurança e privacidade) oferecendo serviços self-service. Enabling team (temporário): Especialistas em Educação Física/Fisioterapia e Ética/Privacidade de IA, apoiando as demais equipes na validação de conteúdo e conformidade. Modos de interação: colaboração entre Visão Computacional e Treino ao Vivo na fase de descoberta, depois X-as-a-Service; a plataforma atua como X-as-a-Service para todos; o enabling facilita e depois se retira.",
+    "flow_optimization": "Times pequenos e autônomos com propriedade de ponta a ponta de cada contexto, com carga cognitiva limitada. Inferência de pose no dispositivo (on-device) para latência mínima e privacidade, reduzindo dependências entre times e custos. Contratos de API e eventos versionados entre contextos, evitando acoplamento. Deploy contínuo com feature flags e rollouts graduais (canary) para modelos e app. Loop de feedback rápido: telemetria de sessão anonimizada alimenta a melhoria dos modelos. Plataforma self-service reduz filas e handoffs. Métricas de fluxo (DORA, lead time, WIP) e de valor (treinos concluídos por semana, retenção D30, NPS de feedback de forma) acompanhadas por time. Revisão periódica do mapa de Wardley para reclassificar componentes conforme evoluem (por exemplo, pose estimation migrando de custom para commodity) e reorientar o investimento.",
+    "interfaces": [
+      "App mobile (iOS/Android) com captura de câmera e inferência on-device",
+      "App web/PWA para planejamento, histórico e conta",
+      "API pública REST/GraphQL de gateway para os clientes",
+      "Eventos de domínio assíncronos (TreinoConcluído, RepeticaoAnalisada, PlanoAtualizado, AssinaturaAlterada) via broker de mensagens",
+      "WebRTC/WebSocket para sessões com feedback em tempo real, quando a inferência é em servidor",
+      "API interna de inferência de modelos (gRPC) do subsistema de Visão Computacional",
+      "Integração com Apple HealthKit, Google Health Connect e wearables",
+      "Webhooks e API de cobrança (Stripe, App Store, Google Play)",
+      "API de LLM para o coach conversacional, atrás de um gateway com guardrails",
+      "Painel administrativo e de conteúdo para profissionais e suporte",
+      "API B2B para academias, empresas e planos de saúde (fase futura)"
+    ],
+    "escalabilidade": "Inferência de pose no dispositivo faz o custo de computação por usuário tender a zero e escala linearmente com a base instalada, sem servidores de GPU no caminho crítico. Serviços de backend stateless em contêineres (Kubernetes ou serviço gerenciado) com autoscaling horizontal. Comunicação assíncrona por eventos absorve picos (por exemplo, janelas de treino no início da manhã e à noite). Dados de sessão em armazenamento de séries temporais e objetos, com particionamento por usuário e retenção em camadas (quente/frio). Modelos mais pesados ou de análise offline rodam em lotes com GPUs sob demanda ou spot. CDN para conteúdo de vídeo. Multirregião conforme a demanda e requisitos de residência de dados (LGPD/GDPR). Escala organizacional: novos contextos viram novos times stream-aligned, sem aumentar a carga cognitiva dos existentes.",
+    "custos": "Principais fatores: (1) inferência de ML, mitigada com modelos leves on-device e processamento no servidor apenas quando necessário; (2) tokens de LLM para o coach, mitigados com cache, modelos menores para tarefas simples, respostas curtas e limites por plano; (3) armazenamento e egress de vídeo, mitigados por não armazenar vídeo bruto (guardar apenas keypoints e métricas) e por usar CDN; (4) treinamento e rotulagem de dados, com uso de spot instances, aprendizado ativo e curadoria seletiva; (5) taxas de lojas de apps (15–30%) e de gateway de pagamento; (6) conformidade e segurança de dados biométricos e de saúde (DPIA, auditorias); (7) folha de especialistas em ML/CV, que é o maior custo fixo. FinOps com tags por contexto e time, orçamentos e alertas por unidade econômica (custo por sessão de treino e por usuário ativo). Meta: margem bruta acima de 75% com custo de inferência por sessão próximo de zero.",
+    "monetizacao": "Modelo freemium com assinatura recorrente. Gratuito: treinos básicos, contagem de repetições e histórico limitado. Premium (mensal/anual, com trial de 7 a 14 dias): planos personalizados e adaptativos, feedback de forma em tempo real, coach conversacional ilimitado, análises avançadas e integrações com wearables. Plano família ou casal. Camada B2B2C: licenciamento para academias, personal trainers humanos (ferramenta de acompanhamento à distância), empresas (benefícios de bem-estar) e planos de saúde/seguradoras. Receitas complementares: programas especializados pagos (reabilitação, gestantes, preparação para corrida), parcerias com marcas de equipamentos e nutrição, marketplace de personal trainers humanos com comissão. API de análise de movimento para terceiros no longo prazo. Métricas-chave: conversão free→pago, churn mensal, LTV/CAC e ARPU.",
+    "stack_sugerida": "Mobile: Flutter ou React Native com módulos nativos (Swift/Kotlin) para câmera e inferência; Core ML, TensorFlow Lite e MediaPipe para pose on-device. Web: Next.js/TypeScript. Backend: serviços em Kotlin/Java ou Go/TypeScript (NestJS) por bounded context, com API Gateway, gRPC interno e GraphQL/REST externo; Python (FastAPI) para serviços de ML. Mensageria/eventos: Kafka ou serviço gerenciado (SNS/SQS, Pub/Sub). Dados: PostgreSQL gerenciado (transacional), TimescaleDB ou ClickHouse (séries temporais e analytics), Redis (cache e sessão), S3/GCS (objetos), pgvector ou vector DB para busca semântica e memória do coach. ML: PyTorch, ONNX, MLflow ou Vertex AI/SageMaker, feature store (Feast), monitoramento de drift; LLMs via API (Claude, com prompt caching) atrás de gateway com guardrails. Identidade: Auth0, Cognito ou Keycloak. Pagamentos: Stripe (web) mais RevenueCat para lojas de apps. Infra: AWS ou GCP, Kubernetes gerenciado, Terraform, GitHub Actions, Argo CD. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Produto e growth: PostHog ou Amplitude, feature flags (LaunchDarkly/Unleash), Firebase Cloud Messaging e APNs para push."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "dfd4115afd4e",
+    "gerado_em": "2026-09-21T03:16:18+00:00",
+    "runner": "runner.py"
+  }
+}

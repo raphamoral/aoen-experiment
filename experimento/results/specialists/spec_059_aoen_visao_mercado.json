@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 59,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está razoavelmente definido (porte, setores, decisores), e a fase 2 esboça lógica de adoção por persona, mas faltam dados de tamanho de mercado (TAM/SAM), a dor do cliente é implícita ('checklist manual') em vez de quantificada (custo por contratação, tempo médio de onboarding, taxa de churn precoce), e não há nenhuma menção a concorrentes diretos (Rippling, Sapling, Workday Onboarding) nem diferenciação posicionada explicitamente contra eles."
+}

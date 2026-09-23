@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 77,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "O fluxo principal é explicitamente fixo e idêntico para todos os clientes, os parâmetros-chave (thresholds, regras de alerta, mapa de dispositivos, timezone, moeda, frequência de amostragem) são configuráveis por tenant, e o motor de anomalias é orientado a configuração — novo cliente padrão entra sem código; a nota fica abaixo de 10 porque adicionar suporte a um inversor ou protocolo ainda inédito na plataforma exige desenvolvimento de um novo adaptador, ou seja, há um subconjunto de onboardings que ainda dependem de código."
+}

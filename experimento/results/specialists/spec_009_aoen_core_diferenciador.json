@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (motor de certificação com fluxo de estados, certificado digital com hash e transferência de titularidade) está explicitamente nomeado, arquiteturalmente isolado em uma CertificationService sem regras de negócio nas interfaces, e é extensível por design — o executor do laudo (inspetor próprio, parceiro via API ou IA futura) é substituível sem alterar o fluxo; perde um ponto porque a proposta não defende por que um concorrente com capital suficiente não poderia replicar exatamente o mesmo fluxo de certificação, ou seja, a insubstituibilidade competitiva não está fundamentada — apenas a insubstituibilidade funcional."
+}

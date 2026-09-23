@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 30,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura inclui clientId como parâmetro em todos os métodos da StockService (submitScan, getStockStatus, getAlerts), o que cria o pré-requisito técnico para rastreamento por tenant — mas a proposta não menciona em nenhum momento mensuração de custo por cliente, não calcula custo por operação/scan, não conecta o consumo de VisionProvider (que tem custo variável por chamada em Google Vision, Rekognition, etc.) ao cliente que o gerou, e não há nenhuma referência a modelo de precificação ou margem por tenant."
+}

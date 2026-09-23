@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta define bounded contexts separados e times dedicados (ex: 'Fiscal & NF' owning Invoice Emission), o que sugere isolamento lógico, mas não menciona explicitamente nenhum mecanismo de isolamento físico de processamento pesado — como filas de mensagens, workers assíncronos ou subprocessos separados para operações críticas como assinatura e envio de NF-e à SEFAZ, cálculo de DAS ou integração com Open Finance; o item 'commodity' lista infraestrutura serverless que poderia viabilizar escalabilidade independente, mas não é associado a nenhum padrão de resiliência (circuit breaker, bulkhead, dead-letter queue ou fallback) para proteger o restante do sistema em caso de falha nesses processos."
+}

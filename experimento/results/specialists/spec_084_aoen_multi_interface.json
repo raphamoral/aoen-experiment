@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 84,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (app mobile, dashboard web, API REST, bot WhatsApp, portal admin), cada uma justificada por um perfil de usuário real e potencial de mercado quantificado, com lógica de negócio completamente desacoplada via Service Layer centralizada, garantindo que novos canais possam ser adicionados sem alterar regras de diagnóstico ou matching."
+}

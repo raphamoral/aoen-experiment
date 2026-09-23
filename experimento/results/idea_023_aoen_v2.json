@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 23,
+  "ideia": "App de assistente jurídico com IA para pequenos escritórios",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de raciocínio jurídico assistido por IA: análise de documentos legais, identificação de riscos contratuais, pesquisa de jurisprudência e geração de minutas — sem isso o produto é apenas um editor de texto caro.",
+    "fase1_mercado": "Advogados e sócios de escritórios com 1 a 15 profissionais que não têm orçamento para contratar equipes de pesquisa jurídica dedicadas ou licenças de LegalTech enterprise (LexisNexis, Thomson Reuters). Mercado brasileiro estimado em ~400 mil OAB ativos em escritórios de pequeno porte.",
+    "fase1_extensivel": "Sim. O core é modelado como uma interface abstrata de 'LegalReasoningProvider'. A implementação inicial usa LLM externo (Claude, GPT-4), mas pode ser substituída por modelo fine-tuned próprio, modelo local (llama jurídico) ou fornecedor alternativo sem alterar a lógica de negócio. Nenhuma chamada de API de IA aparece fora do adapter layer.",
+    "fase2_interfaces": [
+      "Web App (SPA) — interface principal para uso em desktop no escritório",
+      "Mobile App (PWA progressive) — acesso rápido a consultas e notificações em audiências e deslocamentos",
+      "Integração WhatsApp Business API — canal onde advogados brasileiros já operam, zero curva de adoção",
+      "Plugin para Google Docs / Word Online — análise de contratos dentro da ferramenta que o cliente já usa",
+      "API REST pública — para integração com softwares de gestão de escritório (Themis, Astrea, Projuris)"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado principal (advogados no escritório, fluxo de trabalho diário). Mobile abre o mercado de advogados itinerantes e de audiência. WhatsApp abre o mercado de adoção zero-fricção — escritórios que resistem a novos sistemas adotam via canal familiar. Plugin Word/Docs abre mercado de advogados que nunca vão mudar sua ferramenta de escrita. API abre mercado B2B de revenda e integração com ERPs jurídicos já instalados.",
+    "fase2_service_layer": "Todas as interfaces chamam exclusivamente o LegalAssistantService (camada de serviço centralizada). Nenhuma interface contém lógica de negócio: o Web App, o WhatsApp bot e o plugin Word enviam payloads normalizados ao mesmo service, que executa análise, aplica regras de contexto do cliente e retorna resposta estruturada. Trocar ou adicionar uma interface não toca em nada abaixo do controller.",
+    "fase3_fluxo_fixo": "Ingestão do documento (upload/texto) → normalização e chunking → enriquecimento de contexto jurídico (área do direito, jurisdição) → prompt assembly com template do cliente → chamada ao LegalReasoningProvider → pós-processamento da resposta (formatação, extração de riscos, sugestões) → persistência do histórico → entrega ao canal de origem. Este pipeline nunca muda entre clientes.",
+    "fase3_parametros_configuraveis": [
+      "area_direito: ['trabalhista', 'civel', 'tributario', 'contratual', 'familia']",
+      "jurisdicao: ['federal', 'SP', 'RJ', 'MG', ...]",
+      "tom_respostas: ['formal_peticao', 'resumo_executivo', 'checklist_pratico']",
+      "templates_minuta: mapeamento de tipo de documento para template base do escritório",
+      "nivel_detalhe_analise: ['rapido', 'padrao', 'profundo']",
+      "fontes_jurisprudencia: ['STJ', 'STF', 'TRT_regiao', 'TJSP', ...]",
+      "identidade_visual: logo, cores e rodapé para documentos gerados",
+      "alertas_prazo: tipos de prazo a monitorar e regras de notificação",
+      "usuarios_ativos: número de seats licenciados",
+      "modelo_ia_preferido: qual LLM usar (por custo ou qualidade)"
+    ],
+    "fase3_novo_cliente": "Novo cliente = criação de um registro TenantConfig no banco com os parâmetros acima via painel de onboarding (formulário guiado de 10 minutos). Zero deploy, zero código. O pipeline existente lê o TenantConfig em runtime e se comporta conforme configurado. Um script de seed popula defaults sensatos para o perfil 'escritório generalista' caso o cliente não customize nada.",
+    "fase4_core_isolado": "O worker de inferência de IA (LegalReasoningWorker) roda como processo separado em container independente, consome jobs de uma fila durável (Redis Streams ou SQS) e escala horizontalmente sem afetar a API principal. A API web nunca chama a IA diretamente — ela enfileira e retorna job_id; o cliente recebe resultado via webhook ou polling.",
+    "fase4_custo_total_cliente": "Custo core IA: ~$0.008 a $0.04 por análise (tokens input/output, varia por modelo e tamanho do documento). Custo infra proporcional: $0.50–$1.20/mês por cliente ativo (fração de compute, banco, cache). Armazenamento: $0.023/GB/mês (S3-compatible) — escritório médio gera ~2GB/ano = ~$0.04/mês. Banda: desprezível (<$0.01/mês). Custo operacional por cliente: ~$1–$2/mês. Total estimado: $8–$25/cliente/mês dependendo do volume de análises. Margem target de 60–70% sobre plano mínimo de R$149/mês.",
+    "fase4_continuidade": "A API web e as interfaces funcionam normalmente com o worker offline — requests são enfileirados com TTL de 24h. O usuário vê status 'em processamento' em vez de erro. Documentos já processados ficam em cache e continuam acessíveis. Alertas de fila parada disparam PagerDuty após 5 minutos sem consumer ativo. O produto não cai — apenas fica mais lento.",
+    "fase4_manutencao": "O LegalReasoningProvider é uma interface com método único analyze(context, prompt, config). Trocar de GPT-4 para Claude ou para modelo próprio é implementar um novo adapter e alterar uma linha de configuração de ambiente. Zero downtime: novo adapter entra em produção via feature flag, rollout gradual por percentual de tenants, rollback instantâneo.",
+    "monetizacao": "SaaS com planos por seats e volume: Starter R$149/mês (1 usuário, 50 análises/mês), Profissional R$349/mês (3 usuários, 200 análises), Escritório R$699/mês (10 usuários, ilimitado + API access). Add-ons: análise de contratos em volume (pacotes de 100), integração WhatsApp (R$99/mês), customização de templates. Trial gratuito de 14 dias com 20 análises. Canal de aquisição principal: parceria com OAB seccional e marketplaces de software jurídico.",
+    "stack_sugerida": "Backend: Node.js (Fastify) ou Python (FastAPI) para API principal. Workers: Python (melhor ecossistema de NLP/LLM tooling). Fila: Redis Streams (self-hosted) ou AWS SQS. Banco: PostgreSQL (dados estruturados de clientes/configurações) + pgvector (embeddings para busca semântica em jurisprudência). Storage: MinIO self-hosted ou S3. Cache: Redis. LLM: Anthropic Claude via API (primary) com fallback OpenAI. Frontend: Next.js (Web App) + shadcn/ui. Mobile: PWA sobre o Next.js (evita custo de app store no MVP). Infra: Railway ou Render no MVP, migrar para AWS ECS/Fargate ao atingir 200 clientes. Observabilidade: OpenTelemetry + Grafana para custo por tenant em tempo real."
+  }
+}

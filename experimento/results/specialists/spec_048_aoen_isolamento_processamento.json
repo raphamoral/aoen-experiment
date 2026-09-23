@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 48,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta apresenta boa separação lógica (ModelProvider, ForecastService, pipeline descrito em etapas), mas não menciona em nenhum momento filas, workers separados, processos independentes, execução assíncrona ou fallback para falhas no processamento pesado — o pipeline é descrito como 'fixo no código e executa para todos os clientes', sugerindo execução acoplada onde uma falha no treinamento ou na geração de previsões pode comprometer todo o sistema."
+}

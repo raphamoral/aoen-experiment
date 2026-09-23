@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "O projeto menciona os componentes de infraestrutura (EC2, RDS, S3, Redis, CDN) e apresenta uma estimativa agregada inicial de ~$200/mês, além de alertas de billing, mas não há breakdown de custo por serviço, nenhuma estratégia de otimização (instâncias spot, reserved instances, scale-to-zero, S3 Intelligent-Tiering) e a projeção de crescimento é apenas qualitativa ('custo cresce com volume'), sem curvas ou thresholds concretos por faixa de clientes."
+}

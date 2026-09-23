@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente arquitetura funcional (motores, interfaces, fluxo de campanha) sem qualquer menção a mensuração de custos — nem total de infra, nem por tenant, nem por operação — tornando impossível calcular margem por cliente ou conectar consumo de recursos ao modelo de precificação."
+}

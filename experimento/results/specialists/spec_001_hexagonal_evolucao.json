@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura hexagonal com portas/adaptadores segregados por interface e IoC container permite substituição independente de tecnologias (banco, mapas, notificações, auth), domínio isolado de frameworks externos e escalonamento horizontal natural, mas a proposta de microsserviços desde o início introduz complexidade distribuída prematura que pode dificultar refatorações futuras antes do sistema atingir maturidade operacional."
+}

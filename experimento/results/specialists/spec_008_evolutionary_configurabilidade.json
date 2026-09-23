@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta menciona feature flags por tenant e controle de acesso granular, sinalizando intenção de configurabilidade, mas não descreve um modelo de configuração estruturado — não há referência a schema de tenant config, engine de regras por cliente, nem processo de onboarding sem código; as Anti-Corruption Layers para ERPs (SAP, TOTVS) e integrações governamentais (SINIR, SIGOR) sugerem que novos conectores ainda exigirão desenvolvimento, não apenas configuração."
+}

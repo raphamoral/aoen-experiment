@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A separação em 10 bounded contexts bem definidos, o isolamento do BlockchainLedger como abstração técnica e o mapeamento Wardley explícito (genesis→commodity) demonstram forte consciência evolutiva; porém, smart contracts em zona genesis são inerentemente imutáveis após deploy — o risco de acoplamento irreversível entre ChainOfCustody e a estrutura dos contratos na rede blockchain não está mitigado por nenhum padrão anti-corrupção explícito (ports/adapters ou event sourcing agnóstico ao protocolo), o que pode forçar migrações custosas se regras de custódia mudarem por exigência regulatória."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador — gestão de disponibilidade, precificação dinâmica e ciclo de vida de reservas em espaços descentralizados — está bem identificado e isolado via ports/adapters (arquitetura hexagonal), com extensibilidade real (sem lock-in de fornecedor), mas a proposta ainda não articula por que esse núcleo é insubstituível frente a alternativas como Cobot ou Nexudus: falta evidenciar o que a 'descentralização' resolve de forma que os concorrentes não resolvem."
+}

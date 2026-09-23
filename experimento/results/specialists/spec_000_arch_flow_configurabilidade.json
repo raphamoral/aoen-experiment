@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta demonstra consciência básica de multi-tenancy (sharding por clínica, planos de billing) mas é completamente silente sobre uma camada de configuração por tenant — não há menção a feature flags, parâmetros configuráveis por cliente, store de configuração, ou processo de onboarding config-driven, o que indica que o comportamento diferenciado por tenant provavelmente ainda exigiria código ou deploy."
+}

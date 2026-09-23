@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 6,
+  "ideia": "App de nutrição personalizada com IA baseada em exames laboratoriais",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de interpretação de exames laboratoriais via IA que traduz biomarcadores em recomendações nutricionais personalizadas com rastreabilidade clínica — sem isso o produto é apenas mais um app de dieta genérico",
+    "fase1_mercado": "Primário: adultos com condições crônicas ou preventivas (diabetes, dislipidemia, hipotireoidismo) dispostos a pagar por saúde baseada em evidências. Secundário: nutricionistas e clínicas que querem escalar atendimento com inteligência clínica. Terciário: planos de saúde e empresas com programas de wellness corporativo",
+    "fase1_extensivel": "Sim. O motor de IA é abstraído por uma interface AnalysisEngine com método analyze(biomarkers, patientContext) → NutritionalPlan. Hoje pode usar Claude/GPT-4o; amanhã pode ser um modelo fine-tuned médico ou motor proprietário. A base de conhecimento nutricional (protocolos clínicos, ranges de referência) é separada do modelo e versionada independentemente, permitindo troca sem reescrever regras clínicas",
+    "fase2_interfaces": [
+      "Web App (SPA) — paciente final: upload de exames, visualização do plano nutricional, histórico de evolução e metas",
+      "Mobile App (iOS/Android) — paciente final: scanner de exame por câmera, diário alimentar, notificações e check-ins diários",
+      "Dashboard B2B — nutricionista/clínica: gestão de carteira de pacientes, customização de protocolos clínicos, exportação de relatórios profissionais",
+      "API REST + Webhooks — integração com laboratórios, sistemas de prontuário (HIS/EHR) e plataformas de saúde corporativa",
+      "WhatsApp Bot — segmento de baixa fricção: receber plano simplificado e lembretes sem instalar app"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado B2C direto com maior volume de aquisição. Mobile App retém o usuário no cotidiano e aumenta LTV via engajamento diário. Dashboard B2B abre o mercado de clínicas e nutricionistas com ticket alto e contrato recorrente. API abre distribuição via laboratórios e plataformas de saúde sem CAC — o laboratório já tem o paciente. WhatsApp Bot penetra mercados emergentes e população menos tech-savvy sem custo de app nativo",
+    "fase2_service_layer": "Uma camada NutritionService expõe casos de uso puros (submitExam, generatePlan, updateGoals, getHistory) sem conhecimento de interface. Cada canal consome via adaptadores: HTTP Controllers para web/mobile/API REST, WebhookHandlers para integrações de laboratório, e BotHandlers para WhatsApp. A lógica de negócio nunca reside no controller — está no Service, que chama o AnalysisEngine e o PlanRepository de forma agnóstica ao canal",
+    "fase3_fluxo_fixo": "1. Ingestão do exame (upload manual ou webhook de laboratório) → 2. Extração e normalização de biomarcadores via OCR + parser → 3. Validação clínica dos valores contra ranges de referência configurados → 4. Análise IA com contexto clínico do paciente → 5. Geração do plano nutricional estruturado → 6. Persistência + notificação ao usuário → 7. Coleta de feedback e gatilho de reavaliação",
+    "fase3_parametros_configuraveis": [
+      "Condições clínicas prioritárias: diabetes, renal, cardíaco, esportivo, emagrecimento",
+      "Protocolo de referência: SBEM, ADA, WHO, ANVISA — selecionável por cliente B2B",
+      "Subset de biomarcadores monitorados: configurável por especialidade ou plano contratado",
+      "Tom do relatório: linguagem para paciente leigo vs. relatório clínico para nutricionista",
+      "Restrições alimentares: vegano, vegetariano, halal, kosher, intolerâncias",
+      "Idioma e localização: ranges de referência por país e laboratório parceiro",
+      "Branding white-label: logo, paleta de cores, domínio personalizado para clínicas",
+      "Frequência e gatilhos de reavaliação: novo exame, tempo decorrido, mudança de meta",
+      "Integrações ativas: quais webhooks de laboratório ou EHR estão habilitados por tenant",
+      "Limites de análise por plano: cotas mensais por tier de assinatura"
+    ],
+    "fase3_novo_cliente": "Novo cliente B2B é onboardado via painel de configuração que gera um ClientConfig JSON (protocolo clínico, biomarcadores, branding, integrações habilitadas, limites de uso). Esse config é persistido e injetado no NutritionService em runtime via tenant context — zero deploy, zero código novo. Para B2C, o onboarding é self-service: questionário inicial gera automaticamente o perfil clínico do paciente como ponto de partida para a primeira análise",
+    "fase4_core_isolado": "O AnalysisWorker roda como processo assíncrono separado, consumindo uma fila de mensagens (SQS/RabbitMQ). Recebe ExamAnalysisJob, executa OCR + chamada ao LLM via AnalysisEngine, persiste o plano gerado e emite evento PlanReady. É o único componente que acessa a API externa de LLM e o módulo OCR pesado. Escala horizontalmente de forma independente dos servidores web, sem afetar latência da interface",
+    "fase4_custo_total_cliente": "Custo por análise: LLM API $0.03–0.12 (Claude Sonnet com prompt caching reduz ~60% em análises recorrentes) + OCR $0.01 + compute do worker $0.005. Custo de infra proporcional mensal: armazenamento de exames S3 ~$0.023/GB, banco por usuário ativo ~$0.002/mês, CDN/banda ~$0.005/usuário. Total por cliente ativo/mês: $0.15–0.65 em core (2–5 análises) + $0.05 infra = $0.20–0.70. Margem viável com planos entre $9.90 e $29.90/mês",
+    "fase4_continuidade": "O AnalysisWorker é desacoplado por fila — se cair, jobs ficam enfileirados e são processados na retomada sem perda. A interface exibe o plano mais recente em cache sem degradação visível ao usuário. Circuit breaker no AnalysisEngine detecta falha do provedor principal (ex: Anthropic) e roteia automaticamente para provedor backup (ex: OpenAI). Falha do core não afeta o SLA da interface nem o acesso a dados históricos",
+    "fase4_manutencao": "AnalysisEngine é uma interface com implementações intercambiáveis (ClaudeEngine, OpenAIEngine, LocalModelEngine). Trocar provedor de IA = adicionar nova implementação + atualizar config de tenant ou global, sem alterar o fluxo. Deploy do AnalysisWorker usa estratégia blue-green com drenagem de fila antes do shutdown, garantindo zero perda de jobs em processamento durante atualizações",
+    "monetizacao": "B2C: assinatura mensal por tier — Basic $9.90 (1 análise/mês), Pro $19.90 (análises ilimitadas + histórico completo), Premium $29.90 (+ integração com apps de saúde e wearables). B2B clínicas: licença por sede $99–299/mês com volume de análises incluído + excedente por análise. White-label para laboratórios: revenue share por exame processado ($0.50–1.50/análise). API enterprise: pay-per-use para integrações de plataformas de saúde. Funil de aquisição: 1 análise gratuita sem cadastro de cartão",
+    "stack_sugerida": "Backend: NestJS (Node.js) ou FastAPI (Python) para API principal. Workers: processo Node/Python separado consumindo SQS ou CloudAMQP. IA: Claude claude-sonnet-4-6 via Anthropic SDK com prompt caching para contexto clínico recorrente. OCR: AWS Textract ou Google Document AI. Banco: PostgreSQL (dados clínicos, planos, config de tenant) + Redis (cache de planos ativos e sessões). Storage: S3 para exames brutos. Frontend Web: Next.js. Mobile: React Native (Expo). Infra: AWS ECS Fargate para workers com auto-scaling por profundidade de fila + RDS Aurora Serverless + CloudFront. Observabilidade: OpenTelemetry + Grafana Cloud com dashboard de custo por análise por tenant para viabilidade econômica contínua"
+  }
+}

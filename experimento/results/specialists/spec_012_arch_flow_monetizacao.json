@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona um bounded context de 'Billing & Subscription' com planos e uso medido por sensor/dispositivo, mas não detalha tiers, valores, métricas de negócio (MRR, LTV, CAC, churn) nem demonstra conexão explícita entre custo operacional e receita gerada por cliente."
+}

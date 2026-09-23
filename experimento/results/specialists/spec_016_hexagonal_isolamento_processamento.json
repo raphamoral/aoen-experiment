@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta implica processamento assíncrono pela presença de KafkaAdapter/RabbitMQAdapter (IEventBusPort) e comunicação inter-serviço via gRPC, sugerindo arquitetura de microserviços, mas não define explicitamente quais processos pesados (fraude, relatórios, triagem) rodam em workers isolados fisicamente, não descreve fallback em caso de falha nesses workers, e não especifica estratégia de escalonamento independente para as cargas computacionalmente caras."
+}

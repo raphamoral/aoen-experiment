@@ -1,0 +1,46 @@
+{
+  "ideia_idx": 12,
+  "ideia": "SaaS de monitoramento de qualidade do ar para indústrias",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Confiabilidade: disponibilidade 99.9%+ para dados regulatórios críticos",
+      "Escalabilidade: suporte a milhares de sensores por cliente com crescimento horizontal",
+      "Observabilidade: rastreamento completo de ingestão, processamento e alertas",
+      "Integridade dos dados: garantia de não-perda e ordenação temporal de leituras",
+      "Segurança: isolamento de dados por tenant, auditoria de acesso, criptografia em trânsito e repouso",
+      "Elasticidade: absorção de picos durante incidentes industriais (rajadas de eventos)",
+      "Auditabilidade: conformidade com regulações ambientais (CONAMA, ISO 14001, EPA)",
+      "Latência de alertas: notificação em menos de 30s após detecção de anomalia"
+    ],
+    "fitness_functions": [
+      "Automated: uptime >= 99.9% medido via synthetic monitoring a cada 60s",
+      "Automated: latência de ingestão sensor→storage < 5s em P99",
+      "Automated: tempo de entrega de alertas críticos < 30s em P95",
+      "Automated: zero perda de leituras por janela de 24h (reconciliação via seq numbers)",
+      "Automated: tempo de reconexão de sensor após queda < 10s",
+      "Automated: isolamento de tenant validado via testes de penetração por pipeline CI",
+      "Automated: cobertura de testes de contrato de API >= 90%",
+      "Manual (trimestral): auditoria de conformidade regulatória com relatório exportável",
+      "Automated: custo por sensor/mês monitorado via tags de billing e alertado se > threshold"
+    ],
+    "incremental_change": "Estratégia em 4 fases: Fase 1 (MVP) — monolito modular single-tenant com ingestão MQTT, storage time-series e dashboard básico; Fase 2 — extração de serviço de alertas como primeiro bounded context independente, introdução de multi-tenancy via row-level security; Fase 3 — separação do pipeline de ingestão (alta vazão) do pipeline analítico (batch), introdução de message broker; Fase 4 — extração de serviço de compliance/relatórios regulatórios e módulo de ML para anomalias preditivas. Cada fase entrega valor e é validada pelas fitness functions antes de avançar.",
+    "reversibility": "Reversíveis: choice de message broker (Kafka ↔ Pulsar ↔ NATS via adapter pattern), protocolo de ingestão (MQTT ↔ HTTP ↔ CoAP via gateway), provedor de cloud (abstração via Terraform + containers), biblioteca de visualização frontend. Irreversíveis (last responsible moment): escolha do banco time-series após volume real (InfluxDB vs TimescaleDB — migração custosa), modelo de multi-tenancy (schema-per-tenant vs row-level security — decisão atrasada até Fase 2 com dados reais de clientes), estrutura do evento canônico de leitura de sensor (versionamento obrigatório desde o início).",
+    "coupling": "Event-driven como mecanismo primário de desacoplamento: eventos de leitura de sensor publicados em tópicos por tipo/localização. Anti-corruption layer entre sensores externos e modelo interno (diferentes fabricantes têm protocolos distintos). Shared kernel restrito ao evento canônico de leitura (sensor_id, timestamp_utc, pollutant, value, unit, quality_flag). Dependências entre serviços somente via contratos de evento versionados, nunca chamadas síncronas em hot path de ingestão. Backends for Frontends (BFF) para dashboard web vs API de integração vs app mobile.",
+    "interfaces": [
+      "MQTT (port 8883 TLS): ingestão de sensores IoT em tempo real",
+      "REST API v1 (OpenAPI 3.1): gestão de sensores, sites, thresholds e usuários",
+      "WebSocket: streaming de leituras em tempo real para dashboard",
+      "Webhooks configuráveis: entrega de alertas para sistemas externos (ERP, SCADA)",
+      "GraphQL: queries analíticas ad-hoc para relatórios e BI",
+      "gRPC interno: comunicação entre serviços de processamento de alta vazão",
+      "SFTP/S3-compatible: exportação periódica de dados para compliance regulatório",
+      "Zapier/Make webhooks: integrações low-code para PMEs"
+    ],
+    "escalabilidade": "Escala horizontal stateless na camada de ingestão (múltiplos consumers de MQTT broker clusterizado). Time-series database com sharding automático por tenant_id + time range. Read replicas para queries analíticas isoladas do hot path. Cache de leituras recentes (Redis) para dashboards com polling frequente. CDN para assets estáticos e exportações de relatórios. Auto-scaling baseado em métricas de lag de consumer (Kafka consumer group lag) e CPU de processamento. Limites por plano (rate limiting por tenant) protegem contra noisy neighbor.",
+    "custos": "Principais drivers: storage time-series (cresce linearmente com sensores × frequência de leitura — política de downsampling após 90 dias reduz 80% do volume), egress de dados (minimizado com processamento na borda quando possível), instâncias de broker MQTT (fixo, alto valor — compartilhado entre tenants). Estratégia: tiered storage (hot/warm/cold), compressão de séries temporais nativa (gorilla encoding no InfluxDB), alertas de anomalia de custo como fitness function, monitoramento de custo por tenant para precificação justa.",
+    "monetizacao": "Assinatura mensal por tier: Starter (até 20 sensores, alertas básicos, retenção 6 meses), Professional (até 200 sensores, anomaly detection, retenção 2 anos, API access), Enterprise (sensores ilimitados, compliance reports automatizados, SLA contratual, retenção 5 anos, SSO/SAML). Add-ons: relatórios regulatórios automatizados (CONAMA/EPA) como módulo premium, integração com sistemas SCADA/ERP, white-label para revendedores. Modelo expansivo: receita cresce com adição de sensores e sites sem atrição de contrato.",
+    "stack_sugerida": "Ingestão: EMQX (MQTT broker clusterizado) + Apache Kafka para buffer e replay. Processamento: Apache Flink ou Kafka Streams para agregações em tempo real. Storage: TimescaleDB (PostgreSQL extension — facilita queries SQL familiares + time-series otimizado) para leituras, PostgreSQL para metadados/configuração, Redis para cache e pub/sub de alertas. Backend de API: Go (performance e concorrência no hot path de alertas) + Python (serviços analíticos e ML). Frontend: Next.js + React com Recharts/Nivo para visualizações. Infra: Kubernetes (EKS/GKE) + Terraform, Prometheus + Grafana para observabilidade interna, OpenTelemetry para tracing distribuído. CI/CD: GitHub Actions com pipeline de fitness functions automatizadas."
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Confiabilidade: disponibilidade 99.9%+ para dados regulatórios críticos\",\n    \"Escalabilidade: suporte a milhares de sensores por cliente com crescimento horizontal\",\n    \"Observabilidade: rastreamento completo de ingestão, processamento e alertas\",\n    \"Integridade dos dados: garantia de não-perda e ordenação temporal de leituras\",\n    \"Segurança: isolamento de dados por tenant, auditoria de acesso, criptografia em trânsito e repouso\",\n    \"Elasticidade: absorção de picos durante incidentes industriais (rajadas de eventos)\",\n    \"Auditabilidade: conformidade com regulações ambientais (CONAMA, ISO 14001, EPA)\",\n    \"Latência de alertas: notificação em menos de 30s após detecção de anomalia\"\n  ],\n  \"fitness_functions\": [\n    \"Automated: uptime >= 99.9% medido via synthetic monitoring a cada 60s\",\n    \"Automated: latência de ingestão sensor→storage < 5s em P99\",\n    \"Automated: tempo de entrega de alertas críticos < 30s em P95\",\n    \"Automated: zero perda de leituras por janela de 24h (reconciliação via seq numbers)\",\n    \"Automated: tempo de reconexão de sensor após queda < 10s\",\n    \"Automated: isolamento de tenant validado via testes de penetração por pipeline CI\",\n    \"Automated: cobertura de testes de contrato de API >= 90%\",\n    \"Manual (trimestral): auditoria de conformidade regulatória com relatório exportável\",\n    \"Automated: custo por sensor/mês monitorado via tags de billing e alertado se > threshold\"\n  ],\n  \"incremental_change\": \"Estratégia em 4 fases: Fase 1 (MVP) — monolito modular single-tenant com ingestão MQTT, storage time-series e dashboard básico; Fase 2 — extração de serviço de alertas como primeiro bounded context independente, introdução de multi-tenancy via row-level security; Fase 3 — separação do pipeline de ingestão (alta vazão) do pipeline analítico (batch), introdução de message broker; Fase 4 — extração de serviço de compliance/relatórios regulatórios e módulo de ML para anomalias predit"
+}

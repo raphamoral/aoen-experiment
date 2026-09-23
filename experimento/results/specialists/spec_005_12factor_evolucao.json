@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura escala bem e tem boa reversibilidade operacional (artefatos imutáveis, config via env), mas não explicita camadas de abstração (portas e adaptadores / hexagonal) que isolem a lógica de negócio da infraestrutura — a dependência direta de SDKs AWS (SQS, S3, Aurora, ECS) no código, sem interfaces intermediárias, tornaria a troca de backing services uma mudança de código, não apenas de configuração."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 54,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 9,
+  "justificativa": "O pipeline é completamente genérico e parametrizado por botId/configuração carregada em runtime pela ChatbotService, o Web Builder permite onboarding self-service sem nenhum código novo, e a separação código/configuração é explícita — a única ressalva é que regras de escalation e filtros de pós-processamento são mencionados mas não detalhados como config-driven, deixando margem para lógica hardcoded residual."
+}

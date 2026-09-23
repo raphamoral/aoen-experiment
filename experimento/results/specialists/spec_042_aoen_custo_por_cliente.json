@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 42,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente, rastreamento de consumo por tenant ou cálculo de custo por operação — toda a descrição trata a arquitetura como um bloco único, sem qualquer instrumentação de Unit Economics; a abstração do LLM provider poderia ser um ponto de telemetria de custo, mas isso não é sequer citado."
+}

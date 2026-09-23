@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 36,
+  "ideia": "App de gestão de prescrições médicas com alerta de interações medicamentosas",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de detecção de interações medicamentosas: recebe um conjunto de medicamentos prescritos, cruza com base de dados clínica (local ou federada) e retorna riscos classificados por severidade (leve, moderado, grave, contraindicado), com justificativa clínica e sugestão de alternativa.",
+    "fase1_mercado": "Primário: clínicas médicas de pequeno/médio porte sem sistema de prescrição eletrônica integrado. Secundário: farmácias de manipulação e dispensação que precisam validar prescrições recebidas. Terciário: planos de saúde que querem auditoria retroativa de prescrições para redução de sinistros.",
+    "fase1_extensivel": "Sim. O motor é abstraído por uma interface PrescriptionAnalyzer que aceita qualquer provedor de dados de interação: banco proprietário local (SQLite/Postgres com dados ANVISA/FDA), API DrugBank, OpenFDA, ou modelo LLM fine-tuned para farmacologia. Trocar o provedor não altera a interface do produto.",
+    "fase2_interfaces": [
+      "Web App (SPA) — painel para médicos e gestores de clínica prescreverem e consultarem histórico",
+      "Mobile App (iOS/Android) — médicos em atendimento ambulatorial ou visita domiciliar",
+      "API REST/Webhook — integração com sistemas EHR/EMR hospitalares existentes (TASY, MV, Soul MV)",
+      "Widget embarcável — farmácias que querem validação inline no seu próprio sistema de dispensação",
+      "Portal do Paciente (leitura) — paciente visualiza suas prescrições ativas e alertas de interação em linguagem leiga"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de clínicas independentes (maior volume, menor ticket médio). Mobile abre médicos autônomos e teleconsutas (crescimento acelerado pós-pandemia). API/Webhook abre hospitais e redes de clínicas (ticket alto, contrato anual). Widget embarcável abre farmácias e healthtechs que não querem trocar de sistema mas precisam da validação (modelo white-label, margens altas). Portal do Paciente reduz churning e cria diferenciação B2C2B.",
+    "fase2_service_layer": "Cada interface chama exclusivamente a PrescriptionService (camada de aplicação). Nenhuma interface conhece o banco de dados, o motor de interações ou regras de negócio diretamente. A PrescriptionService expõe métodos como analyzePrescription(patientId, medications[]), getPatientHistory(patientId), e acknowledgeAlert(alertId). O transporte (HTTP, WebSocket, gRPC) é resolvido por adaptadores de interface, mantendo a lógica completamente portável.",
+    "fase3_fluxo_fixo": "1. Receber prescrição (medicamentos + paciente + prescritor) → 2. Normalizar nomes de medicamentos para código padrão (DCB/ATC) → 3. Recuperar histórico do paciente → 4. Executar análise de interações no motor → 5. Classificar e rankear alertas por severidade → 6. Persistir resultado → 7. Disparar notificações conforme canais configurados → 8. Registrar log auditável. Este fluxo é fixo em código para todos os clientes.",
+    "fase3_parametros_configuraveis": [
+      "fonte_de_dados_interacoes: ['local_db', 'drugbank_api', 'openfda', 'llm_farmacologico']",
+      "severidade_minima_alerta: leve | moderado | grave | apenas_contraindicado",
+      "canais_notificacao: ['email', 'sms', 'whatsapp', 'webhook_externo', 'push']",
+      "destinatarios_alerta: ['prescritor', 'farmaceuito', 'gestora_clinica', 'paciente']",
+      "idioma_laudo: pt-BR | en-US | es",
+      "base_regulatoria: ANVISA | FDA | EMA",
+      "integracao_ehr: {endpoint, auth_type, payload_schema}",
+      "politica_retencao_dados_dias: 90 | 365 | 1825",
+      "logo_e_identidade_visual: {logo_url, cor_primaria, nome_exibido}",
+      "modulos_ativos: ['prescricao', 'historico_paciente', 'auditoria', 'relatorios']",
+      "limite_requisicoes_mes: 500 | 5000 | ilimitado",
+      "sso_provider: none | google | azure_ad | saml"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro na tabela tenants com seu conjunto de parâmetros configuráveis. O onboarding é um formulário assistido (wizard) que gera o ConfigBundle do tenant e provisiona o ambiente isolado automaticamente. Zero código novo. O tenant começa a operar no mesmo dia.",
+    "fase4_core_isolado": "O InteractionAnalysisWorker roda como processo assíncrono independente (worker queue — BullMQ ou Celery). A prescrição é recebida pela API, persistida imediatamente com status 'pending', e enfileirada. O worker consome a fila, executa a análise (que pode levar 200ms a 3s dependendo do provedor), e atualiza o status para 'analyzed' com os alertas. A API responde ao cliente em <100ms mesmo que a análise ainda não tenha terminado.",
+    "fase4_custo_total_cliente": "Core (análise de interações): R$0,003–0,02 por análise (DrugBank API) ou R$0,001 (banco local — custo de CPU). Infra proporcional: R$0,80–2,50/mês por tenant ativo em servidor compartilhado (RDS Postgres por schema, Redis por tenant). Armazenamento: ~5KB por prescrição × volume médio de 200 prescrições/mês = 1MB/mês → R$0,02/mês. Banda: desprezível (<50MB/mês por tenant). Custo operacional estimado por tenant ativo: R$1,50–4,00/mês. Preço mínimo viável para margem positiva: R$49/mês (clínica pequena, 200 análises). Margem bruta: >90% em escala.",
+    "fase4_continuidade": "O InteractionAnalysisWorker tem retry automático com backoff exponencial (3 tentativas). Se o provedor externo de dados estiver indisponível, o sistema faz fallback para o banco local de interações (cobertura de ~85% dos casos). Prescrições ficam em status 'pending_analysis' visível ao prescritor, que pode prosseguir com aviso de 'análise em processamento'. O sistema de prescrição, histórico e notificações continua operando normalmente — apenas a análise é degradada, nunca parada.",
+    "fase4_manutencao": "O motor implementa a interface PrescriptionAnalyzer. Trocar de DrugBank para OpenFDA ou para um modelo LLM fine-tuned é implementar um novo adaptador e alterar o parâmetro fonte_de_dados_interacoes no ConfigBundle do tenant. Rollout gradual por tenant (feature flag). Zero downtime. Testes de integração validam a saída do novo adaptador contra casos de referência antes do deploy.",
+    "monetizacao": "Modelo principal: SaaS por assinatura mensal por tenant com tiers baseados em volume de análises (Starter R$49/mês até 300 análises, Pro R$149/mês até 2.000 análises, Enterprise R$499+/mês ilimitado + SLA + SSO). Receitas complementares: (1) White-label para farmácias e healthtechs — taxa de setup R$2.000 + mensalidade majorada. (2) Auditoria retroativa para planos de saúde — R$0,05 por prescrição auditada em lote. (3) Relatórios de farmacovigilância para indústria farmacêutica — dados anonimizados agregados. Payback de infraestrutura previsto a partir de 30 tenants ativos.",
+    "stack_sugerida": "Backend: Node.js (Fastify) ou Python (FastAPI) com TypeScript/Python tipado. Banco: PostgreSQL com schema por tenant (isolamento lógico, custo menor que instância por tenant). Cache/Filas: Redis + BullMQ (Node) ou Celery (Python). Worker: processo separado consumindo fila — escalável horizontalmente via Kubernetes HPA. Frontend Web: Next.js (SSR para SEO no portal do paciente, SPA para o dashboard). Mobile: React Native (code sharing web). Infra: Railway ou Render para estágio inicial (baixo overhead operacional); migrar para AWS ECS/Fargate ao atingir 100+ tenants. Observabilidade: OpenTelemetry + Grafana Cloud. Auth: Clerk ou Auth0 (suporte nativo a multi-tenant e SSO). CI/CD: GitHub Actions."
+  }
+}

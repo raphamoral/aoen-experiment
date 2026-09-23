@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "Existe configuração real para thresholds de alerta e cadastro de equipamentos por tenant, mas a proposta não define isolamento multi-tenant explícito, não endereça onboarding self-service, e não separa arquiteturalmente o que é código fixo do que é configuração variável — o caso da 'empresa terceirizada gerenciando múltiplos clientes' evidencia a necessidade de multi-tenancy robusto que simplesmente não foi projetado."
+}

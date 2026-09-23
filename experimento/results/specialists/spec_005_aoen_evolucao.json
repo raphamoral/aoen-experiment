@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva consistente: adapters abstratos (TemplateEngine, SignatureProvider) isolam fornecedores externos e tornam trocas reversíveis sem impacto no domínio; a camada de serviços agnóstica de interface impede vazamento de regras de negócio para as bordas do sistema; e os parâmetros configuráveis reduzem a necessidade de deploys para customizações — os dois pontos que impedem nota máxima são a ausência de estratégia explícita de evolução do modelo de dados (como o schema de contrato cresce sem migrações destrutivas?) e a falta de detalhe sobre o mecanismo de filas, que é o componente crítico para sustentar crescimento de 10 para 10.000 usuários sem redesenho."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A arquitetura tem estrutura multi-tenant (PostgreSQL com dados de tenants, rate limiting por Redis) como pré-requisito técnico para rastreamento por cliente, mas nenhum ponto da proposta descreve atribuição de custo por tenant, custo por operação calculado ou framework de unit economics — o Datadog é citado para APM/métricas gerais, o Stripe apenas para billing de receita, e os custos de infra (Kafka, ES, S3) são tratados como recursos compartilhados sem tagging ou chargeback por cliente."
+}

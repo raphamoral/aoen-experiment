@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A arquitetura hexagonal oferece boa base estrutural e há múltiplos adapters intercambiáveis (OpenAI/Anthropic, S3/Firebase etc.), mas a proposta não descreve nenhum mecanismo explícito de configuração por tenant — faltam ItenantConfigRepository, feature flags, seleção de adapter por configuração ou tabela de parâmetros clínicos por cliente, o que significa que onboarding de novo cliente com comportamento distinto ainda exigiria código ou redeploy."
+}

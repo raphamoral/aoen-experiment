@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta menciona os principais componentes de custo (videochamada, IA, armazenamento, banda, servidores) e até estima grosseiramente $2-8 por consulta em APIs externas, mas carece de estimativas concretas por componente (ex: custo mensal de ECS, RDS, S3, Redis, CDN), não apresenta estratégia de otimização de custos (spot instances, scale-to-zero, S3 tiers, reserved instances) e não projeta como os custos evoluem com o crescimento da base de usuários."
+}

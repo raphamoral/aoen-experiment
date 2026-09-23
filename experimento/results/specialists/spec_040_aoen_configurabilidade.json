@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 40,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra intenção de configurabilidade ao mencionar 'protocolo do cliente' e suportar múltiplos protocolos clínicos (Manchester, ESI, proprietário), e o TriageEngine como interface abstrata permite trocar fornecedor de IA sem alterar outras camadas — mas a arquitetura não descreve nenhum mecanismo concreto de configuração por tenant: não há menção a schema de configuração por cliente, tabela de parâmetros, admin de onboarding, questionários de anamnese configuráveis por cliente, regras de filas configuráveis, ou qualquer artefato que permita afirmar que um novo cliente pode ser onboardado apenas com dados — o que mantém a proposta na faixa 'intenção existe, implementação não foi arquitetada'."
+}

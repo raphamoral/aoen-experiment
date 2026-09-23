@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 5,
+  "justificativa": "A proposta menciona rastreamento de 'custo por sensor/mês via tags de billing com alerta se > threshold' — o que vai além de FinOps genérico e indica intenção de granularidade por unidade de consumo — mas não apresenta cálculo real por operação (ex: custo de ingestão por leitura, custo de alerta por disparo), não detalha como as tags de billing atribuem custo por tenant, e não conecta explicitamente o custo por cliente ao modelo de precificação ou à margem por tenant."
+}

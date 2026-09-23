@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 41,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não menciona nenhum aspecto de infraestrutura cloud — nenhum componente (servidores, banco de dados, CDN, armazenamento), nenhuma estimativa de custo em valores concretos e nenhuma estratégia de otimização como scale-to-zero ou instâncias spot."
+}

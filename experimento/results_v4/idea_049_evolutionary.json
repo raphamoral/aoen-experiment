@@ -1,0 +1,55 @@
+{
+  "ideia_idx": 49,
+  "ideia": "Marketplace de profissionais de acessibilidade digital",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (modularidade e baixo custo de mudança)",
+      "Confiança e segurança (verificação de profissionais, proteção de pagamentos, LGPD/GDPR)",
+      "Acessibilidade da própria plataforma (WCAG 2.2 AA/AAA, eat-your-own-dogfood; exigência de credibilidade do produto)",
+      "Disponibilidade e desempenho da busca/matching",
+      "Testabilidade e observabilidade",
+      "Elasticidade e eficiência de custo (MVP enxuto com crescimento gradual)",
+      "Interoperabilidade (integrações com pagamentos, calendários, videoconferência, ferramentas de auditoria como axe/Lighthouse)"
+    ],
+    "fitness_functions": [
+      "Acessibilidade (atômica, no CI): axe-core/pa11y/Lighthouse a11y ≥ 95 em cada PR; build falha em violação WCAG AA",
+      "Acessibilidade (holística, agendada): auditoria manual trimestral com leitores de tela (NVDA, VoiceOver, JAWS) e usuários com deficiência nos fluxos críticos",
+      "Acoplamento: testes de arquitetura (ArchUnit/dependency-cruiser/Nx boundaries) impedindo dependências entre módulos fora das interfaces públicas e ciclos",
+      "Desempenho: p95 da busca de profissionais < 300 ms e LCP < 2,5 s, verificados em testes de carga (k6) no pipeline e em monitoramento sintético",
+      "Disponibilidade: SLO de 99,9% com alertas de error budget; teste de caos mensal (ex.: queda do provedor de pagamento)",
+      "Segurança: SAST/DAST, varredura de dependências e segredos em cada build; zero vulnerabilidades críticas abertas > 7 dias",
+      "Privacidade: teste automatizado garantindo que PII não vaza em logs/eventos; verificação de retenção e exclusão (direito ao esquecimento)",
+      "Contratos: contract tests (Pact/OpenAPI diff) bloqueando mudanças incompatíveis nas APIs e nos eventos",
+      "Dados: reconciliação diária entre pagamentos da Stripe e o ledger interno com divergência = 0",
+      "Custo: custo de infraestrutura por transação e por usuário ativo com orçamento e alerta de desvio > 15%",
+      "Evolução: DORA metrics (lead time, frequência de deploy, MTTR, change failure rate) com metas acompanhadas",
+      "Migração: modo shadow/paralelo com comparação de resultados antes de extrair ou trocar qualquer componente"
+    ],
+    "incremental_change": "Começar com um monólito modular (modular monolith) com bounded contexts explícitos: Identidade, Perfis de Profissionais, Catálogo de Serviços, Busca/Matching, Projetos e Propostas, Pagamentos/Escrow, Mensagens, Avaliações/Reputação, Verificação/Certificações, Administração. Fases: (1) MVP – perfis, busca básica, contato/propostas e pagamento via Stripe Connect, validando com um nicho (ex.: auditorias WCAG e remediação para PMEs); (2) confiança – verificação de credenciais (IAAP CPACC/WAS/CPWA), avaliações, escrow e disputas; (3) escala – busca dedicada (Elasticsearch/OpenSearch ou Typesense) e matching por relevância; filas para tarefas assíncronas; (4) extração seletiva de módulos em serviços apenas quando houver evidência (métricas de carga, cadência de times independentes), usando o Strangler Fig. Cada passo é guiado por fitness functions, entregue por trunk-based development com feature flags, deploy contínuo, canary/blue-green e ADRs registrando decisões. Uso de eventos de domínio internos (outbox) desde o início para permitir extração futura sem reescrever.",
+    "reversibility": "Reversíveis (two-way doors): framework de UI, provedor de hosting/cloud, motor de busca (atrás de uma porta/adaptador), provedor de e-mail/notificações, videoconferência, analytics, estratégia de cache, provedor de auth (via OIDC padrão), estrutura de módulos vs. serviços, precificação e comissão. Menos reversíveis (one-way doors, adiadas ao último momento responsável): modelo de dados de pagamentos/ledger e escrow (dependência regulatória e da Stripe Connect – mitigada com camada anti-corrupção e ledger próprio), modelo de identidade/multi-tenancy, residência de dados/jurisdição (LGPD/GDPR), decisão de microsserviços e de event streaming (Kafka) – só quando os dados justificarem, e escolha de banco primário (PostgreSQL adotado por ser padrão e portável). Mitigação: ADRs, feature flags, migrações expand/contract e esquemas versionados.",
+    "coupling": "Baixo acoplamento entre módulos via interfaces públicas explícitas e eventos de domínio; cada módulo é dono de seus dados (schemas separados no mesmo Postgres, sem joins entre schemas) para permitir extração futura. Arquitetura hexagonal (ports & adapters) para integrações externas (Stripe, e-mail, busca, videoconferência), com anti-corruption layers. Contratos versionados (OpenAPI/AsyncAPI/JSON Schema) e princípio de tolerância (Postel) em consumidores. Coesão orientada a quantum arquitetural: manter em conjunto o que muda junto (ex.: Projetos + Propostas), separando o que tem ritmos de mudança distintos (ex.: Busca, Pagamentos). Design system acessível compartilhado como biblioteca interna versionada, com a acessibilidade embutida nos componentes. Sem banco compartilhado entre contextos no momento da extração.",
+    "interfaces": [
+      "Web app responsivo e acessível (PWA) para clientes contratantes e profissionais",
+      "API pública REST/JSON (OpenAPI) para parceiros e integrações, com GraphQL/BFF opcional para o front-end",
+      "API interna entre módulos (interfaces em processo, evoluindo para gRPC/HTTP se extraídos)",
+      "Webhooks de entrada (Stripe, calendário, verificação de identidade) e de saída (eventos de projeto e pagamento)",
+      "Barramento de eventos de domínio (outbox + fila; AsyncAPI): ProfissionalVerificado, PropostaEnviada, PagamentoLiberado, AvaliacaoPublicada",
+      "Painel administrativo (moderação, verificação, disputas, financeiro)",
+      "Integrações: Stripe Connect, OIDC/OAuth (Google, LinkedIn, gov.br), e-mail transacional, calendário (Google/Outlook), videoconferência, GitHub/CI para auditorias automatizadas",
+      "Porta de busca (SearchPort) com adaptador substituível",
+      "Notificações multicanal (e-mail, push, WhatsApp opcional)",
+      "SDK/widget embutível de 'Contrate um especialista' e selo de verificação para sites de profissionais"
+    ],
+    "escalabilidade": "Escala vertical e horizontal do monólito modular stateless atrás de load balancer (autoscaling por CPU/latência), com PostgreSQL gerenciado (réplicas de leitura, particionamento por tempo/tenant quando necessário, PgBouncer). Cache (Redis) e CDN para perfis públicos e assets. Busca em índice dedicado, alimentada por eventos, separada do banco transacional (CQRS leve). Processamento assíncrono (fila + workers) para notificações, verificação, relatórios de auditoria e reconciliação. Armazenamento de objetos para documentos e evidências. Extração de módulos de alto tráfego (Busca, Mensagens em tempo real) somente quando as fitness functions de desempenho indicarem gargalo. Multi-região adiada até haver demanda (latência/regulação). Ganhos de capacidade orientados por medições, não por especulação.",
+    "custos": "Foco em custo variável e proporcional ao uso: começar com PaaS/containers gerenciados (Fly.io, Render, Cloud Run ou AWS ECS Fargate) e Postgres gerenciado, evitando Kubernetes até haver necessidade real. Principais custos: infraestrutura, busca dedicada (adiada até o volume justificar; Postgres FTS/pg_trgm no início), taxas de pagamento (Stripe ~2,9%+ em cartões, mais taxa do Connect, tratadas como custo de venda repassado na comissão), verificação de identidade/credenciais, suporte e moderação (custo operacional relevante em marketplaces), armazenamento e e-mail. Boas práticas: FinOps com tags por módulo, orçamento e alertas, métricas de custo por transação como fitness function, reservas/savings plans apenas após padrão de uso estável, retenção de dados e logs com ciclo de vida definido. Custo de aquisição (dois lados do marketplace) tende a superar o de infraestrutura no início.",
+    "monetizacao": "Modelo primário: comissão sobre transações (take rate de 10–20%, possivelmente escalonada por volume/tier) cobrada de forma transparente via Stripe Connect com escrow. Complementares: (1) assinaturas para profissionais (Pro/Premium) com destaque na busca, portfólio ampliado, ferramentas de proposta e analytics; (2) assinatura para empresas contratantes (equipes, faturamento consolidado, contratos-quadro, SLAs, relatórios de conformidade); (3) taxas por selo de verificação/certificação premium; (4) lead fee para projetos de alto valor; (5) serviços gerenciados/curadoria (matching assistido para empresas e governo/licitações sujeitos à Lei Brasileira de Inclusão e à European Accessibility Act); (6) marketplace de produtos digitais (templates, checklists, treinamentos); (7) API/widget white-label para agências. Estratégia: começar apenas com a comissão para validar a proposta de valor, adicionando camadas conforme os dados de retenção e disintermediação (evitar o desvio de transações fora da plataforma oferecendo valor contínuo: escrow, reputação, contratos, faturamento).",
+    "stack_sugerida": "Front-end: TypeScript, Next.js/React (ou Remix) com design system acessível (Radix UI/React Aria), Tailwind, testes com Playwright + axe-core, Storybook com addon de a11y. Back-end: monólito modular em TypeScript (NestJS) ou alternativamente Kotlin/Spring Modulith ou Python/Django, com hexagonal e Nx/dependency-cruiser para limites de módulo. Dados: PostgreSQL (schemas por módulo, pg_trgm/FTS no início), Redis, S3-compatível para arquivos; OpenSearch/Typesense mais tarde. Assíncrono: outbox pattern + fila (SQS/Cloud Tasks/BullMQ), evolução para Kafka/EventBridge só se necessário. Pagamentos: Stripe Connect (Express/Standard) atrás de porta própria. Auth: Auth0/Clerk/Keycloak via OIDC. Infra: containers em PaaS gerenciado (Cloud Run/Fargate/Fly.io), Terraform/OpenTofu, CDN (Cloudflare). CI/CD: GitHub Actions, trunk-based, feature flags (Unleash/OpenFeature), canary. Observabilidade: OpenTelemetry, Grafana/Prometheus ou Datadog, Sentry, SLOs. Qualidade/fitness functions: axe-core, Lighthouse CI, k6, Pact, Semgrep, Dependabot/Trivy, ArchUnit/dependency-cruiser. Documentação: ADRs, C4 model, OpenAPI/AsyncAPI."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:22:30+00:00",
+    "runner": "runner.py"
+  }
+}

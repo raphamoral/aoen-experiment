@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta cobre com solidez escala horizontal, statelessness, rollback por release e feature flags, mas omite completamente como a lógica de negócio é isolada de frameworks e backing services (ausência de ports & adapters, hexagonal ou clean architecture), tornando a substituição real de componentes como banco ou autenticação potencialmente custosa dentro de cada serviço."
+}

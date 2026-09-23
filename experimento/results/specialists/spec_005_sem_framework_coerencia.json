@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam um sistema coeso e bem articulado: o modelo de usuário (signatários sem conta) justifica diretamente a página pública de assinatura; a identificação do gargalo de PDF justifica o BullMQ+Redis; o requisito de validade jurídica justifica o D4Sign; a necessidade de auditoria legal justifica a tabela de eventos imutáveis separada; e o S3 é a consequência natural de guardar apenas o caminho no banco — cada peça explica a outra. A única leve tensão está em combinar Railway/Render no hosting com S3 (AWS) desde o início, gerando dependência de dois provedores antes mesmo de justificar a complexidade, e em propor iniciar sem autenticação num produto que manipula documentos com validade jurídica, o que cria um risco real mesmo num MVP."
+}

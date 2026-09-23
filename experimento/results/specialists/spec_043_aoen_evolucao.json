@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 43,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra sólidos princípios evolutivos: contrato fixo (ProfileDTO → RankedPlansDTO) isola o motor de recomendação de todas as interfaces, o adapter de fonte de dados permite troca de fornecedor sem tocar o core, a implementação do scoring é explicitamente plugável (regras hoje, modelo próprio amanhã), e novas interfaces são apenas adaptadores de entrada/saída — porém perde pontos por não endereçar explicitamente a abstração de persistência (banco de dados) nem estratégias de escala (caching, horizontal scaling), deixando incerteza sobre se o crescimento de 10 para 10.000 usuários exigiria mudanças arquiteturais no nível de infraestrutura."
+}

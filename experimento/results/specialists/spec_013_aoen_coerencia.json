@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam uma narrativa arquitetural coesa e auto-reforçante: a abstração de 'recurso reservável' justifica os múltiplos segmentos de mercado, que por sua vez justificam cada interface listada, que por sua vez justificam a Service Layer protocolo-agnóstica — cada camada existe porque a anterior a exige; a única tensão não resolvida é que o modelo de extensibilidade (plugins de espaço, pagamento, acesso) não endereça explicitamente multi-tenancy, que é pré-requisito arquitetural não trivial para o white-label e para a API corporativa declarados como canais de receita."
+}

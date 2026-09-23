@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta possui blocos parciais de configurabilidade (feature flags via Unleash/LaunchDarkly e interfaces abstratas para provedores), mas não define explicitamente um modelo de configuração por tenant — não há menção a tabela/serviço de configuração por cliente, regras de negócio dirigidas por configuração, customização de fluxo por tenant, nem processo de onboarding declarativamente configuration-only; um novo cliente provavelmente exigiria setup manual e possivelmente código adicional para comportamentos específicos."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista componentes de infraestrutura cloud (AWS/GCP, S3, PostgreSQL, Redis) como commodities, mas não apresenta nenhuma estimativa de custo em valores concretos, nenhuma estratégia de otimização (scale-to-zero, spot instances, storage tiering) e nenhuma projeção de como os custos escalam com o crescimento da base de clientes SaaS."
+}

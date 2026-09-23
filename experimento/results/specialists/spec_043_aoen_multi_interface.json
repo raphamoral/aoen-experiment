@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 43,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces (Web App, API REST, Widget embarcável, WhatsApp Bot e PDF exportável), cada uma ancorada em um segmento de mercado real e distinto (B2C direto, B2B corretoras/RH, distribuição via parceiros, usuários 50+/baixa digitalização e fechamento por corretagem), com lógica de negócio inteiramente encapsulada em uma RecommendationService de contrato fixo (ProfileDTO → RankedPlansDTO) que torna qualquer interface um mero adaptador de entrada/saída, permitindo adicionar ou remover canais sem tocar regras de scoring."
+}

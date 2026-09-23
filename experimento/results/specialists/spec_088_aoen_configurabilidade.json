@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 88,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra separação explícita entre fluxo fixo (imutável no código) e parâmetros configuráveis por cliente (taxa, prazos), e o padrão de adaptadores permite adicionar provedores de risco e funding sem reescrever o core — o que é arquiteturalmente sólido; porém, a lista de parâmetros configuráveis está truncada na proposta (impossível avaliar cobertura real), e a arquitetura não descreve explicitamente como um novo tenant/âncora é onboardado end-to-end apenas com configuração, deixando em aberto se há algum passo que ainda exigiria deploy ou desenvolvimento (ex: novo adapter de ERP, nova fonte de scoring)."
+}

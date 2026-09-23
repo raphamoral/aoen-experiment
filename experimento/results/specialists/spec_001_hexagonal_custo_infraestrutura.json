@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "hexagonal",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona vagamente os principais drivers de custo (API de mapas, banco de dados, message broker, storage, Kubernetes) mas não apresenta nenhuma estimativa concreta em valores monetários, nenhuma estratégia de otimização (spot instances, scale-to-zero, tiering de storage) e nenhuma projeção de crescimento de custos por volume de entregas ou usuários."
+}

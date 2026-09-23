@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 86,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de pontuação de risco especializado em nichos é claramente identificado como núcleo, isolado via abstração de pipeline com contratos de API estáveis, extensível por design (provedores plugáveis, adaptadores intercambiáveis, novos nichos sem novo código) e resolve um gap real — explicabilidade auditável para nichos ignorados por modelos genéricos de grandes seguradoras — perdendo apenas um ponto pela ausência de evidência de validação empírica do diferenciador (dados de mercado, testes com clientes-alvo ou benchmarks contra alternativas existentes)."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta define entidades de domínio explicitamente desacopladas de frameworks e infraestrutura, o que é pré-requisito para suportar múltiplas interfaces, mas não menciona nenhuma interface concreta, não apresenta perfis de usuário por canal (web, mobile, API, SDK), e não há qualquer justificativa de mercado para escolhas de superfície de acesso."
+}

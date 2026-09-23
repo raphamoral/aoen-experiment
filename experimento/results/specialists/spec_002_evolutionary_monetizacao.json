@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "evolutionary",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a modelo de monetização, tiers de preço, comissionamento do marketplace, estrutura de receita ou métricas de negócio (MRR, LTV, CAC, churn) — o critério de monetização está completamente ausente da arquitetura apresentada."
+}

@@ -1,0 +1,56 @@
+{
+  "ideia_idx": 63,
+  "ideia": "App de detecção de pragas agrícolas por fotografia com IA",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (modularidade, baixo acoplamento entre inferência, ingestão e domínio agrícola)",
+      "Acurácia e explicabilidade do modelo de IA (precisão/recall por praga, cultura e região)",
+      "Disponibilidade offline/baixa conectividade no campo (edge-first)",
+      "Desempenho (latência de diagnóstico inferior a 3 s no dispositivo e inferior a 10 s na nuvem)",
+      "Elasticidade (picos sazonais de safra)",
+      "Observabilidade e capacidade de rollback de modelos (MLOps)",
+      "Privacidade e conformidade (LGPD, geolocalização de propriedades)",
+      "Custo-eficiência por diagnóstico",
+      "Testabilidade e capacidade de deploy contínuo"
+    ],
+    "fitness_functions": [
+      "Acurácia: F1 por classe de praga acima do limiar (ex.: 0,85) em golden dataset versionado; falha no CI bloqueia a promoção do modelo",
+      "Detecção de drift: PSI/KL sobre embeddings e distribuição de confiança em produção, com alerta e retreino automático acima do limiar",
+      "Latência: teste de carga em CI com p95 do endpoint /diagnoses inferior a 10 s e da inferência on-device inferior a 3 s",
+      "Acoplamento: ArchUnit/dependency-cruiser no CI proíbe dependências cíclicas e acesso direto de um módulo ao banco de outro",
+      "Contratos: testes de contrato (Pact/OpenAPI diff) bloqueiam breaking changes sem versionamento",
+      "Custo: custo por diagnóstico monitorado e checado diariamente contra um orçamento (ex.: menor que US$ 0,02), com alerta em desvio de 20%",
+      "Resiliência: chaos test que derruba o serviço de inferência e verifica o fallback para o modelo edge ou para a fila, com SLO de 99,5%",
+      "Segurança e privacidade: varredura de dependências e de EXIF/geodados, mais teste de que o acesso é restrito ao tenant (isolamento multi-tenant)",
+      "Reversibilidade de modelo: canary/shadow deploy com rollback automático se a acurácia online cair mais de 3 pontos percentuais",
+      "Tamanho do modelo on-device inferior a 30 MB, verificado no build mobile",
+      "Cobertura de observabilidade: todo serviço deve emitir traces, métricas e logs estruturados, verificado no pipeline"
+    ],
+    "incremental_change": "Fase 0 (walking skeleton): app mobile + upload de foto + modelo pré-treinado (ex.: fine-tune de EfficientNet/ViT) em serviço único, cobrindo 1 cultura e 5 a 10 pragas, com pipeline CI/CD e fitness functions desde o dia 1. Fase 1: monolito modular (módulos Identidade, Diagnóstico, Catálogo de Pragas, Assinatura) com fronteiras impostas por fitness functions. Fase 2: inferência extraída como serviço independente com model registry e deploy canary; loop de feedback humano (agrônomo confirma/corrige) alimenta o dataset. Fase 3: modelo quantizado on-device para uso offline, sincronização em segundo plano. Fase 4: extração seletiva de serviços apenas onde houver pressão real de escala ou de time (Inferência, Ingestão de mídia, Recomendações). Fase 5: novas dimensões (mapa de infestação regional, alertas preditivos com clima/satélite, API para cooperativas). Cada mudança passa por pipeline com fitness functions e é entregue em pequenos incrementos com feature flags.",
+    "reversibility": "Reversíveis (two-way doors), com decisão rápida: framework mobile, provedor de nuvem (com IaC e containers), arquitetura do modelo e versão do modelo (registry com rollback), provedor de billing por trás de adapter, biblioteca de UI, fila/mensageria por trás de interface, feature flags. Irreversíveis ou caras de reverter, adiadas ao last responsible moment: esquema e governança do dataset de imagens rotuladas (é o principal ativo, então deve ser versionado e com taxonomia extensível desde o início), decisão de microsserviços versus monolito modular (começar modular), modelo de multi-tenancy (definir cedo, mas com isolamento lógico por tenant_id, permitindo migrar para isolamento físico), residência de dados/região, identificadores públicos de diagnóstico e contratos da API pública. Mitigação: versionamento de APIs, abstrações (ports/adapters) sobre ML runtime, storage e billing, e ADRs registrando cada decisão com gatilho de revisão.",
+    "coupling": "Monolito modular com bounded contexts (DDD) e comunicação via contratos explícitos: síncrona (REST/gRPC) apenas onde há necessidade de resposta imediata e eventos de domínio assíncronos (ex.: DiagnosticoConcluido, FeedbackRecebido) para o restante. Arquitetura hexagonal: o domínio não conhece o runtime de ML (ONNX/TFLite/Triton), o storage ou o gateway de pagamento. Contrato do modelo padronizado (entrada: imagem + metadados de cultura/região; saída: lista de hipóteses com confiança, top-k e mapa de atenção). Banco por módulo (schemas separados), sem joins entre contextos. Anti-corruption layers para integrações externas (clima, satélite, ERPs de fazenda). Acoplamento por dados é evitado com um data contract versionado no pipeline de treino. Serviços só são extraídos quando o custo de coordenação superar o custo de distribuição.",
+    "interfaces": [
+      "API REST/OpenAPI pública versionada (/v1/diagnoses, /v1/pests, /v1/fields, /v1/feedback)",
+      "API de upload de imagens com URL pré-assinada e processamento assíncrono (webhook/polling)",
+      "SDK/app mobile (Android/iOS) com módulo de inferência on-device e sincronização offline",
+      "Interface de inferência de modelo (gRPC/HTTP): predict(image, context) -> {hipóteses, confiança, explicação}",
+      "Barramento de eventos (DiagnosticoConcluido, FeedbackRecebido, ModeloPromovido, AssinaturaAlterada)",
+      "Painel web para agrônomos, consultores e cooperativas (revisão de casos, mapa de infestação)",
+      "Interface de model registry e pipeline de treino (MLflow ou equivalente)",
+      "Webhooks de saída para ERPs/sistemas de gestão agrícola e para alertas (WhatsApp/SMS/e-mail)",
+      "Interface de billing (adapter para Stripe/Pagar.me/Asaas) e de metering de uso",
+      "Integrações de dados externos (meteorologia, geoprocessamento, bases fitossanitárias como Agrofit/MAPA)"
+    ],
+    "escalabilidade": "Cliente: inferência on-device (TFLite/Core ML) absorve a maior parte da carga e funciona sem rede. Backend: serviços stateless em containers com autoscaling horizontal (HPA/KEDA por tamanho de fila). Inferência na nuvem em GPUs/CPUs com batching dinâmico, autoscaling e scale-to-zero fora da safra. Upload direto do cliente para object storage (S3/GCS) com CDN, sem passar pelo backend. Processamento assíncrono via fila para diagnósticos pesados, com backpressure e degradação graciosa (modelo menor em picos). Banco relacional (Postgres) com réplicas de leitura e particionamento por tenant/tempo; metadados de imagem separados do binário. Cache de resultados por hash perceptual da imagem. Escala de dados de treino com um data lake e pipelines batch. Escala geográfica por regiões/edge conforme demanda, evitando complexidade multi-região no início. A sazonalidade da safra dita a estratégia de capacidade (capacidade reservada para a base, spot/on-demand para os picos).",
+    "custos": "Principais vetores: GPU de inferência e treino, armazenamento de imagens, egress/CDN, rotulagem humana e conectividade dos usuários em campo. Mitigações: inferência on-device como padrão (custo marginal próximo de zero), modelos quantizados e destilados, cascata de modelos (modelo leve primeiro, modelo pesado só se a confiança for baixa), instâncias spot para treino, scale-to-zero, políticas de ciclo de vida do storage (imagens antigas para cold/arquivo, com retenção conforme a LGPD), compressão de imagem no cliente, deduplicação por hash perceptual, active learning para rotular só as amostras mais informativas e serverless/managed no início para reduzir custo operacional de equipe. FinOps: tags por tenant e por funcionalidade, dashboards de custo por diagnóstico e fitness function de orçamento. Começar com um provedor gerenciado e adiar Kubernetes próprio até que o volume justifique. Considerar o custo da equipe de ML/agronomia e o ciclo de retreino sazonal.",
+    "monetizacao": "Modelo freemium com assinatura por tier: (1) Gratuito, com N diagnósticos/mês e culturas básicas, para aquisição e coleta de dados; (2) Produtor Pro (mensal/anual por hectare ou por usuário), com diagnósticos ilimitados, histórico por talhão, recomendações de manejo e modo offline completo; (3) Empresarial/Cooperativas/Revendas (por assento + volume), com painel multi-fazenda, mapas de infestação, alertas regionais, integração com ERP e SLA. Receitas adicionais: API paga por chamada (metered) para agtechs e seguradoras; marketplace/lead generation com revendas de defensivos e biológicos e consultoria de agrônomos, com comissão e regras éticas de neutralidade; dados agregados e anonimizados (inteligência regional de pragas) para governos, seguradoras e indústria, com consentimento e conformidade com a LGPD; white-label para cooperativas; parcerias com bancos e seguradoras (crédito e seguro rural). Métricas-chave: conversão free-to-paid, CAC/LTV, custo por diagnóstico e retenção sazonal. Cobrança com adapter de billing (Stripe/Asaas/Pagar.me) e suporte a Pix e boleto para o mercado brasileiro.",
+    "stack_sugerida": "Mobile: Flutter ou React Native (ou Kotlin/Swift nativo se o desempenho de câmera exigir), com TensorFlow Lite/Core ML/ONNX Runtime Mobile e armazenamento local SQLite com sync. Backend: monolito modular em Python (FastAPI) ou TypeScript (NestJS), evoluindo para serviços; inferência com ONNX Runtime/Triton/TorchServe. ML: PyTorch, fine-tuning de EfficientNet/ConvNeXt/ViT ou modelos de fundação de visão (com VLM apenas como camada de explicação), MLflow/Weights & Biases para registry, DVC/LakeFS para versionamento de dados, Label Studio para rotulagem, Evidently para drift. Dados: PostgreSQL (+ PostGIS para geoespacial), Redis para cache, S3/GCS para imagens, data lake em Parquet (BigQuery/Athena/DuckDB). Mensageria: SQS/SNS ou Pub/Sub no início; Kafka/NATS só se justificado. Infra: AWS ou GCP, Terraform/OpenTofu, containers (ECS/Cloud Run no início, Kubernetes depois se necessário), CDN. CI/CD: GitHub Actions, ArgoCD, feature flags (Unleash/LaunchDarkly), canary com Argo Rollouts. Observabilidade: OpenTelemetry, Grafana/Prometheus/Loki/Tempo ou Datadog, Sentry. Segurança: OIDC/OAuth2 (Auth0/Cognito/Keycloak), KMS, WAF. Pagamentos: Stripe e/ou Asaas/Pagar.me. Web: Next.js para painel. Governança: ADRs, testes de arquitetura (ArchUnit/dependency-cruiser), Pact para contratos."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:50:08+00:00",
+    "runner": "runner.py"
+  }
+}

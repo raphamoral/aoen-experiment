@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra isolamento físico real — workers SQS em containers separados no ECS/Fargate/EKS, processamento assíncrono para tarefas pesadas (matching, geração de contratos, cálculo de comissões) e escalabilidade independente por serviço — mas não menciona mecanismos explícitos de resiliência a falhas dos workers (Dead Letter Queues, circuit breakers, fallback de degradação graciosa), o que impede nota máxima."
+}

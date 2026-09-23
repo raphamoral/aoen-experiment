@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 28,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões se reforçam de forma consistente — o mercado-alvo sem DPO justifica o design sem exigência de conhecimento jurídico, a abstração de regulação como configuração sustenta a extensibilidade declarada, o service layer canônico viabiliza as cinco interfaces sem duplicação de lógica, e o fluxo fixo da fase 3 é a materialização operacional exata do que o core da fase 1 promete; a nota não atinge 9–10 porque o texto está truncado (fase 3 incompleta impede avaliação integral) e o canal indireto via escritórios de advocacia introduz uma tensão estratégica latente com o canal direto PME que não é arquiteturalmente resolvida na proposta."
+}

@@ -1,0 +1,88 @@
+{
+  "ideia_idx": 85,
+  "ideia": "Plataforma de gestão de programas de fidelidade multi-marca",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de programas de fidelidade multi-marca (multi-tenant). Subdomínios do core: Programa (regras, tiers, campanhas), Membro/Cliente (perfil unificado entre marcas, consentimento), Carteira de Pontos (ledger imutável, double-entry, com acúmulo, expiração, estorno e transferência entre marcas), Motor de Regras (elegibilidade, multiplicadores, promoções), Catálogo de Recompensas e Resgate, Parceria/Coalizão entre marcas (liquidação e conciliação de passivo de pontos) e Tenant/Marca (isolamento e configuração por marca).",
+    "primary_ports": [
+      "EarnPointsPort (registrar transação e acumular pontos)",
+      "RedeemRewardPort (resgatar recompensa/pontos)",
+      "MemberManagementPort (cadastro, consentimento LGPD/GDPR, merge de identidades)",
+      "ProgramConfigurationPort (regras, tiers, campanhas, catálogo)",
+      "BalanceQueryPort (saldo, extrato, status de tier)",
+      "PointsTransferPort (transferência/conversão entre marcas)",
+      "PartnerSettlementPort (conciliação e liquidação entre marcas)",
+      "TenantAdministrationPort (onboarding de marcas, usuários e papéis)",
+      "ReportingPort (KPIs, passivo, breakage, cohort)",
+      "BatchProcessingPort (expiração, recálculo de tier, fechamento contábil)"
+    ],
+    "secondary_ports": [
+      "LedgerRepositoryPort (persistência do ledger e agregados)",
+      "MemberRepositoryPort",
+      "ProgramRepositoryPort",
+      "EventPublisherPort (eventos de domínio: PontosAcumulados, TierAlterado, RecompensaResgatada)",
+      "TransactionSourcePort (ingestão de vendas de PDV/e-commerce/ERP)",
+      "RewardFulfillmentPort (entrega de vouchers, cashback, produtos)",
+      "NotificationPort (e-mail, SMS, push, WhatsApp)",
+      "PaymentBillingPort (cobrança do SaaS e pagamento a parceiros)",
+      "IdentityProviderPort (autenticação e autorização por tenant)",
+      "FraudDetectionPort",
+      "ClockPort (tempo determinístico para expiração e testes)",
+      "IdGeneratorPort",
+      "IdempotencyStorePort",
+      "AuditLogPort",
+      "AnalyticsExportPort (data warehouse)",
+      "FeatureFlagPort",
+      "CachePort"
+    ],
+    "primary_adapters": [
+      "REST API (OpenAPI) para integrações de marcas",
+      "GraphQL BFF para apps web e mobile",
+      "Webhooks de entrada (PDV, e-commerce, gateways de pagamento)",
+      "Consumidores de eventos/fila (Kafka/SQS) para ingestão em massa",
+      "Painel Admin Web (SPA) para gestores de marca",
+      "Portal/App do membro (web e mobile)",
+      "SDKs (JS, Java, PHP, Python) para integradores",
+      "CLI e schedulers (cron) para jobs batch",
+      "Adaptadores de teste (testes de aceitação/contrato dirigindo as portas com fakes)",
+      "Importadores de arquivos (CSV/SFTP) para legados"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (ledger append-only, particionado por tenant, com Row-Level Security)",
+      "Redis (cache, rate limit, idempotência, saldos quentes)",
+      "Kafka/RabbitMQ/SNS+SQS (publicação de eventos, outbox pattern)",
+      "Conectores de PDV/ERP/e-commerce (Shopify, VTEX, Magento, SAP, TOTVS)",
+      "Twilio/SendGrid/Amazon SES/FCM/APNs/WhatsApp Business API",
+      "Stripe/Pagar.me/Adyen (billing do SaaS e pagamentos)",
+      "Auth0/Keycloak/Cognito (OIDC/OAuth2, SSO)",
+      "Fornecedores de vouchers e gift cards (Tremendous, Tango, agregadores locais)",
+      "Serviço antifraude (Sift, Sardine ou motor próprio)",
+      "S3/GCS + Snowflake/BigQuery/ClickHouse (analytics e exportação)",
+      "OpenTelemetry/Datadog/Grafana (observabilidade)",
+      "Adaptadores in-memory/fake para testes e desenvolvimento local",
+      "LaunchDarkly/Unleash (feature flags)"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não possui dependências de frameworks, ORM, HTTP, mensageria ou SDKs de terceiros; só conhece as portas, definidas como interfaces no próprio core. Os adapters dependem do core, nunca o contrário (Dependency Inversion). Regra de dependência verificada por testes de arquitetura (ArchUnit/dependency-cruiser) e módulos/pacotes separados (domain, application, adapters-in, adapters-out, bootstrap). DTOs e mapeadores nas fronteiras evitam vazamento de modelos externos (Anti-Corruption Layer). Composição e injeção de dependências ocorrem apenas na camada bootstrap. O ledger é event-sourced/append-only com invariantes no domínio (saldo nunca negativo, idempotência por chave de transação). Tempo, IDs e aleatoriedade entram via portas, o que torna o core 100% testável sem infraestrutura. O contexto de tenant é um value object explícito em todas as chamadas.",
+    "interfaces": [
+      "API REST pública versionada (/v1) com OpenAPI 3",
+      "GraphQL para front-ends",
+      "Webhooks de saída assinados (HMAC) para eventos de fidelidade",
+      "Contratos de eventos assíncronos (AsyncAPI/CloudEvents com schema registry)",
+      "Painel administrativo multi-marca (white-label)",
+      "App/Portal do membro com carteira digital (Apple Wallet/Google Wallet)",
+      "SDKs e widgets embarcáveis (saldo, resgate) para sites das marcas",
+      "Importação/exportação em lote (CSV/SFTP)",
+      "CLI operacional e endpoints de saúde/métricas"
+    ],
+    "escalabilidade": "Serviço stateless com escala horizontal em Kubernetes/serverless. Multi-tenancy com tenant_id como chave de particionamento (pool para marcas pequenas, silo/schema dedicado para grandes contas). Ledger append-only particionado por tenant e tempo, com read models CQRS (saldos materializados em Redis/Postgres) atualizados por eventos. Escritas idempotentes e com locking otimista por carteira, sem transações distribuídas (Saga/Outbox para fluxos entre marcas). Ingestão assíncrona por filas com backpressure e autoscaling por lag (KEDA). Rate limiting por tenant contra noisy neighbors. Jobs de expiração e recálculo de tier particionados e paralelizáveis. Read replicas e cache para consultas de saldo. Como as portas são estáveis, módulos de alta carga (motor de regras, ledger) podem ser extraídos em microsserviços sem alterar o core. Multi-região opcional por residência de dados.",
+    "custos": "Principais custos: banco de dados (armazenamento do ledger, que cresce sem parar, mitigado com particionamento e arquivamento em storage frio), computação para picos sazonais (Black Friday) com autoscaling e instâncias spot para batch, mensageria, notificações (SMS/WhatsApp são o maior custo variável unitário, então usar push/e-mail primeiro e repassar o custo excedente), taxas de gateway e de fornecedores de vouchers (repassadas), observabilidade e egress. Começar com monólito modular hexagonal para reduzir custo operacional e extrair serviços só quando necessário. Custo por tenant medido por metering para garantir margem, com tiers de isolamento cobrados de forma diferente. Custos de compliance (LGPD/GDPR, PCI se aplicável, auditoria e retenção de dados). Investir em FinOps com tags por tenant.",
+    "monetizacao": "Assinatura SaaS por tiers (Starter/Growth/Enterprise) combinada com cobrança por uso: número de membros ativos (MAU), transações processadas e pontos emitidos. Taxa de setup/onboarding e integrações customizadas em contas enterprise. Módulos add-on pagos (motor de campanhas avançado, antifraude, analytics, white-label, gamificação, coalizão multi-marca). Take rate ou fee de liquidação sobre transferências e resgates entre marcas parceiras na coalizão. Margem sobre notificações e vouchers/gift cards. Marketplace de recompensas com comissão de parceiros. SLA premium, suporte dedicado e opção de isolamento single-tenant com preço diferenciado.",
+    "stack_sugerida": "Backend: Kotlin/Java (Spring Boot ou Quarkus) ou TypeScript (NestJS) organizado em módulos hexagonais (domain, application, adapters), com ArchUnit/dependency-cruiser. Dados: PostgreSQL (RLS, particionamento) + Redis; event streaming com Kafka (ou SNS/SQS no início) e outbox pattern; ClickHouse/BigQuery para analytics. Front-end: React/Next.js (admin e portal) e React Native/Flutter (app do membro). APIs: OpenAPI + GraphQL, AsyncAPI para eventos. Auth: Keycloak/Auth0. Infra: AWS/GCP com Kubernetes (EKS/GKE) ou ECS/Fargate, Terraform, GitHub Actions + ArgoCD. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Testes: pirâmide com testes de domínio puros, testes de contrato das portas, Testcontainers para adapters e testes de aceitação dirigindo as primary ports com fakes. Billing: Stripe Billing com metering."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:37:34+00:00",
+    "runner": "runner.py"
+  }
+}

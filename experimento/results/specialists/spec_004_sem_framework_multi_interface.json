@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "O projeto prevê cinco interfaces distintas com perfis de usuário identificáveis (comprador e fornecedor), mas não aborda explicitamente o desacoplamento da lógica de negócio das interfaces nem justifica as escolhas por alcance de mercado — por exemplo, ausência de consideração para mobile (app nativo ou PWA) num contexto onde fornecedores acompanham lances em movimento, e nenhuma menção a API pública para integrações com ERPs corporativos."
+}

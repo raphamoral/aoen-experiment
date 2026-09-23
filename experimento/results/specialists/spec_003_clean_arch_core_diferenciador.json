@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador existe e é tecnicamente identificável — a arquitetura de anonimato por design (token desvinculado antes da persistência + hash unidirecional + limiar mínimo de 5 respostas para k-anonimato) resolve um problema real que ferramentas de RH tradicionais não resolvem (confiança estrutural, não contratual); porém, o núcleo está disperso nas regras de entidades em vez de estar isolado como um componente/serviço delimitado, a extensibilidade não é endereçada (nenhuma abstração para troca de algoritmo de anonimização ou provedor de análise), e a proposta não argumenta explicitamente por que alternativas como surveys anônimos genéricos ou plataformas como Officevibe não atendem — o que enfraquece a tese de insubstituibilidade."
+}

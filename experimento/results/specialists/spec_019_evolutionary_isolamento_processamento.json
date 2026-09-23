@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona processamento assíncrono via Redis Streams/SQS e circuit breakers para dependências externas, mas os processos computacionalmente pesados (predição de no-show, otimização de agenda, chatbot de IA da Fase 4) não possuem estratégia explícita de isolamento físico em workers separados nem fallback definido caso esses processos falhem — e o MVP deliberadamente roda tudo no mesmo processo (monolito modular), adiando o isolamento real para fases futuras condicionais."
+}

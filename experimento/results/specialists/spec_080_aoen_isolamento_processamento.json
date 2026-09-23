@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 80,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta menciona a Camada de Reconhecimento como plugável (Azure Custom Vision, AWS Rekognition, ONNX local), o que implicitamente permite externalizar a computação pesada de visão computacional, mas não há nenhuma menção explícita a processamento assíncrono, filas de mensagens, workers isolados, circuit breakers ou comportamento de fallback caso o reconhecimento falhe — o pipeline de inferência aparenta estar acoplado sincronamente ao fluxo de renderização AR em tempo real, o que significa que uma falha ou degradação no modelo de CV pode travar ou derrubar a experiência do operador inteira."
+}

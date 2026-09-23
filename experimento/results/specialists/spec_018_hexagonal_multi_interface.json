@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta contempla múltiplas interfaces claramente justificadas por perfis reais de uso (REST/GraphQL para dashboards e integrações, gRPC para B2B com operadoras, CLI para dev/ops, Webhook para sistemas externos como CRM e billing, Cron para análises batch autônomas), com a lógica de negócio completamente desacoplada via ports primários — permitindo adicionar ou substituir qualquer interface sem reescrever o core, evidenciando decisões orientadas a alcance de mercado e não conveniência técnica."
+}

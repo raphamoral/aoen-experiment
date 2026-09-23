@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 27,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de orquestração híbrida é claramente identificado como núcleo diferenciador, resolve um problema real que ferramentas de videoconferência não resolvem (coerência entre fluxos físico e virtual), e está abstraído com três portas substituíveis de fornecedor — perde um ponto por não demonstrar evidência técnica concreta do mecanismo de sincronização em tempo real que sustenta a promessa de 'fluxo coerente'."
+}

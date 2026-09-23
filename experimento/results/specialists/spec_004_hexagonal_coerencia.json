@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal é aplicada com rigor consistente do centro para a periferia: o core domain define o vocabulário de negócio, cada primary port mapeia diretamente a um caso de uso do domínio (leilão, lance, qualificação, contrato), cada secondary port nomeia uma dependência externa real, e os adapters escolhidos reforçam as restrições do domínio — PostgreSQL para ACID em lances concorrentes, Redis para controle de concorrência e cache de leilões ativos, Kafka para eventos assíncronos, WebSocket para tempo real e Test Driver para testabilidade do núcleo — formando um sistema onde cada decisão tecnológica é justificada por uma necessidade do domínio declarada, com a única ressalva sendo a proposta truncada que impede verificação completa dos adapters secundários."
+}

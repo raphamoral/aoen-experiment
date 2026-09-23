@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 66,
+  "ideia": "Marketplace de serviços de tradução técnica com especialização por indústria",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Intermediação e orquestração de serviços de tradução técnica especializada por indústria. Subdomínios: (1) Catálogo de Especialidades e Glossários por Indústria (jurídico, médico, farmacêutico, óleo & gás, TI, engenharia, financeiro); (2) Gestão de Tradutores (perfil, certificações, especialização, disponibilidade, reputação); (3) Ciclo de Vida de Projetos de Tradução (briefing, cotação, matching, atribuição, entrega, revisão, aceite); (4) Controle de Qualidade (revisão por pares, métricas de qualidade, disputas); (5) Precificação e Contratação (orçamentos, contratos, SLAs); (6) Pagamentos e Repasses (escrow, split, comissão); (7) Gestão de Terminologia e Memória de Tradução (TM/glossários por cliente e indústria). Entidades centrais: Cliente, Tradutor, Projeto, Documento, Proposta, Contrato, Entrega, Revisão, Glossário, Especialidade, Pagamento. Regras de negócio puras: algoritmo de matching por especialidade/idioma/prazo/reputação, cálculo de preço por palavra/complexidade/urgência, máquina de estados do projeto, políticas de disputa e reembolso.",
+    "primary_ports": [
+      "ProjectManagementPort (criar projeto, solicitar cotação, aceitar proposta, aprovar/rejeitar entrega, abrir disputa)",
+      "TranslatorManagementPort (cadastrar tradutor, submeter certificações, definir disponibilidade e tarifas, aceitar/recusar job)",
+      "MatchingPort (buscar tradutores por idioma, indústria, prazo e orçamento)",
+      "DeliveryPort (submeter tradução, solicitar revisão, registrar feedback)",
+      "GlossaryManagementPort (criar/atualizar glossários e memória de tradução por cliente/indústria)",
+      "QualityReviewPort (atribuir revisão, registrar score de qualidade, resolver disputa)",
+      "BillingPort (consultar faturas, extratos, solicitar saque de repasse)",
+      "AdminCatalogPort (gerir indústrias, pares de idiomas, políticas de comissão, moderação)",
+      "AnalyticsQueryPort (relatórios de desempenho, volume, SLA e receita)"
+    ],
+    "secondary_ports": [
+      "ProjectRepositoryPort / TranslatorRepositoryPort / GlossaryRepositoryPort (persistência)",
+      "DocumentStoragePort (armazenar/recuperar documentos originais e traduzidos)",
+      "PaymentGatewayPort (cobrança, escrow, split, payout)",
+      "NotificationPort (e-mail, push, SMS, chat)",
+      "IdentityProviderPort (autenticação, autorização, SSO, KYC de tradutores)",
+      "MachineTranslationPort (pré-tradução por MT/LLM para acelerar fluxo e estimar esforço)",
+      "TermExtractionPort (extração de terminologia e análise de complexidade do documento)",
+      "DocumentParsingPort (extração de texto de PDF, DOCX, XLSX, CAD, XLIFF preservando layout)",
+      "SearchIndexPort (busca de tradutores e projetos)",
+      "EventBusPort (publicação de eventos de domínio)",
+      "ClockPort / IdGeneratorPort (tempo e identificadores, para determinismo em testes)",
+      "CurrencyExchangePort (conversão multimoeda)",
+      "TaxComplianceInvoicePort (emissão fiscal/NF-e, impostos internacionais)",
+      "PlagiarismAIDetectionPort (verificação de originalidade e uso indevido de MT)",
+      "AuditLogPort (trilha de auditoria e conformidade LGPD/GDPR)",
+      "SignaturePort (assinatura eletrônica de contratos/NDAs)"
+    ],
+    "primary_adapters": [
+      "REST API Adapter (OpenAPI) para o frontend web",
+      "GraphQL Adapter para o dashboard de clientes e tradutores",
+      "Web App Adapter (SPA/SSR) para clientes, tradutores e admins",
+      "Mobile App Adapter (BFF) para tradutores aceitarem jobs e receberem notificações",
+      "Public Partner API Adapter (API keys/OAuth2) para integração com ERPs, CMS e sistemas de documentação do cliente",
+      "CAT Tool Plugin Adapter (integração com Trados, memoQ, Smartcat via XLIFF/TMX)",
+      "Webhook Inbound Adapter (Stripe, provedor KYC, assinatura eletrônica)",
+      "CLI / Script Adapter (operações administrativas, importação em lote, migrações)",
+      "Scheduler/Cron Adapter (prazos, lembretes, liberação de escrow, SLA)",
+      "Message Consumer Adapter (consumo de eventos de filas/tópicos)",
+      "Test Driver Adapter (testes automatizados de aceitação e contrato, usando os mesmos ports)",
+      "Chatbot/Slack/Teams Adapter (solicitação de cotação e acompanhamento de projetos)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter (repositórios relacionais, JSONB para metadados)",
+      "In-Memory Adapter (repositórios e serviços fake para testes e desenvolvimento)",
+      "S3/MinIO Adapter (DocumentStoragePort, com criptografia e URLs assinadas)",
+      "Stripe Connect Adapter (PaymentGatewayPort: escrow, split, payouts) + alternativas: Adyen, Wise, Pix/Mercado Pago",
+      "SendGrid/SES Adapter, Twilio Adapter, FCM/APNs Adapter (NotificationPort)",
+      "Keycloak/Auth0/Cognito Adapter (IdentityProviderPort) + Onfido/Sumsub para KYC",
+      "DeepL / Google Translate / Azure Translator / LLM (Claude) Adapter (MachineTranslationPort)",
+      "LLM Adapter (Claude) para extração terminológica e análise de complexidade",
+      "Apache Tika / Unstructured / Pandoc Adapter (DocumentParsingPort)",
+      "OpenSearch/Elasticsearch/pgvector Adapter (SearchIndexPort, busca semântica de tradutores)",
+      "Kafka / RabbitMQ / SNS+SQS Adapter (EventBusPort)",
+      "System Clock Adapter / Fixed Clock Adapter, UUID/ULID Adapter",
+      "Open Exchange Rates / ECB Adapter (CurrencyExchangePort)",
+      "Focus NFe / Avalara / TaxJar Adapter (TaxComplianceInvoicePort)",
+      "Copyleaks / Originality.ai Adapter (PlagiarismAIDetectionPort)",
+      "DocuSign / Clicksign Adapter (SignaturePort)",
+      "Append-only Audit Log Adapter (PostgreSQL/OpenSearch/S3 WORM)"
+    ],
+    "isolation": "O core (domain + application services/use cases) não possui dependências de frameworks, bancos, SDKs ou protocolos de transporte. Estrutura em módulos: /domain (entidades, value objects, agregados, domain services, eventos), /application (use cases que implementam as primary ports e dependem apenas das secondary ports) e /adapters (inbound e outbound). A regra de dependência aponta sempre para dentro: adapters conhecem ports, ports conhecem o domínio, o domínio não conhece ninguém. Ports são interfaces definidas no core, com DTOs e tipos do próprio domínio, sem vazamento de tipos externos (ex.: objetos Stripe ou entidades ORM). Adapters traduzem modelos externos via mappers/anti-corruption layer. A composição (injeção de dependência) ocorre apenas na composition root, fora do core. Testes de arquitetura (ArchUnit/dependency-cruiser) garantem que o core não importe infraestrutura. Como a aplicação é dirigida igualmente por UI, API, testes ou scripts, o core é testável com adapters in-memory sem subir banco, filas ou gateways. Falhas externas são tratadas com resultados tipados, retries, circuit breakers e timeouts nos adapters, não no domínio. Trocar Stripe por Adyen, Postgres por outro banco ou DeepL por LLM exige apenas um novo adapter.",
+    "interfaces": [
+      "Portal do Cliente (upload de documentos, briefing, cotação, acompanhamento, aprovação, faturas)",
+      "Portal do Tradutor (perfil, certificações, jobs disponíveis, editor de tradução com glossário, ganhos)",
+      "Painel Administrativo (moderação, catálogo de indústrias, disputas, comissões, métricas)",
+      "API pública REST/OpenAPI + webhooks para integração empresarial",
+      "Plugins/conectores para CAT tools (XLIFF/TMX), CMS, ERP e repositórios de documentação",
+      "App mobile (tradutores e clientes)",
+      "Notificações por e-mail, push e chat (Slack/Teams)",
+      "CLI de administração e importação em lote",
+      "SDKs (TypeScript, Python) para clientes enterprise"
+    ],
+    "escalabilidade": "Monolito modular hexagonal na fase inicial, com bounded contexts (Projetos, Tradutores, Matching, Pagamentos, Glossários) já separados por ports, permitindo extração posterior em microsserviços sem reescrever o domínio. Aplicação stateless com escala horizontal atrás de load balancer. Processamento pesado e assíncrono (parsing de documentos, pré-tradução MT/LLM, extração terminológica, análise de plágio) executado por workers consumindo filas, com escala independente por fila. Consistência entre contextos via eventos de domínio, outbox pattern e sagas (ex.: saga de pagamento/escrow). Leitura escalada com read replicas, cache (Redis) e CQRS para busca de tradutores e dashboards. Documentos em object storage com CDN e URLs assinadas. Multi-tenancy com isolamento lógico (tenant_id + RLS) e opção de isolamento dedicado para enterprise. Particionamento de tabelas por tenant/data e índices vetoriais para matching semântico. Idempotência e rate limiting nas APIs. Como os adapters são intercambiáveis, gargalos podem ser resolvidos trocando ou adicionando adapters (ex.: novo provedor de MT, busca dedicada) sem alterar o core.",
+    "custos": "Principais custos: (1) Pagamentos: taxas de gateway (~2,9% + fixa; Connect adiciona payouts/cross-border), FX e chargebacks; (2) Repasse aos tradutores, que é o maior custo variável, mitigado por comissão sobre a transação; (3) IA/MT/LLM: custo por token/caractere, controlado com cache de memória de tradução, roteamento por complexidade e modelos menores para triagem; (4) Infraestrutura: compute stateless, Postgres gerenciado, object storage (barato, mas com retenção longa de documentos), fila e busca; (5) KYC e assinatura eletrônica por verificação/contrato; (6) Compliance: LGPD/GDPR, criptografia, retenção, auditoria, NDAs, eventualmente ISO 27001/SOC 2 para enterprise; (7) Suporte e curadoria humana de qualidade e disputas; (8) Aquisição de dois lados (tradutores especialistas e clientes) — problema clássico de cold start; (9) Impostos e emissão fiscal. Estratégias de contenção: começar com monolito modular e serviços gerenciados, escalar workers por demanda (spot/autoscaling), lifecycle policies no storage, feature flags para adapters de custo alto e monitoramento de unit economics por projeto (custo por palavra entregue).",
+    "monetizacao": "Modelo híbrido: (1) Comissão de 15–25% sobre cada projeto (take rate), variável por indústria, urgência e volume; (2) Assinaturas para clientes enterprise (plano com SLA, tradutores dedicados, glossários e memórias privadas, SSO, API, relatórios, faturamento consolidado); (3) Assinatura/destaque para tradutores (perfil verificado, prioridade em matching, ferramentas de produtividade); (4) Serviços premium: revisão certificada/juramentada, urgência (rush), pacotes de QA extra, terminologia sob medida; (5) Add-ons de tecnologia: pré-tradução com IA + pós-edição humana (MTPE) a preço menor, e uso de API por volume; (6) Taxas de verificação/certificação de tradutores por indústria; (7) Licenciamento white-label/marketplace privado para agências e grandes empresas. Métricas-chave: GMV, take rate, CAC/LTV, custo por palavra, tempo de matching, NPS e taxa de retrabalho.",
+    "stack_sugerida": "Backend: TypeScript (NestJS ou Fastify) ou Kotlin/Java (Spring Boot) organizado em módulos hexagonais (domain/application/adapters); alternativa Python (FastAPI) para módulos de IA. Frontend: React/Next.js + TypeScript, Tailwind, TanStack Query; mobile com React Native. API: REST/OpenAPI + GraphQL opcional, webhooks assinados. Dados: PostgreSQL (com RLS, JSONB e pgvector), Redis (cache/rate limit), OpenSearch (busca), S3/MinIO (documentos). Mensageria: SQS/SNS, RabbitMQ ou Kafka, com outbox pattern. Workers: BullMQ/Celery/Temporal para workflows e sagas. IA: LLMs (ex.: Claude) e DeepL/Azure Translator atrás de MachineTranslationPort; Tika/Unstructured para parsing. Pagamentos: Stripe Connect. Identidade: Keycloak/Auth0 + KYC (Sumsub/Onfido). Infra: Docker, Kubernetes (EKS/GKE) ou ECS/Fargate no início, Terraform, GitHub Actions, CDN (CloudFront/Cloudflare). Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry, logs centralizados. Testes: adapters in-memory, testes de contrato por port, testes de arquitetura (ArchUnit/dependency-cruiser), Testcontainers, Playwright para E2E. Segurança: criptografia em trânsito e repouso, KMS, secrets manager, RBAC/ABAC, auditoria, conformidade LGPD/GDPR."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:55:23+00:00",
+    "runner": "runner.py"
+  }
+}

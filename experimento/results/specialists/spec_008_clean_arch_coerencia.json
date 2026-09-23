@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "As decisões centrais se reforçam com clareza: a imutabilidade via blockchain permeia coerentemente Residuo, ManifestoTransporte e EventoRastreabilidade; a conformidade regulatória (ABNT NBR 10004, MTR, licenças ambientais) atravessa todas as entidades de forma consistente; e o ciclo de vida geração→transporte→destinação forma uma narrativa lógica — porém a definição do Tenant está truncada (regras_negocio vazias), criando lacuna crítica no modelo multi-tenant que é pilar do SaaS, e há ambiguidade não resolvida entre 'hash-chain local' (EventoRastreabilidade com hash_anterior/hash_atual) e 'registro on-chain' (ManifestoTransporte), sugerindo duas estratégias de imutabilidade que podem conflitar em custo e latência."
+}

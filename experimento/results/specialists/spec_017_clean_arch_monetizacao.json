@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O projeto menciona planos (FREE, STARTER, PROFESSIONAL, ENTERPRISE) na entidade Issuer, sugerindo uma estrutura de tiers, mas não detalha valores, limites por plano, métricas de negócio (MRR, LTV, CAC, churn) nem a conexão explícita entre o que é cobrado e o valor entregue ao cliente."
+}

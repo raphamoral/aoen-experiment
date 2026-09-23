@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O público-alvo (corretores e imobiliárias) é identificável pela cadeia de valor, e há sinais implícitos de contexto regulatório brasileiro (ICP-Brasil, Lei 14.711/2023, CRECI), mas a proposta não articula explicitamente a dor do cliente, não apresenta tamanho de mercado (TAM/SAM/SOM), não menciona concorrentes diretos (D4Sign, ClickSign, DocuSign) nem oferece uma proposta de valor diferenciada — o documento é essencialmente arquitetural, sem camada de mercado."
+}

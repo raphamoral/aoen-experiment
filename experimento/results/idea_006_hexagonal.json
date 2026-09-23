@@ -1,0 +1,67 @@
+{
+  "ideia_idx": 6,
+  "ideia": "App de nutrição personalizada com IA baseada em exames laboratoriais",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Análise de biomarcadores laboratoriais e geração de planos nutricionais personalizados com base em evidências clínicas e perfil metabólico individual do paciente",
+    "primary_ports": [
+      "ISubmitLabResults — receber exames laboratoriais para análise",
+      "IRequestNutritionalPlan — solicitar geração de plano nutricional",
+      "IUpdatePatientProfile — atualizar perfil e histórico do paciente",
+      "IQueryNutritionalRecommendations — consultar recomendações vigentes",
+      "IProvideFeedback — registrar resposta do paciente ao plano",
+      "IRequestBiomarkerInterpretation — solicitar interpretação de biomarcador específico",
+      "IManageSubscription — gerenciar plano de assinatura do usuário"
+    ],
+    "secondary_ports": [
+      "ILabResultParser — parsing e normalização de laudos em diferentes formatos",
+      "IAIAnalysisEngine — motor de análise e inferência nutricional via IA",
+      "IPatientRepository — persistência e recuperação de dados do paciente",
+      "INutritionalKnowledgeBase — acesso à base de conhecimento nutricional",
+      "INotificationDispatcher — envio de notificações e alertas",
+      "IPaymentGateway — processamento de pagamentos e assinaturas",
+      "IFileStorage — armazenamento de documentos e laudos",
+      "IAuditLogger — registro de auditoria para conformidade LGPD/HIPAA",
+      "IEmailProvider — envio de e-mails transacionais",
+      "IClinicalReferenceDatabase — base de valores de referência laboratorial"
+    ],
+    "primary_adapters": [
+      "REST API Controller — endpoints HTTP para aplicações web e mobile",
+      "GraphQL Resolver — interface flexível para clientes modernos",
+      "WebSocket Handler — atualizações em tempo real durante análise",
+      "CLI Adapter — execução via linha de comando para testes e scripts internos",
+      "Webhook Receiver — recepção de eventos de laboratórios parceiros",
+      "gRPC Service — comunicação de alta performance entre microserviços internos"
+    ],
+    "secondary_adapters": [
+      "PDFLabResultAdapter — parsing de laudos em PDF via OCR e extração estruturada",
+      "HL7FHIRAdapter — integração com padrão HL7/FHIR de sistemas hospitalares",
+      "OpenAIAdapter — integração com GPT-4o para análise e geração de planos",
+      "AnthropicAdapter — integração com Claude como engine alternativo de IA",
+      "PostgreSQLPatientRepository — persistência relacional com criptografia em repouso",
+      "RedisPatientCache — cache de sessão e dados frequentemente acessados",
+      "S3FileStorageAdapter — armazenamento de laudos no AWS S3 com criptografia",
+      "StripePaymentAdapter — processamento de assinaturas e pagamentos",
+      "SendGridEmailAdapter — envio de e-mails transacionais e relatórios",
+      "FirebaseNotificationAdapter — push notifications para mobile",
+      "ElasticsearchKnowledgeBase — busca semântica na base nutricional",
+      "DatadogAuditLogger — logging estruturado para auditoria e compliance",
+      "PubChemReferenceAdapter — valores de referência laboratorial atualizados"
+    ],
+    "isolation": "O core domain não importa nenhuma dependência de infraestrutura. Toda comunicação ocorre exclusivamente via interfaces (ports) definidas no domínio. Inversão de dependência garante que o core depende apenas de abstrações. Injeção de dependência injeta os adapters concretos em tempo de execução. O domínio pode ser testado completamente com doubles in-memory sem nenhuma infraestrutura real. Regras de negócio, entidades (Patient, LabResult, NutritionalPlan, Biomarker) e casos de uso residem em camada isolada sem acoplamento a frameworks ou bibliotecas externas.",
+    "interfaces": [
+      "Web App (React/Next.js) — dashboard do paciente com histórico e planos",
+      "Mobile App (React Native) — acompanhamento diário e notificações",
+      "Portal do Nutricionista — revisão e ajuste de planos gerados pela IA",
+      "Admin Panel — gestão de usuários, planos e monitoramento do sistema",
+      "API Pública — integração com laboratórios e clínicas parceiras",
+      "Relatório PDF — exportação do plano nutricional para consulta offline",
+      "Integração HL7/FHIR — conexão com prontuários eletrônicos hospitalares"
+    ],
+    "escalabilidade": "Arquitetura stateless permite escalonamento horizontal dos adapters primários via container orchestration (Kubernetes). Filas assíncronas (SQS/RabbitMQ) desacoplam o processamento de laudos do fluxo síncrono. O AIAnalysisEngine é isolado em worker dedicado escalável independentemente da API principal. Cache distribuído (Redis) reduz carga no banco para leituras frequentes. CDN distribui assets estáticos e relatórios PDF. Database read replicas separam leituras analíticas das transacionais. Event-driven architecture permite processar múltiplas análises em paralelo sem bloqueio.",
+    "custos": "Principal custo variável: tokens de API de IA (GPT-4o/Claude) proporcional ao volume de análises — mitigado por caching de análises similares e prompts otimizados. Armazenamento S3 para laudos cresce linearmente com base de usuários — políticas de lifecycle reduzem custo. Instâncias Kubernetes com autoscaling evitam over-provisioning. PostgreSQL RDS com reserved instances para base de custo previsível. Maior custo fixo: equipe de nutricionistas revisores para validação clínica e compliance. Monitoramento com Datadog/CloudWatch para visibilidade de custos em tempo real por tenant.",
+    "monetizacao": "SaaS B2C com assinaturas mensais/anuais em tiers (Basic: análise mensal, Premium: análises ilimitadas + nutricionista, Enterprise: API para clínicas). B2B: licenciamento white-label para laboratórios e clínicas integrarem o motor de análise em seus sistemas. Marketplace de planos nutricionistas certificados. Revenue share com laboratórios parceiros por indicação. Add-ons: consultas com nutricionista humano sob demanda, integração com wearables, análise genômica complementar.",
+    "stack_sugerida": "Backend: Python (FastAPI) pelo ecossistema de IA/ML e tipagem forte. ORM: SQLAlchemy com Alembic para migrações. Core domain em Python puro sem dependências de framework. Frontend: Next.js 14 com TypeScript e Tailwind CSS. Mobile: React Native com Expo. IA: LangChain orquestrando Claude Sonnet (análise principal) + GPT-4o Vision (OCR de laudos). Banco: PostgreSQL (dados transacionais) + Redis (cache) + Elasticsearch (knowledge base). Infra: AWS ECS/Kubernetes, S3, SQS, CloudFront. Observabilidade: OpenTelemetry + Datadog. Auth: Auth0 com MFA obrigatório por requisito LGPD. CI/CD: GitHub Actions + ArgoCD. IaC: Terraform."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Análise de biomarcadores laboratoriais e geração de planos nutricionais personalizados com base em evidências clínicas e perfil metabólico individual do paciente\",\n\n  \"primary_ports\": [\n    \"ISubmitLabResults — receber exames laboratoriais para análise\",\n    \"IRequestNutritionalPlan — solicitar geração de plano nutricional\",\n    \"IUpdatePatientProfile — atualizar perfil e histórico do paciente\",\n    \"IQueryNutritionalRecommendations — consultar recomendações vigentes\",\n    \"IProvideFeedback — registrar resposta do paciente ao plano\",\n    \"IRequestBiomarkerInterpretation — solicitar interpretação de biomarcador específico\",\n    \"IManageSubscription — gerenciar plano de assinatura do usuário\"\n  ],\n\n  \"secondary_ports\": [\n    \"ILabResultParser — parsing e normalização de laudos em diferentes formatos\",\n    \"IAIAnalysisEngine — motor de análise e inferência nutricional via IA\",\n    \"IPatientRepository — persistência e recuperação de dados do paciente\",\n    \"INutritionalKnowledgeBase — acesso à base de conhecimento nutricional\",\n    \"INotificationDispatcher — envio de notificações e alertas\",\n    \"IPaymentGateway — processamento de pagamentos e assinaturas\",\n    \"IFileStorage — armazenamento de documentos e laudos\",\n    \"IAuditLogger — registro de auditoria para conformidade LGPD/HIPAA\",\n    \"IEmailProvider — envio de e-mails transacionais\",\n    \"IClinicalReferenceDatabase — base de valores de referência laboratorial\"\n  ],\n\n  \"primary_adapters\": [\n    \"REST API Controller — endpoints HTTP para aplicações web e mobile\",\n    \"GraphQL Resolver — interface flexível para clientes modernos\",\n    \"WebSocket Handler — atualizações em tempo real durante análise\",\n    \"CLI Adapter — execução via linha de comando para testes e scripts internos\",\n    \"Webhook Receiver — recepção de eventos de laboratórios parceiros\",\n    \"gRPC Service — comunicação de alta performance entre microserviços internos\"\n  ],\n\n  \"secondary_adapters\": [\n    \"PDFLabResultAdapter —"
+}

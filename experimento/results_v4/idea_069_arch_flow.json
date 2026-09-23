@@ -1,0 +1,45 @@
+{
+  "ideia_idx": 69,
+  "ideia": "SaaS de automação de testes de acessibilidade web com relatórios WCAG",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Usuário (equipes de produto, QA, compliance, agências) → precisa de conformidade WCAG comprovável e de correção rápida → relatórios acionáveis e evidências de auditoria → resultados de análise (violações mapeadas a critérios WCAG) → motor de varredura e regras (crawler + axe-core/regras próprias) → orquestração de scans agendados e sob demanda (CI/CD, API) → navegador headless → infraestrutura de execução e filas → armazenamento, compute e observabilidade em nuvem. Necessidades secundárias: integração com o fluxo do dev (issues, PRs, pipelines) e histórico de conformidade para auditorias e exigências legais (LBI, EAA, ADA, Section 508).",
+    "bounded_contexts": [
+      "Gestão de Projetos e Sites (cadastro de sites, páginas, escopos de varredura, autenticação para áreas logadas)",
+      "Orquestração de Varreduras (agendamento, filas, prioridade, retentativas, ciclo de vida do scan)",
+      "Motor de Análise de Acessibilidade (regras WCAG 2.1/2.2, execução em navegador, detecção de violações; core domain)",
+      "Catálogo WCAG e Regras (critérios, níveis A/AA/AAA, técnicas e falhas, versionamento das normas)",
+      "Relatórios e Conformidade (relatórios WCAG, VPAT/ACR, declaração de acessibilidade, exportação PDF/HTML/CSV; core domain)",
+      "Triagem e Remediação (priorização por impacto, atribuição, status, sugestões de correção, ignorar/falso positivo)",
+      "Monitoramento e Tendências (histórico, regressões, score de acessibilidade, alertas)",
+      "Integrações (CI/CD, Jira, GitHub/GitLab, Slack, webhooks)",
+      "Identidade, Organizações e Acesso (multi-tenant, papéis, SSO)",
+      "Faturamento e Planos (assinaturas, quotas de páginas escaneadas, medição de uso)"
+    ],
+    "component_evolution": "GENESIS: sugestões de correção geradas por IA e testes semiautomáticos de critérios que exigem julgamento humano (ainda experimental). CUSTOM: motor de análise próprio (regras adicionais sobre axe-core, tratamento de SPAs e áreas autenticadas), modelo de priorização e score de conformidade, geração de relatórios WCAG/VPAT, orquestração de scans em escala. Esses são o diferencial e o core domain. PRODUCT: axe-core e engines de regras open source, Playwright/Puppeteer, Postgres, Redis, Elasticsearch/OpenSearch, ferramentas de observabilidade, Stripe Billing, auth provider (Auth0/Clerk/Keycloak). COMMODITY: cloud compute (Kubernetes/serverless), armazenamento de objetos (S3), filas gerenciadas, CDN, e-mail transacional, CI/CD, TLS/DNS.",
+    "team_topology": "Stream-aligned teams: (1) Time de Scan e Análise (fluxo de escanear → detectar violações), (2) Time de Relatórios e Conformidade (fluxo de resultado → evidência de auditoria), (3) Time de Experiência do Desenvolvedor (integrações, CLI, API, plugins CI). Platform team: plataforma interna com Kubernetes, filas, pool de navegadores headless, observabilidade e pipelines, oferecida como serviço self-service (X-as-a-Service). Enabling team: especialistas em acessibilidade/WCAG que apoiam os times na interpretação das normas, e depois reduzem o suporte à medida que o conhecimento se dissemina. Complicated-subsystem team (quando escalar): motor de renderização e detecção, por exigir conhecimento especializado de navegadores e do DOM. Cada time é dono de um ou poucos bounded contexts, com carga cognitiva limitada. Começar com 2 a 3 times enxutos e dividir conforme o crescimento.",
+    "flow_optimization": "Mapear o fluxo de ponta a ponta (cadastro do site → primeiro scan → primeiro relatório → primeira correção → rescan) e otimizar o tempo até o primeiro valor: scan inicial em minutos, sem configuração. Reduzir handoffs com a plataforma self-service e contextos de baixo acoplamento. Arquitetura orientada a eventos (ScanRequested, ScanCompleted, ViolationDetected, ReportGenerated) para que os contextos evoluam de forma independente. Shift-left: testes de acessibilidade no pipeline do dev, com quality gates no PR, para dar feedback rápido. Deploy contínuo com feature flags e trunk-based development, buscando alta frequência de deploy e baixo lead time (métricas DORA). Wardley Map revisado por trimestre para decidir o que construir, comprar ou terceirizar, mantendo foco no custom (motor e relatórios) e comprando o commodity. Fluxos de valor separados para o self-service (PLG) e para enterprise.",
+    "interfaces": [
+      "API REST/GraphQL pública para disparar scans e consultar resultados",
+      "Webhooks de eventos (scan concluído, regressão detectada)",
+      "CLI e GitHub Action/GitLab CI para acessibilidade no pipeline",
+      "Dashboard web (React) com relatórios, tendências e triagem",
+      "Extensão de navegador para auditoria pontual",
+      "Exportação de relatórios (PDF, HTML, CSV, JSON, VPAT/ACR)",
+      "Integrações com Jira, GitHub Issues, Slack, Microsoft Teams",
+      "SSO (SAML/OIDC) e SCIM para enterprise",
+      "Eventos internos entre contextos via broker (Kafka/SNS-SQS/NATS)",
+      "API de plataforma para provisionar workers de navegador (contrato entre platform team e stream-aligned teams)"
+    ],
+    "escalabilidade": "Workers de scan sem estado, executando navegadores headless em containers efêmeros com autoscaling horizontal (KEDA/HPA) baseado na profundidade das filas. Fila por prioridade e por tenant para evitar noisy neighbors, com rate limiting por domínio-alvo para respeitar os sites escaneados. Crawling particionado (sharding por site/página) e deduplicação de páginas por hash de DOM para evitar reprocessamento. Resultados gravados em Postgres (metadados, com particionamento por tenant/tempo) e objetos em S3 (screenshots, snapshots do DOM, relatórios). Consultas analíticas em ClickHouse ou OpenSearch quando o volume de violações crescer. Multi-tenancy lógico com opção de isolamento dedicado para enterprise. Multi-região para latência e residência de dados. Evolução incremental: começar como monólito modular com workers separados e extrair serviços apenas onde o fluxo ou a escala exigirem.",
+    "custos": "O maior custo variável é o compute de navegadores headless (CPU e memória por página renderizada). Mitigações: instâncias spot/preemptíveis para workers, reuso de contextos de navegador, limites de timeout, cache e deduplicação de páginas, scans incrementais (só o que mudou) e amostragem para sites grandes. Armazenamento de screenshots e DOM com lifecycle policies (tiering e expiração por plano). Egress e proxies/IPs de saída podem pesar em crawls grandes. Custos fixos: observabilidade, banco e equipe de acessibilidade especializada. Custo de IA (se houver sugestões de correção) controlado por cache de respostas e uso de modelos menores para casos simples. Acompanhar custo por página escaneada como métrica de unit economics e atrelar as quotas dos planos a ela. Evitar construir commodities (auth, billing, e-mail) para manter o time pequeno.",
+    "monetizacao": "Assinatura SaaS (Stripe Billing) em camadas, com preço baseado em páginas/sites monitorados e frequência de scan: Free/Trial (poucas páginas, scan manual, para PLG e aquisição), Pro/Team (mais sites, scans agendados, integrações, histórico), Business/Enterprise (SSO, SLA, relatórios VPAT/ACR de marca própria, API com limites altos, suporte, instância dedicada, contratos anuais). Add-ons: auditoria manual por especialistas (serviço complementar de alta margem), consumo excedente de páginas, white-label para agências (revenda com múltiplos clientes), e treinamento/consultoria. O argumento de venda é a conformidade legal (EAA em vigor desde 2025, ADA, LBI), o que favorece contratos recorrentes e de renovação alta. Canais: PLG via CLI/GitHub Action gratuito, parcerias com agências e marketplaces de plataformas (Shopify, WordPress).",
+    "stack_sugerida": "Frontend: TypeScript, React/Next.js. Backend: TypeScript (NestJS) ou Go para o orquestrador; monólito modular inicial. Motor de scan: Node.js com Playwright + axe-core e regras customizadas, executando em containers efêmeros. Mensageria: SQS/SNS ou NATS (Kafka se o volume de eventos justificar) e Redis/BullMQ para filas de jobs. Dados: PostgreSQL (transacional), S3 (artefatos), OpenSearch ou ClickHouse (analítico e tendências), Redis (cache). Relatórios: geração de PDF com Playwright/Puppeteer ou WeasyPrint, templates versionados por norma. Infra: Kubernetes (EKS/GKE) com KEDA, ou AWS Fargate/Lambda para começar mais simples; Terraform/OpenTofu; GitHub Actions; ArgoCD. Identidade: Auth0/Clerk/Keycloak. Billing: Stripe Billing com metering de uso. Observabilidade: OpenTelemetry, Grafana/Prometheus/Loki, Sentry. Feature flags: OpenFeature/Unleash. IA (opcional): API do Claude para sugestões de correção e explicações em linguagem natural, com cache."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "dfd4115afd4e",
+    "gerado_em": "2026-09-21T04:02:07+00:00",
+    "runner": "runner.py"
+  }
+}

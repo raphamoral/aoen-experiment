@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "A proposta apresenta um modelo de domínio competente com boas abstrações (ReturnPolicy separada, máquina de estados no ReturnRequest), mas não identifica nem isola nenhum componente tecnológico que defina o produto como insubstituível — sem um motor de decisão de elegibilidade, orquestrador de políticas multi-merchant ou inteligência de roteamento de coleta que o diferencie, o que existe é um CRUD bem estruturado em DDD, intercambiável com soluções como Loop Returns ou Aftership."
+}

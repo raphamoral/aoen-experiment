@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural menciona 'assinaturas SaaS' e integração com gateway de pagamento (Stripe/Asaas), indicando consciência de que o produto é pago, mas não define tiers, valores, modelo de cobrança (por nota emitida, por usuário, freemium), métricas de sustentabilidade (MRR, LTV, CAC, churn) nem conexão explícita entre o valor entregue e o que é cobrado."
+}

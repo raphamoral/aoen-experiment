@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta descreve uma cadeia de valor e arquitetura técnica sofisticada (split de receita via Stripe Connect, dashboard de receitas para proprietários), mas não define explicitamente nenhum modelo de monetização — não há menção a comissões, tiers de assinatura, valores, estratégia freemium, nem métricas como MRR, LTV ou CAC."
+}

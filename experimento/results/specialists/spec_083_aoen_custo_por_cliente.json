@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 83,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente, custo por operação (ex: custo de cada análise de certificação pelo CertificationEngine), rastreamento de consumo por tenant ou conexão entre custo e precificação — a arquitetura descreve serviços funcionais (CertificationService, MarketplaceService, etc.) sem qualquer camada de metering, billing por uso ou atribuição de recursos por cliente."
+}

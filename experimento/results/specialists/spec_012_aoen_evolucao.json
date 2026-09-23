@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra sólidos princípios evolutivos: pipeline abstraído com estágios intercambiáveis, adaptadores plugáveis para sensores (eliminando lock-in de fabricante), modelos de análise substituíveis e camada de serviços que isola a lógica de negócio de todas as interfaces — contudo, perde pontos por ausência explícita de abstração de repositório para trocar banco de dados sem impacto, de estratégia de escala horizontal (filas, event-driven) para suportar crescimento de 10 para 10.000 usuários sem mudança arquitetural, e por não detalhar como o modelo multi-tenant é isolado a ponto de evoluir independentemente por cliente."
+}

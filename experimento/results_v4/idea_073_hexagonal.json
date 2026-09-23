@@ -1,0 +1,78 @@
+{
+  "ideia_idx": 73,
+  "ideia": "App de coaching de comunicação com análise de voz por IA",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Coaching de comunicação oral: o domínio central modela Sessões de Prática (gravação/fala de um usuário sobre um tema ou cenário), Métricas de Fala (ritmo/WPM, pausas, palavras de preenchimento, entonação, volume, clareza, tempo de fala), Rubricas de Avaliação, Feedback acionável, Plano de Treino e Metas, Progresso/Evolução ao longo do tempo, Exercícios/Cenários (apresentação, entrevista, pitch, negociação), Assinatura/Plano e Direitos de Uso (quotas). Regras de negócio puras: como pontuar uma sessão, comparar com metas, gerar recomendações, progredir níveis, aplicar limites por plano e gerir consentimento sobre dados de voz (LGPD/GDPR).",
+    "primary_ports": [
+      "IniciarSessaoDePratica (criar sessão, escolher cenário/exercício)",
+      "EnviarAudioParaAnalise (upload/stream de áudio de uma sessão)",
+      "ObterRelatorioDaSessao (métricas, pontuação e feedback)",
+      "ConsultarProgressoEEvolucao (histórico, tendências, metas)",
+      "GerenciarMetasEPlanoDeTreino",
+      "ListarCenariosEExercicios",
+      "GerenciarPerfilEConsentimento (incluindo exportação e exclusão de dados de voz)",
+      "GerenciarAssinatura (planos, upgrade, cancelamento)",
+      "ComandosAdministrativosDeCoach (para times/organizações: convidar membros, ver relatórios agregados)"
+    ],
+    "secondary_ports": [
+      "RepositorioDeSessoes / RepositorioDeUsuarios / RepositorioDeProgresso (persistência)",
+      "ArmazenamentoDeAudio (guardar e recuperar arquivos de áudio com política de retenção)",
+      "TranscricaoDeFala (speech-to-text com timestamps por palavra e diarização)",
+      "AnalisadorAcusticoDeVoz (prosódia, pitch, energia, pausas, ritmo)",
+      "GeradorDeFeedbackIA (LLM que converte métricas e transcrição em feedback e plano de treino)",
+      "FilaDeTrabalhos / BarramentoDeEventos (processamento assíncrono das análises)",
+      "GatewayDePagamento (cobrança, assinaturas, webhooks)",
+      "ServicoDeIdentidade (autenticação/autorização, SSO)",
+      "NotificacaoPort (e-mail, push, lembretes de prática)",
+      "RelogioPort e GeradorDeIdPort (determinismo e testabilidade)",
+      "TelemetriaEAuditoria (logs, métricas, trilha de auditoria de acesso a dados de voz)",
+      "FeatureFlagsPort e ConfiguracaoDePlanosPort"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL HTTP (backend do app web e mobile)",
+      "WebSocket/WebRTC de streaming de áudio para feedback em tempo real",
+      "App web (SPA/PWA) e apps mobile (React Native/Flutter) como clientes da API",
+      "CLI para operações e scripts de manutenção",
+      "Adaptador de testes automatizados (testes de aceitação que dirigem os primary ports com dublês)",
+      "Consumidores de webhooks (Stripe, provedor de identidade) que traduzem eventos externos em comandos do core",
+      "Jobs agendados (cron) para lembretes e relatórios semanais",
+      "Integrações B2B: plugin/API para Zoom, Google Meet e Teams; SDK para LMS/RH corporativo"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios) e Redis (cache e rate limiting)",
+      "S3/GCS/R2 para ArmazenamentoDeAudio com criptografia e lifecycle de retenção",
+      "Adaptadores de STT intercambiáveis: Whisper (self-hosted ou API), Deepgram, AssemblyAI, Google STT",
+      "Adaptador acústico: openSMILE, Praat/Parselmouth ou modelos próprios (PyTorch) em serviço de inferência",
+      "Adaptadores de LLM intercambiáveis: Claude API, OpenAI, modelo local; com prompts versionados",
+      "SQS/SNS, RabbitMQ, Kafka ou Redis Streams para filas e eventos",
+      "Stripe (com Pix/boleto via Stripe ou Mercado Pago/Pagar.me para o Brasil)",
+      "Auth0/Cognito/Keycloak/Clerk para identidade",
+      "SendGrid/SES para e-mail; FCM/APNs para push",
+      "OpenTelemetry + Grafana/Datadog/Sentry para telemetria",
+      "Adaptadores em memória/fakes (repositórios em memória, STT falso, LLM determinístico) para testes e desenvolvimento local",
+      "LaunchDarkly/Unleash ou config em arquivo para feature flags"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) fica em um módulo sem dependência de frameworks, SDKs, banco, HTTP ou provedores de IA; contém apenas entidades, value objects, serviços de domínio e as interfaces (ports) que ele mesmo define. A regra de dependência aponta sempre para dentro: adapters dependem dos ports, nunca o contrário. Os ports usam linguagem do domínio (ex.: TranscricaoDeFala.transcrever(audioRef) → Transcricao), não vocabulário de fornecedor; DTOs e erros de vendors são traduzidos nos adapters (anti-corruption layer). A composição ocorre em um composition root (injeção de dependência manual), onde se escolhe qual adapter liga a qual port por ambiente. Todos os sistemas externos (banco, STT, LLM, pagamento, fila) são tratados de forma simétrica como secondary ports. Regras de arquitetura são reforçadas automaticamente (ArchUnit/dependency-cruiser/import-linter na CI), e testes do core rodam apenas com fakes, sem I/O. Análises longas são assíncronas: o core emite eventos de domínio e os adapters de fila os entregam, mantendo o core síncrono e puro.",
+    "interfaces": [
+      "App mobile (iOS/Android) com gravação de áudio, feedback em tempo real e relatório pós-sessão",
+      "App web/PWA com dashboard de progresso, biblioteca de cenários e histórico de sessões",
+      "API pública REST/GraphQL documentada (OpenAPI) para parceiros e integrações",
+      "Painel B2B para gestores de times e RH (relatórios agregados, convites, SSO)",
+      "Painel administrativo interno (suporte, moderação, planos, feature flags)",
+      "Webhooks de saída (sessão analisada, meta atingida) para integrações de clientes",
+      "CLI operacional e suíte de testes de aceitação como interfaces de primeira classe",
+      "Extensões/bots para Zoom, Meet e Teams"
+    ],
+    "escalabilidade": "Serviço da API stateless e escalável horizontalmente atrás de load balancer; o gargalo é o processamento de áudio, então o pipeline é assíncrono: upload direto ao object storage via URL pré-assinada, evento na fila, workers independentes para STT, análise acústica e geração de feedback, escalados por profundidade de fila (KEDA/HPA), com GPUs em pool separado e spot instances para lotes. Processamento em duas camadas: feedback leve em tempo real (streaming, modelos pequenos) e análise profunda em background. Idempotência e retentativas com dead-letter queue por etapa; backpressure e quotas por plano. Postgres com réplicas de leitura, particionamento por usuário/tempo em tabelas de sessões e métricas, cache de relatórios no Redis, CDN para assets. Multi-região por residência de dados quando exigido (LGPD/GDPR). Como STT/LLM são ports, é possível trocar ou balancear provedores por custo, latência ou falha (fallback e circuit breaker) sem tocar no core. Evolução opcional: começar como monólito modular hexagonal e extrair o pipeline de análise em serviço próprio quando o volume justificar.",
+    "custos": "Os principais custos são por minuto de áudio: STT (API ~US$0,006–0,015/min ou GPU própria), inferência acústica, tokens de LLM por feedback e armazenamento/transferência de áudio. Mitigações: modelo em camadas (modelo barato para triagem e caro apenas para o relatório final), cache e deduplicação, compressão do áudio (Opus), descarte de áudio bruto após análise mantendo apenas métricas e transcrição (também reduz risco de privacidade), lifecycle do storage (hot → cold → delete), quotas de minutos por plano, batch em GPUs spot, self-hosting de Whisper quando o volume passar do ponto de equilíbrio contra APIs, e roteamento dinâmico entre provedores. Custos adicionais: taxas de pagamento (~3–5% + fixos), observabilidade, conformidade e segurança (criptografia, auditoria, DPO), suporte, e CAC de aquisição. Acompanhar margem bruta por minuto analisado e por usuário ativo como métrica-chave, mirando margem bruta acima de 70%.",
+    "monetizacao": "Freemium com limite mensal de minutos/sessões (gancho de aquisição) e assinaturas pagas: Pro individual (mensal/anual com desconto) com minutos maiores, análise avançada, plano de treino personalizado e histórico ilimitado; Premium com cenários especializados (entrevistas, vendas, pitch para investidores, idiomas/sotaque) e feedback em tempo real. B2B/Teams: licença por assento para empresas, escolas, bootcamps e áreas de vendas/RH, com dashboards agregados, SSO, integrações e relatórios de desenvolvimento. Receitas complementares: pacotes avulsos de minutos (créditos), marketplace de coaches humanos com comissão (revisão humana sobre a análise da IA), conteúdo premium (trilhas, desafios), parcerias com universidades e programas de carreira, e API/white-label para plataformas de ensino. Preços com paridade regional e opções Pix/boleto para o Brasil; teste gratuito do plano Pro de 7 a 14 dias.",
+    "stack_sugerida": "Core: TypeScript (Node.js) ou Kotlin/Java em módulo puro, ou Python com Pydantic; escolher uma linguagem só para o core, com testes unitários rápidos (Vitest/JUnit/pytest) e testes de arquitetura na CI. Backend: NestJS/Fastify (ou Spring Boot/FastAPI) somente como adapter primário, com OpenAPI. Análise de áudio e ML: Python (FastAPI ou workers) com Whisper/faster-whisper, Parselmouth/openSMILE, PyTorch, servidos em GPU (NVIDIA Triton ou vLLM quando cabível). LLM: Claude API via adapter, com prompts versionados e avaliações offline (evals). Dados: PostgreSQL, Redis, S3 (ou R2/GCS); filas com SQS/SNS ou RabbitMQ (Kafka apenas em escala maior). Clientes: React/Next.js (web/PWA) e React Native ou Flutter (mobile), WebRTC/WebSocket para streaming de áudio. Infra: Docker, Kubernetes (EKS/GKE) com KEDA ou ECS/Fargate no início, Terraform, GitHub Actions, CDN (CloudFront/Cloudflare). Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Segurança/compliance: criptografia em repouso e em trânsito, KMS, segregação de dados de voz (dados biométricos sensíveis), consentimento explícito, retenção configurável, auditoria e conformidade LGPD/GDPR. Pagamentos: Stripe (ou Mercado Pago/Pagar.me para Pix e boleto)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T04:09:08+00:00",
+    "runner": "runner.py"
+  }
+}

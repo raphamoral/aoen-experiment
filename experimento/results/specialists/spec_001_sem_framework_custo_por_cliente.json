@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "O projeto lista custos de infraestrutura totais (servidor, Maps API, bandwidth, SMS) em visão FinOps, sem nenhum cálculo ou rastreamento de custo por tenant — a monetização prevê cobrança por veículo e por entrega, mas não há conexão entre esses preços e o custo real de servir cada cliente, tornando a margem por tenant incalculável."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona 'uso medido por sensor/dispositivo' no contexto de Billing & Subscription, o que introduz uma métrica de consumo por cliente, mas isso representa a régua de cobrança (pricing metric), não o cálculo do custo real de servir cada tenant — não há mensuração de custo por operação (ingestão, análise AQI, geração de laudo), nenhuma estratégia de tag/alocação de recursos por tenant nas camadas de infra (Kafka, TimescaleDB, S3), e nenhuma conexão entre o que cada cliente consome e a margem que ele gera."
+}

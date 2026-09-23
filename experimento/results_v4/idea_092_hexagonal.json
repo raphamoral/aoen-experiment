@@ -1,0 +1,83 @@
+{
+  "ideia_idx": 92,
+  "ideia": "SaaS de gestão de contratos SaaS para empresas com otimização de licenças",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de contratos de software (SaaS) e otimização de licenças. Agregados centrais: Contrato (vigência, renovação, cláusulas, valor), Fornecedor, Licença/Assento (alocação, atribuição), Uso (telemetria de utilização por usuário/aplicação), Política de Otimização (regras de reclaim, right-sizing, consolidação), Recomendação de Economia e Alerta de Renovação. Regras de negócio: detecção de licenças ociosas, cálculo de economia potencial, previsão de renovação, conformidade contratual e alocação de custos por departamento.",
+    "primary_ports": [
+      "ContractManagementPort (cadastrar, atualizar, renovar, encerrar contratos)",
+      "LicenseAllocationPort (atribuir, revogar e reatribuir licenças)",
+      "OptimizationAnalysisPort (executar análise, listar recomendações, aprovar/rejeitar)",
+      "RenewalAlertPort (consultar e configurar alertas de renovação)",
+      "UsageIngestionPort (receber dados de uso de licenças)",
+      "ReportingPort (relatórios de gasto, economia e conformidade)",
+      "TenantAdministrationPort (organizações, usuários, papéis e permissões)",
+      "BillingSubscriptionPort (plano e consumo do próprio SaaS)"
+    ],
+    "secondary_ports": [
+      "ContractRepositoryPort (persistência de contratos, licenças e políticas)",
+      "UsageMetricsStorePort (série temporal de uso)",
+      "DocumentStoragePort (PDFs e anexos contratuais)",
+      "DocumentExtractionPort (extração de cláusulas, datas e valores de documentos)",
+      "IdentityProviderPort (SSO, diretório de usuários, provisionamento)",
+      "SaaSProviderConnectorPort (APIs de fornecedores: Microsoft 365, Google Workspace, Slack, Salesforce, etc.)",
+      "NotificationPort (e-mail, Slack, Teams)",
+      "PaymentGatewayPort (cobrança do próprio SaaS)",
+      "ERPFinanceIntegrationPort (faturas, centros de custo, aprovação de compra)",
+      "EventPublisherPort (eventos de domínio)",
+      "SchedulerPort (jobs de análise e verificação de renovações)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)",
+      "AuditLogPort (trilha de auditoria)",
+      "RecommendationEnginePort (modelos de previsão/ML, opcional)"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP controllers)",
+      "GraphQL API",
+      "Web SPA (painel do usuário)",
+      "CLI para administradores e scripts",
+      "Webhooks de entrada (eventos de fornecedores e do gateway de pagamento)",
+      "Consumidores de mensageria (ingestão de uso)",
+      "Cron/Scheduler trigger",
+      "Adaptador de teste (test driver / testes de aceitação BDD)",
+      "Bot de Slack/Teams (comandos de aprovação)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL adapter (ContractRepositoryPort)",
+      "TimescaleDB ou ClickHouse adapter (UsageMetricsStorePort)",
+      "S3/GCS/Azure Blob adapter (DocumentStoragePort)",
+      "LLM/OCR adapter (DocumentExtractionPort)",
+      "Okta / Azure AD / Google Workspace / SCIM adapters (IdentityProviderPort)",
+      "Conectores de API por fornecedor (Microsoft Graph, Google Admin SDK, Slack API, Salesforce API)",
+      "SMTP/SES/SendGrid + Slack/Teams webhooks (NotificationPort)",
+      "Stripe adapter (PaymentGatewayPort)",
+      "Adapters para SAP, NetSuite, QuickBooks, Omie (ERPFinanceIntegrationPort)",
+      "Kafka/SQS/RabbitMQ adapter (EventPublisherPort)",
+      "Quartz/Temporal/EventBridge adapter (SchedulerPort)",
+      "Adaptador de auditoria append-only",
+      "In-memory / fake adapters (repositórios, relógio, notificações) para testes e desenvolvimento local",
+      "Adaptador de ML (modelo próprio ou API externa) para RecommendationEnginePort"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não possui dependências de frameworks, bancos, SDKs ou protocolos de transporte. Ele expõe apenas as primary ports, que são implementadas pelos casos de uso, e depende apenas de abstrações das secondary ports, definidas dentro do core. Adapters dependem do core (Dependency Inversion), nunca o contrário. Dados cruzam a fronteira por DTOs/comandos e são traduzidos por mappers nos adapters, evitando vazamento de modelos externos (Anti-Corruption Layer para APIs de fornecedores). A composição é feita apenas no composition root (injeção de dependência). Todas as integrações externas são tratadas simetricamente como adapters intercambiáveis. Testes de arquitetura (ArchUnit, dependency-cruiser) impedem imports indevidos, e a suíte de testes do core roda com adapters fake, sem infraestrutura. Multi-tenancy é tratado como conceito do domínio (TenantId em todos os comandos), com o isolamento físico (RLS, schema por tenant) implementado no adapter de persistência.",
+    "interfaces": [
+      "Dashboard web (visão de contratos, gasto, economia potencial)",
+      "API REST pública documentada com OpenAPI",
+      "API GraphQL para consultas analíticas",
+      "CLI (importação em lote, automação)",
+      "Webhooks de saída (eventos de renovação, licença ociosa, economia identificada)",
+      "Integrações com Slack/Teams para alertas e aprovações",
+      "SSO (SAML/OIDC) e provisionamento SCIM",
+      "Exportação de relatórios (CSV/PDF) e integração com BI",
+      "Calendário (iCal) de renovações"
+    ],
+    "escalabilidade": "Serviços de aplicação stateless escalam horizontalmente atrás de load balancer. Como o core é independente de infraestrutura, os adapters podem ser trocados ou escalados isoladamente. Ingestão de uso é assíncrona via fila/stream, com workers autoscaled por lag. Dados de uso ficam em armazenamento de série temporal com particionamento por tenant e tempo, e agregações são pré-computadas. Análises de otimização rodam como jobs em lote distribuídos, com prioridade por tenant. Leitura e escrita podem ser separadas (CQRS) com réplicas de leitura e cache para dashboards. Conectores de fornecedores usam rate limiting, retry com backoff e circuit breaker por adapter. Multi-tenancy com sharding por tenant permite isolar clientes enterprise. Inicia-se como monólito modular, com extração posterior de módulos (ingestão, análise, conectores) em serviços, pois as fronteiras já estão definidas pelas ports.",
+    "custos": "Principais custos: computação de jobs de análise e ingestão (mitigável com autoscaling e spot/preemptible), armazenamento de série temporal (retenção em camadas, downsampling e compressão), armazenamento de documentos (ciclo de vida para storage frio), chamadas a LLM/OCR na extração de contratos (cache, processamento em lote, modelos menores para tarefas simples), e chamadas às APIs de fornecedores (limites de taxa e custos de licenciamento de integrações). Custos adicionais: suporte e onboarding de clientes enterprise, conformidade e segurança (SOC 2, LGPD/GDPR), observabilidade e desenvolvimento/manutenção de conectores. A arquitetura hexagonal reduz custo de mudança de provedor (baixo lock-in) e permite adapters mais baratos em planos inferiores. Começar como monólito modular mantém a infraestrutura enxuta no início.",
+    "monetizacao": "Assinatura SaaS por faixas (Starter, Growth, Enterprise), precificada por número de contratos gerenciados ou por número de usuários/licenças monitoradas. Modelo de valor: percentual sobre a economia comprovada gerada (success fee) como opção ou complemento. Add-ons pagos: conectores premium, extração de contratos com IA, módulo de conformidade e auditoria, SSO/SCIM, API com limites ampliados e SLA dedicado. Serviços de onboarding e migração de contratos. Possibilidade de marketplace/negociação assistida com fornecedores (benchmark de preços) e comissão de parceiros.",
+    "stack_sugerida": "Backend: TypeScript (NestJS com módulos organizados em ports/adapters) ou Java/Kotlin (Spring Boot) ou Go, com o core em módulos sem dependência de framework. Persistência: PostgreSQL (com Row-Level Security) e TimescaleDB/ClickHouse para uso. Mensageria: Kafka ou SQS/SNS. Orquestração de jobs: Temporal ou BullMQ. Armazenamento: S3. Cache: Redis. Frontend: React/Next.js com TypeScript. Autenticação: OIDC/SAML via Keycloak, Auth0 ou Okta. Pagamentos: Stripe Billing. IA: LLM via API para extração de cláusulas e OCR gerenciado. Infra: Docker, Kubernetes (ou ECS/Cloud Run), Terraform. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry. Testes: unitários do core com fakes, testes de contrato para adapters, testes de arquitetura (ArchUnit/dependency-cruiser), Testcontainers para integração e BDD para aceitação. CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:48:06+00:00",
+    "runner": "runner.py"
+  }
+}

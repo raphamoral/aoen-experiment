@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta é inteiramente técnico-arquitetural — não há definição explícita de mercado-alvo, articulação da dor do cliente, análise de tamanho de mercado, diferenciação frente a concorrentes como uTest/Testlio/Bugcrowd, nem proposta de valor declarada; os únicos sinais de audiência são inferências implícitas dos nomes das interfaces (empresas que criam campanhas e testadores que as executam), o que é insuficiente para caracterizar visão de mercado."
+}

@@ -1,0 +1,16 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "clean_arch",
+  "scores": {
+    "core_diferenciador": 5,
+    "visao_mercado": 4,
+    "multi_interface": 2,
+    "configurabilidade": 4,
+    "isolamento_processamento": 3,
+    "custo_infraestrutura": 2,
+    "custo_por_cliente": 5,
+    "monetizacao": 6,
+    "evolucao": 6,
+    "coerencia": 7
+  }
+}

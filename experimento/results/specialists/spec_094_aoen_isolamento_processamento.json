@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 94,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define uma Service Layer com separação lógica de casos de uso (RecalcularProjecao, EmitirAlerta etc.), mas não menciona em nenhum momento filas de mensagens, workers assíncronos ou processos separados — o motor de recalculo bidirecional parece executar de forma síncrona e co-localizada com o restante da aplicação, sem fallback, sem isolamento físico e sem capacidade de escala independente."
+}

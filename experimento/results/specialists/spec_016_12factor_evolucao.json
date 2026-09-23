@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura apresenta excelente evolução operacional — serviços separados, API versionada (v1), escalonamento horizontal, config por env vars e rollback imediato — mas não explicita padrões de isolamento de domínio (ports & adapters, clean architecture) que protegeriam a lógica de negócio de acoplamentos diretos a frameworks como Celery, ElasticSearch e às múltiplas integrações de carriers, tornando a substituição desses componentes uma refatoração de código, não apenas uma troca de configuração."
+}

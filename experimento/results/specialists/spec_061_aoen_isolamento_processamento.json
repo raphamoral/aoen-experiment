@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 61,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta apresenta apenas isolamento lógico via service layer (MatchingService como módulo independente), mas não menciona filas, workers separados, processamento assíncrono nem qualquer mecanismo de fallback — o motor de embeddings e o pipeline de ranking, que são as operações computacionalmente caras, rodam presumivelmente no mesmo processo da aplicação, o que significa que uma sobrecarga ou falha no matching pode derrubar toda a plataforma."
+}

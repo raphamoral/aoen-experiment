@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 27,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está segmentado com razoável precisão (porte da empresa, perfis de comprador, casos de uso específicos) e a diferenciação técnica pelo motor de orquestração híbrida é tangível, mas a dor do cliente é apenas implícita ('equipes distribuídas', 'audiência mista') sem articulação explícita do custo do problema atual, não há dados de tamanho de mercado (TAM/SAM/SOM) e a diferenciação não é posicionada contra concorrentes nomeados (Hopin, Cvent, Bizzabo), o que enfraquece a proposta de valor para um decisor de compra."
+}

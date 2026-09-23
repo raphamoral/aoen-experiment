@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta descreve exclusivamente a arquitetura técnica do sistema (portas, adaptadores, entidades de domínio) sem mencionar mercado-alvo específico, tamanho de mercado, dor do cliente articulada ou diferenciação competitiva em relação a soluções existentes como Narvar, Loop Returns ou funcionalidades nativas de plataformas como VTEX e Shopify."
+}

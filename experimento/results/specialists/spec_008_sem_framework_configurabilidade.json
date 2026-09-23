@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta implica multi-tenancy estrutural (tabelas separadas por empresa no PostgreSQL) mas não descreve nenhuma camada de configuração explícita — não há menção a feature flags por tenant, regras de negócio configuráveis, templates de MTR customizáveis por cliente, workflows variáveis ou tabela de configurações; a escolha entre Polygon e Hyperledger Besu sugere consciência de variação por cliente, mas parece exigir decisão em tempo de deploy, não de onboarding, o que significa que clientes com requisitos distintos (regras de destinação, tipos de resíduo, integrações estaduais diferentes do SINIR federal) provavelmente exigiriam código novo."
+}

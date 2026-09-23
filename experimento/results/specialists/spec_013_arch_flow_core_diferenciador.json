@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador existe e foi parcialmente isolado via mapeamento Wardley (genesis: IA de recomendação + precificação dinâmica; custom: motor de disponibilidade distribuída), mas está diluído em quatro itens genesis concorrentes sem que nenhum seja declarado o núcleo insubstituível — e o próprio aspecto 'descentralizado', que é a promessa central do nome do produto, não possui bounded context próprio nem aparece como genesis, enfraquecendo a coesão entre proposta de valor e arquitetura."
+}

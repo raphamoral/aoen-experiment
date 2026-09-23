@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta descreve com riqueza técnica a cadeia de valor e os bounded contexts, mas não apresenta nenhum modelo de monetização — não há menção a planos, tiers, faixas de preço, métricas de negócio (MRR, LTV, CAC, churn) nem conexão explícita entre o valor entregue e como ele é cobrado do cliente."
+}

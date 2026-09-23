@@ -1,0 +1,84 @@
+{
+  "ideia_idx": 77,
+  "ideia": "App de gestão de fazendas solares com monitoramento IoT",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão operacional e financeira de ativos de geração solar fotovoltaica. O núcleo (hexágono) contém os agregados Fazenda Solar (Plant), Bloco/Array, String, Inversor, Módulo, Medidor e Sensor; as entidades Leitura de Telemetria, Alerta, Ordem de Manutenção, Contrato/PPA, Fatura e Meta de Geração; e os serviços de domínio: cálculo de Performance Ratio, detecção de anomalias e subgeração (geração real vs. esperada), regras de escalonamento de alertas, planejamento de manutenção preventiva/corretiva, cálculo de receita e perdas, e conciliação de créditos de energia. Multi-tenancy (Organização/Tenant) é um conceito do domínio, não da infraestrutura.",
+    "primary_ports": [
+      "RegisterSolarFarmUseCase (cadastrar/configurar fazendas, arrays, inversores e sensores)",
+      "IngestTelemetryUseCase (receber leituras de dispositivos)",
+      "QueryPlantPerformanceUseCase (geração, PR, disponibilidade, perdas)",
+      "ManageAlertsUseCase (consultar, reconhecer, silenciar e resolver alertas)",
+      "ConfigureAlertRulesUseCase (regras e limiares por ativo)",
+      "ScheduleMaintenanceUseCase (criar e acompanhar ordens de serviço)",
+      "GenerateReportUseCase (relatórios operacionais, financeiros e de conformidade)",
+      "ManageContractsAndBillingUseCase (PPAs, tarifas, faturamento)",
+      "SendDeviceCommandUseCase (comandos remotos: reset de inversor, limitação de potência)",
+      "ManageTenantAndAccessUseCase (organizações, usuários, papéis, assinaturas)"
+    ],
+    "secondary_ports": [
+      "TelemetryRepository (série temporal de leituras)",
+      "PlantRepository / AssetRepository (estado e configuração dos ativos)",
+      "AlertRepository e MaintenanceOrderRepository",
+      "DeviceGateway (comandos e provisionamento de dispositivos IoT)",
+      "TelemetrySubscriber (entrada assíncrona de eventos de dispositivos)",
+      "WeatherProvider (irradiância, temperatura e previsão)",
+      "NotificationPort (e-mail, SMS, push, WhatsApp)",
+      "EventPublisher (eventos de domínio: AlertRaised, ReadingIngested, OrderCompleted)",
+      "ForecastModelPort (previsão de geração e detecção de anomalias por ML)",
+      "BillingPaymentPort (cobrança de assinatura)",
+      "GridOperatorPort (integração com concessionária/ONS/CCEE e dados de compensação)",
+      "ReportStoragePort (armazenamento de PDFs e exportações)",
+      "IdentityProviderPort (autenticação e autorização)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON) para o frontend web e integrações de terceiros",
+      "GraphQL API para dashboards com consultas flexíveis",
+      "Adaptador MQTT de entrada (subscribe em tópicos de telemetria)",
+      "Adaptador de gateway Modbus/SunSpec e OPC-UA para inversores e dataloggers legados",
+      "Webhooks de entrada (parceiros, provedores de pagamento)",
+      "WebSocket/SSE para dashboards em tempo real",
+      "CLI e scripts de operação (backfill, migração, importação em massa)",
+      "Adaptador de testes automatizados (test driver com dublês em memória)",
+      "Jobs agendados (cron) para relatórios, fechamento de faturamento e verificações periódicas",
+      "App mobile (React Native) para técnicos de campo, consumindo a API"
+    ],
+    "secondary_adapters": [
+      "TimescaleDB ou InfluxDB (TelemetryRepository)",
+      "PostgreSQL com row-level security por tenant (repositórios de ativos, alertas e ordens)",
+      "Adaptador MQTT de saída / AWS IoT Core ou EMQX (DeviceGateway e TelemetrySubscriber)",
+      "Kafka, NATS ou SQS/SNS (EventPublisher)",
+      "Adaptadores de clima: Solcast, OpenWeather, NASA POWER",
+      "Twilio, SendGrid/SES, Firebase Cloud Messaging, WhatsApp Business API (NotificationPort)",
+      "Stripe ou Pagar.me/Asaas (BillingPaymentPort)",
+      "S3/MinIO (ReportStoragePort)",
+      "Auth0, Keycloak ou Cognito (IdentityProviderPort)",
+      "Serviço de ML em Python (ForecastModelPort) via gRPC ou SageMaker",
+      "Adaptador da concessionária/ONS/CCEE (GridOperatorPort)",
+      "Adaptadores em memória / fakes para todos os ports (testes e desenvolvimento local)",
+      "Redis (cache, deduplicação e rate limiting, atrás de portas próprias)"
+    ],
+    "isolation": "O core não importa nenhum framework, driver ou SDK: depende apenas de interfaces (ports) definidas por ele mesmo. A regra de dependência aponta sempre para dentro (adapters -> ports -> domínio). Cada adapter traduz o modelo externo (payload MQTT, JSON de API de clima, linha SQL, evento Kafka) para o modelo do domínio, com anti-corruption layer para protocolos de fabricantes distintos (Huawei, SMA, Fronius, Growatt). A injeção de dependência e a composição ficam em um composition root na borda. Testes de arquitetura (ArchUnit, dependency-cruiser, import-linter) falham o build se o core importar infraestrutura. Toda a lógica pode ser exercida por testes usando adapters em memória, sem broker, banco ou rede, e o mesmo caso de uso pode ser acionado por API, MQTT, CLI ou teste com o mesmo resultado. O tratamento é simétrico: banco, broker, provedor de clima e gateway de pagamento são todos 'lados de fora' atrás de ports.",
+    "interfaces": [
+      "Dashboard web multi-tenant (visão de portfólio, mapa das fazendas, drill-down por array/string/inversor)",
+      "App mobile para técnicos (ordens de serviço, checklists, fotos, modo offline)",
+      "API pública REST/GraphQL com chaves e OAuth2 para integradores",
+      "Portal do investidor/proprietário com relatórios de geração e retorno",
+      "Central de alertas e notificações (e-mail, SMS, WhatsApp, push)",
+      "Console administrativo (tenants, planos, dispositivos, auditoria)",
+      "Interface de dispositivos: MQTT/TLS, Modbus TCP/RTU, SunSpec, OPC-UA via gateway de borda",
+      "Webhooks de saída e exportações (CSV, PDF, integração com ERP e BI)"
+    ],
+    "escalabilidade": "Ingestão: dispositivos publicam via MQTT em um broker gerenciado e escalável horizontalmente; um pipeline stream (Kafka/NATS) desacopla ingestão de processamento e absorve picos, com consumidores particionados por fazenda/tenant. Processamento: casos de uso sem estado, em contêineres com autoscaling (Kubernetes/ECS/KEDA), que escalam por lag da fila. Dados: séries temporais em Timescale/Influx com particionamento por tempo, compressão, agregações contínuas (1min, 15min, 1h, 1d) e políticas de retenção em camadas (quente/morno/frio em S3/Parquet). Leituras: cache e visões materializadas para dashboards. Edge: gateways locais fazem buffer e pré-agregação, toleram queda de conectividade e reduzem tráfego. Tenancy: começa com esquema/RLS compartilhado e permite migrar tenants grandes para infraestrutura dedicada (cell-based architecture). Por causa da hexagonal, é possível trocar o adapter (ex.: Influx por Timescale, ou monólito modular por microsserviços) sem alterar o core. Evolução recomendada: monólito modular hexagonal com o pipeline de ingestão separado, extraindo serviços apenas quando a carga justificar.",
+    "custos": "Principais vetores: (1) ingestão e armazenamento de telemetria, que domina o custo e cresce com nº de dispositivos x frequência de amostragem; mitigar com amostragem adaptativa, pré-agregação na borda, compressão, retenção em camadas e downsampling; (2) mensageria/IoT gerenciada (custo por mensagem) versus EMQX auto-hospedado, que fica mais barato acima de certa escala; (3) computação de ML, que deve rodar em lote ou em instâncias spot e ser acionada apenas para anomalias; (4) APIs de clima e SMS/WhatsApp, com custo variável repassável ou limitado por plano; (5) egress e observabilidade (logs/métricas), que exigem amostragem; (6) suporte e onboarding de integrações com fabricantes, que é custo humano relevante. Boas práticas: FinOps por tenant (tagging e custo por fazenda/MW), cotas por plano, reserved instances para carga base e autoscaling para picos. Estimativa de ordem de grandeza: o custo de infraestrutura por MWp monitorado tende a ser baixo se a telemetria for bem agregada, mantendo margem bruta de SaaS acima de 70-80%.",
+    "monetizacao": "Assinatura SaaS por capacidade instalada (R$/kWp ou R$/MWp por mês) ou por número de dispositivos/inversores monitorados, em planos escalonados: Essencial (monitoramento e alertas), Profissional (manutenção, relatórios, API, previsão) e Enterprise (multi-portfólio, SSO, SLA, integrações customizadas, white-label). Receitas complementares: módulo de O&M e gestão de equipes de campo, módulo financeiro/PPA e conciliação de créditos, análise preditiva e detecção de falhas como add-on premium, taxa de onboarding e integração de dispositivos, venda de gateways de borda homologados, marketplace de prestadores de O&M com comissão, acesso pago a API e dados agregados/benchmark. Alvos: geradoras e investidores em usinas de geração distribuída/centralizada, integradores e O&M, gestoras de ativos e cooperativas de energia. Faturamento via Stripe ou Pagar.me/Asaas, com trial gratuito por fazenda piloto.",
+    "stack_sugerida": "Core de domínio em TypeScript (Node.js/NestJS usado apenas na borda, com o domínio em TS puro) ou Kotlin/Java com Spring somente nos adapters; Go opcional para o serviço de ingestão de alta vazão. Mensageria e IoT: MQTT (EMQX ou AWS IoT Core) + Kafka/NATS. Dados: PostgreSQL + TimescaleDB, Redis, S3/Parquet para histórico frio. ML: Python (scikit-learn/PyTorch, Prophet) exposto via gRPC/FastAPI. Frontend: React/Next.js + TypeScript, Tailwind, gráficos com ECharts/Recharts e mapas com MapLibre; mobile em React Native com armazenamento offline. Infra: Docker, Kubernetes (EKS/GKE) ou ECS, Terraform, GitHub Actions, ArgoCD. Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki e Sentry. Segurança: OAuth2/OIDC, mTLS e certificados por dispositivo, RLS por tenant, KMS para segredos, auditoria e conformidade com LGPD. Testes: adapters em memória, testes de contrato por port, testes de arquitetura (dependency-cruiser/ArchUnit) e simulador de dispositivos para carga."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T04:17:11+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "arch_flow",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta conta uma história coerente e auto-reforçante: o objetivo declarado (reduzir fricção e maximizar ocupação da cadeira) se traduz diretamente nos Core Domains escolhidos, que por sua vez justificam o que está em Genesis/Custom (ML de no-show, otimização de agenda) versus o que é corretamente commoditizado (auth, pagamentos, e-mail) — porém a topologia de times está truncada, impedindo avaliar se a estrutura organizacional reforça ou contradiz os bounded contexts definidos, e a interdependência entre 'Agendamento' e 'Agenda da Clínica' como dois Core Domains separados cria um potencial de acoplamento não endereçado na proposta visível."
+}

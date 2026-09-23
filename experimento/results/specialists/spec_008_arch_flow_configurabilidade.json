@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "O bounded context TenantManagement e o ComplianceEngine com 'regras configuráveis por UF' indicam intenção de configurabilidade, mas a proposta não articula um modelo de configuração explícito: faltam feature flags por tenant, configuração de workflows, campos customizáveis por cliente, e o ponto crítico é que os smart contracts de custódia (BlockchainLedger/ChainOfCustody) são tipicamente imutáveis pós-deploy, criando forte acoplamento de código para variações de regras entre clientes — sugerindo que onboarding de clientes com regras de custódia distintas ainda exigiria desenvolvimento."
+}

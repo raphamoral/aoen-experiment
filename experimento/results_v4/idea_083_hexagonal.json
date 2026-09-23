@@ -1,0 +1,91 @@
+{
+  "ideia_idx": 83,
+  "ideia": "Marketplace de materiais de construção sustentáveis com certificação ambiental",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Comércio de materiais de construção sustentáveis com certificação ambiental. O domínio tem cinco subdomínios. (1) Catálogo e Certificação: produtos, atributos ambientais (pegada de carbono, conteúdo reciclado, origem) e o ciclo de vida das certificações (FSC, LEED, Cradle to Cradle, PBQP-H, Selo Procel, EPDs), incluindo validade, revogação e auditoria. (2) Fornecedores: cadastro, verificação e reputação. (3) Pedidos e Negociação: carrinho, cotação (RFQ), pedido, frete e pós-venda. (4) Pagamentos e Repasses: split de pagamento, comissão e conciliação. (5) Conformidade e Impacto: cálculo e relatório de impacto ambiental por obra ou pedido. A regra invariante central é que um produto só pode ser exibido como 'sustentável' se tiver certificação válida e verificável.",
+    "primary_ports": [
+      "GerenciarCatalogoPort (cadastrar, atualizar e publicar produtos)",
+      "BuscarProdutosPort (busca com filtros por certificação, categoria, região e pegada de carbono)",
+      "GerenciarCertificacaoPort (submeter, validar, renovar e revogar certificados)",
+      "GerenciarFornecedorPort (onboarding, verificação e desativação)",
+      "RealizarPedidoPort (carrinho, checkout e cancelamento)",
+      "SolicitarCotacaoPort (RFQ para grandes volumes e obras)",
+      "GerenciarPagamentoPort (iniciar cobrança, estornar e consultar repasses)",
+      "CalcularImpactoAmbientalPort (relatório de pegada e economia de carbono por pedido ou obra)",
+      "AvaliarProdutoPort (avaliações e reputação)",
+      "AdministrarPlataformaPort (moderação, comissões e auditoria)"
+    ],
+    "secondary_ports": [
+      "ProdutoRepositoryPort",
+      "PedidoRepositoryPort",
+      "FornecedorRepositoryPort",
+      "CertificacaoRepositoryPort",
+      "BuscaIndexPort (indexação e consulta full-text e facetada)",
+      "ProvedorPagamentoPort (cobrança, split e KYC de vendedores)",
+      "VerificadorCertificacaoPort (consulta a certificadoras e registros públicos)",
+      "CalculoPegadaCarbonoPort (bases de EPD e inventário de ciclo de vida)",
+      "CalculoFretePort (transportadoras e cálculo de rota)",
+      "EmissorFiscalPort (NF-e e tributos)",
+      "ArmazenamentoDocumentosPort (certificados, laudos e imagens)",
+      "NotificacaoPort (e-mail, SMS e push)",
+      "EventPublisherPort (eventos de domínio)",
+      "IdentidadePort (autenticação e autorização)",
+      "RelogioPort e GeradorIdPort (determinismo em testes)",
+      "AuditLogPort"
+    ],
+    "primary_adapters": [
+      "REST API (controllers HTTP)",
+      "GraphQL API para o frontend do marketplace",
+      "Web app Next.js para compradores (arquitetos, construtoras, consumidores finais)",
+      "Portal web do fornecedor",
+      "Painel administrativo interno",
+      "Aplicativo mobile (React Native)",
+      "Webhooks de entrada (pagamento, certificadoras e transportadoras)",
+      "Consumidores de fila e eventos (mensageria)",
+      "CLI e scripts de importação em lote de catálogo (CSV/XLSX)",
+      "Jobs agendados (revalidação de certificados vencendo, conciliação)",
+      "Suíte de testes automatizados (BDD e contrato), que usa as mesmas portas primárias",
+      "API pública B2B/ERP para integração com sistemas de construtoras"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL via Prisma ou TypeORM (repositórios)",
+      "OpenSearch ou Elasticsearch (índice de busca)",
+      "Stripe Connect e Pagar.me/Mercado Pago (pagamento com split, cada um como adapter intercambiável)",
+      "Clientes HTTP das certificadoras e registros (FSC, INMETRO, bases EPD)",
+      "Adapter de OCR e validação documental (por exemplo, AWS Textract)",
+      "APIs de transportadoras (Correios, Melhor Envio)",
+      "Emissor de NF-e (Focus NFe ou similar)",
+      "S3 ou MinIO (documentos e imagens)",
+      "SES, SendGrid ou Twilio (notificações)",
+      "Kafka, RabbitMQ ou SQS/SNS (eventos)",
+      "Keycloak, Auth0 ou Cognito (identidade)",
+      "Redis (cache e rate limiting)",
+      "Adapters in-memory e fakes para testes",
+      "OpenTelemetry, Prometheus e Loki (auditoria e observabilidade)"
+    ],
+    "isolation": "O core (domain + application) é um módulo sem dependências de framework, banco, HTTP ou SDKs. Ele contém entidades, value objects (Certificacao, PegadaCarbono, Dinheiro), agregados (Produto, Pedido, Fornecedor), serviços de domínio, use cases e as interfaces das portas. A dependência aponta sempre para dentro: os adapters importam o core e nunca o contrário. Os use cases recebem as portas secundárias por injeção de dependência, montada em um composition root fora do core. DTOs e mapeadores ficam nos adapters, e o modelo de domínio nunca vaza para a API nem para o ORM. Todo sistema externo, seja o banco, o gateway de pagamento ou uma certificadora, é tratado de forma simétrica como uma porta com adapter substituível. Testes de arquitetura (ArchUnit, dependency-cruiser) fazem o build falhar se houver violação. Testes de contrato garantem que cada adapter respeite sua porta, e os testes de aceitação rodam o core inteiro com adapters in-memory.",
+    "interfaces": [
+      "Vitrine e busca com filtros ambientais e selo de certificação verificado",
+      "Página do produto com pegada de carbono, certificados e histórico de validação",
+      "Checkout com split entre vários fornecedores",
+      "Portal do fornecedor (catálogo, certificações, pedidos e repasses)",
+      "Fluxo de RFQ e cotação para obras",
+      "Painel de impacto ambiental e relatórios exportáveis (PDF) para LEED/AQUA",
+      "Painel administrativo (moderação e auditoria de certificados)",
+      "API pública documentada em OpenAPI para ERPs e construtoras",
+      "App mobile",
+      "Webhooks de saída para parceiros"
+    ],
+    "escalabilidade": "Começa como monólito modular, com módulos correspondentes aos bounded contexts (Catálogo, Certificação, Pedidos, Pagamentos) e comunicação por portas internas. Os limites hexagonais permitem extrair serviços depois, trocando um adapter in-process por um adapter HTTP ou de mensageria, sem alterar o core. A aplicação é stateless e escala horizontalmente atrás de um load balancer, com autoscaling em Kubernetes ou ECS. A leitura escala com o índice de busca e o cache em Redis, além de CDN para imagens e páginas de catálogo, com o padrão CQRS aplicado só à busca. O PostgreSQL usa réplicas de leitura e particionamento das tabelas de pedidos. Os processos assíncronos (validação de certificados, cálculo de pegada, notificações, conciliação) rodam em filas com workers independentes, com idempotência e outbox pattern para consistência entre banco e eventos. Os picos sazonais são absorvidos por filas e rate limiting.",
+    "custos": "Na fase inicial, o monólito modular em poucas instâncias gerenciadas (ECS/Fargate ou Cloud Run) mantém o custo baixo. Os maiores custos variáveis são: taxas de pagamento (cerca de 2,5–4% mais split), busca gerenciada (OpenSearch é o serviço fixo mais caro), OCR e verificação documental por documento, emissão fiscal por nota e armazenamento e CDN. Para reduzir o custo, dá para usar Postgres com busca full-text no MVP e migrar para OpenSearch só com escala, aplicar cache agressivo no catálogo, usar instâncias spot para workers e políticas de ciclo de vida no armazenamento de documentos. Custos operacionais não técnicos também pesam: curadoria e auditoria de certificações, suporte a fornecedores, compliance fiscal e tributário (ICMS/ISS) e seguro logístico. Como os adapters são substituíveis, dá para trocar de provedor por preço sem reescrever o negócio.",
+    "monetizacao": "Comissão sobre cada transação (por exemplo 5–12% por categoria). Assinatura SaaS para fornecedores (planos Básico, Pro e Enterprise, com destaque no catálogo, analytics e mais SKUs). Taxa de verificação e auditoria de certificações, ou selo próprio de 'Verificado pela plataforma'. Anúncios e posicionamento patrocinado na busca. Plano B2B para construtoras e escritórios de arquitetura (relatórios de impacto ambiental, RFQ ilimitado, integração com ERP e conta corporativa com crédito e prazo). Serviços financeiros, como antecipação de recebíveis para fornecedores e financiamento de compras. Venda de dados e relatórios de mercado agregados e anonimizados. Créditos de carbono e programas de compensação como serviço adicional.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (módulos organizados em domain/application/infrastructure) ou Java/Kotlin com Spring Boot, usando Zod ou class-validator apenas nos adapters. Banco: PostgreSQL, com Redis para cache. Busca: Postgres FTS no MVP, depois OpenSearch. Mensageria: SQS/SNS ou RabbitMQ, migrando para Kafka se o volume exigir. Frontend: Next.js (React) com Tailwind, e React Native para mobile. Pagamentos: Stripe Connect e/ou Pagar.me, atrás da ProvedorPagamentoPort. Armazenamento: S3 com CloudFront. Identidade: Keycloak ou Auth0. Infra: AWS (ECS/Fargate ou EKS), Terraform, GitHub Actions para CI/CD. Observabilidade: OpenTelemetry, Grafana, Prometheus e Sentry. Testes: Vitest/Jest, Testcontainers, Pact (contrato) e Playwright (e2e), com dependency-cruiser para impor as fronteiras hexagonais."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:33:06+00:00",
+    "runner": "runner.py"
+  }
+}

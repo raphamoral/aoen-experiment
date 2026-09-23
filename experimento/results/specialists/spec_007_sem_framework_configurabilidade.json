@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta tem multi-tenancy de dados implícito (cada empresa gerencia seu próprio conteúdo e usuários sem código), mas não menciona nenhuma camada de configuração de comportamento por tenant — regras de pontuação, lógica de gamificação, features disponíveis por plano e preferências de notificação parecem hardcoded e uniformes para todos os clientes, o que exigiria código para atender clientes enterprise com requisitos distintos."
+}

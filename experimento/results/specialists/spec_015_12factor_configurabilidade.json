@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta tem infraestrutura sólida para multi-tenancy (tenants no Postgres, Redis com escopo, feature flags) mas não descreve nenhum mecanismo explícito de configuração por cliente — PRICING_ALGORITHM_VERSION é uma env var global (não por tenant), feature flags parecem voltadas a isolamento de desenvolvimento e não a comportamento diferenciado por cliente, e não há menção a schema de configuração por tenant, parâmetros de algoritmo por cliente ou fluxo de onboarding puramente via dados, sugerindo que adicionar um cliente com regras de precificação distintas ainda exigiria intervenção técnica."
+}

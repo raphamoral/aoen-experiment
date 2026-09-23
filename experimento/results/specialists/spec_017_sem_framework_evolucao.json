@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "O plano de escalonamento incremental (fila para PDF, cache para verificação, réplica de leitura) demonstra pensamento evolutivo prático, mas a arquitetura descrita é um monolito padrão Node.js/React/PostgreSQL sem camadas de abstração explícitas: bibliotecas como Puppeteer, BullMQ e qrcode.js são acopladas diretamente à lógica de negócio sem interfaces/adapters intermediários, o que tornará substituições pontuais (ex: trocar gerador de PDF, mover para outro provedor de fila) em refatorações que tocam código de domínio, e não simples trocas de implementação."
+}

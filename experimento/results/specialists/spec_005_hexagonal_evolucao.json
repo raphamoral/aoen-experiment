@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal com núcleo agnóstico a frameworks, ports explícitos para cada dependência externa (assinatura, pagamento, storage, KYC) e múltiplos adapters permutáveis por contrato garante evolução independente de cada componente — a única ressalva é a tensão latente entre o domínio compartilhado e o gRPC sugerindo microsserviços, o que pode introduzir acoplamento distribuído se a separação de bounded contexts não for formalizada antes do crescimento."
+}

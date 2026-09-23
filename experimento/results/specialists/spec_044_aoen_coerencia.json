@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 44,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história coerente do problema à solução: a premissa central de 'avaliação sem envolvimento humano técnico' permeia todas as fases — o motor plugável (Fase 1) justifica a service layer centralizada (Fase 2), que por sua vez justifica as múltiplas interfaces sem lógica de negócio, e o fluxo fixo com fila assíncrona (Fase 3) é consequência natural dessa arquitetura; cada interface de mercado tem justificativa técnica correspondente (ATS API → enterprise, widget → white-label, webhooks → adoção), e a extensibilidade declarada no design (IEvaluationEngine) é reforçada estruturalmente pela service layer — a única dedu­ção é o truncamento dos parâmetros configuráveis da Fase 3, que impede avaliar se os pesos de scoring honram o princípio de configurabilidade até o fim."
+}

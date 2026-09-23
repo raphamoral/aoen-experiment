@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva exemplar: bounded contexts DDD com schemas isolados desde o início garantem que funcionalidades crecam sem reescrita; o padrão Adapter isola todas as dependências externas críticas (pagamento, cloud, notificações, frontend via BFF); a estratégia Strangler Fig com gatilho por fitness functions — não por antecipação — evita over-engineering prematuro; e a categorização explícita de decisões reversíveis vs. irreversíveis evidencia consciência arquitetural rara, sendo o único ponto de atenção a impossibilidade de avaliar completamente as irreversibilidades pois o campo foi truncado na proposta."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona apenas uma fitness function genérica de monitoramento de custo por tenant via billing tag (sem threshold definido), mas não apresenta nenhuma estimativa concreta em dólares/reais por componente, nenhuma estratégia explícita de otimização (scale-to-zero, spot instances, tiers de armazenamento, reserved capacity) e nenhuma projeção de como os custos evoluem com o crescimento da base de clínicas."
+}

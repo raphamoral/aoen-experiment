@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 95,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta menciona 'configuração de fluxos e SLAs' no portal de clínica e abstrai corretamente o motor de IA (provider-agnostic), mas não arquiteta explicitamente um modelo de tenant-configuration: não há menção a tabela de configuração por tenant, feature flags, templates de laudo configuráveis, white-label, regras clínicas por cliente, nem um processo de onboarding definido como 'nova row no banco' — o que sugere que, na prática, novos clientes com requisitos distintos ainda exigiriam intervenção de código ou deploy customizado."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta apresenta apenas um único valor concreto de custo (R$ 0,80/exame de inferência como fitness function com alerta via FinOps dashboard), mas não há estimativas por componente (compute, banco de dados, armazenamento DICOM, CDN, egress de rede), ausência de estratégias explícitas de otimização (spot/preemptible instances para GPU, scale-to-zero, tiering S3/Glacier para imagens frias) e nenhuma projeção de como os custos evoluem com o crescimento da base de clínicas."
+}

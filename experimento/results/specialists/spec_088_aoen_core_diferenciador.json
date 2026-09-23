@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 88,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de scoring baseado no risco do âncora (não do fornecedor) é um diferenciador claro, tecnicamente isolado em uma service layer agnóstica de interface, extensível via adaptadores para múltiplas fontes de risco e provedores de funding — resolve o problema real de exclusão de PMEs do crédito por ausência de rating próprio, algo que plataformas tradicionais de factoring e bancos não endereçam estruturalmente; perde um ponto por não detalhar como o modelo de scoring do âncora é protegido de replicação ou qual dado proprietário o torna defensável competitivamente."
+}

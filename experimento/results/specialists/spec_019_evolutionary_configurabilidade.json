@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra consciência multi-tenant (isolamento por tenant, fitness function de onboarding < 10 min, feature toggles) mas não define explicitamente um modelo de configuração por cliente — o que é fixo no código versus o que é parametrizável por clínica (horários, procedimentos, canais de notificação, regras de negócio) fica implícito, sem um esquema de configuração descrito, deixando em aberto se novo tenant exige apenas uma row no banco ou ainda depende de intervenção técnica."
+}

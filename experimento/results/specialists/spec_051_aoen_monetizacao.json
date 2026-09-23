@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 51,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural descreve segmentos de mercado e interfaces de entrega com clareza, mas não menciona nenhum modelo de monetização — não há referência a preços, tiers, modelo de cobrança (subscription, usage-based, por transação), nem métricas de negócio como MRR, LTV, CAC ou churn."
+}

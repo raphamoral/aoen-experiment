@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 74,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo é preciso e segmentado (ETTs, comprador primário vs. usuários operacionais bem distintos), e a dor é parcialmente articulada via justificativas de features ('sem resolver a dor operacional do ETT, não há contrato'; 'justifica o ROI para o pró-reitor'), mas faltam dados de tamanho de mercado (TAM/SAM), ausência total de análise competitiva ou diferenciação frente a alternativas existentes (ex: sistemas legados, planilhas, concorrentes como Inteum ou FlintBox), e nenhuma proposta de valor explícita e sintetizada — o valor emerge implicitamente da arquitetura, não de um posicionamento deliberado."
+}

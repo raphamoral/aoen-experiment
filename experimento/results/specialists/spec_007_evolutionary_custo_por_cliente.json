@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "A proposta menciona 'custo por usuário ativo mensal monitorado via AWS Cost Explorer' como fitness function operacional — o que indica consciência de granularidade por usuário, não apenas custo total de infra — mas para aí: não há cálculo por operação/transação, nenhuma modelagem de margem por tenant, nenhuma conexão com o modelo de precificação e nenhum mecanismo explícito de rastreamento de consumo de recursos por tenant (tags, billing dimension por cliente); fica no nível de alerta de desvio agregado, não de unit economics real."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Dashboard Web, App Mobile, Portal do destinatário, API/Webhooks e White-label), cada uma com justificativa explícita de perfil de usuário e impacto de mercado, enquanto a service layer GraphQL/REST garante desacoplamento total — adicionar um novo canal não exige duplicar lógica de negócio."
+}

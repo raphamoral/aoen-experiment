@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "O produto identifica um mercado real (espaços subutilizados + trabalhadores flexíveis), mas a proposta arquitetural descreve um CRUD de reservas com Stripe e QR Code — funcionalidades comoditizadas que já existem no Airbnb for Work, Coworker.com e Skedda; nenhum componente tecnológico é isolado como núcleo insubstituível, e o diferenciador competitivo ('descentralizado') não se traduz em nenhuma decisão técnica ou de produto que uma alternativa existente não possa replicar trivialmente."
+}

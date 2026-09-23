@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona 'consumo por envelope' no contexto de Billing & Subscriptions, o que indica alguma consciência de metering baseado em uso, mas isso está voltado para cobrança do cliente (receita), não para mensuração do custo incorrido pela empresa por cliente — não há cálculo de custo por operação (ex: custo de chamada LLM no motor de extração de cláusulas, custo de SMS/WhatsApp por evento, custo de storage por tenant), nenhum mecanismo de rastreamento de consumo de recursos por tenant para fins de COGS, e nenhuma conexão entre custo unitário e margem por cliente, configurando uma confusão implícita entre FinOps (custo total de infra) e Unit Economics (custo por cliente)."
+}

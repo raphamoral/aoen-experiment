@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta não define explicitamente múltiplas interfaces — o único indício implícito é o atributo 'apiQuotaMonthly' no Tenant, sugerindo acesso via API, mas sem nenhuma menção a dashboard web, mobile ou CLI, sem justificativa por perfil de usuário (analista de retenção, gestor, operador de campo), e sem qualquer evidência de desacoplamento da lógica de negócio das camadas de apresentação."
+}

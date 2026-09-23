@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 76,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra clareza arquitetural no princípio correto — pipeline fixo no código com parâmetros variáveis, service layer centralizada sem lógica nas interfaces e adapters plugáveis — mas o campo 'fase3_parametros_configurave' está truncado, impedindo avaliar o escopo real do que é configurável por tenant, e não há descrição explícita do mecanismo de armazenamento de configuração por cliente (tabela de tenants, schema de config, feature flags), o que é o núcleo operacional do onboarding zero-código."
+}

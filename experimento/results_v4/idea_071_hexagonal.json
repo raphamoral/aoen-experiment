@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 71,
+  "ideia": "Plataforma de certificação de origem para cadeias de café especial",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Certificação e rastreabilidade de origem de café especial. O núcleo modela Lote (Lot) e Propriedade/Produtor, Evento de Cadeia de Custódia (colheita, beneficiamento, secagem, torra, transferência, blend, exportação), Evidência (documentos, fotos, coordenadas geográficas, laudos), Análise Sensorial (pontuação SCA, perfil de xícara), Regra e Padrão de Certificação (Fair Trade, Rainforest, Indicação Geográfica, orgânico, EUDR), Auditoria e Certificado verificável. As invariantes centrais são: um lote só é certificado se a cadeia de custódia for contínua, a soma dos volumes de saída não excede a de entrada (balanço de massa), e toda evidência é imutável e datada.",
+    "primary_ports": [
+      "GerenciarProdutoresEPropriedadesUseCase (cadastro, geolocalização de talhões)",
+      "RegistrarLoteUseCase",
+      "RegistrarEventoCadeiaCustodiaUseCase (transferência, beneficiamento, blend, split)",
+      "SubmeterEvidenciaUseCase",
+      "SolicitarCertificacaoUseCase",
+      "ExecutarAuditoriaUseCase (checklist, não conformidades)",
+      "EmitirCertificadoUseCase / RevogarCertificadoUseCase",
+      "VerificarOrigemPublicaUseCase (consulta por QR code/ID do lote)",
+      "GerenciarPadroesDeCertificacaoUseCase (regras versionadas)",
+      "GerarRelatorioDeConformidadeUseCase (EUDR, exportação)",
+      "AdministrarTenantEPlanoUseCase"
+    ],
+    "secondary_ports": [
+      "RepositorioDeLotes / RepositorioDeEventos (event store append-only)",
+      "RepositorioDeCertificados",
+      "RepositorioDeProdutoresEPropriedades",
+      "ArmazenamentoDeEvidenciasPort (blobs)",
+      "LedgerDeAncoragemPort (hash/Merkle root para imutabilidade e prova de integridade)",
+      "ServicoGeoespacialPort (polígonos, sobreposição com áreas desmatadas, satélite)",
+      "ProvedorDeIdentidadePort (autenticação, SSO, papéis)",
+      "AssinaturaDigitalPort (ICP-Brasil, certificados X.509)",
+      "NotificacaoPort (e-mail, SMS, WhatsApp, push)",
+      "GatewayDePagamentoPort (cobrança e assinaturas)",
+      "IntegracaoERPPort (cooperativas, exportadoras, torrefadoras)",
+      "IntegracaoAduaneiraPort (SISCOMEX, TRACES, DDS da EUDR)",
+      "ProvedorDeLaudoLaboratorialPort (análise sensorial e físico-química)",
+      "GeradorDePdfEQrCodePort",
+      "PublicadorDeEventosPort (mensageria/domain events)",
+      "RelogioPort e GeradorDeIdPort (determinismo em testes)",
+      "AuditoriaETelemetriaPort (logs, métricas, traces)"
+    ],
+    "primary_adapters": [
+      "API REST/JSON (OpenAPI) para integrações B2B",
+      "API GraphQL para o portal web",
+      "Web app SPA para certificadoras, cooperativas e exportadoras",
+      "App mobile offline-first para agrônomos e auditores de campo (captura de GPS, fotos e eventos)",
+      "Página pública de verificação via QR code (mobile web)",
+      "Webhooks de entrada (laboratórios, ERPs)",
+      "CLI e scripts de importação em lote (CSV/Excel)",
+      "Consumidores de fila para eventos de sistemas externos",
+      "Suíte de testes de aceitação e BDD, tratada como driver de primeira classe",
+      "Agendadores (cron) para expiração e renovação de certificados e reavaliação de risco"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL + PostGIS (repositórios e consultas geoespaciais)",
+      "Event store em PostgreSQL (tabela append-only) ou EventStoreDB",
+      "S3/GCS/Azure Blob (evidências, com Object Lock/WORM)",
+      "Ancoragem de hash em blockchain pública ou permissionada (Polygon, Hyperledger) ou serviço de timestamp RFC 3161",
+      "Adaptador de imagens de satélite/desmatamento (Sentinel, Planet, MapBiomas, Global Forest Watch)",
+      "Keycloak/Auth0/Cognito (OIDC)",
+      "Assinador ICP-Brasil / DocuSign",
+      "SendGrid/SES, Twilio, WhatsApp Business API",
+      "Stripe / Pagar.me / Asaas (pagamentos)",
+      "Conectores de ERP (SAP, TOTVS, Odoo, planilhas)",
+      "Cliente SISCOMEX / TRACES NT",
+      "Adaptadores de laboratórios e Q Graders",
+      "Kafka / RabbitMQ / SQS+SNS (mensageria)",
+      "OpenTelemetry + Prometheus/Grafana/Sentry",
+      "Adaptadores em memória e fakes para todas as portas (testes e desenvolvimento local)"
+    ],
+    "isolation": "O core (domínio + casos de uso) é um módulo sem dependência de frameworks, ORM, SDKs ou protocolos. Ele expõe apenas interfaces (portas) e trabalha com entidades, value objects (Coordenada, Volume, Safra, Altitude, Variedade) e eventos de domínio. A regra de dependência aponta sempre para dentro: adaptadores conhecem as portas, o core nunca conhece adaptadores. A composição é feita numa composition root (injeção de dependência) fora do core. Cada sistema externo, seja banco, blockchain, satélite ou ERP, é tratado de forma simétrica, atrás de uma porta com um contrato próprio e uma camada anticorrupção (ACL) que traduz modelos externos para a linguagem do domínio. Testes de arquitetura (ArchUnit, dependency-cruiser) impedem imports proibidos no CI. Todos os casos de uso podem ser exercitados por testes com adaptadores em memória, sem infraestrutura. Regras de certificação são dados versionados avaliados pelo domínio, não código de infraestrutura.",
+    "interfaces": [
+      "Portal web multi-tenant (cooperativas, exportadoras, torrefadoras, certificadoras)",
+      "App mobile offline-first de campo",
+      "Página pública de verificação de origem (QR code no saco/embalagem)",
+      "API REST/OpenAPI e GraphQL para parceiros",
+      "Webhooks de saída (mudança de status, certificado emitido ou revogado)",
+      "Importação/exportação CSV, XLSX e GeoJSON",
+      "Certificado em PDF assinado com QR code e credencial verificável (W3C VC)",
+      "Widget/embed de selo de origem para e-commerce de torrefadoras",
+      "Painel de auditoria e de conformidade regulatória (EUDR)",
+      "Console administrativo (planos, tenants, regras de certificação)"
+    ],
+    "escalabilidade": "Escala horizontal com serviços stateless em contêineres atrás de load balancer, com autoscaling por CPU e fila. O modelo de eventos append-only separa escrita (comandos) de leitura (projeções/CQRS), o que permite réplicas de leitura, caches e índices dedicados, como Elasticsearch/OpenSearch, para a busca pública. Ingestão de eventos e processamento pesado (análise geoespacial, satélite, geração de PDF, ancoragem) são assíncronos, via filas e workers que escalam de forma independente. Ancoragem em blockchain é feita em lote (Merkle root periódico) para manter custo e latência baixos. Multi-tenancy por tenant_id com row-level security, com possibilidade de sharding por tenant ou região para clientes grandes. A verificação pública é servida por CDN com cache. O app mobile sincroniza em lote, tolerando conectividade ruim no campo. Como as portas isolam a infraestrutura, é possível começar como monólito modular e extrair serviços (ingestão, geoespacial, verificação pública) sem reescrever o core.",
+    "custos": "Os principais custos variáveis são armazenamento de evidências (fotos e documentos, mitigado com compressão, ciclo de vida e tiers frios), análise de imagens de satélite (licenças ou APIs por área/consulta; usar fontes abertas como Sentinel e MapBiomas reduz o custo), ancoragem em blockchain (custo por lote e não por evento, ou rede permissionada/timestamp RFC 3161 mais barato), mensageria WhatsApp/SMS por mensagem e egress de CDN na verificação pública. Custos fixos moderados: banco gerenciado, observabilidade e equipe de auditoria/compliance. Começar com monólito modular em nuvem gerenciada e serverless para picos sazonais de safra mantém o custo baixo. Existem custos não técnicos relevantes: acreditação como certificadora ou parceria com organismos certificadores, seguro, LGPD/GDPR e suporte em campo. O custo marginal por lote é baixo, o que favorece margem à medida que o volume cresce. A hexagonal reduz o custo de troca de fornecedor (por exemplo, trocar o provedor de satélite ou de blockchain) por exigir só um novo adaptador.",
+    "monetizacao": "Modelo híbrido: (1) assinatura SaaS por tenant, em planos escalonados por número de produtores, propriedades e usuários; (2) taxa por lote certificado ou por certificado emitido, com faixa por volume (sacas/toneladas); (3) módulos adicionais, como conformidade EUDR com análise de desmatamento por satélite, auditoria remota, análise de risco e relatórios ESG; (4) API para parceiros, cobrada por uso (verificações e consultas); (5) selo de origem white-label e widgets para torrefadoras e varejistas, com valor de marca e storytelling ao consumidor; (6) serviços profissionais (onboarding de cooperativas, integração com ERP, treinamento); (7) marketplace ou geração de leads entre produtores certificados e compradores, com comissão. A precificação pode ser dividida entre o lado da oferta (cooperativas, produtores) e o da demanda (exportadoras, torrefadoras, importadores), que ganham em conformidade e prêmio de preço.",
+    "stack_sugerida": "Backend: TypeScript (NestJS, com módulos organizados em portas e adaptadores) ou Kotlin/Java (Spring Boot, com ArchUnit) ou Go; core em módulo separado, sem framework. Banco: PostgreSQL + PostGIS, com RLS para multi-tenancy; event store em tabela append-only; Redis para cache; OpenSearch para busca. Mensageria: Kafka ou SQS/SNS + workers. Armazenamento: S3 com Object Lock. Integridade: hash encadeado + Merkle root ancorado (Polygon/Hyperledger ou timestamp RFC 3161). Geoespacial: PostGIS, GDAL, integração com Sentinel/MapBiomas/Global Forest Watch. Identidade: Keycloak ou Auth0 (OIDC). Frontend: React/Next.js + TypeScript; mobile: React Native ou Flutter com armazenamento local (SQLite) e sincronização offline. API: OpenAPI + GraphQL. Infra: Docker, Kubernetes (EKS/GKE) ou ECS/Fargate, Terraform, CDN (CloudFront/Cloudflare). CI/CD: GitHub Actions com testes de arquitetura (dependency-cruiser/ArchUnit), testes de contrato por porta e testes de aceitação com adaptadores em memória. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry. Pagamentos: Stripe ou Asaas/Pagar.me."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T04:05:09+00:00",
+    "runner": "runner.py"
+  }
+}

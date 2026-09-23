@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural consistente e autorreforçante: o padrão de adaptadores aparece simetricamente em dois níveis (provedores STT/MT/TTS na fase 1 e interfaces de entrega na fase 2), a Service Layer centraliza a lógica de negócio exatamente para suportar a multiplicidade de interfaces sem duplicação, cada interface justifica um segmento de mercado declarado na fase 1, e a separação entre fluxo imutável e parâmetros configuráveis na fase 3 resolve de forma elegante a tensão entre estabilidade do core e flexibilidade operacional — a única fricção não endereçada é que múltiplas camadas de adaptação somadas a providers externos criam overhead que tensiona o SLA de <2 segundos sem estratégia explícita de orçamento de latência por camada."
+}

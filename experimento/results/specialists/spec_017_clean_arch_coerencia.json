@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "O modelo de domínio apresenta coerência interna sólida — SHA-256 no Certificate e RSA-4096 no Issuer formam uma cadeia criptográfica que suporta diretamente o objetivo de 'verificação pública', a regra de suspensão do Issuer que preserva certificados existentes é consistente com a proteção ao estudante, e o versionamento imutável do CertificateTemplate protege a integridade histórica dos certificados emitidos — mas a proposta está truncada (use cases cortados no meio, CertificateMetadata sem definição), impedindo avaliar se a camada de orquestração e as escolhas tecnológicas sustentam a mesma coerência do domínio."
+}

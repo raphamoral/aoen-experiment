@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 37,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta introduz isolamento apenas lógico via interface PricingEngine, mas não menciona filas, workers separados, processamento assíncrono, nem qualquer mecanismo de fallback — o pipeline de 7 etapas (incluindo chamadas LLM potencialmente lentas e caras) aparenta rodar de forma síncrona no mesmo processo, o que significa que uma falha ou lentidão no motor de precificação bloqueia todas as interfaces simultaneamente."
+}

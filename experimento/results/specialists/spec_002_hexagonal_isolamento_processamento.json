@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona serviços que sugerem processamento assíncrono implícito (INotificationService, IAnalyticsService, Webhook Receiver), mas não descreve nenhum mecanismo explícito de isolamento físico — não há filas de mensagens, workers separados, bulkheads ou circuit breakers para os processos computacionalmente pesados como KYC (IIdentityVerificationService), background checks (IBackgroundCheckService), indexação full-text (ISearchIndexService) ou validação de certificações (IComplianceCertificationService), deixando esses processos potencialmente acoplados ao fluxo síncrono da aplicação sem fallback definido."
+}

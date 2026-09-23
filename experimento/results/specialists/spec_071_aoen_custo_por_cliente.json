@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 71,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta é integralmente arquitetural — descreve serviços, interfaces e contratos abstratos, mas não contém nenhuma mensuração de custo por cliente, nenhum cálculo de custo por operação (ex: custo de âncora blockchain por lote, custo de geração de certificado por tenant) e nenhuma indicação de rastreamento de consumo de recursos por tenant; o projeto sequer lista custos totais de infra, tornando impossível derivar qualquer unit economics."
+}

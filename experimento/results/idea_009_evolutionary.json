@@ -1,0 +1,91 @@
+{
+  "ideia_idx": 9,
+  "ideia": "Marketplace de equipamentos médicos usados com certificação de qualidade",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Auditabilidade (regulatory compliance ANVISA/FDA/CE — imutabilidade de registros de certificação)",
+      "Segurança (dados sensíveis de saúde, transações financeiras, PII de compradores/vendedores)",
+      "Confiabilidade (SLA 99.9% — contexto de saúde não tolera indisponibilidade de catálogo)",
+      "Evolvabilidade (core da Evolutionary Architecture — suporte a mudanças regulatórias e de negócio)",
+      "Desempenho de busca (catálogo com filtros complexos: tipo, marca, certificação, região)",
+      "Integridade de dados (cadeia de custódia do equipamento não pode ser alterada retroativamente)",
+      "Observabilidade (rastreabilidade de cada etapa do workflow de certificação)",
+      "Escalabilidade elástica (picos de acesso sazonais e crescimento geográfico)"
+    ],
+    "fitness_functions": [
+      "Automated: cobertura de testes de contrato de API >= 95% — impede breaking changes silenciosos",
+      "Automated: scan de dependências (OWASP/Snyk) em cada PR — nenhuma vulnerabilidade crítica em produção",
+      "Automated: tempo médio de busca no catálogo < 200ms (p95) medido via testes de carga no CI",
+      "Automated: nenhum serviço com acoplamento aferente > 5 dependentes diretos (ArchUnit ou Dependency-Cruiser)",
+      "Automated: 100% dos eventos de certificação persistidos em audit log imutável (teste de integridade hash)",
+      "Automated: uptime sintético a cada 60s nos endpoints críticos — alerta se < 99.9% em janela de 30d",
+      "Manual (trimestral): revisão de fitness regulatória com jurídico — conformidade LGPD, ANVISA RDC 551",
+      "Manual (por release): threat model atualizado para novos fluxos que envolvam dados médicos ou pagamentos",
+      "Automated: mutation score dos testes de domínio de certificação >= 80%",
+      "Automated: custo de infra por transação monitorado — alerta se crescer > 15% MoM sem justificativa"
+    ],
+    "incremental_change": "Iniciar como Modular Monolith com bounded contexts bem definidos por DDD (Catálogo, Certificação, Marketplace, Pagamentos, Notificações, Identidade). Extrair para serviços independentes apenas quando fitness functions sinalizarem gargalo específico (escala, time de desenvolvimento ou deployment independente). Usar Strangler Fig Pattern para migrações de banco e integrações de terceiros. Feature flags (ex: Unleash/LaunchDarkly) para rollout gradual de funcionalidades regulatórias. Database-per-module desde o início para viabilizar extração futura. Versionar APIs com tolerância a múltiplas versões ativas simultaneamente.",
+    "reversibility": {
+      "reversiveis": [
+        "Escolha de banco de dados por módulo (isolamento garante troca sem impacto global)",
+        "Framework de frontend (Next.js pode ser substituído sem afetar backend)",
+        "Provedor de pagamentos (adaptador/anti-corruption layer isola Stripe, Adyen, etc.)",
+        "Provedor de busca (ElasticSearch ↔ OpenSearch ↔ Typesense via interface de repositório)",
+        "Provedor de email/SMS (adaptador abstrai SendGrid, Twilio, etc.)",
+        "Infraestrutura de cloud (IaC com Terraform permite migração entre provedores)",
+        "Estratégia de deployment (monolito → microsserviços via extração incremental)"
+      ],
+      "irreversiveis_requerem_last_responsible_moment": [
+        "Modelo de dados do audit trail de certificações (imutabilidade é requisito regulatório)",
+        "Identificadores públicos de equipamentos certificados (URLs/IDs publicados em documentos físicos)",
+        "Schema do evento de transferência de propriedade (integridade jurídica)",
+        "Escolha de jurisdição de armazenamento de dados de saúde (compliance LGPD/HIPAA)"
+      ]
+    },
+    "coupling": "Comunicação assíncrona via eventos de domínio (ex: EquipmentCertified, OrderPlaced, PaymentSettled) usando message broker (RabbitMQ ou AWS SQS/SNS) para desacoplar Certificação de Marketplace e Pagamentos. APIs síncronas REST/GraphQL apenas para leituras do consumidor final (BFF por canal). Bounded contexts com anti-corruption layers nas bordas de integração com sistemas externos (ANVISA APIs, operadoras de pagamento, sistemas de logística). Evitar shared database entre módulos — comunicação apenas via contrato de API ou evento. Contratos de API versionados e testados com Consumer-Driven Contract Testing (Pact).",
+    "interfaces": [
+      "Marketplace Web API (REST/GraphQL) — busca, listagem, compra para compradores",
+      "Seller Portal API — gestão de inventário, precificação, documentos de equipamentos",
+      "Certification Workflow API — intake de equipamentos, checklist de inspeção, emissão de certificado",
+      "Admin API — gestão de certificadores, moderação, disputas, relatórios regulatórios",
+      "Payments API (adaptador) — abstração sobre gateway de pagamento com suporte a escrow",
+      "Notification Service API — orquestração de email, SMS, push por evento de domínio",
+      "Search API — interface de busca facetada com filtros por tipo, marca, certificação, localização",
+      "Audit/Compliance API — consulta imutável do histórico de certificação por número de série",
+      "Webhook API — notificações para integradores (hospitais, clínicas) sobre disponibilidade de equipamentos",
+      "Mobile BFF API — interface otimizada para aplicativo comprador/vendedor"
+    ],
+    "escalabilidade": "Escala horizontal stateless na camada de API (Kubernetes com HPA baseado em CPU/RPS). CDN (CloudFront/Cloudflare) para assets estáticos e fotos de equipamentos (storage S3/GCS). Read replicas no PostgreSQL para consultas de catálogo; escrita isolada no primário. Cache distribuído (Redis) para resultados de busca frequente e sessões. Search engine dedicado (OpenSearch) escalado independentemente do banco transacional. Workers de certificação (processamento de documentos, OCR, checklist) em filas isoladas com auto-scaling. Sharding geográfico futuro por região (expansão internacional) sem reescrita — possibilitado pelo isolamento de bounded contexts.",
+    "custos": {
+      "fixos": "Kubernetes cluster mínimo (3 nodes), banco de dados primário, message broker, observabilidade (Grafana + OpenTelemetry collector)",
+      "variaveis": "Storage S3 por volume de fotos/documentos de equipamentos, compute de workers de certificação por volume de inspeções, CDN por tráfego, search engine por volume de índice",
+      "otimizacao": "Tiered storage (S3 Infrequent Access para documentos históricos), spot instances para workers de processamento assíncrono, cache agressivo de catálogo (80% das buscas são repetidas), monitorar custo por transação como fitness function",
+      "riscos": "Armazenamento de imagens de equipamentos cresce linearmente — implementar lifecycle policies desde o início"
+    },
+    "monetizacao": {
+      "modelo_primario": "Comissão sobre vendas concluídas (8-15% do valor da transação) — alinhamento de incentivo com sucesso do marketplace",
+      "certificacao": "Taxa por certificação de equipamento (R$ 150–800 dependendo da complexidade) — receita recorrente por intake",
+      "assinatura_vendedor": "Planos para vendedores profissionais (distribuidores, revendas) com listagens ilimitadas, relatórios e API access",
+      "premium_listing": "Destaque de anúncios no catálogo e resultados de busca",
+      "financiamento": "Parceria com fintechs para crédito a compradores (taxa de originação)",
+      "seguro_logistica": "Parceria com seguradora para cobertura de transporte de equipamentos — comissão por apólice",
+      "dados_b2b": "Relatórios de mercado anonimizados para fabricantes, distribuidores e planos de saúde (futuro)"
+    },
+    "stack_sugerida": {
+      "backend": "Node.js (TypeScript) com NestJS — ecossistema maduro, tipagem forte, módulos como bounded contexts naturais",
+      "frontend": "Next.js (React) com App Router — SSR para SEO de catálogo, RSC para performance",
+      "banco_de_dados": "PostgreSQL (AWS RDS Multi-AZ) por módulo com Prisma ORM — ACID para transações financeiras e audit trail",
+      "busca": "OpenSearch (AWS) — busca facetada com geolocalização, relevância customizável",
+      "mensageria": "AWS SQS + SNS — managed, sem operação de broker, integração nativa com Lambda para workers",
+      "cache": "Redis (AWS ElastiCache) — sessões, cache de catálogo, rate limiting",
+      "storage": "AWS S3 + CloudFront — fotos, documentos de certificação, laudos técnicos",
+      "infraestrutura": "AWS EKS (Kubernetes) + Terraform + GitHub Actions CI/CD",
+      "observabilidade": "OpenTelemetry (traces, metrics, logs) → Grafana Cloud — fitness functions de performance automatizadas",
+      "feature_flags": "Unleash (self-hosted) ou LaunchDarkly — rollout incremental de features regulatórias",
+      "contratos_api": "Pact (Consumer-Driven Contract Testing) — fitness function de compatibilidade entre serviços",
+      "seguranca": "Auth0 (Identidade/OAuth2/RBAC), AWS WAF, Snyk no CI, HashiCorp Vault para secrets"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Auditabilidade (regulatory compliance ANVISA/FDA/CE — imutabilidade de registros de certificação)\",\n    \"Segurança (dados sensíveis de saúde, transações financeiras, PII de compradores/vendedores)\",\n    \"Confiabilidade (SLA 99.9% — contexto de saúde não tolera indisponibilidade de catálogo)\",\n    \"Evolvabilidade (core da Evolutionary Architecture — suporte a mudanças regulatórias e de negócio)\",\n    \"Desempenho de busca (catálogo com filtros complexos: tipo, marca, certificação, região)\",\n    \"Integridade de dados (cadeia de custódia do equipamento não pode ser alterada retroativamente)\",\n    \"Observabilidade (rastreabilidade de cada etapa do workflow de certificação)\",\n    \"Escalabilidade elástica (picos de acesso sazonais e crescimento geográfico)\"\n  ],\n  \"fitness_functions\": [\n    \"Automated: cobertura de testes de contrato de API >= 95% — impede breaking changes silenciosos\",\n    \"Automated: scan de dependências (OWASP/Snyk) em cada PR — nenhuma vulnerabilidade crítica em produção\",\n    \"Automated: tempo médio de busca no catálogo < 200ms (p95) medido via testes de carga no CI\",\n    \"Automated: nenhum serviço com acoplamento aferente > 5 dependentes diretos (ArchUnit ou Dependency-Cruiser)\",\n    \"Automated: 100% dos eventos de certificação persistidos em audit log imutável (teste de integridade hash)\",\n    \"Automated: uptime sintético a cada 60s nos endpoints críticos — alerta se < 99.9% em janela de 30d\",\n    \"Manual (trimestral): revisão de fitness regulatória com jurídico — conformidade LGPD, ANVISA RDC 551\",\n    \"Manual (por release): threat model atualizado para novos fluxos que envolvam dados médicos ou pagamentos\",\n    \"Automated: mutation score dos testes de domínio de certificação >= 80%\",\n    \"Automated: custo de infra por transação monitorado — alerta se crescer > 15% MoM sem justificativa\"\n  ],\n  \"incremental_change\": \"Iniciar como Modular Monolith com bounded contexts bem definidos por DDD (Catálogo"
+}

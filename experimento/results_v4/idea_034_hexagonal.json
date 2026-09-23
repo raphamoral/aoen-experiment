@@ -1,0 +1,89 @@
+{
+  "ideia_idx": 34,
+  "ideia": "Plataforma de simulação financeira para planejamento de aposentadoria",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Planejamento e simulação financeira de aposentadoria: modelagem de perfis de investidor, projeção de acumulação e desacumulação de patrimônio, simulação de cenários (determinísticos e Monte Carlo), regras previdenciárias e tributárias, metas e suficiência de renda. O core contém Entidades/Agregados (Plano de Aposentadoria, Perfil do Participante, Carteira, Cenário, Meta), Value Objects (Dinheiro, Taxa, Horizonte, Inflação, Probabilidade de Sucesso) e Domain Services (Motor de Projeção, Simulador Monte Carlo, Calculadora de Contribuição/Retirada, Avaliador de Regras Previdenciárias e Tributárias).",
+    "primary_ports": [
+      "CriarPlanoAposentadoriaUseCase",
+      "ExecutarSimulacaoUseCase (determinística e Monte Carlo)",
+      "CompararCenariosUseCase",
+      "AjustarPremissasUseCase (inflação, retorno, longevidade, contribuição)",
+      "ConsultarResultadoSimulacaoUseCase",
+      "GerarRelatorioPlanoUseCase",
+      "GerenciarPerfilParticipanteUseCase",
+      "GerenciarAssinaturaUseCase",
+      "AgendarReSimulacaoUseCase"
+    ],
+    "secondary_ports": [
+      "PlanoRepositoryPort (persistência de planos, perfis e cenários)",
+      "ResultadoSimulacaoRepositoryPort",
+      "DadosMercadoPort (índices, taxas de juros, inflação, curva de juros)",
+      "TabelasPrevidenciariasPort (regras INSS/RPPS, tábuas de mortalidade, tributação PGBL/VGBL)",
+      "AutenticacaoPort (identidade e autorização)",
+      "PagamentoCobrancaPort (assinaturas, faturamento)",
+      "NotificacaoPort (e-mail, push, WhatsApp)",
+      "GeradorRelatorioPort (PDF/Excel)",
+      "AgregacaoFinanceiraPort (Open Finance: saldos e carteira do usuário)",
+      "FilaProcessamentoPort (simulações assíncronas)",
+      "CachePort",
+      "RelogioPort (tempo determinístico para testes)",
+      "GeradorAleatorioPort (seed reprodutível para Monte Carlo)",
+      "AuditoriaEventosPort (trilha de auditoria e eventos de domínio)",
+      "ConsentimentoLGPDPort"
+    ],
+    "primary_adapters": [
+      "REST API Adapter (HTTP/JSON)",
+      "GraphQL Adapter",
+      "Web App Adapter (SPA consumindo a API)",
+      "Mobile App Adapter",
+      "CLI Adapter (operações e scripts)",
+      "Scheduler/Cron Adapter (re-simulações periódicas)",
+      "Webhook Inbound Adapter (eventos de pagamento e Open Finance)",
+      "Consumer de Fila Adapter (jobs de simulação)",
+      "Test Driver Adapter (testes automatizados de aceitação e contrato dirigindo o core sem UI)",
+      "API Pública para parceiros (assessores, corretoras, RH/benefícios corporativos)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Repository Adapter",
+      "In-Memory Repository Adapter (testes e desenvolvimento)",
+      "Redis Cache Adapter",
+      "Adapter de dados de mercado (BCB/SGS, IBGE, ANBIMA, B3)",
+      "Adapter de tabelas previdenciárias (arquivos versionados/config store)",
+      "Fake/Stub de dados de mercado (cenários fixos para testes)",
+      "OIDC Adapter (Auth0, Keycloak ou Cognito)",
+      "Stripe Adapter (assinaturas) e alternativa local (Pix/boleto via Asaas ou Pagar.me)",
+      "SES/SendGrid Email Adapter, FCM/APNs Push Adapter, WhatsApp Business Adapter",
+      "PDF Generator Adapter (Puppeteer/WeasyPrint) e Excel Adapter",
+      "Open Finance Brasil Adapter (Pluggy, Belvo ou API direta)",
+      "SQS/RabbitMQ/Kafka Adapter (fila e eventos)",
+      "S3/Object Storage Adapter (relatórios e exportações)",
+      "SystemClock Adapter e FixedClock Adapter",
+      "SeededRandom Adapter (PRNG reprodutível)",
+      "Audit Log Adapter (tabela append-only ou event store)",
+      "Observabilidade Adapter (OpenTelemetry, Prometheus, Grafana)"
+    ],
+    "isolation": "O core (domínio e casos de uso) fica em módulo próprio sem dependência de frameworks, banco, HTTP ou SDKs; só conhece interfaces (ports) definidas por ele mesmo. A dependência aponta sempre de fora para dentro (Dependency Inversion): adapters importam o core, nunca o contrário. A injeção de dependência e a composição ficam na borda (composition root). Tempo, aleatoriedade e I/O são abstraídos em ports, o que torna as simulações puras, determinísticas e reprodutíveis. DTOs e mapeadores nas fronteiras evitam vazamento de modelos externos (anti-corruption layer) e tratam todos os sistemas externos simetricamente (banco, mercado, pagamento, notificação). Testes de arquitetura (ArchUnit, dependency-cruiser ou import-linter) impedem violações e testes de contrato validam cada adapter contra o seu port.",
+    "interfaces": [
+      "Aplicação web responsiva (dashboard, wizard de plano, gráficos de projeção e fan chart Monte Carlo)",
+      "Aplicativo mobile",
+      "API REST/GraphQL documentada com OpenAPI",
+      "API pública e SDK para parceiros (white-label para assessores, planos de previdência e RH)",
+      "Painel administrativo (parâmetros de mercado, tabelas previdenciárias, planos comerciais)",
+      "CLI para operações e scripts",
+      "Relatórios exportáveis (PDF/Excel)",
+      "Notificações (e-mail, push, WhatsApp)",
+      "Webhooks de saída para integrações"
+    ],
+    "escalabilidade": "As simulações são CPU-bound e sem estado, por isso escalam horizontalmente: API stateless atrás de load balancer e workers de simulação consumindo filas com autoscaling por profundidade da fila. Simulações leves rodam de forma síncrona; Monte Carlo pesado (10 mil+ trajetórias) roda de forma assíncrona com notificação de conclusão. Resultados são cacheados por hash de (premissas + seed + versão das tabelas), e dados de mercado ficam em cache com TTL. O banco usa réplicas de leitura e particionamento por tenant/usuário. Como o core é isolado, é possível extrair o motor de simulação como serviço independente, ou trocá-lo por implementação em Rust/Go, sem alterar os demais componentes. Multi-tenancy suporta o modelo B2B2C. Começar como monólito modular e extrair serviços só quando as métricas justificarem.",
+    "custos": "Computação dos workers é o principal custo variável, mitigado por cache de resultados, instâncias spot, redução de trajetórias por plano gratuito e execução assíncrona em lote. Dados de mercado públicos (BCB, IBGE) têm custo baixo; feeds premium (ANBIMA, B3) e Open Finance (cobrança por conexão) são custos relevantes a repassar aos planos pagos. Custos fixos moderados: banco gerenciado, fila, observabilidade, e-mail/WhatsApp (custo por mensagem). Compliance (LGPD, criptografia, auditoria, eventual regulação CVM para recomendação de investimentos) exige investimento inicial em segurança e jurídico. Começo enxuto: monólito modular em PaaS ou contêineres gerenciados, com FinOps e alertas de orçamento desde o início. Estimativa inicial de infraestrutura na faixa de centenas de dólares por mês até alguns milhares de usuários ativos.",
+    "monetizacao": "Modelo freemium com assinatura SaaS: (1) Gratuito: simulação determinística básica, um plano e poucos cenários; (2) Premium (mensal/anual): Monte Carlo completo, múltiplos cenários, relatórios PDF, integração Open Finance, alertas e re-simulação automática; (3) B2B/B2B2C: licença por assessor/planejador financeiro e por colaborador para RH/benefícios corporativos, com white-label; (4) API para parceiros com cobrança por uso (simulações); (5) Receita complementar: referral/afiliação com corretoras e previdência (com atenção à conformidade e conflito de interesse), cursos e consultorias. Métricas-chave: conversão free→pago, MRR, churn, CAC/LTV e custo por simulação.",
+    "stack_sugerida": "Backend: TypeScript (Node.js + NestJS ou Fastify) ou Kotlin/Java (Spring Boot), com o core em pacote puro sem dependências de framework; motor numérico opcional em Rust ou Python (NumPy) atrás de um port. Frontend: React/Next.js com TypeScript, Recharts/ECharts/D3 para gráficos; mobile em React Native ou Flutter. Dados: PostgreSQL, Redis, S3-compatível. Mensageria: SQS ou RabbitMQ (Kafka apenas se necessário). Auth: Keycloak, Auth0 ou Cognito (OIDC). Pagamentos: Stripe e/ou Asaas/Pagar.me. Infra: Docker, Kubernetes ou ECS/Fargate (ou Cloud Run no início), Terraform, CI/CD com GitHub Actions. Observabilidade: OpenTelemetry, Prometheus, Grafana, Sentry. Qualidade: testes unitários no core com adapters in-memory, testes de contrato por port, testes de arquitetura (dependency-cruiser/ArchUnit) e testes E2E."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:52:30+00:00",
+    "runner": "runner.py"
+  }
+}

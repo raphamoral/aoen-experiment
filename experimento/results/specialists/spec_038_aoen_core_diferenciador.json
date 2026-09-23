@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 38,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador (motor de comparação + avaliação de regras de alerta) está claramente identificado, explicitamente separado das interfaces via service layer, e é extensível por design (pipeline com etapas intercambiáveis e fontes plugáveis), mas a proposta não argumenta diretamente por que alternativas consolidadas como Prisync, Price2Spy ou Competera não resolvem o mesmo problema — o diferenciador é sólido arquiteturalmente, porém sua insubstituibilidade competitiva está implícita, não demonstrada."
+}

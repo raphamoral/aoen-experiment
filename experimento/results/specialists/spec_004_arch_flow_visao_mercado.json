@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "A proposta identifica implicitamente empresas corporativas compradoras de TI e fornecedores como público-alvo, mas não articula explicitamente o tamanho do mercado (TAM/SAM/SOM), a dor específica do cliente (ineficiência no processo de compra? falta de transparência? custos elevados?), nem apresenta diferenciação clara frente a alternativas como Jaggaer, Coupa ou Pipefy Procurement."
+}

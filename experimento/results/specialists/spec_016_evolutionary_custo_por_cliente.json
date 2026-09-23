@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta é completamente silente sobre custo por cliente: não há menção a custo por operação (ex: geração de etiqueta, chamada a transportadora), nenhum mecanismo de atribuição de consumo por tenant, e nenhuma conexão entre uso de recursos e modelo de precificação — o multi-tenancy com isolamento de dados cria a fundação técnica para rastreamento por tenant, mas isso não é explorado como instrumento de unit economics em nenhum momento do documento."
+}

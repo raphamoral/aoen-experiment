@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A arquitetura demonstra intenção clara de configurabilidade nos eixos críticos — RBAC por empresa/planta/operador, limites de threshold por regulação/cliente e motor de regras multi-regulação (CONAMA/EPA/ISO) como componente custom-built — mas não descreve explicitamente um mecanismo de configuration store por tenant nem um fluxo de onboarding declaradamente zero-código; além disso, os itens genesis ('modelos de ML proprietários por tipo de indústria') implicam que clientes em novos verticais industriais ainda exigiriam trabalho de desenvolvimento, não apenas configuração."
+}

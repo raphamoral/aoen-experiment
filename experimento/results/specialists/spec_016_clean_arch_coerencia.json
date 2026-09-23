@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 6,
+  "justificativa": "O modelo de domínio apresentado é internamente coeso — as regras de negócio se encadeiam logicamente (política do Merchant governa prazo do Order, condição do ReturnItem determina valor do Refund, aprovação da ReturnRequest bloqueia o Shipment) — mas a proposta expõe apenas a camada de entidades, sem mostrar casos de uso, adaptadores ou infraestrutura, tornando impossível verificar se o princípio declarado de 'independência de framework' se sustenta nas camadas superiores, o que deixa a história arquitetural incompleta e parcialmente incoerente como todo."
+}

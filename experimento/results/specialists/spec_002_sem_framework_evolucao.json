@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "A proposta demonstra consciência evolutiva no crescimento incremental de features e na listagem de alternativas tecnológicas (Supabase ou Railway, Stripe ou Pagar.me), mas não define nenhum padrão arquitetural que garanta essa evolução — ausência de separação entre lógica de negócio e framework (Express/Fastify), sem menção a ports & adapters, repositórios ou camadas de domínio, o que significa que trocar banco ou framework exigirá refatoração significativa; além disso, a estratégia de 'separar as partes lentas quando chegarem volumes maiores' é reativa e pressupõe uma reescrita parcial futura, não uma arquitetura projetada para crescer."
+}

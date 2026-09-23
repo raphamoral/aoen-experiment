@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta menciona implicitamente e-commerces de moda como público-alvo no título do produto, mas a arquitetura apresentada não articula a dor do cliente, não quantifica o tamanho do mercado, não descreve diferenciação frente a concorrentes como Prisync ou Wiser, e não apresenta proposta de valor além das capacidades técnicas do sistema."
+}

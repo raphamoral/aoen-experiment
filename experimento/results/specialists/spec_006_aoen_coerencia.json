@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma cadeia causal sem quebras: o AnalysisEngine abstraído (fase1) justifica a multi-tenência de modelos IA; a separação da base de conhecimento clínico justifica a rastreabilidade prometida; a NutritionService agnóstica de canal (fase2) é a consequência arquitetural direta da estratégia multi-interface; cada interface mapeada tem seu segmento de mercado correspondente; e o fluxo de 7 passos (fase3) costura todos os componentes sem redundância — a única lacuna é que o passo 7 (feedback) não fecha o loop explicitamente de volta ao AnalysisEngine ou ao versionamento da base clínica, e o mercado terciário (corporativo) não tem interface dedicada identificada, impedindo nota máxima."
+}

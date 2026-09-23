@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta demonstra consciência de multi-tenancy superficial (Subscription com limites de uso, IdentityAccess com RBAC), mas nenhum bounded context ou mecanismo explícito de configuração por tenant é descrito — componentes críticos como faixas de referência de biomarcadores, pipeline OCR e o motor de recomendação são listados como 'custom built' sem qualquer menção a parâmetros configuráveis por cliente, feature flags, schemas de tenant ou separação código/configuração; onboarding de um novo cliente (ex: clínica com laudos em formato diferente, faixas de referência próprias ou fluxo de revisão médica distinto) exigiria desenvolvimento."
+}

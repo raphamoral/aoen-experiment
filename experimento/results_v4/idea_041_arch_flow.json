@@ -1,0 +1,46 @@
+{
+  "ideia_idx": 41,
+  "ideia": "Plataforma de gestão de portfólio de patentes para empresas de tecnologia",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Cliente (CTO, Head de P&D, Diretor Jurídico/IP) → precisa proteger inovação e gerir custo e risco do portfólio de patentes → capacidades: (1) captura de invenções e disclosures → (2) gestão do ciclo de vida da patente (rascunho, depósito, exame, concessão, manutenção) → (3) controle de prazos, anuidades e taxas → (4) colaboração com escritórios externos e inventores → (5) análise e valoração do portfólio (cobertura, lacunas, landscape, FTO) → (6) decisão estratégica (manter, licenciar, abandonar, monetizar) → componentes de suporte: dados de escritórios de patentes (INPI, USPTO, EPO, WIPO), busca de anterioridade e IA/NLP, workflow e documentos, identidade e acesso, cobrança, infraestrutura em nuvem.",
+    "bounded_contexts": [
+      "Invention Disclosure (captura de invenções, avaliação de patenteabilidade e comitê de revisão)",
+      "Patent Lifecycle (ciclo de vida da patente e famílias por jurisdição)",
+      "Deadlines & Fees (prazos legais, docketing, anuidades e custos)",
+      "Prior Art & Landscape Intelligence (busca de anterioridade, análise competitiva, FTO)",
+      "Portfolio Analytics & Valuation (métricas, mapas de cobertura, custo x valor, recomendações de poda)",
+      "Legal Collaboration (escritórios externos, inventores, documentos e aprovações)",
+      "Licensing & Monetization (acordos de licença, royalties, transações)",
+      "Patent Office Integration (anti-corruption layer para INPI, USPTO, EPO, WIPO)",
+      "Identity, Tenant & Access (multi-tenant, papéis e permissões, auditoria)",
+      "Billing & Subscription (planos, medição de uso e faturamento)",
+      "Notifications & Reporting (alertas, relatórios executivos e exportações)"
+    ],
+    "component_evolution": "GENESIS: motor de recomendação de portfólio (valor x custo, poda e priorização), com diferencial competitivo e alta incerteza. CUSTOM: Patent Lifecycle e Deadlines & Fees (regras de prazo por jurisdição são o núcleo do domínio), Portfolio Analytics, Invention Disclosure, modelo de dados de famílias de patentes e conectores de escritórios de patentes. PRODUCT (comprar ou adotar): busca semântica e embeddings (Elasticsearch/OpenSearch, pgvector), LLMs via API para resumos e classificação, bases de dados de patentes (Lens.org, PATSTAT, Google Patents Public Data, DOCDB), motor de workflow (Temporal), assinatura eletrônica (DocuSign, Clicksign), BI embutido. COMMODITY: autenticação (Auth0, Keycloak, Cognito), pagamentos (Stripe), e-mail transacional, armazenamento de objetos, Kubernetes gerenciado, observabilidade, CI/CD. Regra: investir em construir apenas o que está em genesis e custom e diferencia; comprar ou terceirizar o restante.",
+    "team_topology": "Stream-aligned teams (por fluxo de valor): (1) Time Ciclo de Vida & Prazos (Patent Lifecycle + Deadlines & Fees); (2) Time Inteligência de Portfólio (Analytics, Valuation, Landscape); (3) Time Invenção & Colaboração (Disclosure + Legal Collaboration + Licensing). Platform team: plataforma interna de desenvolvimento (CI/CD, Kubernetes, observabilidade, multi-tenancy, IaC) oferecida como serviço com baixa carga cognitiva. Enabling team: especialistas em IA/NLP e em propriedade intelectual que ajudam os times de fluxo a adotar ML e regras jurídicas, e depois se afastam. Complicated-subsystem team: motor de regras de prazos por jurisdição e conectores com escritórios de patentes, se a complexidade justificar (fase 2). Modos de interação: colaboração no início dos contextos novos, X-as-a-Service com a plataforma e facilitação com o enabling team. Começar com 2 a 3 times e dividir conforme cresce a carga cognitiva (Conway reverso).",
+    "flow_optimization": "1) Mapear a jornada do cliente e eliminar handoffs entre P&D, jurídico e escritórios externos. 2) Monólito modular com fronteiras por bounded context no início (evita microsserviços prematuros), extraindo serviços só quando a evolução ou a escala divergirem (ex.: ingestão de dados e IA). 3) Comunicação assíncrona por eventos de domínio (PatentFiled, DeadlineApproaching, FeePaid, GrantIssued) para desacoplar times. 4) Cada time é dono do seu contexto ponta a ponta (código, dados, operação). 5) Trunk-based development, feature flags, deploy contínuo e métricas DORA (lead time, frequência de deploy, MTTR, taxa de falha). 6) Anti-corruption layer para os escritórios de patentes, isolando formatos heterogêneos (XML/ST.36, APIs instáveis). 7) Plataforma interna com golden paths para reduzir carga cognitiva. 8) Revisão periódica do Wardley Map para reavaliar build x buy conforme os componentes evoluem.",
+    "interfaces": [
+      "API REST/GraphQL pública para clientes e integrações (OpenAPI, versionada)",
+      "Webhooks de eventos (prazo próximo, mudança de status, taxa paga)",
+      "Eventos de domínio assíncronos entre contextos (Kafka/NATS/SNS+SQS, CloudEvents)",
+      "Conectores/ACL para INPI, USPTO (Patent Center/PEDS), EPO (OPS), WIPO (PATENTSCOPE)",
+      "Integração com sistemas corporativos: SSO (SAML/OIDC), SCIM, Jira, Confluence, ERP/financeiro (SAP, Oracle), Slack/Teams",
+      "Portal para escritórios externos e inventores (acesso restrito por matter)",
+      "Integração de calendário (iCal/Google/Outlook) para prazos",
+      "Exportação de relatórios e dados (CSV, PDF, conexão a BI)",
+      "Interface de assinatura eletrônica",
+      "API de IA interna (busca semântica, classificação, resumos) consumida pelos contextos"
+    ],
+    "escalabilidade": "Multi-tenant com isolamento lógico por tenant (row-level security no PostgreSQL) e opção de isolamento dedicado (schema ou banco por tenant) para clientes enterprise. Aplicação stateless em Kubernetes com autoscaling horizontal (HPA/KEDA). O gargalo real é a ingestão e indexação de dados de patentes, então usa pipelines em lote e streaming separados, filas com backpressure e workers escaláveis. Busca e analytics em índices dedicados (OpenSearch e/ou data warehouse) para não pesar o banco transacional (CQRS onde fizer sentido). Cache de consultas caras, processamento assíncrono de jobs de IA e cotas por plano. Escala de times por divisão dos contextos quando a carga cognitiva aumentar. Requisitos de residência de dados por região (LGPD/GDPR) atendidos por deployment multi-região quando houver demanda.",
+    "custos": "Principais vetores: (1) licenciamento e acesso a dados de patentes (PATSTAT, DOCDB, fornecedores comerciais), que costuma ser o maior custo variável, então prefere fontes abertas (Lens, Google Patents Public Data, dados oficiais) e cache agressivo; (2) inferência de LLM e embeddings, controlada com modelos menores para tarefas simples, batch, cache e cotas por plano; (3) nuvem, com instâncias reservadas ou spot para workers de ingestão; (4) armazenamento de documentos de patentes com camadas frias; (5) segurança e conformidade (SOC 2, ISO 27001, criptografia, auditoria), necessárias porque se trata de PI sensível; (6) suporte e customer success especializados. Estratégia: comprar commodities, construir só o diferencial, e usar FinOps com tagging por tenant e contexto para calcular margem por cliente.",
+    "monetizacao": "Assinatura SaaS B2B em camadas: Starter (portfólio pequeno, até N famílias, prazos e docketing básicos), Growth (analytics, colaboração com escritórios, integrações), Enterprise (SSO/SCIM, isolamento dedicado, SLA, API completa, IA avançada e recomendações de poda). Preço por número de famílias/ativos gerenciados mais usuários, com add-ons de uso (busca de anterioridade e análises de IA por crédito). Serviços profissionais (migração de dados de sistemas legados, onboarding). Receita complementar: módulo de licenciamento/monetização de patentes com taxa sobre transações e parcerias com escritórios de advocacia, provedores de anuidades e marketplaces de PI (revenue share). Métricas: ARR, NRR, custo por família gerenciada, ativação e retenção.",
+    "stack_sugerida": "Backend: TypeScript (NestJS) ou Kotlin/Java (Spring Boot) em monólito modular, com Python para pipelines de dados e ML. Frontend: React + Next.js/TypeScript com design system próprio. Dados: PostgreSQL (com RLS e pgvector), OpenSearch para busca, S3/GCS para documentos, data warehouse (BigQuery/Snowflake) e dbt para analytics. Mensageria: Kafka ou NATS (SNS/SQS na fase inicial). Workflows: Temporal para prazos e processos de longa duração. IA: APIs de LLM (Claude) para resumo, classificação e extração, embeddings e busca semântica, com camada de avaliação. Identidade: Keycloak/Auth0. Pagamentos: Stripe Billing. Infra: AWS/GCP, Kubernetes gerenciado, Terraform, ArgoCD/GitHub Actions. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Segurança: Vault/KMS, criptografia em repouso e em trânsito, trilha de auditoria, SOC 2."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "dfd4115afd4e",
+    "gerado_em": "2026-09-21T03:06:27+00:00",
+    "runner": "runner.py"
+  }
+}

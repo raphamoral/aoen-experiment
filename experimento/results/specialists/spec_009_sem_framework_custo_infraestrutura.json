@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "O projeto menciona plataformas (Vercel, Railway/Supabase, S3) e traz uma estimativa global de R$500–800/mês, mas sem detalhamento por componente (ex: custo de RDS/Supabase por GB, egress S3, tier do Redis, banda CDN), sem estratégia explícita de otimização de custos (scale-to-zero está implícito na Vercel, mas não discutido) e sem projeção de como os custos escalam com volume de usuários, laudos armazenados ou transações."
+}

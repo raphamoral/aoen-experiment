@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador existe conceitualmente — integração nativa de séries temporais de sensores IoT com fluxo de ordens de serviço preventivas num produto unificado — mas não foi isolado explicitamente: o MVP intencionalmente remove o componente que tornaria o produto insubstituível (predição por histórico de falhas) em favor de lógica de thresholds simples, que qualquer plataforma IoT genérica (Thingsboard, AWS IoT, Azure IoT Hub) já entrega sem esforço, e a proposta não articula por que este produto vence alternativas consolidadas como Limble CMMS ou UpKeep que já combinam monitoramento com gestão de manutenção."
+}

@@ -1,0 +1,117 @@
+{
+  "ideia_idx": 21,
+  "ideia": "SaaS de gestão de manutenção predial preventiva com IoT",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Elasticidade: picos de ingestão de dados IoT são imprevisíveis e variam por número de sensores ativos",
+      "Disponibilidade: alertas de manutenção crítica não podem ser perdidos (target 99.9% uptime no plano de alertas)",
+      "Observabilidade: pipelines de dados IoT exigem rastreabilidade fim-a-fim para debugging e SLA",
+      "Extensibilidade: novos tipos de sensores, protocolos e integrações devem ser adicionados sem reescrita",
+      "Segurança: dados de acesso predial e sensores são regulados (LGPD); multi-tenancy requer isolamento forte",
+      "Performance: latência de ingestão de sensor para alerta deve ser sub-segundos para falhas críticas",
+      "Evolvabilidade: domínio de manutenção predial muda com regulações, normas ABNT e novos equipamentos"
+    ],
+    "fitness_functions": [
+      "Latência de alerta crítico: P99 < 2s entre leitura do sensor e notificação ao responsável (medido em staging com carga sintética)",
+      "Taxa de perda de eventos IoT: < 0.01% de mensagens MQTT descartadas sob carga de 10k dispositivos simultâneos",
+      "Tempo de onboarding de novo tipo de sensor: < 1 sprint para suportar novo protocolo sem alterar core do sistema",
+      "Isolamento de tenants: queries de um tenant jamais retornam dados de outro (teste automatizado de cross-tenant leak em CI)",
+      "Cobertura de contrato de API: 100% dos endpoints cobertos por consumer-driven contract tests (Pact) para garantir compatibilidade retroativa",
+      "RTO de ingestão IoT: recuperação do pipeline de dados em < 5 minutos após falha (testado com chaos engineering mensal)",
+      "Tamanho de módulo: nenhum módulo ultrapassa 1000 linhas de código de domínio (ArchUnit no pipeline CI)",
+      "Cobertura de observabilidade: 100% das operações críticas emitem spans OpenTelemetry (verificado automaticamente em build)"
+    ],
+    "incremental_change": {
+      "fase_1_mvp": "Monólito modular com módulos bem delimitados: Tenants, Ativos, Ordens de Serviço, Alertas. Ingestão IoT via MQTT broker simples. Decisão deliberada de NÃO distribuir ainda — fronteiras de domínio precisam ser descobertas com uso real.",
+      "fase_2_separacao_iot": "Extrair pipeline de ingestão IoT como serviço independente somente quando volume de dados criar contenção mensurável no monólito. Decisão guiada por fitness function de latência.",
+      "fase_3_analytics": "Adicionar camada de analytics/ML como serviço separado com acesso read-only ao data lake. Não acoplado ao core operacional.",
+      "fase_4_marketplace": "Expor APIs públicas e SDK para integradores (ERPs, BMS, CMMS) somente após estabilização das interfaces internas.",
+      "principio_guia": "Cada extração é motivada por fitness function degradada, nunca por antecipação especulativa"
+    },
+    "reversibility": {
+      "reversiveis": [
+        "Escolha de banco de dados: schema versionado com Flyway/Liquibase permite migração entre engines",
+        "Fronteiras de serviço: módulos internos do monólito podem ser fundidos ou divididos sem quebrar contratos externos",
+        "Provedor de cloud: abstrações de infra via Terraform e adaptadores de storage evitam vendor lock-in",
+        "Protocolo IoT: camada de adaptadores (MQTT, CoAP, HTTP) isola o core da escolha de protocolo",
+        "Modelo de notificação: strategy pattern permite trocar providers (email, SMS, push) sem impacto no domínio"
+      ],
+      "irreversiveis_last_responsible_moment": [
+        "Modelo de isolamento de dados entre tenants (schema-per-tenant vs row-level security): decidir apenas quando primeiro cliente enterprise com requisito de compliance for fechado",
+        "Escolha de time-series database (InfluxDB vs TimescaleDB vs Redshift): decidir após 3 meses de dados reais para entender padrões de query",
+        "Estrutura de precificação e granularidade de cobrança: testar com clientes piloto antes de codificar no billing engine"
+      ]
+    },
+    "coupling": {
+      "estrategia": "Acoplamento aferente máximo nas interfaces públicas, acoplamento eferente mínimo entre módulos de domínio",
+      "mecanismos": [
+        "Eventos de domínio para comunicação entre módulos (ManutencaoAgendada, SensorAlertoEmitido): desacoplamento temporal",
+        "Anti-corruption layers em todas as integrações externas (ERPs, fornecedores de sensores)",
+        "Shared kernel limitado a tipos primitivos de domínio (TenantId, AssetId, Timestamp) — sem lógica no shared kernel",
+        "Database-per-service quando e somente quando serviços forem extraídos: sem compartilhamento de schema entre módulos",
+        "Consumer-driven contracts (Pact) para garantir que mudanças em produtores não quebram consumidores silenciosamente"
+      ]
+    },
+    "interfaces": [
+      "REST API v1: operações CRUD para ativos, ordens de serviço, planos de manutenção — versionada com tolerância a adição de campos",
+      "WebSocket /events: stream de alertas e atualizações de status em tempo real para dashboards operacionais",
+      "MQTT broker (tópico: tenant/{id}/sensor/{device_id}/telemetria): ingestão de dados de sensores IoT",
+      "Webhook outbound: notificações para sistemas externos (ERP, Slack, Teams) com retry exponencial e dead letter queue",
+      "GraphQL (fase 2+): queries flexíveis para relatórios e dashboards analíticos sem criar N endpoints REST",
+      "Mobile SDK (React Native): interface para técnicos de campo — captura de fotos, checklist offline-first com sync",
+      "API de Integração CMMS: conectores para SAP PM, Maximo, Proteus — via adaptadores específicos, não acoplamento direto"
+    ],
+    "escalabilidade": {
+      "modelo": "Scale-out horizontal por camada com isolamento de tenant como unidade de escalonamento",
+      "ingestao_iot": "Broker MQTT (EMQX ou AWS IoT Core) desacopla dispositivos do backend; Kafka/Kinesis como buffer entre broker e processamento — permite escalar ingestão independente do processamento",
+      "processamento": "Workers stateless de processamento de eventos escaláveis horizontalmente; regras de alerta avaliadas em stream com Flink ou Lambda simples dependendo do volume",
+      "storage": "TimescaleDB para séries temporais de sensores (compressão nativa, particionamento por tempo); PostgreSQL para dados operacionais; S3/GCS para dados históricos frios",
+      "api_layer": "Stateless, escalada via réplicas com load balancer; cache Redis para dados de configuração de tenant (evita hot path no banco)",
+      "multi_tenant": "Row-level security como default; schema-per-tenant para clientes enterprise com requisito de isolamento total — decisão adiada conforme reversibility"
+    },
+    "custos": {
+      "maiores_drivers": [
+        "Ingestão IoT: custo por mensagem em managed services (AWS IoT Core ~$1/milhão de mensagens) — avaliar self-hosted EMQX em escala",
+        "Storage de séries temporais: crescimento linear com número de sensores e frequência de leitura — política de retenção e downsampling obrigatórios",
+        "Processamento em stream: custo de compute para avaliação contínua de regras — otimizar com micro-batching onde latência permite"
+      ],
+      "estrategias_reducao": [
+        "Compressão de payload MQTT no edge (protobuf > JSON para sensores)",
+        "Tiering de storage: dados quentes 30 dias em TimescaleDB, frios em S3 com Athena para queries históricas",
+        "Downsampling automático: agregar leituras de 1min para 1h após 90 dias",
+        "Fitness function de custo: alerta automático quando custo por tenant ativo excede threshold mensal (integrado ao billing dashboard)"
+      ]
+    },
+    "monetizacao": {
+      "modelo_principal": "Subscription por ativo monitorado (building asset) + camada de dispositivos IoT conectados",
+      "tiers": [
+        "Starter: até 50 ativos, 100 sensores, sem analytics avançado — foco em PMEs",
+        "Professional: ativos ilimitados, 1000 sensores, analytics e relatórios regulatórios (ABNT)",
+        "Enterprise: multi-site, SLA dedicado, isolamento de dados, integrações ERP customizadas, suporte a auditoria"
+      ],
+      "adicional": [
+        "Onboarding e instalação de sensores: receita de serviços profissionais",
+        "Marketplace de integrações: revenue share com parceiros de ERP e BMS",
+        "Relatórios de conformidade regulatória: add-on de alto valor para condomínios e facilities managers",
+        "API access para integradores: plano developer com limite de chamadas"
+      ],
+      "metrica_chave": "Net Revenue Retention > 110% — expansão via aumento de ativos monitorados e upsell de tiers"
+    },
+    "stack_sugerida": {
+      "principio": "Stack escolhida por reversibilidade e ecossistema maduro, não por novidade — cada componente pode ser substituído sem reescrever domínio",
+      "backend_core": "Node.js (TypeScript) com NestJS — modularidade nativa alinhada à arquitetura modular; ou Go para serviços de ingestão de alta throughput",
+      "iot_broker": "EMQX (self-hosted em K8s) para controle de custo em escala; AWS IoT Core como fallback managed no MVP",
+      "message_streaming": "Apache Kafka (Confluent Cloud no início) para buffer e replay de eventos IoT",
+      "banco_operacional": "PostgreSQL com Row-Level Security para multi-tenancy",
+      "banco_timeseries": "TimescaleDB (extensão Postgres) — mesma operação, sem novo sistema no MVP; migrar para InfluxDB/Redshift se fitness function de query indicar necessidade",
+      "cache": "Redis para sessões, cache de configuração de tenant e pub/sub de alertas",
+      "frontend": "Next.js (React) com Server Components para dashboards — SEO e performance; Recharts/Victory para visualização de séries temporais",
+      "mobile": "React Native com WatermelonDB para offline-first em campo",
+      "infra": "Kubernetes (EKS/GKE) com Terraform; GitHub Actions para CI/CD com fitness functions automatizadas no pipeline",
+      "observabilidade": "OpenTelemetry para instrumentação agnóstica; Grafana + Tempo + Loki stack — evita lock-in em vendor de observabilidade",
+      "seguranca": "Keycloak para identity/multi-tenancy auth; Vault para secrets; OWASP ZAP integrado no pipeline de CI"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Elasticidade: picos de ingestão de dados IoT são imprevisíveis e variam por número de sensores ativos\",\n    \"Disponibilidade: alertas de manutenção crítica não podem ser perdidos (target 99.9% uptime no plano de alertas)\",\n    \"Observabilidade: pipelines de dados IoT exigem rastreabilidade fim-a-fim para debugging e SLA\",\n    \"Extensibilidade: novos tipos de sensores, protocolos e integrações devem ser adicionados sem reescrita\",\n    \"Segurança: dados de acesso predial e sensores são regulados (LGPD); multi-tenancy requer isolamento forte\",\n    \"Performance: latência de ingestão de sensor para alerta deve ser sub-segundos para falhas críticas\",\n    \"Evolvabilidade: domínio de manutenção predial muda com regulações, normas ABNT e novos equipamentos\"\n  ],\n  \"fitness_functions\": [\n    \"Latência de alerta crítico: P99 < 2s entre leitura do sensor e notificação ao responsável (medido em staging com carga sintética)\",\n    \"Taxa de perda de eventos IoT: < 0.01% de mensagens MQTT descartadas sob carga de 10k dispositivos simultâneos\",\n    \"Tempo de onboarding de novo tipo de sensor: < 1 sprint para suportar novo protocolo sem alterar core do sistema\",\n    \"Isolamento de tenants: queries de um tenant jamais retornam dados de outro (teste automatizado de cross-tenant leak em CI)\",\n    \"Cobertura de contrato de API: 100% dos endpoints cobertos por consumer-driven contract tests (Pact) para garantir compatibilidade retroativa\",\n    \"RTO de ingestão IoT: recuperação do pipeline de dados em < 5 minutos após falha (testado com chaos engineering mensal)\",\n    \"Tamanho de módulo: nenhum módulo ultrapassa 1000 linhas de código de domínio (ArchUnit no pipeline CI)\",\n    \"Cobertura de observabilidade: 100% das operações críticas emitem spans OpenTelemetry (verificado automaticamente em build)\"\n  ],\n  \"incremental_change\": {\n    \"fase_1_mvp\": \"Monólito modular com módulos bem delimitados: Tenants, Ativos, Ordens de Serviço, Alertas. Ing"
+}

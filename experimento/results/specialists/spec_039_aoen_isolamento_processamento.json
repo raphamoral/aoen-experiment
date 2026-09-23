@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 39,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 1,
+  "justificativa": "A proposta centraliza 100% da lógica em uma única ServiceLayer sem mencionar filas, workers assíncronos, processos separados ou qualquer padrão de isolamento para operações computacionalmente pesadas como análise de imagens NDVI, inferência de ML para pragas e match multi-critério — uma falha ou sobrecarga no ReportService ou no motor de orquestração derrubaria todas as interfaces simultaneamente."
+}

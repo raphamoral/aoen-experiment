@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 61,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "A proposta identifica três segmentos pagantes distintos (ONGs, empresas ESG, integrações via API) e sinaliza diferencial de ticket para o segmento corporativo ('10x maior'), o que demonstra consciência de captura de valor diferenciada — mas não há definição explícita de modelo de cobrança (assinatura? por match? por usuário?), nenhum tier ou faixa de preço especificada, ausência completa de métricas de sustentabilidade (CAC, LTV, churn, MRR), e o voluntário — principal combustível do matching — não tem monetização ou incentivo estruturado definido."
+}

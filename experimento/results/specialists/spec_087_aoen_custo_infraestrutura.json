@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 87,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — nenhum provedor cloud é citado, nenhum serviço específico é nomeado (banco de dados gerenciado, fila de mensagens, CDN, armazenamento), não há estimativas em dólares ou reais, nenhuma estratégia de otimização (scale-to-zero, spot instances, tiers de armazenamento) e nenhuma projeção de como os custos evoluem com o crescimento da base de operadores e jogadores."
+}

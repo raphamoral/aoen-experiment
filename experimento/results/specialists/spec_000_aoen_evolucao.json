@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A abstração do provedor de inferência e a ClinicalService centralizada demonstram boas práticas evolutivas — trocar modelo de IA ou adicionar canal não exige reescrita — mas a proposta é silenciosa sobre abstrações de persistência (repositórios, storage), independência do domínio de frameworks de infraestrutura, e estratégias concretas de escalabilidade horizontal, deixando pontos de acoplamento implícitos que podem exigir refatoração relevante na transição de pequena para grande escala."
+}

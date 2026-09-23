@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 70,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta estabelece corretamente a separação entre fluxo fixo (pipeline invariante) e parâmetros configuráveis por tenant (horários, canais, campos customizados do prontuário, tipos de serviço), mas não descreve o mecanismo de armazenamento dessas configurações por tenant (tabela de config, feature flags), não explicita o processo de onboarding zero-código e a lista de parâmetros configuráveis está truncada — impedindo avaliar se casos como regras fiscais, integrações específicas ou limites de plano são cobertos sem código."
+}

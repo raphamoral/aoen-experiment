@@ -1,0 +1,63 @@
+{
+  "ideia_idx": 54,
+  "ideia": "Plataforma de criação de chatbots customizados sem código para PMEs",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (capacidade de mudar componentes sem reescrever o sistema)",
+      "Multi-tenancy com isolamento de dados e de desempenho entre clientes (PMEs)",
+      "Modularidade e baixo acoplamento entre motor de conversação, canais e provedores de LLM",
+      "Usabilidade do builder no-code (baixa curva de aprendizado)",
+      "Disponibilidade dos chatbots em produção (o runtime é mais crítico que o builder)",
+      "Elasticidade para picos de mensagens por tenant",
+      "Segurança e conformidade (LGPD/GDPR, isolamento de dados, gestão de segredos)",
+      "Observabilidade e controle de custo por tenant (tokens, mensagens)",
+      "Testabilidade e deployability (CI/CD contínuo, feature flags)"
+    ],
+    "fitness_functions": [
+      "Arquitetura: ArchUnit/dependency-cruiser no CI que falha o build se módulos de domínio importarem infraestrutura ou se houver dependência circular entre módulos",
+      "Arquitetura: teste que proíbe importação direta do SDK de um provedor de LLM fora da camada de adaptador (LLM Gateway)",
+      "Contrato: testes de contrato (Pact/OpenAPI diff) que bloqueiam breaking changes em APIs públicas e no schema do fluxo do bot",
+      "Isolamento: teste automatizado que tenta acessar dados do tenant B com credenciais do tenant A (deve sempre falhar); validação de RLS no CI",
+      "Desempenho: SLO de p95 de resposta do runtime do bot menor que 2s (excluindo geração do LLM) e p95 da API do builder menor que 300ms, verificados em teste de carga a cada release",
+      "Escalabilidade: teste de carga com aumento de 10x de mensagens por minuto, exigindo autoscaling sem violar o SLO",
+      "Disponibilidade: SLO de 99,9% no runtime, com alerta de burn-rate do error budget",
+      "Segurança: SAST, SCA e scan de segredos no pipeline; teste de que nenhum PII aparece em logs; rotação de chaves auditada",
+      "Custo: métrica de custo de LLM por conversa e por tenant, com alerta e bloqueio quando ultrapassa a margem do plano",
+      "Evolvability: DORA metrics (lead time menor que 1 dia, deploy frequency diária, change failure rate menor que 15%)",
+      "Qualidade de IA: suíte de avaliação (golden dataset) rodando a cada mudança de prompt, modelo ou provedor, com limite mínimo de acurácia e taxa de alucinação",
+      "Portabilidade: teste periódico (chaos de provedor) que troca o LLM primário pelo secundário e valida que os bots continuam funcionando",
+      "Acoplamento: métrica de instabilidade e abstração por módulo acompanhada no CI, com limite máximo de dependências aferentes"
+    ],
+    "incremental_change": "Começar com um monólito modular (bounded contexts: Identidade/Tenants, Bot Builder, Runtime de Conversação, Base de Conhecimento, Canais, Billing, Analytics), com fronteiras impostas por fitness functions. Fase 1 (MVP): builder de fluxos + 1 canal (widget web) + 1 provedor de LLM + RAG simples + planos via Stripe. Fase 2: WhatsApp e demais canais, templates por vertical, analytics e handoff humano. Fase 3: extrair apenas o Runtime de Conversação e a ingestão da Base de Conhecimento como serviços independentes quando métricas mostrarem necessidade de escala ou de ciclos de deploy distintos. Fase 4: marketplace de integrações/plugins e API pública. Usar Strangler Fig para extrações, feature flags e canary releases para rollouts, expand/contract para migrações de schema e versionamento do schema de definição do bot. Cada passo é validado pelas fitness functions antes de avançar.",
+    "reversibility": "Reversíveis (Two-way doors), com custo baixo: provedor de LLM (atrás do LLM Gateway), provedor de embeddings, framework de frontend, provedor de filas, ferramentas de observabilidade, provedor de e-mail, modelo de prompts, granularidade de deploy (monólito modular para serviços). Reversíveis com esforço médio: banco vetorial (atrás de uma interface de repositório), provedor de cloud (com containers e IaC), gateway de pagamento (atrás de uma interface de billing). Difíceis de reverter (One-way doors), adiadas até o last responsible moment: modelo de multi-tenancy (schema compartilhado com tenant_id e RLS, com possibilidade de promover tenants grandes a schema/DB dedicado), formato canônico da definição do bot (mitigado com versionamento e migrações), contratos de API pública e webhooks (versionados desde o dia 1), residência de dados por região, e a escolha entre orquestração em código proprietário e engine de fluxo terceirizada. ADRs registram cada decisão, seu gatilho de revisão e o custo de reversão.",
+    "coupling": "Acoplamento baixo por design: módulos com APIs internas explícitas e sem acesso ao banco de outros módulos. O núcleo do domínio (definição do bot como DSL/JSON versionado) fica independente de canais e de provedores, seguindo Ports & Adapters/arquitetura hexagonal. Comunicação síncrona só onde há necessidade de resposta imediata (builder para API); o restante usa eventos de domínio assíncronos (bot publicado, mensagem recebida, documento ingerido, uso medido) via outbox pattern, o que permite extrair serviços depois sem reescrever. Canais, LLMs, vetores e integrações de terceiros ficam atrás de adaptadores e um anti-corruption layer. Contratos são publicados com schema registry e versionamento semântico. O acoplamento é medido e vigiado por fitness functions; o acoplamento entre builder e runtime ocorre apenas pelo artefato publicado e imutável do bot, o que permite escalar e fazer deploy de cada um separadamente.",
+    "interfaces": [
+      "Builder UI (SPA): editor visual de fluxos, gestão de conhecimento, testes e publicação",
+      "REST/GraphQL API de administração (tenants, bots, fluxos, usuários, planos)",
+      "API de runtime de conversação (REST + WebSocket/SSE para streaming) com autenticação por chave de bot",
+      "Widget JS embarcável e SDKs (web, mobile) para o site do cliente",
+      "Channel Adapter Port: WhatsApp Business API, Instagram, Messenger, Telegram, e-mail, SMS",
+      "LLM Gateway Port: interface única para múltiplos provedores (OpenAI, Anthropic, modelos open-source), com roteamento, fallback, cache e medição de tokens",
+      "Knowledge Ingestion API: upload de PDFs, URLs, FAQ, sitemap e conectores (Google Drive, Notion)",
+      "Vector Store Port (pgvector, Qdrant, Pinecone etc.)",
+      "Webhooks de saída assinados e API de eventos (nova conversa, lead capturado, handoff)",
+      "Integration/Action Connectors: CRM, calendário, e-commerce, Zapier/Make, HTTP genérico",
+      "Handoff API para atendimento humano (inbox ou integração com helpdesk)",
+      "Billing Port (Stripe) e API de medição de uso",
+      "Event bus interno com schemas versionados (domain events)",
+      "Analytics/Export API e OpenTelemetry para observabilidade",
+      "SSO/OIDC e API de gestão de identidade"
+    ],
+    "escalabilidade": "Separar os planos de controle (builder/admin, tráfego baixo e transacional) e de dados (runtime de conversação, tráfego alto e imprevisível). O runtime é stateless, escala horizontalmente com autoscaling por métricas de fila e latência, e guarda o estado da sessão em Redis. Bots publicados são artefatos imutáveis em cache, o que evita consulta ao banco por mensagem. Mensagens de canais entram por filas (SQS/Kafka/NATS), com backpressure e rate limiting por tenant contra vizinho barulhento; chamadas ao LLM são assíncronas, com streaming, cache semântico, retries e fallback entre provedores. Dados: PostgreSQL com RLS por tenant_id, read replicas e particionamento das tabelas de conversas por tenant/tempo; arquivamento de conversas antigas em object storage. Busca vetorial começa com pgvector e migra para um banco vetorial dedicado quando a métrica exigir. Ingestão de documentos em workers separados e escaláveis. Tenants grandes podem ser promovidos a células/shards dedicados (cell-based architecture) e, depois, a regiões diferentes. Escala incremental: começar simples (uma região, um cluster) e escalar apenas guiado por fitness functions e SLOs, sem antecipar complexidade.",
+    "custos": "O maior componente de custo variável é o consumo de LLM e embeddings (tokens), seguido por mensagens de canal (principalmente WhatsApp, cobrado por conversa pela Meta), infraestrutura de compute, banco de dados e armazenamento vetorial. Mitigações: roteamento de modelo por complexidade (modelos pequenos para intents simples, maiores para casos complexos), cache semântico e de prompts, respostas determinísticas do fluxo antes de chamar o LLM, limites de contexto, RAG eficiente com poucos chunks, quotas e limites por plano, e modelos open-source auto-hospedados quando o volume justificar. Infra: começar com serviços gerenciados e containers com autoscaling (scale-to-zero para ambientes de dev e workers), spot instances para ingestão, e monitorar custo por tenant e por conversa (unit economics) com FinOps. Custos fixos iniciais baixos (monólito modular, um banco). Custos de suporte e de conformidade (LGPD, DPA com provedores de IA) devem entrar na margem. Fitness function de custo garante que a margem bruta por plano não caia abaixo do mínimo definido (por exemplo, 70%).",
+    "monetizacao": "SaaS por assinatura com planos em camadas e componente de uso: Free/Trial (1 bot, poucas conversas, marca d'água) para aquisição bottom-up; Starter, Pro e Business, diferenciados por número de bots, conversas/mensagens mensais incluídas, canais (WhatsApp como premium), tamanho da base de conhecimento, integrações, handoff humano, analytics, remoção de marca e múltiplos usuários. Cobrança excedente por conversa ou pacotes de créditos de IA, alinhando receita ao custo variável de LLM. Add-ons: canais adicionais, número de WhatsApp dedicado, SSO, SLA, white-label para agências (revenda com margem) e serviços de setup/templates por vertical. Marketplace de templates e integrações com revenue share no médio prazo. Cobrança mensal/anual com desconto (Stripe Billing com medição de uso), preços em BRL e outras moedas. Métricas: MRR, CAC/LTV, churn, margem bruta por tenant e ativação (primeiro bot publicado em menos de 30 minutos).",
+    "stack_sugerida": "Frontend: React/Next.js + TypeScript, editor de fluxos com React Flow, Tailwind/shadcn-ui; widget em JS leve (Web Component). Backend: monólito modular em TypeScript (NestJS) ou Python (FastAPI) para serviços de IA/ingestão, com arquitetura hexagonal; contratos em OpenAPI e JSON Schema. Dados: PostgreSQL (RLS, pgvector inicialmente), Redis (sessão, cache, rate limit), object storage S3-compatível. Mensageria: SQS/SNS ou NATS/Kafka (conforme volume) com outbox pattern. IA: LLM Gateway próprio ou LiteLLM sobre múltiplos provedores (Anthropic, OpenAI, open-source), embeddings intercambiáveis, avaliação com suíte de golden datasets (ex.: promptfoo/Ragas), guardrails e moderação. Infra: containers em Kubernetes gerenciado ou ECS/Cloud Run, Terraform/IaC, CI/CD com GitHub Actions, feature flags (OpenFeature/Unleash), canary/blue-green. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry, tracing de conversas e custo por tenant. Segurança: OIDC/OAuth2 (Auth0/Keycloak/Clerk), secrets manager, WAF, criptografia em repouso e em trânsito, auditoria. Pagamentos: Stripe Billing. Fitness functions no CI: ArchUnit/dependency-cruiser, Pact, k6 para carga, Semgrep/Trivy para segurança."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:32:28+00:00",
+    "runner": "runner.py"
+  }
+}

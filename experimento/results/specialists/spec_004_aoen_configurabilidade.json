@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra arquitetura orientada a extensibilidade com interface AuctionEngine abstrata, lógica de seleção plugável (menor preço, TCO, score ponderado), adaptadores de notificação e portas de saída substituíveis — separação código/configuração está implícita no design hexagonal — porém o documento não especifica explicitamente um modelo de configuração por tenant (ex: tabela de tenant_config, rule sets por cliente), nem confirma que o onboarding de novo cliente é zero-código/zero-deploy, deixando ambíguo se a plugabilidade descrita opera em tempo de deploy ou em tempo de execução via configuração persistida."
+}

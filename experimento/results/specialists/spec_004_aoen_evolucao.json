@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta demonstra intenção arquitetural sólida com linguagem explícita de portas-e-adaptadores (output ports, AuctionEngine abstrata, implementações substituíveis para matching, seleção de vencedor, auditoria e notificações), o que indica dependências apontando para dentro e componentes trocáveis independentemente — porém a ausência de estratégias explícitas de escalabilidade (event sourcing, CQRS, scaling horizontal do motor de leilão em tempo real) e de evolução da camada de dados (migrações sem breaking changes) impede nota máxima, pois a teoria hexagonal está presente mas a viabilidade do crescimento de 10 para 10.000 usuários concorrentes no core em tempo real permanece sem resposta arquitetural declarada."
+}

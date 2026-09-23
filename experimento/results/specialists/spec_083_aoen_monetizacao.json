@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 83,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta descreve com clareza os segmentos de mercado e interfaces que poderiam sustentar diferentes fluxos de receita (SaaS, marketplace take-rate, API enterprise, Portal da Certificadora), mas não apresenta nenhum modelo de monetização explícito — não há tiers, preços, comissões, métricas de SaaS (MRR, LTV, CAC, churn) nem análise de sustentabilidade custo-receita."
+}

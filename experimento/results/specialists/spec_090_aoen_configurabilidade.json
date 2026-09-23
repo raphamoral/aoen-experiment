@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 90,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra boas intenções arquiteturais — modelo de dados estável no core, regras centralizadas na Service Layer, e menção a 'configuração de protocolos' — mas não projeta explicitamente uma camada de configuração por tenant: não há design de tabela de configurações por cliente, ausência de feature flags por tenant, campos clínicos e validações por especialidade parecem estar na Service Layer como código (não como configuração), e o processo de onboarding de novo cliente não é descrito como 'nova row no banco', deixando implícita a necessidade de desenvolvimento para customizações além do básico."
+}

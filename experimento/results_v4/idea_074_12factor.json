@@ -1,0 +1,48 @@
+{
+  "ideia_idx": 74,
+  "ideia": "Plataforma de gestão de propriedade intelectual para universidades",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Um único repositório Git (monorepo) com um app principal (API + workers) e módulos internos por domínio: invenções, patentes, marcas, software, contratos de licenciamento, transferência de tecnologia (NIT/TTO), prazos e taxas (anuidades), documentos e relatórios. Cada deploy (dev, staging, produção e o tenant dedicado de universidades maiores) sai do mesmo codebase, com versões e feature flags diferentes. Bibliotecas compartilhadas, se surgirem, viram dependências versionadas e não codebases separados.",
+    "dependencies": "Todas as dependências são declaradas de forma explícita, com lockfile versionado (pnpm-lock.yaml ou poetry.lock). Não há dependência de pacotes globais do sistema. Cada ambiente roda em container com imagem base fixada por digest. Renovate ou Dependabot atualizam as versões, e scanners de vulnerabilidade (Trivy, npm audit) e de licença rodam no CI. Ferramentas externas, como OCR e conversão de PDF, entram vendorizadas dentro da imagem.",
+    "config": "Toda configuração vem de variáveis de ambiente: URLs e credenciais dos backing services, chaves de API, feature flags, domínios e limites por plano. Não há arquivos de config por ambiente no código. Segredos ficam em um gerenciador (Vault, AWS Secrets Manager ou Doppler) e são injetados em runtime. A configuração específica de cada universidade (SSO, branding, campos customizados, políticas de PI) é dado de negócio do tenant, guardado no banco, e não config de deploy.",
+    "backing_services": [
+      "PostgreSQL gerenciado (dados transacionais, multi-tenant com Row-Level Security por universidade)",
+      "Redis (cache, rate limiting e broker de filas)",
+      "Object storage compatível com S3 (documentos, relatórios de patente, anexos, versionamento e criptografia em repouso)",
+      "Fila de mensagens (SQS, RabbitMQ ou Redis Streams) para jobs assíncronos",
+      "Motor de busca (OpenSearch ou Meilisearch) para busca full-text em patentes e documentos",
+      "Provedor de identidade (SAML 2.0, OIDC e Shibboleth/CAFe/eduGAIN para SSO acadêmico)",
+      "Serviço de e-mail transacional (SES ou Postmark)",
+      "APIs externas de escritórios de PI (INPI, EPO, WIPO, USPTO, Espacenet e Google Patents) para consulta de status e dados bibliográficos, tratadas como recursos anexáveis",
+      "Gateway de pagamento e billing (Stripe ou Pagar.me)",
+      "Provedor de assinatura eletrônica (ICP-Brasil, DocuSign ou Clicksign) para contratos de licenciamento",
+      "Serviço de observabilidade (Grafana/Loki/Prometheus ou Datadog) e Sentry para erros"
+    ],
+    "build_release_run": "Build: cada commit na main dispara o CI (GitHub Actions), que roda lint, testes unitários e de integração, varredura de segurança e o build da imagem Docker versionada pelo SHA, publicada em um registry. Release: a imagem é combinada com a config do ambiente, gerando um release imutável e numerado, com changelog e migrações de banco versionadas. Run: o orquestrador (Kubernetes, ECS ou Fly.io) executa o release. Staging recebe deploy automático, e produção usa deploy manual aprovado ou canary/blue-green. O rollback é feito apontando para o release anterior, e as migrações seguem o padrão expand/contract para permitir isso. Nunca se altera código em runtime.",
+    "processes": "Processos stateless e share-nothing. O processo web (API e frontend servidos por SSR ou por CDN) não guarda estado local: sessões vão em JWT ou Redis, e arquivos vão para o object storage. Processos worker consomem filas para OCR e indexação de documentos, geração de relatórios, sincronização com bases de patentes, alertas de prazos e anuidades, e envio de e-mails e notificações. Um processo scheduler dispara os jobs periódicos. Tudo o que precisa persistir vai para os backing services.",
+    "concurrency": "Escala horizontal por tipo de processo, seguindo o modelo do Procfile: web, worker e scheduler. Cada um escala de forma independente. A web escala por CPU e latência, e os workers escalam pelo tamanho da fila (KEDA ou autoscaling do orquestrador). Filas separadas por prioridade (interativa, relatórios pesados e sincronização com escritórios) evitam que jobs pesados travem os leves. Os jobs são idempotentes, com retry e backoff exponencial e dead-letter queue. O scheduler roda com eleição de líder ou lock distribuído para não duplicar execuções.",
+    "disposability": "Startup em segundos, com imagens enxutas e sem trabalho pesado na inicialização. Shutdown gracioso ao receber SIGTERM: a web para de aceitar novas conexões e conclui as requisições em andamento, e os workers terminam ou devolvem o job à fila. Como os jobs são idempotentes e usam ack tardio, um crash não perde trabalho. Health checks de liveness e readiness, circuit breakers e timeouts nas integrações externas, e degradação graciosa quando o INPI ou o EPO estiverem fora do ar. Banco com réplica, failover automático e PITR, backups testados periodicamente, Multi-AZ e RPO/RTO definidos em SLA (99,9%).",
+    "interfaces": [
+      "Aplicação web responsiva (SPA/SSR) para pesquisadores, NIT/TTO, procuradores e gestores",
+      "API REST pública (OpenAPI) com autenticação OAuth2 e API keys por tenant",
+      "Webhooks de saída para eventos (prazo próximo, mudança de status, contrato assinado)",
+      "SSO via SAML/OIDC/Shibboleth (CAFe) para integração com o IdP da universidade",
+      "Integração com sistemas acadêmicos (Lattes, SIGAA, repositórios institucionais e CRIS via OAI-PMH)",
+      "Portal de submissão de divulgação de invenção para pesquisadores",
+      "Painel de dashboards e relatórios (indicadores de PI, exportação CSV/PDF)",
+      "Notificações por e-mail e in-app; app móvel opcional para alertas de prazos",
+      "Portal externo para empresas licenciadas e parceiros, com acesso restrito"
+    ],
+    "escalabilidade": "A aplicação é stateless, então escala horizontalmente atrás de um load balancer. O multi-tenant usa um schema compartilhado com RLS para a maioria das universidades e isolamento dedicado (schema ou banco próprio) para as grandes ou com exigências regulatórias. No banco, usa-se réplicas de leitura, particionamento de tabelas de auditoria e eventos e pooling de conexões (PgBouncer). Busca e documentos pesados ficam fora do Postgres, no motor de busca e no object storage com CDN. O volume por tenant é moderado (milhares de ativos de PI), então o gargalo tende a ser o processamento assíncrono de documentos e a sincronização com escritórios, que escalam por workers. O crescimento é geográfico e por número de tenants, com possibilidade de regiões separadas por exigência de residência de dados (LGPD).",
+    "custos": "O custo é dominado por banco gerenciado, object storage, busca e workers de OCR/sincronização. Para conter gastos: autoscaling que reduz workers a zero fora do horário de pico, instâncias spot para jobs assíncronos, lifecycle policies que movem documentos antigos para storage frio, cache agressivo das consultas a bases externas, e limites por plano. Também pesam segurança e conformidade (LGPD, auditoria, backups, pentests), a possível taxa de APIs de dados de patentes pagas, o suporte e a implantação, e o onboarding e a migração de dados legados, que devem ser cobrados à parte. A margem bruta esperada é alta em SaaS B2B com poucos milhares de usuários por tenant.",
+    "monetizacao": "Assinatura anual B2B por universidade (contratos institucionais, muitas vezes via licitação ou dispensa no setor público), em planos por faixa de porte: Essencial (registro e prazos), Profissional (fluxos de licenciamento, integrações e relatórios) e Enterprise (SSO, SLA, tenant dedicado, API completa). A cobrança combina base fixa com variáveis como número de ativos de PI, usuários ativos ou pesquisadores cadastrados. Receitas adicionais: taxa de implantação e migração de dados, treinamento, consultoria de estruturação de NIT, módulos opcionais (valoração de tecnologias, marketplace de tecnologias para empresas, gestão de royalties e repasse aos inventores), e um possível marketplace de licenciamento com comissão. Oferecer piloto gratuito ou de baixo custo para universidades pequenas e programas de parceria com redes como FORTEC e ANPROTEC facilita a adoção.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (ou Python com FastAPI) em containers. Frontend: React com Next.js e TypeScript, com uma biblioteca de componentes acessível (Radix, shadcn/ui). Banco: PostgreSQL com RLS, mais Redis. Fila e jobs: BullMQ ou Celery, com SQS/RabbitMQ em escala maior. Busca: OpenSearch ou Meilisearch. Storage: S3 (ou compatível). Autenticação: Keycloak ou Auth0/WorkOS para SAML, OIDC e SCIM. Infra: Docker, Kubernetes (EKS/GKE) ou ECS/Fly.io, Terraform para IaC, GitHub Actions para CI/CD. Observabilidade: OpenTelemetry, Grafana/Loki/Prometheus e Sentry, com logs em JSON emitidos no stdout e coletados pela plataforma. Tarefas administrativas (migrações, backfills, reindexação) rodam como processos pontuais no mesmo release e codebase, via comandos do orquestrador (kubectl run/Job), nunca por acesso direto ao servidor. IA opcional: OCR e extração de metadados de documentos e busca de anterioridade semântica com embeddings (pgvector), via API de modelos de linguagem."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "3cd7f8c8cda0",
+    "gerado_em": "2026-09-21T04:11:23+00:00",
+    "runner": "runner.py"
+  }
+}

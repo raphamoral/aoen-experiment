@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta descreve apenas entidades de domínio com regras de negócio puras; não há qualquer menção a filas, workers, processos separados ou mecanismos assíncronos para isolar processamentos pesados como recálculo de reputação, avaliação de badges/challenges ou processamento de rewards — tudo aparenta rodar de forma acoplada e síncrona."
+}

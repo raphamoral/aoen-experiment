@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 37,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não faz nenhuma menção a custo por cliente/tenant: não quantifica o custo por orçamento gerado (ex: chamada LLM + storage), não prevê rastreamento de consumo por tenant, e o único 'margem/BDI' citado refere-se à margem do contratante de reforma — não à margem da plataforma SaaS por cliente atendido."
+}

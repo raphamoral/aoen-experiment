@@ -1,0 +1,88 @@
+{
+  "ideia_idx": 78,
+  "ideia": "Plataforma de empréstimo entre pessoas com scoring alternativo por IA",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Intermediação de crédito P2P. O núcleo contém as entidades Empréstimo, Proposta, Contrato, Parcela, Tomador, Investidor, Score de Crédito, Carteira e Ledger. Ele também contém as regras de negócio: elegibilidade, precificação de risco (taxa por faixa de score), matching oferta x demanda, cronograma de amortização, inadimplência, renegociação, cobrança, limites regulatórios e conciliação. O scoring alternativo é modelado como um serviço de domínio que depende de portas. Ele não conhece nenhum modelo de ML nem provedor de dados específico.",
+    "primary_ports": [
+      "SolicitarEmprestimoPort (o tomador cria a solicitação)",
+      "PublicarOfertaDeInvestimentoPort (o investidor define apetite e ticket)",
+      "AvaliarRiscoPort (dispara o scoring alternativo e devolve score, explicação e faixa de taxa)",
+      "AceitarContratoPort (assinatura e formalização)",
+      "GerenciarPagamentosPort (pagar parcela, antecipar, renegociar)",
+      "ConsultarCarteiraPort (investidor e tomador consultam posição, rendimentos e extrato)",
+      "GerenciarKycPort (onboarding e verificação de identidade)",
+      "AdministrarPlataformaPort (backoffice: revisão manual, políticas de risco, disputas)",
+      "ExecutarCobrancaPort (régua de cobrança acionada por agendador)",
+      "ExportarRelatorioRegulatorioPort (relatórios ao regulador, ex.: Bacen/SCD e LGPD)"
+    ],
+    "secondary_ports": [
+      "RepositorioEmprestimoPort / RepositorioUsuarioPort / RepositorioLedgerPort (persistência)",
+      "ProvedorDadosAlternativosPort (open finance, dados de telecom, e-commerce, utilities, comportamento de pagamento)",
+      "ModeloScoringPort (inferência do modelo de IA, com versionamento e explicabilidade)",
+      "BureauCreditoPort (Serasa, SPC, Boa Vista, consulta e negativação)",
+      "KycProviderPort (documento, biometria facial, prova de vida, PEP e sanções)",
+      "GatewayPagamentoPort (Pix, boleto, TED, cartão, split e escrow)",
+      "ContaEscrowPort / BancoParceiroPort (custódia, SCD/IP parceira, BaaS)",
+      "AssinaturaDigitalPort (ICP-Brasil e assinatura eletrônica)",
+      "NotificacaoPort (e-mail, SMS, push, WhatsApp)",
+      "PublicadorEventosPort (barramento de eventos de domínio)",
+      "RelogioPort / IdGeneratorPort (tempo e ids determinísticos para testes)",
+      "AuditoriaPort (trilha imutável e decisões de IA para compliance)",
+      "AntiFraudePort (device fingerprint, análise de fraude)",
+      "FeatureStorePort (features de ML versionadas)",
+      "CobrancaExternaPort (assessorias de cobrança e protesto)",
+      "ArmazenamentoDocumentosPort (contratos e comprovantes)"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL (BFF) para web e mobile",
+      "App mobile (iOS/Android) e SPA web via BFF",
+      "Painel de backoffice/admin",
+      "Consumidores de webhooks (gateway de pagamento, KYC, banco parceiro, assinatura digital)",
+      "Jobs agendados (cron): vencimentos, régua de cobrança, recálculo de score, conciliação",
+      "Consumidores de fila/eventos",
+      "CLI e scripts operacionais (migrações, reprocessamento)",
+      "API pública B2B/parceiros (embedded lending, marketplaces)",
+      "Suíte de testes automatizados (unitários, contrato e ponta a ponta) e simulador de cenários (test driver)",
+      "Bot de atendimento (WhatsApp/chat)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (persistência transacional e ledger de dupla entrada append-only)",
+      "Redis (cache e locks distribuídos)",
+      "Kafka/SNS+SQS/RabbitMQ (publicação de eventos)",
+      "Adaptador do modelo de scoring: serviço de inferência (SageMaker, Vertex AI, KServe ou ONNX runtime) com gradient boosting/GLM explicável (SHAP)",
+      "Adaptadores Open Finance (agregadores como Pluggy, Belvo ou Open Finance Brasil)",
+      "Adaptadores de bureau (Serasa, Boa Vista, SPC, Quod)",
+      "Adaptadores KYC (Unico, idwall, Jumio, Onfido)",
+      "Adaptadores de pagamento (Pix via PSP, Stripe, Pagar.me, Asaas, Celcoin) e BaaS/SCD parceira (Dock, Cubos, QI Tech)",
+      "Adaptador de assinatura (ClickSign, DocuSign, D4Sign)",
+      "Adaptadores de notificação (SES, Twilio, Zenvia, FCM/APNs, WhatsApp Business)",
+      "S3/GCS para documentos",
+      "Adaptador de auditoria (armazenamento WORM e OpenTelemetry)",
+      "Adaptadores de fraude (Clearsale, Sift ou similares)",
+      "Adaptadores fake/in-memory de todas as portas (testes, demo e sandbox)"
+    ],
+    "isolation": "O núcleo é um módulo sem dependências de framework, banco, HTTP ou SDKs de terceiros. Ele só conhece as interfaces (portas) que ele mesmo define. A dependência aponta sempre para dentro (Dependency Inversion). Os casos de uso (application services) implementam as portas primárias e consomem as secundárias por injeção de dependência. A montagem dos adapters acontece só na composition root, configurada por ambiente. DTOs e mapeadores (anti-corruption layer) traduzem modelos externos, como o payload do bureau ou do Open Finance, para a linguagem do domínio. Assim, trocar de provedor não afeta o core. O modelo de IA fica atrás de ModeloScoringPort, com contrato fixo de entrada (features) e saída (score, motivos, versão). Trocar ou retreinar o modelo não altera as regras de negócio. A política de decisão (aprovar, recusar, revisão manual) fica no domínio e é determinística. O modelo apenas informa. Isso facilita auditoria e explicabilidade. Fitness tests de arquitetura (ArchUnit, dependency-cruiser ou import-linter) impedem imports proibidos. Cada porta tem testes de contrato reutilizáveis, executados contra o adapter real e contra o fake.",
+    "interfaces": [
+      "App mobile do tomador (solicitar, acompanhar, pagar)",
+      "App/portal do investidor (marketplace de ofertas, carteira, diversificação automática)",
+      "Portal web responsivo",
+      "Painel de backoffice (risco, cobrança, compliance, suporte)",
+      "API REST pública com OpenAPI e webhooks para parceiros",
+      "Dashboard de monitoramento de modelo (drift, aprovação, inadimplência por coorte)",
+      "Relatórios regulatórios e exportações",
+      "Canais conversacionais (WhatsApp/chat)",
+      "Ambiente sandbox para integradores e para testes automatizados"
+    ],
+    "escalabilidade": "Monólito modular hexagonal no início, com bounded contexts separados: Onboarding/KYC, Scoring, Originação, Ledger/Pagamentos, Cobrança e Notificações. Cada contexto pode virar microsserviço sem reescrever o core, porque a comunicação já ocorre por portas e eventos. Os serviços de API são stateless e escalam horizontalmente atrás de load balancer com autoscaling. O ledger usa consistência forte (PostgreSQL com transações, idempotency keys e outbox pattern), e réplicas de leitura atendem consultas. Fluxos assíncronos (scoring, conciliação, notificações, cobrança) usam filas com DLQ e consumidores idempotentes. A inferência de ML é um serviço independente com autoscaling, cache de scores por janela de validade e fallback para um modelo simples baseado em regras quando o serviço está indisponível. As features são calculadas em batch e streaming pela feature store. A leitura pesada (marketplace, dashboards) usa CQRS com projeções em cache ou em um banco analítico. O particionamento por tenant ou por data é possível se o volume crescer. Nas integrações externas, circuit breakers, retries com backoff, timeouts e bulkheads evitam falhas em cascata. Há suporte a multi-região e a multi-tenant (white-label) quando necessário.",
+    "custos": "Os maiores custos são de funding, inadimplência e conformidade, não de infraestrutura. Custos variáveis por transação: consultas a bureau (R$ 1–5 por consulta), KYC/biometria (R$ 1–4 por verificação), Open Finance, Pix/boleto, assinatura digital e SMS/WhatsApp. Um cache inteligente, consultas escalonadas (modelo barato primeiro, dados pagos só se o caso for limítrofe) e negociação de volume reduzem esse custo. A infraestrutura em nuvem é modesta no início (containers gerenciados, PostgreSQL gerenciado, fila). O ML pode usar inferência em CPU com modelos leves. GPU só é necessária se houver modelos pesados ou NLP. Há ainda custos com equipe de dados e risco, retreinamento e monitoramento de drift, auditoria e explicabilidade, jurídico e compliance (LGPD, Bacen/SCD ou parceria, PLD/AML), seguros e provisão para perdas. O custo de aquisição de clientes (CAC) tende a ser alto nos dois lados do marketplace. Recomenda-se monitorar o custo por empréstimo originado e a margem de contribuição por coorte. Também se recomenda adotar FinOps, com tags de custo por contexto e limites de gasto por provedor.",
+    "monetizacao": "Fee de originação (1–5% do valor, cobrado do tomador). Spread ou take-rate sobre os juros pagos ao investidor (por exemplo, 10–20% do rendimento). Taxa de serviço/administração mensal sobre a carteira gerenciada. Taxas de cobrança e de antecipação de parcelas. Planos premium para investidores (auto-invest, diversificação automática, relatórios fiscais e acesso antecipado a ofertas). Scoring como API B2B (SaaS/pay-per-call) para fintechs, cooperativas e varejistas, o que aproveita o diferencial de IA. Embedded lending white-label com revenue share. Marketplace de cessão de créditos (secundário) com taxa de intermediação. Receita de dados agregados e anonimizados, se a LGPD e o consentimento permitirem. Educação financeira e produtos cruzados (seguro prestamista, com comissão).",
+    "stack_sugerida": "Backend: Kotlin/Java (Spring Boot), TypeScript (NestJS) ou Go, com o core em módulo puro sem framework; Python (FastAPI) para o serviço de ML. Arquitetura: monólito modular em hexagonal, com eventos de domínio, outbox e CQRS pontual. Dados: PostgreSQL (ledger e transacional), Redis, S3, ClickHouse ou BigQuery (analytics) e feature store (Feast). ML: scikit-learn, XGBoost/LightGBM, SHAP para explicabilidade, MLflow para versionamento e registro de modelos, Airflow/Dagster para pipelines. Mensageria: Kafka ou SQS/SNS. Frontend: React/Next.js e React Native ou Flutter. Infra: AWS ou GCP, Kubernetes (EKS/GKE) ou ECS/Cloud Run, Terraform, CI/CD com GitHub Actions, API Gateway. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry e monitoramento de drift (Evidently). Segurança: Keycloak/Auth0, KMS, Vault, mTLS, criptografia de campo para PII e WAF. Qualidade: testes de contrato por porta (Pact), fakes in-memory, testes de arquitetura (ArchUnit) e testes de propriedade para o cálculo financeiro."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T04:19:09+00:00",
+    "runner": "runner.py"
+  }
+}

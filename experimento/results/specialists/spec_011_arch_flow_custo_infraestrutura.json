@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista serviços de infraestrutura com especificidade razoável (S3/GCS, Auth0, Stripe, SendGrid, Elasticsearch) na camada commodity, mas não apresenta nenhuma estimativa de custo em valores monetários, nenhuma estratégia de otimização (scale-to-zero, spot instances, storage tiers) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

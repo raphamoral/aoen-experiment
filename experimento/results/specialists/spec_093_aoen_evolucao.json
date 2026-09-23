@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 93,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra evolução bem planejada no core: o motor de matching tem interface estável com estratégias intercambiáveis (regras→ML→LLM) e compliance como plug-ins, e a Service Layer isola lógica de negócio das interfaces via DTOs — mas perde pontos por não abordar explicitamente a independência de infraestrutura (abstração de banco, filas, cloud provider), por descrever a Service Layer como 'centralizada' sem esclarecer se é um único processo (gargalo de escala) ou como a API pública mantém compatibilidade retroativa em múltiplas versões."
+}

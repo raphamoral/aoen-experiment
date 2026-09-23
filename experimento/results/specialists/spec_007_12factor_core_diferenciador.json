@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "A proposta descreve uma infraestrutura técnica sólida e bem arquitetada, mas não identifica nem isola um núcleo diferenciador real — a combinação de gamificação + microlearning corporativo é mencionada implicitamente no nome do produto, porém nenhum componente tecnológico exclusivo é descrito: o que está documentado é um stack de commodities (PostgreSQL, Redis, S3, Auth0, etc.) sem explicar qual algoritmo, modelo ou mecanismo proprietário entrega a experiência gamificada de forma que plataformas como Cornerstone, TalentLMS ou Docebo não consigam replicar."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural menciona IPaymentGateway como porta secundária (assinaturas, upgrades de plano e cobranças), indicando consciência de que o produto precisa monetizar, mas não apresenta nenhum modelo de negócio concreto — sem tiers definidos, sem valores, sem estratégia freemium/enterprise, sem métricas de sustentabilidade (MRR, LTV, CAC, churn)."
+}

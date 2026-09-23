@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 96,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "Cada decisão arquitetural deriva diretamente da anterior: a complexidade jurisdicional justifica rulesets versionados (não hardcode), que justificam a extensibilidade por país, que justifica a Service Layer central como guardião das regras — e cada interface de entrega é ancorada num segmento de mercado distinto com lógica de distribuição própria, formando uma narrativa onde problema, arquitetura, mercado e canais se reforçam sem contradições visíveis; o ponto que impede o 10 é a fase 3 truncada, que deixa o fluxo canônico — peça central do sistema — sem avaliação completa."
+}

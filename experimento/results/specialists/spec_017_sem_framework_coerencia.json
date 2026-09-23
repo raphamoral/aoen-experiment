@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam uma narrativa coerente e progressiva: o UUID/nanoid conecta-se diretamente à URL de verificação pública, que justifica a interface sem login para o verificador (RH), que reforça o modelo de negócio onde só a instituição paga; o PostgreSQL indexado endereça o gargalo de leitura da verificação, o S3 resolve o peso dos PDFs no banco, e o BullMQ antecipa corretamente o gargalo de geração em lote antes mesmo que ele apareça — porém a ambiguidade entre Puppeteer (processo pesado, exige mais RAM) e PDFKit (leve) tem implicações arquiteturais relevantes que a proposta não resolve, criando uma tensão não endereçada com a premissa de rodar em servidor único de baixo custo."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "Arquitetura event-driven com domínios independentes, CQRS, strangler pattern e decisões explicitamente classificadas como reversíveis/irreversíveis demonstra maturidade evolutiva sólida, mas a dependência de contratos de eventos como decisão irreversível e a ausência de menção a anti-corruption layers ou portas/adaptadores (hexagonal) impede a nota máxima."
+}

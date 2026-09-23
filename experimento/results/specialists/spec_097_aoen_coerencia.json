@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 97,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões se reforçam em cadeia: a abstração de 3 camadas da Fase 1 (coleta agnóstica de canal → engine genérica de mapas → orquestrador agnóstico de notificação) é a fundação exata que viabiliza as 5 interfaces da Fase 2 sem duplicação de lógica; cada segmento de mercado da Fase 1 (indústria, enterprise, parques empresariais) encontra uma interface correspondente na Fase 2 (bot WhatsApp para baixa maturidade digital, API REST para enterprise, painel de parceiros para parques); a Service Layer da Fase 2 não é uma decisão nova — é a materialização do contrato prometido pela extensibilidade da Fase 1; o único fator que impede nota 10 é o truncamento da Fase 3, que não permite verificar se o fluxo operacional fecha o ciclo com a mesma coesão das fases anteriores."
+}

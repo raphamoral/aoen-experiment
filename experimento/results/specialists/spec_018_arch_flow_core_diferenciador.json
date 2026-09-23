@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado no bounded context 'Churn Intelligence' (churn-score, feature-vector, model-version com horizontes 30/60/90 dias) e reforçado pelo 'Retention Playbook' com priorização por ROI, formando um loop preditivo-acionável exclusivo para telecom — porém perde pontos por mencionar MLflow como commodity no component_evolution sem evidenciar o que torna o feature engineering de telecom (ARPU decay, roaming pattern, slicing 5G SA) genuinamente incopiável frente a players como DataRobot ou Medallia."
+}

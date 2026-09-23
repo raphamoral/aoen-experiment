@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 45,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta menciona uma Service Layer central e um 'motor de monitoramento' como camada separada das interfaces, sugerindo separação lógica, mas não há qualquer menção explícita a filas de mensagens, workers assíncronos, isolamento físico de processos pesados (geração de relatórios de conformidade, trilhas de auditoria, processamento massivo de telemetria IoT), mecanismos de fallback em caso de falha do motor, ou estratégia de escalonamento independente para a camada de processamento pesado — o isolamento descrito é puramente arquitetural/lógico, sem resiliência operacional demonstrada."
+}

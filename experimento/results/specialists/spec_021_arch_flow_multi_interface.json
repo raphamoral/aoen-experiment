@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A proposta implica dois perfis distintos (técnico de campo e gestor predial) e os canais de notificação (push, email, SMS, WhatsApp) demonstram consciência multi-canal, mas nenhuma interface concreta (web app, mobile, API pública, CLI) é explicitamente declarada, justificada por alcance de mercado ou acompanhada de uma estratégia de desacoplamento UI/lógica de negócio."
+}

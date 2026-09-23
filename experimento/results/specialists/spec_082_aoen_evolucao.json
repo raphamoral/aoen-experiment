@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 82,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra design evolutivo sólido — a interface `ConversationalProvider` torna a troca de provedor de IA reversível, o `AttendanceService` como fronteira de domínio agnóstica de canal segue o padrão ports-and-adapters corretamente, e os adapters de canal são substituíveis de forma independente — mas a proposta não explicita abstrações para a camada de persistência (trocar banco de dados exigiria quê?), não menciona mecanismos de processamento assíncrono/filas que viabilizariam a escala de 10 para 10.000 sem mudança estrutural, e o pipeline da Fase 3 é descrito como 'fluxo fixo', o que pode introduzir rigidez se etapas precisarem ser reordenadas ou condicionalizadas por tenant."
+}

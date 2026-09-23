@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 44,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (motor de avaliação automatizada com interface IEvaluationEngine plugável) está claramente identificado, isolado da camada de produto, extensível por design com fornecedores intercambiáveis, e resolve o problema real de triagem técnica sem dependência de engenheiro humano no processo — falta apenas evidência de que o modelo de scoring proprietário é genuinamente inimitável frente a concorrentes como HackerRank e Codility."
+}

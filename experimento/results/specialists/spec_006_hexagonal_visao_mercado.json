@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta menciona implicitamente 'paciente' como usuário e sugere modelo B2C via IManageSubscription, mas não articula dor do cliente, tamanho de mercado, segmentação precisa (B2C direto? clínicas? planos de saúde?) nem diferenciação frente a concorrentes como Noom, Nutrify ou serviços de nutricionistas — toda a profundidade está na arquitetura técnica, não na visão de mercado."
+}

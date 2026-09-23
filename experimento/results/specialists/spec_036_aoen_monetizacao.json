@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 36,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta detalha bem a arquitetura técnica e segmentos de mercado (clínicas, farmácias, hospitais, white-label), mas não menciona nenhum modelo de monetização — não há tiers, preços, métricas de negócio (MRR, LTV, CAC, churn) ou estratégia de cobrança definida."
+}

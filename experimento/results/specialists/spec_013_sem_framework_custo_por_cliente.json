@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "O projeto lista custos totais de infraestrutura ('abaixo de R$50/mês para 100 espaços') e menciona custos variáveis com natureza por operação (Stripe por transação, WhatsApp por mensagem), mas não realiza nenhum cálculo de custo por cliente/tenant — não há 'cada reserva custa R$X de Stripe + R$Y de notificação = margem de Z%', sem rastreamento de consumo por tenant e sem conexão entre estrutura de custo e modelo de precificação."
+}

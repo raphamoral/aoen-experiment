@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta aplica os princípios 12-factor de forma consistente e intencional em todas as camadas — config externalizada no Parameter Store reforça os processos stateless, que por sua vez justificam o Redis como sessão externa, que habilita o scale-out via ECS/EKS, que é viabilizado pelos artefatos imutáveis do pipeline BUILD/RELEASE/RUN, que dependem dos lockfiles e imagens SHA256-pinadas para reprodutibilidade — formando um sistema onde cada decisão sustenta as demais; a única tensão menor é o uso recorrente de alternativas não resolvidas (Auth0 *ou* Cognito, Datadog *ou* CloudWatch, ECS *ou* EKS) que deixa pontos de integração em aberto e poderia gerar incoerências operacionais dependendo da combinação escolhida."
+}

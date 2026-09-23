@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 1,
+  "justificativa": "A proposta não menciona nenhuma interface (web, mobile, API, etc.) nem perfis de usuário mapeados a canais específicos; o único ponto positivo implícito é a descrição das entidades como independentes de framework/infraestrutura, sugerindo base Clean Architecture que permitiria desacoplamento futuro, mas sem qualquer planejamento explícito de múltiplos canais ou justificativa de mercado."
+}

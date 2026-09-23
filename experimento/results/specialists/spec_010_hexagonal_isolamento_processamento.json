@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta menciona EventBusPort para processamento assíncrono de eventos de domínio e um SchedulerAdapter para jobs periódicos, sinalizando consciência de async, mas não descreve isolamento físico real (workers separados, filas com consumidores dedicados, processos independentes), ausência de mecanismo de fallback explícito para falha nos processos pesados (emissão de NF-e via SEFAZ, apuração de DAS, geração de relatórios) e nenhuma estratégia de escalonamento independente para esses workloads — o isolamento inferível é apenas lógico/arquitetural, não operacional."
+}

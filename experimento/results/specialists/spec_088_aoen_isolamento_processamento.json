@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 88,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define um fluxo fixo de 9 etapas com operações computacionalmente pesadas (scoring do âncora, validação fiscal de NF-e, cálculo de taxa) mas não menciona em nenhum momento filas de mensagens, workers separados, processamento assíncrono ou isolamento físico — o fluxo parece inteiramente síncrono e colocado dentro de uma única camada de serviço, o que significa que uma falha ou lentidão no scoring derruba a experiência inteira do fornecedor e não há indicação de que esses processos possam escalar independentemente."
+}

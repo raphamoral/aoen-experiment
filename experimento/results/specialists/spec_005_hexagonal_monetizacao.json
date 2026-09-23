@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona um PaymentGatewayPort para 'cobrança de assinaturas SaaS e por uso' e um TenantManagementPort que indica consciência de multi-tenancy, mas não há nenhum detalhamento de tiers, valores, métricas (MRR, LTV, CAC, churn) ou estratégia de precificação — apenas a existência de um ponto de integração com gateway de pagamento, o que é insuficiente para caracterizar um modelo de monetização estruturado."
+}

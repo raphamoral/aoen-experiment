@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta apresenta apenas isolamento lógico via interface AnalysisEngine e camada NutritionService — sem nenhuma menção a filas de mensagens, workers separados, processamento assíncrono ou fallback para o caso de falha da IA/OCR, o que significa que uma falha ou sobrecarga no processamento pesado (OCR + análise IA) propagaria diretamente para toda a aplicação."
+}

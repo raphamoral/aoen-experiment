@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona componentes de infraestrutura (PostgreSQL, Redis, workers, filas, scraping separado), mas não apresenta nenhuma estimativa concreta de custo em valores monetários, nenhuma estratégia de otimização (scale-to-zero, spot instances, storage tiers) e nenhuma projeção de como os custos evoluem com o crescimento da base de clientes."
+}

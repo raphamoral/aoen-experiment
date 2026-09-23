@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 92,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê cinco interfaces distintas (Web App, API REST/Webhooks, Slack/Teams Bot, Relatórios exportáveis e CLI), cada uma justificada por perfil de usuário e caso de uso real de mercado, com lógica de negócio centralizada em uma ContractService desacoplada das interfaces, permitindo adicionar ou substituir canais sem impacto nas regras de negócio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "A proposta menciona filas de jobs assíncronos (RabbitMQ/Kafka) para cálculo de rotas e notificações, além de microsserviços separados por bounded context com Kubernetes, indicando isolamento físico real e escalabilidade independente; perde pontos por não especificar estratégias de fallback explícitas (circuit breaker, degradação graciosa) quando o Route Service ou workers ficam indisponíveis."
+}

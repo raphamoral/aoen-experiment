@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma narrativa coesa e auto-reforçante: processos stateless viabilizam escala horizontal, Docker + lockfiles determinísticos garantem reprodutibilidade entre os três estágios imutáveis de CI/CD, zero-config habilita o mesmo codebase em múltiplos ambientes/tenants sem forks, e o Feature Store fecha o ciclo ML ao tornar features reutilizáveis entre os jobs de treinamento isolados por tenant — a única lacuna leve é a ausência de estratégia explícita de isolamento de dados por tenant no PostgreSQL (row-level security, schemas separados), que contradiz levemente a promessa multi-tenant anunciada nas demais camadas."
+}

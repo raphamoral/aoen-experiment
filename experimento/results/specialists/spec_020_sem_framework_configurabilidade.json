@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta tem configurabilidade natural no nível de campanha (empresa define escopo, recompensa e orçamento como dados), mas não descreve nenhuma camada de configuração de tenant: regras de gamificação (pontos por severidade de bug, critérios de badge), fluxo de validação (quantos validadores confirmam um bug, threshold de aprovação) e regras de pagamento parecem hardcoded no código — adicionar um cliente com regras diferentes exigiria desenvolvimento, não apenas uma nova row de configuração."
+}

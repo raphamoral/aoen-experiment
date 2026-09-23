@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 51,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura descreve um pipeline plugável com componentes isolados (Ingestion, Classification, Extraction, Risk Scoring, Report Generation) e menciona uso de LLM e parsers de documentos — o que torna o custo por operação tecnicamente calculável — mas a proposta não define nenhum mecanismo explícito de rastreamento de consumo por tenant, não apresenta estimativas de custo por análise/operação e não conecta estrutura de custos ao modelo de precificação; há potencial latente para unit economics, mas nenhuma implementação ou intenção declarada."
+}

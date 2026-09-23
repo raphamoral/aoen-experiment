@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "O processamento pesado está fisicamente isolado (serviço Python separado), roda de forma assíncrona via fila (SQS) e escala independentemente com workers adicionais — o que é sólido — mas falta descrever resiliência a falhas: não há menção a retry policy, dead letter queue para exames que falham repetidamente, nem o que ocorre com o usuário caso o worker caia ou a fila transborde."
+}

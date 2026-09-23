@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta descreve configurabilidade por ambiente (env vars, Secrets Manager, feature flags via LaunchDarkly), não por tenant — não há menção a tabela de configuração por cliente, targeting de feature flags por tenant-id, fluxo de onboarding sem deploy, nem separação explícita entre comportamento fixo e parâmetros variáveis por cliente; um novo tenant provavelmente exigiria intervenção além de inserir uma row no banco."
+}

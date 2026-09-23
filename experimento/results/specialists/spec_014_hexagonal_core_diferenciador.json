@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — orquestração de sessões de tradução simultânea híbrida (humano + IA) em tempo real, operando sobre plataformas de videoconferência existentes — está claramente identificado no core_domain, isolado dos adaptadores via arquitetura hexagonal com múltiplos fornecedores intercambiáveis (Agora/LiveKit, DeepL/OpenAI/Google, Google STT/AssemblyAI), e resolve um problema real que Zoom e Teams não resolvem nativamente (roteamento dinâmico de canais por idioma com failover entre IA e tradutor humano); perde 2 pontos porque a proposta de valor 'insubstituível' não está explicitada — há concorrentes especializados (Interprefy, KUDO) e a arquitetura, embora extensível, não evidencia qual mecanismo de orquestração (ex: algoritmo de roteamento, latência garantida, handoff humano/IA) constituiria vantagem técnica defensável."
+}

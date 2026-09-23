@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 22,
+  "ideia": "Marketplace de ingredientes orgânicos B2B para restaurantes",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de conexão verificada entre restaurantes e fornecedores de ingredientes orgânicos certificados: catálogo unificado com disponibilidade em tempo real, rastreabilidade de origem e fluxo de pedido B2B (cotação → aprovação → entrega → fatura). Sem esse motor, o produto não existe.",
+    "fase1_mercado": "Primário: restaurantes com posicionamento premium, orgânico ou saudável (fast-casual, fine dining, redes de alimentação natural) que sofrem com fornecimento fragmentado, falta de rastreabilidade e negociação manual. Secundário: produtores e distribuidores orgânicos que carecem de canal digital B2B com acesso direto a compradores qualificados.",
+    "fase1_extensivel": "Sim. O core é uma camada de orquestração agnóstica de fornecedor: suppliers são integrados via adaptadores (API REST, EDI, planilha, entrada manual). Trocar ou adicionar fornecedor = novo adaptador, sem alterar o motor central. Certificações (IBD, Ecocert, USDA Organic) são validadas por módulo plugável. Integrações de pagamento e logística são swappable via interface contratual interna.",
+    "fase2_interfaces": [
+      "Web App (PWA) — painel de compras para gerentes e compradores de restaurantes",
+      "Mobile App (iOS/Android) — reposição rápida para chefs e cozinheiros em campo",
+      "Portal do Fornecedor (Web) — gestão de catálogo, estoque, pedidos e faturamento",
+      "API REST — integração com sistemas ERP/POS dos restaurantes (Totvs, SAP, Oracle F&B)",
+      "WhatsApp/Bot conversacional — canal de recompra para restaurantes menores e fornecedores sem equipe de TI",
+      "Dashboard Admin — operação do marketplace: curadoria de fornecedores, suporte, analytics"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de compradores profissionais que gerenciam listas de compra e aprovações. Mobile abre o mercado de reposição impulsiva e urgente dentro da cozinha. Portal do Fornecedor converte produtores sem canal digital em parceiros ativos. API abre o mercado enterprise (redes e franquias com ERP). WhatsApp/Bot abre o mercado de cauda longa: restaurantes menores que nunca adotarão um app mas compram pelo celular todos os dias.",
+    "fase2_service_layer": "Uma Service Layer central expõe contratos bem definidos (CatalogService, OrderService, SupplierService, PricingService, TraceabilityService). Nenhuma interface contém lógica de negócio: cada canal chama a mesma Service Layer via HTTP interno ou fila de mensagens. Trocar ou adicionar uma interface não toca regras de pedido, precificação ou rastreabilidade.",
+    "fase3_fluxo_fixo": "O fluxo canônico de compra é imutável: Descoberta de produto → Seleção e montagem de carrinho → Solicitação de cotação ou pedido direto → Aprovação interna (opcional) → Confirmação do fornecedor → Rastreamento de entrega → Recebimento e faturamento → Avaliação. Esse pipeline roda igual para todos os clientes.",
+    "fase3_parametros_configuraveis": [
+      "Lista de fornecedores aprovados por restaurante/rede",
+      "Categorias e produtos visíveis no catálogo (filtro por tipo de culinária, certificação exigida)",
+      "Valor mínimo de pedido por fornecedor",
+      "Janelas de entrega aceitas (dias e horários)",
+      "Fluxo de aprovação interno (direto ou com N níveis de aprovação)",
+      "Contas e centros de custo para rateio por unidade",
+      "Moeda, impostos e regras fiscais por região",
+      "Prazo de pagamento e método (boleto, PIX, cartão, crédito na plataforma)",
+      "Alertas de estoque mínimo por SKU",
+      "Integrações ativas (ERP, POS, contabilidade)",
+      "Markup ou desconto contratual por fornecedor/categoria",
+      "Regras de rastreabilidade exigidas (lote, fazenda, certificação mínima)"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário de configuração que popula um tenant isolado: define perfil (restaurante ou rede), seleciona fornecedores do marketplace, configura fluxo de aprovação, janelas de entrega e integração opcional com ERP. Sem deploy, sem código novo. Novo cliente = novo registro de configuração no banco de tenants. Toda a lógica já existe e é parametrizada.",
+    "fase4_core_isolado": "O processo crítico isolado é o Motor de Matching e Processamento de Pedidos: recepção de pedido, validação de estoque em tempo real com o fornecedor, cálculo de preço/frete, emissão de ordem de compra e notificação de confirmação. Roda em workers assíncronos (filas de mensagens) separados da API web, escaláveis horizontalmente e independentes dos demais serviços.",
+    "fase4_custo_total_cliente": "Custo core por pedido: processamento de fila + chamadas a APIs de fornecedores (~R$ 0,05–0,15/pedido). Custo de infra proporcional: banco de dados (leitura/escrita proporcional ao volume de SKUs e pedidos), CDN para imagens de produtos (~R$ 0,01/GB), armazenamento de documentos fiscais e laudos de certificação (S3/equivalente, ~R$ 0,10/GB/mês). Custo operacional: suporte, curadoria de fornecedores, homologação de certificados. Estimativa por restaurante ativo (30 pedidos/mês): R$ 8–25/mês em infra + R$ 15–40/mês em operação = custo total ~R$ 23–65/mês por restaurante, permitindo precificação com margem positiva a partir de planos de R$ 199/mês.",
+    "fase4_continuidade": "A API web e as interfaces continuam operando mesmo se o worker de processamento de pedidos cair: o pedido entra na fila de mensagens (durável, persistida) e fica em estado 'aguardando processamento'. O restaurante vê status 'em análise'. Quando o worker volta, processa a fila sem perda. Sem acoplamento síncrono entre interface e processamento pesado.",
+    "fase4_manutencao": "Cada fornecedor é integrado via adaptador com interface contratual fixa. Trocar a tecnologia de um adaptador (ex: migrar de polling para webhook) não afeta o motor central. O Motor de Matching pode ser substituído gradualmente via feature flag: novo motor roda em shadow mode, processa os mesmos pedidos em paralelo, e assume quando validado. Zero downtime.",
+    "monetizacao": "1) SaaS por restaurante: planos mensais escalonados por volume de pedidos e número de unidades (R$ 199–R$ 999/mês). 2) Take rate sobre GMV: comissão de 1,5–3% sobre pedidos processados, cobrada do fornecedor. 3) Destaque patrocinado: fornecedores pagam para aparecer em posições premium no catálogo. 4) Plano Enterprise para redes: fee fixo + integração ERP dedicada. 5) Futuro: financiamento de capital de giro B2B (antecipação de recebíveis entre restaurante e fornecedor).",
+    "stack_sugerida": "Backend: Node.js (NestJS) com TypeScript para a Service Layer e API REST. Filas assíncronas: BullMQ sobre Redis para o Motor de Pedidos. Banco principal: PostgreSQL com schema multi-tenant (row-level security). Cache e sessão: Redis. Armazenamento de arquivos: AWS S3 ou Cloudflare R2. CDN: Cloudflare. Frontend Web (restaurante e fornecedor): Next.js (PWA). Mobile: React Native (Expo). Bot conversacional: Twilio/Z-API + Baileys para WhatsApp. Infraestrutura: Railway ou Render para início, migração para ECS/Kubernetes na escala. Observabilidade: OpenTelemetry + Grafana. Autenticação multi-tenant: Clerk ou Auth0."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A arquitetura hexagonal e o IClinicaService (horários, feriados) indicam intenção de configurabilidade básica por tenant, mas a proposta não descreve mecanismos explícitos de multi-tenancy — ausência de tabela de configuração por tenant, feature flags, seleção de adapter por cliente em runtime ou política de onboarding sem deploy; variações de comportamento entre clínicas (ex: exigir sinal, regras de fila, tipos de consulta) provavelmente ainda exigiriam código ou reconfiguração de DI."
+}

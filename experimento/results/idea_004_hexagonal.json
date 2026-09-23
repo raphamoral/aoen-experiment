@@ -1,0 +1,69 @@
+{
+  "ideia_idx": 4,
+  "ideia": "Plataforma de leilão reverso para compras corporativas de TI",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de leilões reversos corporativos de TI: criação de demandas de compra, recebimento e comparação de propostas de fornecedores, aplicação de regras de negócio para qualificação, classificação e homologação de lances, e geração de contratos de fornecimento — completamente isolado de qualquer tecnologia de entrega ou persistência.",
+    "primary_ports": [
+      "AuctionManagementPort — criar, publicar, encerrar e cancelar leilões",
+      "BidSubmissionPort — submeter, atualizar e retirar lances de fornecedores",
+      "SupplierQualificationPort — habilitar, suspender e avaliar fornecedores",
+      "BuyerRequestPort — registrar requisições de compra e aprovar resultados",
+      "ReportQueryPort — consultar relatórios de economia, compliance e desempenho",
+      "NotificationCommandPort — disparar notificações de eventos de negócio",
+      "ContractGenerationPort — solicitar geração e assinatura de contratos"
+    ],
+    "secondary_ports": [
+      "AuctionRepositoryPort — persistência e recuperação de leilões e lances",
+      "SupplierRepositoryPort — persistência de fornecedores e qualificações",
+      "BuyerRepositoryPort — persistência de compradores e centros de custo",
+      "EventPublisherPort — publicação de eventos de domínio",
+      "NotificationDispatchPort — envio de alertas por canal externo",
+      "DocumentStoragePort — armazenamento de editais e anexos técnicos",
+      "PaymentGatewayPort — cobrança de taxas de sucesso e assinaturas",
+      "IdentityProviderPort — autenticação e autorização de usuários",
+      "ContractSignaturePort — coleta de assinaturas digitais",
+      "AuditLogPort — registro imutável de ações para compliance",
+      "CatalogIntegrationPort — sincronização de catálogo de produtos de TI",
+      "ERPIntegrationPort — integração com sistemas de compras corporativos"
+    ],
+    "primary_adapters": [
+      "REST API Controller — interface HTTP/JSON para buyers e suppliers via browser",
+      "GraphQL API Gateway — consultas flexíveis para dashboards analíticos",
+      "WebSocket Handler — canal bidirecional para atualizações de lances em tempo real",
+      "Webhook Receiver — recebimento de eventos de sistemas externos (ERP, assinatura)",
+      "CLI Admin Adapter — operações de manutenção e scripts de suporte",
+      "Test Driver Adapter — adaptador de testes de aceitação que aciona use cases diretamente"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter — implementação de todos os repositórios com transações ACID",
+      "Redis Adapter — cache de leilões ativos e controle de concorrência de lances",
+      "Kafka Adapter — publicação e consumo de eventos de domínio assíncronos",
+      "SendGrid Adapter — envio de e-mails transacionais e notificações de leilão",
+      "Firebase/OneSignal Adapter — push notifications para app mobile",
+      "AWS S3 Adapter — armazenamento de editais, propostas técnicas e contratos",
+      "Stripe Adapter — cobrança de taxa de sucesso e assinaturas mensais",
+      "Auth0 Adapter — SSO, MFA e gestão de identidade corporativa (SAML/OIDC)",
+      "DocuSign Adapter — assinatura digital de contratos de fornecimento",
+      "Elasticsearch Adapter — indexação e busca full-text de leilões e fornecedores",
+      "SAP/TOTVS Adapter — integração bidirecional com ERPs corporativos via API",
+      "GCP BigQuery Adapter — sink de eventos para analytics e relatórios de BI",
+      "Immutable Audit Adapter — gravação em append-only store para trilha de auditoria"
+    ],
+    "isolation": "O core domain não importa frameworks, drivers de banco, bibliotecas HTTP ou qualquer dependência de infraestrutura. Todas as dependências apontam para dentro: adapters dependem de ports (interfaces), nunca o contrário. O domínio define contratos via interfaces em sua própria camada; adapters residem em módulos externos que implementam esses contratos por injeção de dependência. A inversão de controle é gerenciada por um Composition Root na camada de bootstrap, único ponto onde implementações concretas são instanciadas e conectadas. Testes unitários do core rodam sem nenhum adapter ativo, usando Test Doubles injetados diretamente via ports.",
+    "interfaces": [
+      "Portal Web do Comprador — criação de demandas, acompanhamento de leilões e homologação",
+      "Portal Web do Fornecedor — visualização de oportunidades, submissão e monitoramento de lances",
+      "Painel Administrativo — gestão de usuários, configuração de regras e auditoria",
+      "App Mobile (iOS/Android) — alertas em tempo real e participação em leilões ativos",
+      "API Pública REST/GraphQL — integração com ERPs, e-procurement e marketplaces",
+      "Webhook System — notificação push de eventos para sistemas integrados",
+      "CLI de Operações — manutenção, migrações e suporte nível 3"
+    ],
+    "escalabilidade": "Escalonamento horizontal da camada de adapters primários (stateless API pods) via Kubernetes HPA. Lances em leilões de alto volume processados por workers Kafka consumindo eventos de BidSubmittedEvent, desacoplando submissão de persistência. Leilões ativos mantidos em Redis com TTL, aliviando leitura no PostgreSQL. Read models (CQRS) projetados em Elasticsearch para consultas analíticas sem impacto no banco de escrita. EventPublisher permite fan-out para múltiplos consumidores independentes (auditoria, notificações, BI) sem acoplamento. Sharding por tenant_id nos repositórios para isolamento de dados em contexto multi-tenant.",
+    "custos": "Modelo multi-tenant com isolamento por schema reduz custo de infraestrutura por cliente. Redis elástico (AWS ElastiCache serverless) paga por uso em leilões ativos. Workers Kafka escalam para zero fora de horário comercial. S3 com lifecycle policies move documentos antigos para Glacier. Uso de BigQuery sob demanda evita cluster de BI dedicado. Auth0 free tier cobre até 7.000 MAUs; custo cresce linearmente com adoção. Stripe cobra percentual apenas em transações convertidas, alinhando custo a receita.",
+    "monetizacao": "Taxa de sucesso de 0,3% a 1,5% sobre o valor contratado em leilões homologados (principal receita). Assinatura SaaS mensal por comprador com tiers baseados em volume de leilões (Starter/Growth/Enterprise). Taxa de habilitação anual para fornecedores com acesso a oportunidades premium. Add-ons pagos: integração ERP nativa, assinatura digital avançada, relatórios de benchmark de mercado, consultoria de categoria de TI. Modelo freemium para fornecedores (visualização gratuita, submissão de lances requer plano pago).",
+    "stack_sugerida": "Backend: Node.js com TypeScript (Fastify) ou Kotlin (Ktor) para core domain e adapters — ambos com excelente suporte a DI e isolamento de módulos. Mensageria: Apache Kafka para eventos de domínio. Banco de dados: PostgreSQL (escrita) + Elasticsearch (leitura/busca) + Redis (cache/locks). Frontend: Next.js com React Query para portais web; React Native para mobile. Infraestrutura: Kubernetes (GKE/EKS) com Helm charts por serviço. IaC: Terraform. CI/CD: GitHub Actions. Observabilidade: OpenTelemetry + Grafana Stack (Loki, Tempo, Prometheus). Autenticação: Auth0 com SAML para SSO corporativo. Assinatura: DocuSign. Pagamentos: Stripe. Storage: AWS S3. Analytics: GCP BigQuery + Looker Studio."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Gestão do ciclo de vida de leilões reversos corporativos de TI: criação de demandas de compra, recebimento e comparação de propostas de fornecedores, aplicação de regras de negócio para qualificação, classificação e homologação de lances, e geração de contratos de fornecimento — completamente isolado de qualquer tecnologia de entrega ou persistência.\",\n  \"primary_ports\": [\n    \"AuctionManagementPort — criar, publicar, encerrar e cancelar leilões\",\n    \"BidSubmissionPort — submeter, atualizar e retirar lances de fornecedores\",\n    \"SupplierQualificationPort — habilitar, suspender e avaliar fornecedores\",\n    \"BuyerRequestPort — registrar requisições de compra e aprovar resultados\",\n    \"ReportQueryPort — consultar relatórios de economia, compliance e desempenho\",\n    \"NotificationCommandPort — disparar notificações de eventos de negócio\",\n    \"ContractGenerationPort — solicitar geração e assinatura de contratos\"\n  ],\n  \"secondary_ports\": [\n    \"AuctionRepositoryPort — persistência e recuperação de leilões e lances\",\n    \"SupplierRepositoryPort — persistência de fornecedores e qualificações\",\n    \"BuyerRepositoryPort — persistência de compradores e centros de custo\",\n    \"EventPublisherPort — publicação de eventos de domínio\",\n    \"NotificationDispatchPort — envio de alertas por canal externo\",\n    \"DocumentStoragePort — armazenamento de editais e anexos técnicos\",\n    \"PaymentGatewayPort — cobrança de taxas de sucesso e assinaturas\",\n    \"IdentityProviderPort — autenticação e autorização de usuários\",\n    \"ContractSignaturePort — coleta de assinaturas digitais\",\n    \"AuditLogPort — registro imutável de ações para compliance\",\n    \"CatalogIntegrationPort — sincronização de catálogo de produtos de TI\",\n    \"ERPIntegrationPort — integração com sistemas de compras corporativos\"\n  ],\n  \"primary_adapters\": [\n    \"REST API Controller — interface HTTP/JSON para buyers e suppliers via browser\",\n    \"GraphQL API Gateway — consultas flexíveis para da"
+}

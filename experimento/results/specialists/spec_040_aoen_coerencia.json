@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 40,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma cadeia arquitetural sem quebras: a abstração TriageEngine (fase 1) justifica a TriageService como único ponto de orquestração (fase 2), que por sua vez viabiliza cada interface sem acoplamento ao motor — e cada interface foi escolhida com justificativa de mercado diretamente rastreável ao segmento-alvo declarado na fase 1 (totem→UPAs, API→hospitais com HIS, WhatsApp→planos de saúde), culminando num fluxo fixo (fase 3) que traduz a promessa de padronização do problema original; o único ponto que impede nota 10 é o truncamento da fase 3 no passo 6, que deixa sem avaliação como o override manual da enfermagem retroalimenta o engine e como a conformidade CFM/ANVISA é tecnicamente garantida além da camada de UI."
+}

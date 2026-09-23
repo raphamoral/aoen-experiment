@@ -1,0 +1,90 @@
+{
+  "ideia_idx": 94,
+  "ideia": "App de gestão de obras com timeline visual e controle de custos em tempo real",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de Obras de Construção: agregados Obra (Project), Cronograma (Timeline/Etapas/Tarefas com dependências e caminho crítico), Orçamento e Controle de Custos (Budget, CostItem, Lançamentos, Medições, Previsto x Realizado, Desvios/EVM), Recursos (equipes, materiais, equipamentos), Fornecedores/Compras e Diário de Obra. Regras de negócio: recálculo de cronograma e de custo consolidado, alertas de estouro de orçamento/atraso, aprovação de medições e multi-tenancy por organização.",
+    "primary_ports": [
+      "ProjectManagementPort (criar/editar obra, etapas e tarefas)",
+      "TimelineQueryPort (consultar cronograma, Gantt, caminho crítico)",
+      "ScheduleUpdatePort (reprogramar tarefas, registrar progresso físico)",
+      "CostTrackingPort (lançar despesas, medições e apontamentos)",
+      "BudgetManagementPort (definir e revisar orçamento e versões)",
+      "CostDashboardQueryPort (custo real vs. previsto em tempo real, EVM)",
+      "ProcurementPort (requisições, cotações, pedidos de compra)",
+      "SiteDiaryPort (diário de obra, fotos, ocorrências)",
+      "AlertSubscriptionPort (configurar regras de alerta)",
+      "TenantAndAccessManagementPort (organizações, usuários, papéis)",
+      "BillingPort (planos e assinaturas)"
+    ],
+    "secondary_ports": [
+      "ProjectRepositoryPort",
+      "TimelineRepositoryPort",
+      "CostLedgerRepositoryPort (event store/ledger de lançamentos)",
+      "ReadModelStorePort (projeções para dashboards em tempo real)",
+      "EventPublisherPort / DomainEventBusPort",
+      "RealtimeNotificationPort (push de atualizações aos clientes)",
+      "NotificationPort (e-mail, push, WhatsApp)",
+      "FileStoragePort (plantas, notas fiscais, fotos)",
+      "DocumentOcrPort (leitura de notas fiscais e boletos)",
+      "AccountingErpPort (integração com ERP/contabilidade)",
+      "PaymentGatewayPort (cobrança da assinatura)",
+      "PriceCatalogPort (SINAPI/TCPO e tabelas de preços)",
+      "IdentityProviderPort (autenticação/SSO)",
+      "ClockPort e IdGeneratorPort",
+      "AuditLogPort",
+      "WeatherForecastPort (previsão do tempo para o cronograma)",
+      "CalendarSyncPort (Google/Outlook)"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON) consumida pela SPA web",
+      "GraphQL API para consultas do timeline e dashboards",
+      "WebSocket/SSE gateway para atualizações em tempo real",
+      "App mobile (React Native/Flutter) via API para uso em canteiro, com modo offline e sync",
+      "CLI/scripts administrativos e de migração",
+      "Webhooks de entrada (ERP, gateway de pagamento, e-mail de NF)",
+      "Consumidores de fila/eventos e jobs agendados (cron)",
+      "Test adapters (testes de aceitação e contrato dirigindo o core diretamente, sem UI/DB)",
+      "Bot/Chat (WhatsApp) para lançamentos rápidos"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios de obras, cronograma e orçamento)",
+      "Event store/ledger append-only em PostgreSQL para lançamentos de custo",
+      "Redis (cache e read models em tempo real, pub/sub)",
+      "Kafka/NATS/SQS+SNS (event bus)",
+      "S3/MinIO (armazenamento de arquivos)",
+      "OCR: AWS Textract / Google Document AI",
+      "Stripe / Pagar.me / Asaas (pagamentos e assinaturas)",
+      "SendGrid/SES (e-mail), FCM/APNs (push), Twilio/WhatsApp Business API",
+      "Adaptador de ERP (Omie, Conta Azul, TOTVS, SAP) via REST/CNAB",
+      "Importador SINAPI (planilhas/API da Caixa)",
+      "Keycloak/Auth0/Cognito (identidade)",
+      "OpenWeather/INMET (clima)",
+      "Google/Microsoft Calendar API",
+      "In-memory adapters e fakes (testes e desenvolvimento local)",
+      "OpenTelemetry/Sentry/Loki (observabilidade e auditoria)"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não tem dependências de frameworks, ORM, HTTP ou SDKs de nuvem. Ele expõe primary ports (interfaces de casos de uso) e depende apenas de secondary ports definidas por ele mesmo (inversão de dependência). Adapters ficam em pacotes/módulos separados e dependem do core, nunca o contrário; a composição ocorre em um composition root que injeta as implementações. DTOs e mapeadores nas bordas traduzem modelos externos para o modelo de domínio (anti-corruption layer), evitando que ERP, OCR ou gateways poluam a linguagem ubíqua. Regras de arquitetura são verificadas automaticamente (ArchUnit/dependency-cruiser) no CI, e todo o core é testado com adapters in-memory, sem infraestrutura. Eventos de domínio desacoplam cálculo de custos, alertas e projeções em tempo real.",
+    "interfaces": [
+      "Dashboard web com timeline visual (Gantt interativo, arrastar e soltar, caminho crítico)",
+      "Painel de custos em tempo real (previsto x realizado, curva S, EVM, semáforos de desvio)",
+      "App mobile offline-first para engenheiros e mestres de obra (diário, fotos, apontamentos)",
+      "Portal do cliente/investidor (somente leitura, progresso e custos)",
+      "Portal de fornecedores (cotações e medições)",
+      "API pública documentada (OpenAPI/GraphQL) e webhooks para integrações",
+      "Notificações por e-mail, push e WhatsApp",
+      "Relatórios exportáveis (PDF/Excel)",
+      "Console administrativo de tenants e planos"
+    ],
+    "escalabilidade": "Core stateless, escalado horizontalmente atrás de balanceador (containers em Kubernetes/ECS com autoscaling). Multi-tenancy com tenant_id em todas as tabelas e row-level security, evoluindo para sharding ou schema por tenant para contas grandes. CQRS: escrita transacional no PostgreSQL e leituras em read models (Redis/materialized views) atualizados por eventos, o que sustenta dashboards em tempo real com baixa latência. Ledger de custos append-only, particionado por tenant/data. Event bus com consumidores independentes escalando por partição. Gateway WebSocket escalado com Redis pub/sub. Arquivos em object storage com CDN; OCR e relatórios em workers assíncronos com filas. Como a hexagonal isola o core, é possível extrair módulos (custos, cronograma) em serviços separados apenas trocando adapters, sem reescrever regras de negócio.",
+    "custos": "Começar com monólito modular hexagonal (um deploy, um PostgreSQL gerenciado, Redis pequeno, S3) para manter custo baixo, com estimativa de US$ 200–600/mês no MVP. Principais variáveis com o crescimento: armazenamento de fotos e plantas (lifecycle para storage frio), OCR cobrado por página (limitar por plano e fazer cache), WhatsApp/SMS por mensagem (repassar ao cliente ou limitar por plano), conexões WebSocket e egress de dados. Reservar instâncias e usar spot para workers, além de observabilidade com amostragem de traces. Usar adapters substituíveis para evitar vendor lock-in e renegociar fornecedores. Acompanhar custo por tenant (FinOps) para proteger a margem dos planos.",
+    "monetizacao": "Assinatura SaaS B2B recorrente por níveis: Starter (1–3 obras ativas, timeline e custos básicos), Pro (obras ilimitadas, integração com ERP, OCR, portal do cliente) e Enterprise (SSO, SLA, API, customizações, multi-empresa). Precificação híbrida: base por organização mais usuários adicionais ou por obra ativa, com possível cobrança percentual sobre o valor da obra gerenciada. Add-ons pagos: OCR de notas, WhatsApp, módulo de compras/cotações, portal de fornecedores e relatórios avançados. Trial gratuito de 14 dias, plano anual com desconto e serviços de onboarding/importação de orçamentos. Receita adicional possível via marketplace de fornecedores (comissão) e integrações premium.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (ou Kotlin/Spring Boot) estruturado em módulos hexagonais (domain, application, ports, adapters), com Zod para validação nas bordas. Banco: PostgreSQL com RLS multi-tenant e Redis para cache e pub/sub. Mensageria: NATS ou SQS/SNS (Kafka em maior escala). Frontend web: React + Next.js, TanStack Query, biblioteca de Gantt (Bryntum/DHTMLX ou componente próprio com D3/Canvas) e Recharts/ECharts para gráficos de custos. Mobile: React Native (Expo) com SQLite/WatermelonDB para offline-first. Auth: Keycloak ou Auth0. Infra: AWS (ECS Fargate ou EKS, RDS, S3, CloudFront) com Terraform e GitHub Actions. Pagamentos: Stripe ou Asaas. Observabilidade: OpenTelemetry, Grafana, Sentry. Testes: Vitest/Jest com adapters in-memory, Testcontainers para adapters de infraestrutura, Pact para testes de contrato e Playwright para E2E."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:49:34+00:00",
+    "runner": "runner.py"
+  }
+}

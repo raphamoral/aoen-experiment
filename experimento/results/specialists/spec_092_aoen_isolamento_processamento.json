@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 92,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define separação lógica via ContractService e NotificationService, mas não menciona filas, workers assíncronos ou processos separados para isolar o motor de análise (que é computacionalmente pesado por natureza — cruzamento de dados de uso, scoring e projeções de ROI); se o motor de análise travar ou falhar, toda a service layer — e consequentemente todas as interfaces — ficam indisponíveis, pois não há fallback, circuit breaker ou isolamento físico descritos."
+}

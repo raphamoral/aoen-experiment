@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta descreve apenas entidades de domínio e casos de uso abstratos, sem mencionar nenhuma interface concreta (web, mobile, API, dashboard RH), sem justificativa de mercado para canais específicos e sem qualquer declaração explícita de desacoplamento entre lógica de negócio e camada de apresentação — embora o modelo de domínio agnóstico de interface permita, em teoria, adicionar interfaces futuramente sem reescrever regras de negócio."
+}

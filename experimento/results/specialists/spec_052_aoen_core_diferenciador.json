@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 52,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (pipeline de eventos PCC → limite → ação corretiva com rastro imutável), isolado da camada de interfaces via service layer, extensível por design (fontes de coleta intercambiáveis sem quebrar o motor de conformidade) e resolve um gap real — transformar conformidade regulatória APPCC de processo manual/auditável-só-no-papel em fluxo auditável, imutável e acionável em tempo real; perde um ponto por não explicitar o mecanismo de imutabilidade do registro (ex: hash de evidência, append-only log) que é o que diferencia um 'formulário digital sofisticado' de um 'registro auditável de fato'."
+}

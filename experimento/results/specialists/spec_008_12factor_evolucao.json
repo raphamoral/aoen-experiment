@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A separação em microserviços com Dockerfiles independentes, pacotes internos versionados e opções alternativas de tecnologia (Kafka/RabbitMQ, Fabric/Polygon, S3/MinIO) demonstra boa consciência evolutiva no nível de infraestrutura, permitindo escala horizontal e substituição de backing services com impacto localizado; porém a proposta não menciona padrões de isolamento interno aos serviços (hexagonal/ports-and-adapters, anti-corruption layers), o que significa que os SDKs de blockchain (Web3.js, Fabric SDK) provavelmente acoplam diretamente a lógica de negócio a implementações específicas, tornando a troca de rede blockchain — decisão de alto risco e baixa reversibilidade — uma reescrita significativa do blockchain-service em vez de uma substituição de adaptador."
+}

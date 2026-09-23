@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 29,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define uma Service Layer com contratos agnósticos de transporte, o que sugere separação lógica entre componentes, mas não há qualquer menção a filas de processamento, workers assíncronos, processos separados ou mecanismos de fallback para os processos computacionalmente pesados — em especial o motor de matching e o pipeline de scoring de compatibilidade, que são candidatos naturais a sobrecarregar a aplicação principal em cenários de pico de demanda."
+}

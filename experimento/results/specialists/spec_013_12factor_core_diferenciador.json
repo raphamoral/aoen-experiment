@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "A proposta descreve uma infraestrutura tecnicamente sólida (12-factor, stateless, split payments via Stripe, disponibilidade em tempo real via Redis), mas não isola nem nomeia um núcleo diferenciador — o 'modelo descentralizado de parceiros' aparece apenas como decisão arquitetural ('cada espaço é um deploy'), sem explicar por que isso resolve algo que Desana, LiquidSpace ou coworker.com não resolvem, tornando o produto tecnicamente competente mas conceitualmente substituível."
+}

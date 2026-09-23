@@ -1,0 +1,87 @@
+{
+  "ideia_idx": 52,
+  "ideia": "SaaS de gestão de qualidade para indústria alimentícia com APPCC",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão da Qualidade e Segurança de Alimentos baseada em APPCC (HACCP): modelagem do Plano APPCC (perigos biológicos, químicos e físicos; Pontos Críticos de Controle - PCC; limites críticos; monitoramento; ações corretivas; verificação e validação), Programas de Pré-Requisitos (BPF/GMP, POPs, PPHO), controle de não conformidades e CAPA, rastreabilidade e recall de lotes, gestão de fornecedores, auditorias internas e externas, calibração de equipamentos, treinamento e evidências para conformidade com ANVISA, MAPA, RDC 275/216, ISO 22000, FSSC 22000 e BRCGS.",
+    "primary_ports": [
+      "PlanoAPPCCUseCases (criar/versionar plano, análise de perigos, definir PCCs e limites críticos)",
+      "MonitoramentoPCCUseCases (registrar leituras, validar limites críticos, disparar desvios)",
+      "NaoConformidadeUseCases (abrir NC, ação corretiva/preventiva, CAPA, encerramento)",
+      "RastreabilidadeUseCases (rastrear lote para frente e para trás, iniciar e simular recall)",
+      "AuditoriaUseCases (planejar checklists, executar auditorias, registrar achados)",
+      "FornecedorUseCases (homologar, avaliar e qualificar fornecedores, gerir certificados)",
+      "PrerequisitosUseCases (POPs, checklists de BPF, cronogramas de limpeza e controle de pragas)",
+      "CalibracaoUseCases (cronograma e registros de calibração de instrumentos)",
+      "TreinamentoUseCases (matriz de competências, registro e validade de treinamentos)",
+      "RelatoriosConformidadeUseCases (dossiês de auditoria, indicadores, evidências regulatórias)",
+      "GestaoTenantUseCases (onboarding, planos, usuários, papéis e permissões)"
+    ],
+    "secondary_ports": [
+      "RepositorioPlanoAPPCC / RepositorioRegistros / RepositorioNaoConformidade / RepositorioLote (persistência)",
+      "EventStorePort (trilha de auditoria imutável dos registros)",
+      "SensorTelemetriaPort (leitura de temperatura, pH, umidade, tempo por IoT)",
+      "ERPPort (integração com ordens de produção, lotes, estoque e NF-e)",
+      "NotificacaoPort (e-mail, SMS, WhatsApp, push para desvios críticos)",
+      "ArmazenamentoDocumentosPort (POPs, laudos, certificados, fotos de evidência)",
+      "AssinaturaDigitalPort (assinatura eletrônica com validade jurídica, ICP-Brasil)",
+      "IdentidadePort (autenticação, SSO, autorização)",
+      "PagamentoPort (cobrança recorrente e faturamento)",
+      "GeradorRelatorioPort (PDF, XLSX)",
+      "RelogioPort e GeradorIdPort (tempo e identificadores determinísticos para testes)",
+      "MensageriaPort (publicação de eventos de domínio)",
+      "LaboratorioPort (recebimento de laudos microbiológicos e físico-químicos)",
+      "IAPort (classificação de causa raiz, sugestão de perigos e OCR de documentos)",
+      "BuscaPort (busca textual em documentos e registros)"
+    ],
+    "primary_adapters": [
+      "API REST/OpenAPI (HTTP) consumida pelo front-end web",
+      "API GraphQL para dashboards analíticos",
+      "PWA / app móvel offline-first para registros de chão de fábrica com leitura de QR Code",
+      "Webhooks de entrada (ERP, laboratórios, gateway de pagamento)",
+      "Consumidor de eventos MQTT para gateways IoT",
+      "CLI e scripts administrativos (migração, importação em lote)",
+      "Agendador de jobs (cron) para alertas de vencimento de calibração, treinamento e certificado",
+      "Suíte de testes automatizados (BDD/contract tests) usando as mesmas portas primárias",
+      "Painel administrativo de backoffice (suporte e operação do SaaS)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (Row-Level Security por tenant) para repositórios",
+      "Event store em PostgreSQL append-only, com hash encadeado para integridade",
+      "TimescaleDB ou InfluxDB para séries temporais de sensores",
+      "Adapter MQTT/AWS IoT Core ou EMQX para telemetria",
+      "S3 ou MinIO com versionamento e Object Lock para documentos",
+      "Adaptadores de ERP: SAP, TOTVS Protheus, Senior, Bling (via REST/SOAP/EDI)",
+      "Amazon SES, Twilio e WhatsApp Business API para notificações",
+      "Keycloak, Auth0 ou Cognito para identidade",
+      "Stripe, Asaas ou Pagar.me para pagamentos",
+      "Adaptador de assinatura digital (ICP-Brasil, Clicksign, D4Sign)",
+      "Kafka, RabbitMQ ou SNS/SQS para mensageria",
+      "OpenSearch/Elasticsearch para busca",
+      "Gerador de PDF (WeasyPrint ou Puppeteer) e de XLSX",
+      "Adaptador de LLM (por exemplo, API da Anthropic) para IA",
+      "Adaptadores em memória e fakes (repositórios, relógio, sensores simulados) para testes e desenvolvimento local"
+    ],
+    "isolation": "O core (domínio + aplicação) é um módulo sem dependências de frameworks, banco, HTTP ou SDKs de nuvem. Entidades, value objects (LimiteCritico, Lote, Perigo, PCC), agregados (PlanoAPPCC, RegistroMonitoramento, NaoConformidade) e domain services contêm as regras de negócio puras. Os casos de uso implementam as portas primárias e dependem apenas de interfaces das portas secundárias, injetadas por composição na raiz da aplicação (composition root). A regra de dependência aponta sempre para dentro, o que é verificado em CI com ArchUnit, dependency-cruiser ou import-linter. DTOs e mapeadores ficam nos adapters, e o domínio não conhece JSON, SQL nem HTTP. Eventos de domínio são publicados pelo core e traduzidos pelos adapters. Multi-tenancy é um conceito do contexto de execução, propagado explicitamente pelas portas. Todo sistema externo (banco, ERP, sensor, pagamento) é tratado de forma simétrica, como um adapter substituível atrás de uma porta, e o core roda inteiro com adapters em memória, o que permite testes rápidos sem infraestrutura.",
+    "interfaces": [
+      "Web app responsivo (dashboard de conformidade, editor visual de fluxograma e plano APPCC)",
+      "PWA/app móvel offline-first para operadores (checklists, leituras de PCC, fotos, QR Code)",
+      "Painéis de TV para chão de fábrica com status de PCCs em tempo real",
+      "API pública REST + webhooks para integrações de clientes",
+      "Portal do auditor/cliente externo (acesso somente leitura e temporário a evidências)",
+      "Portal do fornecedor (upload de certificados e respostas a questionários)",
+      "Backoffice interno para suporte e administração do SaaS",
+      "CLI para importação e exportação de dados"
+    ],
+    "escalabilidade": "Core stateless que escala horizontalmente em contêineres (Kubernetes ou ECS/Fargate) atrás de balanceador. Multi-tenancy com banco compartilhado e RLS para o plano padrão, com opção de schema ou banco dedicado para clientes enterprise. Separação de CQRS: escrita transacional no PostgreSQL e leitura para dashboards em réplicas de leitura ou views materializadas. Ingestão de telemetria IoT desacoplada por fila (MQTT → Kafka/SQS → consumidores) e armazenada em banco de séries temporais com retenção e downsampling. Jobs pesados (relatórios, recall em massa, OCR e IA) executam em workers assíncronos com autoscaling por profundidade de fila. O app móvel opera offline-first e sincroniza com resolução de conflitos e idempotência. Particionamento de tabelas por tenant e período, cache com Redis e CDN para ativos estáticos. Como o acoplamento é feito por portas, é possível extrair módulos (por exemplo, telemetria ou rastreabilidade) para serviços independentes sem alterar o domínio, começando como monólito modular.",
+    "custos": "Começar com monólito modular para reduzir custo de operação e complexidade. Principais custos: nuvem (computação, banco gerenciado, armazenamento de documentos com retenção regulatória de anos), ingestão e armazenamento de telemetria IoT (controlável com downsampling e camadas frias), mensagens (WhatsApp/SMS por notificação), assinatura digital por documento, chamadas de LLM (controlar com cache, limites por plano e modelos menores para tarefas simples), observabilidade e backups com retenção. Riscos de custo: clientes enterprise com banco dedicado e alto volume de sensores. Mitigações: limites e cotas por plano, repasse de custos variáveis (SMS, assinaturas, sensores) como add-ons, uso de instâncias reservadas ou spot para workers, classes de armazenamento frio para registros antigos e monitoramento de custo por tenant (FinOps). Custos fixos adicionais: conformidade com LGPD, auditoria de segurança e suporte com especialista em segurança de alimentos.",
+    "monetizacao": "Assinatura SaaS recorrente por faixas: (1) Essencial, para pequenas agroindústrias, com plano APPCC, checklists e registros básicos, precificado por planta e por usuários; (2) Profissional, com rastreabilidade e recall, gestão de fornecedores, auditorias, NC/CAPA e app offline; (3) Enterprise, com multi-planta, SSO, integração com ERP, IoT, SLA, banco dedicado e API. Add-ons: pacotes de sensores IoT, assinaturas digitais, notificações WhatsApp/SMS, módulo de IA e portal do fornecedor por volume. Receitas complementares: implantação e onboarding pago, consultoria e templates setoriais de APPCC (laticínios, carnes, panificação, pescados), treinamentos e certificação, marketplace de laboratórios e consultores, e parcerias com consultorias e certificadoras. Estratégia de entrada: teste gratuito com templates prontos, expansão por planta e por módulo (land and expand), e cobrança anual com desconto para reduzir churn.",
+    "stack_sugerida": "Back-end: TypeScript com NestJS (módulos organizados em portas e adapters) ou Kotlin/Spring Boot, ou Java com ArchUnit; core em pacote puro, sem framework. Front-end: React + Next.js com TypeScript, TanStack Query, e editor de fluxogramas com React Flow. Mobile: PWA com Workbox e IndexedDB (ou React Native/Expo se necessário). Dados: PostgreSQL (RLS, particionamento), TimescaleDB para telemetria, Redis para cache e filas, OpenSearch para busca. Mensageria: Kafka ou RabbitMQ (SNS/SQS na AWS). Armazenamento: S3 com Object Lock. Identidade: Keycloak ou Auth0. Infra: AWS (ECS/Fargate ou EKS), Terraform, GitHub Actions, containers Docker. Observabilidade: OpenTelemetry, Grafana, Prometheus, Sentry. Testes: Jest/Vitest, Testcontainers, Pact para contract tests e BDD com Cucumber contra as portas primárias. Segurança e conformidade: criptografia em repouso e em trânsito, KMS, trilha de auditoria imutável, LGPD e backup com retenção regulatória."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:27:38+00:00",
+    "runner": "runner.py"
+  }
+}

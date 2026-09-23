@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "O projeto lista exclusivamente custos totais de infraestrutura (servidor R$500-800/mês, RDS R$300-500/mês, Redis R$150/mês), sem nenhuma mensuração por cliente, por leilão ou por operação — é FinOps de nível básico, não Unit Economics."
+}

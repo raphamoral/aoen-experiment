@@ -1,0 +1,59 @@
+{
+  "ideia_idx": 25,
+  "ideia": "SaaS de otimização de rotas para coleta de lixo reciclável",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (mudança incremental segura em múltiplas dimensões)",
+      "Testabilidade e deployability (CI/CD com deploy contínuo e rollback rápido)",
+      "Desempenho do motor de otimização (tempo de cálculo de rotas VRP/CVRP com janelas de tempo e capacidade)",
+      "Escalabilidade elástica (picos por região e horário de planejamento; multi-tenant)",
+      "Confiabilidade e disponibilidade das rotas em campo (app do motorista com modo offline)",
+      "Isolamento multi-tenant e segurança de dados (LGPD)",
+      "Observabilidade e custo previsível por tenant",
+      "Interoperabilidade (integração com ERPs, cooperativas, frotas e telemetria)",
+      "Modularidade com baixo acoplamento entre domínios"
+    ],
+    "fitness_functions": [
+      "Arquitetura (automatizada no CI): ArchUnit/dependency-cruiser/import-linter falham o build se um módulo acessar o banco ou as classes internas de outro, ou se houver dependência cíclica entre módulos",
+      "Desempenho: benchmark de otimização com instâncias de referência (ex.: 200 paradas / 20 veículos) em no máximo 60 s no p95. O build falha se o custo total da rota piorar mais de 2% frente à baseline",
+      "Qualidade da solução: a distância total da rota não pode ser maior que a da baseline de referência (Solomon/Homberger e dados reais anonimizados) além da tolerância definida",
+      "Contrato: testes de contrato (Pact/OpenAPI diff) impedem breaking changes em APIs e eventos sem nova versão",
+      "Escalabilidade: teste de carga noturno (k6) simula N tenants simultâneos e exige p95 de API menor que 300 ms e fila de jobs de otimização drenada em menos de 5 min",
+      "Isolamento multi-tenant: testes automatizados verificam que nenhuma query devolve dados de outro tenant (RLS + testes de penetração de tenant)",
+      "Deployability: DORA monitorado, com lead time menor que 1 dia, deploy sem downtime e rollback automático se a taxa de erro subir mais de 1% no canary",
+      "Resiliência: chaos test periódico (queda do provedor de mapas ou do worker de otimização) exige degradação graciosa, com fallback para a última rota válida ou heurística simples",
+      "Custo: alerta e falha de pipeline se o custo por rota otimizada ou por tenant ultrapassar o limite definido (FinOps, com tags por tenant)",
+      "Offline: testes E2E do app do motorista sem rede, com sincronização sem perda de dados de coleta",
+      "Segurança e LGPD: SAST/DAST, varredura de dependências e verificação automatizada de retenção e anonimização de dados de localização",
+      "Observabilidade: cada serviço precisa expor métricas, logs e traces (OpenTelemetry), e o pipeline barra deploys sem essas SLIs"
+    ],
+    "incremental_change": "Começar com um monolito modular bem particionado por bounded contexts (Cadastro/Tenants, Pontos de Coleta, Frota e Motoristas, Planejamento e Otimização, Execução em Campo, Faturamento, Relatórios). Só o motor de otimização, que tem perfil de carga e linguagem distintos, roda desde o início como worker assíncrono separado, atrás de uma interface estável. Fases: (1) MVP com uma cidade ou cooperativa piloto, otimização por heurística/OR-Tools com CVRP e janelas de tempo, painel web e app PWA do motorista. (2) Rotas dinâmicas com dados de enchimento de contêineres (IoT) e reotimização em tempo real. (3) Marketplace e integração com cooperativas e indústrias de reciclagem, com rastreabilidade e relatórios ESG. (4) Extração de módulos para serviços somente quando uma fitness function mostrar dor real (escala, cadência de deploy ou time). Usar strangler fig na extração, feature flags, canary releases, expand/contract nas migrações de banco e ADRs versionados. Cada iteração precisa ter a evolução guiada por métricas das fitness functions.",
+    "reversibility": "Reversíveis (two-way doors), decididas cedo e sem cerimônia: solver de otimização (OR-Tools, VROOM ou GraphHopper), provedor de mapas e roteamento (OSRM, Mapbox ou Google), provedor de nuvem, fila (SQS, RabbitMQ ou Kafka) e framework de frontend, todos atrás de portas/adaptadores. Também são reversíveis a divisão monolito/microsserviços (o monolito modular permite extrair depois), o provedor de e-mail, notificação e pagamento (via adapter) e as feature flags. Irreversíveis ou caras de reverter, adiadas ao last responsible moment: modelo de tenancy (schema por tenant ou banco por tenant, decidido só quando houver requisitos de clientes enterprise, começando com tenant_id + RLS), contratos públicos de API e eventos (versionados desde o início), escolha do banco principal (PostgreSQL + PostGIS, baixo risco) e a modelagem de dados geoespaciais e históricos. Adotar Kafka, Kubernetes e multi-região só quando as fitness functions provarem a necessidade.",
+    "coupling": "Baixo acoplamento entre bounded contexts, com comunicação por interfaces públicas explícitas dentro do monolito (módulos com API interna e sem acesso cruzado a tabelas) e por eventos de domínio assíncronos (RotaPlanejada, ColetaConcluida, ContêinerCheio) via outbox pattern. Arquitetura hexagonal (ports and adapters) isola o domínio do solver, do provedor de mapas, do gateway de pagamento e de dispositivos IoT. Acoplamento intencional apenas onde necessário: kernel compartilhado mínimo (identidade do tenant, tipos geoespaciais). Anti-corruption layer nas integrações com ERPs e sistemas legados de clientes. Cada módulo é dono de seus dados (schema separado no mesmo Postgres), o que permite extração futura sem reescrever o modelo. Contratos versionados (OpenAPI/AsyncAPI/JSON Schema) e evolução por compatibilidade retroativa (tolerant reader).",
+    "interfaces": [
+      "API REST/JSON pública versionada (OpenAPI) para tenants, pontos de coleta, frota, planos e rotas",
+      "Endpoint assíncrono de otimização: POST /optimization-jobs (retorna job_id), GET /optimization-jobs/{id} e callback por webhook",
+      "Porta interna RouteOptimizer (adapter OR-Tools/VROOM/solver comercial)",
+      "Porta interna MapsRoutingProvider (matriz de distâncias, geocodificação, ETA, tráfego)",
+      "Barramento de eventos de domínio (AsyncAPI): RotaPlanejada, RotaReotimizada, ColetaConcluida, ContêinerCheio, VeículoDesviou",
+      "Webhooks de saída para ERPs e sistemas de cooperativas e prefeituras",
+      "Ingestão IoT/telemetria (MQTT/HTTP) de sensores de nível de contêiner e GPS de veículos",
+      "App/PWA do motorista com API sincronizável offline-first (fila local, resolução de conflitos)",
+      "Painel web do gestor (planejamento, mapa, KPIs, relatórios ESG e de rastreabilidade)",
+      "Importação e exportação em lote (CSV/GeoJSON/Excel) de pontos e rotas",
+      "Interface de identidade (OIDC/SAML, RBAC por tenant) e SSO enterprise",
+      "Interface de cobrança e metering (uso por rota otimizada, por veículo e por ponto) para o gateway de pagamento"
+    ],
+    "escalabilidade": "Escala horizontal por componente. A API e o painel são stateless atrás de load balancer, com autoscaling. A carga pesada, a otimização, roda em workers assíncronos consumindo uma fila, com autoscaling por profundidade da fila (KEDA/HPA) e particionamento do problema por região/depósito para limitar o tamanho de cada instância do VRP. Reotimização incremental e cache de matrizes de distância e geocodificação reduzem o custo por execução. PostgreSQL com PostGIS começa com uma instância gerenciada, réplicas de leitura para relatórios, particionamento por tenant e tempo para dados de telemetria, e uma base de séries temporais (TimescaleDB) para telemetria IoT quando o volume justificar. Multi-tenancy com tenant_id + RLS no início, migrando tenants grandes para schema ou banco dedicado (modelo em pool e silo) se necessário. Ingestão de telemetria desacoplada por fila/stream. CDN para o frontend e tiles. Escala de time acompanha o desacoplamento: módulos extraídos em serviços apenas quando as fitness functions de deployability ou performance exigirem. Multi-região só com requisito de latência ou compliance.",
+    "custos": "Principais vetores: (1) APIs de mapas e roteamento (geocodificação, matriz de distâncias, tráfego), o item mais caro em escala; mitigar com OSRM/Valhalla/GraphHopper self-hosted sobre OpenStreetMap, cache agressivo e uso do provedor pago só para tráfego em tempo real. (2) Computação de otimização, com picos e uso de spot instances/serverless jobs e limite de tempo por execução. (3) Banco de dados gerenciado e armazenamento de telemetria, com retenção em camadas (quente/frio) e agregação. (4) Observabilidade e egress. (5) Suporte e onboarding. Estratégias: começar com monolito modular em poucos containers (ECS/Cloud Run/Fly) em vez de Kubernetes, evitar complexidade prematura, tagging por tenant para FinOps e unit economics (custo por rota otimizada e por veículo), alertas de orçamento como fitness function, planos com cotas de uso para proteger a margem e reserved/savings plans depois que o uso estabilizar. Meta: margem bruta de SaaS acima de 70% e custo de infraestrutura por tenant monitorado.",
+    "monetizacao": "Assinatura B2B SaaS por faixas, cobrando por veículo ativo/mês ou por número de pontos de coleta, com um componente de uso (rotas otimizadas além da cota). Planos: Starter (pequenas cooperativas e catadores, otimização básica, poucos veículos), Pro (janelas de tempo, reotimização dinâmica, app do motorista, relatórios) e Enterprise (SSO, SLA, integrações ERP, tenant dedicado, API completa, white-label). Receitas adicionais: módulo IoT/sensores de contêiner (hardware + assinatura), relatórios ESG e de rastreabilidade para indústrias e prefeituras (créditos de logística reversa e cumprimento da PNRS), marketplace de recicláveis com comissão sobre transações, serviços de onboarding e consultoria de roteirização, e venda para prefeituras via licitação/contrato anual. Trial gratuito de 30 dias e piloto pago com cooperativa âncora. Métricas: MRR, CAC/LTV, NRR e custo de servir por tenant.",
+    "stack_sugerida": "Backend: monolito modular em TypeScript (NestJS) ou Kotlin/Java (Spring Modulith), com hexagonal e módulos independentes. Motor de otimização: worker em Python com Google OR-Tools (ou VROOM em C++ como alternativa) atrás da porta RouteOptimizer. Roteamento e mapas: OSRM/Valhalla/GraphHopper self-hosted sobre OpenStreetMap, com Mapbox/Google apenas para tráfego em tempo real, e MapLibre GL no frontend. Dados: PostgreSQL + PostGIS (RLS para multi-tenancy), Redis (cache e locks), TimescaleDB para telemetria quando necessário, S3/GCS para arquivos. Mensageria: SQS/SNS ou RabbitMQ no início (outbox pattern), evoluindo para Kafka/Redpanda só se o volume de eventos e telemetria justificar. Frontend: React/Next.js com TypeScript para o painel; PWA offline-first (Workbox, IndexedDB) ou React Native para o app do motorista. IoT: MQTT (AWS IoT Core/EMQX). Identidade: Keycloak/Auth0/Cognito (OIDC). Infra: containers em AWS (ECS Fargate) ou GCP (Cloud Run), Terraform/Pulumi, GitHub Actions, feature flags (Unleash/OpenFeature), evoluindo para Kubernetes só se necessário. Observabilidade: OpenTelemetry + Grafana/Prometheus/Loki/Tempo (ou Datadog). Qualidade e fitness functions: ArchUnit/dependency-cruiser, Pact, k6, benchmarks de instâncias VRP no CI, Testcontainers. Pagamentos e billing: Stripe Billing (ou Asaas/Pagar.me para o mercado brasileiro) com metering de uso. Documentação de decisões: ADRs versionados no repositório."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T02:36:08+00:00",
+    "runner": "runner.py"
+  }
+}

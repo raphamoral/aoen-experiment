@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O produto menciona empresas e colaboradores como público-alvo e sugere uma solução para bem-estar psicológico organizacional, mas não articula a dor do cliente com profundidade, não define tamanho de mercado, não apresenta diferenciação clara frente a concorrentes existentes (como Wellhub, Gympass, Headspace for Work ou ferramentas de pulse survey como Glint/Culture Amp), e a proposta de valor é descrita em termos técnico-arquiteturais em vez de benefícios de negócio mensuráveis."
+}

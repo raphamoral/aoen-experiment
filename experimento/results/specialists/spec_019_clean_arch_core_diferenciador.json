@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 2,
+  "justificativa": "A arquitetura é um CRUD de agendamento bem estruturado (Clean Architecture com regras de domínio válidas), mas o componente 'inteligente' do produto — que justificaria o nome 'App de agendamento inteligente' — não tem nenhuma representação arquitetural: não há núcleo de otimização de slots, predição de no-show, recomendação por IA ou qualquer mecanismo que diferencie o produto de soluções já consolidadas como Doctoralia ou SimplesVet."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 26,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces (mobile, dashboard web, WhatsApp/SMS, portal admin e API REST) cada uma justificada por um segmento de mercado específico, com lógica clínica completamente desacoplada numa ClinicalService Layer que permite adicionar ou trocar canais sem tocar nas regras de triagem."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta implica dois canais (frontend web + API REST/GraphQL), e a arquitetura stateless com backing services desacoplados cria condições técnicas para expansão, mas não há menção explícita de perfis de usuário distintos (corretores, compradores, administradores, integradores), nenhuma justificativa de alcance de mercado para as interfaces escolhidas, e nenhuma camada de domínio/negócio formalmente desacoplada que permita adicionar mobile, CLI ou portal de parceiros sem reescrever lógica core."
+}

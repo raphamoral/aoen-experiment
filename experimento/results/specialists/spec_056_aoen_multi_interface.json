@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 56,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Web Portal, Mobile, API/ERP, WhatsApp, Portal do Fornecedor), cada uma justificada por um perfil de usuário e contexto de uso específico com impacto de mercado claro, e a Service Layer central garante total desacoplamento entre as interfaces e a lógica de negócio, permitindo adicionar novos canais sem reescrever regras de domínio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 43,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 1,
+  "justificativa": "A proposta descreve apenas isolamento lógico via camada de serviço (RecommendationService chamada sincronamente por todas as interfaces), sem qualquer menção a filas, workers separados, processamento assíncrono ou fallback — a chamada ao LLM para geração de justificativas (etapa 5 do fluxo fixo) é computacionalmente cara e ocorre inline no fluxo síncrono, o que significa que latência ou falha no LLM bloqueia e pode derrubar todas as interfaces simultaneamente."
+}

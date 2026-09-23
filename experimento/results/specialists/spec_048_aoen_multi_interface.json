@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 48,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Web, API, PDF/Email, WhatsApp, iFrame), cada uma justificada por um perfil de usuário e segmento de mercado concreto, com lógica de negócio totalmente desacoplada em uma camada de serviço agnóstica — qualquer nova interface pode ser adicionada consumindo os mesmos métodos sem tocar em regras de negócio."
+}

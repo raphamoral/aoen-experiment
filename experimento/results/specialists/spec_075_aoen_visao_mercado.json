@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 75,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 7,
+  "justificativa": "O ICP é preciso (Platform Engineering/SRE em empresas com 10+ microsserviços, pós-Kubernetes) e a dor está bem articulada (fragmentação entre Prometheus, Jaeger e ELK sem correlação automática), mas a proposta não quantifica o tamanho de mercado (TAM/SAM/SOM) nem faz benchmarking explícito contra concorrentes nomeados (Datadog, Dynatrace, Honeycomb), o que enfraquece a diferenciação percebida apesar do diferencial técnico real ('sem configuração manual de dependências')."
+}

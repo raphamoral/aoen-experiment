@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra intenção evolutiva sólida — o padrão Port/Adapter no MatchEnginePort permite trocar a implementação de scoring (rule-based → ML → LLM) sem alterar contratos, e o adapter para provedores de IA garante substituibilidade do fornecedor; a service layer desacoplada dos canais de entrega via DTOs é correta — mas a proposta não aborda abstração de banco de dados (trocar PostgreSQL por outro seria disruptivo?), não menciona estratégia de escalabilidade horizontal (crescer de 10 para 10.000 usuários pode exigir mudanças na MatchmakingService centralizada, que tem risco de virar god class), e as implicações de multi-tenancy do white-label não foram explicitadas arquiteturalmente, deixando reversibilidade incompleta nessas dimensões críticas."
+}

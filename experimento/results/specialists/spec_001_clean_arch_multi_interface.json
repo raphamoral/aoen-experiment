@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 7,
+  "justificativa": "O projeto prevê interfaces web (React.js) e mobile (React Native/Flutter) com justificativa implícita de perfis distintos (gestores vs. motoristas), e a arquitetura Clean com Controllers/Presenters/Gateways indica desacoplamento real entre lógica e interface — porém faltam justificativas explícitas de mercado para cada canal e não há menção a interfaces para clientes finais (rastreamento via link/SMS) ou API pública para integradores, o que deixa o modelo incompleto para o contexto last-mile."
+}

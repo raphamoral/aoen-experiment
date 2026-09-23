@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta lista componentes de infraestrutura total (RDS, ElastiCache, OpenSearch, S3, SQS, Fargate) sem nenhum mecanismo de atribuição de custo por tenant — não há menção a tags de alocação de custo por cliente, metering de consumo por tenant, custo por operação calculado (ex: 'cada matching custa R$X de OpenSearch + R$Y de compute'), nem conexão entre o consumo individual de recursos e o modelo de precificação; o Stripe Connect rastreia receita por transação, não custo de infra por cliente, e o Datadog/CloudWatch é citado apenas como monitoramento operacional, não como instrumento de unit economics."
+}

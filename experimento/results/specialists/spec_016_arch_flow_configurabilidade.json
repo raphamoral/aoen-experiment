@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra intenção clara de configurabilidade (PolicyEngine com regras por lojista, InspectionGrading parametrizável, MerchantPortal self-service), mas não descreve o modelo concreto de armazenamento e aplicação de configurações por tenant, não especifica como o onboarding de um novo lojista ocorre sem deploy, e mantém DispositionDecision e PolicyEngine no tier 'custom' sem definir a fronteira explícita entre o que é código fixo e o que é configuração variável — o que sugere que novos casos de uso de clientes ainda podem demandar desenvolvimento."
+}

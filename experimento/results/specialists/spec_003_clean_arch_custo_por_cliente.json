@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura não prevê nenhuma mensuração de custo por cliente: não há entidades de metering/usage tracking, nenhum atributo de consumo de recursos por tenant, nenhum cálculo de custo por operação (ex: por Report submetido, por AggregatedInsight gerado, por Alert disparado), e o campo 'plan' na entidade Company indica apenas que planos existem, mas sem qualquer conexão com custo real por cliente — os custos são tratados como inexistentes na modelagem."
+}

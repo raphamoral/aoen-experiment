@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: cada característica arquitetural possui fitness function correspondente (auditabilidade → hash de audit log; confiabilidade → uptime sintético; busca → p95 < 200ms; evolvabilidade → acoplamento aferente ≤ 5), e a estratégia incremental (monólito modular + database-per-module + Strangler Fig) é diretamente sustentada pelas decisões de reversibilidade via adapters/anti-corruption layers — com único ponto de tensão não resolvido: FDA e CE são declarados como requisitos nas características mas não possuem fitness functions correspondentes (apenas LGPD e ANVISA RDC 551 aparecem na revisão manual trimestral), criando uma lacuna entre o escopo regulatório declarado e o escopo regulatório medido."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural consistente e auto-reforçante: o mercado-alvo (SMB sem time técnico, margens apertadas) justifica cada interface da Fase 2 (plugin zero-code, alertas WhatsApp), que por sua vez é viável pelo padrão de adaptadores sobre o PricingService central, que encapsula o motor abstraído pela PricingEngine — cuja intercambiabilidade (heurísticas → ML → LLM) é sustentada pelo fluxo fixo da Fase 3 com log de auditoria que retroalimenta o retreino; as guard rules (floor de margem, teto de variação) fecham o ciclo ao proteger exatamente a restrição de negócio declarada no segmento-alvo, e o único ponto que impede nota 10 é que o documento está truncado nos parâmetros configuráveis e não explicita a estratégia de isolamento de dados multi-tenant, lacuna relevante dado o canal white-label declarado."
+}

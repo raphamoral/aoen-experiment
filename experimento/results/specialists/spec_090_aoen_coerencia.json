@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 90,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta constrói uma narrativa arquitetural encadeada e sem contradições: o modelo de dados estável da evolução (Fase 1) justifica a extensibilidade dos mecanismos de entrada; a multiplicidade de interfaces (Fase 2) é a consequência lógica dos segmentos de mercado mapeados; a Service Layer é a resposta estrutural inevitável para sustentar essas interfaces sem duplicar regras; a API/TISS endereça o mercado secundário (planos de saúde) já anunciado na Fase 1; e o WhatsApp/SMS fecha o argumento de ROI para clínicas avessas à tecnologia — cada decisão encontra ancoragem nas anteriores, com a única ressalva de que a Fase 3 está truncada e não há stack tecnológico declarado para verificar consistência no nível de implementação."
+}

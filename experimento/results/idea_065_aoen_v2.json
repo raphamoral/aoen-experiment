@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 65,
+  "ideia": "SaaS de análise de produtividade de equipes remotas sem invasão de privacidade",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de análise de produtividade coletiva baseado em sinais comportamentais agregados e anonimizados — nunca rastreia indivíduos, sempre analisa padrões de equipe. O diferenciador é a camada de privacidade como premissa arquitetural, não como feature adicionada: dados individuais jamais chegam ao armazenamento persistente.",
+    "fase1_mercado": "Empresas de tecnologia, consultorias e agências com times remotos (10–500 funcionários), cujos líderes precisam de visibilidade operacional sem violar a confiança das equipes. CTOs e heads de engineering que rejeitam ferramentas de monitoramento invasivo, mas ainda precisam identificar gargalos, burnout e desequilíbrio de carga.",
+    "fase1_extensivel": "Sim. O core é uma interface abstrata de 'SignalCollector → Aggregator → InsightEngine'. Cada etapa é plugável: novos coletores de sinal (Slack, GitHub, Jira, Linear, Google Calendar) são adaptadores que implementam a interface SignalCollector. O InsightEngine pode ser trocado de regras estáticas para ML ou LLM sem alterar o restante do pipeline. Nenhuma etapa depende de fornecedor específico.",
+    "fase2_interfaces": [
+      "Web Dashboard (gerentes e diretores): visão estratégica de saúde de times, tendências e alertas",
+      "Portal do Time Lead: relatórios táticos semanais por squad/tribo sem exposição individual",
+      "API REST + Webhooks: embedding em ferramentas internas, BI corporativo e pipelines DataOps",
+      "Bot Slack/Teams: relatórios assíncronos entregues onde o time já trabalha",
+      "Exportação PDF/CSV: compliance, apresentações executivas e auditorias de RH"
+    ],
+    "fase2_justificativa_mercado": "Dashboard web abre o mercado de médias empresas com gestores que precisam de visibilidade consolidada. Portal do Team Lead abre o mercado de engenharia ágil onde o lead quer autonomia sem depender de RH. A API abre enterprise com stacks proprietárias e equipes de BI internas. O bot Slack/Teams captura times de produto que vivem no chat e resistem a abrir mais uma ferramenta. O exportador PDF/CSV destrava procurement corporativo que exige relatórios para compliance e OKRs.",
+    "fase2_service_layer": "Um ApplicationService centraliza toda lógica: agregação de sinais, cálculo de scores de produtividade, detecção de anomalias e geração de insights. Cada interface chama exclusivamente métodos do ApplicationService via DTOs tipados. Nenhuma interface acessa diretamente repositórios ou o motor de análise — impossibilitando lógica de negócio vazando para camadas de apresentação.",
+    "fase3_fluxo_fixo": "Coleta de sinais brutos → Anonimização e filtragem de PII em memória → Agregação por equipe/período → Cálculo de métricas normalizadas → Detecção de padrões e anomalias → Geração de insights → Entrega via interface configurada → Arquivamento de métricas agregadas (nunca dados brutos individuais).",
+    "fase3_parametros_configuraveis": [
+      "Fontes de dados habilitadas (Slack, GitHub, Jira, Calendar, Linear, etc.)",
+      "Métricas ativas por cliente (foco, colaboração, frequência de comunicação, cycle time)",
+      "Limiar mínimo de anonimização (ex: mínimo 5 pessoas para exibir dado agregado)",
+      "Janela de análise (diária, semanal, quinzenal, mensal)",
+      "Regras de alerta (queda de X% em métrica Y dispara notificação para Z)",
+      "Hierarquia organizacional (squads, tribos, departamentos)",
+      "Fuso horário e horário de expediente por time",
+      "KPIs customizados por papel/departamento",
+      "Idioma dos relatórios e formato de data",
+      "Integrações de saída (webhook destino, canal Slack para alertas, e-mail de entrega)"
+    ],
+    "fase3_novo_cliente": "Onboarding via wizard no dashboard: cliente conecta OAuth das ferramentas, define a estrutura de times, escolhe métricas, configura limiares de privacidade e frequência de relatório. Tudo persiste como um documento de configuração JSON versionado por tenant. Nenhum deploy, nenhuma linha de código — o pipeline genérico lê a configuração e executa.",
+    "fase4_core_isolado": "O Worker de Análise: processo assíncrono isolado que consome jobs da fila, executa agregação e geração de insights. Roda em containers independentes com autoscaling baseado no tamanho da fila. Separado da API web, do coletor de sinais e do serviço de entrega — falha sem cascata.",
+    "fase4_custo_total_cliente": "Core (Worker de Análise): $0.002–0.01 por job de análise (CPU/GPU se ML) × volume de runs mensais. Coleta de sinais: ~$1–3/mês em chamadas de API para integrações (Slack, GitHub) proporcional ao tamanho do time. Armazenamento: métricas agregadas ~50KB/time/mês em banco time-series — desprezível. Banco relacional (configs, tenants): compartilhado, rateado por tenant ativo ~$0.20–0.50/mês. Infra de fila (SQS/Redis): $0.10–0.30/mês por tenant. Banda/CDN: dashboard estático — < $0.05/mês por tenant. Total estimado: $2–8/mês por cliente com time de 10–50 pessoas, permitindo precificação a partir de $29–49/mês com margem saudável.",
+    "fase4_continuidade": "A coleta de sinais brutos e a API web funcionam independentemente do Worker de Análise. Sinais chegam, são anonimizados e enfileirados. Se o Worker cair, os jobs acumulam na fila persistente (SQS/RabbitMQ) sem perda. Ao Worker se recuperar, processa o backlog. Usuários veem o dashboard com o último snapshot calculado e um indicador de 'atualização em andamento'. Zero perda de dados, degradação visível mas não bloqueante.",
+    "fase4_manutencao": "InsightEngine é injetado via interface abstrata. Trocar de regras estáticas para modelo ML ou para chamada LLM é substituir a implementação sem alterar o Worker ou o pipeline. Blue/green deployment do Worker: nova versão sobe, processa jobs de teste, tráfego migrado gradualmente com feature flag por tenant. Rollback imediato se métricas de qualidade de insight degradarem.",
+    "monetizacao": "SaaS por assento com três tiers: Starter ($29/mês até 15 usuários, métricas essenciais, 1 integração), Growth ($99/mês até 100 usuários, todas as métricas, integrações ilimitadas, API), Enterprise (contrato anual, SSO, SLA, relatórios customizados, suporte dedicado). Add-ons vendáveis: Insights por IA (+$29/mês), Relatórios de Burnout (+$19/mês), Exportação BI avançada (+$15/mês). Upsell natural: cliente começa Starter, cresce o time, migra de tier sem fricção de migração técnica.",
+    "stack_sugerida": "API: FastAPI (Python) — ecossistema rico para análise de dados. Worker assíncrono: Python + Celery ou ARQ sobre Redis. Fila: AWS SQS (durabilidade nativa) ou Redis Streams. Banco de métricas time-series: TimescaleDB (PostgreSQL extension — sem novo sistema a operar). Banco relacional (tenants, configs): PostgreSQL. Cache: Redis. Frontend: Next.js + TypeScript + shadcn/ui. Autenticação: Auth0 ou Clerk (OAuth2 delegado para integrações). Infraestrutura: Docker + AWS ECS Fargate (serverless containers, escala por fila). CDN: CloudFront. Monitoramento: Grafana + Prometheus. IaC: Terraform."
+  }
+}

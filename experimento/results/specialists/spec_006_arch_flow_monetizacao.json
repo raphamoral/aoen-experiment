@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural menciona um bounded context de 'Subscription' (controle de planos, limites de uso, cobrança e trial), indicando consciência da necessidade de monetização, mas não define tiers, valores, modelo de precificação, métricas de negócio (MRR, LTV, CAC, churn) nem conexão explícita entre custo operacional e receita por cliente."
+}

@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 14,
+  "ideia": "Plataforma de tradução simultânea para reuniões corporativas multilíngues",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Pipeline de baixa latência: captura de áudio em tempo real → reconhecimento de fala (STT) → tradução automática (MT) → síntese ou entrega de texto ao ouvinte — tudo em menos de 2 segundos de atraso perceptível, dentro de uma sessão corporativa ativa.",
+    "fase1_mercado": "Empresas multinacionais com equipes distribuídas globalmente, corporações em processo de expansão internacional, firmas de consultoria e advocacia com clientes estrangeiros, plataformas de eventos e conferências B2B, e times remotos com colaboradores em múltiplos idiomas.",
+    "fase1_extensivel": "Sim. O core é o orquestrador do pipeline — não o motor de tradução. Os provedores de STT (Google Speech, AWS Transcribe, Azure Speech, Whisper), MT (DeepL, Google Translate, AWS Translate, modelos próprios) e TTS (ElevenLabs, Azure Neural TTS, Google TTS) são plugáveis via adaptadores. Trocar de provedor não altera o fluxo central.",
+    "fase2_interfaces": [
+      "Web App (browser, sem instalação) — participantes entram via link da reunião",
+      "SDK embeddable para Zoom, Google Meet e Microsoft Teams — integração com ferramentas já adotadas",
+      "Mobile App (iOS/Android) — participantes em campo ou em deslocamento",
+      "Dashboard administrativo (web) — organizadores configuram reuniões, idiomas e usuários",
+      "API REST + Webhooks — integração com sistemas corporativos internos (HRMs, ERPs, portais de eventos)",
+      "Dispositivo/modo kiosk para salas de conferência físicas com áudio ambiente"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de adoção zero-friction (sem TI envolvida, decisão individual). O SDK para plataformas existentes abre o maior volume — empresas que já pagam Zoom/Teams e querem a tradução como camada adicional sem mudar fluxo. Mobile abre times de campo e executivos em trânsito. O Dashboard abre o comprador corporativo (RH, TI, COO) que precisa de controle e relatórios. A API abre integradores e revendedores (canal). O modo kiosk abre eventos presenciais e salas de reunião físicas — mercado de AV corporativo.",
+    "fase2_service_layer": "Uma Translation Session Service Layer recebe eventos de todas as interfaces (áudio stream, texto, metadados de sessão) e expõe contratos padronizados: startSession(), streamAudio(), getTranslationStream(), endSession(). Cada interface é um adaptador que converte seu protocolo nativo (WebSocket, WebRTC, REST, SDK callback) para esses contratos. A lógica de negócio — seleção de provedor, fallback, billing por minuto, armazenamento de transcrição — vive exclusivamente na Service Layer, invisível às interfaces.",
+    "fase3_fluxo_fixo": "Captura de chunk de áudio (100–500ms) → identificação do speaker → envio ao STT selecionado → recebimento do texto transcrito → envio ao MT para o(s) idioma(s) alvo da sessão → entrega do resultado via stream ao(s) ouvinte(s) correto(s) → log de evento para billing e transcrição. Esse fluxo é imutável no código core.",
+    "fase3_parametros_configuraveis": [
+      "Idioma(s) de origem aceitos na sessão",
+      "Idioma(s) alvo por participante ou por grupo",
+      "Provedor de STT preferencial e fallback",
+      "Provedor de MT preferencial e fallback",
+      "Modo de entrega: áudio sintetizado (TTS) ou legenda de texto",
+      "Latência vs. qualidade (streaming incremental ou esperar sentença completa)",
+      "Retenção de transcrição: duração e jurisdição de armazenamento (GDPR, LGPD)",
+      "Número máximo de participantes simultâneos",
+      "Branding customizado no Web App e emails",
+      "Notificações e webhooks de eventos (sessão iniciada, encerrada, erro)",
+      "Limite de minutos mensais por plano",
+      "Autenticação SSO (SAML, OAuth) por domínio corporativo"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel administrativo: criação de tenant com CNPJ/domínio → seleção de plano (define limites e provedores disponíveis) → configuração de idiomas e modo de entrega → geração de chave de API ou link de integração SDK → primeiro meeting ativo. Nenhuma linha de código é escrita. Um novo cliente é um novo registro de configuração de tenant no banco.",
+    "fase4_core_isolado": "O Translation Processing Service — worker assíncrono e stateless que executa o pipeline STT → MT → TTS. Roda em processos/containers separados, escalados horizontalmente por fila de jobs (ex: RabbitMQ ou SQS). Cada chunk de áudio é uma mensagem na fila; os workers são consumidores independentes. O resto do sistema (autenticação, dashboard, API, WebSocket gateway) continua operacional mesmo se os workers de tradução estiverem sobrecarregados ou em manutenção.",
+    "fase4_custo_total_cliente": "Custo do core por minuto de áudio traduzido: STT (~$0.006–$0.016/min) + MT (~$0.000015–$0.00002/caractere, ~$0.01–$0.03/min) + TTS se habilitado (~$0.004–$0.016/min) = ~$0.02–$0.06/minuto de fala traduzida. Custo de infra proporcional: WebSocket/WebRTC gateway (EC2/ECS) rateado por sessão concorrente (~$0.002–$0.005/min), banco de dados (transcrição, config) ~$0.001/min, armazenamento de transcrição (~$0.023/GB/mês), CDN/banda (~$0.008/GB). Custo operacional estimado total: $0.025–$0.08 por minuto de reunião traduzida por cliente. Com 20% de margem de segurança: custo real ~$0.10/min na pior configuração (TTS + múltiplos idiomas).",
+    "fase4_continuidade": "O WebSocket Gateway aceita o áudio e enfileira na fila de processamento. Se o Translation Processing Service ficar indisponível, a reunião continua com modo de degradação graceful: (1) legenda atrasada com buffer de 10–30s, (2) fallback para provedor secundário via circuit breaker, (3) exibição de status 'tradução temporariamente indisponível' sem derrubar a sessão. O gateway e a autenticação nunca dependem do worker de tradução para funcionar.",
+    "fase4_manutencao": "Cada provedor (STT, MT, TTS) é encapsulado em um ProviderAdapter com interface padronizada: transcribe(audioChunk): Promise<text>, translate(text, sourceLang, targetLang): Promise<text>. Trocar de DeepL para AWS Translate significa criar um novo AWSTranslateAdapter e alterar um parâmetro de configuração de tenant — sem tocar no pipeline. Deploy com feature flag permite rollout gradual por tenant antes de migração completa.",
+    "monetizacao": "Assinatura mensal por tenant baseada em consumo de minutos: Starter ($199/mês, 500 min, 2 idiomas), Growth ($699/mês, 3.000 min, 5 idiomas, SSO), Enterprise (custom, minutos ilimitados, SLA, suporte dedicado). Cobrança por excedente: $0.30/min adicional (margem de ~3–10x sobre custo). Add-ons: armazenamento de transcrição por 12 meses ($49/mês), modo TTS com voz clonada ($99/mês), integração SDK para plataformas de terceiros ($149/mês). Modelo de revendedor/white-label para plataformas de eventos com revenue share de 20%.",
+    "stack_sugerida": "WebSocket/WebRTC Gateway: Node.js com Socket.io ou mediasoup (baixa latência). Fila de processamento: AWS SQS ou RabbitMQ. Workers de tradução: Python (suporte nativo a SDKs de STT/MT/TTS) rodando em containers ECS/Fargate com auto-scaling por tamanho de fila. STT: OpenAI Whisper (self-hosted para custo) + Google Speech como fallback. MT: DeepL API (qualidade corporativa) + AWS Translate como fallback. TTS: Azure Neural TTS. API/Auth: Node.js + Fastify, JWT + SAML para SSO. Banco: PostgreSQL (configurações de tenant, billing) + Redis (estado de sessão ativa, cache de tradução de frases recorrentes). Armazenamento de transcrição: S3 + Glacier para retenção longa. Frontend: React (dashboard + web app participante). Mobile: React Native. Infra: AWS com Terraform, multi-region para compliance GDPR/LGPD."
+  }
+}

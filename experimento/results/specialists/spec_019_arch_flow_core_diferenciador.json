@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado no contexto 'Inteligência de Agendamento' (predição de no-show + sugestão proativa de slots otimizados via ML) e corretamente isolado como Genesis/Custom, separado de commodities; perde 2 pontos porque a proposta ainda não explicita por que esse motor é insubstituível frente a concorrentes como Doctoralia ou soluções de scheduling com IA genérica — falta articular o dado proprietário (histórico comportamental da clínica) como barreira de entrada real."
+}

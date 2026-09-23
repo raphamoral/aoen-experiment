@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 72,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra consciência multi-tenant consistente — clientId atravessa toda a service layer, o fluxo principal é declarado fixo com parâmetros configuráveis, a antecedência de alerta é explicitamente configurável e o ModelProvider abstrai o engine de ML por cliente — mas falta especificar o esquema concreto de configuração por tenant: onde vivem os limiares de alerta, os perfis de sensores por tipo de máquina, as regras de escalonamento e os canais de notificação por cliente; sem essa camada de configuração explicitada, onboarding zero-código é intenção arquitetural, não garantia estrutural."
+}

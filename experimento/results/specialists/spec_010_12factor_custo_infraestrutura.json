@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista os componentes de infraestrutura (ECS Fargate, S3, RDS PostgreSQL, Redis, SQS/RabbitMQ, SES) e menciona boas práticas como auto-scaling e scale horizontal, mas não apresenta nenhuma estimativa concreta de custo em dólares/reais por componente, nenhuma estratégia explícita de otimização de custos (instâncias Spot, Reserved Instances, scale-to-zero, tiering de armazenamento S3) e nenhuma projeção de crescimento de custo em função da base de usuários MEI."
+}

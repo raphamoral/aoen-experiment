@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 5,
+  "justificativa": "O modelo menciona assinatura para startups (R$150/mês) e acesso gratuito para investidores com possível cobrança futura, mas falta detalhamento de tiers, análise de LTV/CAC, estimativas de churn ou justificativa de sustentabilidade econômica além dos custos de infraestrutura."
+}

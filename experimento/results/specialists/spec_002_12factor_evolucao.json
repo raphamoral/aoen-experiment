@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A separação por domínios no monorepo, os processos stateless e o rollback imutável favorecem evolução incremental, mas o forte acoplamento a serviços AWS específicos (RDS, OpenSearch, SQS, Parameter Store, ECS/EKS) sem camadas de abstração explícitas (ports & adapters, interfaces sobre backing services) cria vendor lock-in que torna a substituição de componentes-chave custosa, e a ausência de estratégia declarada de versionamento de contratos entre serviços é um risco para evolução independente a longo prazo."
+}

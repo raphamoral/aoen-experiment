@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 1,
+  "justificativa": "A proposta descreve explicitamente um 'monólito modular com chamada direta' entre interfaces e serviços — não há nenhuma menção a filas, workers assíncronos, processos separados ou mecanismos de fallback; integrações pesadas com provedores fiscais externos (eNotas, SEFAZ) e Open Finance rodam inline no mesmo fluxo síncrono, de modo que uma lentidão ou falha nesses adapters bloqueia e potencialmente derruba toda a stack."
+}

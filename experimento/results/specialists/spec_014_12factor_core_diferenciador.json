@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — pipeline de tradução simultânea em tempo real com adapter pattern sobre múltiplos provedores (DeepL, Whisper, Azure) — está claramente identificado, extensível e resolve um problema real que soluções genéricas de videoconferência não endereçam; perde dois pontos por não evidenciar IP proprietário no processamento de áudio/segmentação que tornaria o núcleo verdadeiramente insubstituível frente a uma integração direta de APIs de terceiros."
+}

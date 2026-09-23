@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 12,
+  "ideia": "SaaS de monitoramento de qualidade do ar para indústrias",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de análise contínua de dados de sensores de qualidade do ar com detecção de anomalias, correlação com limites regulatórios e geração de alertas auditáveis em tempo real.",
+    "fase1_mercado": "Indústrias com obrigação regulatória de monitoramento ambiental: química, petroquímica, siderúrgica, cimenteira, mineração e celulose. Decisores: gerentes de meio ambiente e SSMA. Mercado secundário: consultorias ambientais que gerenciam múltiplos clientes.",
+    "fase1_extensivel": "Sim. O core é abstraído como pipeline: Ingestão → Normalização → Análise → Alerta → Relatório. Sensores são plugáveis via adaptadores (IoT MQTT, HTTP REST, CSV/FTP legado). Modelos de análise são intercambiáveis (threshold estático, ML anomaly detection, séries temporais). Nenhuma dependência hard-coded de fabricante de sensor ou provedor de IA.",
+    "fase2_interfaces": [
+      "Dashboard Web (React SPA) — para gestores ambientais e auditores internos",
+      "App Mobile (PWA ou React Native) — para técnicos de campo que instalam e verificam sensores",
+      "API REST/WebSocket pública — para integração com SCADA, ERP e sistemas legados industriais",
+      "Relatórios PDF/Excel agendados — para órgãos reguladores (IBAMA, CETESB, agências estaduais)",
+      "Canal de alertas (SMS, e-mail, WhatsApp Business) — para notificações críticas fora do dashboard",
+      "Portal multi-tenant para consultorias — para gestão de múltiplos clientes numa única sessão"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de gestores internos de médias e grandes indústrias (maior ticket, decisão centralizada). App Mobile abre o mercado de campo onde técnicos precisam de diagnóstico rápido sem laptop. A API REST abre o mercado de indústrias que já possuem infraestrutura SCADA/OT e exigem integração. Relatórios regulatórios transformam o produto em ferramenta de compliance obrigatória, elevando retenção (switching cost alto). Alertas multicanal atendem industrias com plantões noturnos e sem acesso ao dashboard. O portal de consultorias abre um canal B2B2C com efeito multiplicador de clientes.",
+    "fase2_service_layer": "Uma camada de serviços centralizada (AirQualityService, AlertService, ReportService, SensorService) contém toda a lógica de negócio. Cada interface (Web, Mobile, API, Relatório) consome apenas DTOs via essa camada — nunca acessa banco ou motor de análise diretamente. Trocar o frontend ou adicionar nova interface não altera regras de negócio.",
+    "fase3_fluxo_fixo": "Coleta de leitura do sensor → validação e normalização da unidade → comparação com limites configurados → classificação de severidade (normal/atenção/crítico) → disparo de alertas conforme régua configurada → armazenamento da série histórica → geração de relatório periódico. Esse fluxo é idêntico para todos os clientes.",
+    "fase3_parametros_configuraveis": [
+      "Poluentes monitorados (CO, CO2, NO2, PM2.5, PM10, SO2, VOCs — seleção por cliente)",
+      "Limites de alerta por poluente (atenção, crítico) e por zona da planta",
+      "Frequência de leitura dos sensores (30s, 1min, 5min)",
+      "Destinatários de alertas por canal (e-mail, SMS, WhatsApp) e por severidade",
+      "Fuso horário e idioma dos relatórios",
+      "Norma regulatória aplicável (CONAMA, EPA, EU AQD) — determina os limites legais de referência",
+      "Período de retenção histórica dos dados (1 ano, 5 anos, 10 anos conforme exigência legal)",
+      "Agendamento de relatórios automáticos (diário, semanal, mensal)",
+      "Número e identificação de sensores/pontos de monitoramento",
+      "Integrações ativas (webhook SCADA, FTP de exportação, API key para sistemas externos)"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel administrativo: criação de tenant → seleção de poluentes e norma regulatória → cadastro de sensores com protocolo de comunicação → definição de limites e destinatários → ativação. Nenhuma linha de código é escrita. O novo cliente herda o fluxo fixo e opera com seus próprios parâmetros isolados no banco multi-tenant.",
+    "fase4_core_isolado": "O motor de processamento de séries temporais e detecção de anomalias roda em workers assíncronos isolados (ex: processos Python com Celery ou serviço Rust/Go dedicado), desacoplados da API principal via fila de mensagens (RabbitMQ ou AWS SQS). A API web nunca chama o motor diretamente — publica eventos na fila e consome resultados já processados.",
+    "fase4_custo_total_cliente": "Custo core (análise/ML): ~$0,002–0,01 por leitura processada (CPU/GPU spot ou Lambda serverless), estimado $5–30/mês para cliente com 10 sensores em 1min de intervalo. Custo de infra proporcional: banco de séries temporais (TimescaleDB/InfluxDB) ~$0,025/GB/mês, estimado $2–15/mês por cliente. Armazenamento histórico S3: ~$0,023/GB/mês, $1–10/mês. Banda/CDN: ~$0,09/GB transferido, $1–5/mês. Custo operacional (suporte, alertas SMS): $2–8/mês. Total estimado: $11–68/mês por cliente de porte médio. Margem viável com plano a partir de $199/mês.",
+    "fase4_continuidade": "A API de leitura de dados históricos e o dashboard funcionam mesmo se o worker de análise estiver offline — os dados brutos continuam sendo ingeridos e armazenados na fila. Quando o motor volta, processa o backlog. Alertas críticos têm fallback: se o worker não processar em N segundos, o próprio collector de borda envia alerta direto por threshold simples configurado localmente.",
+    "fase4_manutencao": "O motor de análise é acessado exclusivamente via contrato de interface (mensagem de entrada com schema versionado, mensagem de saída com resultado padronizado). Trocar de threshold estático para modelo ML, ou de um vendor de IA para outro, exige apenas substituir o worker — a fila, a API e o banco não mudam. Deploy blue/green do worker garante zero downtime na troca.",
+    "monetizacao": "SaaS B2B por assinatura mensal com 3 tiers: Starter ($199/mês — até 5 sensores, 1 planta, relatórios mensais), Professional ($599/mês — até 25 sensores, múltiplas plantas, API + integrações, relatórios regulatórios automáticos), Enterprise (contrato anual customizado — sensores ilimitados, SLA 99,9%, suporte dedicado, white-label para consultorias). Upsell: retenção histórica estendida, módulo de previsão com ML, laudos técnicos assinados digitalmente. CAC baixo via canal de consultorias ambientais (parceiros que revendem o produto).",
+    "stack_sugerida": "Ingestion: MQTT Broker (EMQX) + adaptadores HTTP/FTP. Queue: RabbitMQ ou AWS SQS. Core Worker: Python (pandas + scikit-learn) ou serviço Go para alta throughput. Banco de séries: TimescaleDB (PostgreSQL extension) ou InfluxDB. Banco relacional (tenants, configs, usuários): PostgreSQL. Cache: Redis (sessões, últimas leituras). API: FastAPI (Python) ou NestJS (Node). Frontend: React + Recharts para gráficos de séries temporais. Mobile: React Native ou PWA. Relatórios PDF: WeasyPrint ou Puppeteer. Alertas: Twilio (SMS), SendGrid (e-mail), Z-API (WhatsApp Business). Infra: AWS (ECS Fargate + RDS + S3 + CloudWatch) ou Railway/Render para early stage. CI/CD: GitHub Actions."
+  }
+}

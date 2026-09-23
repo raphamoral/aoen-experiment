@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O projeto identifica um modelo dual-sided (compradores usam a plataforma; fornecedores pagam pelo acesso à demanda qualificada) e sinaliza implicitamente um segmento enterprise via API REST, mas não detalha tiers, valores, estrutura de cobrança (assinatura, comissão por leilão, fee por fornecedor qualificado), nem aborda sustentabilidade financeira ou métricas de negócio como MRR, LTV ou CAC."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A única menção a custo granular é a fitness function de 'custo por transação blockchain não deve exceder threshold configurável', que é um controle de teto de gasto (FinOps/alerta), não um cálculo de custo por cliente — a arquitetura multi-tenant com isolamento por tenant cria a infraestrutura técnica que *poderia* viabilizar rastreamento por cliente, mas não há nenhuma modelagem explícita de custo por tenant, custo por operação atribuível ao cliente, nem conexão entre consumo de recursos e modelo de precificação."
+}

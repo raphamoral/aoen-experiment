@@ -1,0 +1,91 @@
+{
+  "ideia_idx": 90,
+  "ideia": "App de gestão de clínicas de fisioterapia com evolução por sessão",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão clínica de fisioterapia centrada no ciclo de tratamento do paciente: Paciente → Plano Terapêutico → Sessão → Evolução (registro clínico por sessão). Subdomínios de apoio: Agenda e Agendamento, Profissionais e Salas, Faturamento (particular e convênios), Prontuário e Documentos clínicos, Assinatura/Planos SaaS (multi-tenant por clínica).",
+    "primary_ports": [
+      "ForGerenciarPacientes (cadastrar, atualizar, buscar, consentimento LGPD)",
+      "ForGerenciarPlanoTerapeutico (avaliação inicial, diagnóstico fisioterapêutico, objetivos, número de sessões prescritas)",
+      "ForAgendarSessoes (criar, remarcar, cancelar, bloquear horários, recorrência)",
+      "ForRegistrarEvolucaoDaSessao (registrar evolução, escala de dor EVA, condutas, exercícios, anexos, assinatura do fisioterapeuta)",
+      "ForConsultarProntuario (histórico e linha do tempo de evolução, comparativos de progresso)",
+      "ForGerenciarFaturamento (cobrança de sessões, pacotes, guias TISS, repasse a profissionais)",
+      "ForGerenciarClinicaEProfissionais (unidades, salas, profissionais, permissões por papel)",
+      "ForEmitirRelatorios (produtividade, faltas, altas, receita, alta clínica)",
+      "ForGerenciarAssinaturaSaaS (planos, limites de uso, tenant onboarding)"
+    ],
+    "secondary_ports": [
+      "ForPersistirPacientes / ForPersistirProntuario (repositórios)",
+      "ForPersistirAgenda",
+      "ForPersistirFaturamento",
+      "ForArmazenarDocumentos (exames, laudos, imagens, PDFs)",
+      "ForNotificarPacientes (lembrete de sessão, confirmação, pós-sessão)",
+      "ForNotificarProfissionais",
+      "ForProcessarPagamentos (Pix, cartão, boleto, assinatura recorrente)",
+      "ForIntegrarConvenios (envio de guias TISS/TUSS, elegibilidade)",
+      "ForEmitirNotaFiscal (NFS-e)",
+      "ForAutenticarUsuarios (identidade, MFA, papéis)",
+      "ForSincronizarCalendario (Google/Outlook)",
+      "ForAssinarDocumentosDigitalmente (ICP-Brasil)",
+      "ForGerarDocumentosPDF (relatórios de evolução, laudos, atestados)",
+      "ForRegistrarAuditoria (trilha LGPD/CFM/COFFITO)",
+      "ForPublicarEventosDeDominio (event bus)",
+      "ForObterRelogio / ForGerarIds (determinismo em testes)",
+      "ForRegistrarMetricasELogs (observabilidade)"
+    ],
+    "primary_adapters": [
+      "REST API HTTP (JSON/OpenAPI) consumida pelo front-end",
+      "GraphQL/BFF opcional para o app web",
+      "Web App SPA/PWA para fisioterapeutas e recepção",
+      "App mobile (React Native/Flutter) para fisioterapeuta e paciente",
+      "Portal do paciente (agenda, evolução resumida, exercícios domiciliares)",
+      "Webhooks de entrada (gateway de pagamento, WhatsApp, convênios)",
+      "CLI / scripts administrativos (migração, importação de pacientes, backfill)",
+      "Jobs agendados (cron) para lembretes, fechamento de faturamento e relatórios",
+      "Consumidores de fila/eventos",
+      "Test drivers (testes de aceitação/BDD chamando as primary ports diretamente com fakes)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL adapter (repositórios com Row-Level Security por tenant)",
+      "Adapter em memória (testes e desenvolvimento local)",
+      "S3/GCS/MinIO adapter para documentos e imagens",
+      "WhatsApp Business API / Twilio adapter",
+      "Email adapter (SES/SendGrid/Postmark)",
+      "SMS/Push adapter (FCM/APNs)",
+      "Stripe / Asaas / Pagar.me / Mercado Pago adapter",
+      "Conector TISS/TUSS para operadoras",
+      "NFS-e adapter (Focus NFe / eNotas / prefeituras)",
+      "Keycloak/Auth0/Cognito adapter de identidade",
+      "Google Calendar / Microsoft Graph adapter",
+      "Assinatura digital (Certisign/ClickSign/D4Sign) adapter",
+      "Gerador de PDF adapter (Puppeteer/WeasyPrint)",
+      "Kafka/RabbitMQ/SNS+SQS/Outbox adapter para eventos",
+      "Auditoria (tabela append-only, ou OpenSearch)",
+      "OpenTelemetry/Prometheus/Sentry adapter",
+      "Relógio de sistema e gerador de UUID/ULID adapters (mais versões fake para testes)"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não importa nenhum framework, ORM, SDK ou cliente HTTP. Ele depende apenas de interfaces (ports) definidas dentro dele, e as dependências apontam sempre para dentro (Dependency Inversion). Entidades e agregados (Paciente, PlanoTerapeutico, Sessao, Evolucao, Agendamento, Fatura) são objetos puros, com invariantes próprias (p.ex., evolução só pode ser fechada pelo profissional responsável, sessão não pode ser evoluída antes de realizada, evolução assinada é imutável e só recebe adendos). A composição acontece na composition root, onde os adapters são injetados nos casos de uso. Adapters traduzem DTOs externos para o modelo do domínio via anti-corruption layers. Eventos de domínio são publicados via port, sem que o core conheça o broker. O multi-tenancy é um contexto (TenantContext) passado aos casos de uso, e não uma preocupação do core. Isolamento verificável por regras de arquitetura automatizadas (ArchUnit/dependency-cruiser/import-linter) no CI, e testes do core rodam em milissegundos com adapters em memória, permitindo dirigir o sistema por UI, teste ou script de forma equivalente.",
+    "interfaces": [
+      "Web app para fisioterapeutas (agenda do dia, tela de evolução rápida por sessão com templates, EVA, mobilidade, força)",
+      "Painel da recepção (agenda, check-in, cobrança)",
+      "Painel do gestor da clínica (KPIs, faturamento, ocupação, absenteísmo)",
+      "App mobile do fisioterapeuta (evolução offline-first à beira do leito/sala)",
+      "Portal/app do paciente (agendamento, lembretes, exercícios prescritos, recibos)",
+      "API pública REST + webhooks para integrações de terceiros",
+      "Painel de administração SaaS (super-admin, tenants, planos)",
+      "Integração conversacional via WhatsApp (confirmação/remarcação)",
+      "CLI/scripts para operações e importação de dados"
+    ],
+    "escalabilidade": "Monólito modular hexagonal no início (um módulo por bounded context: Pacientes/Prontuário, Agenda, Faturamento, Identidade/Tenants), com extração posterior para serviços apenas quando necessário, já que as ports definem os limites. Aplicação stateless com escala horizontal atrás de load balancer. Multi-tenancy com schema compartilhado + tenant_id + RLS no PostgreSQL para o grosso das clínicas, com opção de banco/schema dedicado para clientes enterprise (troca de adapter, sem tocar no core). Read replicas e views/CQRS leve para relatórios e linha do tempo de evolução. Trabalhos assíncronos (lembretes, faturamento, PDFs, TISS) via fila com workers independentes e padrão Outbox para consistência de eventos. Cache (Redis) para agenda e permissões. Armazenamento de objetos para anexos, com CDN. Particionamento de tabelas de sessões/evoluções por tenant/data conforme o volume cresce. Adapter offline-first no mobile com sincronização e resolução de conflitos por evolução.",
+    "custos": "Custo inicial baixo com monólito modular em PaaS ou container único (Fly.io/Render/Cloud Run/ECS Fargate) + PostgreSQL gerenciado + S3. Principais custos variáveis: mensagens de WhatsApp/SMS (repassar ou limitar por plano), armazenamento de documentos/imagens, taxas de gateway de pagamento, emissão de NFS-e e assinatura digital por documento. Compliance (LGPD, dados sensíveis de saúde): criptografia em repouso e em trânsito, backups, logs de auditoria, retenção mínima de prontuário (20 anos segundo CFM/COFFITO), o que impacta armazenamento a longo prazo (usar tiering frio/Glacier). Reduzir custo com multi-tenancy compartilhado, jobs em lotes, compressão/redimensionamento de imagens e cache. Suporte e onboarding (importação de dados) tendem a ser o maior custo humano. Observabilidade em camadas (open-source no início). Como as ports isolam os provedores, é possível trocar fornecedores caros por mais baratos sem reescrever o core.",
+    "monetizacao": "Assinatura SaaS recorrente (MRR) por clínica com planos escalonados: Starter (1 profissional, agenda + evolução), Pro (multi-profissional, faturamento, portal do paciente, lembretes por WhatsApp), Enterprise (multi-unidade, TISS/convênios, SSO, API, SLA, banco dedicado). Precificação híbrida: preço base por profissional ativo/mês + limites de pacientes/sessões. Add-ons pagos: pacote de mensagens WhatsApp, emissão de NFS-e, assinatura digital ICP-Brasil, módulo de convênios TISS, app de exercícios domiciliares para o paciente, BI avançado. Taxa de setup/onboarding e migração de dados para contas maiores. Take rate opcional em pagamentos processados via gateway integrado (Pix/cartão) e marketplace de integrações/parceiros. Trial de 14 dias e modelo freemium limitado para aquisição.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (módulos organizados em domain/application/adapters) ou alternativamente Kotlin/Spring ou Java com regras ArchUnit; core em TypeScript/Kotlin puro, sem decorators de framework. Banco: PostgreSQL (RLS, JSONB para formulários de evolução flexíveis) + Redis. Filas: SQS/SNS ou RabbitMQ (com Outbox). Storage: S3 compatível. Frontend web: React + Next.js/Vite, TanStack Query, PWA. Mobile: React Native (Expo) ou Flutter com armazenamento local (SQLite/WatermelonDB) para offline. Identidade: Keycloak/Auth0/Cognito com MFA. Pagamentos: Stripe Billing (assinaturas SaaS) e Asaas/Pagar.me (Pix/boleto BR). Infra: Docker, Terraform, AWS (ECS Fargate/RDS/S3/SQS) ou GCP (Cloud Run/Cloud SQL), CI/CD com GitHub Actions. Observabilidade: OpenTelemetry + Grafana/Prometheus/Loki + Sentry. Testes: Vitest/Jest para core com adapters em memória, testes de contrato para cada port, Testcontainers para adapters de banco, Playwright para E2E e dependency-cruiser/ArchUnit para validar as fronteiras."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:46:31+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,456 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "description": "Objetos de negócio com regras críticas independentes de qualquer framework ou banco de dados",
+      "list": [
+        {
+          "name": "Certificate",
+          "attributes": [
+            "id: UUID",
+            "hash: SHA-256",
+            "issuedAt: DateTime",
+            "expiresAt: DateTime?",
+            "status: ACTIVE|REVOKED|EXPIRED",
+            "metadata: CertificateMetadata"
+          ],
+          "rules": [
+            "hash deve ser único e imutável após emissão",
+            "não pode ser reativado após revogação permanente",
+            "expiração é opcional por política do Issuer"
+          ]
+        },
+        {
+          "name": "Student",
+          "attributes": [
+            "id: UUID",
+            "name: string",
+            "email: string",
+            "document: CPF|Passport",
+            "verifiedAt: DateTime?"
+          ],
+          "rules": [
+            "document deve ser único por jurisdiction",
+            "email verificado antes de emitir certificado"
+          ]
+        },
+        {
+          "name": "Course",
+          "attributes": [
+            "id: UUID",
+            "title: string",
+            "workload: Hours",
+            "syllabus: Topic[]",
+            "issuerId: UUID",
+            "publishedAt: DateTime"
+          ],
+          "rules": [
+            "workload mínimo definido por política do Issuer",
+            "syllabus deve ter ao menos 1 tópico"
+          ]
+        },
+        {
+          "name": "Issuer",
+          "attributes": [
+            "id: UUID",
+            "name: string",
+            "slug: string",
+            "plan: FREE|STARTER|PROFESSIONAL|ENTERPRISE",
+            "publicKey: RSA-4096",
+            "status: ACTIVE|SUSPENDED"
+          ],
+          "rules": [
+            "slug é único e imutável após criação",
+            "assinaturas digitais vinculadas à publicKey",
+            "suspensão bloqueia emissão mas não invalida certificados existentes"
+          ]
+        },
+        {
+          "name": "Verification",
+          "attributes": [
+            "id: UUID",
+            "certificateHash: string",
+            "verifiedAt: DateTime",
+            "ipAddress: string",
+            "result: VALID|REVOKED|NOT_FOUND"
+          ],
+          "rules": [
+            "cada verificação é registrada para auditoria",
+            "nunca armazena dados pessoais do verificador além do IP"
+          ]
+        },
+        {
+          "name": "CertificateTemplate",
+          "attributes": [
+            "id: UUID",
+            "issuerId: UUID",
+            "layoutJson: JSON",
+            "version: semver",
+            "isDefault: boolean"
+          ],
+          "rules": [
+            "versão imutável após uso em certificado emitido",
+            "apenas um template default por Issuer"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "description": "Regras de aplicação que orquestram o fluxo entre entidades sem depender de frameworks",
+      "emission": [
+        {
+          "name": "IssueCertificate",
+          "input": "IssueCertificateCommand { studentId, courseId, issuerId, completedAt, grade? }",
+          "output": "IssueCertificateResult { certificateId, publicUrl, hash }",
+          "steps": [
+            "Valida Student existe e está verificado",
+            "Valida Course pertence ao Issuer",
+            "Verifica duplicidade via CertificateRepository",
+            "Gera hash SHA-256 do payload canônico",
+            "Assina digitalmente com chave privada do Issuer",
+            "Persiste Certificate via CertificateRepository",
+            "Publica evento CertificateIssued"
+          ]
+        },
+        {
+          "name": "RevokeCertificate",
+          "input": "RevokeCertificateCommand { certificateId, issuerId, reason: FRAUD|ERROR|POLICY, permanent: boolean }",
+          "output": "void",
+          "steps": [
+            "Verifica propriedade: certificate.issuerId === issuerId",
+            "Aplica regra de negócio de revogação da entidade",
+            "Persiste status via CertificateRepository",
+            "Publica evento CertificateRevoked"
+          ]
+        },
+        {
+          "name": "BulkIssueCertificates",
+          "input": "BulkIssueCommand { courseId, issuerId, students: StudentCertificateData[] }",
+          "output": "BulkIssueResult { issued: UUID[], failed: FailureDetail[] }",
+          "steps": [
+            "Valida quota do plano do Issuer",
+            "Itera IssueCertificate por estudante",
+            "Agrega resultados sem falha total (partial success)"
+          ]
+        }
+      ],
+      "verification": [
+        {
+          "name": "VerifyCertificateByHash",
+          "input": "VerifyCommand { hash: string, requesterIp: string }",
+          "output": "VerificationResult { status, certificate?: PublicCertificateView, issuer?: PublicIssuerView }",
+          "steps": [
+            "Busca Certificate pelo hash",
+            "Verifica assinatura digital com publicKey do Issuer",
+            "Registra Verification para auditoria",
+            "Retorna view pública sem dados sensíveis"
+          ]
+        },
+        {
+          "name": "VerifyCertificateByQRCode",
+          "input": "QRCodePayload",
+          "output": "VerificationResult",
+          "steps": [
+            "Decodifica payload do QR",
+            "Delega para VerifyCertificateByHash"
+          ]
+        }
+      ],
+      "management": [
+        "RegisterIssuer",
+        "UpdateIssuerPlan",
+        "CreateCourse",
+        "PublishCourse",
+        "RegisterStudent",
+        "VerifyStudentEmail",
+        "CreateCertificateTemplate",
+        "GetCertificatesByStudent",
+        "GetCertificatesByIssuer",
+        "GetVerificationAuditLog",
+        "ExportCertificatesPDF",
+        "GenerateCertificatePDFAsset"
+      ]
+    },
+    "interface_adapters": {
+      "description": "Converte dados entre formato conveniente para use cases/entities e formato conveniente para agentes externos",
+      "controllers": [
+        {
+          "name": "CertificateController",
+          "routes": [
+            "POST /v1/certificates",
+            "POST /v1/certificates/bulk",
+            "DELETE /v1/certificates/:id",
+            "GET /v1/certificates/:hash/verify"
+          ],
+          "responsibility": "Converte HTTP Request → Command, chama Use Case, converte Result → HTTP Response"
+        },
+        {
+          "name": "PublicVerificationController",
+          "routes": [
+            "GET /verify/:hash",
+            "GET /verify/qr/:token"
+          ],
+          "responsibility": "Sem autenticação, rate-limited, retorna dados públicos do certificado"
+        },
+        {
+          "name": "IssuerController",
+          "routes": [
+            "POST /v1/issuers",
+            "GET /v1/issuers/:slug/certificates",
+            "PUT /v1/issuers/:id/plan"
+          ],
+          "responsibility": "Gestão de organizações emissoras"
+        },
+        {
+          "name": "WebhookController",
+          "routes": [
+            "POST /webhooks/payment"
+          ],
+          "responsibility": "Recebe eventos de pagamento e delega para UpdateIssuerPlan use case"
+        }
+      ],
+      "presenters": [
+        "CertificatePresenter — formata Certificate entity para PublicView, DetailView, PDFView",
+        "VerificationPresenter — formata Verification + Certificate para resposta pública sem PII",
+        "IssuerPresenter — formata Issuer para dashboard view e public profile"
+      ],
+      "gateways": [
+        {
+          "name": "CertificateRepository (interface)",
+          "methods": [
+            "save(certificate)",
+            "findByHash(hash)",
+            "findByStudent(studentId)",
+            "findByIssuer(issuerId)",
+            "existsByStudentAndCourse(studentId, courseId)"
+          ]
+        },
+        {
+          "name": "IssuerRepository (interface)",
+          "methods": [
+            "save(issuer)",
+            "findById(id)",
+            "findBySlug(slug)"
+          ]
+        },
+        {
+          "name": "StudentRepository (interface)",
+          "methods": [
+            "save(student)",
+            "findById(id)",
+            "findByDocument(doc, jurisdiction)"
+          ]
+        },
+        {
+          "name": "VerificationRepository (interface)",
+          "methods": [
+            "save(verification)",
+            "findByCertificateHash(hash, pagination)"
+          ]
+        },
+        {
+          "name": "SignatureGateway (interface)",
+          "methods": [
+            "sign(payload, privateKey): Signature",
+            "verify(payload, signature, publicKey): boolean"
+          ]
+        },
+        {
+          "name": "PDFGateway (interface)",
+          "methods": [
+            "generate(template, data): Buffer",
+            "store(buffer): StorageUrl"
+          ]
+        },
+        {
+          "name": "EmailGateway (interface)",
+          "methods": [
+            "sendCertificate(to, certificate)",
+            "sendVerificationCode(to, code)"
+          ]
+        },
+        {
+          "name": "QRCodeGateway (interface)",
+          "methods": [
+            "generate(url): Buffer",
+            "decode(token): QRPayload"
+          ]
+        },
+        {
+          "name": "EventBus (interface)",
+          "methods": [
+            "publish(event)",
+            "subscribe(eventType, handler)"
+          ]
+        }
+      ]
+    },
+    "frameworks_drivers": {
+      "description": "Camada mais externa: implementações concretas que podem ser trocadas sem afetar regras de negócio",
+      "api": {
+        "runtime": "Node.js 22 LTS + TypeScript 5",
+        "framework": "Fastify 5 (alta performance, baixo overhead)",
+        "validation": "Zod (schema validation na borda da API)",
+        "auth": "JWT RS256 + PKCE OAuth2 (Auth0 ou Keycloak self-hosted)"
+      },
+      "persistence": {
+        "primary_db": "PostgreSQL 16 (dados relacionais: issuers, students, courses, certificates)",
+        "cache": "Redis 7 (rate limiting, sessions, resultado de verificações populares)",
+        "search": "PostgreSQL FTS ou Meilisearch (busca por certificado/aluno)",
+        "migrations": "Flyway ou node-pg-migrate"
+      },
+      "storage": {
+        "pdfs": "AWS S3 ou MinIO self-hosted (PDFs gerados dos certificados)",
+        "templates": "S3 + CloudFront CDN (assets de template público)"
+      },
+      "email": "AWS SES ou Resend.com (transacional de baixo custo)",
+      "pdf_generation": "Puppeteer (HTML→PDF) ou @react-pdf/renderer",
+      "qr_code": "qrcode npm package",
+      "cryptography": "node:crypto nativo (SHA-256, RSA-4096) ou @peculiar/webcrypto",
+      "event_bus": "BullMQ + Redis (filas assíncronas para emissão bulk e envio de email)",
+      "observability": "OpenTelemetry + Grafana Stack (Loki, Tempo, Prometheus)",
+      "infrastructure": "Docker + Kubernetes (EKS/GKE) ou Railway/Render para early stage",
+      "ci_cd": "GitHub Actions → ECR → ArgoCD"
+    },
+    "dependency_rule": {
+      "description": "Código-fonte aponta SEMPRE de fora para dentro. Nunca uma camada interna importa de camada externa.",
+      "enforcement": [
+        "Entities não importam nada além de primitivos e outras entities",
+        "Use Cases importam apenas Entities e interfaces (ports) — nunca implementações concretas",
+        "Interface Adapters implementam as interfaces definidas pelos Use Cases (inversão de dependência)",
+        "Frameworks & Drivers implementam as interfaces dos Adapters",
+        "Injeção de dependência em tempo de execução via container (Tsyringe ou InversifyJS) conecta as camadas",
+        "ESLint rule @nx/enforce-module-boundaries ou dependency-cruiser valida automaticamente no CI"
+      ],
+      "example_flow": "HTTP Request → CertificateController → IssueCertificate UseCase → Certificate Entity | CertificateRepository (interface) ← PostgresCertificateRepository (implementação na camada externa)",
+      "ports_and_adapters": "Cada gateway é um 'port' (interface) definido na camada de Use Cases. A implementação concreta (adapter) vive na camada Frameworks & Drivers. Trocar PostgreSQL por DynamoDB não toca nem uma linha de Use Case."
+    },
+    "testability": {
+      "description": "Cada camada é testável de forma isolada sem dependências externas reais",
+      "unit_tests": {
+        "target": "Entities e Use Cases",
+        "approach": "Puro TypeScript, sem mock de framework. Use Cases recebem fakes/stubs das interfaces via construtor.",
+        "example": "IssueCertificate usa InMemoryCertificateRepository (implementação em memória da interface) nos testes",
+        "framework": "Vitest (zero config, ESM nativo, cobertura via V8)"
+      },
+      "integration_tests": {
+        "target": "Implementações concretas dos Repositories e Gateways",
+        "approach": "PostgreSQL real via Testcontainers (Docker efêmero por suite)",
+        "coverage": "SQL, migrations, índices, constraints — sem mock de banco"
+      },
+      "e2e_tests": {
+        "target": "Fluxos completos via API HTTP",
+        "approach": "Supertest ou Playwright (API mode) contra app real com banco de teste",
+        "scenarios": [
+          "Emitir → Verificar → Revogar → Verificar (espera REVOKED)",
+          "Bulk issue com quota excedida",
+          "Verificação pública de hash inexistente"
+        ]
+      },
+      "contract_tests": {
+        "target": "Webhooks e integrações externas",
+        "approach": "Pact.io para garantir contrato entre emissor e consumidor de eventos",
+        "coverage": "Payload de pagamento, eventos de certificado emitido"
+      },
+      "metrics": "Cobertura mínima: 90% entities, 85% use cases, 70% adapters. Enforced no CI via Vitest --coverage."
+    },
+    "interfaces": [
+      "ICertificateRepository: save, findByHash, findByStudent, findByIssuer, existsByStudentAndCourse",
+      "IIssuerRepository: save, findById, findBySlug, findAll",
+      "IStudentRepository: save, findById, findByEmail, findByDocument",
+      "ICourseRepository: save, findById, findByIssuer, publish",
+      "IVerificationRepository: save, findByCertificateHash, countByHash",
+      "ITemplateRepository: save, findById, findDefaultByIssuer",
+      "ISignatureGateway: sign(payload, privateKey), verify(payload, signature, publicKey)",
+      "IPDFGateway: generate(templateId, data), store(buffer, filename)",
+      "IEmailGateway: sendCertificateEmail(to, certificateData), sendOTP(to, code)",
+      "IQRCodeGateway: generateFromUrl(url), decodeToken(token)",
+      "IStorageGateway: upload(buffer, path, mime), getSignedUrl(path, ttl)",
+      "IEventBus: publish(event: DomainEvent), subscribe(type, handler)",
+      "IHashGenerator: generate(payload): string",
+      "IKeyVault: getPrivateKey(issuerId), storeKeyPair(issuerId)"
+    ],
+    "escalabilidade": {
+      "horizontal": "Stateless API pods escalados via HPA (CPU/RPS). Redis centraliza estado de sessão e rate limiting.",
+      "async_workloads": "Emissão bulk e geração de PDF são filas BullMQ assíncronas com workers dedicados e auto-scaling independente",
+      "verification_hotpath": "GET /verify/:hash cacheado no Redis (TTL 60s para VALID, sem cache para REVOKED). CloudFront CDN para página pública de verificação (HTML estático gerado).",
+      "database": "PostgreSQL com read replicas para queries de listagem/auditoria. Particionamento por issuer_id em tabela certificates em escala.",
+      "multi_tenancy": "Schema-per-tenant para isolamento forte (Enterprise) ou shared schema com RLS por issuer_id (Standard)",
+      "global": "CDN para assets públicos e PDFs. Verificação pública pode ser edge-cached (hash é determinístico e imutável para certificados VALID).",
+      "limits_by_plan": "Quotas de emissão por plano enforced via Redis counter + Use Case, sem sobrecarga no banco principal"
+    },
+    "custos": {
+      "infra_early_stage": "Railway ou Render: ~$50-150/mês para MVP (API + PostgreSQL + Redis gerenciados)",
+      "infra_growth": "AWS EKS + RDS + ElastiCache: ~$300-800/mês para 10k-100k certificados/mês",
+      "storage": "S3: ~$0.023/GB. 1 PDF médio = 200KB. 100k certificados = 20GB = ~$0.46/mês de storage",
+      "email": "AWS SES: $0.10 por 1000 emails. 100k certificados = $10/mês",
+      "pdf_generation": "Puppeteer self-hosted em worker pod: custo incluso na infra. Alternativa: API externa ~$0.01/PDF",
+      "maiores_custos": [
+        "Compute (API + workers)",
+        "RDS PostgreSQL (HA com read replica)",
+        "Suporte e oncall em escala"
+      ],
+      "otimizacoes": [
+        "PDF gerado once, servido do S3 (sem regeneração)",
+        "Cache agressivo na verification hotpath reduz load do banco em 80%+",
+        "Free tier com quota baixa reduz custo de aquisição de clientes"
+      ]
+    },
+    "monetizacao": {
+      "modelo": "SaaS B2B por assinatura (Issuer paga para emitir; verificação é sempre gratuita e pública)",
+      "planos": [
+        {
+          "name": "Free",
+          "price": "R$0/mês",
+          "limits": "50 certificados/mês, 1 curso, 1 template padrão, watermark da plataforma",
+          "goal": "Aquisição e experimentação"
+        },
+        {
+          "name": "Starter",
+          "price": "R$97/mês",
+          "limits": "500 certificados/mês, 5 cursos, 3 templates customizados, domínio próprio na URL pública",
+          "goal": "Instrutores solo e pequenas escolas"
+        },
+        {
+          "name": "Professional",
+          "price": "R$297/mês",
+          "limits": "5.000 certificados/mês, cursos ilimitados, templates ilimitados, API access, webhooks, bulk import CSV",
+          "goal": "Escolas online consolidadas"
+        },
+        {
+          "name": "Enterprise",
+          "price": "Sob consulta (R$1.500+/mês)",
+          "limits": "Volume ilimitado, SLA 99.9%, SSO/SAML, schema dedicado, suporte prioritário, assinatura com certificado digital ICP-Brasil",
+          "goal": "Grandes instituições, franquias educacionais"
+        }
+      ],
+      "revenue_adicional": [
+        "Pay-per-use acima da quota do plano: R$0,50/certificado excedente",
+        "Verificação avançada com API (para RH integrar em sistemas): R$0,05/verificação via API key",
+        "White-label completo: fee de setup + mensalidade Enterprise"
+      ],
+      "metricas_saas": "Foco em Net Revenue Retention (NRR): expansão de plano conforme o Issuer cresce é o principal motor de receita"
+    },
+    "stack_sugerida": {
+      "backend": "Node.js 22 + TypeScript 5 + Fastify 5",
+      "frontend_dashboard": "Next.js 15 (App Router) + Tailwind CSS + shadcn/ui",
+      "frontend_verificacao_publica": "Next.js static export ou Astro (máxima performance, SEO, edge-cacheable)",
+      "orm": "Drizzle ORM (type-safe, zero-abstraction, SQL-first) + PostgreSQL 16",
+      "cache_queue": "Redis 7 + BullMQ",
+      "storage": "AWS S3 ou MinIO",
+      "auth": "Auth0 (time-to-market) → migrar para Keycloak self-hosted em Enterprise",
+      "email": "Resend.com (developer-friendly) ou AWS SES",
+      "pdf": "Puppeteer em worker isolado ou html-pdf-node",
+      "monorepo": "Turborepo com workspaces: apps/api, apps/dashboard, apps/verify, packages/entities, packages/use-cases, packages/adapters",
+      "deploy_mvp": "Railway (zero DevOps, PostgreSQL + Redis gerenciados)",
+      "deploy_producao": "AWS EKS + RDS + ElastiCache + CloudFront",
+      "ci_cd": "GitHub Actions (lint → test → build → push ECR → deploy via ArgoCD)",
+      "observabilidade": "OpenTelemetry SDK → Grafana Cloud (Loki + Tempo + Prometheus)",
+      "iac": "Terraform + AWS modules",
+      "rationale": "Stack TypeScript full-stack maximiza compartilhamento de types entre camadas (especialmente entities e DTOs) sem violar a dependency rule — packages/entities é importado como biblioteca pura por todos os workspaces"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"description\": \"Objetos de negócio com regras críticas independentes de qualquer framework ou banco de dados\",\n    \"list\": [\n      {\n        \"name\": \"Certificate\",\n        \"attributes\": [\"id: UUID\", \"hash: SHA-256\", \"issuedAt: DateTime\", \"expiresAt: DateTime?\", \"status: ACTIVE|REVOKED|EXPIRED\", \"metadata: CertificateMetadata\"],\n        \"rules\": [\"hash deve ser único e imutável após emissão\", \"não pode ser reativado após revogação permanente\", \"expiração é opcional por política do Issuer\"]\n      },\n      {\n        \"name\": \"Student\",\n        \"attributes\": [\"id: UUID\", \"name: string\", \"email: string\", \"document: CPF|Passport\", \"verifiedAt: DateTime?\"],\n        \"rules\": [\"document deve ser único por jurisdiction\", \"email verificado antes de emitir certificado\"]\n      },\n      {\n        \"name\": \"Course\",\n        \"attributes\": [\"id: UUID\", \"title: string\", \"workload: Hours\", \"syllabus: Topic[]\", \"issuerId: UUID\", \"publishedAt: DateTime\"],\n        \"rules\": [\"workload mínimo definido por política do Issuer\", \"syllabus deve ter ao menos 1 tópico\"]\n      },\n      {\n        \"name\": \"Issuer\",\n        \"attributes\": [\"id: UUID\", \"name: string\", \"slug: string\", \"plan: FREE|STARTER|PROFESSIONAL|ENTERPRISE\", \"publicKey: RSA-4096\", \"status: ACTIVE|SUSPENDED\"],\n        \"rules\": [\"slug é único e imutável após criação\", \"assinaturas digitais vinculadas à publicKey\", \"suspensão bloqueia emissão mas não invalida certificados existentes\"]\n      },\n      {\n        \"name\": \"Verification\",\n        \"attributes\": [\"id: UUID\", \"certificateHash: string\", \"verifiedAt: DateTime\", \"ipAddress: string\", \"result: VALID|REVOKED|NOT_FOUND\"],\n        \"rules\": [\"cada verificação é registrada para auditoria\", \"nunca armazena dados pessoais do verificador além do IP\"]\n      },\n      {\n        \"name\": \"CertificateTemplate\",\n        \"attributes\": [\"id: UUID\", \"issuerId: UUID\", \"layoutJson: JSON\", \"version: semver\", \"isDefault: boolean\"],\n        \"rules\": [\"versão imutável após uso"
+}

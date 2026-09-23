@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Pipeline de coleta anônima → anonimização garantida → análise agregada de bem-estar → geração de insights acionáveis para RH/gestores sem expor indivíduos. O coração do produto é a equação: anonimidade real + inteligência agregada. Sem anonimidade, ninguém responde. Sem inteligência, o dado não gera valor.",
+    "fase1_mercado": "Empresas médias e grandes (50–5000 funcionários) com departamento de RH estruturado, especialmente setores de alta rotatividade e pressão: tecnologia, finanças, saúde, varejo. Tomadores de decisão: CHROs, diretores de RH, gestores de People & Culture. Dor primária: alta rotatividade, burnout invisível, custo de turnover não monitorado.",
+    "fase1_extensivel": "Sim. O core é uma abstração de três contratos: (1) ICollector — qualquer canal de coleta implementa a interface; (2) IAnonymizer — algoritmo de anonimização substituível (k-anonimidade, differential privacy, supressão); (3) IAnalysisEngine — provider de análise plugável (modelo próprio, OpenAI, Anthropic Claude, Google Vertex). Trocar qualquer um não quebra o fluxo.",
+    "fase2_interfaces": [
+      "Web App (funcionário) — formulário de resposta acessível via browser sem login pessoal",
+      "Dashboard Web (RH/gestor) — visualização de relatórios agregados, alertas e tendências",
+      "Integração Slack/Microsoft Teams — pesquisas entregues onde o funcionário já trabalha",
+      "WhatsApp Bot — canal de alta adesão para mercados Brasil/LATAM e operações sem computador",
+      "Mobile App (iOS/Android) — maior engajamento para empresas com workforce remoto/híbrido",
+      "API REST — integração com sistemas de RH existentes (SAP SuccessFactors, Workday, Gupy)"
+    ],
+    "fase2_justificativa_mercado": "Web App (funcionário) abre qualquer empresa com acesso a browser — zero fricção de instalação. Dashboard Web é o produto vendido ao tomador de decisão (RH). Slack/Teams abre empresas de tecnologia e corporações — onde já existe ferramenta de colaboração. WhatsApp Bot abre mercado de operações, varejo e indústria no Brasil onde penetração de Slack é baixa. Mobile App abre empresas com workforce remoto e culturas mobile-first. API abre grandes contas enterprise que já têm HCM e precisam de integração, desbloqueando tickets de contrato maiores.",
+    "fase2_service_layer": "Camada de serviços centralizada expõe casos de uso puros: SurveyService.submit(payload), ReportService.generate(companyId, period), AlertService.evaluate(companyId). Cada interface chama apenas a Service Layer — nunca acessa banco ou engine de análise diretamente. A interface não sabe como o dado é anonimizado ou qual LLM gerou o insight. Isso permite adicionar WhatsApp sem tocar no dashboard, ou trocar o modelo de análise sem alterar nenhuma interface.",
+    "fase3_fluxo_fixo": "Coleta de resposta → validação de schema → anonimização (supressão de identificadores + agregação mínima de N respostas) → enfileiramento assíncrono → análise de sentimento/índice de bem-estar → atualização de métricas agregadas → avaliação de limiares de alerta → geração de relatório periódico → notificação ao gestor responsável. Este fluxo é invariante para todos os clientes.",
+    "fase3_parametros_configuraveis": [
+      "Frequência das pesquisas (diária, semanal, quinzenal, mensal)",
+      "Banco de questões ativo (PHQ-9, GAD-7, MBI, ou questões customizadas)",
+      "Idioma e localização do formulário",
+      "Estrutura de grupos/departamentos para segmentação de relatórios",
+      "Limiar mínimo de respostas para gerar relatório (privacidade — ex: mínimo 5)",
+      "Limiares de alerta (ex: índice abaixo de 60 dispara notificação)",
+      "Canais de entrega da pesquisa habilitados (web, Slack, WhatsApp, e-mail)",
+      "Destinatários dos relatórios e alertas (por departamento, por cargo)",
+      "Periodicidade e formato dos relatórios (semanal, mensal, PDF, dashboard)",
+      "Branding (logo, paleta de cores, nome exibido ao funcionário)",
+      "Política de retenção de dados (90 dias, 1 ano, conforme LGPD/GDPR)"
+    ],
+    "fase3_novo_cliente": "Novo cliente = criação de registro de empresa no painel admin com CNPJ/domínio + upload de estrutura de departamentos (CSV ou sync via API de RH) + seleção de template de questionário + configuração de canais + definição de limiares. Zero linha de código. O pipeline genérico já existe; apenas os parâmetros mudam. Onboarding pode ser self-service em menos de 30 minutos.",
+    "fase4_core_isolado": "O processo de Análise Assíncrona: worker isolado que consome a fila de respostas anonimizadas, executa o modelo de análise (cálculo de índices + LLM para respostas abertas qualitativas) e persiste os resultados agregados. Roda em processo/container separado, escala horizontalmente de forma independente da API web. É o único processo que acessa o IAnalysisEngine.",
+    "fase4_custo_total_cliente": "Custo core: chamadas ao LLM para análise qualitativa (~$0.002–$0.01 por resposta com Claude Haiku/GPT-4o-mini); para empresa de 200 funcionários com pesquisa semanal = ~800 respostas/mês = $1.60–$8.00/mês em LLM. Custo infra proporcional: 1 schema PostgreSQL isolado por empresa (~$0.50–$2/mês), storage de relatórios PDF em S3 (~$0.10/mês), fração de worker ECS (~$1–$3/mês), CDN/banda (~$0.10/mês). Custo operacional amortizado: suporte tier 1, onboarding automatizado (~$2–$5/mês). Total estimado por cliente 200 funcionários: $5–$18/mês de custo real. Margem bruta saudável com preço de $3–$8/funcionário/mês (ARR de $7.200–$19.200/ano para essa empresa).",
+    "fase4_continuidade": "Coleta e armazenamento de respostas funcionam independentemente do worker de análise. Se o worker de análise falhar, respostas entram na fila e são processadas quando o worker volta — sem perda de dado. O dashboard exibe o último relatório válido com indicação de 'análise em processamento'. Dead letter queue captura falhas para reprocessamento. A experiência do funcionário (submeter resposta) nunca é afetada por falha de análise.",
+    "fase4_manutencao": "O IAnalysisEngine é um contrato de interface. Para trocar de OpenAI para Claude ou para modelo próprio fine-tunado: implementar nova classe concreta, validar em ambiente de staging com dados históricos, alterar variável de configuração. Zero downtime. O restante do sistema não sabe qual provider está ativo. Versionamento de modelos permite rollback imediato se qualidade de análise regredir.",
+    "monetizacao": "SaaS B2B com cobrança por funcionário ativo/mês (per seat). Tier Starter ($3/funcionário/mês): canais web + e-mail, questionários padrão, relatório mensal. Tier Growth ($5/funcionário/mês): todos os canais, questionários customizados, relatórios semanais, alertas configuráveis. Tier Enterprise ($8+/funcionário/mês): API de integração, SLA, data residency, relatórios white-label, suporte dedicado. Setup fee único para Enterprise ($2.000–$10.000) cobre integração com HCM. Expansão natural: empresa cresce → mais funcionários → receita cresce sem novo custo de aquisição (NRR > 110%).",
+    "stack_sugerida": "Backend: Node.js + TypeScript (Fastify) para API web de alta performance; Python (FastAPI) para worker de análise (ecossistema ML/NLP nativo. Banco: PostgreSQL com schema-per-tenant para isolamento de dados; Redis para cache de sessões e fila de jobs (Bull). LLM: Anthropic Claude Haiku para análise qualitativa de respostas abertas (custo/performance ótimos) com fallback para modelo open-source (Llama 3 via Ollama) em tier self-hosted. Anonimização: pipeline própria com k-anonimidade (k≥5) + supressão de PII via spaCy NER antes de enviar ao LLM. Frontend: Next.js (App Router) + TailwindCSS + Recharts para dashboard. Mobile: React Native (código compartilhado iOS/Android). Infra: AWS — ECS Fargate (API + worker), RDS PostgreSQL, ElastiCache Redis, S3 + CloudFront (relatórios PDF), SQS (fila alternativa de alta durabilidade). Observabilidade: OpenTelemetry + Grafana Cloud. CI/CD: GitHub Actions. IaC: Terraform."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 2,
+  "justificativa": "A arquitetura apresenta um CRUD de reservas bem estruturado, mas o suposto diferenciador — a natureza 'descentralizada' do produto, que deveria ser o núcleo tecnológico insubstituível — não está representado em nenhuma entidade, regra de negócio ou mecanismo; o sistema de créditos/assinaturas existe, mas é commodity em qualquer plataforma SaaS de booking, tornando o conjunto replicável por qualquer desenvolvedor com uma biblioteca de agendamento genérica."
+}

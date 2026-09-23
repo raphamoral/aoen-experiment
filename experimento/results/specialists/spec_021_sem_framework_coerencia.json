@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta conta uma história arquitetural coesa e bem encadeada — a escolha de MQTT se justifica pelo ecossistema Node.js, o TimescaleDB como extensão do Postgres resolve o problema de séries temporais sem duplicar a operação, o React + React Native cria sinergia de conhecimento entre web e mobile, os três perfis de usuário mapeiam diretamente para as interfaces declaradas, e a progressão 'threshold simples → ML depois' é metodologicamente consistente com o 'fale com clientes antes de construir'; a nota não chega a 10 por três lacunas de coerência: (1) a seção de escalabilidade está truncada, deixando sem resolução a tensão entre 'servidor único' e o MQTT broker gerenciado vs self-hosted com implicações operacionais distintas, (2) o perfil de 'empresa de manutenção gerenciando múltiplos clientes' exige arquitetura multi-tenant que não aparece nas decisões de banco ou segurança, e (3) os relatórios PDF mensais são mencionados nas interfaces mas nenhuma tecnologia de geração é citada em nenhuma camada."
+}

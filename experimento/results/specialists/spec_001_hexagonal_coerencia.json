@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam uma narrativa consistente e bem encadeada — hexagonal architecture → IoC + interfaces → testabilidade; WebSocket + Redis + Socket.io → rastreamento em tempo real; PostGIS + RouteOptimizationPort + OSRM/Maps → domínio geoespacial; event-driven + filas assíncronas + horizontal scaling → escalabilidade coerente com o problema — mas há tensões que impedem nota máxima: a camada de adapters primários descreve um monolito (Express/FastAPI único + Socket.io) enquanto a escalabilidade propõe microsserviços por bounded context sem mapear quais adapters pertencem a qual serviço; a dualidade Node.js/TypeScript vs Python/FastAPI fica sem delineação de responsabilidade entre os serviços; e 'RabbitMQ ou Kafka' trata como equivalentes tecnologias com trade-offs distintos (task queue vs event log), revelando uma lacuna na decisão arquitetural de mensageria."
+}

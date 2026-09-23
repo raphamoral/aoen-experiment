@@ -1,0 +1,89 @@
+{
+  "ideia_idx": 74,
+  "ideia": "Plataforma de gestão de propriedade intelectual para universidades",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida da propriedade intelectual universitária (PI): registro de invenções e divulgações (disclosures), avaliação de patenteabilidade, proteção (patentes, marcas, software, cultivares, direitos autorais), titularidade e coautoria entre pesquisadores/instituições/financiadores, contratos de licenciamento e transferência de tecnologia (NIT/TTO), distribuição de royalties, prazos e anuidades, e conformidade legal (Lei de Inovação 10.973/2004, Marco Legal de CT&I, Lei de Propriedade Industrial 9.279/96, Bayh-Dole em contextos internacionais). Agregados principais: Invenção, Disclosure, PedidoDeProteção, Portfólio, Contrato de Licença, Parceiro/Licenciado, Inventor, Prazo/Anuidade, Royalty, Titularidade.",
+    "primary_ports": [
+      "SubmitInventionDisclosureUseCase (submeter divulgação de invenção)",
+      "EvaluatePatentabilityUseCase (avaliar patenteabilidade e decisão de proteger)",
+      "ManageIPPortfolioUseCase (gerir portfólio de PI)",
+      "FileProtectionApplicationUseCase (depositar pedido de proteção)",
+      "ManageOwnershipAndInventorsUseCase (titularidade e coautoria)",
+      "NegotiateLicenseUseCase (negociar e formalizar licenças/transferência de tecnologia)",
+      "TrackDeadlinesAndFeesUseCase (prazos, exigências e anuidades)",
+      "CalculateAndDistributeRoyaltiesUseCase (royalties e partilha)",
+      "GenerateComplianceAndReportingUseCase (relatórios, indicadores e prestação de contas)",
+      "ManageTenantAndAccessUseCase (universidades/tenants, papéis e permissões)",
+      "SearchPriorArtUseCase (busca de anterioridade)"
+    ],
+    "secondary_ports": [
+      "InventionRepository / PortfolioRepository / LicenseRepository (persistência)",
+      "DocumentStoragePort (armazenamento de documentos e evidências)",
+      "PatentOfficePort (INPI, EPO, USPTO, WIPO/PCT)",
+      "PriorArtSearchPort (bases de patentes e literatura científica)",
+      "ResearchInformationPort (Lattes, ORCID, CRIS/Current Research Information Systems, repositórios institucionais)",
+      "IdentityProviderPort (SSO institucional: SAML/OIDC, CAFe/eduGAIN)",
+      "PaymentGatewayPort (cobrança de assinatura, pagamento de royalties e taxas)",
+      "ERPFinancePort (sistema financeiro/contábil da universidade, fundações de apoio)",
+      "ESignaturePort (assinatura eletrônica de contratos, ICP-Brasil)",
+      "NotificationPort (e-mail, mensageria, push)",
+      "AIAnalysisPort (LLM/ML para classificação, resumo e similaridade)",
+      "ValuationPort (estimativa de valor e dados de mercado)",
+      "EventPublisherPort (eventos de domínio)",
+      "AuditLogPort (trilha de auditoria imutável)",
+      "ClockPort / IdGeneratorPort (tempo e identidades, para testabilidade)"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON) e GraphQL para SPA web",
+      "Aplicação web (portal de pesquisadores, NIT/TTO, jurídico, gestores)",
+      "Portal externo para licenciados e empresas parceiras",
+      "CLI e scripts administrativos (migração, importações em lote)",
+      "Webhooks de entrada (assinatura eletrônica, pagamentos, escritórios de patentes)",
+      "Consumidores de fila/eventos (jobs agendados de prazos e anuidades)",
+      "Bot/assistente conversacional (Slack, Teams)",
+      "Test adapters (testes de aceitação, BDD, contract tests dirigindo o core sem UI)",
+      "SDK/API pública para integração com sistemas da universidade"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL adapter (repositórios, com Row-Level Security por tenant)",
+      "In-memory adapter (testes e desenvolvimento)",
+      "S3/MinIO/Azure Blob adapter (documentos)",
+      "INPI adapter (e-Patentes/RPI, web services) e adapters EPO OPS, USPTO, WIPO PATENTSCOPE/PCT",
+      "Google Patents/Lens.org/Espacenet adapters (anterioridade)",
+      "Lattes/ORCID/OpenAlex/Scopus/Web of Science adapters",
+      "Keycloak/Auth0/Azure AD adapter (SAML/OIDC)",
+      "Stripe/Pagar.me/Asaas adapter (pagamentos, PIX, boleto)",
+      "SAP/TOTVS/Oracle adapters (ERP)",
+      "DocuSign/Clicksign/Gov.br adapters (assinatura)",
+      "SES/SendGrid/SMTP adapter (e-mail) e adapter de WhatsApp/SMS",
+      "Adapter de LLM (Claude API) e modelos de embeddings (busca semântica)",
+      "Kafka/RabbitMQ/SQS adapter (eventos)",
+      "Adapter de auditoria append-only (tabela imutável/ledger)",
+      "Fake/stub adapters (escritórios de patentes e pagamentos simulados)"
+    ],
+    "isolation": "O core (domínio + casos de uso) é um módulo sem dependências de frameworks, banco, HTTP ou SDKs; contém apenas entidades, value objects, serviços de domínio e as interfaces das portas. Dependências apontam sempre para dentro (Dependency Inversion): adapters conhecem o core, nunca o contrário. Primary adapters traduzem protocolos externos (HTTP, filas, CLI) em chamadas às portas primárias com DTOs próprios; secondary adapters implementam as portas secundárias e traduzem modelos externos (INPI, ORCID, Stripe) para o modelo do domínio via anti-corruption layers. A injeção de dependências é feita em um composition root fora do core. O tenant é um conceito do domínio passado explicitamente em cada caso de uso. Regras de arquitetura (ArchUnit/dependency-cruiser) falham o build se o core importar infraestrutura. Todos os sistemas externos recebem tratamento simétrico: qualquer adapter pode ser substituído por um fake, permitindo que o mesmo core seja dirigido por usuário, teste automatizado ou script.",
+    "interfaces": [
+      "Portal do Pesquisador (submissão de divulgações, acompanhamento)",
+      "Painel do NIT/TTO (triagem, portfólio, pipeline de licenciamento)",
+      "Painel jurídico (contratos, titularidade, prazos)",
+      "Painel da reitoria/pró-reitoria (indicadores, ROI de PI, relatórios ao MCTI/Forinter)",
+      "Portal de licenciados e empresas (ofertas de tecnologia, vitrine, propostas)",
+      "API REST/OpenAPI e GraphQL pública para integração",
+      "Webhooks de saída para sistemas da universidade",
+      "CLI administrativa",
+      "Notificações por e-mail/mensageria sobre prazos e aprovações",
+      "Console de administração multi-tenant e billing"
+    ],
+    "escalabilidade": "Multi-tenancy por universidade (schema ou RLS por tenant, com opção de banco dedicado para clientes maiores). Core stateless, escalando horizontalmente atrás de balanceador (containers/Kubernetes ou serviços serverless). Como as portas isolam a infraestrutura, adapters podem ser escalados ou trocados independentemente (ex.: migrar de Postgres único para read replicas, ou busca para OpenSearch). Cargas assíncronas (sincronização com escritórios de patentes, análise por IA, geração de relatórios, cálculo de royalties) via filas e workers separados, com idempotência e retries. Cache (Redis) em adapters de leitura e de consulta a bases externas com limite de taxa. CQRS leve para relatórios/dashboards com read models. Arquitetura pode evoluir de monolito modular (um módulo por bounded context) para serviços separados nas fronteiras já definidas pelas portas, se necessário. O volume é naturalmente moderado (milhares de invenções por universidade), então o gargalo tende a ser integrações externas, não throughput.",
+    "custos": "Custos principais: infraestrutura de nuvem (banco gerenciado, storage, filas, computação), que é baixa a moderada dada a carga; chamadas a APIs de escritórios de patentes e bases de anterioridade (algumas pagas ou com cotas); inferência de IA/LLM (controlável com cache, modelos menores para triagem e limites por tenant); assinatura eletrônica e envio de mensagens por transação; conformidade e segurança (LGPD, sigilo de invenções antes do depósito, criptografia, backups, auditoria, certificações como ISO 27001); onboarding e migração de dados legados por universidade (custo relevante de implantação); suporte especializado com conhecimento jurídico de PI. Ciclo de vendas longo no setor público exige licitação/contratação e capital para sustentar o comercial. Monolito modular no início reduz custo operacional; multi-tenancy compartilhado dilui custo por cliente. Requisitos de soberania de dados podem exigir região de nuvem nacional.",
+    "monetizacao": "Assinatura SaaS por universidade em planos escalonados (Básico, Profissional, Enterprise) com base em número de usuários, invenções ativas ou tamanho do portfólio; taxa de implantação e migração de dados; módulos adicionais (busca de anterioridade com IA, valuation, gestão de royalties, vitrine de tecnologias); cobrança por uso em integrações e IA (consultas, análises); comissão ou taxa sobre transações de licenciamento e pagamento de royalties processados na plataforma (marketplace de tecnologias com empresas); serviços profissionais (consultoria de PI, treinamento, customização); plano para institutos de pesquisa, ICTs, hospitais universitários e fundações de apoio; contratos plurianuais com preço reduzido; acesso à API para integradores. Financiamento via editais de inovação pode subsidiar a entrada no setor público.",
+    "stack_sugerida": "Core em TypeScript (Node.js) ou Kotlin/Java com módulo de domínio puro; NestJS ou Spring Boot apenas nos adapters e composition root; PostgreSQL (RLS multi-tenant) com Flyway/Prisma ou jOOQ; OpenSearch/pgvector para busca textual e semântica; Redis para cache; RabbitMQ/SQS/Kafka para eventos e filas; S3-compatível para documentos; Keycloak (SAML/OIDC, SSO institucional); frontend React/Next.js com TypeScript; API REST com OpenAPI e GraphQL opcional; integração de IA via Claude API atrás da AIAnalysisPort; Stripe/Asaas para pagamentos; Docker + Kubernetes (ou ECS/Cloud Run) com Terraform; CI/CD com GitHub Actions; OpenTelemetry, Grafana/Prometheus e Sentry para observabilidade; testes com Vitest/JUnit, Testcontainers, Pact (contract tests) e ArchUnit/dependency-cruiser para impor a arquitetura hexagonal."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T04:10:57+00:00",
+    "runner": "runner.py"
+  }
+}

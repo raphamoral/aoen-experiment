@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 31,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta apresenta isolamento apenas lógico (interface abstrata 'MatchingEngine' com contrato fixo), mas não há menção a filas, workers separados, processamento assíncrono ou fallback — o pareamento com embeddings (operação cara) aparenta ser chamado de forma síncrona dentro da camada de serviços, o que significa que uma falha ou lentidão no motor de IA bloqueia toda a stack e não permite escalonamento independente do processamento pesado."
+}

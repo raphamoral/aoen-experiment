@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 92,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de análise de utilização de licenças está claramente identificado como núcleo diferenciador, isolado das interfaces e extensível via modelo de dados normalizado e conectores plugáveis, resolvendo o problema de gastos ocultos em SaaS de forma que cadastros simples de contratos não resolvem — perde um ponto por não detalhar qual vantagem técnica concreta impede um concorrente de replicar o motor rapidamente."
+}

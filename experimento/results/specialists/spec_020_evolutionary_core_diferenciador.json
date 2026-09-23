@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador emerge implicitamente da combinação entre o Gamification Engine e o Bug Similarity Service (ML-heavy para deduplicação/fraude), que juntos tornam o crowdsourced testing escalável e confiável — algo que plataformas genéricas de bug bounty não resolvem — mas a proposta arquitetural nunca nomeia explicitamente esse núcleo como razão de existir do produto, trata-o como mais um módulo funcional entre outros, e não articula por que alternativas como Testbirds ou Rainforest QA não conseguem replicá-lo."
+}

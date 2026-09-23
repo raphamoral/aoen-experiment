@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "aoen",
+  "response": {
+    "fase1_core": "Emissão de certificados com assinatura criptográfica imutável e verificação pública por URL/código único — sem isso o produto não existe. O núcleo é: assinar → registrar → verificar.",
+    "fase1_mercado": "Instituições de cursos livres (escolas de idiomas, bootcamps, academias de negócios), criadores de conteúdo independentes (infoprodutores), plataformas LMS white-label e empresas que emitem certificações internas sem estrutura de MEC.",
+    "fase1_extensivel": "Sim. O mecanismo de assinatura é abstraído por uma interface CertificateSigner. Implementações intercambiáveis: hash SHA-256 + banco imutável (barato, day-zero), blockchain pública como Ethereum/Polygon (premium, auditável), PKI com certificado ICP-Brasil (enterprise). O emissor troca sem reescrever o domínio.",
+    "fase2_interfaces": [
+      "Dashboard Web (emissor): gestão de cursos, turmas, alunos e emissão em lote",
+      "Página pública de verificação: URL amigável ou QR Code, sem login, acessível por terceiros (RH, contratantes)",
+      "REST API: integração com LMS externos (Hotmart, Eduzz, Moodle, plataformas próprias)",
+      "Portal do aluno: histórico de certificados recebidos, download, compartilhamento em LinkedIn",
+      "Widget embeddable: iframe de verificação para ser incorporado no site do emissor"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de instituições que operam manualmente (Excel/PDF avulso). Página pública abre o valor percebido pelo mercado de RH e recrutadores, que validam sem depender do emissor. REST API abre o mercado de plataformas que já têm base de alunos mas não têm infraestrutura de certificação. Portal do aluno retém o aluno na plataforma e gera viralidade orgânica (compartilhamento no LinkedIn). Widget embeddable retém o emissor ao integrar a marca dele no fluxo.",
+    "fase2_service_layer": "CertificationService expõe métodos como issueCertificate(payload), verifyCertificate(code), revokeCertificate(id), listByStudent(studentId). Todas as interfaces (Web, API, Widget) chamam exclusivamente o Service Layer — nenhuma interface conhece banco, fila ou engine de PDF diretamente. Troca de interface não afeta regras de negócio.",
+    "fase3_fluxo_fixo": "Fluxo imutável no código: receber dados do curso/aluno → validar elegibilidade → gerar hash único → renderizar PDF do certificado → assinar digitalmente → persistir registro imutável → notificar aluno → disponibilizar URL pública de verificação.",
+    "fase3_parametros_configuraveis": [
+      "template visual do certificado (HTML/CSS por cliente)",
+      "logo, cores, tipografia e assinatura do emissor",
+      "campos customizados (carga horária, data, nome do instrutor, código de curso)",
+      "validade do certificado (indefinida, 1 ano, 2 anos)",
+      "idioma do certificado e do e-mail de entrega",
+      "mecanismo de assinatura (hash simples, blockchain, ICP-Brasil)",
+      "domínio customizado para URL de verificação (certificados.minhaescola.com.br)",
+      "webhook de notificação pós-emissão",
+      "critério de elegibilidade (nota mínima, % de conclusão, aprovação manual)",
+      "número máximo de emissões por plano"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro na tabela tenants com seu config JSON (template, logo, domínio, plano, mecanismo de assinatura). Zero código. Onboarding via formulário no dashboard admin que popula o tenant config. Ambientes isolados por tenant_id em todas as queries.",
+    "fase4_core_isolado": "O worker de geração + assinatura de certificados roda em processo separado, consumindo fila de jobs (ex: BullMQ ou SQS). A aplicação principal enfileira o job e retorna imediatamente. O worker processa de forma assíncrona: renderiza PDF, assina, persiste, dispara notificação. Escalável horizontalmente por demanda.",
+    "fase4_custo_variavel": "Custo por certificado emitido: tempo de CPU do worker (PDF rendering) + armazenamento do PDF (S3/R2 ~0,01 USD/GB) + e-mail transacional (SES ~0,0001 USD/email) + escrita no ledger (hash em banco = negligível; blockchain = gas fee variável). Custo mensurável por tenant_id, permitindo cobrança por volume.",
+    "fase4_continuidade": "A fila de jobs é o buffer de desacoplamento. Se o worker cair: a aplicação principal continua operando (dashboard, verificações, API), jobs ficam enfileirados com retry automático, SLA de entrega degradado mas sem perda de dados. Circuit breaker detecta falha do worker e alerta ops sem derrubar o sistema principal.",
+    "fase4_manutencao": "A troca de engine de PDF (ex: Puppeteer → WeasyPrint → serviço externo) ou de mecanismo de assinatura ocorre apenas dentro do worker, atrás da interface CertificateSigner/PdfRenderer. O restante do sistema não percebe a troca. Blue-green deployment no worker permite atualização sem downtime.",
+    "monetizacao": "SaaS por assinatura mensal baseada em volume de emissões: Starter (até 100 certs/mês), Growth (até 1.000), Scale (até 10.000), Enterprise (ilimitado + SLA + domínio customizado + ICP-Brasil). Add-ons: blockchain anchoring por certificado (ex: R$0,50/cert), API access (plano Growth+), white-label completo (Enterprise). Receita previsível desde o day-zero com plano Starter pago.",
+    "stack_sugerida": "Backend: Node.js + TypeScript (NestJS) — Service Layer limpa e testável. Fila: BullMQ + Redis. PDF: Puppeteer (headless Chrome) no worker isolado. Assinatura: SHA-256 + timestamp server (day-zero), Polygon/Ethereum via ethers.js (premium). Banco: PostgreSQL (dados relacionais + JSONB para configs de tenant). Storage: Cloudflare R2 (custo baixo para PDFs). Frontend: Next.js (dashboard + portal aluno + página de verificação pública com SSR para SEO). Infra: Railway ou Render (day-zero, baixo custo), migração para AWS ECS Fargate quando escalar. Domínio customizado: Cloudflare para proxy e SSL automático por tenant."
+  },
+  "raw": "```json\n{\n  \"fase1_core\": \"Emissão de certificados com assinatura criptográfica imutável e verificação pública por URL/código único — sem isso o produto não existe. O núcleo é: assinar → registrar → verificar.\",\n  \"fase1_mercado\": \"Instituições de cursos livres (escolas de idiomas, bootcamps, academias de negócios), criadores de conteúdo independentes (infoprodutores), plataformas LMS white-label e empresas que emitem certificações internas sem estrutura de MEC.\",\n  \"fase1_extensivel\": \"Sim. O mecanismo de assinatura é abstraído por uma interface CertificateSigner. Implementações intercambiáveis: hash SHA-256 + banco imutável (barato, day-zero), blockchain pública como Ethereum/Polygon (premium, auditável), PKI com certificado ICP-Brasil (enterprise). O emissor troca sem reescrever o domínio.\",\n  \"fase2_interfaces\": [\n    \"Dashboard Web (emissor): gestão de cursos, turmas, alunos e emissão em lote\",\n    \"Página pública de verificação: URL amigável ou QR Code, sem login, acessível por terceiros (RH, contratantes)\",\n    \"REST API: integração com LMS externos (Hotmart, Eduzz, Moodle, plataformas próprias)\",\n    \"Portal do aluno: histórico de certificados recebidos, download, compartilhamento em LinkedIn\",\n    \"Widget embeddable: iframe de verificação para ser incorporado no site do emissor\"\n  ],\n  \"fase2_justificativa_mercado\": \"Dashboard Web abre o mercado de instituições que operam manualmente (Excel/PDF avulso). Página pública abre o valor percebido pelo mercado de RH e recrutadores, que validam sem depender do emissor. REST API abre o mercado de plataformas que já têm base de alunos mas não têm infraestrutura de certificação. Portal do aluno retém o aluno na plataforma e gera viralidade orgânica (compartilhamento no LinkedIn). Widget embeddable retém o emissor ao integrar a marca dele no fluxo.\",\n  \"fase2_service_layer\": \"CertificationService expõe métodos como issueCertificate(payload), verifyCertificate(code), revokeCertificate(id), listByStudent(studentId). Toda"
+}

@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 57,
+  "ideia": "App de controle parental inteligente com relatórios de bem-estar digital",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de análise comportamental inteligente: transformar dados brutos de uso digital das crianças em insights acionáveis de bem-estar — não apenas bloquear conteúdo (commodity), mas interpretar padrões, detectar riscos emergentes e gerar relatórios empáticos e contextualizados para os pais",
+    "fase1_mercado": "Pais de crianças entre 5 e 16 anos preocupados com saúde digital, especialmente famílias de classe média/alta com múltiplos dispositivos. Segmento secundário: escolas e redes de ensino que precisam de políticas de uso digital com evidências. Mercado total endereçável: qualquer família com filhos conectados em qualquer dispositivo",
+    "fase1_extensivel": "Sim. O core é abstraído por uma interface AnalysisEngine implementável por qualquer LLM (OpenAI, Anthropic Claude, Google Gemini) ou modelos on-premise. Os agentes de coleta também são abstraídos por plataforma via interface DeviceAgent (Android, iOS, Windows, Mac). Nenhum fornecedor é obrigatório — apenas a interface e o contrato de dados são fixos no código",
+    "fase2_interfaces": [
+      "App mobile para pais (iOS e Android) — controle em tempo real e notificações push",
+      "Dashboard web para pais — relatórios detalhados, histórico e configurações avançadas",
+      "Agente silencioso no dispositivo da criança (Android/iOS) — coleta de dados de uso",
+      "Extensão de navegador no computador da criança — monitoramento de uso web",
+      "Bot de alertas via WhatsApp/Telegram — canal para pais menos tech-savvy",
+      "API REST + webhooks — integração com plataformas escolares e ERPs educacionais (B2B)"
+    ],
+    "fase2_justificativa_mercado": "App mobile captura o mercado B2C com alta frequência de uso e retenção. Dashboard web converte famílias que precisam de profundidade analítica e reduz churn. Agente no dispositivo da criança é o ponto de coleta sem o qual o produto não existe — é também a barreira de entrada competitiva. Bot WhatsApp/Telegram abre mercado emergente onde WhatsApp é canal primário (Brasil, Índia, LatAm) sem necessidade de instalar mais um app. API B2B abre mercado escolar com tickets 10-50x maiores que B2C, contrato recorrente e churn estruturalmente menor",
+    "fase2_service_layer": "Uma Service Layer centralizada (REST API) expõe todos os casos de uso: coletar evento de uso, processar relatório, configurar regras, enviar alerta, consultar histórico. Todas as interfaces — mobile, web, bot, API B2B — consomem exclusivamente essa camada via tokens de autenticação por contexto. A lógica de negócio (cálculo de bem-estar, detecção de anomalias, geração de relatório) existe uma única vez no servidor, nunca duplicada em nenhuma interface",
+    "fase3_fluxo_fixo": "Coleta de evento de uso no dispositivo filho → envio para fila de ingestão → normalização e enriquecimento do evento → agregação por período configurado → análise de padrão comportamental via LLM → geração de relatório estruturado → classificação de nível de risco → dispatch de alertas por canal → persistência do relatório → disponibilização nas interfaces do responsável",
+    "fase3_parametros_configuraveis": [
+      "Perfil de cada criança: nome, data de nascimento, faixa etária (determina thresholds automáticos por padrão de mercado)",
+      "Lista de apps e categorias: permitidos, bloqueados, monitorados sem bloqueio",
+      "Limite de tempo de tela por app, categoria e tipo de dia (semana vs fim de semana vs feriado)",
+      "Horários permitidos por categoria de uso (educacional, entretenimento, redes sociais)",
+      "Frequência de geração dos relatórios (diário, semanal, mensal)",
+      "Canais de notificação por severidade de alerta (push, email, WhatsApp, SMS)",
+      "Thresholds de alerta por métrica (ex: mais de 3h em redes sociais, detecção de conteúdo adulto)",
+      "Tom e profundidade dos relatórios gerados pela IA (resumido, técnico, empático, clínico)",
+      "Benchmarks de referência aplicados na análise (faixa etária, país, perfil escolar)",
+      "Fuso horário e calendário escolar da família",
+      "Idioma dos relatórios e notificações",
+      "Política de retenção de dados históricos (30, 90 ou 365 dias)"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário inicial: nome dos filhos, datas de nascimento e plataformas utilizadas. O sistema cria automaticamente um tenant isolado, aplica templates de regras padrão por faixa etária, gera credenciais de instalação dos agentes e inicia a coleta imediatamente. Zero código novo — apenas instanciação de uma nova configuração de tenant com parâmetros persistidos em banco",
+    "fase4_core_isolado": "O processo de análise comportamental via LLM é isolado em workers assíncronos independentes (AnalysisWorker) rodando em containers separados. Recebe jobs de uma fila durável, processa o relatório e publica o resultado em outro tópico. Opera completamente desacoplado da Service Layer principal — falha, lentidão ou manutenção do worker não interrompem a coleta de dados nem as funcionalidades de controle em tempo real",
+    "fase4_custo_total_cliente": "Por família/mês (estimativa plano base, 2 filhos): LLM para relatórios semanais e alertas pontuais (Claude Haiku ou GPT-4o mini) $0.50–1.50; compute e API gateway proporcional $0.30; PostgreSQL + TimescaleDB por volume de eventos $0.20 (~200MB/mês por família); armazenamento de histórico de relatórios $0.10 (S3/R2, ~100MB); banda de sync dos agentes $0.10 (~1–2GB/mês); email e push notifications $0.05. TOTAL ESTIMADO: $1.25–2.25 por família/mês. Margem operacional viável com pricing de $9.99–14.99/mês (5–8x de cobertura de custo)",
+    "fase4_continuidade": "Arquitetura de fila durável (Redis + BullMQ ou SQS) garante que eventos continuam sendo coletados e enfileirados mesmo com o AnalysisWorker completamente offline. Quando o worker volta, processa retroativamente sem perda. O app dos pais permanece funcional via cache do último relatório processado. Bloqueios e regras de acesso operam via cache local no agente do dispositivo filho — independem do worker de análise. Circuit breaker na Service Layer impede que falha do LLM se propague para o restante da API",
+    "fase4_manutencao": "A interface AnalysisEngine é implementada por adapters intercambiáveis: AnthropicAdapter, OpenAIAdapter, GeminiAdapter, LocalModelAdapter. Trocar provedor de LLM equivale a trocar o adapter ativo via variável de ambiente. Feature flags permitem migração gradual de tráfego (ex: 10% no novo modelo, 90% no atual) com comparação de qualidade de output antes do rollout completo. Zero downtime, zero mudança de schema de banco de dados",
+    "monetizacao": "B2C — Freemium: 1 filho, relatórios mensais (canal de aquisição e validação). Plano Família $9.99/mês: até 4 filhos, relatórios semanais, alertas em tempo real, todos os dispositivos. Plano Premium $14.99/mês: relatórios diários, análise de sentimento, suporte prioritário, histórico de 1 ano. B2B Escolas: $1.50–3.00/aluno/mês com dashboard institucional, API de integração e contrato anual (LTV 10-20x maior que B2C). Add-ons de alto valor percebido: relatório psicopedagógico aprofundado com IA $4.99/mês, modo integração com terapeuta ou psicólogo $9.99/mês. Modelo de upsell natural: quanto mais o produto detecta problemas reais, maior o valor percebido e menor o churn",
+    "stack_sugerida": "Service Layer: Node.js com NestJS (tipagem forte, DI nativa, módulos isoláveis) ou Python com FastAPI. Fila de processamento: Redis + BullMQ para self-hosted ou AWS SQS para gerenciado. LLM: Claude Haiku (custo operacional baixo) ou GPT-4o mini com fallback via LiteLLM proxy abstraindo o adapter. Banco de dados: PostgreSQL para dados relacionais (usuários, configurações, relatórios) + TimescaleDB para séries temporais de eventos de uso. Cache: Redis. Agente Android: Kotlin usando Accessibility Service API e UsageStats API. Agente iOS: Swift com Screen Time API e MDM profile para ambientes escolares. Extensão navegador: JavaScript com Manifest V3. App pais: React Native com Expo (iOS + Android base única). Dashboard web: Next.js + TailwindCSS. Infra: Railway ou Render para MVP, containers Docker orquestrados com Kubernetes para escala. CDN e proxy: Cloudflare. Autenticação: Supabase Auth ou Auth0. Metering por tenant: OpenMeter ou Lago (open-source) para medir e faturar por uso real. Monitoramento: OpenTelemetry + Grafana"
+  }
+}

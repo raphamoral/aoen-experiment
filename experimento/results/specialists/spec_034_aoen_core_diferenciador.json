@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 34,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (motor Monte Carlo probabilístico) está explicitamente identificado, isolado via interface abstrata SimulationEngine com implementações substituíveis, extensível por adapters de dados de mercado e plugins fiscais por jurisdição/tenant, e resolve um problema real — planejamento de aposentadoria com probabilidade de sucesso e déficit esperado — que calculadoras determinísticas existentes não resolvem; perde um ponto porque simulação Monte Carlo para aposentadoria não é tecnologia nova em si, e a verdadeira unicidade está na arquitetura multi-tenant extensível, que poderia ser articulada mais diretamente como o diferenciador central."
+}

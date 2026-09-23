@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não menciona nenhuma interface de usuário, canal de entrega ou contexto de acesso — não há referência a web, mobile, API pública ou qualquer outra superfície de interação, tornando impossível avaliar múltiplas interfaces."
+}

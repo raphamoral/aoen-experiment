@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 6,
+  "justificativa": "O modelo prevê três tiers de assinatura (BASIC: 20h/mês, PRO: 80h/mês, ENTERPRISE: ilimitado) com sistema de créditos e pagamento por reserva, conectando receita ao uso real do espaço, mas faltam valores monetários explícitos, métricas de sustentabilidade (LTV, CAC, churn) e estratégia de precificação diferenciada por segmento."
+}

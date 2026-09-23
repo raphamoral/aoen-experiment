@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: as fitness functions são rastreáveis 1-para-1 às características arquiteturais declaradas; a estratégia incremental respeita o princípio de last responsible moment (broker introduzido na Fase 3, quando a vazão justifica; modelo de multi-tenancy adiado até dados reais de Fase 2); o event-driven como mecanismo primário de desacoplamento reforça diretamente elasticidade e escalabilidade; o anti-corruption layer é consequência natural da heterogeneidade de fabricantes de sensores industriais; e o versionamento obrigatório do evento canônico desde o início é coerente com a irreversibilidade declarada dessa decisão — a única tensão leve é entre a meta de 99.9% de uptime e o monolito da Fase 1, mitigada (mas não eliminada) pela reconciliação via sequence numbers, e o texto truncado impede avaliação completa da seção de coupling."
+}

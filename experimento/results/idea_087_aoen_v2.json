@@ -1,0 +1,43 @@
+{
+  "ideia_idx": 87,
+  "ideia": "App de gestão de quadras esportivas com reserva e pagamento integrado",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de disponibilidade em tempo real com orquestração do ciclo de reserva: verificação de conflito → bloqueio atômico do slot → processamento de pagamento → confirmação → notificação. Sem esse fluxo transacional e sem conflitos, o produto não existe.",
+    "fase1_mercado": "Operadores de quadras esportivas (clubes, academias, condomínios, centros esportivos municipais) que perdem receita por gestão manual, e jogadores que precisam reservar sem ligar ou comparecer presencialmente.",
+    "fase1_extensivel": "Sim. O core é agnóstico: (1) sport-agnostic — quadra de tênis, futsal, padel, basquete são apenas configurações; (2) payment-agnostic — Stripe, Mercado Pago, PagSeguro são adaptadores trocáveis via interface PaymentGateway; (3) notification-agnostic — WhatsApp, SMS, e-mail são canais plugáveis via interface NotificationProvider.",
+    "fase2_interfaces": [
+      "PWA/Web para jogadores — reserva self-service pelo browser sem instalação",
+      "Painel admin web para operadores — gestão de quadras, agenda, relatórios financeiros",
+      "App mobile (iOS/Android) para jogadores frequentes — notificações push e reserva recorrente",
+      "Bot WhatsApp para reserva conversacional — atinge mercado que não usa app",
+      "Widget embeddável para o site próprio do operador — preserva a marca do cliente",
+      "API REST/Webhooks para integrações B2B — sistemas de gestão de academias (ERP fitness)"
+    ],
+    "fase2_justificativa_mercado": "PWA abre o mercado de jogadores ocasionais (zero fricção de instalação). App mobile fideliza jogadores recorrentes com notificações e histórico. WhatsApp bot captura o segmento 40+ e operadores de baixa digitalização. Widget embeddável vende para operadores que já têm site e marca própria (premium). API B2B abre o canal de parceiros e integradores — revenda sem CAC direto.",
+    "fase2_service_layer": "Uma camada de serviços internos (AvailabilityService, BookingService, PaymentService, NotificationService, ReportingService) expõe contratos estáveis via interfaces tipadas. Nenhuma interface contém lógica de negócio — todas consomem os mesmos serviços via API interna ou diretamente injetados. Trocar ou adicionar uma interface não toca os serviços.",
+    "fase3_fluxo_fixo": "O fluxo de reserva é imutável no código: (1) consultar disponibilidade → (2) adquirir lock distribuído no slot → (3) criar reserva em estado pendente → (4) processar pagamento → (5) confirmar ou reverter reserva → (6) emitir notificação → (7) liberar lock. O fluxo de cancelamento segue: (1) validar prazo configurado → (2) calcular reembolso pelo percentual configurado → (3) estornar → (4) liberar slot → (5) notificar.",
+    "fase3_parametros_configuraveis": [
+      "Modalidades e tipos de quadra por tenant",
+      "Horários de funcionamento e duração de slot (30min, 1h, 2h)",
+      "Tabela de preços por quadra/horário/dia da semana (pico e fora de pico)",
+      "Política de cancelamento (prazo mínimo em horas, percentual de reembolso por faixa)",
+      "Antecedência mínima e máxima para reserva",
+      "Limite de reservas simultâneas por usuário",
+      "Regras de reserva recorrente (semanal, mensal)",
+      "Provedores de pagamento habilitados por tenant",
+      "Canais de notificação ativos (WhatsApp, SMS, e-mail) e templates",
+      "Idioma e locale (pt-BR, es-AR, en-US)",
+      "Branding (logo, cores, domínio customizado)",
+      "Planos de associação e tabela de descontos por categoria de membro",
+      "Webhooks de integração para sistemas externos"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário de configuração que popula um registro de Tenant com todos os parâmetros acima. O sistema cria automaticamente o subdomínio, provisiona o banco de dados isolado por schema (multi-tenant schema-per-tenant), habilita os módulos contratados e disponibiliza o painel e o widget. Novo cliente = novo conjunto de configurações, zero linha de código nova.",
+    "fase4_core_isolado": "O motor de reserva e detecção de conflito (BookingEngine) roda como processo isolado com acesso exclusivo ao banco de reservas e ao Redis para locks distribuídos. Toda requisição de reserva passa por esse processo — ele é o único árbitro de disponibilidade. Notificações, relatórios e o painel admin rodam em processos separados e consomem eventos do BookingEngine via fila de mensagens (nunca chamam diretamente o banco de reservas).",
+    "fase4_custo_total_cliente": "Core por transação: taxa da gateway de pagamento (1,5–3% + R$0,40 fixo). Infra proporcional: ~R$8–15/mês por tenant ativo em compute (instância isolada ou container) + R$3–7/mês por schema PostgreSQL (até 10k reservas/mês) + R$2–5/mês Redis. Armazenamento: ~R$1–2/mês (fotos de quadras, recibos PDF, relatórios). Banda: ~R$0,50–1/mês (API calls + assets servidos via CDN). Notificações: WhatsApp ~R$0,08/mensagem, SMS ~R$0,12, e-mail ~R$0,001. Custo total estimado por tenant pequeno (1–3 quadras, 300 reservas/mês): R$25–45/mês. Margem bruta viável com plano R$199/mês: ~78–87%.",
+    "fase4_continuidade": "O painel admin, o site de reservas e o WhatsApp bot operam em modo degradado quando o BookingEngine está indisponível: exibem disponibilidade em cache (TTL curto no Redis) e enfileiram tentativas de reserva. Circuit breaker com fallback de 'lista de espera' garante que o usuário não perde a intenção de compra. O banco de pagamentos é gravado de forma idempotente — re-processamento não gera cobrança dupla.",
+    "fase4_manutencao": "O BookingEngine depende apenas de interfaces abstratas (IPaymentGateway, INotificationProvider, ILockService). Trocar Mercado Pago por Stripe = implementar novo adaptador e alterar configuração do tenant, sem parar o serviço. Trocar Redis por um lock distribuído diferente = reimplementar ILockService. Blue-green deployment garante troca sem downtime: nova versão sobe em paralelo, tráfego migra gradualmente via feature flag por tenant.",
+    "monetizacao": "SaaS por assinatura mensal escalonada por número de quadras (Starter R$99/mês até 2 quadras, Pro R$249/mês até 6, Business R$599/mês ilimitado + API). Taxa de conveniência opcional de 3–5% sobre transações processadas pela plataforma, repassada ao jogador (operador não paga). Add-ons pagos: domínio customizado (+R$49/mês), relatórios avançados (+R$79/mês), integração ERP (+R$199/mês). Modelo freemium para 1 quadra capta operadores pequenos e converte com crescimento.",
+    "stack_sugerida": "Backend: NestJS (Node.js) — modularidade por domínio, suporte nativo a filas e WebSockets. Banco de dados: PostgreSQL com schema por tenant (Prisma ORM) + Redis para locks distribuídos e cache de disponibilidade. Filas: BullMQ sobre Redis para processamento assíncrono de notificações e relatórios. Frontend web: Next.js 14 (App Router) — SSR para SEO do widget embeddável, RSC para painel admin. Mobile: React Native (Expo) — compartilha lógica com web. Pagamentos: Mercado Pago + Stripe via adapter pattern. Notificações: Evolution API (WhatsApp self-hosted) + Twilio (SMS) + Resend (e-mail transacional). Infra: Railway ou Render (early stage, sem overhead de DevOps) — migração suave para AWS ECS quando CAC justificar. Auth: Clerk ou Auth0 (multi-tenant nativo). CDN: Cloudflare R2 + CDN para assets estáticos. Observabilidade: Sentry (erros) + Grafana + Prometheus (métricas por tenant)."
+  }
+}

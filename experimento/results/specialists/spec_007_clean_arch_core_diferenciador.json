@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "O produto combina gamificação (XP, streaks, badges, níveis) com microlearning corporativo, o que sugere um diferenciador, mas a proposta arquitetural não isola esse núcleo como componente tecnológico independente — as regras de gamificação estão dispersas como atributos simples em User e Achievement, sem um motor de regras extensível, algoritmo adaptativo ou mecanismo que não possa ser replicado por qualquer CRUD com campos de pontuação."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 53,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente arquitetura de produto (HabitService, ImpactCalculator, GamificationEngine, interfaces) sem qualquer menção a mensuração de custo por tenant, custo por operação, rastreamento de consumo individual de recursos ou conexão entre custo operacional e modelo de precificação — não há nem esboço de unit economics, apenas FinOps implícito zero."
+}

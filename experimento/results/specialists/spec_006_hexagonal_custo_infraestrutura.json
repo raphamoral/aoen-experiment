@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "hexagonal",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista os componentes de infraestrutura (S3, PostgreSQL, Redis, Elasticsearch, Datadog, Firebase, etc.) mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia de otimização (scale-to-zero, instâncias spot, tiering de armazenamento) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

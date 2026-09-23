@@ -1,0 +1,82 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Monitoramento de bem-estar mental organizacional com privacidade por design. Agregados: Organização (tenant), Programa de Avaliação (check-ins periódicos, pesquisas validadas como PHQ-9, GAD-7, WHO-5, escalas de burnout), Resposta Anônima (sem vínculo com identidade do colaborador), Coorte/Grupo (unidade mínima de agregação com limiar de k-anonimato, ex.: k>=8), Indicador Agregado (índices de bem-estar, tendências, mapas de risco por área), Alerta de Risco Coletivo (sinais agregados, nunca individuais), Política de Privacidade e Consentimento, Encaminhamento Voluntário a Recursos de Apoio (EAP, psicólogos, linhas de crise). Regras de negócio centrais: anonimização irreversível, supressão de relatórios abaixo do limiar de k-anonimato, ruído de privacidade diferencial, separação entre identidade e resposta via token anônimo, retenção mínima, conformidade com LGPD/GDPR (dados de saúde são dados sensíveis).",
+    "primary_ports": [
+      "SubmeterCheckInAnonimoPort (registrar resposta anônima usando token de uso único)",
+      "EmitirTokenAnonimoPort (validar elegibilidade do colaborador e emitir token não rastreável)",
+      "GerenciarProgramaAvaliacaoPort (criar, agendar e encerrar campanhas e questionários)",
+      "ConsultarRelatorioAgregadoPort (dashboards e relatórios para RH/gestores com regras de k-anonimato)",
+      "GerenciarOrganizacaoPort (onboarding do tenant, estrutura de coortes, planos)",
+      "GerenciarConsentimentoPort (consentimento, revogação, exclusão de dados)",
+      "SolicitarApoioPort (acesso voluntário e confidencial a recursos de apoio e conteúdo de autocuidado)",
+      "AuditarPrivacidadePort (relatórios de conformidade e prova de anonimato para DPO e auditores)"
+    ],
+    "secondary_ports": [
+      "RepositorioRespostasPort (persistência de respostas anonimizadas)",
+      "RepositorioOrganizacaoPort (tenants, coortes, programas)",
+      "ProvedorIdentidadePort (SSO e verificação de elegibilidade sem expor identidade ao core de respostas)",
+      "NotificadorPort (lembretes de check-in sem revelar quem respondeu)",
+      "GeradorTokenAnonimoPort (criptografia, tokens cegos e assinaturas cegas)",
+      "MotorAnonimizacaoPort (k-anonimato, privacidade diferencial, supressão)",
+      "ProvedorAnalyticsPort (armazenamento e consulta de séries temporais agregadas)",
+      "ProvedorRecursosApoioPort (integração com EAP, telepsicologia, diretório de profissionais)",
+      "GatewayPagamentoPort (assinaturas e cobrança)",
+      "ArmazenamentoSegredosPort (KMS e gestão de chaves)",
+      "RelogioPort (tempo, para tornar regras temporais testáveis)",
+      "AuditoriaLogPort (trilha de auditoria imutável sem dados pessoais)",
+      "ExportadorRelatorioPort (PDF, CSV, BI)",
+      "LLMInsightsPort (geração opcional de insights textuais sobre dados já agregados)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API Controller (backend do app web e mobile)",
+      "App Web SPA (portal do colaborador) via API",
+      "App Mobile (iOS/Android) via API",
+      "Dashboard Web do RH/Gestão via API",
+      "Bot Slack / Microsoft Teams (check-in rápido no chat)",
+      "CLI e scripts administrativos (onboarding em lote, exportações)",
+      "Agendador/Cron (disparo de campanhas e fechamento de janelas)",
+      "Consumidores de webhooks (eventos de SSO/SCIM e pagamentos)",
+      "Suíte de testes automatizados (BDD/contrato), tratada como driver equivalente aos usuários"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL com row-level security por tenant (RepositorioRespostas/Organizacao)",
+      "ClickHouse ou TimescaleDB (analytics agregado)",
+      "Adapter SSO/SCIM: Okta, Azure AD, Google Workspace (OIDC/SAML)",
+      "AWS KMS / HashiCorp Vault (segredos e chaves)",
+      "Implementação de assinatura cega RSA (tokens anônimos)",
+      "Biblioteca de k-anonimato e privacidade diferencial (ex.: OpenDP) como adapter do MotorAnonimizacao",
+      "SendGrid / Amazon SES / FCM / APNs (notificações)",
+      "Stripe (cobrança e assinaturas)",
+      "Integração com EAP e telepsicologia (ex.: APIs de parceiros)",
+      "Fila de mensagens: SQS/SNS, RabbitMQ ou Kafka (eventos de domínio)",
+      "Armazenamento de auditoria em S3 com Object Lock (WORM)",
+      "Gerador de PDF/CSV (ex.: Puppeteer, WeasyPrint)",
+      "Adapter LLM (ex.: API Claude) restrito a dados já agregados e suprimidos",
+      "Adapters in-memory/fake para testes (repositórios, relógio, notificador)"
+    ],
+    "isolation": "O core (domínio + casos de uso) não importa nenhum framework, ORM, SDK ou biblioteca de I/O. Depende apenas de interfaces (ports) definidas dentro dele; a injeção de dependências é feita na composition root, fora do hexágono. DTOs e mapeadores ficam nos adapters, sem vazamento de modelos de persistência para o domínio. O anonimato é garantido por design arquitetural: existem dois bounded contexts separados, Identidade/Elegibilidade e Respostas, comunicando-se apenas por token cego, de modo que o core de respostas nunca recebe identificador de colaborador. A política de k-anonimato é regra de domínio, não de UI: nenhum adapter primário consegue obter dados abaixo do limiar. Testes de arquitetura (ArchUnit, dependency-cruiser) impedem violações de dependência. Cada adapter pode ser trocado (ex.: Postgres por DynamoDB, Stripe por Pagar.me) sem alterar o core, e o mesmo caso de uso pode ser acionado por API, bot, CLI ou teste.",
+    "interfaces": [
+      "Portal do colaborador (web/mobile) para check-in anônimo em menos de 2 minutos",
+      "Dashboard de RH com indicadores agregados, tendências e comparativos entre coortes, com supressão automática de grupos pequenos",
+      "Painel do administrador do tenant (coortes, campanhas, integrações SSO, plano)",
+      "Painel do DPO/compliance (auditoria, prova de anonimato, gestão de retenção)",
+      "Bot para Slack/Teams",
+      "API pública REST/GraphQL e webhooks para integração com HRIS e BI",
+      "Área de recursos de apoio e autocuidado (conteúdo, contatos de crise, agendamento com profissionais)",
+      "Exportação de relatórios (PDF/CSV)"
+    ],
+    "escalabilidade": "Multi-tenant com isolamento lógico (RLS) e opção de isolamento físico para clientes enterprise. Core sem estado, escalável horizontalmente atrás de balanceador (containers em Kubernetes ou ECS/Fargate). Escrita de respostas assíncrona via fila para absorver picos de campanha (muitos colaboradores respondendo na mesma janela). Separação de leitura e escrita (CQRS): agregados pré-computados em jobs em lote e servidos por store analítico colunar, sem consultar respostas brutas em tempo real. Cache de dashboards com invalidação por campanha. Particionamento por tenant e período. Escalabilidade geográfica com residência de dados por região (Brasil/UE/EUA) por conformidade. Como as portas isolam o armazenamento, é possível migrar gradualmente de monólito modular para serviços separados (Identidade, Respostas, Analytics) sem reescrever o core.",
+    "custos": "Custo dominado por conformidade e confiança, mais que por computação. Principais itens: (1) infraestrutura, baixa a moderada, pois cargas são periódicas e previsíveis, com bom uso de autoscaling e instâncias reservadas; (2) segurança e privacidade, como KMS, auditoria, pentests periódicos, certificações (ISO 27001, SOC 2) e DPO; (3) equipe com psicólogos organizacionais e especialista em privacidade para validar instrumentos e limiares; (4) parcerias com rede de apoio e EAP, que podem ter custo variável por uso, sendo preferível repassar ao cliente; (5) LLM opcional, com custo por token controlado por processar apenas agregados e usar cache; (6) suporte e customer success para adoção, já que o valor depende de taxa de participação. Estimativa inicial: infraestrutura por colaborador ativo na faixa de centavos de dólar por mês, favorecendo margem bruta alta (70–80%). Riscos de custo: incidentes de vazamento (impacto reputacional e multas LGPD/GDPR), residência de dados multi-região e customização enterprise.",
+    "monetizacao": "Assinatura SaaS B2B por colaborador ativo por mês (PEPM), em faixas: Essencial (check-ins e dashboards básicos), Profissional (coortes avançadas, integrações SSO/Slack/Teams, alertas coletivos, exportações) e Enterprise (residência de dados dedicada, SLA, API, auditoria avançada, isolamento físico, SSO/SCIM customizado). Receitas complementares: módulo de recursos de apoio e EAP integrado com comissão ou repasse de parceiros, consultoria e workshops de saúde ocupacional com base nos indicadores, relatórios de conformidade (NR-1 riscos psicossociais no Brasil, ISO 45003) como add-on, benchmarks setoriais anonimizados opcionais (com consentimento da organização) e onboarding pago para grandes contas. Contratos anuais com desconto e piloto gratuito de 30–60 dias para provar taxa de adesão.",
+    "stack_sugerida": "Backend: TypeScript (NestJS usado apenas na camada de adapters, com core em TS puro) ou Kotlin/Java com Spring apenas nos adapters; alternativa Go. Arquitetura: monólito modular hexagonal, com evolução para microsserviços quando necessário. Frontend: React + Next.js (web e dashboard), React Native ou Flutter (mobile), design system próprio com acessibilidade. Dados: PostgreSQL (RLS) para transacional, ClickHouse ou TimescaleDB para analytics, Redis para cache e rate limiting. Mensageria: SQS/SNS ou Kafka. Privacidade: assinaturas cegas RSA, OpenDP para privacidade diferencial, biblioteca de k-anonimato, criptografia em repouso e em trânsito (AES-256, TLS 1.3), KMS/Vault. Identidade: Auth0/Keycloak com OIDC/SAML/SCIM. Infra: AWS (ou GCP) com Terraform, Kubernetes/ECS, regiões separadas por jurisdição, S3 Object Lock para auditoria. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry, com scrubbing de PII em logs. Qualidade: testes de arquitetura (ArchUnit/dependency-cruiser), testes de contrato para ports, BDD, adapters in-memory para testes de domínio, CI/CD com GitHub Actions, SAST/DAST. Pagamentos: Stripe (ou Pagar.me para o Brasil). IA opcional: API Claude apenas sobre dados agregados, para resumos de tendências."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T01:47:29+00:00",
+    "runner": "runner.py"
+  }
+}

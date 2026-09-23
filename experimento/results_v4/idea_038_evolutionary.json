@@ -1,0 +1,59 @@
+{
+  "ideia_idx": 38,
+  "ideia": "SaaS de monitoramento de concorrentes para e-commerce",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (modularidade e baixo acoplamento entre coleta, normalização, análise e alertas)",
+      "Confiabilidade/resiliência da coleta (sites alvo mudam layout, bloqueiam e falham com frequência)",
+      "Escalabilidade elástica e horizontal (crescimento do número de SKUs, concorrentes e tenants)",
+      "Qualidade e frescor dos dados (precisão de preço/estoque, latência entre coleta e alerta)",
+      "Isolamento multi-tenant e segurança",
+      "Observabilidade (taxa de sucesso por fonte, custo por coleta, drift de dados)",
+      "Eficiência de custo (proxies, computação de scraping e armazenamento são os maiores custos)",
+      "Conformidade legal (LGPD/GDPR, termos de uso dos sites, robots.txt)",
+      "Testabilidade e implantabilidade contínua"
+    ],
+    "fitness_functions": [
+      "Taxa de sucesso de coleta por fonte >= 95% (janela de 24h); queda abaixo do limite abre alerta e aciona fallback de estratégia de extração",
+      "Frescor: p95 do intervalo entre coleta e disponibilização do preço <= SLA do plano (ex.: 15 min Enterprise, 6 h Free); medido continuamente",
+      "Latência de alerta: p95 entre mudança detectada e notificação enviada <= 2 min",
+      "Teste de arquitetura no CI (ArchUnit/dependency-cruiser/import-linter): módulos só dependem de contratos públicos; falha o build se houver dependência cíclica ou acesso direto ao banco de outro módulo",
+      "Contract tests (Pydantic/JSON Schema/Pact) entre coletor e normalizador e entre API e clientes; mudança quebrando compatibilidade falha o pipeline",
+      "Teste de regressão de extratores com snapshots HTML reais (golden files) executado diariamente contra amostra de sites",
+      "Detecção de drift de schema/layout: variação > X% em campos nulos por fonte dispara alerta e sinaliza necessidade de reparo do extrator",
+      "Isolamento de tenant: suíte automatizada que tenta acesso cruzado (RLS/authz) e deve falhar 100%; executada em todo deploy",
+      "Custo por 1.000 coletas e por tenant monitorado; alerta se ultrapassar a margem-alvo (ex.: custo de infra < 30% da receita por plano)",
+      "Teste de carga/escala semanal: 10x a carga atual mantém p95 de API < 300 ms e fila sem backlog crescente",
+      "Cobertura de observabilidade: todo serviço emite traces/métricas/logs estruturados (verificado no CI)",
+      "Verificação de conformidade: checagem de robots.txt/ToS por fonte antes de habilitá-la, e retenção de dados pessoais verificada por job de auditoria",
+      "Métricas DORA (frequência de deploy, lead time, taxa de falha de mudança) acompanhadas como fitness function de evolvabilidade"
+    ],
+    "incremental_change": "Começar com um monólito modular bem particionado (módulos: Catálogo/Matching, Coleta, Normalização, Análise de Preços, Alertas, Billing, Tenancy) e um pipeline de coleta assíncrono já separado por fila. Fase 1 (MVP): 5-10 marketplaces/lojas populares, preços e estoque, alertas por e-mail, dashboard simples, plano Free/Starter. Fase 2: matching de produtos (EAN/GTIN + similaridade por embeddings), histórico de preços, alertas Slack/webhook, API pública. Fase 3: extrair a Coleta em serviço/worker independente (primeiro candidato natural por perfil de carga e falhas diferentes), adicionar recomendações de repricing e monitoramento de promoções/ads/reviews. Fase 4: extrair outros módulos apenas quando fitness functions e métricas de time/carga justificarem (strangler fig). Cada fase é entregue atrás de feature flags, com deploy contínuo, canary e rollback automático. Usar o padrão Branch by Abstraction para trocar estratégias de extração (HTML parsing -> headless browser -> API de terceiros -> feeds oficiais) sem alterar consumidores. Revisar fitness functions a cada trimestre, pois as características priorizadas mudam com o estágio do produto.",
+    "reversibility": "Reversíveis (two-way doors): provedor de proxies, biblioteca de scraping, provedor de e-mail/notificação, ferramenta de dashboard, framework de front-end, provedor de LLM/embeddings, estratégia de extração por fonte (isolada atrás de interface), limites de plano, feature flags, provedor de observabilidade. Custosas de reverter (one-way doors, decidir no último momento responsável): modelo canônico de produto/oferta (identidade do produto e matching), estratégia de multi-tenancy (schema compartilhado com tenant_id + RLS no início, permitindo migrar tenants grandes para schema/banco dedicado depois), contratos de API pública versionada, escolha de nuvem principal (mitigada por contêineres e IaC), e formato dos eventos no barramento (mitigado por schema registry e versionamento). Registrar decisões em ADRs com gatilhos explícitos de revisão (ex.: 'migrar de Postgres para time-series DB quando > 500M pontos de preço ou p95 de consulta > 500 ms').",
+    "coupling": "Baixo acoplamento por contratos: módulos se comunicam via interfaces explícitas e eventos de domínio (PriceObserved, PriceChanged, ProductMatched, AlertTriggered) com schema versionado (JSON Schema/Avro), no estilo Anti-Corruption Layer entre o mundo externo caótico (sites concorrentes) e o modelo canônico interno. Cada módulo é dono dos seus dados (sem joins entre módulos; leitura via API ou read models). Arquitetura hexagonal: portas para fontes de dados, notificações e billing; adaptadores substituíveis. Coleta desacoplada por fila (at-least-once + idempotência por hash de observação), permitindo que falhas de scraping não afetem API e dashboard. Comunicação síncrona apenas para consultas de usuário; todo o resto assíncrono. Bounded contexts do DDD definem as fronteiras de futura extração para serviços. Acoplamento com terceiros (proxies, LLMs, gateways de pagamento) sempre via adaptador com timeout, circuit breaker e fallback.",
+    "interfaces": [
+      "REST/JSON API pública versionada (/v1) para produtos monitorados, histórico de preços, concorrentes e alertas, com OpenAPI",
+      "Webhooks de saída assinados (HMAC) para eventos: price.changed, stock.changed, promotion.detected, competitor.new_product",
+      "Dashboard web (SPA) consumindo a API/BFF",
+      "Importação de catálogo do cliente: CSV/XLSX, feed Google Shopping/XML e integrações com Shopify, WooCommerce, VTEX, Nuvemshop, Mercado Livre",
+      "Exportação de dados (CSV, Google Sheets, BigQuery/S3) e conector para BI",
+      "Interface interna SourceAdapter/Extractor (contrato: fetch(url) -> RawObservation) para plugar novas estratégias de coleta",
+      "Barramento de eventos interno (fila/tópicos) com schema registry",
+      "Integrações de notificação: e-mail, Slack, Microsoft Teams, WhatsApp, Telegram",
+      "Interface de repricing (opcional, fase 3): envio de sugestões/ajustes de preço para plataformas do cliente via API",
+      "Painel administrativo interno: saúde das fontes, reparo de extratores, fila de matching manual",
+      "API de billing/entitlements (limites de SKUs, frequência de coleta, usuários por plano)"
+    ],
+    "escalabilidade": "Escala horizontal por partes com perfis de carga distintos. Coleta: workers stateless e autoscaling por profundidade de fila (KEDA), agendador que prioriza URLs por valor (frequência adaptativa: itens voláteis ou de clientes premium coletados com mais frequência; itens estáveis, menos), deduplicação de URLs entre tenants (um mesmo produto concorrente é coletado uma vez e compartilhado entre clientes, o que reduz custo e carga), rate limiting por domínio e pools de proxies rotativos. Armazenamento: Postgres com particionamento por tempo para observações de preço, evoluindo para TimescaleDB/ClickHouse quando o volume exigir; snapshots HTML brutos em object storage com lifecycle (expiração/tiering). Leitura: cache (Redis) e agregações pré-computadas para dashboards; read replicas. Alertas: processamento por stream com comparação apenas de deltas. Multi-tenancy: pool compartilhado por padrão, com opção de célula/banco dedicado para clientes enterprise (arquitetura celular quando necessário). Gargalos previstos e gatilhos de evolução documentados: volume de observações, matching de produtos (batch + filas) e custo de headless browsers.",
+    "custos": "Principais drivers: (1) proxies residenciais/datacenter e serviços anti-bot, tipicamente o maior custo variável; (2) computação de scraping, sobretudo browsers headless (mais caros que HTTP puro, então usar HTTP primeiro e browser só como fallback); (3) armazenamento de histórico e HTML bruto; (4) LLM/embeddings para matching e extração assistida (usar cache, modelos menores e lote); (5) e-mail/SMS/WhatsApp. Mitigações: coleta compartilhada entre tenants, frequência adaptativa, uso de feeds/APIs oficiais quando existirem, spot instances para workers, retenção por plano (ex.: 30 dias Free, 12+ meses pagos), compressão e downsampling de séries antigas, FinOps com tagging por tenant/fonte e dashboards de custo por coleta. Começar com infraestrutura gerenciada e enxuta (PaaS/serverless containers) para minimizar operação; ~US$ 300-1.500/mês no MVP, com meta de margem bruta > 70%. Riscos não técnicos com custo: bloqueios/disputas legais e manutenção de extratores (dimensionar equipe/tempo de reparo).",
+    "monetizacao": "Assinatura recorrente (SaaS) em planos escalonados por número de produtos/SKUs monitorados, número de concorrentes/fontes, frequência de coleta e retenção de histórico. Ex.: Free (10 SKUs, coleta diária, 1 usuário) para aquisição; Starter (~US$ 49/mês, 100 SKUs); Growth (~US$ 199/mês, 1.000 SKUs, coleta horária, API, webhooks); Enterprise (sob contrato: SKUs ilimitados/negociados, SLA, coleta quase em tempo real, integrações customizadas, SSO, célula dedicada). Add-ons: repricing automático, monitoramento de promoções/ads/reviews, relatórios de mercado, assentos extras, exportação/BI. Possibilidade de cobrança por uso (SKUs x frequência) via Stripe Billing com medição (metered billing), trial de 14 dias sem cartão, desconto anual, e parcerias/marketplace de apps (Shopify App Store, VTEX) como canal de aquisição. Métricas-chave: MRR, churn, CAC/LTV, margem bruta por plano e custo de coleta por SKU.",
+    "stack_sugerida": "Backend: Python (FastAPI) para API e coleta, com módulos organizados por domínio (alternativa: TypeScript/NestJS); Coleta: httpx/Scrapy como padrão, Playwright para páginas dinâmicas, provedores de proxy rotativo e serviços anti-bot como adaptadores substituíveis; Fila/eventos: SQS/RabbitMQ no início (ou Redis Streams), evoluindo para Kafka/Redpanda apenas quando necessário; Orquestração/agendamento: Temporal ou Celery/Arq + scheduler; Dados: PostgreSQL (RLS para multi-tenancy, particionamento, pgvector para matching) + Redis (cache/rate limit) + S3/GCS para HTML bruto, com TimescaleDB/ClickHouse como evolução para séries temporais; Matching/IA: GTIN/EAN + embeddings + LLM sob demanda, atrás de interface; Front-end: React/Next.js + TypeScript com bibliotecas de gráficos; Auth: Auth0/Clerk/Cognito ou Keycloak; Billing: Stripe Billing; Infra: Docker, IaC (Terraform/Pulumi), Kubernetes gerenciado ou ECS/Cloud Run com KEDA para autoscaling, CI/CD (GitHub Actions) com canary e feature flags (Unleash/OpenFeature); Observabilidade: OpenTelemetry + Grafana/Prometheus/Loki ou Datadog, Sentry; Qualidade/arquitetura: pytest, testes de contrato (Pact/Schemathesis), import-linter, testes de carga (k6), ADRs em repositório."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:00:49+00:00",
+    "runner": "runner.py"
+  }
+}

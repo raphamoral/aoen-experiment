@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 8,
+  "justificativa": "A proposta prevê múltiplas interfaces bem diversificadas (REST/GraphQL, WebSocket, Mobile API, Admin Dashboard, Webhooks, gRPC interno, integração ERP) com perfis de uso distintos e justificados por contexto real (motoristas, clientes, administradores, sistemas externos), e o desacoplamento via event-driven architecture com GraphQL gateway permite adicionar novas interfaces sem reescrever a lógica de negócio — perde pontos por não explicitar explicitamente a justificativa de mercado para cada canal nem detalhar a estratégia de expansão de interfaces."
+}

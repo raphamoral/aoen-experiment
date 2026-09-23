@@ -1,0 +1,81 @@
+{
+  "ideia_idx": 10,
+  "ideia": "App de gestão financeira para MEIs com emissão automática de nota fiscal",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão financeira e fiscal do Microempreendedor Individual (MEI). Subdomínios: (1) Lançamentos financeiros (receitas, despesas, categorias, fluxo de caixa); (2) Faturamento e emissão de Nota Fiscal de Serviço (NFS-e) e, quando aplicável, NF-e/NFC-e; (3) Obrigações do MEI (limite anual de faturamento de R$ 81 mil, guia DAS mensal, DASN-SIMEI anual); (4) Clientes e cadastro do MEI (CNPJ, CNAE, município); (5) Assinatura e planos do próprio SaaS. O core contém entidades (MEI, Cliente, Lançamento, NotaFiscal, Guia DAS, Assinatura), regras de negócio (cálculo de limite, alertas de desenquadramento, ciclo de vida da nota: rascunho → emitida → cancelada/rejeitada) e casos de uso, sem qualquer conhecimento de HTTP, banco de dados ou provedores fiscais.",
+    "primary_ports": [
+      "GerenciarLancamentosPort (registrar, categorizar, conciliar receitas e despesas)",
+      "EmitirNotaFiscalPort (emitir, cancelar, consultar status e reenviar nota)",
+      "GerenciarClientesPort (cadastrar e consultar tomadores de serviço)",
+      "ConsultarPainelFinanceiroPort (fluxo de caixa, DRE simplificado, saldo, limite anual do MEI)",
+      "GerenciarObrigacoesFiscaisPort (gerar guia DAS, lembrar vencimentos, apoiar a DASN-SIMEI)",
+      "GerenciarCadastroMEIPort (onboarding, dados do CNPJ, CNAE, município, certificado/credenciais)",
+      "GerenciarAssinaturaPort (contratar, trocar e cancelar plano)",
+      "ProcessarEventoExternoPort (entrada de eventos assíncronos: retorno da prefeitura, confirmação de pagamento, webhook bancário)"
+    ],
+    "secondary_ports": [
+      "LancamentoRepositoryPort / NotaFiscalRepositoryPort / MEIRepositoryPort / ClienteRepositoryPort (persistência)",
+      "EmissorFiscalPort (emissão, cancelamento e consulta de NFS-e/NF-e em qualquer provedor ou prefeitura)",
+      "ConsultaCnpjPort (validação e dados cadastrais do CNPJ)",
+      "OpenBankingPort (importação de extratos e transações bancárias)",
+      "GatewayPagamentoPort (cobrança do cliente final via Pix/boleto e cobrança da assinatura do SaaS)",
+      "GuiaDASPort (geração da guia DAS junto ao Portal do Simples Nacional / PGMEI)",
+      "NotificacaoPort (e-mail, WhatsApp e push)",
+      "ArmazenamentoDocumentosPort (XML e PDF das notas, comprovantes)",
+      "SecretsVaultPort (certificados digitais e credenciais de terceiros)",
+      "AutenticacaoIdentidadePort (identidade e sessão)",
+      "FilaEventosPort / PublicadorEventosDominioPort (mensageria e eventos de domínio)",
+      "RelogioPort e GeradorIdPort (tempo e identificadores determinísticos em testes)",
+      "IAClassificacaoPort (categorização automática de lançamentos, opcional)",
+      "AuditoriaPort (trilha de auditoria fiscal)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API (consumida pelo frontend web)",
+      "App mobile (React Native ou Flutter) via API",
+      "Bot de WhatsApp (ex.: 'emitir nota de R$ 300 para João')",
+      "Webhook receivers (gateway de pagamento, provedor fiscal, Open Finance)",
+      "Consumidores de fila/eventos (retornos assíncronos de emissão)",
+      "Jobs agendados/cron (lembrete de DAS, alerta de limite, recorrências de cobrança)",
+      "CLI/scripts administrativos (backoffice, migrações, reprocessamento)",
+      "Adaptador de testes (test driver que chama os casos de uso diretamente, sem UI)",
+      "Integração com contador ou API pública para parceiros (B2B2C)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL adapter (repositórios)",
+      "Adapter do emissor fiscal: Focus NFe, eNotas, PlugNotas ou NFe.io, e adapter direto do Emissor Nacional de NFS-e (padrão nacional), com fallback entre provedores",
+      "Adapter da Receita Federal/Serpro ou BrasilAPI para CNPJ",
+      "Adapters de Open Finance/Open Banking (Pluggy, Belvo ou similar)",
+      "Adapters de pagamento (Asaas, Pagar.me, Stripe ou Mercado Pago)",
+      "Adapter do Portal do Simples Nacional / PGMEI para DAS",
+      "Adapters de notificação (Amazon SES ou SendGrid; WhatsApp Business API; FCM)",
+      "S3 ou compatível (documentos)",
+      "AWS KMS / Secrets Manager / HashiCorp Vault",
+      "Adapter de identidade (Keycloak, Auth0 ou Cognito)",
+      "SQS/SNS, RabbitMQ ou Kafka (mensageria)",
+      "Adapter de LLM/OCR para classificação e leitura de comprovantes",
+      "Adapters in-memory e fakes/mocks de todas as portas (testes e desenvolvimento local)",
+      "Adapter de observabilidade/auditoria (OpenTelemetry, log imutável)"
+    ],
+    "isolation": "O core (domínio + camada de aplicação/casos de uso) é um módulo sem dependências de frameworks, bancos ou SDKs de terceiros; ele só conhece as interfaces (ports) que ele mesmo define. A regra de dependência aponta sempre de fora para dentro: adapters dependem do core, nunca o contrário. A injeção de dependências é feita em uma composition root fora do core. Erros e DTOs externos (ex.: respostas de prefeituras ou provedores fiscais) são traduzidos por anti-corruption layers dentro de cada adapter, de modo que o modelo de domínio permanece limpo. Regras de isolamento são verificadas automaticamente por testes de arquitetura (ArchUnit, dependency-cruiser ou similar) no CI. Todos os sistemas externos recebem tratamento simétrico: o banco, o provedor fiscal e o gateway de pagamento são secondary adapters, e UI, bot, webhook e testes são primary adapters. Assim, o mesmo caso de uso pode ser acionado por um usuário, por um script ou por um teste automatizado, e o provedor fiscal pode ser trocado sem alterar o domínio. Operações com efeitos externos usam outbox pattern e idempotência para garantir consistência.",
+    "interfaces": [
+      "Web app responsivo (dashboard, lançamentos, emissão de nota em poucos cliques)",
+      "App mobile (emissão rápida, foto de comprovante, alertas)",
+      "Bot/atendimento por WhatsApp",
+      "API REST pública documentada (OpenAPI) e webhooks para integrações",
+      "Painel de backoffice/suporte",
+      "Portal ou visão de leitura para contador",
+      "Notificações por e-mail, push e WhatsApp (alertas de limite de R$ 81 mil, vencimento de DAS, nota rejeitada)"
+    ],
+    "escalabilidade": "Começar como monólito modular hexagonal (um deploy, módulos por bounded context: lançamentos, fiscal, obrigações, cobrança), o que reduz custo e complexidade no início. Como as fronteiras são ports, módulos podem ser extraídos em serviços independentes (especialmente o módulo fiscal) sem reescrever o core. Estratégias: API stateless com escala horizontal atrás de load balancer; emissão de notas, importação bancária e envio de notificações de forma assíncrona via filas, com retries, backoff, idempotency keys e DLQ para absorver picos (ex.: fechamento de mês e vencimento do DAS); PostgreSQL com réplicas de leitura, índices por tenant e particionamento de tabelas grandes (lançamentos, notas) por período; cache (Redis) para consultas do painel; multi-tenancy com isolamento por tenant_id (row-level security) e possibilidade de schema/DB dedicado para contas maiores; circuit breaker e fallback entre provedores fiscais; CQRS leve para relatórios/painel com projeções de leitura; armazenamento de XML/PDF em object storage com ciclo de vida (retenção fiscal de 5 anos).",
+    "custos": "Custos variáveis dominantes: (1) emissão de nota via provedor fiscal (tipicamente centavos a poucos reais por nota ou plano por volume) — negociar tarifa por volume e avaliar a integração direta com o Emissor Nacional de NFS-e, que é gratuito, para reduzir o custo unitário; (2) Open Finance/agregador bancário (cobrança por conexão ativa); (3) mensageria WhatsApp Business (cobrança por conversa/template); (4) taxas do gateway de pagamento (Pix é mais barato que cartão); (5) LLM/OCR por chamada, com cache e modelos menores para categorização. Custos fixos baixos no início: monólito em contêiner gerenciado, PostgreSQL gerenciado, S3, filas gerenciadas e observabilidade básica. Como o MEI tem baixa disposição a pagar, a margem depende de ticket baixo com custo unitário controlado: limites de notas por plano, eficiência nas integrações e uso de serverless/spot para jobs. Custos de conformidade: LGPD, segurança de certificados e credenciais, backups e retenção fiscal. Dependência regulatória: mudanças de prefeituras e do padrão nacional exigem manutenção contínua nos adapters (isolada por design).",
+    "monetizacao": "Modelo freemium com assinatura recorrente (SaaS): plano gratuito com lançamentos e um número limitado de notas por mês; plano Pro (ex.: R$ 19–49/mês) com notas ilimitadas ou em franquia maior, conciliação bancária, alertas de DAS e limite, e cobrança automática por Pix; plano Premium com WhatsApp bot, relatórios avançados e suporte de contador. Receitas complementares: comissão ou taxa sobre cobranças Pix/boleto emitidas pelo app; marketplace de serviços (conta PJ, crédito para MEI, maquininha, seguros, contabilidade) via parcerias e afiliados/revenue share; plano B2B2C para contadores e bancos/fintechs com white-label e API; venda de notas avulsas acima da franquia. Aquisição via SEO, conteúdo educativo sobre MEI e parcerias com contadores.",
+    "stack_sugerida": "Backend: Kotlin (Spring Boot) ou TypeScript (NestJS) organizado em módulos hexagonais (domain / application / adapters-in / adapters-out), com testes de arquitetura; alternativa: Java 21 ou Go. Banco: PostgreSQL (RLS para multi-tenancy) + Redis (cache e rate limiting). Mensageria: SQS/SNS ou RabbitMQ, com outbox pattern (Debezium opcional). Frontend: React/Next.js (web) e React Native ou Flutter (mobile). Infra: AWS (ECS Fargate ou Cloud Run/GCP) com Terraform, S3, KMS/Secrets Manager, CloudFront, CI/CD com GitHub Actions. Auth: Keycloak, Auth0 ou Cognito. Integrações: provedor fiscal (Focus NFe/PlugNotas/eNotas) com adapter alternativo para o Emissor Nacional, Pluggy/Belvo (Open Finance), Asaas ou Stripe (pagamentos), WhatsApp Business API. Observabilidade: OpenTelemetry, Grafana/Prometheus ou Datadog, Sentry. Qualidade: testes unitários no core com fakes in-memory, testes de contrato para cada adapter, testes E2E via API, ArchUnit/dependency-cruiser no CI. Segurança e conformidade: criptografia em repouso e em trânsito, gestão segura de certificados A1, trilha de auditoria, LGPD."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:01:35+00:00",
+    "runner": "runner.py"
+  }
+}

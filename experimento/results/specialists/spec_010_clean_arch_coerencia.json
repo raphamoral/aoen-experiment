@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "As entidades formam um modelo de domínio internamente coeso — MEI, Competencia, DAS, NotaFiscal e Lancamento se encadeiam logicamente (faturamento → competência → DAS → obrigação fiscal) com regras de negócio alinhadas à legislação brasileira (LC 116/2003, limite MEI R$81.000, ISS 2–5%), e a separação entre entidades sem dependências externas e use cases como orquestradores é consistente com Clean Architecture — porém a proposta está truncada (use_cases e camadas de infraestrutura ausentes), impedindo avaliar se as decisões de tecnologia, integrações (PGMEI, prefeituras) e deployment reforçam ou contradizem essa coerência inicial."
+}

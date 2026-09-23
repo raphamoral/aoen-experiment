@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 81,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra pensamento evolutivo sólido — interface CalcEngine com adapters plugáveis por padrão de certificação, fatores de emissão em tabelas versionadas (não hardcoded), integrações com registries como plugins desacoplados e CarbonService como camada única de lógica de negócio que isola todas as interfaces do núcleo — mas perde pontos por omitir: (1) abstração de persistência (não há menção de repository pattern ou como trocar o banco sem impactar a CarbonService), (2) estratégia de escala horizontal (sem menção a filas, cache distribuído ou particionamento que permitam ir de 10 a 10.000 usuários sem mudança arquitetural), e (3) a estrutura interna da CarbonService não é detalhada — se for um serviço monolítico internamente, a adição do Marketplace e do White-Label na Fase 2 pode criar pressão de acoplamento que a proposta não antecipa."
+}

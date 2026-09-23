@@ -1,0 +1,62 @@
+{
+  "ideia_idx": 88,
+  "ideia": "Plataforma de supply chain finance para pequenos fornecedores",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (capacidade de mudar regras de crédito, precificação e integrações sem reescrever o núcleo)",
+      "Segurança e conformidade (LGPD, KYC/AML, regulação do Banco Central/SCD/IP, PCI quando aplicável)",
+      "Auditabilidade e rastreabilidade (trilha imutável de toda decisão de crédito, desembolso e liquidação)",
+      "Consistência financeira e idempotência (ledger correto, sem duplicidade de pagamentos)",
+      "Confiabilidade e disponibilidade (SLO 99,9% em desembolso e conciliação)",
+      "Interoperabilidade (ERPs, bancos, registradoras de recebíveis, Pix, e-invoicing/NF-e)",
+      "Testabilidade e deployability (CI/CD com deploys diários e rollback rápido)",
+      "Observabilidade",
+      "Simplicidade de uso para pequenos fornecedores (onboarding rápido, baixa fricção)",
+      "Elasticidade e eficiência de custo (picos de fim de mês e sazonalidade)"
+    ],
+    "fitness_functions": [
+      "Atômica/estática: análise de dependências (ArchUnit/dependency-cruiser) falha o build se um módulo violar fronteiras de bounded context ou se o domínio importar infraestrutura",
+      "Atômica: testes de propriedade no ledger garantindo invariante de partidas dobradas (soma de débitos = soma de créditos) em todo commit",
+      "Atômica: testes de idempotência que reenviam a mesma requisição de desembolso N vezes e exigem exatamente um efeito",
+      "Atômica/segurança: SAST, SCA, secret scanning e verificação de SBOM no pipeline; build bloqueado com CVE crítico",
+      "Atômica: testes de contrato (Pact) para cada integração (ERP, banco, registradora); quebra de contrato bloqueia o deploy",
+      "Sistêmica/holística: reconciliação diária automática entre ledger interno e extratos bancários, com alerta se divergência > 0 centavos",
+      "Sistêmica: teste de carga e caos periódico (fim de mês simulado, falha de provedor de pagamento) validando p95 < 300 ms nas APIs e RTO < 15 min",
+      "Sistêmica: DORA metrics como fitness function (lead time < 1 dia, change failure rate < 15%, MTTR < 1h) com alerta de regressão",
+      "Operacional: SLOs com error budget; congelamento automático de features quando o orçamento de erro se esgota",
+      "Conformidade: verificação automática de retenção e mascaramento de PII (LGPD) e checagem de que toda decisão de crédito tem registro de auditoria imutável",
+      "Custo: métrica de custo por transação/fatura financiada monitorada; alerta se crescer mais de 10% mês a mês sem crescimento de volume",
+      "Acoplamento: métrica de instabilidade/acoplamento aferente e eferente por módulo com limite máximo definido, verificada no CI",
+      "Usabilidade: tempo de onboarding do fornecedor (meta < 10 min) e taxa de abandono no funil como métrica contínua"
+    ],
+    "incremental_change": "Começar como monólito modular (modular monolith) organizado por bounded contexts (Onboarding/KYC, Faturas e Recebíveis, Crédito e Precificação, Desembolso/Pagamentos, Ledger, Conciliação, Notificações), com fronteiras aplicadas por fitness functions. Evolução guiada em fases: (1) MVP: antecipação de recebíveis (early payment) para um pequeno número de compradores âncora, com parceiro financiador (banco/FIDC/SCD) e integração via arquivo/API simples; (2) integração com ERPs e registradoras, motor de regras de crédito configurável e multi-financiador (marketplace de capital); (3) extração seletiva de serviços apenas onde houver pressão real (Ledger/Pagamentos por compliance e isolamento; Motor de Crédito por cadência de mudança e ML; Integrações por volatilidade de terceiros); (4) dados analíticos e scoring com dados alternativos. Uso de strangler fig para extrações, feature flags, deploy canário, blue/green e expand/contract em migrações de banco. Cada mudança passa pelas fitness functions antes de ir para produção; revisões trimestrais de arquitetura (ADRs) ajustam as fitness functions conforme o negócio evolui.",
+    "reversibility": "Reversíveis (two-way doors): escolha de provedor de cloud gerenciado dentro de abstrações, fila/mensageria (atrás de porta/adaptador), provedor de KYC, provedor de notificação, ferramenta de observabilidade, framework de front-end, granularidade de módulos vs serviços (extração gradual), motor de regras, provedor de OCR/parsing de faturas e provedores de ML/scoring. Semi-reversíveis: banco relacional principal (PostgreSQL, mitigado com repositórios e migrações versionadas) e escolha de parceiro financiador (mitigado por interface de 'Funding Provider' com múltiplos adaptadores). Difíceis de reverter (one-way doors, decidir no último momento responsável): modelo de dados do ledger e contabilidade (partidas dobradas, imutável/append-only, com event sourcing apenas se justificado), estrutura jurídica/regulatória (SCD vs parceria com IP/banco vs FIDC), identificadores públicos de API e contratos externos versionados, modelo de multi-tenancy e residência de dados, e formato de armazenamento de trilha de auditoria. Para essas, registrar ADRs, adiar até haver evidência de mercado e criar testes de caracterização antes de comprometer.",
+    "coupling": "Baixo acoplamento entre bounded contexts via Domain-Driven Design e arquitetura hexagonal (ports and adapters). Comunicação síncrona apenas para consultas críticas dentro do monólito (interfaces em memória bem definidas); comunicação assíncrona por eventos de domínio (ex.: FaturaAprovada, AntecipacaoSolicitada, DesembolsoConfirmado, LiquidacaoRecebida) usando padrão Outbox para garantir entrega e preparar futura extração. Anti-Corruption Layer para cada sistema externo (ERPs, bancos, registradoras), impedindo que modelos de terceiros vazem para o domínio. Cada contexto é dono dos seus dados (schemas separados no mesmo Postgres, sem joins entre contextos). Contratos de eventos e APIs versionados (schema registry, compatibilidade retroativa). Acoplamento intencional e aceito apenas onde o ganho compensa (ex.: Ledger como fonte única de verdade financeira). Evitar bibliotecas compartilhadas com lógica de negócio (shared kernel mínimo).",
+    "interfaces": [
+      "API REST/JSON pública versionada (OpenAPI) para fornecedores e compradores: faturas, propostas de antecipação, extratos, status",
+      "Portal web responsivo e app PWA/mobile para pequenos fornecedores (onboarding, simulação, aceite, acompanhamento)",
+      "Portal do comprador âncora (aprovação de faturas, confirmação de títulos, gestão de programa de supply chain finance)",
+      "Webhooks assinados (HMAC) para eventos de fatura, aprovação, desembolso e liquidação",
+      "Conectores de ERP (SAP, TOTVS, Oracle, Omie, Conta Azul, Bling) e ingestão de NF-e/XML, CNAB/SFTP como fallback",
+      "Interface 'Funding Provider' (porta) com adaptadores para bancos, FIDCs, SCDs e investidores",
+      "Integração com registradoras de recebíveis (CERC, TAG, CIP) para registro e verificação de gravames",
+      "Integração Pix/TED/boleto para desembolso e liquidação",
+      "Integrações de KYC/KYB, bureaus de crédito (Serasa, Boa Vista, SCR/Open Finance) e antifraude",
+      "API interna do Motor de Decisão de Crédito e Precificação (regras versionadas)",
+      "Barramento de eventos de domínio com schema registry",
+      "API de Admin/Backoffice para operações, risco, conciliação e suporte",
+      "Exportação analítica (data warehouse/BI) e relatórios regulatórios"
+    ],
+    "escalabilidade": "Escala horizontal por padrão: aplicação stateless em contêineres atrás de load balancer com autoscaling, começando pelo monólito modular (que escala verticalmente e por réplicas). Banco PostgreSQL gerenciado com réplicas de leitura, particionamento por tenant/tempo em tabelas de alto volume (faturas, lançamentos do ledger) e CQRS leve com projeções de leitura para dashboards. Processamentos pesados (ingestão de NF-e em lote, conciliação, cálculo de precificação, envio de arquivos CNAB) em workers assíncronos com filas, backpressure, retentativas com backoff e DLQ; jobs de fim de mês escalam sob demanda. Cache (Redis) para consultas de leitura frequentes e limites de taxa por tenant. Multi-tenancy lógico (tenant_id + row-level security) com opção de isolamento dedicado para compradores âncora grandes (cell-based architecture quando necessário). Extração de contextos para serviços independentes só quando métricas indicarem gargalo (ex.: ledger com throughput ou motor de crédito com ML). Escala validada continuamente por testes de carga como fitness functions; escala geográfica e multi-região adiada até haver requisito regulatório ou de latência.",
+    "custos": "Foco em custo variável proporcional ao volume: começar com monólito modular, um banco gerenciado e workers, evitando a sobrecarga operacional e de infraestrutura de dezenas de microsserviços prematuros. Principais custos: infraestrutura cloud (compute, banco, armazenamento de documentos), taxas de terceiros por transação (KYC/KYB, bureaus de crédito, registradoras, Pix/TED, antifraude, OCR), compliance e auditoria (jurídico, regulatório, segurança, pentests), custo de capital/funding (não é opex de software, mas define a margem) e suporte/operações de cobrança e conciliação. Mitigações: uso de instâncias reservadas/savings plans após previsibilidade, autoscaling com scale-to-zero em ambientes não produtivos, cache de consultas pagas a bureaus, negociação de tarifas por volume, FinOps com tagging por contexto/tenant, observabilidade com amostragem e retenção em camadas (hot/warm/cold), automação de conciliação e onboarding para reduzir trabalho manual. Fitness function de custo por fatura financiada guia decisões de otimização. Preferir serviços gerenciados no início (menor custo de pessoal) e reavaliar build vs buy a cada trimestre.",
+    "monetizacao": "Modelo híbrido com receita alinhada ao valor entregue: (1) spread/taxa de desconto sobre antecipação de recebíveis (principal fonte de receita, cobrada do fornecedor ou subsidiada pelo comprador âncora conforme o programa); (2) taxa de originação/serviço por operação financiada; (3) assinatura SaaS (mensal/anual) cobrada de compradores âncora pela plataforma de gestão de programa, integração com ERP e relatórios; (4) fee de estruturação/setup de programa e integrações customizadas; (5) comissão/fee de plataforma de financiadores (bancos, FIDCs) por volume originado no marketplace de capital; (6) serviços premium: analytics, scoring, gestão de fluxo de caixa, conciliação, API de alto volume; (7) futuro: produtos adjacentes (capital de giro, seguro de crédito, cobrança). Camada gratuita/freemium de visibilidade de faturas para fornecedores a fim de estimular adoção em rede (efeito de rede pelo lado do comprador âncora). Métricas-chave: GMV financiado, take rate, CAC por fornecedor, LTV, inadimplência e custo de funding.",
+    "stack_sugerida": "Backend: Kotlin ou Java (Spring Boot) ou alternativamente Go/TypeScript (NestJS) organizados como monólito modular com arquitetura hexagonal; Banco: PostgreSQL gerenciado (RDS/Aurora/Cloud SQL) com ledger append-only e schemas por contexto; Mensageria/Eventos: Outbox + Kafka/Redpanda ou SQS/SNS (atrás de uma abstração), schema registry (Avro/Protobuf/JSON Schema); Cache/Filas: Redis; Workflows/Sagas de longa duração: Temporal; Motor de regras: DMN/Drools ou regras versionadas em código com feature flags; Armazenamento: S3/GCS para documentos e XMLs com criptografia e versionamento; Front-end: React/Next.js (TypeScript) com PWA; Infra: contêineres (Docker) em Kubernetes gerenciado ou ECS/Cloud Run, IaC com Terraform; CI/CD: GitHub Actions/GitLab CI com ArchUnit, Pact, testes de carga (k6), SAST/SCA (Semgrep, Trivy, Dependabot), deploy canário/blue-green (Argo Rollouts) e feature flags (OpenFeature/Unleash); Observabilidade: OpenTelemetry, Prometheus/Grafana, Loki/ELK, Sentry, SLOs; Segurança: OAuth2/OIDC (Keycloak/Auth0), mTLS entre serviços, KMS/Vault, WAF, RLS no Postgres; Dados/Analytics: CDC (Debezium) para data warehouse (BigQuery/Snowflake/Redshift) e dbt; ML/scoring (fase posterior): Python com MLflow, feature store e modelos versionados; Pagamentos: Pix/TED via banco parceiro ou provedor de BaaS; Documentação de decisões: ADRs versionados no repositório."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T05:43:46+00:00",
+    "runner": "runner.py"
+  }
+}

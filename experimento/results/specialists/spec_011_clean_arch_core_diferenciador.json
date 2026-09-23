@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O algoritmo de compatibilidade com 'fit regional' é identificado como diferenciador (Match.scoreCompatibilidade, Investidor.calcularFitRegional, caso de uso RealizarMatchmaking), mas a proposta não isola esse núcleo como componente técnico autônomo, não detalha a lógica que o tornaria superior a alternativas como AngelList ou Pipe, e o 'fit regional' — que seria o real diferencial — aparece apenas como uma regra de negócio genérica sem especificação de como resolve o que plataformas existentes falham."
+}

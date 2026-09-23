@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 76,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta menciona um BillingService na service layer, mas este componente refere-se à cobrança do cliente (receita), não ao rastreamento de custo de servir cada tenant — não há nenhum cálculo de custo por operação (teleconsulta, matching, storage por prontuário, inferência de IA), nenhuma metodologia de alocação de recursos por tenant e nenhuma conexão entre custo unitário e modelo de precificação."
+}

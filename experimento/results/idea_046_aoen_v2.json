@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 46,
+  "ideia": "App de personal trainer virtual com IA e visão computacional",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de análise de movimento em tempo real via visão computacional + IA generativa que detecta postura, conta repetições, identifica erros biomecânicos e adapta o plano de treino com base no desempenho observado — sem isso o produto é apenas um app de vídeo.",
+    "fase1_mercado": "B2C: pessoas que querem treino personalizado sem pagar R$150-300/hora por personal humano. B2B: academias e estúdios que querem oferecer PT digital como diferencial sem contratar mais profissionais. B2B2C: plataformas de saúde corporativa que precisam engajar funcionários em atividade física mensurável.",
+    "fase1_extensivel": "Sim. O core é uma interface de análise de movimento — o modelo de CV (MediaPipe, OpenPose, YOLOv8-Pose, ou modelo proprietário) é plugável via adapter pattern. O LLM para geração de feedback e planos (OpenAI, Anthropic, Gemini, modelo local) também é trocável por abstração de serviço. Nenhum fornecedor específico é obrigatório.",
+    "fase2_interfaces": [
+      "Mobile App (iOS/Android) com câmera — interface primária para o usuário treinar em casa",
+      "Web App — dashboard do usuário para histórico, planos, progresso e configuração",
+      "API REST/WebSocket — para academias, apps de terceiros e integrações white-label",
+      "Tablet/Kiosk Mode — interface simplificada para uso em academias e estúdios",
+      "Integração com Wearables (Apple Watch, Garmin, Polar) — via HealthKit/Google Fit para captura de biometria complementar"
+    ],
+    "fase2_justificativa_mercado": "Mobile abre o mercado consumer (maior volume, menor ticket). Web dashboard abre o mercado de gestão B2B para PTs e academias que gerenciam múltiplos alunos. A API REST abre o mercado de plataformas SaaS white-label (academias de rede, apps de saúde corporativa) — ticket mais alto e contrato recorrente. Tablet/Kiosk abre academias físicas que querem PT digital sem app próprio. Wearables aumentam retenção e diferenciação, reduzindo churn no mercado consumer.",
+    "fase2_service_layer": "Uma CamadaDeServiço (TrainingService, AnalysisService, PlanService) centraliza toda a lógica de negócio. As interfaces (Mobile, Web, API, Kiosk) consomem apenas essa camada via contratos bem definidos (DTOs/interfaces TypeScript ou schemas Pydantic). A câmera do mobile, o upload de vídeo da web e o stream do kiosk são apenas transportes diferentes para o mesmo pipeline de análise — a lógica não sabe qual interface está sendo usada.",
+    "fase3_fluxo_fixo": "Captura de mídia → pré-processamento de frames → inferência de pose estimation → comparação com modelo de referência biomecânico → geração de feedback (textual + visual) → atualização do histórico de performance → recalibração do plano de treino → entrega do feedback ao usuário. Esse pipeline nunca muda — apenas seus parâmetros variam.",
+    "fase3_parametros_configuraveis": [
+      "Biblioteca de exercícios habilitados (por modalidade: musculação, yoga, pilates, fisioterapia)",
+      "Threshold de tolerância de erro biomecânico (strictness: reabilitação vs. performance)",
+      "Frequência e volume de treino semanal",
+      "Tom e idioma do feedback de IA (motivacional, técnico, clínico)",
+      "Regras de progressão de carga (conservadora, moderada, agressiva)",
+      "Restrições físicas e histórico de lesões por usuário",
+      "Branding e identidade visual (white-label: logo, cores, nome do produto)",
+      "Modelo de IA preferido por tenant (custo vs. qualidade)",
+      "Frequência de análise de frame (performance vs. custo de inferência)",
+      "Integrações habilitadas por tenant (wearables, CRM, EHR)"
+    ],
+    "fase3_novo_cliente": "Novo tenant = novo registro no banco de configurações com os parâmetros acima + credenciais de API + plano de cobrança. Nenhum código é escrito, nenhum deploy é feito. Um painel de administração permite onboarding self-service ou assistido. O sistema detecta o tenant via JWT/subdomain e carrega o perfil de configuração correspondente em todas as chamadas.",
+    "fase4_core_isolado": "O serviço de inferência de visão computacional (PoseEstimationWorker) roda em processo/container separado com GPU dedicada, consumindo uma fila de jobs (Redis Streams ou RabbitMQ). É stateless, horizontalmente escalável e completamente desacoplado da API principal. O serviço de LLM (FeedbackGenerationWorker) também é isolado — chamadas assíncronas com resultado persistido antes de notificar o cliente.",
+    "fase4_custo_total_cliente": "Custo de core por sessão: inferência CV (GPU spot instance ~$0.002-0.008/min de vídeo analisado) + chamada LLM para feedback (~$0.001-0.005 por análise). Custo de infra proporcional: armazenamento de vídeo processado (~$0.023/GB/mês S3) + logs de performance no banco (~$0.10/GB/mês RDS) + CDN para entrega de conteúdo de treino (~$0.01/GB). Estimativa por usuário ativo mensal (4 treinos/semana, 30min/sessão): $3-8 de GPU + $0.50-2 de LLM + $0.30-1 de infra = ~$4-11/usuário ativo/mês. Precificação viável a partir de R$49/mês consumer (margem >70%) ou R$15-25/usuário/mês em B2B (escala compensando margem menor).",
+    "fase4_continuidade": "A API principal e as interfaces continuam funcionando mesmo se o PoseEstimationWorker estiver offline. O usuário consegue acessar histórico, ver planos pré-gerados e executar treinos com vídeos de referência. Jobs de análise entram na fila e são processados quando o worker volta — o usuário recebe feedback retroativo. Circuit breaker com fallback para feedback genérico baseado no plano configurado garante que o app nunca 'quebre' visualmente.",
+    "fase4_manutencao": "O PoseEstimationWorker implementa uma interface IMotorDeAnalise com métodos padronizados (analisarFrame, extrairPose, calcularDesvio). Trocar de MediaPipe para YOLOv8 ou modelo proprietário = implementar um novo adapter e atualizar a variável de ambiente MOTOR_DE_ANALISE. Zero downtime com blue/green deployment do worker. O mesmo vale para o LLM — IMotorDeFeedback abstrai OpenAI, Anthropic ou Ollama.",
+    "monetizacao": "B2C: SaaS mensal/anual (R$49/mês consumer, R$89/mês premium com análise avançada e nutrição). B2B Academia: por usuário ativo/mês (R$15-25/usuário) com mínimo mensal + setup fee. B2B White-label: licença mensal flat por tenant (R$2.000-10.000/mês) para academias de rede ou apps corporativos. Expansão: marketplace de programas de treino criados por PTs certificados (comissão 20-30%) e API pública com billing por análise (pay-per-use para parceiros).",
+    "stack_sugerida": "Inferência CV: Python + MediaPipe/YOLOv8 + FastAPI (worker isolado, container com GPU). LLM: Anthropic Claude ou OpenAI via SDK com cache de prompts para reduzir custo. Backend API: Node.js + TypeScript + Fastify (alta throughput, tipagem forte). Banco: PostgreSQL (dados estruturados) + Redis (filas, sessões, cache de configuração por tenant). Storage: S3-compatible (Cloudflare R2 para custo menor). Mobile: React Native (iOS + Android com único código, acesso nativo à câmera). Web: Next.js + React. Infra: Docker + Kubernetes (EKS ou GKE) com autoscaling de workers por tamanho da fila. Observabilidade: OpenTelemetry + Grafana para custo por tenant em tempo real."
+  }
+}

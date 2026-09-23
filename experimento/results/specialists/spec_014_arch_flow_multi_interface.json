@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta implica múltiplas interfaces — UI para participantes (Meeting Experience Team), conectores de integração (Integration Hub com Zoom/Teams/Google Meet) e SDKs para integradores (Developer Experience Team) —, e a separação em bounded contexts sugere algum desacoplamento arquitetural, mas nenhuma interface é explicitamente justificada por perfil de usuário ou alcance de mercado, e não há declaração de que a lógica de negócio é intencionalmente agnóstica ao canal de entrega."
+}

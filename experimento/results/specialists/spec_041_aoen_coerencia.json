@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 41,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural coesa e autoexplicativa: o princípio de desacoplamento declarado na Fase 1 (core analítico agnóstico de fontes e IA) materializa-se diretamente na PatentPortfolioService da Fase 2 (nenhuma interface conhece regras de domínio) e no fluxo canônico da Fase 3 (ingestão → normalização → enriquecimento), cada camada justificando e viabilizando a seguinte; o mapeamento mercado→interface é rigoroso — cada canal de entrega rastreia-se a um segmento nomeado na Fase 1 sem sobreposição ou contradição — e a única lacuna verificável é que o mercado secundário (escritórios de advocacia) aparece na Fase 1 mas não recebe interface explicitamente dedicada na Fase 2, além do texto da Fase 3 estar truncado, impedindo validação completa do fluxo operacional."
+}

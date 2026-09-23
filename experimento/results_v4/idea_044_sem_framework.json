@@ -1,0 +1,34 @@
+{
+  "ideia_idx": 44,
+  "ideia": "Plataforma de recrutamento técnico com avaliação automatizada de código",
+  "abordagem": "sem_framework",
+  "response": {
+    "o_que_construir": "Uma plataforma web em que empresas criam vagas técnicas e montam desafios de programação, e candidatos os resolvem direto no navegador. O código enviado é executado automaticamente em ambiente isolado contra casos de teste, com pontuação por corretude, desempenho e qualidade. Há também um painel para o recrutador comparar candidatos por ranking e relatório, um banco de desafios prontos e um histórico de tentativas com detecção básica de plágio.",
+    "como_comecar": "1) Conversar com 5 a 10 recrutadores e devs para validar a dor real. 2) Construir o menor fluxo possível: o recrutador cria um desafio com testes, o candidato recebe um link, escreve código num editor e vê o resultado. 3) Fazer o executor de código funcionar para uma única linguagem (Python ou JavaScript) dentro de contêineres descartáveis, sem rede e com limite de tempo e memória. Essa é a parte mais arriscada, então vem primeiro. 4) Fazer o painel simples do recrutador com a lista de candidatos e as notas. 5) Testar com 2 ou 3 empresas piloto, gratuitamente. 6) Só depois adicionar mais linguagens, cobrança, plágio e relatórios avançados.",
+    "tecnologias": "Front-end em React/Next.js com TypeScript e editor Monaco. Back-end em Node.js/TypeScript (ou Python) com API REST. Fila de mensagens (Redis + BullMQ) para as submissões. Executores em contêineres Docker isolados por gVisor ou Firecracker, ou o motor open source Judge0 no início. PostgreSQL para dados. Redis para cache e filas. Armazenamento de objetos S3 para arquivos e logs. Autenticação com e-mail/senha e login com Google/GitHub. E-mails transacionais via serviço externo. Pagamentos com Stripe. Monitoramento com Sentry e Grafana.",
+    "banco_dados": "PostgreSQL como banco principal, com tabelas de empresas, usuários, vagas, desafios, casos de teste, convites, submissões, resultados por teste e avaliações. Código enviado e logs de execução longos ficam em armazenamento de objetos (S3), e o banco guarda só as referências. Redis guarda a fila de execução, o cache do ranking e os limites de uso. Casos de teste ocultos ficam separados e nunca são enviados ao navegador. Cada empresa só acessa seus próprios dados, com filtro por empresa em todas as consultas. Backups diários automáticos e remoção de dados de candidatos sob pedido, em conformidade com a LGPD.",
+    "interfaces": [
+      "Site de apresentação e página de preços",
+      "Cadastro, login e convite por link único para candidatos",
+      "Painel do recrutador: vagas, candidatos, ranking e relatórios",
+      "Construtor de desafios com editor de casos de teste",
+      "Biblioteca de desafios prontos por linguagem e nível",
+      "Ambiente de prova do candidato: enunciado, editor de código, botão executar e resultado dos testes",
+      "Página de relatório individual do candidato, com nota, tempo e código enviado",
+      "Área de cobrança e assinatura da empresa",
+      "API REST e webhooks para integração com sistemas de vagas (ATS)",
+      "Painel interno de administração e suporte"
+    ],
+    "usuarios": "Recrutadores e times de RH técnico de startups e empresas médias que contratam desenvolvedores. Gestores de engenharia que definem os desafios e avaliam os resultados. Candidatos desenvolvedores que fazem o teste. Consultorias e agências de recrutamento. Administradores da plataforma, que fazem o suporte e moderam.",
+    "escalabilidade": "Sim, mas sem exagero no começo. A carga pesada está na execução de código, que é separada do resto e roda como processos trabalhadores lendo de uma fila. Assim dá para aumentar ou reduzir o número de executores conforme a demanda, que tem picos quando uma empresa envia um teste para centenas de candidatos ao mesmo tempo. A API é sem estado e pode rodar em várias réplicas atrás de um balanceador. O banco começa numa instância gerenciada com réplica de leitura, e o ranking fica em cache. Há limites por empresa e por candidato para evitar abuso. Executores em máquinas separadas da API por segurança. Se o volume crescer, dá para dividir por região e migrar os executores para um cluster Kubernetes com autoescalonamento.",
+    "custos": "Sim. O maior custo é a computação dos executores, e o isolamento seguro exige cuidado, então limito tempo, memória e CPU por submissão e reaproveito contêineres aquecidos. Também pesam o banco gerenciado, o armazenamento, o e-mail e as taxas do Stripe (cerca de 3 a 4% por transação). No início, uma única nuvem com máquinas pequenas e executores sob demanda (instâncias spot) deve ficar entre US$ 200 e 500 por mês. Estimo o custo por avaliação (centavos) para garantir margem em cada plano. Também considero suporte, segurança (testes de invasão e revisão do isolamento) e conformidade com a LGPD.",
+    "monetizacao": "Assinatura mensal ou anual por empresa, com planos por número de avaliações: um gratuito com poucas avaliações por mês para experimentar, um intermediário para times pequenos e um empresarial com assinantes ilimitados, integração com ATS, marca própria e suporte prioritário. Como alternativa, cobrança por avaliação enviada (pré-pago em pacotes) para quem contrata pouco. Complementos pagos: desafios personalizados feitos por nós, detecção avançada de plágio, entrevistas ao vivo com editor compartilhado e relatórios comparativos. Candidatos usam de graça.",
+    "stack_sugerida": "Next.js + React + TypeScript + Monaco Editor (front-end); Node.js + TypeScript com API REST (back-end); PostgreSQL (dados); Redis + BullMQ (fila e cache); Docker + gVisor ou Judge0 (execução isolada de código); S3 (arquivos e logs); Stripe (pagamentos); Sentry + Grafana (monitoramento); hospedagem em AWS ou GCP, com Terraform e GitHub Actions para implantação."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "d3c4c17010f1",
+    "gerado_em": "2026-09-21T03:12:04+00:00",
+    "runner": "runner.py"
+  }
+}

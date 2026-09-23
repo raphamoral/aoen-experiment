@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 32,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está bem segmentado por tamanho de operação e persona (GM, revenue manager, consultor) e a dor central — processar reviews manualmente — está identificada, mas não quantificada (sem dados de tempo perdido, impacto em receita ou churn de reputação); falta completamente análise de tamanho de mercado (TAM/SAM/SOM) e diferenciação explícita frente a concorrentes estabelecidos como ReviewPro, TrustYou e Revinate, o que impede avaliar se a proposta de valor é convincente o suficiente para justificar troca ou adoção."
+}

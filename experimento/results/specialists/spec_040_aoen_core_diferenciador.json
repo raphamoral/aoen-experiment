@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 40,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O TriageEngine é um núcleo diferenciador claro, isolado por contrato de interface, extensível para múltiplos fornecedores de IA ou modelos locais, e resolve um gargalo real (padronização e aceleração da triagem clínica) que planilhas, HIS genéricos e fluxos manuais não resolvem — perdendo um ponto por não evidenciar dados proprietários ou aprendizado contínuo que criariam lock-in defensável ao longo do tempo."
+}

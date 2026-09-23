@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 32,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta menciona eventos de domínio (ReviewAnalyzed, AlertTriggered, ReportReady) que sugerem intenção assíncrona, mas não especifica mecanismos concretos de isolamento físico — ausência de filas explícitas (SQS, RabbitMQ, Kafka), workers separados, estratégias de fallback quando o SentimentAnalyzer falha (ex: enfileirar para reprocessamento, retornar score parcial) ou capacidade de escalar o pipeline de análise independentemente das interfaces de apresentação."
+}

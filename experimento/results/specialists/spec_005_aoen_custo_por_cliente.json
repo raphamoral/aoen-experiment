@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente, por operação ou por tenant — descreve exclusivamente arquitetura técnica (adaptadores, service layer, interfaces) sem qualquer referência a rastreamento de consumo por tenant, custo unitário de geração de contrato (LLM + storage + chamada ao provedor de assinatura) ou conexão entre custo e modelo de precificação."
+}

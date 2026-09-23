@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 36,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Web App, Mobile, API REST/Webhook, Widget embarcável e Portal do Paciente), cada uma justificada por um segmento de mercado e perfil de usuário específico, com lógica de negócio completamente desacoplada via PrescriptionService — permitindo adicionar novos canais sem alterar regras de domínio."
+}

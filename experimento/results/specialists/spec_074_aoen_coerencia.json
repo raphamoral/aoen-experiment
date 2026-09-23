@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 74,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões se reforçam consistentemente: o núcleo de ciclo de vida mapeia diretamente os papéis de usuário declarados (pesquisador → analista ETT → pró-reitor), o padrão port/adapter (PatentSearchPort, AIClassifierPort) é coerente com um mercado universitário heterogêneo que não pode ser amarrado a fornecedor único, a camada de serviços de domínio sustenta a promessa de múltiplas interfaces sem duplicação de regras, e cada interface tem justificativa de mercado atrelada às personas do fase1 — a narrativa vai de 'inventor submete' a 'royalty volta ao pesquisador' sem ruptura lógica; a nota não atinge 10 porque o fase3 está truncado, impedindo avaliar se o fluxo operacional detalhado mantém a mesma coesão, e porque ausência de decisões sobre persistência e deployment deixa lacunas que poderiam introduzir contradições não visíveis na proposta."
+}

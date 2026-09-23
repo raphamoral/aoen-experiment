@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma narrativa arquitetural coesa e auto-reforçante: o core de rastreamento justifica as interfaces, o padrão de adaptadores (fase1) viabiliza diretamente o white-label e a troca de fornecedores (fase2), a service layer sem lógica nas interfaces implementa o mesmo princípio de abstração do LocationProvider/RoutingEngine, o state machine fixo + parâmetros configuráveis reflete a realidade operacional do mercado-alvo, e cada interface abre exatamente o segmento que o produto precisa para crescer — há uma linha lógica contínua do problema (WhatsApp/planilhas) à solução (core → serviços → canais → extensibilidade); o único ponto que impede nota 10 é a truncagem de fase3_parametros_configur, que deixa incompleta a análise da tensão entre fluxo fixo e variabilidade configurável."
+}

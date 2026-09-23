@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (motor de rastreamento com orquestração de estado, ETA dinâmico e detecção de anomalias) está claramente identificado, isolado e abstraído em interfaces substituíveis (LocationProvider, RoutingEngine, NotificationBus), com proposta de valor objetiva para o mercado-alvo; perde um ponto por não demonstrar por que o cálculo de ETA dinâmico ou detecção de anomalias é tecnicamente superior às soluções existentes (ex: Onfleet, Routific), deixando a insubstituibilidade implícita em vez de evidenciada."
+}

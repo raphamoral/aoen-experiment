@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 38,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta apresenta coerência sistêmica elevada: a abstração de pipeline em camadas intercambiáveis (fase 1) é o fundamento estrutural que justifica diretamente a multiplicidade de interfaces (fase 2), o fluxo fixo de fase 3 operacionaliza com precisão o modelo abstrato de fase 1, cada interface de fase 2 tem correspondência explícita com um segmento de mercado identificado em fase 1, e a CompetitorIntelligenceService como camada única de lógica elimina a contradição mais comum nesse tipo de arquitetura (lógica fragmentada por canal); o único demérito é a ausência de decisões sobre stack tecnológica e persistência, que deixa em aberto se as escolhas concretas sustentarão a promessa de coleta em frequências de 15min sem contradizer o posicionamento small/mid market."
+}

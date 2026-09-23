@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta usa Celery com workers separados para processamento assíncrono, o que configura isolamento físico real de processos, mas não menciona circuit breakers, fallback em caso de falha dos workers, monitoramento de filas ou estratégia de retry/dead-letter queue — elementos essenciais para resiliência completa."
+}

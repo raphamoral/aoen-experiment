@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 56,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não faz nenhuma menção a custos de infraestrutura, não cita nenhum serviço cloud específico com estimativa de valor, não apresenta estratégia de otimização de custos (scale-to-zero, spot instances, storage tiers) e não considera como os custos evoluem com o crescimento da base de usuários."
+}

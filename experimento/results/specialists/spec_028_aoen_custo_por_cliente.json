@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 28,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente arquitetura técnica e funcional (motor de conformidade, interfaces, service layer) sem qualquer menção a rastreamento de custo por tenant, cálculo de custo por operação (ex: custo de cada runScan em LLM + storage + compute), ou conexão entre consumo de recursos e modelo de precificação — os custos de IA e infraestrutura existem implicitamente na arquitetura, mas são tratados como bloco invisível, não como unit economics por cliente."
+}

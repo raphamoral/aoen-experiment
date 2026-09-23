@@ -1,0 +1,24 @@
+{
+  "total_ideias": 100,
+  "abordagens": [
+    "aoen",
+    "clean_arch",
+    "hexagonal",
+    "12factor",
+    "evolutionary",
+    "arch_flow",
+    "sem_framework"
+  ],
+  "total_execucoes": 700,
+  "criterios_avaliacao": [
+    "core_diferenciador",
+    "visao_mercado",
+    "multi_interface",
+    "configurabilidade",
+    "isolamento_processamento",
+    "consideracao_custo",
+    "monetizacao",
+    "evolucao",
+    "coerencia"
+  ]
+}

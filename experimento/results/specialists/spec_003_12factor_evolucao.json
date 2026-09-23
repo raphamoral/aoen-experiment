@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra alta substituibilidade de backing services (RabbitMQ/SQS, Auth0/Keycloak, S3/MinIO, SendGrid/SES) e bom potencial de escala via Kubernetes + filas + cache, mas não evidencia padrões explícitos de isolamento da lógica de negócio dos frameworks (hexagonal/ports-and-adapters) dentro de cada serviço, deixando em aberto se uma troca de framework interno exigiria reescrita significativa."
+}

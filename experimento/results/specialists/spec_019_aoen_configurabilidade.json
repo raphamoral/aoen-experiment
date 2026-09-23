@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta acerta na separação de camadas (service layer, adapters de calendário e IA) e descreve um fluxo principal fixo — boas bases para multi-tenancy —, mas não define nenhum mecanismo explícito de configuração por tenant: não há schema de configuração por clínica, os intervalos de lembrete (D-2, D-1, H-2) e os pesos do score de ranqueamento aparecem hardcoded, e o onboarding de novo cliente não é tratado como operação de dados — o produto ainda precisaria de desenvolvimento para entregar comportamento diferenciado por cliente além da troca de provider de IA/calendário."
+}

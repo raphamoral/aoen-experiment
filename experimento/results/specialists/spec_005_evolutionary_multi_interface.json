@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta não menciona interfaces voltadas ao usuário final (web, mobile, CLI) nem perfis de usuário distintos (corretor, comprador, cartório); o único indício de multi-interface é o versionamento de URI (/v1, /v2) — pensado para estabilidade de migração, não para alcance de mercado — e os webhooks de integração, insuficientes para caracterizar uma estratégia multi-canal deliberada, ainda que a arquitetura modular crie condições técnicas passivas para adicionar interfaces sem reescrever regras de negócio."
+}

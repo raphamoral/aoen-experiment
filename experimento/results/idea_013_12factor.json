@@ -1,0 +1,60 @@
+{
+  "ideia_idx": 13,
+  "ideia": "App de reserva e gestão de espaços de coworking descentralizados",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único no Git (ex: GitHub/GitLab) com múltiplos serviços versionados juntos. Branches por ambiente (main=prod, staging, dev). Um único codebase rastreado, deployado em múltiplos ambientes (dev, staging, prod, por região geográfica). Cada espaço de coworking parceiro é um 'deploy', não um codebase separado.",
+    "dependencies": "Dependências declaradas explicitamente via package.json (Node/TypeScript), pyproject.toml (Python) ou go.mod (Go). Nenhuma dependência implícita do sistema operacional. Ambientes isolados via Docker containers. Lock files commitados (package-lock.json, poetry.lock). Sem dependências globais — tudo encapsulado na imagem.",
+    "config": "Zero configuração hardcoded. Todas as configs injetadas via variáveis de ambiente: DATABASE_URL, REDIS_URL, STRIPE_SECRET_KEY, JWT_SECRET, AWS_REGION, MAPS_API_KEY, etc. Uso de dotenv para dev local (.env nunca commitado). Secrets gerenciados via AWS Secrets Manager ou HashiCorp Vault em produção. Configuração por ambiente via CI/CD (GitHub Actions secrets, Kubernetes ConfigMaps/Secrets).",
+    "backing_services": {
+      "banco_de_dados": "PostgreSQL (reservas, usuários, espaços) — tratado como recurso externo via DATABASE_URL",
+      "cache": "Redis — sessões, rate limiting, disponibilidade de espaços em tempo real via REDIS_URL",
+      "fila_de_mensagens": "RabbitMQ ou AWS SQS — notificações assíncronas, confirmações de reserva",
+      "armazenamento": "AWS S3 ou Cloudflare R2 — fotos de espaços, documentos",
+      "email": "SendGrid ou AWS SES — confirmações, lembretes",
+      "sms_push": "Twilio (SMS) + Firebase FCM (push mobile)",
+      "pagamentos": "Stripe — cobrança de reservas, split de pagamentos para parceiros",
+      "mapas": "Google Maps API ou Mapbox — localização e busca geográfica de espaços",
+      "monitoramento": "Datadog ou New Relic — APM e logs centralizados",
+      "identidade": "Auth0 ou AWS Cognito — autenticação/autorização"
+    },
+    "build_release_run": "Pipeline estrito em 3 etapas separadas: BUILD (docker build, compilação, testes unitários, geração de artefato imutável versionado com SHA do commit), RELEASE (combinação do artefato com config do ambiente via CI/CD — GitHub Actions/ArgoCD, tag semântica ex: v2.3.1-prod), RUN (execução do release em Kubernetes ou ECS — nunca alterar código em runtime). Rollback = redeployar release anterior imutável. Nenhum código é alterado após o build.",
+    "processes": "Aplicação executada como processos stateless e share-nothing. Nenhum estado local em memória ou disco entre requests. Sessões armazenadas no Redis (backing service), não no processo. Uploads temporários vão direto para S3. Múltiplas instâncias do mesmo processo podem rodar em paralelo sem conflito. Sticky sessions proibidas. Estado de disponibilidade de salas gerenciado no Redis/DB, nunca in-process.",
+    "concurrency": "Escala horizontal via tipos de processo distintos: web workers (API HTTP — escala por requisições/s), worker processes (filas assíncronas — escala por volume de jobs), scheduler (cron jobs — single instance com lock distribuído no Redis). Kubernetes HPA (Horizontal Pod Autoscaler) escala web e worker pods automaticamente por CPU/memória/custom metrics. Cada tipo de processo escala independentemente.",
+    "disposability": "Startup em menos de 5 segundos (containers leves, conexões lazy). Shutdown gracioso: ao receber SIGTERM, parar de aceitar novas requests, finalizar requests em andamento (timeout 30s), fechar conexões com DB/Redis, sair com código 0. Workers de fila retornam jobs ao broker antes de encerrar (nack/requeue). Health checks (/health, /ready) para Kubernetes saber quando pod está pronto ou deve ser removido. Reservas em andamento protegidas por transações ACID no PostgreSQL.",
+    "port_binding": "Cada serviço é autocontido e expõe sua funcionalidade via porta HTTP/HTTPS. API principal: porta 8080. Serviço de notificações: porta 8081. Serviço de pagamentos: porta 8082. Sem dependência de servidor de aplicação externo (Apache/IIS) — o servidor HTTP está embutido no processo (Express, Fastify, FastAPI, Gin). Roteamento via Nginx Ingress Controller ou AWS ALB.",
+    "dev_prod_parity": "Dev, staging e prod usam as mesmas versões de backing services via Docker Compose local (PostgreSQL 16, Redis 7, mesma versão). Mesmas variáveis de ambiente (valores diferentes, estrutura igual). Deploy contínuo — PR mergeado = deploy em staging em minutos, promoção para prod após aprovação. Desenvolvedores usam dados anonimizados de prod em staging. Proibido usar SQLite em dev e PostgreSQL em prod.",
+    "logs": "Todos os processos escrevem logs apenas em stdout/stderr como stream de eventos JSON estruturado (timestamp, level, service, trace_id, user_id, message). Nenhum arquivo de log local. A infraestrutura (Kubernetes + Fluentd/Vector) coleta, agrega e roteia para destino centralizado (Datadog, ELK Stack ou CloudWatch). Correlação de requests via trace_id propagado em headers (OpenTelemetry). Alertas baseados em padrões nos logs centralizados.",
+    "admin_processes": "Migrações de banco (prisma migrate deploy, alembic upgrade) executadas como jobs pontuais no mesmo ambiente/imagem do app, antes do deploy via initContainers no Kubernetes. Scripts de seed, relatórios, limpeza de dados expirados: Kubernetes Jobs ou AWS ECS Tasks. CLI de administração (criar planos, gerenciar parceiros) como comando separado no mesmo codebase. Nunca via SSH direto em container de produção.",
+    "interfaces": [
+      "REST API (JSON) — backend principal para web e mobile",
+      "WebSocket — disponibilidade de salas em tempo real",
+      "Progressive Web App (PWA) — interface web responsiva para usuários finais",
+      "App Mobile (React Native) — iOS e Android para reservas on-the-go",
+      "Dashboard Web (React/Next.js) — painel para gestores de espaços parceiros",
+      "Admin Panel (Next.js + shadcn/ui) — gestão interna da plataforma",
+      "Webhook API — notificações de eventos para sistemas externos dos parceiros",
+      "SDK/API pública — integração com sistemas de gestão predial de parceiros"
+    ],
+    "escalabilidade": "Escala horizontal stateless no Kubernetes (EKS/GKE). HPA por tipo de processo. CDN (Cloudflare) para assets estáticos e cache de respostas. Read replicas no PostgreSQL para queries de busca. Redis Cluster para cache de disponibilidade de alta frequência. Sharding geográfico futuro: instâncias regionais (BR-SOUTH, BR-NORTHEAST) com banco por região para latência e LGPD. Event sourcing para histórico de reservas (alto volume de leitura). Elasticsearch para busca geográfica complexa de espaços em escala.",
+    "custos": "Infraestrutura cloud-native com custo variável. Ambientes não-prod desligam fora do horário comercial (economia ~60%). Spot/Preemptible instances para workers de fila (70% mais barato). Reserved instances para banco e cache (economia 40%). S3 Intelligent-Tiering para fotos antigas. Cloudflare como CDN/proxy reduz egress AWS. Monitoramento de custo via AWS Cost Explorer com alertas. Estimativa inicial: $500-2000/mês para MVP, escalando linearmente com uso.",
+    "monetizacao": "SaaS B2B2C com múltiplos fluxos: (1) Comissão por transação: 8-15% sobre cada reserva processada via Stripe Connect — principal fonte de receita; (2) Assinatura mensal para gestores: planos Basic ($49/mês, até 3 espaços), Pro ($149/mês, até 15 espaços), Enterprise (custom, API + white-label); (3) Planos de crédito para usuários corporativos: empresas compram pacotes de horas para times; (4) Featured listing: espaços pagam para aparecer no topo das buscas; (5) Dados e analytics: relatórios de ocupação e tendências para gestores (add-on $29/mês).",
+    "stack_sugerida": {
+      "api_backend": "Node.js 22 + TypeScript + Fastify (alta performance, low overhead)",
+      "orm": "Prisma (type-safe, migrations versionadas)",
+      "banco_de_dados": "PostgreSQL 16 (AWS RDS Multi-AZ)",
+      "cache_filas": "Redis 7 (ElastiCache) + BullMQ para filas",
+      "busca_geo": "PostGIS (extensão PostgreSQL) para queries geográficas",
+      "frontend_web": "Next.js 15 + React 19 + Tailwind CSS + shadcn/ui",
+      "mobile": "React Native + Expo (code sharing com web)",
+      "autenticacao": "Auth0 (social login, MFA, B2B SSO)",
+      "pagamentos": "Stripe + Stripe Connect (split de pagamentos para parceiros)",
+      "armazenamento": "AWS S3 + CloudFront CDN",
+      "email_sms": "SendGrid + Twilio",
+      "observabilidade": "OpenTelemetry + Datadog (APM, logs, métricas)",
+      "ci_cd": "GitHub Actions + ArgoCD + Docker + Kubernetes (EKS)",
+      "iac": "Terraform (infraestrutura como código, versionada no repo)"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único no Git (ex: GitHub/GitLab) com múltiplos serviços versionados juntos. Branches por ambiente (main=prod, staging, dev). Um único codebase rastreado, deployado em múltiplos ambientes (dev, staging, prod, por região geográfica). Cada espaço de coworking parceiro é um 'deploy', não um codebase separado.\",\n\n  \"dependencies\": \"Dependências declaradas explicitamente via package.json (Node/TypeScript), pyproject.toml (Python) ou go.mod (Go). Nenhuma dependência implícita do sistema operacional. Ambientes isolados via Docker containers. Lock files commitados (package-lock.json, poetry.lock). Sem dependências globais — tudo encapsulado na imagem.\",\n\n  \"config\": \"Zero configuração hardcoded. Todas as configs injetadas via variáveis de ambiente: DATABASE_URL, REDIS_URL, STRIPE_SECRET_KEY, JWT_SECRET, AWS_REGION, MAPS_API_KEY, etc. Uso de dotenv para dev local (.env nunca commitado). Secrets gerenciados via AWS Secrets Manager ou HashiCorp Vault em produção. Configuração por ambiente via CI/CD (GitHub Actions secrets, Kubernetes ConfigMaps/Secrets).\",\n\n  \"backing_services\": {\n    \"banco_de_dados\": \"PostgreSQL (reservas, usuários, espaços) — tratado como recurso externo via DATABASE_URL\",\n    \"cache\": \"Redis — sessões, rate limiting, disponibilidade de espaços em tempo real via REDIS_URL\",\n    \"fila_de_mensagens\": \"RabbitMQ ou AWS SQS — notificações assíncronas, confirmações de reserva\",\n    \"armazenamento\": \"AWS S3 ou Cloudflare R2 — fotos de espaços, documentos\",\n    \"email\": \"SendGrid ou AWS SES — confirmações, lembretes\",\n    \"sms_push\": \"Twilio (SMS) + Firebase FCM (push mobile)\",\n    \"pagamentos\": \"Stripe — cobrança de reservas, split de pagamentos para parceiros\",\n    \"mapas\": \"Google Maps API ou Mapbox — localização e busca geográfica de espaços\",\n    \"monitoramento\": \"Datadog ou New Relic — APM e logs centralizados\",\n    \"identidade\": \"Auth0 ou AWS Cognito — autenticação/autorização\"\n  },\n\n  \"build_release_run\": \"Pipeline estrito e"
+}

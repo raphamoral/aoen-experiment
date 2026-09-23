@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta trata custos exclusivamente como totais de infraestrutura (ex: 'servidor na AWS EC2 + RDS'), sem nenhuma mensuração por cliente, rastreamento de consumo por tenant ou cálculo de custo por operação conectado ao modelo de precificação."
+}

@@ -1,0 +1,68 @@
+{
+  "ideia_idx": 12,
+  "ideia": "SaaS de monitoramento de qualidade do ar para indústrias",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Monitoramento contínuo de qualidade do ar industrial: coleta de métricas de poluentes (CO2, CO, NOx, SO2, PM2.5, PM10, VOCs), análise de conformidade com normas regulatórias (CONAMA, EPA, ISO), geração de alertas e relatórios de qualidade ambiental para operadores industriais",
+    "primary_ports": [
+      "IMonitoringCommandPort — submeter leituras manuais, configurar thresholds e zonas de monitoramento",
+      "IAirQualityQueryPort — consultar métricas atuais, históricas e agregadas por sensor ou zona",
+      "IAlertManagementPort — criar, pausar e reconhecer alertas de qualidade do ar",
+      "IReportGenerationPort — solicitar relatórios de conformidade regulatória e auditorias",
+      "IUserManagementPort — gerenciar usuários, papéis e permissões por tenant",
+      "IDashboardPort — fornecer dados estruturados para visualização em tempo real",
+      "ICompliancePort — consultar conformidade com normas ambientais vigentes"
+    ],
+    "secondary_ports": [
+      "ISensorDataIngestionPort — receber dados brutos de sensores via protocolos IoT",
+      "IDataPersistencePort — persistir e recuperar séries temporais de métricas",
+      "INotificationPort — enviar alertas por canais externos (email, SMS, webhook)",
+      "IWeatherDataPort — consultar dados meteorológicos externos que afetam dispersão de poluentes",
+      "IRegulatoryStandardsPort — buscar limites legais vigentes por região e tipo de indústria",
+      "IBillingPort — registrar eventos de uso para cobrança por tenant",
+      "ICachePort — armazenar métricas recentes para baixa latência",
+      "IEventBusPort — publicar eventos de domínio para processamento assíncrono",
+      "IMLModelPort — invocar modelos preditivos de qualidade do ar",
+      "IAuditLogPort — registrar ações de usuários e mudanças de configuração"
+    ],
+    "primary_adapters": [
+      "RestApiAdapter — API HTTP/JSON para dashboards web e integrações de terceiros",
+      "GraphQLAdapter — consultas flexíveis para clientes com necessidades de dados compostas",
+      "GrpcAdapter — comunicação de alta performance para sistemas internos e edge computing",
+      "WebSocketAdapter — streaming de métricas em tempo real para dashboards ao vivo",
+      "CliAdapter — operações administrativas e scripts de automação DevOps",
+      "WebhookReceiverAdapter — receber eventos de sistemas externos de automação industrial (SCADA, DCS)",
+      "SchedulerAdapter — disparar jobs recorrentes de agregação, relatórios e verificações de conformidade"
+    ],
+    "secondary_adapters": [
+      "MqttSensorAdapter — ingesta de dados de sensores via protocolo MQTT (IoT padrão industrial)",
+      "OpcUaAdapter — integração com equipamentos industriais via OPC-UA",
+      "TimescaleDbAdapter — persistência otimizada de séries temporais (implementa IDataPersistencePort)",
+      "RedisAdapter — cache de métricas recentes e sessões (implementa ICachePort)",
+      "KafkaAdapter — barramento de eventos distribuído para ingestão de alta vazão (implementa IEventBusPort)",
+      "SendGridEmailAdapter — notificações por email (implementa INotificationPort)",
+      "TwilioSmsAdapter — notificações por SMS para alertas críticos (implementa INotificationPort)",
+      "PagerDutyAdapter — escalonamento de incidentes críticos (implementa INotificationPort)",
+      "OpenWeatherMapAdapter — dados meteorológicos externos (implementa IWeatherDataPort)",
+      "StripeAdapter — billing por consumo e assinaturas (implementa IBillingPort)",
+      "SageMakerAdapter — modelos ML de previsão de dispersão e anomalias (implementa IMLModelPort)",
+      "PostgreSQLAdapter — dados relacionais de configuração, usuários e tenants",
+      "S3Adapter — armazenamento de relatórios gerados e exports históricos",
+      "ElasticSearchAdapter — busca e análise de logs e eventos históricos"
+    ],
+    "isolation": "O core domain nunca importa bibliotecas de infraestrutura. Todas as dependências externas são invertidas via interfaces (ports) definidas dentro do hexágono. A regra de dependência flui de fora para dentro: adapters dependem do core, jamais o contrário. Use cases orquestram apenas ports abstratos injetados via DI. Testes unitários substituem todos os adapters por doubles sem modificar o core. O core pode ser executado completamente em memória sem rede, banco de dados ou sensores reais.",
+    "interfaces": [
+      "Dashboard Web — React/Next.js com WebSocket para métricas em tempo real por zona industrial",
+      "Mobile App — React Native para alertas push e consultas de campo por operadores",
+      "REST API pública — para integrações com ERPs industriais (SAP, Totvs) e sistemas SCADA",
+      "Portal de Relatórios — geração sob demanda de relatórios regulatórios (PDF/Excel) para órgãos ambientais",
+      "CLI Admin — operações de manutenção, onboarding de tenants e diagnóstico de sensores",
+      "Embedded Edge SDK — SDK para coleta e pré-processamento local em gateways IoT industriais"
+    ],
+    "escalabilidade": "Ingestão de dados via Kafka permite escalonamento horizontal independente dos consumidores de processamento. Adapters de persistência de séries temporais (TimescaleDB) escalam via particionamento por tenant e tempo. O core stateless escala horizontalmente em containers Kubernetes com auto-scaling baseado em lag do Kafka. Leitura e escrita são separadas (CQRS aplicado nos use cases) permitindo réplicas de leitura para dashboards intensivos. Multi-tenancy isolado por schema no banco de dados. Edge computing via gateways locais reduz latência e banda para plantas industriais remotas.",
+    "custos": "Principais vetores de custo: ingestão e armazenamento de séries temporais (escala com volume de sensores e frequência de coleta), processamento de alertas em tempo real, chamadas a APIs externas de clima e normas regulatórias, e modelos ML em SageMaker. Otimizações: downsampling de dados históricos após 30/90 dias, cache agressivo de dados regulatórios (baixa variação), processamento em batch para relatórios fora do horário de pico, e tier de armazenamento frio (S3 Glacier) para dados com mais de 1 ano. Arquitetura hexagonal facilita trocar adapters por alternativas mais baratas sem afetar o core.",
+    "monetizacao": "Assinatura SaaS por tenant com tiers baseados em: número de sensores ativos, frequência de coleta, volume de alertas/mês, retenção histórica de dados e acesso a relatórios regulatórios avançados. Add-ons pagos: modelos preditivos de ML, integração com sistemas SCADA legados via OPC-UA, suporte a normas regulatórias específicas por país, e SLA premium de alertas críticos. Marketplace de integrações com parceiros de hardware de sensores. Potencial para modelo por consumo (pay-per-reading) para indústrias com variação sazonal intensa.",
+    "stack_sugerida": "Core Domain: Python (FastAPI) ou Kotlin (Ktor) — ambos com excelente suporte a injeção de dependência e tipagem forte. Ingestão IoT: EMQX ou HiveMQ (broker MQTT), Apache Kafka (event streaming). Persistência: TimescaleDB (séries temporais), PostgreSQL (relacional), Redis (cache). Infraestrutura: Kubernetes (EKS/GKE), Terraform (IaC), Docker. Frontend: Next.js + TailwindCSS + Recharts para gráficos de séries temporais. Mobile: React Native. ML: Python + scikit-learn/Prophet via SageMaker. Observabilidade: OpenTelemetry + Grafana + Loki + Tempo. CI/CD: GitHub Actions + ArgoCD. Billing: Stripe. Autenticação: Keycloak (OIDC) com suporte a multi-tenancy."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Monitoramento contínuo de qualidade do ar industrial: coleta de métricas de poluentes (CO2, CO, NOx, SO2, PM2.5, PM10, VOCs), análise de conformidade com normas regulatórias (CONAMA, EPA, ISO), geração de alertas e relatórios de qualidade ambiental para operadores industriais\",\n  \"primary_ports\": [\n    \"IMonitoringCommandPort — submeter leituras manuais, configurar thresholds e zonas de monitoramento\",\n    \"IAirQualityQueryPort — consultar métricas atuais, históricas e agregadas por sensor ou zona\",\n    \"IAlertManagementPort — criar, pausar e reconhecer alertas de qualidade do ar\",\n    \"IReportGenerationPort — solicitar relatórios de conformidade regulatória e auditorias\",\n    \"IUserManagementPort — gerenciar usuários, papéis e permissões por tenant\",\n    \"IDashboardPort — fornecer dados estruturados para visualização em tempo real\",\n    \"ICompliancePort — consultar conformidade com normas ambientais vigentes\"\n  ],\n  \"secondary_ports\": [\n    \"ISensorDataIngestionPort — receber dados brutos de sensores via protocolos IoT\",\n    \"IDataPersistencePort — persistir e recuperar séries temporais de métricas\",\n    \"INotificationPort — enviar alertas por canais externos (email, SMS, webhook)\",\n    \"IWeatherDataPort — consultar dados meteorológicos externos que afetam dispersão de poluentes\",\n    \"IRegulatoryStandardsPort — buscar limites legais vigentes por região e tipo de indústria\",\n    \"IBillingPort — registrar eventos de uso para cobrança por tenant\",\n    \"ICachePort — armazenar métricas recentes para baixa latência\",\n    \"IEventBusPort — publicar eventos de domínio para processamento assíncrono\",\n    \"IMLModelPort — invocar modelos preditivos de qualidade do ar\",\n    \"IAuditLogPort — registrar ações de usuários e mudanças de configuração\"\n  ],\n  \"primary_adapters\": [\n    \"RestApiAdapter — API HTTP/JSON para dashboards web e integrações de terceiros\",\n    \"GraphQLAdapter — consultas flexíveis para clientes com necessidades de dados compostas\","
+}

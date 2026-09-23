@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona componentes de infraestrutura (Kafka/Redis, CDN/WebRTC SFU, provedores cloud, APIs de STT/TTS como Whisper/Deepl/OpenAI) mas inteiramente sob ótica técnica — não há nenhuma estimativa de custo em dólares, nenhuma estratégia de otimização financeira (scale-to-zero, instâncias spot, reserved capacity, tier de armazenamento), e nenhuma projeção de como os custos escalam com sessões simultâneas ou base de tenants; a elasticidade é tratada como fitness function de performance, não como alavanca de custo."
+}

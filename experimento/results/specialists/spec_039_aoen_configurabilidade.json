@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 39,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A arquitetura demonstra boas fundações para multi-tenancy (ServiceLayer centralizada, MissionProvider plugável via interface abstrata, portal explicitamente rotulado como multi-tenant), mas não descreve nenhum mecanismo concreto de configuração por tenant — ausentes: tabela de configuração por cliente, feature flags, motor de regras de negócio configurável, templates de laudo por cooperativa, regras de pricing por contrato ou workflow de match parametrizável; um novo cliente enterprise (cooperativa com regras customizadas de matching, SLA ou relatório) quase certamente exigiria desenvolvimento, não apenas provisionamento de dados."
+}

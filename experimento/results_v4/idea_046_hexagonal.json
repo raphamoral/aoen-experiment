@@ -1,0 +1,84 @@
+{
+  "ideia_idx": 46,
+  "ideia": "App de personal trainer virtual com IA e visão computacional",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Coaching de treino personalizado e adaptativo: o domínio central é o ciclo 'planejar treino → executar sessão → avaliar execução → adaptar plano'. Agregados principais: Atleta (perfil, objetivos, restrições/lesões), PlanoDeTreino (periodização, metas), Exercício (catálogo, biomecânica, critérios de execução correta), SessãoDeTreino (execução em tempo real), AnáliseDePostura (repetições, ângulos articulares, score de forma), Progresso (métricas, PRs, aderência) e Assinatura (plano contratado e direitos de uso). Regras de negócio puras: progressão de carga, deload, detecção de erro de forma, limites de segurança, cálculo de aderência e elegibilidade por plano de assinatura.",
+    "primary_ports": [
+      "GerenciarPerfilAtleta (onboarding, objetivos, restrições físicas)",
+      "GerarPlanoDeTreino (solicitar/ajustar plano personalizado)",
+      "ConduzirSessaoDeTreino (iniciar, pausar, finalizar sessão)",
+      "AnalisarExecucao (receber frames/poses e devolver feedback de postura e contagem de repetições)",
+      "ConsultarProgresso (histórico, métricas, relatórios)",
+      "ConversarComCoach (pergunta/resposta com o coach virtual)",
+      "GerenciarAssinatura (contratar, cancelar, trocar de plano)",
+      "AdministrarCatalogoDeExercicios (uso interno/backoffice)"
+    ],
+    "secondary_ports": [
+      "RepositorioAtletas",
+      "RepositorioPlanos",
+      "RepositorioSessoes",
+      "RepositorioProgresso",
+      "CatalogoExerciciosRepository",
+      "PoseEstimationPort (extrai keypoints/pose de frames de vídeo)",
+      "GeradorDePlanoIAPort (LLM/ML para gerar e adaptar planos)",
+      "CoachConversacionalPort (LLM para diálogo e motivação)",
+      "ArmazenamentoDeMidiaPort (vídeos, thumbnails, gravações opcionais)",
+      "GatewayDePagamentoPort (cobrança, assinaturas, reembolsos)",
+      "NotificacaoPort (push, e-mail, SMS)",
+      "IdentidadePort (autenticação/autorização, provedores de identidade)",
+      "WearablesPort (Apple Health, Google Fit, Garmin, frequência cardíaca)",
+      "PublicadorDeEventosPort (event bus)",
+      "RelogioPort",
+      "TelemetriaPort (logs, métricas, tracing)",
+      "AnalyticsPort (eventos de produto)",
+      "FeatureFlagsPort"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL (backend para web e mobile)",
+      "WebSocket/WebRTC gateway (streaming de pose e feedback em tempo real)",
+      "App mobile (iOS/Android) e app web",
+      "CLI/scripts administrativos e de migração",
+      "Webhooks de entrada (pagamento, wearables)",
+      "Consumidores de fila/eventos (jobs agendados, reprocessamento)",
+      "Bot de mensageria (WhatsApp/Telegram) para o coach",
+      "Test drivers (testes de aceitação e contrato que acionam as mesmas portas primárias, com pose e LLM simulados)",
+      "Integração por voz (assistentes de voz), opcional"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (adapters de repositório)",
+      "Redis (cache e estado de sessão em tempo real)",
+      "MediaPipe/MoveNet on-device (pose no cliente) ou OpenPose/RTMPose em servidor GPU",
+      "Adapter de LLM (Claude API, OpenAI ou modelo próprio) com prompts versionados",
+      "S3/GCS/R2 para mídia",
+      "Stripe/Pagar.me/Mercado Pago (pagamentos)",
+      "Firebase Cloud Messaging/APNs, SendGrid/SES, Twilio",
+      "Auth0/Cognito/Keycloak",
+      "HealthKit, Health Connect, Garmin Connect API",
+      "Kafka/SNS+SQS/NATS (event bus)",
+      "OpenTelemetry + Prometheus/Grafana/Datadog",
+      "PostHog/Mixpanel",
+      "Adapters in-memory e fakes/stubs (bancos em memória, pose gravada, LLM determinístico) para testes e desenvolvimento offline"
+    ],
+    "isolation": "O core (domínio + casos de uso/aplicação) não importa nenhum framework, SDK ou biblioteca de I/O; depende apenas de interfaces (ports) definidas por ele mesmo. A regra de dependência aponta sempre de fora para dentro: adapters conhecem o core, nunca o contrário. Os dados cruzam a fronteira como DTOs/comandos e value objects do domínio, nunca como tipos de ORM, payloads de LLM ou estruturas de bibliotecas de visão. A injeção de dependência é feita em uma composition root, e cada adapter faz a tradução de/para a linguagem do domínio (anti-corruption layer), por exemplo convertendo keypoints do MediaPipe em um value object 'PoseFrame' independente de fornecedor. Regras de verificação: testes de arquitetura (ArchUnit/dependency-cruiser/import-linter) impedem imports proibidos; o mesmo conjunto de testes de aceitação roda contra adapters reais e fakes; trocar fornecedor de LLM, pose ou pagamento significa trocar apenas um adapter. Todos os sistemas externos (banco, LLM, visão, pagamento, wearables) são tratados de forma simétrica, cada um atrás de sua porta. Decisão de projeto: a inferência de pose pode rodar on-device, mas o cálculo de ângulos, contagem de repetições e regras de forma correta ficam no core, recebendo apenas PoseFrames.",
+    "interfaces": [
+      "App mobile com câmera e overlay de esqueleto/feedback em tempo real (áudio e visual)",
+      "App web/PWA para planejamento, histórico e dashboards",
+      "Dashboard do coach humano/administrador (supervisão e catálogo de exercícios)",
+      "API pública/parceiros (B2B para academias, planos de saúde e empresas)",
+      "Chat com coach virtual e interface de voz",
+      "Integração com smartwatches e TVs (casting da sessão)",
+      "Painel de backoffice (assinaturas, suporte, moderação de conteúdo)"
+    ],
+    "escalabilidade": "Escala horizontal por contexto e por perfil de carga. (1) O caminho de tempo real de visão é o mais crítico: rodar a inferência de pose on-device (MediaPipe/MoveNet/TFLite/CoreML) transfere o custo de GPU para o dispositivo do usuário e mantém a latência abaixo de ~100 ms; o servidor recebe apenas keypoints leves (poucos KB/s) em vez de vídeo. Fallback com GPU no servidor (autoscaling por fila/KEDA) apenas para dispositivos fracos. (2) Serviços stateless atrás de load balancer com autoscaling; estado de sessão em Redis com particionamento por atletaId. (3) Geração de planos e chamadas ao LLM são assíncronas (fila + workers), com cache de planos, prompts curtos e roteamento de modelos por complexidade. (4) Leitura e escrita separadas (CQRS leve) para progresso/relatórios, com réplicas de leitura e projeções. (5) Eventos de domínio via event bus desacoplam notificações, analytics e gamificação. (6) Começar como monólito modular hexagonal (um módulo por bounded context) e extrair serviços (visão em tempo real, IA de planos) somente quando métricas justificarem; como as portas já existem, a extração é uma troca de adapter (chamada em processo → chamada de rede). (7) Multi-região/CDN para mídia; multi-tenant lógico para B2B.",
+    "custos": "Principais vetores de custo: (a) Inferência de LLM (por token) — mitigar com cache, modelos menores para tarefas simples, geração de plano em lote e limites por plano de assinatura; (b) GPU no servidor para visão — evitar com inferência on-device e processar apenas keypoints; (c) Armazenamento e egress de vídeo — não gravar vídeo por padrão, guardar só keypoints/métricas, gravação opcional com retenção e compressão configuráveis (lifecycle rules); (d) Taxas de pagamento (~3–5% + taxa fixa) e impostos; (e) Observabilidade e analytics, que crescem com o volume de eventos (amostragem); (f) Custo de aquisição de usuários (CAC) e churn, geralmente maior que a infraestrutura. Conformidade: dados de saúde e biométricos são sensíveis (LGPD/GDPR, possivelmente HIPAA), com custos de consentimento, criptografia, auditoria e DPO; processar no dispositivo também reduz risco e custo de compliance. Estratégias: custo unitário por sessão monitorado (FinOps), feature flags para desligar funções caras, instâncias spot para workers batch, reservas para carga base, e trocar de fornecedor por adapter quando o preço mudar. Estimativa de ordem de grandeza: com pose on-device, o custo variável tende a ficar dominado por LLM e taxas de pagamento, uma fração pequena da receita por assinante; validar com medições reais em piloto.",
+    "monetizacao": "Modelo freemium com assinaturas recorrentes: Free (planos básicos, poucas sessões com análise de postura), Pro mensal/anual (planos adaptativos ilimitados, análise de forma em tempo real, coach conversacional, integração com wearables) e Premium (revisão por coach humano, nutrição, metas avançadas, prioridade de suporte). Receitas adicionais: B2B2C (licenciamento white-label/API para academias, estúdios, empresas de wellness e planos de saúde, cobrado por assento ou por sessão analisada), programas e desafios patrocinados/marketplace de treinadores humanos com comissão, pacotes de conteúdo (programas especializados, reabilitação leve, esportes específicos), afiliação (equipamentos, suplementos — com cuidado ético) e venda de hardware/acessórios (suporte de celular, sensores) em parcerias. Paywall aplicado no core como regra de elegibilidade (porta de assinatura), com trial de 7–14 dias, preços regionais (PPP), planos anuais com desconto para reduzir churn e métricas-chave: conversão free→pago, retenção D30/D90, LTV/CAC e margem por sessão. Observação: a viabilidade dos preços e das taxas de conversão deve ser validada com testes de mercado.",
+    "stack_sugerida": "Backend: TypeScript (NestJS com módulos hexagonais, ou Fastify + estrutura própria) ou Kotlin/Java (Spring Boot) ou Python (FastAPI) — o core em módulo puro sem dependências de framework; monólito modular inicial. Mobile: React Native ou Flutter, com módulos nativos para câmera e pose on-device (MediaPipe Tasks, TFLite, CoreML/ML Kit); alternativa nativa Swift/Kotlin se a latência exigir. Web: Next.js/React (PWA) com TanStack Query. Tempo real: WebSocket/WebRTC (LiveKit ou nativo), Redis Streams/pub-sub. IA: adapter de LLM (Claude API/OpenAI) com camada de prompts versionados e avaliação (evals); serviço Python opcional com RTMPose/ONNX Runtime/Triton para pose em servidor GPU. Dados: PostgreSQL (com TimescaleDB para séries de métricas), Redis, S3/R2 para mídia, pgvector para embeddings do catálogo. Mensageria: NATS/Kafka ou SNS+SQS. Infra: Docker, Kubernetes (ou ECS/Cloud Run no início) com KEDA para autoscaling de GPU, Terraform, GitHub Actions, feature flags (Unleash/LaunchDarkly). Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Pagamentos: Stripe (internacional) e Pagar.me/Mercado Pago (Brasil, PIX). Qualidade: testes de arquitetura (dependency-cruiser/ArchUnit), testes de contrato por porta, adapters fake para testes de aceitação, CI com verificação de fronteiras."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:15:29+00:00",
+    "runner": "runner.py"
+  }
+}

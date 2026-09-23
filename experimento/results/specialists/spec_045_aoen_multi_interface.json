@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 45,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define 7 interfaces distintas, cada uma justificada por perfil de usuário e caso de uso de mercado concreto (3PLs, motoristas, auditores, farmacêuticas, integrações ERP), com lógica de negócio centralizada em uma Service Layer que desacopla completamente as interfaces — permitindo adicionar novos canais sem reescrever regras de domínio."
+}

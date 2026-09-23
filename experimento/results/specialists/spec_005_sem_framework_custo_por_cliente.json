@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona que o D4Sign cobra por envelope/documento assinado — o que é um custo variável por operação — mas trata isso como linha de custo total de infra, não como insumo de um cálculo de custo por cliente; não há estimativa de 'cada contrato custa R$X de assinatura + R$Y de PDF + R$Z de storage por tenant', nenhuma menção a rastreamento de consumo por tenant, e nenhuma conexão explícita entre custo unitário e a margem por plano."
+}

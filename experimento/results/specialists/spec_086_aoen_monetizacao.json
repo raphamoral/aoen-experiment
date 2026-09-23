@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 86,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta não apresenta nenhum modelo de monetização explícito — não há tiers, faixas de preço, lógica de cobrança (por seat, por chamada de API, por apólice analisada, assinatura mensal) nem métricas de negócio (MRR, LTV, CAC, churn); a única referência a receita é incidental ('canal de maior volume e receita recorrente' ao justificar a API REST), o que denota consciência de que o produto deve gerar receita, mas sem nenhuma estrutura de monetização desenvolvida."
+}

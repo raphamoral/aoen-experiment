@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma mensuração de custo por cliente ou por operação — a única referência a custo ('custo de GPU > 30% da infra total') é uma métrica FinOps agregada usada como gatilho de escala, sem qualquer rastreamento por tenant, cálculo de custo unitário por análise ou conexão com modelo de precificação."
+}

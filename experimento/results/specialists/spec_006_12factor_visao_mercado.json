@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 0,
+  "justificativa": "A proposta apresentada é integralmente técnica/arquitetural (infraestrutura, CI/CD, backing services), sem qualquer menção a mercado-alvo, tamanho de mercado, dor do cliente, diferenciação competitiva ou proposta de valor — o nome do produto sugere um escopo, mas não constitui visão de mercado."
+}

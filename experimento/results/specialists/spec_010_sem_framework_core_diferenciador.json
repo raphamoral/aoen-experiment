@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "O diferenciador (emissão automática de NFS-e integrada ao controle financeiro) é identificado e parte de uma dor real, mas não está isolado como núcleo arquitetural próprio — aparece diluído entre features de CRUD financeiro, depende de um intermediário externo (Focus NFe) sem camada de abstração que garanta extensibilidade, e a proposta não demonstra por que MEIs abandonariam soluções já estabelecidas como Nibo, Conta Azul ou o próprio portal da prefeitura para emissão avulsa."
+}

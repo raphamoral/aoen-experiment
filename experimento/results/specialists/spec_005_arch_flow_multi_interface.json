@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta não endereça explicitamente uma estratégia de múltiplas interfaces para usuários finais — não há menção a web app, mobile, PWA ou portal diferenciado por perfil (corretor, jurídico, partes assinantes); o Integration Gateway sugere uma camada de API implícita e o Notification Hub trata canais de notificação (email, SMS, WhatsApp), mas canais de notificação não equivalem a interfaces de uso; o DDD com bounded contexts provê a fundação técnica para desacoplamento, porém sem declaração explícita de interface-agnostic design, e a ausência de justificativa orientada a mercado (alcance mobile para assinantes externos, portal jurídico, SDK para corretoras) impede pontuação superior."
+}

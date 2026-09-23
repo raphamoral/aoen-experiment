@@ -1,0 +1,377 @@
+{
+  "ideia_idx": 2,
+  "ideia": "Marketplace de freelancers especializados em compliance regulatório",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "description": "Objetos de negócio com regras críticas, sem dependências externas",
+      "list": [
+        {
+          "name": "Freelancer",
+          "attributes": [
+            "id",
+            "name",
+            "email",
+            "certifications",
+            "specializations",
+            "hourlyRate",
+            "availability",
+            "reputationScore"
+          ],
+          "rules": [
+            "Deve ter ao menos uma especialização regulatória",
+            "reputationScore calculado internamente (0-5)",
+            "Certificações possuem data de validade"
+          ]
+        },
+        {
+          "name": "Client",
+          "attributes": [
+            "id",
+            "companyName",
+            "cnpj",
+            "industry",
+            "verificationStatus",
+            "contacts"
+          ],
+          "rules": [
+            "CNPJ deve ser único e válido",
+            "Só pode publicar projetos após verificação KYC"
+          ]
+        },
+        {
+          "name": "Project",
+          "attributes": [
+            "id",
+            "clientId",
+            "title",
+            "description",
+            "regulatoryDomain",
+            "budget",
+            "deadline",
+            "status",
+            "requiredCertifications"
+          ],
+          "rules": [
+            "Budget mínimo por domínio regulatório",
+            "Deadline mínimo de 7 dias",
+            "Status segue máquina de estados: DRAFT→OPEN→IN_PROGRESS→REVIEW→CLOSED"
+          ]
+        },
+        {
+          "name": "Bid",
+          "attributes": [
+            "id",
+            "projectId",
+            "freelancerId",
+            "proposedValue",
+            "estimatedDays",
+            "coverLetter",
+            "status"
+          ],
+          "rules": [
+            "Um freelancer só pode ter uma proposta ativa por projeto",
+            "Valor não pode exceder budget do projeto em mais de 20%"
+          ]
+        },
+        {
+          "name": "Contract",
+          "attributes": [
+            "id",
+            "projectId",
+            "freelancerId",
+            "clientId",
+            "agreedValue",
+            "milestones",
+            "status",
+            "signedAt"
+          ],
+          "rules": [
+            "Imutável após assinatura de ambas as partes",
+            "Milestones devem somar 100% do valor acordado"
+          ]
+        },
+        {
+          "name": "Escrow",
+          "attributes": [
+            "id",
+            "contractId",
+            "totalAmount",
+            "releasedAmount",
+            "heldAmount",
+            "transactions"
+          ],
+          "rules": [
+            "Fundos só liberados após aprovação do milestone pelo cliente",
+            "Disputa aciona processo de arbitragem interno"
+          ]
+        },
+        {
+          "name": "Review",
+          "attributes": [
+            "id",
+            "contractId",
+            "authorId",
+            "targetId",
+            "score",
+            "comment",
+            "category"
+          ],
+          "rules": [
+            "Somente após contrato finalizado",
+            "Score de 1-5 em múltiplas dimensões",
+            "Não editável após 48h da criação"
+          ]
+        },
+        {
+          "name": "ComplianceDomain",
+          "attributes": [
+            "id",
+            "name",
+            "regulatoryBody",
+            "jurisdiction",
+            "requiredCertifications",
+            "description"
+          ],
+          "rules": [
+            "Ex: LGPD, GDPR, SOX, ISO27001, BACEN, CVM",
+            "Jurisdição define obrigatoriedade de certificações"
+          ]
+        },
+        {
+          "name": "Certification",
+          "attributes": [
+            "id",
+            "name",
+            "issuingBody",
+            "expiresAt",
+            "verificationUrl"
+          ],
+          "rules": [
+            "Validade máxima de 3 anos sem renovação",
+            "Vinculada a ComplianceDomain"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "description": "Regras de aplicação que orquestram o fluxo entre entidades",
+      "freelancer": [
+        "RegisterFreelancer — valida dados, verifica unicidade de email, cria perfil pendente",
+        "SubmitCertification — recebe documento, agenda verificação assíncrona",
+        "UpdateAvailability — altera disponibilidade e notifica clientes em watchlist",
+        "SearchFreelancersByDomain — filtra por domínio regulatório, certificações, reputação e disponibilidade",
+        "ViewFreelancerProfile — retorna perfil público com histórico de projetos e reviews"
+      ],
+      "client": [
+        "RegisterClient — valida CNPJ, inicia fluxo KYC",
+        "PublishProject — valida orçamento, domínio e prazo, cria projeto OPEN",
+        "SelectBid — aceita proposta, dispara criação de contrato e bloqueio de escrow",
+        "ApproveMilestone — libera parcela do escrow ao freelancer",
+        "OpenDispute — aciona arbitragem interna sobre milestone"
+      ],
+      "marketplace": [
+        "MatchFreelancersToProject — ranqueia freelancers elegíveis por score composto",
+        "CalculatePlatformFee — aplica taxa variável por tier de cliente e domínio",
+        "ProcessPayoutToFreelancer — transfere fundos do escrow após aprovação",
+        "GenerateComplianceReport — exporta histórico de projetos e certificações para auditoria",
+        "DetectFraud — analisa padrões de comportamento suspeito em bids e contratos"
+      ],
+      "review": [
+        "LeaveReview — valida elegibilidade, persiste review, dispara recálculo de reputação",
+        "RecalculateReputationScore — média ponderada por categoria e recência"
+      ]
+    },
+    "interface_adapters": {
+      "description": "Converte dados entre formato dos use cases e formato do mundo externo",
+      "controllers": [
+        "FreelancerController — HTTP REST handlers para /freelancers",
+        "ClientController — HTTP REST handlers para /clients",
+        "ProjectController — HTTP REST handlers para /projects",
+        "BidController — HTTP REST handlers para /bids",
+        "ContractController — HTTP REST handlers para /contracts",
+        "PaymentController — HTTP REST handlers para /payments e webhooks",
+        "ReviewController — HTTP REST handlers para /reviews",
+        "SearchController — HTTP REST handlers para /search com query DSL"
+      ],
+      "presenters": [
+        "FreelancerProfilePresenter — serializa Freelancer para view pública vs privada",
+        "ProjectListPresenter — serializa lista de projetos com metadados de match",
+        "ContractPresenter — formata contrato com milestones e status de escrow",
+        "DashboardPresenter — agrega KPIs para cliente e freelancer"
+      ],
+      "gateways": [
+        "FreelancerRepositoryGateway — implementa IFreelancerRepository via ORM",
+        "ProjectRepositoryGateway — implementa IProjectRepository via ORM",
+        "ContractRepositoryGateway — implementa IContractRepository via ORM",
+        "PaymentGateway — implementa IPaymentService via Stripe SDK",
+        "NotificationGateway — implementa INotificationService via email/push",
+        "SearchGateway — implementa ISearchService via Elasticsearch client",
+        "FileStorageGateway — implementa IFileStorage via S3 SDK",
+        "KYCGateway — implementa IKYCService via provedor externo (ex: Serpro)"
+      ],
+      "event_handlers": [
+        "ContractSignedEventHandler — dispara bloqueio de escrow",
+        "MilestoneApprovedEventHandler — dispara payout parcial",
+        "CertificationExpiredEventHandler — notifica freelancer e suspende especialização"
+      ]
+    },
+    "frameworks_drivers": {
+      "description": "Camada mais externa — detalhes de infraestrutura substituíveis",
+      "web": "NestJS (Node.js) ou FastAPI (Python) — framework HTTP",
+      "database": "PostgreSQL — dados transacionais relacionais",
+      "search": "Elasticsearch — busca full-text e ranqueamento de freelancers",
+      "cache": "Redis — sessões, rate limiting e resultados de busca",
+      "queue": "RabbitMQ — processamento assíncrono de eventos",
+      "storage": "AWS S3 — documentos, portfólios e certificados",
+      "payment": "Stripe Connect — marketplace payments, escrow e payouts",
+      "auth": "Auth0 ou Keycloak — autenticação OAuth2/OIDC com MFA",
+      "kyc": "Serpro (BR) + Stripe Identity — verificação de identidade e CNPJ",
+      "email": "SendGrid — transacional e campanhas",
+      "monitoring": "Datadog + Sentry — APM, logs e rastreamento de erros",
+      "containerization": "Docker + Kubernetes — orquestração de containers",
+      "ci_cd": "GitHub Actions + ArgoCD — pipeline de entrega contínua"
+    },
+    "dependency_rule": {
+      "description": "Implementação estrita da Dependency Rule de Clean Architecture",
+      "principle": "Dependências de código-fonte apontam SOMENTE para camadas internas. Nenhuma entidade conhece use cases; nenhum use case conhece adaptadores; nenhum adaptador conhece frameworks.",
+      "implementation": [
+        "Entities não importam nada externo — puro domínio",
+        "Use Cases dependem apenas de Entities e de interfaces abstratas (IFreelancerRepository, IPaymentService)",
+        "Interface Adapters implementam as interfaces definidas pelos Use Cases — inversão de dependência",
+        "Frameworks & Drivers são injetados via IoC container (ex: NestJS DI) nas implementações concretas",
+        "DTOs na fronteira: dados cruzam camadas como estruturas simples, nunca como objetos de domínio"
+      ],
+      "inversion_example": "Use Case define interface IPaymentService; PaymentGateway na camada de adaptadores implementa essa interface usando Stripe — o Use Case nunca importa Stripe"
+    },
+    "testability": {
+      "description": "Testabilidade garantida pela inversão de dependência e isolamento de camadas",
+      "unit_tests": [
+        "Entities testadas com pure functions — sem mocks, sem framework",
+        "Use Cases testados com mocks das interfaces (IRepository, IPaymentService) — sem banco, sem HTTP",
+        "Cobertura mínima de 90% nas camadas internas"
+      ],
+      "integration_tests": [
+        "Gateways testados contra banco real em containers Docker (testcontainers)",
+        "Fluxos de pagamento testados com Stripe test mode",
+        "KYC testado com sandbox do provedor"
+      ],
+      "e2e_tests": [
+        "Fluxos críticos (publicar projeto → selecionar bid → assinar contrato → pagar) via Playwright ou Supertest",
+        "Ambiente efêmero por PR via GitHub Actions"
+      ],
+      "contract_tests": "Pact para garantir compatibilidade de contratos de API entre serviços"
+    },
+    "interfaces": [
+      "IFreelancerRepository: findById, search, save, updateReputation",
+      "IClientRepository: findById, findByCNPJ, save, updateKYCStatus",
+      "IProjectRepository: findById, findByDomain, save, updateStatus",
+      "IBidRepository: findByProject, findByFreelancer, save, updateStatus",
+      "IContractRepository: findById, findByProject, save",
+      "IEscrowRepository: findByContract, save, release",
+      "IReviewRepository: findByTarget, save",
+      "IPaymentService: createEscrow, releaseFunds, processPayout, refund",
+      "INotificationService: sendEmail, sendPush, sendSMS",
+      "ISearchService: indexFreelancer, searchFreelancers, indexProject",
+      "IFileStorage: upload, getSignedUrl, delete",
+      "IKYCService: initiateCNPJVerification, initiateIdentityCheck, getStatus",
+      "IFraudDetector: analyzeActivity, flagSuspicious",
+      "IEventBus: publish, subscribe",
+      "ICertificationVerifier: verify, checkExpiry"
+    ],
+    "escalabilidade": {
+      "horizontal": "Serviços stateless escalam horizontalmente via réplicas no Kubernetes — HPA baseado em CPU/RPS",
+      "cqrs": "Separação de Command (escrita no PostgreSQL) e Query (leitura no Elasticsearch + Redis) via CQRS — leitura sem pressão no banco transacional",
+      "event_driven": "Eventos de domínio via RabbitMQ desacoplam operações pesadas (recálculo de reputação, notificações, indexação) do fluxo síncrono",
+      "database": "PostgreSQL com read replicas para queries analíticas; particionamento de tabelas de histórico por data",
+      "cache": "Redis com TTL para perfis de freelancer, resultados de busca e sessões — reduz 70-80% das leituras em BD",
+      "cdn": "Assets estáticos e documentos via CloudFront — latência global reduzida",
+      "microservices_path": "Monólito modular inicialmente com bounded contexts bem definidos; extração para microserviços quando escala justificar (search, payments, notifications são candidatos naturais)"
+    },
+    "custos": {
+      "infraestrutura_mensal_estimada": {
+        "kubernetes_cluster": "AWS EKS 3 nodes t3.medium ~$150/mês (dev/staging)",
+        "rds_postgresql": "db.t3.medium Multi-AZ ~$200/mês",
+        "elasticsearch": "2 nodes t3.medium ~$150/mês",
+        "redis": "cache.t3.micro ~$30/mês",
+        "s3": "por volume — ~$0.023/GB",
+        "stripe": "2.9% + $0.30 por transação + 0.5% para Connect",
+        "auth0": "Gratuito até 7000 MAU; $23/mês depois",
+        "sendgrid": "Gratuito até 100/dia; $19.95/mês (Pro)"
+      },
+      "otimizacoes": [
+        "Reserved Instances para base estável — economia de 30-40%",
+        "Spot Instances para workers assíncronos",
+        "Elasticsearch snapshot para dados históricos frios no S3",
+        "Lazy loading de features premium para evitar custo desnecessário de terceiros"
+      ],
+      "custo_variavel_dominante": "Stripe fees — monitorar GMV e negociar taxa customizada acima de $500k/mês em volume"
+    },
+    "monetizacao": {
+      "modelo_primario": "Comissão sobre transações (marketplace fee) — percentual sobre valor de cada contrato fechado",
+      "tiers": [
+        {
+          "tier": "Starter",
+          "fee": "15% sobre contratos",
+          "features": [
+            "Acesso básico à plataforma",
+            "5 bids ativos/mês",
+            "Suporte por email"
+          ]
+        },
+        {
+          "tier": "Professional",
+          "fee": "10% sobre contratos + $99/mês",
+          "features": [
+            "Bids ilimitados",
+            "Badge de verificação premium",
+            "Destaque nas buscas",
+            "Suporte prioritário"
+          ]
+        },
+        {
+          "tier": "Enterprise (Cliente)",
+          "fee": "8% sobre contratos + contrato anual",
+          "features": [
+            "Dedicated account manager",
+            "SLA contratual",
+            "Relatórios de compliance customizados",
+            "Integração via API"
+          ]
+        }
+      ],
+      "receitas_adicionais": [
+        "Verificação acelerada de certificações ($29 por certificação)",
+        "Featured Listing — impulsionamento de perfil de freelancer ($49/semana)",
+        "Compliance Intelligence Reports — relatórios setoriais de demanda e tendências regulatórias ($299/relatório)",
+        "API access para integração com sistemas de GRC corporativos ($499/mês)",
+        "Seguro de projeto via parceria com seguradora (comissão de indicação)"
+      ],
+      "unit_economics_alvo": {
+        "gmv_break_even": "$50.000/mês em GMV considerando custo fixo de infraestrutura + time",
+        "take_rate_medio": "11% (blend entre tiers)",
+        "ltv_freelancer_estimado": "$2.400 (12 meses x $200 avg fee/mês)"
+      }
+    },
+    "stack_sugerida": {
+      "backend": {
+        "linguagem": "TypeScript (Node.js 20 LTS)",
+        "framework": "NestJS — DI nativo, módulos alinhados com bounded contexts, suporte a CQRS embutido",
+        "orm": "Prisma — type-safe, migrations declarativas",
+        "validacao": "Zod — schema validation na fronteira de entrada"
+      },
+      "frontend": {
+        "framework": "Next.js 14 (App Router) — SSR para SEO de perfis de freelancer",
+        "ui": "Tailwind CSS + shadcn/ui",
+        "state": "TanStack Query — server state; Zustand — client state",
+        "forms": "React Hook Form + Zod"
+      },
+      "mobile": "React Native (Expo) — app complementar para freelancers (notificações, status de contratos)",
+      "infra_as_code": "Terraform + Helm charts",
+      "observabilidade": "OpenTelemetry → Datadog (traces, metrics, logs)",
+      "seguranca": "OWASP Top 10 checklist, SAST via Semgrep no CI, secrets via AWS Secrets Manager, LGPD compliance por design",
+      "monorepo": "Turborepo — packages compartilhados entre backend, frontend e mobile (types, validations, constants)"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"description\": \"Objetos de negócio com regras críticas, sem dependências externas\",\n    \"list\": [\n      {\n        \"name\": \"Freelancer\",\n        \"attributes\": [\"id\", \"name\", \"email\", \"certifications\", \"specializations\", \"hourlyRate\", \"availability\", \"reputationScore\"],\n        \"rules\": [\"Deve ter ao menos uma especialização regulatória\", \"reputationScore calculado internamente (0-5)\", \"Certificações possuem data de validade\"]\n      },\n      {\n        \"name\": \"Client\",\n        \"attributes\": [\"id\", \"companyName\", \"cnpj\", \"industry\", \"verificationStatus\", \"contacts\"],\n        \"rules\": [\"CNPJ deve ser único e válido\", \"Só pode publicar projetos após verificação KYC\"]\n      },\n      {\n        \"name\": \"Project\",\n        \"attributes\": [\"id\", \"clientId\", \"title\", \"description\", \"regulatoryDomain\", \"budget\", \"deadline\", \"status\", \"requiredCertifications\"],\n        \"rules\": [\"Budget mínimo por domínio regulatório\", \"Deadline mínimo de 7 dias\", \"Status segue máquina de estados: DRAFT→OPEN→IN_PROGRESS→REVIEW→CLOSED\"]\n      },\n      {\n        \"name\": \"Bid\",\n        \"attributes\": [\"id\", \"projectId\", \"freelancerId\", \"proposedValue\", \"estimatedDays\", \"coverLetter\", \"status\"],\n        \"rules\": [\"Um freelancer só pode ter uma proposta ativa por projeto\", \"Valor não pode exceder budget do projeto em mais de 20%\"]\n      },\n      {\n        \"name\": \"Contract\",\n        \"attributes\": [\"id\", \"projectId\", \"freelancerId\", \"clientId\", \"agreedValue\", \"milestones\", \"status\", \"signedAt\"],\n        \"rules\": [\"Imutável após assinatura de ambas as partes\", \"Milestones devem somar 100% do valor acordado\"]\n      },\n      {\n        \"name\": \"Escrow\",\n        \"attributes\": [\"id\", \"contractId\", \"totalAmount\", \"releasedAmount\", \"heldAmount\", \"transactions\"],\n        \"rules\": [\"Fundos só liberados após aprovação do milestone pelo cliente\", \"Disputa aciona processo de arbitragem interno\"]\n      },\n      {\n        \"name\": \"Review\",\n        \"attributes\": [\"id\", \"contractId\", \"author"
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O público-alvo é inferível pela arquitetura (geradores, transportadores, receptoras, fiscais), e o contexto regulatório (CONAMA, IBAMA, MTR, SINIR) sugere implicitamente uma dor de conformidade, mas não há definição explícita de mercado-alvo, nenhuma estimativa de tamanho de mercado (TAM/SAM/SOM), nenhuma articulação direta da dor do cliente em termos de negócio, e nenhuma diferenciação frente a alternativas existentes — toda a proposta é puramente técnico-arquitetural, sem framing de valor para o comprador."
+}

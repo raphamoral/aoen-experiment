@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador (motor de regras de qualificação, classificação e homologação de lances) está explicitamente isolado no core_domain e protegido por ports bem definidos, demonstrando independência de tecnologia de entrega e persistência; porém, a proposta não articula por que esse motor é insubstituível frente a alternativas como Jaggaer, Coupa ou SAP Ariba — falta evidência de que as regras de negócio específicas para leilões reversos de TI corporativo são suficientemente complexas ou proprietárias para constituir uma vantagem competitiva real e defensável."
+}

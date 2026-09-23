@@ -1,0 +1,61 @@
+{
+  "ideia_idx": 59,
+  "ideia": "SaaS de automação de onboarding de funcionários com workflows configuráveis",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (extensibilidade de workflows e integrações sem reescrita)",
+      "Configurabilidade (workflows definidos como dados/DSL, não como código)",
+      "Multi-tenancy com isolamento de dados",
+      "Segurança e privacidade (dados pessoais de funcionários, LGPD/GDPR, RBAC)",
+      "Confiabilidade e idempotência na execução de workflows (retries, compensações)",
+      "Auditabilidade (trilha imutável de cada etapa do onboarding)",
+      "Interoperabilidade (HRIS, IdP, e-mail, chat, assinatura eletrônica)",
+      "Observabilidade",
+      "Testabilidade e deployability (CI/CD frequente, feature flags)",
+      "Elasticidade e eficiência de custo"
+    ],
+    "fitness_functions": [
+      "Arquitetura: ArchUnit/dependency-cruiser no CI falha o build se um módulo acessar o banco ou as classes internas de outro módulo, ou se o domínio importar infraestrutura",
+      "Acoplamento: limite de dependências aferentes e eferentes por módulo e proibição de ciclos, medidos a cada PR",
+      "Contratos: testes de contrato (Pact/OpenAPI diff) bloqueiam breaking changes nas APIs públicas e nos eventos",
+      "Multi-tenancy: teste automatizado de vazamento entre tenants (o tenant A nunca lê dados do tenant B), executado a cada deploy",
+      "Desempenho: p95 da API abaixo de 300 ms e latência de início de workflow abaixo de 2 s, validados em testes de carga no pipeline e por SLO em produção",
+      "Confiabilidade: teste de caos e de reexecução comprovando que os passos são idempotentes e que nenhuma tarefa de onboarding é perdida ou duplicada",
+      "Durabilidade: workflows em andamento sobrevivem a deploy e a falha de worker (teste de replay do histórico)",
+      "Evolução da DSL: toda nova versão do schema de workflow deve executar as definições da versão anterior (teste de compatibilidade retroativa)",
+      "Segurança: SAST/DAST, varredura de dependências e de segredos no CI, além de verificação de que os campos de PII estão criptografados",
+      "Conformidade: teste de que a exclusão/anonimização de dados atende ao SLA de LGPD e de que todo evento sensível gera log de auditoria",
+      "Custo: alerta e falha de pipeline se o custo por tenant ou por workflow executado passar do orçamento definido (FinOps como fitness function)",
+      "Deployability: DORA (frequência de deploy, lead time, taxa de falha de mudança) como metas monitoradas, com tempo de build abaixo de 10 min"
+    ],
+    "incremental_change": "Começar com um monólito modular (modular monolith) com fronteiras bem definidas por bounded context: Identidade/Tenants, Modelagem de Workflows, Motor de Execução, Tarefas e Formulários, Integrações, Notificações, Billing e Auditoria. Fase 0 (MVP): workflows lineares com um catálogo pequeno de tipos de passo (tarefa manual, formulário, aprovação, e-mail), um único banco Postgres com row-level security e deploy simples. Fase 1: motor de workflows com condições, prazos, paralelismo e templates por departamento ou cargo. Fase 2: integrações via conectores (Google Workspace, Microsoft 365, Slack, HRIS como BambooHR, Gupy e Workday), expostas como plugins com contrato estável. Fase 3: eventos de domínio publicados via outbox e extração de módulos para serviços apenas quando houver evidência (gargalo de escala, cadência de release ou time distinto), seguindo o strangler pattern. Fase 4: marketplace de templates e conectores, e recursos avançados (analytics, IA para sugerir workflows). Cada fase é entregue por feature flags, canary releases e dark launches, com as fitness functions validando cada mudança. Versionamento de workflows e da API permite que clientes migrem no próprio ritmo.",
+    "reversibility": "Reversíveis (two-way doors): escolha de framework web, provedor de e-mail, provedor de fila, ferramenta de observabilidade, UI kit, provedor de cloud para serviços gerenciáveis (mitigado por abstrações/ports and adapters), feature flags, extração de módulo para microsserviço, motor de workflow interno versus Temporal (atrás de uma interface de porta). Difíceis de reverter (one-way doors), a decidir no last responsible moment: (1) estratégia de multi-tenancy (schema compartilhado com tenant_id e RLS no início, com caminho documentado para banco/schema dedicado em clientes enterprise); (2) formato da DSL de workflow persistida e sua semântica, mitigado com versionamento explícito e migradores; (3) modelo de identidade e autenticação (SSO/SCIM), onde se adota um IdP gerenciado e se mantém o modelo de usuário desacoplado; (4) residência de dados por região, adiada até haver demanda contratual, mas com o tenant_id e a região já modelados; (5) contratos públicos de API e webhooks, protegidos por versionamento e política de deprecação. Registrar tudo em ADRs com gatilhos de revisão.",
+    "coupling": "Baixo acoplamento entre módulos, com alta coesão dentro de cada bounded context. Comunicação síncrona só por interfaces públicas do módulo (facade); comunicação assíncrona por eventos de domínio (OnboardingIniciado, TarefaConcluída, FuncionárioAdmitido) com transactional outbox, o que permite extrair serviços depois sem mudar produtores. Cada módulo é dono dos próprios dados (sem joins entre schemas de módulos diferentes). Integrações externas ficam atrás de um anticorruption layer com o padrão ports and adapters, de modo que trocar um HRIS ou provedor não afeta o domínio. Os workflows são configuração (dados versionados) interpretada por um motor, e não código por cliente, o que evita forks por tenant. Conectores seguem um contrato de plugin (manifesto, schema de entrada/saída, autenticação) e são o único ponto de acoplamento com terceiros. Pontos de acoplamento aceitos e explícitos: banco Postgres compartilhado (com separação lógica por schema) e o kernel compartilhado mínimo (tenant, usuário, ids), mantido pequeno e vigiado por fitness functions.",
+    "interfaces": [
+      "REST/JSON API pública versionada (OpenAPI) para tenants, funcionários, workflows, instâncias de onboarding e tarefas",
+      "Webhooks de saída com assinatura HMAC, retry e dead-letter para eventos de onboarding",
+      "Webhooks/API de entrada para gatilhos (ex.: contratação confirmada no ATS/HRIS)",
+      "DSL/JSON Schema de definição de workflows (passos, condições, prazos, responsáveis) com editor visual no frontend",
+      "SPI de conectores/plugins (manifesto, ações, gatilhos, credenciais via OAuth2)",
+      "SCIM 2.0 para provisionamento de usuários e SAML/OIDC para SSO",
+      "Barramento de eventos de domínio (interno via outbox; externo via fila ou stream)",
+      "Portal do novo funcionário (web e mobile responsivo) com formulários, upload de documentos e assinatura eletrônica",
+      "Portal do gestor/RH com painel de acompanhamento, aprovações e relatórios",
+      "Interface de notificações (e-mail, Slack/Teams, SMS) com templates por tenant",
+      "Interface de armazenamento de documentos (S3-compatível) com URLs assinadas",
+      "API de auditoria e exportação de dados (CSV/JSON) para conformidade",
+      "API de billing/metering para uso e planos"
+    ],
+    "escalabilidade": "Aplicação stateless atrás de load balancer, com escala horizontal automática. O motor de workflows executa em workers separados que consomem filas; passos são idempotentes e com timers duráveis, então o throughput cresce adicionando workers e particionando por tenant_id. Postgres gerenciado com réplicas de leitura, pooling (PgBouncer) e particionamento das tabelas de eventos/auditoria por tenant e por data; cache (Redis) para definições de workflow e permissões. Uploads e documentos vão direto ao object storage por URL assinada. A carga tem picos previsíveis (início de mês, ondas de contratação), tratados com autoscaling por profundidade de fila. Proteção contra noisy neighbor com rate limit, quotas e filas priorizadas por tenant. Caminho de evolução: clientes enterprise migram para schema ou banco dedicado (cell-based architecture), e módulos com gargalo comprovado (motor de execução, notificações, integrações) são extraídos como serviços independentes. Escalar só quando os SLOs e as fitness functions indicarem necessidade, evitando otimização prematura.",
+    "custos": "No início, custo baixo com monólito modular, um banco gerenciado e workers em containers serverless (Cloud Run/Fargate/Fly.io) com escala a zero fora do horário de pico. Evitar Kubernetes e microsserviços até haver time e carga que justifiquem. Principais vetores de custo: banco de dados, armazenamento e tráfego de documentos, envio de e-mail/SMS (repassável), observabilidade (controlar volume e retenção de logs) e integrações de terceiros (assinatura eletrônica, verificação de identidade). Medir custo por tenant e por workflow executado (tagging e metering) e usar como fitness function. Usar serviços gerenciados para reduzir custo operacional de equipe (IdP, filas, e-mail transacional), aceitando o risco de lock-in que as portas e adaptadores mitigam. Reservar instâncias e otimizar storage com ciclo de vida (arquivamento em camadas frias) quando o uso se estabilizar. Custos de conformidade (auditoria SOC 2/ISO 27001, DPO, pentests) crescem com o mercado enterprise e devem entrar no preço dos planos superiores. Margem bruta-alvo de 75% ou mais.",
+    "monetizacao": "Assinatura SaaS recorrente (B2B) em camadas: Starter (poucos workflows e limite de novos funcionários por mês, conectores básicos), Growth (workflows ilimitados, condições, integrações com Slack/Google/Microsoft, relatórios) e Enterprise (SSO/SCIM, auditoria avançada, SLA, ambiente dedicado, residência de dados, suporte prioritário). Métrica de cobrança principal: por funcionário onboardado (ou por funcionário ativo) por mês, com um mínimo por plano, o que alinha o preço ao valor entregue. Receitas adicionais: add-ons (assinatura eletrônica, verificação de documentos, IA para criação de workflows), marketplace de templates e conectores premium com revenue share, serviços de implantação e consultoria de templates, e parcerias com HRIS, ATS e provedores de benefícios. Estratégia de entrada: trial gratuito de 14 dias e modelo product-led com templates prontos, expandindo para vendas assistidas em empresas maiores. Usar Stripe Billing para assinaturas e metering de uso. Métricas de acompanhamento: MRR, churn, NRR, CAC/LTV e tempo até o primeiro onboarding concluído (ativação).",
+    "stack_sugerida": "Backend: TypeScript com NestJS (ou Kotlin/Spring Boot) em monólito modular, com módulos e fronteiras verificadas por dependency-cruiser/ArchUnit. Motor de workflows: começar com um motor próprio simples sobre filas e timers, atrás de uma porta, com Temporal como evolução para orquestração durável quando a complexidade justificar. Banco: PostgreSQL com row-level security, JSONB para definições de workflow versionadas e tabela de outbox. Cache e rate limit: Redis. Filas e eventos: SQS/SNS ou Google Pub/Sub no início, com evolução para Kafka apenas se houver necessidade. Storage: S3/GCS com criptografia e URLs assinadas. Frontend: React com Next.js, TypeScript, editor visual de workflows com React Flow e um design system compartilhado. Identidade: Auth0/Clerk/Keycloak com SAML/OIDC e SCIM. Cobrança: Stripe Billing. E-mail: Postmark/SES. Infra: Terraform (IaC), containers em Cloud Run/ECS Fargate, CDN e WAF. CI/CD: GitHub Actions com testes, fitness functions, testes de contrato (Pact), canary e feature flags (Unleash/LaunchDarkly). Observabilidade: OpenTelemetry com Grafana/Prometheus/Loki ou Datadog, Sentry e SLOs. Segurança: segredos em um vault, criptografia de PII no nível de campo, Snyk/Dependabot e trilha de auditoria. Documentação de decisões em ADRs."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:42:45+00:00",
+    "runner": "runner.py"
+  }
+}

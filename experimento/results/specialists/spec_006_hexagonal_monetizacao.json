@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona IManageSubscription e StripePaymentAdapter, indicando consciência de que há monetização via assinatura, mas não define tiers, valores, segmentos de cliente, análise de sustentabilidade (LTV/CAC) nem qualquer métrica de negócio — é apenas infraestrutura de pagamento sem modelo de receita articulado."
+}

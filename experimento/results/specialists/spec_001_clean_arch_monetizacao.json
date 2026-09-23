@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não faz nenhuma menção a modelo de monetização, tiers de preço, receita recorrente ou qualquer mecanismo de como o produto gerará receita."
+}

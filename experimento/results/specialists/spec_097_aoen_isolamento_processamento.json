@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 97,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve apenas separação lógica via Service Layer centralizada (MatchService, RouteService), sem qualquer menção a filas, workers assíncronos, processos separados ou mecanismos de fallback — os processamentos mais pesados (otimização de rota e matching) rodam acoplados ao mesmo processo que serve as interfaces, tornando uma falha ou sobrecarga nesses serviços potencialmente catastrófica para toda a aplicação."
+}

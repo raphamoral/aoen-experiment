@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta elimina corretamente forks por cliente e centraliza customizações em feature flags e variáveis de ambiente, mas o modelo de 'sandbox por tenant com configurações distintas por variável de ambiente' implica um deploy/operação por tenant — não onboarding zero-toque via row no banco — e não há menção a um plano de controle de tenant (tenant config store) que permitiria ativar novo cliente sem ciclo de infraestrutura."
+}

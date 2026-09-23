@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona IBillingPort para registrar eventos de uso por tenant, sinalizando intenção de cobrança baseada em consumo, mas não há nenhum detalhamento de tiers, valores, modelo de receita, métricas de negócio (MRR/LTV/CAC) ou análise de sustentabilidade econômica."
+}

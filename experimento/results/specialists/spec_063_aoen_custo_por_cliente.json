@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 63,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 6,
+  "justificativa": "A arquitetura demonstra intenção clara de rastreamento por tenant — o `tenantId` atravessa toda a cadeia de chamadas e o passo 8 do fluxo fixo ('Persistir diagnóstico com custo de inferência') indica que o custo por operação é armazenado individualmente; contudo, falta decomposição explícita do custo unitário (ex.: 'R$0,50 de inferência + R$0,01 de storage por análise'), e não há conexão declarada entre custo por tenant e modelo de precificação ou margem por cliente."
+}

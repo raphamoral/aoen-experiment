@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A arquitetura adota princípios de Clean Architecture (entidades independentes de framework, casos de uso como orquestradores), o que tecnicamente viabiliza o desacoplamento necessário para múltiplas interfaces — mas nenhuma interface é explicitamente definida, nenhum perfil de usuário (técnico em campo, gestor, integração IoT) é mapeado a um canal específico, e não há qualquer justificativa orientada a mercado para escolhas de interface."
+}

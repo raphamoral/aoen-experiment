@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado — modelagem comportamental de assinantes + score de risco de churn + recomendação de retenção — isolado via portas primárias (IChurnAnalysisUseCase, IRetentionCampaignUseCase) e completamente desacoplado de infraestrutura por portas secundárias (IMLModelPort abstrai tanto SKLearn/MLflow quanto SageMaker, IFeatureStorePort abstrai Redis), garantindo extensibilidade multi-fornecedor; perde um ponto porque a proposta de valor insubstituível frente a alternativas (Salesforce Einstein, Medallia) não está explicitada na arquitetura — o 'porquê único para telecom' fica implícito, não declarado como invariante do domínio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "hexagonal",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista componentes de infraestrutura concretos (PostgreSQL, Redis, AWS S3/Cloudflare R2, SendGrid), demonstrando consciência dos serviços necessários, mas não apresenta nenhuma estimativa de custo em valores monetários, nenhuma estratégia de otimização (scale-to-zero, spot instances, storage tiers, reserved capacity) e nenhuma projeção de crescimento de custos em função da base de usuários."
+}

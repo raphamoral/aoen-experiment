@@ -1,0 +1,72 @@
+{
+  "ideia_idx": 9,
+  "ideia": "Marketplace de equipamentos médicos usados com certificação de qualidade",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Marketplace de equipamentos médicos usados com certificação de qualidade. O domínio central abrange: listagem e busca de equipamentos, processo de certificação de qualidade (inspeção, laudos técnicos), negociação entre compradores e vendedores, gestão de transações financeiras, rastreabilidade de equipamentos e conformidade regulatória (ANVISA/FDA).",
+    "primary_ports": [
+      "IEquipmentListingUseCase — publicar, editar e remover anúncios de equipamentos",
+      "ICertificationUseCase — solicitar, aprovar e emitir laudos de certificação",
+      "ISearchEquipmentUseCase — buscar e filtrar equipamentos por categoria, condição, preço e certificação",
+      "ITransactionUseCase — iniciar, confirmar e cancelar transações de compra/venda",
+      "IUserManagementUseCase — cadastro, autenticação e perfis de vendedores/compradores/certificadores",
+      "IOfferNegotiationUseCase — criar e responder propostas de preço",
+      "IDisputeResolutionUseCase — abrir e resolver disputas entre partes",
+      "IComplianceReportUseCase — gerar relatórios de conformidade regulatória"
+    ],
+    "secondary_ports": [
+      "IEquipmentRepository — persistência de equipamentos e seus metadados",
+      "ICertificationRepository — persistência de laudos e histórico de inspeções",
+      "IUserRepository — persistência de usuários, perfis e KYC",
+      "ITransactionRepository — persistência de transações e estados financeiros",
+      "IPaymentGateway — processar pagamentos, splits e estornos",
+      "INotificationService — envio de notificações (e-mail, SMS, push)",
+      "IFileStorageService — armazenamento de documentos, laudos e fotos de equipamentos",
+      "ISearchIndexService — indexação e busca full-text de equipamentos",
+      "IRegulatorySyncService — sincronização com bases regulatórias (ANVISA/INMETRO)",
+      "IKYCVerificationService — verificação de identidade de vendedores e certificadores",
+      "IAuditLogService — registro imutável de eventos para conformidade",
+      "IShippingService — cotação e rastreamento de envio de equipamentos"
+    ],
+    "primary_adapters": [
+      "REST API Controller (HTTP/JSON) — interface para aplicações web e mobile",
+      "GraphQL Gateway — consultas flexíveis para o painel do marketplace",
+      "CLI Adapter — scripts de manutenção, seed de dados e operações administrativas",
+      "WebSocket Handler — notificações em tempo real de ofertas e status de certificação",
+      "Test Harness Adapter — driver de testes automatizados que exercita os use cases diretamente",
+      "Webhook Receiver — recebe eventos de sistemas externos (pagamentos, transportadoras)",
+      "Admin Dashboard Controller — interface interna para gestão operacional"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL EquipmentRepositoryAdapter — persistência relacional com suporte a jsonb para atributos técnicos",
+      "PostgreSQL CertificationRepositoryAdapter — histórico de laudos com versionamento",
+      "PostgreSQL UserRepositoryAdapter — dados de usuários com suporte a multi-tenant",
+      "ElasticsearchSearchIndexAdapter — busca full-text com filtros facetados",
+      "StripePaymentGatewayAdapter — pagamentos com split automático e marketplace escrow",
+      "S3FileStorageAdapter — armazenamento de imagens, PDFs de laudos e documentos KYC",
+      "SendGrid/AWS SES NotificationAdapter — envio de e-mails transacionais",
+      "Twilio NotificationAdapter — SMS e WhatsApp para alertas críticos",
+      "Firebase Push NotificationAdapter — notificações mobile",
+      "Jumio/Serpro KYCVerificationAdapter — verificação de identidade e CPF/CNPJ",
+      "Kafka AuditLogAdapter — log imutável de eventos para auditoria regulatória",
+      "Correios/Loggi ShippingAdapter — cotação e rastreamento de frete",
+      "ANVISA API RegulatoryAdapter — consulta de registros e alertas sanitários"
+    ],
+    "isolation": "O core domain não possui nenhuma dependência de frameworks, bibliotecas de infraestrutura ou sistemas externos. Todas as interações externas ocorrem exclusivamente através de interfaces (ports) definidas no interior do domínio. A inversão de dependência é aplicada rigorosamente: os adapters dependem das abstrações do core, nunca o contrário. O core é testável em isolamento total via Test Harness Adapter com implementações in-memory de todos os secondary ports. Nenhuma anotação de framework, ORM ou protocolo HTTP penetra nos use cases ou entidades de domínio.",
+    "interfaces": [
+      "Web App (React/Next.js) — marketplace público para compradores",
+      "Seller Portal (React) — painel de gestão de anúncios e vendas",
+      "Certifier Portal (React) — interface para certificadores emitirem laudos",
+      "Mobile App (React Native) — acesso mobile para compradores e vendedores",
+      "Admin Panel (React) — operações internas, moderação e compliance",
+      "REST API pública — integração com ERPs hospitalares e sistemas de compras",
+      "GraphQL API — cliente rico para dashboards e relatórios",
+      "WebSocket API — atualizações em tempo real de lances e status"
+    ],
+    "escalabilidade": "Horizontalmente via stateless application servers atrás de load balancer. Os use cases são stateless por design, permitindo múltiplas instâncias sem coordenação. Leitura escalada com read replicas no PostgreSQL e cache Redis para consultas frequentes. Busca escalada de forma independente no Elasticsearch. Processamento assíncrono de certificações e notificações via filas (SQS/Kafka), desacoplando picos de carga. File storage no S3 com CDN para assets estáticos. Multi-tenancy suportado no schema para isolamento por região ou cliente enterprise. Sharding por categoria de equipamento para particionamento futuro.",
+    "custos": "Infraestrutura cloud-native com escala zero quando inativo (Lambda para workers assíncronos). Custos variáveis dominantes: storage S3 para fotos e laudos (~$0.023/GB/mês), processamento de pagamentos Stripe (~2.9% + $0.30 por transação), Elasticsearch managed (~$150-800/mês dependendo do volume). PostgreSQL RDS com instâncias reservadas reduz custo em ~40%. CDN para assets de laudos e imagens reduz egress. Monitoramento via OpenTelemetry com backend open-source (Grafana + Tempo) evita lock-in em APM caros. Estimativa inicial: $800-2000/mês para MVP, escala linear com volume de transações.",
+    "monetizacao": "1) Comissão por transação: 3-8% sobre o valor da venda cobrado do vendedor (principal receita). 2) Taxa de certificação: R$150-800 por laudo emitido, variável por complexidade do equipamento. 3) Plano de destaque/featured listing: R$49-299/mês para posicionamento privilegiado nos resultados. 4) Assinatura Seller Pro: R$199/mês para vendedores profissionais com analytics, múltiplos anúncios e badge verificado. 5) SaaS B2B para hospitais e clínicas: plano enterprise para gestão de inventário de equipamentos próprios e compras recorrentes. 6) Seguro transacional opcional: parceria com seguradora para cobertura de transporte e defeitos pós-venda.",
+    "stack_sugerida": "Backend: Node.js com TypeScript (NestJS como framework HTTP, mantido nos adapters primários — nunca no core) ou Python com FastAPI. Core domain em TypeScript/Python puro sem dependências externas. Banco de dados: PostgreSQL 16 com extensão pg_trgm para busca básica e jsonb para specs técnicas. Busca avançada: Elasticsearch 8.x. Cache: Redis para sessões e rate limiting. Filas: AWS SQS ou RabbitMQ para processamento assíncrono de certificações. Storage: AWS S3 + CloudFront CDN. Pagamentos: Stripe Connect (marketplace payments nativos). Frontend: Next.js 14 com App Router, Tailwind CSS, shadcn/ui. Mobile: React Native com Expo. Infra: Docker + Kubernetes (EKS) ou Railway/Render para MVP. IaC: Terraform. CI/CD: GitHub Actions. Observabilidade: OpenTelemetry + Grafana Stack."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Marketplace de equipamentos médicos usados com certificação de qualidade. O domínio central abrange: listagem e busca de equipamentos, processo de certificação de qualidade (inspeção, laudos técnicos), negociação entre compradores e vendedores, gestão de transações financeiras, rastreabilidade de equipamentos e conformidade regulatória (ANVISA/FDA).\",\n\n  \"primary_ports\": [\n    \"IEquipmentListingUseCase — publicar, editar e remover anúncios de equipamentos\",\n    \"ICertificationUseCase — solicitar, aprovar e emitir laudos de certificação\",\n    \"ISearchEquipmentUseCase — buscar e filtrar equipamentos por categoria, condição, preço e certificação\",\n    \"ITransactionUseCase — iniciar, confirmar e cancelar transações de compra/venda\",\n    \"IUserManagementUseCase — cadastro, autenticação e perfis de vendedores/compradores/certificadores\",\n    \"IOfferNegotiationUseCase — criar e responder propostas de preço\",\n    \"IDisputeResolutionUseCase — abrir e resolver disputas entre partes\",\n    \"IComplianceReportUseCase — gerar relatórios de conformidade regulatória\"\n  ],\n\n  \"secondary_ports\": [\n    \"IEquipmentRepository — persistência de equipamentos e seus metadados\",\n    \"ICertificationRepository — persistência de laudos e histórico de inspeções\",\n    \"IUserRepository — persistência de usuários, perfis e KYC\",\n    \"ITransactionRepository — persistência de transações e estados financeiros\",\n    \"IPaymentGateway — processar pagamentos, splits e estornos\",\n    \"INotificationService — envio de notificações (e-mail, SMS, push)\",\n    \"IFileStorageService — armazenamento de documentos, laudos e fotos de equipamentos\",\n    \"ISearchIndexService — indexação e busca full-text de equipamentos\",\n    \"IRegulatorySyncService — sincronização com bases regulatórias (ANVISA/INMETRO)\",\n    \"IKYCVerificationService — verificação de identidade de vendedores e certificadores\",\n    \"IAuditLogService — registro imutável de eventos para conformidade\",\n    \"IShippingService — c"
+}

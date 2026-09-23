@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 72,
+  "ideia": "SaaS de previsão de falhas em máquinas industriais com machine learning",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de inferência preditiva: pipeline que ingere dados de sensores industriais (vibração, temperatura, pressão, corrente elétrica) em tempo quase-real, detecta padrões de degradação e emite alertas de falha iminente com antecedência configurável. Sem isso o produto não existe.",
+    "fase1_mercado": "Gerentes de manutenção e engenheiros de confiabilidade em indústrias com alto custo de parada não planejada: manufatura automotiva, mineração, papel e celulose, alimentos e bebidas, energia elétrica e petroquímica. Mercado secundário: integradores de automação industrial e revendedores de sistemas SCADA.",
+    "fase1_extensivel": "Sim. O core é abstraído atrás de uma interface ModelProvider com métodos predict(features) e train(dataset). Implementações concretas podem ser: scikit-learn local, ONNX Runtime, Azure ML, AWS SageMaker, Google Vertex AI ou modelos próprios. Trocar o provider não altera o fluxo de dados nem as interfaces do produto.",
+    "fase2_interfaces": [
+      "Dashboard Web (React SPA): visão analítica completa para gerentes de manutenção — gráficos de saúde de máquinas, histórico de alertas, KPIs de disponibilidade e ROI de manutenção preditiva",
+      "App Mobile (PWA ou React Native): interface de campo para técnicos — receber alertas, registrar inspeções, abrir ordens de serviço com checklist guiado",
+      "API REST / WebSocket: integração com ERPs (SAP, TOTVS), sistemas SCADA, CMMS (Maximo, SAP PM) e plataformas IoT (AWS IoT, Azure IoT Hub)",
+      "Alertas via WhatsApp / SMS / E-mail: canal para operadores de chão de fábrica sem acesso a dashboard, via Twilio ou Z-API",
+      "Widget embarcável (iframe + token): para integradores OEM que querem oferecer a funcionalidade dentro de seus próprios softwares de monitoramento"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de gestores e compradores de TI industrial que exigem relatórios executivos. Mobile abre o mercado de empresas que já têm técnicos de campo — o produto vira ferramenta de trabalho diária, aumentando retenção. API REST abre o mercado enterprise com sistemas legados consolidados, onde o diferencial é integração sem ruptura de processo. WhatsApp/SMS abre plantas com baixa digitalização onde smartphones são escassos mas celulares básicos existem. Widget embarcável abre o canal de parceiros — revendedores incluem a funcionalidade no próprio produto, escalando sem força de vendas direta.",
+    "fase2_service_layer": "Uma camada MachineHealthService expõe métodos como getAssetStatus(assetId), getAlertHistory(clientId, filters), triggerManualInference(assetId) e subscribeToAlerts(clientId, channel). Todas as interfaces (web, mobile, API, widget) consomem apenas essa service layer via contratos estáveis. A lógica de quando e como alertar, qual modelo usar e quais sensores monitorar vive na service layer, nunca nas interfaces.",
+    "fase3_fluxo_fixo": "Ingestão de dados de sensor → normalização e feature engineering → execução do modelo de inferência → comparação com thresholds de risco → geração de evento de alerta → roteamento do alerta para canais configurados → registro no histórico do ativo. Este fluxo é imutável no código — todo cliente passa por ele.",
+    "fase3_parametros_configuraveis": [
+      "Tipos e quantidade de sensores por máquina (vibração, temperatura, pressão, RPM, corrente)",
+      "Taxa de amostragem dos sensores (por segundo, por minuto)",
+      "Janela temporal para feature engineering (últimos 5min, 30min, 24h)",
+      "Modelo de ML atribuído a cada tipo de máquina (classificador de vibração, regressão de temperatura, etc.)",
+      "Thresholds de risco por nível: atenção, crítico, falha iminente",
+      "Antecedência mínima de alerta (ex: alertar com 48h de antecedência)",
+      "Canais de notificação por severidade (e-mail no nível atenção, WhatsApp no crítico, ligação no falha iminente)",
+      "Destinatários por turno e por tipo de máquina",
+      "Integrações ativas (qual ERP, qual endpoint de webhook, qual tópico MQTT)",
+      "Retenção de dados históricos por cliente (30, 90, 365 dias)",
+      "Fuso horário e idioma da interface",
+      "SLA de resposta configurável por plano contratado"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel de configuração: admin cria tenant, registra ativos (máquinas) com tipo e sensores associados, seleciona modelo pré-treinado para aquele tipo de equipamento ou faz upload de dataset para fine-tuning automático, configura thresholds e canais de alerta, gera token de API para integração. Zero código envolvido — novo cliente ativo em menos de 1 dia útil.",
+    "fase4_core_isolado": "O processo de inferência ML roda como worker assíncrono isolado (ex: serviço Python em container dedicado, acionado via fila de mensagens como RabbitMQ ou SQS). Ele consome eventos de 'novos dados de sensor disponíveis', executa o modelo e publica eventos de resultado. É completamente separado da API web, do banco de dados transacional e das interfaces de usuário.",
+    "fase4_custo_total_cliente": "Custo de core (inferência): proporcional ao número de ativos monitorados × frequência de inferência — estimado em GPU/CPU de worker dedicado ou custo de API de ML (ex: $0.002–$0.01 por inferência); custo de ingestão de dados: proporcional ao volume de mensagens de sensor (IoT broker, ex: $0.50–$2.00/mês por ativo com amostragem por minuto); custo de armazenamento: séries temporais em banco especializado (TimescaleDB ou InfluxDB) — ~$0.10–$0.30/GB/mês por cliente; custo de CDN e banda: relativamente baixo pois payloads são pequenos; custo de notificações: Twilio/WhatsApp ~$0.005–$0.05 por mensagem; custo fixo de infra base (API, auth, banco relacional): amortizado entre clientes. Custo total estimado por ativo monitorado: $2–$8/mês, permitindo precificação de $15–$60/ativo/mês com margem saudável.",
+    "fase4_continuidade": "O worker de inferência opera de forma desacoplada via fila de mensagens. Se o worker cair: a API web continua funcionando, o histórico de dados continua sendo gravado, os dashboards continuam acessíveis com dados históricos. Alertas pendentes ficam na fila e são processados quando o worker volta. Health checks com auto-restart via Kubernetes. O produto degrada graciosamente — perde predição em tempo real, mas não perde dados nem acesso.",
+    "fase4_manutencao": "Trocar o modelo ML ou o provider de inferência exige apenas: (1) implementar a interface ModelProvider no novo provider, (2) atualizar a configuração do tenant para apontar para o novo modelo, (3) deploy do worker sem downtime via blue-green. O restante do sistema (API, interfaces, banco) não sabe e não precisa saber qual modelo está rodando.",
+    "monetizacao": "SaaS B2B com precificação por ativo monitorado: plano Starter ($25/ativo/mês, até 10 ativos, alertas básicos), plano Professional ($45/ativo/mês, até 50 ativos, integração API, relatórios avançados), plano Enterprise (precificação customizada, ativos ilimitados, SLA dedicado, fine-tuning de modelos proprietários, suporte de implantação on-premise). Receita recorrente (MRR) previsível. Expansão natural: cliente começa com 5 máquinas críticas, expande para toda a planta. Canal adicional: comissão de revendedores OEM que embarcam via widget (revenue share de 20–30%).",
+    "stack_sugerida": "Ingestão: MQTT (Mosquitto/EMQX) ou AWS IoT Core para dados de sensor em tempo real. Fila: RabbitMQ ou AWS SQS para desacoplar ingestão de inferência. Core ML: Python (scikit-learn, PyTorch, ONNX Runtime) em worker containerizado. Banco de séries temporais: TimescaleDB (PostgreSQL-compatível) ou InfluxDB. Banco relacional: PostgreSQL (tenants, ativos, configurações, alertas). API Backend: FastAPI (Python) ou Node.js com NestJS. Frontend Web: React + TypeScript + Recharts/D3 para visualização de séries temporais. Mobile: React Native ou PWA. Infraestrutura: Docker + Kubernetes (EKS/GKE) para escalar workers de inferência independentemente. Observabilidade: Prometheus + Grafana para monitorar custo por cliente e latência de inferência. Auth: Keycloak ou Auth0 com suporte a multi-tenant."
+  }
+}

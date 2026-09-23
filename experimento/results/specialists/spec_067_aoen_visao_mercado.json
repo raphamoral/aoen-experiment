@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 67,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está bem segmentado (clínicas, operadoras, hospitais, home care, pacientes crônicos) e a proposta de valor central é clara ('detectar deterioração antes que vire emergência'), com diferenciadores relevantes como o canal WhatsApp/SMS para populações vulneráveis e a API FHIR para integração não-substitutiva — mas faltam tamanho de mercado (TAM/SAM), quantificação da dor do cliente (ex: custos de reinternação evitáveis, taxa de readmissão) e análise explícita de alternativas competitivas existentes no mercado."
+}

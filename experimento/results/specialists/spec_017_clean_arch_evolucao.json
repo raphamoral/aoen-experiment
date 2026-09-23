@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra sólida adesão aos princípios de Clean/Hexagonal Architecture — entidades com regras de negócio isoladas de frameworks, casos de uso como orquestradores puros e IDs agnósticos de tecnologia (UUID) —, o que permite substituição independente de banco, framework e provedores externos; a nota não chega a 9-10 porque a proposta (truncada) não evidencia estratégia explícita de eventos/CQRS para escala horizontal, versionamento de API nem camada de adaptadores claramente definida, deixando aberta a questão de como o sistema crescerá de 10 para 10.000 usuários sem mudança arquitetural no transporte/infraestrutura."
+}

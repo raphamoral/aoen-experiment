@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 83,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra boa separação de contratos via service layer e adapter pattern no CertificationEngine, o que é uma fundação promissora, mas não endereça explicitamente configurabilidade multi-tenant: não há menção a tabelas de configuração por tenant, feature flags, personalização de workflows por cliente, nem mecanismo de onboarding zero-código — adicionar um novo órgão certificador ainda implica desenvolver um adapter, e não há evidência de que comportamentos como regras de pontuação, selos exibidos ou etapas do fluxo sejam dirigidos por configuração em banco ao invés de código."
+}

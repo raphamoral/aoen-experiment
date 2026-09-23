@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "A separação entre fluxo imutável (fase3_fluxo_fixo) e parâmetros configuráveis (fase3_parametros_configuraveis) é arquiteturalmente explícita, os provedores STT/MT/TTS são plugáveis via adaptadores sem alteração de código, e a Service Layer centraliza billing e seleção de provedor por sessão — o que indica que novo tenant pode ser onboardado por configuração; a nota não chega a 10 porque a proposta não descreve explicitamente um modelo de tenant-store (nova row = novo cliente ativo) nem aborda feature flags ou regras de negócio customizáveis por tenant além da seleção de provedores e idiomas."
+}

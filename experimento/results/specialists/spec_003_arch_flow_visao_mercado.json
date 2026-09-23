@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo (empresas, RH/gestão como comprador, colaboradores como usuário) está implicitamente identificado na cadeia de valor, mas o documento é essencialmente arquitetural — não há tamanho de mercado (TAM/SAM/SOM), a dor do cliente não é articulada explicitamente (apenas inferida pelo resultado 'retenção e produtividade aumentam'), e não existe nenhuma análise de diferenciação frente a concorrentes estabelecidos como Culture Amp, Qualtrics ou Wellhub."
+}

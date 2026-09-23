@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "A arquitetura define processos stateless com serviços físicos separados (iot-ingestion, maintenance-engine como processos independentes) e usa Kafka para desacoplamento assíncrono de carga pesada, além de Redis para filas de jobs — isolamento físico real e escalável; porém, a proposta não explicita workers dedicados com circuit breakers, bulkheads configurados, nem fallback definido para falha do serviço de processamento pesado, deixando lacunas de resiliência explícita."
+}

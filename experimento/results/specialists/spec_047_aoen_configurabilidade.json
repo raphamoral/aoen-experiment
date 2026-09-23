@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 47,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra separação correta entre fluxo fixo (pipeline invariante no código) e parâmetros configuráveis por tenant, com RuleSet plugável e ArbitrationEngine abstraída — padrão arquitetural sólido; a nota não chega a 9-10 porque a lista de parâmetros configuráveis está truncada (não é possível verificar se cobre todos os casos de borda), e a opção 'regras_procedimentais: custom' é ambígua: se criar um RuleSet customizado para um novo cliente exige desenvolvimento (mesmo que mínimo), o onboarding não é zero-código, quebrando o critério central."
+}

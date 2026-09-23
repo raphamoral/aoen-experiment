@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta menciona BullMQ para filas assíncronas e processamento não-bloqueante (PDF, blockchain), o que é positivo, mas não especifica workers em processos separados, não detalha estratégias de fallback em caso de falha nas filas, e a escalabilidade independente dos workers é apenas implícita — sem menção a circuit breakers, dead letter queues ou isolamento físico real entre o serviço de API e os consumidores de fila."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador — rastreabilidade imutável via blockchain com assinatura digital das três partes da cadeia (gerador, transportador, destinador) — está implicitamente presente e é extensível (Polygon ou Hyperledger Besu), mas a proposta o trata como uma feature técnica entre outras, sem isolá-lo explicitamente como o componente sem o qual o produto vira mais um sistema de gestão de resíduos qualquer, e sem articular por que a imutabilidade on-chain é insubstituível frente a alternativas como um banco de dados auditado com hash criptográfico centralizado."
+}

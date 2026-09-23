@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 76,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define uma Service Layer com serviços nomeados (MatchingService, ProtocolService, BillingService), o que oferece separação lógica, mas não menciona em nenhum momento filas de mensagens, workers assíncronos, subprocessos isolados ou mecanismos de fallback — processos potencialmente pesados como o motor de matching (especialmente nas versões ML/LLM descritas na fase1) e geração de relatórios clínicos parecem rodar no mesmo processo síncrono da aplicação, sem isolamento físico nem resiliência a falha."
+}

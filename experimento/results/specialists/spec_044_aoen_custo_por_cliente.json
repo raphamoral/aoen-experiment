@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 44,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta descreve componentes com custo variável implícito (chamadas à Claude API/GPT-4 por avaliação, execução em sandbox por submissão), mas trata esses elementos puramente como decisões técnicas — nunca como unidades de custo calculável por cliente; não há mensuração por tenant, nenhum modelo de custo por operação (ex: 'cada avaliação = R$X de IA + R$Y de sandbox'), e nenhuma conexão entre consumo de recursos e modelo de precificação."
+}

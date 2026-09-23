@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 9,
+  "justificativa": "Isolamento físico real e completo: API (gunicorn), workers (celery) e scheduler (celery-beat) são processos separados em containers distintos, com escala independente por métricas específicas (RPS para API, tamanho de fila para workers), processamento assíncrono via Redis queues, idempotência garantida para reprocessamento seguro e dead-letter queue para falhas — falta apenas descrição explícita de mecanismo de fallback/circuit breaker quando workers estão sobrecarregados ou indisponíveis (ex: degradação graciosa, rejeição controlada de novas tarefas, alertas de backpressure)."
+}

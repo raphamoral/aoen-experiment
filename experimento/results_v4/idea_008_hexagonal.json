@@ -1,0 +1,79 @@
+{
+  "ideia_idx": 8,
+  "ideia": "SaaS de gestão de resíduos industriais com rastreabilidade blockchain",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida e rastreabilidade de resíduos industriais (geração, classificação, acondicionamento, transporte, tratamento e destinação final), com regras de conformidade ambiental (ex.: PNRS, CONAMA, MTR/CDF/SINIR, normas ABNT). Agregados centrais: Gerador, Resíduo, Lote de Resíduo, Manifesto de Transporte (MTR), Transportador, Destinador/Tratamento, Certificado de Destinação Final (CDF), Cadeia de Custódia, Evento de Rastreabilidade e Política de Conformidade. O blockchain é tratado como detalhe de infraestrutura (registro imutável de eventos), não como parte do domínio.",
+    "primary_ports": [
+      "RegistrarResiduoPort (cadastro e classificação de resíduos e lotes)",
+      "EmitirManifestoTransportePort (criação e assinatura de MTR)",
+      "RegistrarEventoCustodiaPort (coleta, transbordo, recebimento, tratamento)",
+      "EmitirCertificadoDestinacaoPort (emissão de CDF)",
+      "VerificarConformidadePort (validação de licenças, prazos e limites legais)",
+      "ConsultarRastreabilidadePort (linha do tempo e prova de integridade de um lote)",
+      "GerarRelatorioAmbientalPort (inventário, indicadores, relatórios regulatórios)",
+      "GerenciarParceirosPort (geradores, transportadores, destinadores e licenças)",
+      "GerenciarTenantAssinaturaPort (organizações, usuários, papéis, planos)"
+    ],
+    "secondary_ports": [
+      "ResiduoRepositoryPort (persistência de agregados)",
+      "EventStorePort (log de eventos de domínio append-only)",
+      "LedgerRegistryPort (ancoragem e verificação de hashes/eventos em blockchain)",
+      "DocumentStoragePort (armazenamento de MTR, CDF, laudos e fotos)",
+      "OrgaoAmbientalGatewayPort (integração com SINIR/MTR-online, órgãos estaduais e IBAMA)",
+      "IdentidadeAssinaturaPort (autenticação, autorização e assinatura digital ICP-Brasil)",
+      "NotificacaoPort (e-mail, SMS, WhatsApp, push)",
+      "IoTTelemetriaPort (balanças, sensores, RFID/QR, GPS de veículos)",
+      "ERPIntegrationPort (SAP, TOTVS, Oracle e outros)",
+      "PagamentoCobrancaPort (assinaturas, faturamento e notas fiscais)",
+      "RelogioPort e IdGeneratorPort (tempo e identificadores determinísticos para testes)",
+      "ObservabilidadePort (logs, métricas, traces)",
+      "MensageriaPort (publicação e consumo de eventos assíncronos)"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON) e GraphQL",
+      "Web App SPA para gestores e EHS",
+      "App mobile offline-first para operadores e motoristas (leitura de QR/RFID, fotos, GPS)",
+      "Portal de auditoria para fiscais e certificadoras (somente leitura)",
+      "Webhooks de entrada de parceiros e ERPs",
+      "CLI e scripts de carga/migração em lote",
+      "Consumidores de mensageria (eventos vindos de IoT e ERPs)",
+      "Suíte de testes automatizados (BDD/contract tests) usando as mesmas portas primárias",
+      "Agendadores (cron jobs) para vencimento de licenças e relatórios periódicos"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter (ResiduoRepositoryPort)",
+      "PostgreSQL Event Store / Kafka Adapter (EventStorePort e MensageriaPort)",
+      "Hyperledger Fabric Adapter (permissionado) ou Polygon/Ethereum L2 Adapter (LedgerRegistryPort), com ancoragem por Merkle root em lote",
+      "S3/MinIO Adapter (DocumentStoragePort) com hash do documento ancorado no ledger",
+      "SINIR/MTR-online HTTP Adapter (OrgaoAmbientalGatewayPort)",
+      "Keycloak/Auth0 + ICP-Brasil Signer Adapter (IdentidadeAssinaturaPort)",
+      "SES/Twilio/WhatsApp Business Adapter (NotificacaoPort)",
+      "MQTT/LoRaWAN Adapter (IoTTelemetriaPort)",
+      "SAP/TOTVS Connector Adapters (ERPIntegrationPort)",
+      "Stripe/Asaas Adapter (PagamentoCobrancaPort)",
+      "OpenTelemetry Adapter (ObservabilidadePort)",
+      "Adapters in-memory/fake (repositório, ledger, relógio, gateway) para testes e desenvolvimento local"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não possui dependências de frameworks, banco, SDKs de blockchain ou HTTP. Ele expõe apenas portas primárias (interfaces de casos de uso) e depende exclusivamente de portas secundárias (interfaces definidas no próprio core, em linguagem de domínio). Adapters ficam fora e dependem do core (Dependency Inversion), nunca o contrário. A composição ocorre em um Composition Root que injeta os adapters por configuração. Regras são reforçadas por testes de arquitetura (ArchUnit/dependency-cruiser) no CI. Adapters primários e secundários são intercambiáveis: o mesmo core roda com UI, testes ou scripts, e com Postgres real ou in-memory, ledger real ou fake. Traduções (DTOs ↔ modelos de domínio) ficam nos adapters (anti-corruption layer), evitando vazamento de tipos externos. A blockchain é tratada como qualquer outro sistema externo, atrás de LedgerRegistryPort, e a consistência é garantida por padrão Outbox: o core grava o evento e o outbox, e um adapter assíncrono ancora no ledger com retentativas idempotentes.",
+    "interfaces": [
+      "Dashboard web multi-tenant para geradores (inventário, MTRs, alertas de conformidade)",
+      "App mobile offline-first para coleta e recebimento com QR/RFID e assinatura",
+      "Portal do transportador e do destinador (aceite de MTR, emissão de CDF)",
+      "Portal público/auditor de verificação de rastreabilidade (consulta por QR code, prova de integridade on-chain)",
+      "API pública REST/GraphQL com OpenAPI e webhooks para integração com ERPs",
+      "Painel administrativo do SaaS (tenants, planos, métricas)",
+      "Relatórios exportáveis (PDF/CSV/XML) para órgãos ambientais"
+    ],
+    "escalabilidade": "Multi-tenancy com isolamento lógico (tenant_id + row-level security) e opção de banco dedicado para clientes enterprise. Aplicação stateless em containers com escala horizontal (Kubernetes/HPA). Eventos assíncronos via Kafka permitem desacoplar ingestão de IoT, ancoragem e relatórios. Escrita no ledger em lote (Merkle tree) para reduzir transações e custo: apenas hashes são registrados on-chain, dados sensíveis ficam off-chain. CQRS com projeções de leitura (read models em PostgreSQL/Elasticsearch) para consultas de rastreabilidade e relatórios. Particionamento por tenant/tempo em tabelas de eventos, cache (Redis) e CDN para portal público. Como as portas são estáveis, adapters podem ser trocados ou escalados independentemente (ex.: migrar de Fabric para L2 sem tocar no core), e o sistema pode evoluir de monólito modular para serviços por bounded context (Rastreabilidade, Conformidade, Parceiros, Faturamento) quando necessário.",
+    "custos": "Principais custos: infraestrutura de nuvem (compute, banco, Kafka, armazenamento de documentos com retenção longa), operação de nós blockchain (Fabric permissionado tem custo fixo de nós e manutenção; L2 pública tem custo variável por transação, mitigado por ancoragem em lote), certificados digitais e assinatura ICP-Brasil, integrações com órgãos ambientais e ERPs (manutenção de conectores), mensageria (SMS/WhatsApp) e IoT/hardware (etiquetas QR/RFID, gateways), além de conformidade (LGPD, auditorias, segurança) e suporte/onboarding enterprise. Estratégias: ancoragem em lote, armazenar apenas hashes on-chain, tiers de armazenamento (hot/cold), autoscaling, começar com monólito modular e um único ledger, e repassar custos variáveis (IoT, SMS, assinaturas digitais) como consumo.",
+    "monetizacao": "Assinatura SaaS por tiers (Starter/Pro/Enterprise) baseada em número de unidades geradoras, usuários e volume de MTRs/lotes rastreados; cobrança por uso para eventos ancorados em blockchain, emissões de CDF, assinaturas digitais e mensagens; módulos add-on (compliance avançada, ESG/relatórios de economia circular, integrações ERP, IoT); taxa de setup/onboarding e integração customizada para enterprise; marketplace de destinadores/transportadores homologados com comissão por transação ou listagem premium; venda de relatórios e certificações de rastreabilidade para ESG e cadeia de suprimentos; licenciamento white-label para consultorias ambientais e associações setoriais; API paga para seguradoras, bancos e auditores (dados agregados e anonimizados)",
+    "stack_sugerida": "Backend: Java 21 + Spring Boot (ou Kotlin) ou TypeScript com NestJS, organizado em módulos hexagonais (domain, application, ports, adapters, bootstrap), com ArchUnit/dependency-cruiser. Banco: PostgreSQL com RLS e particionamento, Redis para cache, Elasticsearch/OpenSearch para busca. Mensageria: Kafka (ou RabbitMQ/NATS em estágio inicial) com padrão Outbox (Debezium). Blockchain: Hyperledger Fabric (consórcio permissionado) ou Polygon/Base (L2) com contratos Solidity de ancoragem e Merkle roots; SDKs isolados em adapters. Armazenamento: S3/MinIO com versionamento e WORM. Identidade: Keycloak/Auth0 (OIDC) + assinatura ICP-Brasil. Frontend: React/Next.js (TypeScript) para web; React Native/Flutter para mobile offline-first. IoT: MQTT (EMQX) e LoRaWAN. Infra: Docker, Kubernetes, Terraform, GitHub Actions, ArgoCD. Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki. Testes: JUnit/Jest, Testcontainers, Cucumber (BDD), Pact (contract tests). Pagamentos: Stripe/Asaas."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T01:57:45+00:00",
+    "runner": "runner.py"
+  }
+}

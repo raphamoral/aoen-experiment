@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (pipeline Ingestão→Normalização→Análise→Alerta→Relatório com detecção de anomalias e correlação regulatória em tempo real), é explicitamente isolado da camada de interfaces, é extensível via adaptadores plugáveis e modelos intercambiáveis sem dependência de fabricante ou provedor de IA, e resolve um problema real que planilhas e sistemas SCADA genéricos não resolvem — a falta de um ponto que seja responsável por integrar dados heterogêneos de sensores, classificar severidade segundo limites regulatórios e gerar evidência auditável automaticamente; perde um ponto por não articular explicitamente por que concorrentes estabelecidos (ex: OSIsoft PI, Enviro.ai) não entregam esse mesmo núcleo."
+}

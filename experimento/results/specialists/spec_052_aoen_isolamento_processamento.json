@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 52,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta menciona um 'pipeline de eventos' como metáfora arquitetural e integração IoT via MQTT (protocolo de fila), mas não descreve em nenhum momento isolamento físico de processos pesados — geração de relatórios PDF/Excel auditáveis, ingestão de volume IoT e avaliação em lote de conformidades rodariam no mesmo processo da aplicação principal; não há menção a workers separados, filas (Kafka, RabbitMQ, SQS), fallback em caso de falha no processamento assíncrono, nem escalonamento independente dessas cargas — o risco é que uma exportação pesada ou pico de ingestão de sensores degrade ou derrube o fluxo crítico de registro de monitoramentos."
+}

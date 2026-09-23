@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta menciona self-service onboarding e isolamento por schema (sinais positivos), mas não define um modelo de configuração explícito — não há menção a tabelas de configuração por tenant, parâmetros de modelo por operadora, seleção de features configurável ou gestão de thresholds (ex: o próprio SLA de < 4h de freshness aparece como hardcoded na fitness function), sugerindo que onboarding de operadoras com estruturas de dados ou requisitos de modelo distintos ainda exigiria intervenção de desenvolvimento."
+}

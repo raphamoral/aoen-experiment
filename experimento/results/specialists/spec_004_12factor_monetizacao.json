@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a modelo de receita, pricing, tiers, métricas de negócio (MRR, LTV, CAC, churn) ou qualquer estratégia de monetização — foca exclusivamente na arquitetura técnica da plataforma."
+}

@@ -1,0 +1,74 @@
+{
+  "ideia_idx": 5,
+  "ideia": "SaaS de automação de contratos imobiliários com assinatura digital",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Automatização do ciclo de vida de contratos imobiliários: criação, parametrização, envio para assinatura, controle de status, armazenamento e auditoria. O núcleo é agnóstico a qualquer tecnologia externa e contém apenas regras de negócio puras — validação de cláusulas, fluxo de assinatura, estados do contrato (rascunho, pendente, assinado, expirado, cancelado) e permissões de partes envolvidas.",
+    "primary_ports": [
+      "ContractManagementPort — criar, editar, clonar e arquivar contratos",
+      "SignatureWorkflowPort — iniciar, avançar e cancelar fluxo de assinaturas",
+      "TemplateManagementPort — criar e gerenciar modelos de contrato parametrizáveis",
+      "PartyManagementPort — cadastrar e gerenciar partes assinantes (compradores, vendedores, corretores)",
+      "AuditQueryPort — consultar trilha de auditoria e histórico de eventos",
+      "NotificationTriggerPort — disparar notificações de eventos do domínio",
+      "UserAuthenticationPort — autenticar e autorizar usuários da plataforma",
+      "TenantManagementPort — gerenciar inquilinos SaaS (imobiliárias, construtoras)",
+      "ReportingPort — gerar relatórios de contratos e assinaturas"
+    ],
+    "secondary_ports": [
+      "ContractRepositoryPort — persistência e recuperação de contratos",
+      "TemplateRepositoryPort — persistência de modelos de contrato",
+      "UserRepositoryPort — persistência de usuários e tenants",
+      "AuditRepositoryPort — gravação imutável de eventos de auditoria",
+      "DocumentStoragePort — armazenamento de PDFs e documentos gerados",
+      "DigitalSignatureProviderPort — integração com provedor de assinatura digital (ICP-Brasil / e-Sign)",
+      "NotificationDeliveryPort — envio efetivo de e-mails, SMS e push",
+      "PaymentGatewayPort — cobrança de assinaturas SaaS e por uso",
+      "IdentityVerificationPort — verificação de identidade das partes (KYC/biometria)",
+      "PdfGeneratorPort — renderização de contratos em PDF a partir de templates",
+      "CachePort — cache de sessão, templates compilados e dados frequentes",
+      "EventBusPort — publicação de eventos de domínio para consumidores externos",
+      "ViaCepPort — consulta de endereços para preenchimento automático"
+    ],
+    "primary_adapters": [
+      "RestApiAdapter — controllers HTTP/REST (FastAPI ou NestJS) consumidos pelo front-end e integrações externas",
+      "GraphQLAdapter — endpoint GraphQL para consultas flexíveis pelo painel web",
+      "WebhookReceiverAdapter — recebe callbacks de provedores de assinatura e pagamento",
+      "GrpcAdapter — comunicação interna entre microsserviços com baixa latência",
+      "CliAdapter — ferramentas de linha de comando para operações administrativas e onboarding",
+      "SchedulerAdapter — jobs agendados (Celery/BullMQ) para expiração de contratos e lembretes",
+      "WebSocketAdapter — notificações em tempo real de mudança de status para o front-end"
+    ],
+    "secondary_adapters": [
+      "PostgreSQLContractRepository — implementação JPA/SQLAlchemy para contratos e templates no PostgreSQL",
+      "PostgreSQLUserRepository — persistência de usuários, tenants e permissões",
+      "TimescaleAuditRepository — gravação de eventos de auditoria em série temporal imutável",
+      "AWSS3DocumentStorage — upload e download de PDFs no Amazon S3 com URLs assinadas",
+      "DocuSignAdapter — integração com DocuSign API para assinatura eletrônica avançada",
+      "ClickSignAdapter — integração alternativa com ClickSign para assinatura ICP-Brasil",
+      "SendGridNotificationAdapter — envio de e-mails transacionais via SendGrid",
+      "TwilioSmsAdapter — envio de SMS para notificação e autenticação de partes",
+      "StripePaymentAdapter — gestão de assinaturas SaaS recorrentes e cobranças por uso",
+      "UnicoCheckIdVerificationAdapter — verificação biométrica de identidade via Unico Check",
+      "PuppeteerPdfAdapter — geração de PDFs a partir de templates HTML via Puppeteer headless",
+      "RedisCache — cache de sessão, rate-limiting e templates pré-compilados via Redis",
+      "KafkaEventBus — publicação e consumo de eventos de domínio com Apache Kafka",
+      "ViaCepHttpAdapter — client HTTP para API ViaCEP de consulta de endereços"
+    ],
+    "isolation": "O core domain não importa nenhuma biblioteca de infraestrutura. Todas as dependências externas (banco de dados, provedores de assinatura, storage) são representadas exclusivamente por interfaces (Ports) definidas dentro do core. A inversão de dependência é aplicada rigorosamente: o core define o contrato, os adapters o implementam. A injeção de dependência é realizada na camada de composição (main/bootstrap), que é a única responsável por instanciar adapters concretos e injetá-los via construtor nas entidades de aplicação. Testes unitários do core usam adapters in-memory substituindo qualquer infraestrutura real, permitindo execução isolada e determinística.",
+    "interfaces": [
+      "Web SPA (React + TailwindCSS) — painel principal para imobiliárias e construtoras",
+      "Portal do Assinante — interface simplificada para partes externas assinarem contratos via link",
+      "REST API pública — integração com ERPs imobiliários (Sienge, Facilita, Vista)",
+      "Webhooks de saída — notificação de sistemas clientes sobre mudanças de status de contratos",
+      "App mobile (React Native) — assinatura e acompanhamento via smartphone",
+      "CLI admin — gerenciamento de tenants, migrações e configurações operacionais",
+      "Dashboard analítico — métricas de conversão, SLA de assinaturas e uso por tenant"
+    ],
+    "escalabilidade": "O sistema escala horizontalmente através de stateless services em containers (Kubernetes). O core de negócio é distribuído em microsserviços por bounded context: ContractService, SignatureService, NotificationService e BillingService, cada um com seu próprio banco de dados (Database per Service pattern). O EventBus (Kafka) desacopla comunicação entre serviços de forma assíncrona. O volume de PDFs e documentos escala via S3 com CDN. O banco PostgreSQL escala via read replicas para queries e connection pooling (PgBouncer). Rate limiting e cache de templates reduzem carga no core. O plano SaaS multi-tenant usa row-level security no PostgreSQL para isolamento de dados por tenant sem overhead de banco separado.",
+    "custos": "Custos variáveis principais: armazenamento S3 (baixo, ~$0.023/GB), chamadas à API de assinatura digital (por envelope/documento — maior custo unitário), envio de SMS (Twilio, por mensagem), geração de PDF (CPU-bound, escalar pods sob demanda). Custos fixos: cluster Kubernetes gerenciado (EKS/GKE), banco PostgreSQL gerenciado (RDS), Kafka gerenciado (Confluent/MSK). Estratégia de redução: cache agressivo de templates compilados, geração de PDF assíncrona em fila, escolha de provedor de assinatura com pricing por volume, uso de webhooks ao invés de polling para eventos externos.",
+    "monetizacao": "Modelo SaaS híbrido: (1) Assinatura mensal por plano — Starter (até 20 contratos/mês), Professional (até 200), Enterprise (ilimitado + SLA + suporte dedicado); (2) Pay-per-use para volume acima do plano; (3) Add-ons: verificação biométrica de identidade por contrato, armazenamento premium, integrações com ERPs específicos; (4) White-label para grandes redes imobiliárias e construtoras com taxa de setup + mensalidade fixa; (5) API pública para desenvolvedores com modelo de créditos por chamada.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Node.js (NestJS) para os microsserviços principais, com DDD explícito no core domain. Banco de dados: PostgreSQL (dados relacionais + row-level security multi-tenant), Redis (cache e filas leves), TimescaleDB (auditoria time-series). Mensageria: Apache Kafka (eventos de domínio entre serviços). Storage: AWS S3 + CloudFront. Geração de PDF: Puppeteer headless em worker dedicado. Assinatura digital: DocuSign (mercado geral) + ClickSign (ICP-Brasil). Frontend: React 18 + TypeScript + TailwindCSS + Zustand. Mobile: React Native (Expo). Infra: Kubernetes (EKS), Terraform, GitHub Actions CI/CD, Datadog para observabilidade. Auth: Keycloak ou Auth0 para SSO e gestão de identidade multi-tenant."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Automatização do ciclo de vida de contratos imobiliários: criação, parametrização, envio para assinatura, controle de status, armazenamento e auditoria. O núcleo é agnóstico a qualquer tecnologia externa e contém apenas regras de negócio puras — validação de cláusulas, fluxo de assinatura, estados do contrato (rascunho, pendente, assinado, expirado, cancelado) e permissões de partes envolvidas.\",\n\n  \"primary_ports\": [\n    \"ContractManagementPort — criar, editar, clonar e arquivar contratos\",\n    \"SignatureWorkflowPort — iniciar, avançar e cancelar fluxo de assinaturas\",\n    \"TemplateManagementPort — criar e gerenciar modelos de contrato parametrizáveis\",\n    \"PartyManagementPort — cadastrar e gerenciar partes assinantes (compradores, vendedores, corretores)\",\n    \"AuditQueryPort — consultar trilha de auditoria e histórico de eventos\",\n    \"NotificationTriggerPort — disparar notificações de eventos do domínio\",\n    \"UserAuthenticationPort — autenticar e autorizar usuários da plataforma\",\n    \"TenantManagementPort — gerenciar inquilinos SaaS (imobiliárias, construtoras)\",\n    \"ReportingPort — gerar relatórios de contratos e assinaturas\"\n  ],\n\n  \"secondary_ports\": [\n    \"ContractRepositoryPort — persistência e recuperação de contratos\",\n    \"TemplateRepositoryPort — persistência de modelos de contrato\",\n    \"UserRepositoryPort — persistência de usuários e tenants\",\n    \"AuditRepositoryPort — gravação imutável de eventos de auditoria\",\n    \"DocumentStoragePort — armazenamento de PDFs e documentos gerados\",\n    \"DigitalSignatureProviderPort — integração com provedor de assinatura digital (ICP-Brasil / e-Sign)\",\n    \"NotificationDeliveryPort — envio efetivo de e-mails, SMS e push\",\n    \"PaymentGatewayPort — cobrança de assinaturas SaaS e por uso\",\n    \"IdentityVerificationPort — verificação de identidade das partes (KYC/biometria)\",\n    \"PdfGeneratorPort — renderização de contratos em PDF a partir de templates\",\n    \"CachePort — cache de sessão"
+}

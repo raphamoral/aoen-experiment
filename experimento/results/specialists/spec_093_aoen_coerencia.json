@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 93,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões se reforçam com consistência notável: o mercado-alvo (PMEs sem CISO em setores regulados) justifica o motor de matching como núcleo, que por sua vez justifica a Service Layer desacoplada, que habilita os múltiplos canais (web, API, PDF), cada um com justificativa de mercado que fecha o ciclo — a arquitetura conta uma história linear e sem contradições visíveis, perdendo apenas por o fluxo da Fase 3 estar truncado e por ausência de decisões sobre camada de dados, que poderia revelar tensões com as promessas de extensibilidade."
+}

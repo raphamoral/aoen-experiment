@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador está identificado (ciclo de vida de contratos imobiliários com estados, validação de cláusulas e fluxo de assinaturas agnóstico a fornecedor), mas a proposta de valor não demonstra por que esse domínio não seria substituível por um DocuSign + um CRM imobiliário genérico — falta articular a inteligência específica do setor (ex: validação de cláusulas ICP-Brasil, conformidade com lei do inquilinato, parametrização por tipo de imóvel) que tornaria o núcleo verdadeiramente insubstituível."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A arquitetura menciona IEventBusPort para integrações assíncronas e adapters de workers/filas implícitos na estrutura de portas secundárias, indicando intenção de processamento assíncrono, mas não há evidência explícita de isolamento físico real (processos/workers separados) para operações pesadas como cálculo de matches (IMatchDiscoveryUseCase), enriquecimento externo (IExternalEnrichmentPort) ou indexação semântica (ISearchIndexPort), nem mecanismos de fallback documentados caso esses processamentos falhem."
+}

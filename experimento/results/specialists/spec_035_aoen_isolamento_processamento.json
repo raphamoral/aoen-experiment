@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 35,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona processamento assíncrono via webhook (batch com callback) e abstrai o Risk Scorer como interface intercambiável — ambos indicam consciência do problema — mas não há evidência de isolamento físico real: o FraudService centraliza normalização, enriquecimento histórico, scoring ML e auditoria no mesmo processo/serviço; não há filas explícitas, workers dedicados ou subprocessos separados para as operações pesadas (enriquecimento de contexto e inferência do modelo); e nenhum fallback é descrito para quando o scorer falhar, deixando o fluxo síncrono do checkout sem resiliência a falhas do componente caro."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O diferenciador existe e está tecnicamente isolado — o loop inteligente IoT→telemetria→IMLAnomalyDetector→IAlertEvaluator→agendamento preventivo automático distingue o produto de CMMs tradicionais (IBM Maximo, UpKeep) que não fecham esse ciclo nativamente; a arquitetura hexagonal garante extensibilidade via interfaces; porém o núcleo não é explicitamente elevado como razão de existir do produto — IMLAnomalyDetector aparece como secondary port de mesmo peso que IBillingGateway, diluindo a percepção de irreplabilidade, e a proposta não articula por que alternativas existentes falham especificamente nesse ciclo."
+}

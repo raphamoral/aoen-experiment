@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura prevê um IBillingPort com registro de uso por minuto/sessão/usuário, sinalizando consciência de cobrança baseada em consumo, mas não há nenhum modelo de monetização explícito — ausência completa de tiers, valores, segmentação de clientes, análise de sustentabilidade ou métricas de negócio (MRR, LTV, CAC, churn)."
+}

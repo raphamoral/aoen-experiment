@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 1,
+  "justificativa": "A proposta não descreve nenhum mecanismo de isolamento de processamento: operações pesadas como registro on-chain e geração de hashes são implicitamente síncronas ('hash gerado no momento da emissão'), sem menção a filas, workers separados, processamento assíncrono ou fallback — qualquer falha no blockchain travaria toda a emissão de MTR."
+}

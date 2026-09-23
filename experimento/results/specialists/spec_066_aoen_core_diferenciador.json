@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 66,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (motor de matching semântico + pipeline de QA terminológico/regulatório) está claramente identificado, isolado atrás de uma interface abstrata TranslationEngine, e resolve um problema real que marketplaces genéricos não resolvem — perde um ponto por não detalhar como o matching semântico é tecnicamente implementado nem como o QA valida conformidade regulatória, deixando margem para questionar se é realmente proprietário ou apenas uma composição de APIs existentes."
+}

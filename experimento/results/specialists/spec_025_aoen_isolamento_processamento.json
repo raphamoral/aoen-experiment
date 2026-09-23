@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 25,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta apresenta isolamento lógico adequado — a RouteService encapsula o solver e a interface é agnóstica de algoritmo — mas não há menção a processamento assíncrono (filas, workers, subprocessos), isolamento físico do motor de otimização, fallback em caso de falha do solver, ou capacidade de escalar o processamento pesado independentemente do restante da aplicação."
+}

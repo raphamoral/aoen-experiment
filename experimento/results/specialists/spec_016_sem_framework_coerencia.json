@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam uma narrativa coesa e bem conectada: o problema (planilha/e-mail) justifica o produto, o público (lojistas médios em Shopify/VTEX) justifica as interfaces (painel, portal, API REST, mobile), a dor principal identificada (etiqueta e rastreamento) justifica a ordem do MVP, o Redis mencionado no stack reaparece coerentemente na estratégia de escalabilidade como worker assíncrono, o modelo de custo por etiqueta (APIs de transportadoras) casa com a monetização por volume de devoluções — porém há duas lacunas de coerência: WhatsApp aparece como interface de notificação mas está ausente do stack tecnológico (integração com WhatsApp Business API é não-trivial e ignora custo e complexidade), e o app mobile é listado como interface sem nenhuma decisão tecnológica correspondente (nativo? React Native? PWA?), criando pontas soltas que quebram a consistência do restante."
+}

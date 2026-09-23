@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 99,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural sem lacunas: o pipeline collect→analyze→signal justifica cada interface da Fase 2, as abstrações ISourceCollector e ISentimentEngine são coerentes com a estratégia de extensibilidade declarada, a escolha de banco de séries temporais é consistente com as queries analíticas de tendência/volume, cada interface da Fase 2 mapeia diretamente a um segmento de mercado da Fase 1, e a BrandReputationService como camada central fecha o ciclo evitando duplicação de lógica entre canais — o único ponto que impede nota máxima é a descrição da service layer estar truncada, deixando a coerência técnica dessa camada parcialmente verificável."
+}

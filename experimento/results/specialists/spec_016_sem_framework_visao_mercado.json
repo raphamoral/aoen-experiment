@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 5,
+  "justificativa": "O público-alvo está razoavelmente definido (lojistas de médio porte em Shopify, VTEX, Nuvemshop) e a dor é identificada de forma superficial ('perdidos gerenciando por planilha e e-mail'), mas faltam dados de tamanho de mercado (TAM/SAM/SOM), ausência total de análise competitiva frente a alternativas existentes (Intelipost, Melhor Envio, módulos nativos das plataformas) e nenhuma diferenciação explícita que justifique por que o cliente migraria para esta solução."
+}

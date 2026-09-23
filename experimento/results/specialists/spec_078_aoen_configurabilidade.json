@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 78,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A abstração via interfaces plugáveis (ScoreProvider, DataSource) e a separação pelo Service Layer criam uma base extensível, mas a proposta descreve extensibilidade em tempo de código/deploy — não um modelo de configuração por tenant em runtime; não há menção a tabela de configuração por cliente, feature flags, parâmetros operacionais por tenant (taxas, limites, thresholds de score) nem a um processo de onboarding de novo cliente via configuração pura sem envolvimento de desenvolvimento."
+}

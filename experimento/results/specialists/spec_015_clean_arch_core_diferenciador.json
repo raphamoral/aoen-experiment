@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador existe e está parcialmente isolado — a combinação de CompetitorPrice com confidence scoring, DemandSignal com elasticityIndex e Inventory com gatilho de precificação defensiva formam um motor de decisão multi-sinal genuíno — mas o mecanismo algorítmico central (como o CalculateDynamicPrice sintetiza esses sinais em um preço ótimo) não é explicitado, tornando impossível avaliar se a proposta de valor é insubstituível ou apenas uma orquestração sofisticada de regras que qualquer concorrente poderia replicar."
+}

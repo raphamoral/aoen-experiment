@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 85,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra fundamentos sólidos de configurabilidade — DSL de regras configuráveis por marca, dashboard self-service para gestores e interfaces abstraídas via ports — mas não especifica o modelo de onboarding de novos tenants (operadores/redes): falta descrever se existe um schema de configuração de tenant que tornaria o processo puramente declarativo, e a menção de substituição do RulesEnginePort por provedores externos (Braze, Salesforce) implica que alguns cenários ainda demandariam trabalho de integração/desenvolvimento."
+}

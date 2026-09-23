@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta apresenta elementos promissores de configurabilidade — glossários por domínio/cliente, cotas de billing por plano e SSO corporativo via SAML/OIDC — mas não define explicitamente um modelo de configuração por tenant, não descreve separação formal entre comportamento fixo do pipeline e parâmetros variáveis por cliente, e itens 'genesis' como 'tradução sensível a jargão por setor' sugerem diferenciação que pode exigir customização de código por vertical, não apenas nova row de configuração."
+}

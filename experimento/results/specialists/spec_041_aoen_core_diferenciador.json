@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 41,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (motor analítico de inteligência sobre portfólio de patentes), isolado em uma camada desacoplada, extensível via adaptadores intercambiáveis e interfaces agnósticas de IA, e resolve com dados um problema real que alternativas como planilhas ou sistemas legados não resolvem — perde um ponto por não detalhar o mecanismo de scoring de risco nem evidenciar por que a detecção de oportunidades de licenciamento seria tecnicamente superior ao estado da arte."
+}

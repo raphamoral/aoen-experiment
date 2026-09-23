@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "A proposta menciona rastreamento de custo por tenant via tag de billing cloud com alerta por threshold (fitness function), o que supera o nível zero, mas para aí: não há cálculo de custo por operação/transação (ex: 'cada agendamento custa R$X de compute + R$Y de notificação'), não existe decomposição dos drivers de custo por tenant (IA, storage, mensageria), e não há conexão explícita entre custo por cliente e o modelo de precificação para derivar margem — a tag de billing é um instrumento de FinOps agregado, não um motor de unit economics orientado a decisão comercial."
+}

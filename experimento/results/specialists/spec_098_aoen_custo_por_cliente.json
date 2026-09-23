@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 98,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta é puramente funcional/arquitetural — descreve o que o sistema faz (coleta, benchmark, alertas, interfaces), mas não contém nenhuma mensuração de custo por cliente, nenhum rastreamento de consumo por tenant, e nenhuma conexão entre custo operacional e modelo de precificação; custos não são sequer mencionados, nem como total de infra."
+}

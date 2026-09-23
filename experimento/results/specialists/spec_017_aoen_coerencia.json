@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural altamente coerente: a premissa central (verificação independente da plataforma) justifica diretamente a abstração de ancoragem plugável, que por sua vez fundamenta a service layer centralizada, que habilita as múltiplas interfaces sem duplicação de lógica, cada uma justificada por um segmento de mercado específico — e todas convergem para a página pública de verificação declarada explicitamente como 'o produto em si'; a única tensão menor é que o pipeline fixo (fase3) menciona armazenamento em banco como etapa central, o que cria uma dependência implícita de infraestrutura que contradiz levemente a promessa de independência da plataforma emissora, resolvida apenas se a âncora blockchain for escolhida como implementação concreta."
+}

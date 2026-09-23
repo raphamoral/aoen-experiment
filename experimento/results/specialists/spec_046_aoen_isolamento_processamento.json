@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 46,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta descreve separação lógica via camada de serviços (AnalysisService, adapter de CV, abstração de LLM), mas não menciona isolamento físico: não há referência a filas de mensagens, workers separados, subprocessos dedicados para inferência de pose ou circuit breakers — o pipeline de CV/LLM pesado parece rodar acoplado à requisição principal, sem fallback explícito caso a inferência falhe ou sature."
+}

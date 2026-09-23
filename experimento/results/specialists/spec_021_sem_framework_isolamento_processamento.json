@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta menciona filas e workers apenas de forma implícita e futura ('quando crescer, separo...'), sem nenhum isolamento físico real no desenho atual — processamento de séries temporais, geração de PDFs, envio de notificações e ingestão MQTT rodam todos no mesmo processo Node.js monolítico, de modo que uma sobrecarga em qualquer um desses derrubaria os demais."
+}

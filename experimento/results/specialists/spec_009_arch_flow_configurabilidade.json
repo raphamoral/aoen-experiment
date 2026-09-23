@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta menciona um motor de workflow de certificação com 'etapas configuráveis por categoria' e uma engine de conformidade multi-regulatória (ANVISA/CE/FDA), sinalizando intenção de configurabilidade, mas não define explicitamente uma camada de configuração por tenant — não há menção a feature flags por cliente, schema de configurações isolado por tenant, nem estratégia de onboarding zero-código, o que indica que novos perfis de cliente ainda dependeriam de desenvolvimento."
+}

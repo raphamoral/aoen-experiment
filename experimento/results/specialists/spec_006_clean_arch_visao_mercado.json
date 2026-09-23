@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta apresenta apenas arquitetura técnica detalhada; o público-alvo é inferível pelo nome do produto ('pacientes que fazem exames laboratoriais'), mas não há nenhuma articulação explícita de dor do cliente, estimativa de tamanho de mercado, diferenciação frente a concorrentes (ex: apps de nutrição genéricos, acompanhamento nutricional clínico) ou proposta de valor que justifique adoção."
+}

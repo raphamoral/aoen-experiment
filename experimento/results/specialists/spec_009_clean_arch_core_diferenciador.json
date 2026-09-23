@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador existe (o fluxo Certification + Inspector com conformidade ANVISA torna o marketplace inviável sem ele), mas está diluído como mais uma entidade no modelo — não há isolamento arquitetural explícito do núcleo, nenhuma camada tecnológica proprietária (algoritmo, score, matching) que vá além de validações CRUD, e a proposta não argumenta por que um concorrente não poderia replicar o mesmo modelo de domínio."
+}

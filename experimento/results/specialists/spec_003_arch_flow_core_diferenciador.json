@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado nos componentes 'genesis' e 'custom_build' — especificamente o motor de anonimização com k-anonimato + differential privacy combinado ao pipeline de agregação com preservação de privacidade individual, que resolve o paradoxo central do produto (coletar dados sensíveis de saúde mental sem comprometer a confiança do colaborador); esse núcleo é isolado no bounded context 'Anonymization', não depende de fornecedor único e resolve um problema que dashboards de engajamento genéricos (Qualtrics, Culture Amp) não resolvem — a perda de nota se dá porque o modelo de scoring organizacional ainda carece de descrição de como se diferencia de abordagens concorrentes já estabelecidas."
+}

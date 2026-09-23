@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define secondary ports que abstraem serviços externos (ISearchIndexService, IRegulatorySyncService, IKYCVerificationService), sugerindo separação lógica mínima, mas não menciona filas de mensagens, workers assíncronos, separação física de processos, circuit breakers nem estratégias de fallback para operações computacionalmente pesadas como geração de laudos de certificação (ICertificationUseCase), relatórios de conformidade (IComplianceReportUseCase) ou re-indexação de busca — processos que, se executados sincronicamente no mesmo processo da aplicação, podem degradar ou derrubar todo o sistema."
+}

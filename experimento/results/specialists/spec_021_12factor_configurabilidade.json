@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta menciona feature flags e PostgreSQL para dados de tenants, sinalizando consciência multi-tenant, mas não descreve nenhum mecanismo explícito de configuração por cliente — ausentes: tabela de configuração por tenant, regras de negócio parametrizáveis (thresholds de alerta, frequência de manutenção, fluxos de aprovação), ou processo de onboarding baseado puramente em dados; a seção de 'config' trata exclusivamente de variáveis de ambiente por ambiente (dev/staging/prod), não por tenant, deixando ambíguo se novo cliente exigiria ou não intervenção de código."
+}

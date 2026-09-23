@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura demonstra intenção de configurabilidade via IAlertConfigPort (limiares por empresa) e ICompanyManagementPort (política de privacidade por tenant), mas não descreve um mecanismo explícito de seleção de adapters por configuração em runtime (ex: como o sistema decide usar SendGridAdapter vs SlackAdapter por tenant), nem um modelo de configuração centralizado que governe comportamento variável — sugerindo que onboarding de cliente novo ainda dependeria de intervenção técnica para wiring de adapters ou ajustes de infraestrutura."
+}

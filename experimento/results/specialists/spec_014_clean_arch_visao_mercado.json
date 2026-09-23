@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O nome do produto e as entidades (Organization com plano/billing, Meeting corporativo) sugerem implicitamente um mercado B2B, mas a proposta é puramente arquitetural — não há tamanho de mercado, dor do cliente articulada, diferenciação frente a concorrentes (Zoom, Teams, Interprefy, KUDO) nem proposta de valor explícita."
+}

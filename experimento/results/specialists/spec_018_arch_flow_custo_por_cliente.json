@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura possui 'usage-meter' e 'data-partition' que são infraestrutura de billing (o que cobrar do cliente), mas não há nenhum mecanismo explícito de atribuição de custo por tenant — sem custo por inferência de modelo, sem alocação de compute/storage por operadora, sem cálculo de margem por cliente; o que existe serve à monetização, não ao unit economics interno."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "A proposta menciona múltiplas interfaces distribuídas nas fases (dashboard web, exportação CSV, API REST, webhooks e SDK), com justificativas de uso implícitas (time de retenção, integração com CRM, sistemas de oferta), e sinais de desacoplamento via contratos OpenAPI validados por Pact — mas faltam personas explícitas mapeadas a cada canal, ausência de menção a padrão arquitetural de desacoplamento (hexagonal/ports-and-adapters) que garanta adição de nova interface sem reescrita, e nenhuma análise de alcance de mercado que justifique as escolhas de canal."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 89,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural sem contradições: a segmentação de mercado (fase 1) determina exatamente as interfaces escolhidas (fase 2) — agrônomos→Dashboard, campo→Mobile offline-first, baixa conectividade→WhatsApp/SMS, B2B→API, crédito rural→CSV/PDF —, a camada de serviços centraliza toda lógica agronômica garantindo que adicionar interfaces não quebre o núcleo, os adaptadores intercambiáveis de provedores satelitais/climáticos reforçam a promessa de extensibilidade declarada na fase 1, e o fluxo fixo de 7 passos da fase 3 é precisamente a implementação concreta dos serviços da fase 2; o único ponto que impede nota 10 é a lista de parâmetros configuráveis da fase 3 truncada no input, o que não permite verificar se a parametrização por cliente é consistente com a promessa de planos 'otimizados por talhão'."
+}

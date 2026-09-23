@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura prevê observabilidade com OpenTelemetry e métricas por serviço, o que cria infraestrutura técnica para rastrear consumo por tenant, mas a proposta não menciona explicitamente mensuração de custo por cliente, cálculo de custo por operação (ex: emissão de certificado, ancoragem blockchain) nem conexão entre consumo de recursos por tenant e o modelo de precificação — apenas descreve a infraestrutura total."
+}

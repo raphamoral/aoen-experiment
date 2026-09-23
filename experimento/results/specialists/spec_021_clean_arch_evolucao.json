@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A separação explícita entre entidades independentes de framework e casos de uso orquestradores evidencia intenção clara de Clean Architecture, protegendo a lógica de negócio de acoplamento tecnológico; porém a proposta está incompleta — a camada de casos de uso é truncada e não há definição visível de ports/adapters, infraestrutura substituível ou estratégia de escalonamento IoT, impedindo confirmar se a reversibilidade das decisões foi de fato operacionalizada ou permanece apenas como intenção."
+}

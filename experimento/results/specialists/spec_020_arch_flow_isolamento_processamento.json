@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta define bounded contexts separados e infraestrutura de containers (EKS/GKE) que fisicamente permitiriam isolamento, mas não explicita filas de mensagens, workers assíncronos, circuit breakers nem estratégias de fallback para os processos computacionalmente pesados identificados (embeddings semânticos para deduplicação de bugs, geração de sugestões por IA, cálculos de payout e analytics), deixando a resiliência ao isolamento implícita na infraestrutura mas ausente no design arquitetural."
+}

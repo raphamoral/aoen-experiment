@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A arquitetura separa contextos como MatchingEngine e Analytics como bounded contexts distintos e classifica o motor de recomendação como componente custom, sugerindo intenção de separação, mas não há especificação explícita de filas, workers isolados, processos separados ou estratégias de fallback para os processos computacionalmente pesados (embedding de perfis via NLP, scoring multidimensional, detecção de anomalias), ficando o isolamento físico real apenas implícito."
+}

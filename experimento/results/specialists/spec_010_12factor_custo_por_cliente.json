@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta descreve uma infraestrutura sólida (Datadog/Grafana, workers separados por tipo, auto-scaling por processo) que poderia instrumentalizar rastreamento por tenant, mas em nenhum momento menciona atribuição de custo por cliente, cálculo de custo por operação (ex.: emissão de NF-e, armazenamento de XML/DANFE por tenant) ou conexão entre consumo de recursos e modelo de precificação — os custos são tratados implicitamente como totais de infraestrutura, sem qualquer framework de unit economics."
+}

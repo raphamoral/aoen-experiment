@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 47,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra pensamento evolutivo sólido na camada de aplicação — interface ArbitrationEngine, RuleSets plugáveis, provedores de IA intercambiáveis e service layer com contrato único isolam bem o núcleo de negócio de dependências externas — mas perde pontos por não abordar abstração da camada de dados (nenhum repositório ou port para banco), ausência de estratégia de versionamento de API (crítico para integrações B2B de longa duração), pipeline de fases declarado como invariante no código (o que engessa evolução processual futura) e silêncio total sobre mecanismos de escala operacional como filas, eventos ou CQRS que seriam necessários ao crescer de 10 para 10.000 disputas simultâneas sem reescrita."
+}

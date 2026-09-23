@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 94,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta forma uma narrativa arquitetural altamente coesa: o diagnóstico de mercado (planilhas, ERPs inacessíveis) justifica o posicionamento; o contrato abstrato Evento→Transformação→Projeção é a consequência lógica da promessa de visibilidade unificada; a Service Layer é a solução estrutural inevitável para suportar múltiplas interfaces sem duplicar regras; cada interface é justificada por um segmento de mercado específico que remonta ao público-alvo declarado — sem lacunas nem redundâncias; e a extensibilidade (fontes plugáveis, repositório agnóstico de banco) é consistente com o objetivo de evoluir de regras determinísticas para modelos preditivos sem quebrar contratos — a única ressalva é que a Fase 3 foi truncada ('Captura de e...'), impedindo avaliação completa do pipeline de processamento, o que introduz uma lacuna pontual na coerência total."
+}

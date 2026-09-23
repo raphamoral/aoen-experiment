@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A arquitetura hexagonal fornece boa separação de responsabilidades e o IGamificationRepository menciona 'persistir regras', sugerindo que parâmetros de gamificação poderiam ser configuráveis por tenant, mas não há nenhuma port explícita de configuração por tenant (ex: ITenantConfigRepository, IFeatureFlagPort), nenhum mecanismo declarado de provisionamento de novo cliente via configuração, e o IUserOnboardingUseCase trata onboarding de usuários — não de tenants — indicando que onboarding de um novo cliente provavelmente ainda exige desenvolvimento ou deploy manual."
+}

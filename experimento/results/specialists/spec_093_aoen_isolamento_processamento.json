@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 93,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta apresenta separação lógica via Service Layer (RiskAssessmentService, MatchingService), mas não menciona isolamento físico do processamento pesado — não há referência a filas de mensagens (ex: RabbitMQ, SQS), workers independentes, subprocessos separados ou circuit breakers para os fluxos computacionalmente caros (scoring de risco, execução do algoritmo de matching com ML/LLM); as únicas menções a comportamento assíncrono são as notificações por e-mail e webhook, que são periféricas ao núcleo do sistema, deixando o core do produto vulnerável a falhas em cascata."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 26,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra separação explícita e correta entre fluxo fixo no código (ciclo de 6 etapas imutável) e parâmetros configuráveis por cliente, com abstrações bem posicionadas (RiskAnalysisProvider, ClinicalService Layer, portal de gestão de protocolos) — mas perde pontos por não especificar o mecanismo de armazenamento e resolução de configuração por tenant (ausência de um Config Store explícito, schema de tabelas de configuração ou runtime de carregamento por tenant_id), e a lista de parâmetros configuráveis está truncada, deixando incerto se itens críticos como limiares de risco, frequência de checkin e regras de roteamento são de fato dirigidos por dados ou ainda hardcoded por protocolo."
+}

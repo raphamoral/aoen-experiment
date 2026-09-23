@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura menciona 'consumo por minuto' no contexto de Subscription & Billing e rastreia fluxos por participante no Audio Capture, sinalizando alguma granularidade por tenant; os serviços externos (Deepgram, DeepL, ElevenLabs) têm precificação por uso que tornaria o custo por operação tecnicamente calculável — mas o projeto não apresenta nenhum cálculo explícito de custo por cliente/operação (ex: 'cada minuto traduzido custa R$X de STT + R$Y de tradução + R$Z de TTS'), não conecta esses custos a margens por tenant e não distingue FinOps de Unit Economics, caracterizando uma menção a custo variável sem modelo real de custo por cliente."
+}

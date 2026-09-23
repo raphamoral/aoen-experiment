@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — o engine de anonimização/agregação com k-anonimidade garantida por fitness function automatizada — está claramente identificado, isolado em módulo separado com extração planejada como serviço independente, e resolve um problema real que CRUDs genéricos ou surveys corporativos comuns não resolvem (confiança técnica e legal de não-rastreabilidade); perde 2 pontos por não explicitar extensibilidade do algoritmo de anonimização além de k-anonimidade (ex: differential privacy, l-diversity) nem diferenciar por que esse engine é insubstituível frente a soluções como ferramentas de pesquisa anônima já consolidadas no mercado B2B."
+}

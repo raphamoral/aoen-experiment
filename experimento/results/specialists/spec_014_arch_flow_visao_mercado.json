@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O documento identifica implicitamente um público-alvo ('participante corporativo multilíngue' em setores como jurídico, financeiro e tech) e sugere a dor de forma genérica ('reunião produtiva sem barreira linguística'), mas não há tamanho de mercado (TAM/SAM/SOM), nenhuma análise de concorrentes (Kudo, Interprefy, Google Meet nativo, intérpretes humanos) e nenhuma diferenciação explícita que justifique adoção — tornando a visão de mercado insuficiente mesmo para o nível mínimo de profundidade."
+}

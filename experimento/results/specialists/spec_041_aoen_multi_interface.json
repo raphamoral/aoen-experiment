@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 41,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (Web, API, E-mail/Slack, PDF/Excel, Mobile, Webhooks), cada uma explicitamente justificada por um perfil de usuário e segmento de mercado específico, com a lógica de negócio completamente encapsulada na PatentPortfolioService — garantindo que qualquer interface nova ou modificada não toca nas regras de domínio."
+}

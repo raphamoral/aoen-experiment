@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A arquitetura desacoplada (entidades + use cases sem dependências externas) cria base técnica para múltiplas interfaces, mas o projeto não define explicitamente nenhuma interface de usuário, não justifica canais por perfil de usuário (paciente mobile, dentista web, admin painel) nem apresenta escolhas orientadas a alcance de mercado — o único elemento multi-canal identificado é o Reminder (SMS/EMAIL/WHATSAPP), que trata notificações, não interfaces de interação."
+}

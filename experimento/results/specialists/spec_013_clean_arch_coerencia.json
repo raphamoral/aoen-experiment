@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "O modelo conta uma história coerente — Space→Resource→Availability→Reservation→Payment→Review formam uma cadeia lógica onde cada entidade sustenta a próxima, e as regras de negócio cruzam corretamente as entidades (User.verificationStatus bloqueando Reservation, Space.isActive sendo checado, Payment confirmando status); porém há tensões que impedem nota máxima: (1) Reservation carrega spaceId de forma redundante, pois já é derivável via resourceId→Resource.spaceId, sugerindo falta de consenso sobre o modelo de acesso; (2) User.credits e Subscription.creditsPerMonth mesclam semânticas de 'créditos' e 'horas' sem esclarecer a unidade de consumo, criando ambiguidade nas regras de plano (BASIC: 20h vs. créditos); (3) Availability é listada como entidade pura de negócio mas é um read-model calculado, contradizendo a premissa de 'sem dependências externas'; e (4) o adjetivo 'descentralizado' no produto não encontra nenhum reflexo arquitetural nas entidades (sem conceito de nó, propriedade distribuída ou governança), deixando a promessa do nome sem respaldo estrutural."
+}

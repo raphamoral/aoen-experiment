@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 79,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "O núcleo em grafo com padrão de adaptadores para ingestão e Service Layer com contratos estáveis demonstra boa direção de dependências (lógica de negócio isolada de frameworks e fontes externas), permitindo trocar interfaces e origens de dados sem tocar no core — mas a proposta não endereça reversibilidade tecnológica da infraestrutura (banco de dados, broker), não descreve mecanismos de escala horizontal (filas assíncronas, cache, sharding do grafo) necessários para crescer de 10 a 10.000 usuários sem mudança arquitetural, e não menciona decisões explicitamente reversíveis como feature flags ou migração incremental, deixando lacunas que podem forçar intervenções estruturais sob carga real."
+}

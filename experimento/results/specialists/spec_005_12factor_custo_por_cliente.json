@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura descreve custos de infraestrutura por componente (RDS, ECS Fargate, S3, DocuSign API, SendGrid, Stripe) e menciona observabilidade (Datadog/New Relic) com capacidade técnica latente para rastreamento por tenant, mas não há nenhuma menção explícita a atribuição de custo por cliente, cálculo de custo por operação/transação, metering por tenant, tagging de recursos por cliente, nem conexão entre consumo individual e modelo de precificação — o que caracteriza tratamento de custos como FinOps de infraestrutura total, não como Unit Economics."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 7,
+  "justificativa": "O projeto prevê cinco interfaces distintas com perfis de usuário reais e bem justificados (instituição, aluno, verificador anônimo, admin), mas não menciona explicitamente o desacoplamento da lógica de negócio das interfaces nem canais além do web (mobile, API pública, widget embedável), o que limita a pontuação máxima."
+}

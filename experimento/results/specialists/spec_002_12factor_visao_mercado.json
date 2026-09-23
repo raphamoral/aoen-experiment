@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta descreve exclusivamente a arquitetura técnica — o único sinal de mercado é o nome do produto ('compliance regulatório'), que sugere um nicho, mas não há definição de ICP, tamanho de mercado, dor articulada do cliente, diferenciação frente a alternativas como Upwork ou consultorias tradicionais, nem proposta de valor declarada."
+}

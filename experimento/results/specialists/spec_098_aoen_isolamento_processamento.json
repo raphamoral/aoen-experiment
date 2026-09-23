@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 98,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta apresenta separação lógica via FranchiseService Layer e abstração DataCollector, mas nenhuma menção a filas de mensagens, workers isolados ou processamento assíncrono — o fluxo fase3 (Coleta → Validação → Normalização → Cálculo → Alertas) é descrito como pipeline síncrono dentro da mesma camada, o que significa que uma falha ou sobrecarga no motor de benchmarking (processamento N unidades com z-score, percentis, rankings) bloqueia ou derruba toda a aplicação."
+}

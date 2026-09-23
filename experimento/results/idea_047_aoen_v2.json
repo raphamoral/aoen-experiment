@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 47,
+  "ideia": "Plataforma de arbitragem online para disputas de pequeno valor",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de condução de disputas digitais com validade legal: fluxo estruturado de submissão → instrução probatória → análise assistida por IA → decisão arbitral vinculante. Sem esse motor, a plataforma é apenas um formulário.",
+    "fase1_mercado": "Primário: marketplaces e plataformas de e-commerce que precisam resolver disputas entre compradores e vendedores sem judicializar. Secundário: fintechs, seguradoras, construtoras e qualquer B2B ou B2C com volume alto de conflitos de baixo valor (até R$ 20 mil). Terciário: consumidores individuais e pequenas empresas sem acesso prático ao judiciário.",
+    "fase1_extensivel": "Sim. O motor é abstraído atrás de uma interface ArbitrationEngine. Pode usar IA de diferentes fornecedores (OpenAI, Anthropic, modelos locais) para análise de documentos e suporte à decisão. As regras procedimentais (CAMARB, CAM-CCBC, regras próprias do cliente) são plugáveis via RuleSet configurável. Árbitros humanos e IA coexistem como estratégias intercambiáveis de decisão.",
+    "fase2_interfaces": [
+      "Portal Web (React SPA) — para partes individuais submeterem e acompanharem disputas",
+      "API REST/Webhook — para marketplaces e plataformas B2B integrarem resolução de disputas nativamente nos seus fluxos",
+      "Dashboard do Árbitro (Web) — backoffice para árbitros humanos instruírem processos, acessarem IA de suporte e emitirem decisões",
+      "Widget Embeddable (JS SDK) — embed white-label em plataformas parceiras sem redirecionamento",
+      "Mobile App (PWA ou React Native) — para usuários finais de baixa renda ou regiões com acesso limitado a desktop"
+    ],
+    "fase2_justificativa_mercado": "Portal Web abre o mercado de consumidores e PMEs diretos (maior volume, menor ticket). API REST abre o mercado enterprise de plataformas digitais (menor volume, maior ticket e recorrência). Dashboard do Árbitro não abre mercado — é operacional, reduz custo. Widget Embeddable aumenta conversão em plataformas parceiras ao eliminar fricção de redirecionamento. Mobile App abre mercado de usuários sem desktop, especialmente relevante em regiões com alta penetração de smartphone e baixa de computador.",
+    "fase2_service_layer": "Uma ArbitrationService centraliza toda a lógica: criação de disputa, upload de evidências, atribuição de árbitro, aplicação de prazos, geração de decisão e notificação. Cada interface (web, API, widget, mobile) chama essa service via contrato único. Nenhuma interface contém regra de negócio. Trocar ou adicionar interface não altera a lógica central.",
+    "fase3_fluxo_fixo": "Submissão da disputa → Notificação e aceite da contraparte → Prazo para apresentação de evidências → Análise por IA + suporte ao árbitro → Deliberação e emissão de decisão → Notificação das partes → Registro imutável da decisão. Esse pipeline é invariante no código.",
+    "fase3_parametros_configuraveis": [
+      "valor_maximo_disputa",
+      "regras_procedimentais (CAMARB, CAM-CCBC, custom)",
+      "sla_por_fase_em_dias (submissao, instrucao, deliberacao)",
+      "pool_de_arbitros (IDs por especialidade e jurisdição)",
+      "modelo_ia_ativo (gpt-4o, claude-opus, etc.)",
+      "idiomas_suportados",
+      "templates_de_notificacao (email, SMS, webhook)",
+      "tabela_de_custas (fixo, percentual do valor, gratuito para certas faixas)",
+      "jurisdicao_aplicavel",
+      "webhook_de_decisao (URL do cliente para receber o resultado)",
+      "logo_e_branding (white-label)",
+      "tipos_de_evidencia_aceitos",
+      "limite_de_documentos_por_parte_em_mb"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro na tabela de tenants com seu conjunto de parâmetros. Um script de onboarding valida o config JSON e provisiona o tenant sem deploy de código. Plataformas via API recebem credenciais e documentação. O fluxo já existe; apenas os parâmetros mudam.",
+    "fase4_core_isolado": "O processo de análise de documentos e suporte à decisão por IA roda em workers assíncronos isolados (filas de mensagens). Separado do servidor principal de aplicação. Escala independentemente conforme volume de disputas. Se o worker de IA cair, as disputas ficam em fila — árbitros humanos podem prosseguir manualmente sem interrupção do serviço.",
+    "fase4_custo_total_cliente": "Custo do core IA: ~R$ 0,80–2,50 por disputa (tokens de análise de documentos + geração de resumo para árbitro). Infra proporcional: ~R$ 0,15/disputa em compute (worker + API server fração). Armazenamento: ~R$ 0,05/disputa/mês (documentos em object storage, média 5 MB por processo). Banda: ~R$ 0,02/disputa (downloads de evidências e decisão). Custo operacional estimado: R$ 1,00–3,00 por disputa resolvida. Modelo: cobrar R$ 29–299/disputa dependendo do valor em litígio — margem de 10x a 100x sobre o custo.",
+    "fase4_continuidade": "IA é suporte ao árbitro, não substituto. Se o worker IA falhar, a disputa permanece na fila e o árbitro recebe alerta para proceder sem análise automatizada. Circuit breaker no worker previne cascata de falhas. O banco de dados de disputas e o portal continuam operando normalmente — falha de IA não afeta submissão, autenticação, upload de evidências nem emissão manual de decisões.",
+    "fase4_manutencao": "A interface ArbitrationAIProvider abstrai o fornecedor de IA. Trocar de OpenAI para Anthropic ou modelo local é implementar um novo adapter e alterar um parâmetro de configuração no tenant. Nenhuma regra de negócio muda. Deploy do novo adapter sem downtime via feature flag por tenant.",
+    "monetizacao": "B2B (principal): assinatura mensal por volume de disputas incluídas (ex: R$ 999/mês até 50 disputas, R$ 2.999/mês até 200) + taxa por disputa excedente. API/white-label: plano enterprise com SLA garantido. B2C (secundário): pay-per-dispute para partes individuais (ex: R$ 49–299 por disputa conforme valor em litígio). Upsells: árbitros especializados premium, decisões em SLA reduzido, relatórios analíticos de disputas para compliance.",
+    "stack_sugerida": "Backend: Node.js (Fastify) ou Python (FastAPI) com TypeScript/Python tipado. Banco: PostgreSQL (dados relacionais de disputas e tenants) + Redis (filas e cache de sessão). Fila assíncrona: BullMQ (Redis) ou AWS SQS para workers de IA. Object storage: AWS S3 ou Cloudflare R2 (documentos e decisões). IA: Anthropic Claude via API (análise jurídica de documentos) com fallback para OpenAI. Frontend: React + TailwindCSS (portal + dashboard). Mobile: React Native ou PWA. Auth: Auth0 ou Clerk (multi-tenant, SSO para enterprise). Infra: Railway ou Render para MVP; migração para ECS/Fargate quando escalar. Observabilidade: Sentry + Datadog. Assinatura e billing: Stripe."
+  }
+}

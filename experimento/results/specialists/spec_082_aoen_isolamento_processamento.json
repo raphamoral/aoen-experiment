@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 82,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define boa separação lógica via interface ConversationalProvider e AttendanceService, mas não menciona em nenhum momento filas, workers ou processos físicos separados para isolar as operações caras (geração de resposta por IA e busca RAG), e o pipeline descrito na fase 3 é inteiramente síncrono e sequencial — uma falha ou lentidão no provider de IA bloqueia todo o ciclo de atendimento sem qualquer fallback ou mecanismo de escalonamento independente descrito."
+}

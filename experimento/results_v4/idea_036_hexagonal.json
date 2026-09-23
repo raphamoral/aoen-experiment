@@ -1,0 +1,82 @@
+{
+  "ideia_idx": 36,
+  "ideia": "App de gestão de prescrições médicas com alerta de interações medicamentosas",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão segura de prescrições médicas: ciclo de vida da prescrição (criação, validação, emissão, renovação, cancelamento), perfil clínico do paciente (alergias, condições, medicações em uso) e motor de detecção de interações medicamentosas (droga-droga, droga-alergia, droga-condição, duplicidade terapêutica e ajuste de dose). Agregados principais: Paciente, Prescrição, ItemPrescrito, Medicamento, Interação e Alerta. Regras de negócio puras: classificação de severidade (contraindicada, grave, moderada, leve), política de override com justificativa clínica e trilha de auditoria.",
+    "primary_ports": [
+      "CriarPrescricaoUseCase (driving)",
+      "VerificarInteracoesUseCase (driving)",
+      "EmitirPrescricaoUseCase (driving)",
+      "RenovarOuCancelarPrescricaoUseCase (driving)",
+      "RegistrarOverrideDeAlertaUseCase (driving)",
+      "ConsultarHistoricoMedicamentosoUseCase (driving)",
+      "GerenciarPerfilClinicoPacienteUseCase (driving)",
+      "ConsultarAuditoriaUseCase (driving)"
+    ],
+    "secondary_ports": [
+      "PrescricaoRepositoryPort",
+      "PacienteRepositoryPort",
+      "BaseDeInteracoesPort (fonte de conhecimento farmacológico)",
+      "CatalogoMedicamentosPort (busca por nome, princípio ativo, código ATC)",
+      "NotificadorPort (e-mail, SMS, push, WhatsApp)",
+      "AssinaturaDigitalPort (ICP-Brasil / certificado do prescritor)",
+      "ProntuarioExternoPort (FHIR/HL7 para EHR/EMR)",
+      "FarmaciaIntegracaoPort (envio da receita e dispensação)",
+      "ValidacaoProfissionalPort (CRM/CRO/COREN)",
+      "AutenticacaoAutorizacaoPort (identidade e permissões)",
+      "AuditoriaLogPort (trilha imutável)",
+      "EventPublisherPort (eventos de domínio)",
+      "RelogioPort (tempo determinístico para testes)",
+      "CobrancaPort (assinaturas e faturamento)"
+    ],
+    "primary_adapters": [
+      "API REST/JSON (controllers HTTP)",
+      "API GraphQL para o front-end web",
+      "Web app SPA para médicos e clínicas",
+      "App mobile para pacientes (lembretes e consulta de prescrições)",
+      "Adapter de webhooks de entrada (EHRs e farmácias)",
+      "CLI / scripts administrativos (importação em lote, reprocessamento)",
+      "Consumidores de fila/eventos (entrada assíncrona)",
+      "Test drivers / harness de testes automatizados (BDD e contrato), com o mesmo status dos demais"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (PrescricaoRepository, PacienteRepository)",
+      "InMemory repositories (testes e desenvolvimento)",
+      "Adapter de base de interações: DrugBank / First Databank / Medi-Span / Micromedex (comerciais) e RxNorm/openFDA/base ANVISA (abertas)",
+      "Cache Redis para consultas de interação",
+      "Adapter de catálogo: CMED/ANVISA, RxNorm, ATC/WHO",
+      "Notificações: SendGrid/SES, Twilio, Firebase Cloud Messaging, WhatsApp Business API",
+      "Assinatura digital: provedores ICP-Brasil (BirdID, VIDaaS, Certisign)",
+      "Cliente FHIR R4 / HL7 para EHRs (Tasy, MV, Epic)",
+      "Integração com redes de farmácia e plataformas de receita digital (ex.: Memed)",
+      "Validação de conselhos profissionais (APIs CFM/CRM)",
+      "IdP OIDC (Keycloak/Auth0/Cognito)",
+      "Auditoria append-only (tabela imutável ou S3 Object Lock) com hash encadeado",
+      "Broker de mensagens (Kafka/SQS/RabbitMQ)",
+      "Stripe/Pagar.me para cobrança",
+      "Fakes e stubs de todos os sistemas externos para testes"
+    ],
+    "isolation": "O core (domínio + casos de uso) não tem dependência de frameworks, banco, HTTP ou SDKs; só conhece interfaces. Regras: (1) dependências apontam sempre para dentro; (2) primary adapters traduzem protocolo externo em DTOs/comandos do caso de uso; (3) secondary adapters implementam as portas e traduzem modelos externos (FHIR, DrugBank, etc.) para o modelo de domínio via anti-corruption layer; (4) injeção de dependência montada na composition root, fora do core; (5) o core não usa exceções nem tipos de infraestrutura; (6) fitness tests de arquitetura (ArchUnit, dependency-cruiser, import-linter) bloqueiam imports indevidos no CI; (7) testes de contrato garantem que cada adapter respeita a sua porta; (8) o motor de interações fica atrás de uma porta, permitindo trocar a base de conhecimento sem alterar regras clínicas; (9) dados sensíveis (LGPD/HIPAA) tratados por políticas na borda, com pseudonimização antes de sair para serviços externos.",
+    "interfaces": [
+      "Web dashboard do prescritor com alertas em tempo real durante a prescrição",
+      "App mobile do paciente (lista de medicamentos, lembretes, alertas)",
+      "API pública REST/OpenAPI + FHIR para integração com EHRs e farmácias",
+      "Webhooks de saída (alerta gerado, prescrição emitida, override registrado)",
+      "Painel administrativo da clínica (usuários, políticas de alerta, relatórios)",
+      "Portal de auditoria e compliance",
+      "CLI para operação e migração de dados",
+      "SDK/widget embutível de verificação de interações para terceiros"
+    ],
+    "escalabilidade": "Core stateless, com escala horizontal em containers atrás de load balancer. A verificação de interações é leitura intensiva e altamente cacheável: grafo/índice de interações pré-carregado em memória ou Redis, com invalidação por versão da base. Postgres com réplicas de leitura e particionamento por tenant/data, com multi-tenancy por schema ou por coluna de tenant. Operações não críticas (notificações, sincronização com EHR, relatórios) ficam assíncronas via eventos e filas, com outbox pattern para consistência. A verificação de interação é síncrona e de baixa latência (meta p95 < 300 ms), com degradação controlada (circuit breaker, fallback para base local) se o provedor externo falhar. Autoscaling por CPU e profundidade de fila. Como as portas isolam os adapters, o motor de interações pode ser extraído para um serviço próprio sem tocar o domínio. Multi-região para disponibilidade e residência de dados.",
+    "custos": "Principais custos: (1) licenciamento da base farmacológica comercial (maior custo fixo; mitigar começando com fontes abertas e migrando por adapter, ou cobrar por consulta); (2) infraestrutura de nuvem (compute, Postgres gerenciado, Redis, filas), moderada se o cache reduzir chamadas externas; (3) assinatura digital ICP-Brasil e integrações (custo por assinatura/transação); (4) mensageria (SMS/WhatsApp são os itens variáveis mais caros, priorizar push e e-mail); (5) conformidade: LGPD/HIPAA, criptografia, auditoria, pentest, certificações e seguro cyber; (6) suporte e validação clínica (farmacêutico/médico consultor para curadoria de regras); (7) retenção de logs e prontuários por prazos legais (armazenamento em camadas frio/quente). Estratégias: cache agressivo, batch de notificações, reserved instances, FinOps por tenant e observabilidade de custo por caso de uso.",
+    "monetizacao": "SaaS B2B por assinatura em planos: (a) Individual/Profissional por médico por mês, com verificação básica de interações; (b) Clínica por assento, com multiusuário, relatórios e integração de agenda; (c) Enterprise/Hospital com SSO, FHIR/EHR, SLA, auditoria avançada e base premium de interações. Complementos: cobrança por uso (consultas de interação via API para terceiros), módulo de assinatura digital cobrado por receita emitida, módulo paciente (freemium, com plano familiar premium), integrações com farmácias (comissão ou lead fee), white-label para operadoras e redes de farmácia e, com anonimização e consentimento, insights agregados para pesquisa. Trial gratuito e go-to-market via clínicas pequenas e expansão para redes.",
+    "stack_sugerida": "Core em TypeScript (Node.js) ou Kotlin/Java, com domínio em módulo puro sem dependências de framework. Alternativa: Go ou C#/.NET. Primary adapters: NestJS/Fastify ou Spring Boot (REST/GraphQL), front-end em React/Next.js, mobile em React Native ou Flutter. Persistência: PostgreSQL (JSONB para dados clínicos flexíveis), Redis, OpenSearch para busca de medicamentos. Mensageria: Kafka ou SQS/SNS, com outbox pattern. Identidade: Keycloak ou Auth0. Padrões: FHIR R4, HL7, OpenAPI. Infra: Docker, Kubernetes (EKS/GKE) ou ECS, Terraform, GitHub Actions, com deploy blue/green. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Segurança: KMS, secrets manager, criptografia em repouso e em trânsito, WAF, RBAC/ABAC. Testes: unitários no core com fakes, testes de contrato por adapter, BDD e testes de arquitetura (dependency-cruiser/ArchUnit). Cobrança: Stripe ou Pagar.me."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:56:03+00:00",
+    "runner": "runner.py"
+  }
+}

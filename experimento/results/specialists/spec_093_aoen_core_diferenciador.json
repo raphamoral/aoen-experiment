@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 93,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de avaliação de risco + matching inteligente é claramente identificado como núcleo diferenciador, explicitamente isolado das interfaces e extensível via três gerações de implementação (regras → ML → LLM) e plug-ins de compliance — perde apenas 1 ponto porque a proposta de valor ainda carece de evidência concreta de que o algoritmo de tradução perfil→serviço supera alternativas existentes (consultorias manuais, ferramentas GRC genéricas) em precisão ou custo, o que definiria a insubstituibilidade real."
+}

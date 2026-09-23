@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "A proposta demonstra boas escolhas operacionais pontuais (filas, cache Redis, S3) que ajudam na escala, mas não descreve nenhuma camada de abstração entre lógica de negócio e infraestrutura — sem ports/adapters, sem separação de domínio, sem estratégia explícita para substituir Redis, Bull ou PostgreSQL independentemente, o que sugere acoplamento implícito a tecnologias específicas e dificuldade crescente para evoluir componentes isoladamente."
+}

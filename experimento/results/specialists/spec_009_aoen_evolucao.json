@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A separação entre service layer e interfaces, o padrão de executor plugável para certificação e o fluxo de estados explícito demonstram intenção evolutiva sólida — mas a proposta não especifica como dependências de infraestrutura (banco, frameworks) são abstraídas dentro da CertificationService, nem aborda estratégia de escala ou particionamento modular interno, deixando reversibilidade técnica parcialmente implícita."
+}

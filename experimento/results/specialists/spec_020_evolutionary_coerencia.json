@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta demonstra alta coerência sistêmica: as fitness functions mapeiam diretamente sobre as características arquiteturais (FF-01→disponibilidade, FF-03→multi-tenancy, FF-04→latência de gamificação, FF-05/FF-10→auditabilidade), os gatilhos de extração das fases são orientados por falha real nas FFs (não por calendário), e a progressão Modular Monolith→Microservices seletivo é consistente com os requisitos de escala sem overhead prematuro — porém há duas tensões que impedem nota máxima: (1) a característica declara latência <500ms para leaderboard enquanto FF-04 aceita ≤2s, e embora sejam métricas complementares (leitura vs. propagação de escrita), a distinção não é explicitada no documento, criando ambiguidade interpretativa; (2) 'Observabilidade' é listada como característica arquitetural central mas não possui fitness function automatizada correspondente, ficando como intenção sem mecanismo de enforcement."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve apenas entidades de domínio e regras de negócio sem nenhuma mensuração de custo por cliente, rastreamento de consumo por tenant ou cálculo de custo por operação — custos de infraestrutura sequer são mencionados, tornando impossível conectar qualquer margem ao modelo de precificação."
+}

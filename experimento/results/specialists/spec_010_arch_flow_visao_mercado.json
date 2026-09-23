@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo (MEI) é identificado com alguma especificidade, e os bounded contexts revelam consciência implícita das dores fiscais (emissão de NF, DAS, DASN), mas a proposta não articula explicitamente por que o MEI sofre com isso, não apresenta tamanho de mercado (ex: ~15M MEIs no Brasil), não menciona alternativas existentes (Nibo, MEI Fácil, Contabilizei) nem oferece diferenciação clara frente a elas — resultando em uma visão de mercado inferível pelos artefatos técnicos, mas nunca declarada como estratégia."
+}

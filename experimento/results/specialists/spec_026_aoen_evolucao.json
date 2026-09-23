@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 26,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A proposta demonstra pensamento evolutivo consistente — RiskAnalysisProvider abstrai o motor de IA tornando a troca de provedor reversível, a ClinicalService Layer isola regras clínicas dos canais impedindo vazamento de lógica, e a separação entre ciclo fixo e parâmetros configuráveis permite extensão sem reescrita do core; a nota não chega a 10 porque a proposta omite abstrações na camada de persistência de dados (trocar banco exigiria mudanças não endereçadas), não menciona estratégia de escalonamento horizontal (a ClinicalService pode se tornar gargalo de 10 para 10.000 usuários sem particionamento ou filas), e não trata versionamento de API para compatibilidade retroativa com integrações enterprise já implantadas."
+}

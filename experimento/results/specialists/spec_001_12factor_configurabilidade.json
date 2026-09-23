@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta apresenta configuração de infraestrutura via variáveis de ambiente e secrets manager, mas é silenciosa sobre mecanismos de configurabilidade por tenant (tabelas de configuração por cliente, feature flags, regras de negócio parametrizáveis, fluxo de onboarding sem código), sugerindo que comportamentos específicos por cliente — como janelas de entrega, regras de roteirização, integrações customizadas ou SLAs — ainda exigiriam desenvolvimento, não apenas uma nova row no banco."
+}

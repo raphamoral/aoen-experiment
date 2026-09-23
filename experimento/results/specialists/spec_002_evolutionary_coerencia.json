@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema coeso e auto-reforçante: o modular monolith com fronteiras DDD viabiliza a evolvability exigida pelo domínio regulatório mutável; as fitness functions automatizadas cobrem exatamente as características críticas declaradas (segurança, disponibilidade, auditabilidade); a separação explícita entre decisões reversíveis e irreversíveis reflete o princípio Last Responsible Moment aplicado onde o custo de mudança é real — a única tensão leve é que a meta de 99,9% de disponibilidade pode exigir estratégias de isolamento de falhas que um monolith torna mais difíceis, mas isso é mitigado pela estratégia de extração guiada por fitness functions."
+}

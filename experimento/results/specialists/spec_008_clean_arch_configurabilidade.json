@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "clean_arch",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A entidade Tenant possui 'configuracoes' e 'limites_uso', indicando intenção de configurabilidade, mas as regras de negócio das demais entidades (fluxo por periculosidade, validação de licença, cadeia de hashes) aparecem hardcoded nas definições — sem engine de regras, sem schema explícito de configuração por tenant, e sem indicação de que workflows ou validações possam variar por cliente sem alteração de código."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta inicia como Monólito Modular com isolamento apenas lógico (mesmo processo/runtime), não menciona filas de mensagens, workers assíncronos ou identificação de processos computacionalmente pesados — a extração para serviços independentes é reativa (só ocorre quando fitness functions de escala forem violadas), sem garantia de que um processo pesado não derrube o monólito durante a janela crítica de um leilão."
+}

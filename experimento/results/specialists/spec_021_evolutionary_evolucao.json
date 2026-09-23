@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A proposta demonstra maturidade evolutiva excepcional: adota monólito modular deliberado no MVP para descobrir fronteiras reais antes de distribuir, cada extração futura é condicionada a fitness function degradada (não especulação), reversibilidade de banco e fronteiras de serviço é tratada explicitamente com ferramentas concretas (Flyway/Liquibase), e a fitness function de onboarding de novo sensor (< 1 sprint) valida diretamente a extensibilidade — perdendo apenas o ponto máximo por não evidenciar explicitamente inversão de dependências em relação a frameworks externos (ex: ports & adapters / hexagonal) para proteger o core de negócio."
+}

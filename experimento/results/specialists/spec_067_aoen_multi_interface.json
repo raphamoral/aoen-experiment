@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 67,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê seis interfaces distintas (Dashboard Web, App Mobile paciente, App Mobile cuidador, API REST/FHIR, canal WhatsApp/SMS e Painel Administrativo), cada uma com justificativa explícita de segmento de mercado e perfil de usuário, além de arquitetura desacoplada via service layer (PatientService, AlertService, MonitoringService) que permite adicionar novas interfaces sem reescrever lógica de negócio."
+}

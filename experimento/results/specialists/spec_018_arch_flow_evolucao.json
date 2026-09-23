@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "Os bounded contexts bem definidos com linguagem ubíqua própria e a classificação de maturidade dos componentes (genesis/custom_built/product ao estilo Wardley) demonstram consciência evolutiva sólida, mas a proposta não explicita mecanismos anti-acoplamento críticos — como camadas anticorrupção entre contextos, inversão de dependência (ports & adapters) para isolar a lógica de negócio de MLflow/LLMs/conectores OSS-BSS, ou o contrato de comunicação entre contextos (eventos vs. chamadas síncronas) — lacunas que, em produção, tipicamente tornam os componentes 'custom_built' (especialmente conectores Amdocs/Ericsson e o pipeline de retraining) pontos de acoplamento implícito que limitam a substituibilidade independente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona um IBillingGateway para controle de assinaturas, cobrança e limites de uso por tenant, o que indica consciência de monetização, mas não há qualquer definição de tiers, valores, modelo de precificação (flat, usage-based, por ativo/sensor), métricas de sustentabilidade (MRR, LTV, CAC, churn) ou conexão explícita entre o valor entregue e o que é cobrado."
+}

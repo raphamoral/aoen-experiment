@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador existe e é tecnicamente sólido — a cadeia de confiança criptográfica (SHA-256 imutável no Certificate + RSA-4096 no Issuer + Verification como audit trail público) é o que separa a plataforma de um simples gerador de PDFs — e usa padrões abertos que garantem extensibilidade; porém, esse núcleo não foi explicitamente isolado como uma camada arquitetural própria (ex.: um 'TrustCore' ou 'VerificationEngine'), aparecendo diluído entre entidades de domínio diferentes, o que enfraquece a clareza da proposta de valor insubstituível perante concorrentes como Credly ou Accredible."
+}

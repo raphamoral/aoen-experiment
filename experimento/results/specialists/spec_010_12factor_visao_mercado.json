@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo (MEIs) é identificável pelo nome do produto, mas toda a documentação fornecida é exclusivamente técnica-arquitetural — não há articulação da dor do cliente, estimativa de tamanho de mercado, diferenciação frente a concorrentes como Conta Azul ou Bling, nem proposta de valor explícita além do que está implícito no título."
+}

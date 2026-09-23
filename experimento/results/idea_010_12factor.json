@@ -1,0 +1,52 @@
+{
+  "ideia_idx": 10,
+  "ideia": "App de gestão financeira para MEIs com emissão automática de nota fiscal",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único no Git com múltiplos ambientes de deploy (staging, production, sandbox de NF-e). Cada serviço vive em seu próprio diretório dentro do repositório. Tags de release imutáveis (semver) mapeiam cada deploy. CI/CD garante que o mesmo código-fonte sirva todos os ambientes.",
+    "dependencies": "Backend Python gerenciado via pyproject.toml + Poetry com lockfile commitado. Frontend TypeScript via package.json + pnpm lockfile. Dependências de sistema (wkhtmltopdf para PDF de notas) declaradas no Dockerfile base. Nenhuma dependência implícita do ambiente de execução — tudo explícito e isolado em containers.",
+    "config": "Toda configuração sensível (credenciais da SEFAZ, chaves de API de pagamento, strings de conexão de banco, certificados digitais A1/A3) injetada via variáveis de ambiente. Segredos gerenciados no AWS Secrets Manager ou HashiCorp Vault, nunca em código. Arquivo .env.example documentado no repositório. Ambientes distinguidos exclusivamente por variáveis, jamais por lógica condicional no código.",
+    "backing_services": {
+      "banco_de_dados": "PostgreSQL (dados transacionais de MEIs, notas, fluxo de caixa)",
+      "cache": "Redis (sessões, filas de jobs, rate limiting)",
+      "fila_de_mensagens": "RabbitMQ ou AWS SQS (emissão assíncrona de NF-e, envio de e-mails)",
+      "armazenamento_de_arquivos": "AWS S3 ou MinIO (XMLs de NF-e, DANFEs em PDF, certificados)",
+      "email": "Amazon SES ou SendGrid (notificações, envio de notas ao cliente)",
+      "sefaz_webservice": "Webservice SOAP da SEFAZ estadual tratado como backing service externo substituível",
+      "gateway_de_pagamento": "Stripe ou Asaas como recurso externo para cobrança das assinaturas SaaS",
+      "observabilidade": "Datadog ou Grafana Stack (métricas, logs, traces)"
+    },
+    "build_release_run": "Pipeline em três estágios estritos e imutáveis: BUILD — Docker buildx compila imagem, instala dependências, roda testes unitários e de integração, gera artefato imutável com hash SHA256 tagueado no registry (ECR); RELEASE — artefato do build combinado com variáveis de ambiente do ambiente-alvo via ConfigMap/Secrets, gerando uma release versionada e auditável no registro de deploys; RUN — orquestrador (ECS Fargate ou Kubernetes) executa a release. Rollback é apenas apontar para release anterior. Nenhuma alteração de código em runtime.",
+    "processes": "Aplicação decomposta em processos stateless independentes: api-server (REST/GraphQL, stateless, escala horizontal), worker-nfe (consome fila para emissão de notas fiscais junto à SEFAZ), worker-email (envia notificações e documentos), scheduler (cron jobs para lembretes de DAS, fechamentos mensais), migration-runner (executa migrations como processo avulso antes do deploy). Estado persistido exclusivamente em backing services. Qualquer instância pode atender qualquer requisição.",
+    "concurrency": "Escala horizontal por tipo de processo: api-server escala por CPU/RPS via auto-scaling; workers de NF-e escalam pelo tamanho da fila (queue depth); workers de e-mail escalam por horário de pico. Kubernetes HPA ou ECS Service Auto Scaling gerenciam réplicas. Concorrência interna via asyncio (Python) no servidor HTTP. Processos pesados (geração de PDF, consulta SEFAZ) sempre delegados a workers para não bloquear o processo web.",
+    "disposability": "Containers com startup < 5 segundos usando health checks /healthz e /readyz separados. Shutdown gracioso: ao receber SIGTERM, servidor para de aceitar novas requisições, drena as existentes em até 30 segundos, workers concluem o job corrente antes de encerrar. Jobs de NF-e são idempotentes com chave de idempotência (chave de acesso NF-e) para reprocessamento seguro em caso de falha. Circuit breaker nos clientes do webservice SEFAZ para falhas externas.",
+    "interfaces": [
+      "REST API JSON (v1) para integração com apps e parceiros",
+      "GraphQL API para o frontend SPA (dashboard do MEI)",
+      "WebSocket para notificações em tempo real (status de emissão de NF-e)",
+      "Webhooks de saída para integração com ERPs e contadores",
+      "CLI interna para tarefas administrativas (migrations, seed, relatórios)",
+      "Portal Web SPA (React/Next.js) — dashboard financeiro, emissão de notas, DRE simplificado",
+      "App Mobile (React Native) — consulta de fluxo de caixa e emissão rápida de notas"
+    ],
+    "escalabilidade": "Escala horizontal stateless no plano de aplicação (API + workers). Banco de dados escala verticalmente primeiro; leituras distribuídas via réplica de leitura PostgreSQL. Cache Redis absorve leituras repetitivas (consulta de clientes, produtos, configurações de empresa). Particionamento de tabelas por CNPJ para multi-tenancy seguro e performance. Em volumes altos, sharding de workers por faixa de CNPJ. CDN (CloudFront) para assets estáticos e DANFEs gerados. Arquitetura permite migração gradual para microsserviços se um domínio específico (ex: NF-e) exigir escala independente.",
+    "custos": "Infraestrutura base estimada em USD 200-400/mês para early-stage (ECS Fargate spot instances, RDS t3.medium, ElastiCache t3.micro, SQS). Crescimento de custo linear com número de MEIs ativos e volume de NF-e emitidas. Maior driver de custo variável: chamadas ao webservice SEFAZ (latência alta, necessidade de retentativas) e armazenamento de XMLs e PDFs no S3. Uso de Fargate Spot para workers reduz custo em ~70%. Observabilidade e secrets management adicionam ~USD 50-100/mês fixos.",
+    "monetizacao": "SaaS por assinatura mensal com planos escalonados por volume: Plano Básico (~R$ 49/mês, até 20 NF-e/mês, fluxo de caixa básico), Plano Profissional (~R$ 99/mês, NF-e ilimitadas, relatórios avançados, integração com contador), Plano Premium (~R$ 199/mês, múltiplos CNPJs, API de integração, suporte prioritário). Add-ons: certificado digital A1 emitido pela plataforma, importação de extratos bancários via Open Finance, módulo de gestão de contratos. Trial gratuito de 14 dias sem cartão para redução de fricção no onboarding.",
+    "stack_sugerida": {
+      "backend": "Python 3.12 + FastAPI (performance, tipagem, async nativo)",
+      "workers": "Celery + Redis Broker para jobs assíncronos",
+      "banco_de_dados": "PostgreSQL 16 via RDS (multi-AZ em produção)",
+      "cache_e_filas": "Redis 7 via ElastiCache",
+      "nfe_library": "python-nfe ou nfse via biblioteca open-source + cliente SOAP zeep para SEFAZ",
+      "frontend": "Next.js 14 (App Router) + TypeScript + Tailwind CSS + shadcn/ui",
+      "mobile": "React Native + Expo",
+      "infra": "AWS (ECS Fargate, RDS, ElastiCache, S3, SES, SQS, Secrets Manager)",
+      "iac": "Terraform para infraestrutura como código",
+      "ci_cd": "GitHub Actions → ECR → ECS rolling deploy",
+      "observabilidade": "OpenTelemetry + Grafana Cloud (logs, métricas, traces)",
+      "autenticacao": "JWT + Refresh Tokens, MFA via TOTP para acesso ao certificado digital",
+      "multi_tenancy": "Schema-per-tenant no PostgreSQL para isolamento de dados entre CNPJs"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único no Git com múltiplos ambientes de deploy (staging, production, sandbox de NF-e). Cada serviço vive em seu próprio diretório dentro do repositório. Tags de release imutáveis (semver) mapeiam cada deploy. CI/CD garante que o mesmo código-fonte sirva todos os ambientes.\",\n\n  \"dependencies\": \"Backend Python gerenciado via pyproject.toml + Poetry com lockfile commitado. Frontend TypeScript via package.json + pnpm lockfile. Dependências de sistema (wkhtmltopdf para PDF de notas) declaradas no Dockerfile base. Nenhuma dependência implícita do ambiente de execução — tudo explícito e isolado em containers.\",\n\n  \"config\": \"Toda configuração sensível (credenciais da SEFAZ, chaves de API de pagamento, strings de conexão de banco, certificados digitais A1/A3) injetada via variáveis de ambiente. Segredos gerenciados no AWS Secrets Manager ou HashiCorp Vault, nunca em código. Arquivo .env.example documentado no repositório. Ambientes distinguidos exclusivamente por variáveis, jamais por lógica condicional no código.\",\n\n  \"backing_services\": {\n    \"banco_de_dados\": \"PostgreSQL (dados transacionais de MEIs, notas, fluxo de caixa)\",\n    \"cache\": \"Redis (sessões, filas de jobs, rate limiting)\",\n    \"fila_de_mensagens\": \"RabbitMQ ou AWS SQS (emissão assíncrona de NF-e, envio de e-mails)\",\n    \"armazenamento_de_arquivos\": \"AWS S3 ou MinIO (XMLs de NF-e, DANFEs em PDF, certificados)\",\n    \"email\": \"Amazon SES ou SendGrid (notificações, envio de notas ao cliente)\",\n    \"sefaz_webservice\": \"Webservice SOAP da SEFAZ estadual tratado como backing service externo substituível\",\n    \"gateway_de_pagamento\": \"Stripe ou Asaas como recurso externo para cobrança das assinaturas SaaS\",\n    \"observabilidade\": \"Datadog ou Grafana Stack (métricas, logs, traces)\"\n  },\n\n  \"build_release_run\": \"Pipeline em três estágios estritos e imutáveis: BUILD — Docker buildx compila imagem, instala dependências, roda testes unitários e de integração, gera artefato imutável com "
+}

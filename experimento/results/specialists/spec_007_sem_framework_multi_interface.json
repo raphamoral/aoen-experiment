@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "O projeto prevê interfaces distintas para colaborador, gestor e empresa, além de app mobile planejado para fase 2, com justificativas razoáveis por perfil de usuário, mas não há evidência explícita de desacoplamento da lógica de negócio das interfaces (ex: API-first, camada de serviços independente), e a escolha do mobile como 'fase 2' sugere que a decisão foi postergada por conveniência técnica, não antecipada por estratégia de alcance de mercado."
+}

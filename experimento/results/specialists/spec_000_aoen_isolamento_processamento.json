@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona explicitamente uma 'fila de processamento' antes da inferência de IA no pipeline fixo, indicando intenção de processamento assíncrono, mas não especifica isolamento físico real (workers separados, containers distintos, processos independentes), não descreve nenhum mecanismo de fallback caso a inferência falhe, e não aborda escalabilidade independente do componente pesado — tornando o isolamento presumivelmente apenas lógico via ClinicalService, não físico."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O produto identifica claramente seu núcleo diferenciador na camada de assinatura digital com conformidade ICP-Brasil/ITI e rastreabilidade jurídica imutável (auditoria + cadeia de custódia), e o isola corretamente via interface SignatureProvider extensível e independente de fornecedor — porém a proposta não articula explicitamente por que esse núcleo é insubstituível frente a alternativas como DocuSign, ClickSign ou D4Sign adaptadas ao mercado imobiliário brasileiro, deixando a unicidade de valor implícita em vez de demonstrada."
+}

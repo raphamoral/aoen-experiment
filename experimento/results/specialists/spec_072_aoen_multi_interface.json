@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 72,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces (Web, Mobile, API REST, WhatsApp/SMS e widget embarcável), cada uma justificada por um segmento de mercado e perfil de usuário distintos, com lógica de negócio explicitamente centralizada em uma MachineHealthService que expõe contratos estáveis — garantindo que novas interfaces possam ser adicionadas sem reescrever regras de domínio."
+}

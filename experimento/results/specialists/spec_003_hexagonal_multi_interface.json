@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "O projeto prevê múltiplas interfaces bem justificadas por perfis reais (REST/GraphQL para web e mobile, WebSocket para dashboards em tempo real, Webhook para integração com HRIS, CLI para operações técnicas e Scheduled Jobs para automação), com lógica de negócio claramente desacoplada via ports hexagonais — permitindo adicionar novas interfaces sem reescrever o domínio — perdendo apenas um ponto pela ausência de justificativas explícitas de alcance de mercado para cada canal."
+}

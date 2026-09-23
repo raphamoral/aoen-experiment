@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta demonstra consciência de multi-tenancy via isolamento de dados e módulo dedicado de Tenants, mas é completamente silente sobre uma camada de configuração por cliente — não há menção a feature flags, tabelas de configuração por tenant, parâmetros de comportamento variáveis (ex: limites de alerta, regras de escalonamento, protocolos aceitos por tenant), nem a um modelo de onboarding configuration-driven; o próprio fitness function de 'novo tipo de sensor em < 1 sprint' confirma que extensão ainda é via código, não via configuração."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 78,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta identifica com clareza os dois lados do marketplace (tomadores e investidores) e menciona um canal B2B via API white-label, o que implica intenção comercial, mas não articula nenhum modelo de monetização explícito — não há menção a spread de juros, taxa de originação, fee de performance, pricing de API, tiers de planos, nem qualquer métrica de sustentabilidade (MRR, LTV, CAC, churn); a proposta encerra abruptamente em 'fase3' sugerindo que a seção de monetização pode ter sido truncada, mas pelo conteúdo avaliável o modelo de receita simplesmente não existe no documento."
+}

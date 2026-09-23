@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O projeto menciona um modelo de assinatura com consumo (overage, trials, upgrades de plano) e até define um bounded context de Billing & Subscription com linguagem ubíqua relevante, mas não detalha tiers concretos, faixas de preço, âncoras de valor (ex: cobrar por subscriber monitorado ou por churn evitado), nem apresenta análise de sustentabilidade com LTV/CAC ou projeções de MRR."
+}

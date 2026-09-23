@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "A proposta identifica implicitamente um público-alvo (empresas brasileiras com CNPJ precisando de compliance e freelancers certificados), mas não articula explicitamente a dor do cliente, o tamanho do mercado, a diferenciação frente a alternativas como consultorias tradicionais ou plataformas genéricas (Upwork, Workana), nem uma proposta de valor convincente — o documento é puramente arquitetural, sem nenhuma análise de mercado."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta menciona separar o serviço de notificações em um worker independente e usa BullMQ para filas assíncronas, o que indica consciência de isolamento físico futuro, mas o isolamento real só ocorre após crescimento — no estado inicial tudo roda no mesmo processo, sem fallback explícito caso o worker de notificações falhe nem estratégia de degradação graceful para o fluxo principal de agendamentos."
+}

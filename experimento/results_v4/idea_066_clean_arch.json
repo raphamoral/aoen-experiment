@@ -1,0 +1,63 @@
+{
+  "ideia_idx": 66,
+  "ideia": "Marketplace de serviços de tradução técnica com especialização por indústria",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": "Entidades de negócio puras, sem dependência de framework: Cliente (empresa contratante), Tradutor (perfil profissional, com certificações e idiomas), Especialidade/Indústria (jurídica, médica, farmacêutica, engenharia, TI, financeira, etc.), ParIdiomas (origem/destino), ProjetoTraducao, Documento (com contagem de palavras e formato), OrcamentoProposta (Quote/Bid), Glossario e TermoTecnico (por indústria e cliente), MemoriaTraducao (segmentos), Contrato/Pedido (Order), Entrega (versão traduzida), Revisao (QA), Pagamento e Repasse (Payout), Avaliacao (Review), Disputa, PoliticaDePreco (valor por palavra, urgência, complexidade), Money e Prazo (value objects). Regras de negócio nas entidades: um tradutor só pode aceitar projetos de indústrias nas quais é qualificado; um projeto só é concluído após revisão aprovada; o preço mínimo por palavra respeita a política da plataforma; o repasse só é liberado após aceite ou expiração do prazo de contestação.",
+    "use_cases": [
+      "CadastrarTradutor e SubmeterCredenciais",
+      "AprovarEspecializacaoDoTradutor (verificação de qualificação por indústria)",
+      "PublicarProjetoDeTraducao",
+      "AnalisarDocumentoECalcularOrcamento",
+      "BuscarTradutoresPorIndustriaEIdiomas (matching e ranking)",
+      "EnviarProposta e AceitarProposta",
+      "ContratarTradutor com custódia de pagamento (escrow)",
+      "GerenciarGlossarioEMemoriaDeTraducao",
+      "EntregarTraducao",
+      "SolicitarRevisaoOuCorrecao",
+      "AprovarEntrega e LiberarRepasse",
+      "AbrirEResolverDisputa",
+      "AvaliarTradutorECliente",
+      "EmitirFaturaENotaFiscal",
+      "GerenciarAssinaturaDeContaCorporativa",
+      "NotificarPartesInteressadas"
+    ],
+    "interface_adapters": "Controllers REST/GraphQL que convertem requisições HTTP em Input DTOs dos casos de uso; Presenters/ViewModels que formatam Output DTOs para a UI web e para a API pública; Gateways/Repositórios (implementações das portas): TradutorRepository, ProjetoRepository, GlossarioRepository, PedidoRepository; adaptadores de pagamento (PaymentGateway com escrow e split), armazenamento de arquivos (DocumentStorage), extração de texto de documentos (DocumentParser), motor de tradução automática opcional para pré-tradução (MachineTranslationGateway), busca (SearchGateway), e-mail e notificações (NotificationGateway), assinatura eletrônica de contratos, emissão fiscal, autenticação (IdentityProvider) e publicação de eventos (EventPublisher). Mappers convertem entre modelos de persistência, DTOs externos e entidades de domínio.",
+    "frameworks_drivers": "Camada externa e substituível: framework web (NestJS ou Fastify), frontend React/Next.js, PostgreSQL com ORM (Prisma/TypeORM), Redis para cache e filas, OpenSearch/Elasticsearch para busca de tradutores e termos, S3 compatível para documentos, Stripe Connect (ou Adyen/Pagar.me no Brasil) para pagamentos e split, Auth0/Keycloak para identidade, SendGrid/SES para e-mail, DeepL/Google Translate como pré-tradução opcional, e Docker/Kubernetes com CI/CD. Tudo é plugado via composition root (injeção de dependência), sem ser referenciado pelas camadas internas.",
+    "dependency_rule": "As dependências de código-fonte apontam sempre para dentro: Frameworks & Drivers → Interface Adapters → Use Cases → Entities. Os casos de uso definem interfaces (portas de saída) como ProjetoRepository, PaymentGateway e DocumentStorage, e a camada externa as implementa (inversão de dependência). Os casos de uso recebem Input DTOs e devolvem Output DTOs por meio de uma porta de saída (Output Boundary), sem conhecer HTTP, SQL ou SDKs. Entidades não importam nada externo. A regra é reforçada por módulos/pacotes separados por camada, com regras de lint de dependência (dependency-cruiser, ArchUnit ou eslint-plugin-boundaries) executadas no CI, e por um único composition root que monta as implementações concretas.",
+    "testability": "Entidades e casos de uso são testados como unit tests puros, com fakes e in-memory repositories no lugar das portas (InMemoryProjetoRepository, FakePaymentGateway, FakeClock), sem banco, rede ou framework, com execução em milissegundos. Testes de contrato garantem que cada adaptador real respeita a interface da porta, executados contra Postgres em Testcontainers e contra o sandbox do provedor de pagamento. Testes de integração cobrem controllers e presenters. Poucos testes E2E cobrem os fluxos críticos (publicar → contratar → entregar → repasse). Testes baseados em propriedades validam o cálculo de preço e as regras de qualificação. Os testes do domínio rodam de forma determinística, com relógio e gerador de IDs injetados.",
+    "interfaces": [
+      "ProjetoRepository",
+      "TradutorRepository",
+      "ClienteRepository",
+      "PropostaRepository",
+      "PedidoRepository",
+      "GlossarioRepository",
+      "MemoriaTraducaoRepository",
+      "PaymentGateway (escrow, split, repasse)",
+      "DocumentStorage",
+      "DocumentParser",
+      "MachineTranslationGateway",
+      "TradutorSearchGateway",
+      "NotificationGateway",
+      "IdentityProvider",
+      "EventPublisher",
+      "ContractSigningGateway",
+      "InvoiceGateway",
+      "Clock",
+      "IdGenerator",
+      "PricingPolicy",
+      "Presenter/OutputBoundary por caso de uso"
+    ],
+    "escalabilidade": "Começar com um monólito modular, com módulos alinhados aos limites do domínio (Catálogo de Tradutores, Projetos, Matching, Pagamentos, Glossários, Disputas), que a Clean Architecture permite extrair depois em serviços sem reescrever o núcleo. API stateless com escala horizontal atrás de load balancer. Processamento pesado e assíncrono (parsing de documentos, pré-tradução, indexação, notificações) em filas com workers autoescaláveis. Réplicas de leitura no Postgres, cache Redis para perfis e buscas frequentes, índice de busca separado para o matching. Documentos em object storage com CDN e URLs pré-assinadas. Eventos de domínio (Outbox pattern) desacoplam os módulos. Multi-tenancy para contas corporativas com isolamento lógico por tenant e opção de isolamento dedicado para clientes enterprise. Particionamento por tenant ou idioma quando o volume exigir.",
+    "custos": "Principais custos: taxas do processador de pagamentos (cerca de 2,9% + tarifa fixa, mais Connect/payout), infraestrutura de nuvem (computação, banco, busca, storage e egress), APIs de tradução automática cobradas por caractere, verificação e onboarding de tradutores (KYC/KYB), revisão humana e QA em indústrias reguladas, suporte e mediação de disputas, seguro de responsabilidade profissional, aquisição de clientes (CAC B2B alto) e conformidade (LGPD/GDPR, confidencialidade e NDAs). Para conter custos: monólito modular no início, instâncias spot para workers, cache agressivo, ciclo de vida de storage para arquivar documentos antigos, pré-tradução apenas sob demanda e cotas por plano. Custos da liquidez do marketplace (oferta e demanda equilibradas) tendem a dominar nos primeiros meses.",
+    "monetizacao": "Comissão sobre cada transação (take rate de 15–25% cobrado do tradutor e/ou do cliente); assinaturas SaaS para contas corporativas (planos com gestão de equipe, glossários compartilhados, memória de tradução, SLA, API e integrações com CMS/TMS); taxa de urgência e serviços premium (revisão certificada, tradução juramentada, notarização, entrega em 24h); listagem em destaque e planos Pro para tradutores; venda de serviços gerenciados (project management dedicado para grandes volumes); licenciamento de API e whitelabel para agências; taxa de escrow e de saque internacional (FX).",
+    "stack_sugerida": "Backend: TypeScript com NestJS (ou Kotlin/Spring Boot), organizado em pacotes por camada (domain, application, adapters, infrastructure). Frontend: Next.js + React + Tailwind. Banco: PostgreSQL (com pgvector opcional para busca semântica de termos). Cache e filas: Redis + BullMQ (ou SQS/RabbitMQ). Busca: OpenSearch. Storage: S3/R2 com CDN. Pagamentos: Stripe Connect. Identidade: Keycloak ou Auth0. Tradução automática opcional: DeepL API. Observabilidade: OpenTelemetry, Grafana, Sentry. Infra: Docker, Terraform e Kubernetes (ou ECS/Fargate no início), com CI/CD no GitHub Actions. Testes: Vitest/Jest, Testcontainers, Playwright e dependency-cruiser para validar a regra de dependência."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "99d475cb3837",
+    "gerado_em": "2026-09-21T03:55:00+00:00",
+    "runner": "runner.py"
+  }
+}

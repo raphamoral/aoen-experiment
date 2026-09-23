@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura não contém nenhuma entidade, atributo ou mecanismo voltado ao rastreamento de custo por cliente — não há UsageMetrics, CostEvent, TenantConsumption nem qualquer estrutura que registre quanto cada Patient/tenant consome de IA, storage ou operações; os custos sequer são mencionados no modelo, tratando o projeto como se infra fosse custo fixo invisível."
+}

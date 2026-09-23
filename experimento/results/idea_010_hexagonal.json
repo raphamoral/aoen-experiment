@@ -1,0 +1,69 @@
+{
+  "ideia_idx": 10,
+  "ideia": "App de gestão financeira para MEIs com emissão automática de nota fiscal",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão financeira de MEIs: controle de receitas e despesas, apuração de impostos (DAS/Simples Nacional), emissão de NF-e/NFS-e, fluxo de caixa e conformidade fiscal. O domínio não conhece nenhum sistema externo — apenas regras de negócio puras.",
+    "primary_ports": [
+      "IssueInvoiceUseCase: solicita emissão de nota fiscal com dados do tomador e serviço/produto",
+      "RegisterTransactionUseCase: registra receita ou despesa no fluxo de caixa",
+      "CalculateTaxLiabilityUseCase: apura DAS mensal com base nas receitas do período",
+      "GenerateFinancialReportUseCase: gera DRE simplificada, extrato e relatórios gerenciais",
+      "ManageClientUseCase: cadastro e manutenção de clientes e fornecedores",
+      "AuthenticateUserUseCase: autenticação e autorização do MEI na plataforma",
+      "ConfigureCompanyUseCase: configura CNPJ, atividades, regime tributário e certificado digital"
+    ],
+    "secondary_ports": [
+      "InvoiceGatewayPort: emite e cancela NF-e/NFS-e junto à autoridade fiscal",
+      "TransactionRepositoryPort: persiste e consulta transações financeiras",
+      "InvoiceRepositoryPort: persiste e consulta notas fiscais emitidas",
+      "ClientRepositoryPort: persiste e consulta clientes/fornecedores",
+      "UserRepositoryPort: persiste e consulta usuários e permissões",
+      "TaxAuthorityPort: consulta alíquotas, situação fiscal e transmite declarações",
+      "NotificationPort: envia notificações por e-mail, SMS ou push",
+      "DocumentStoragePort: armazena XMLs de NF-e, PDFs e comprovantes",
+      "PaymentGatewayPort: processa cobranças de assinatura e planos",
+      "CertificateVaultPort: armazena e recupera certificados digitais A1/A3 do MEI",
+      "BankingPort: importa extratos via Open Finance / OFX",
+      "EventBusPort: publica eventos de domínio para processamento assíncrono"
+    ],
+    "primary_adapters": [
+      "RestApiAdapter: API HTTP/JSON consumida pelo frontend e integrações de terceiros",
+      "WebAppAdapter: SPA React que aciona use cases via REST",
+      "MobileAdapter: app React Native que aciona os mesmos use cases",
+      "WebhookInboundAdapter: recebe callbacks de gateways de pagamento e prefeituras",
+      "SchedulerAdapter: job cron que aciona apuração mensal de DAS e lembretes de vencimento",
+      "CliAdapter: interface de linha de comando para testes de regressão e seeds de dados"
+    ],
+    "secondary_adapters": [
+      "SefazNFeAdapter: integra com SEFAZ via webservice SOAP para emissão de NF-e (produto)",
+      "PrefeituraNFSeAdapter: integra com APIs municipais de NFS-e (serviço) por padrão ABRASF/GINFES/ISS.net",
+      "FocusNFeAdapter: alternativa SaaS (Focus NF-e / eNotas) para abstração multi-município",
+      "PostgresTransactionRepository: implementação JPA/TypeORM para transações financeiras",
+      "PostgresInvoiceRepository: implementação JPA/TypeORM para notas fiscais",
+      "S3DocumentStorage: armazena XMLs e PDFs em object storage (AWS S3 ou compatível)",
+      "AWSSecretsManagerCertificateVault: armazena certificados A1 criptografados",
+      "StripePaymentAdapter: processa assinaturas e upgrades de plano",
+      "SendGridNotificationAdapter: dispara e-mails transacionais e alertas",
+      "FirebasePushAdapter: notificações push para o app mobile",
+      "OpenFinanceBankingAdapter: importa extratos via Open Finance Brasil",
+      "ReceitaFederalTaxAdapter: consulta situação cadastral e alíquotas do Simples Nacional",
+      "RabbitMQEventBusAdapter: publica e consome eventos de domínio de forma assíncrona"
+    ],
+    "isolation": "O core nunca importa frameworks, bibliotecas de infraestrutura ou SDKs externos. Toda comunicação com o mundo externo passa exclusivamente por interfaces (ports) definidas no próprio domínio. Inversão de dependência (DIP) garante que adapters dependem do core, nunca o contrário. Injeção de dependência em runtime conecta ports a adapters sem que o core saiba qual implementação está ativa — permitindo substituir qualquer adapter por um mock/stub em testes unitários sem alterar uma linha de lógica de negócio.",
+    "interfaces": [
+      "API REST versionada (v1/v2) com OpenAPI 3.0 — consumida por web, mobile e parceiros",
+      "Webhook outbound para notificar sistemas externos sobre eventos (nota emitida, pagamento recebido)",
+      "Webhook inbound para receber callbacks de SEFAZ, prefeituras e gateway de pagamento",
+      "Interface web SPA (React) — painel do MEI com dashboard, emissão e relatórios",
+      "App mobile (React Native) — emissão rápida e notificações em campo",
+      "CLI interno para automação de testes, migrações e operações de suporte",
+      "Export OFX/CSV/PDF para contabilidade e declaração do Imposto de Renda"
+    ],
+    "escalabilidade": "Arquitetura stateless em containers (Docker/Kubernetes) permite escala horizontal da camada de API. Use cases de longa duração (emissão de NF-e, geração de relatórios) são desacoplados via EventBus e processados por workers assíncronos independentemente escaláveis. Multi-tenancy por schema PostgreSQL por plano premium ou schema compartilhado com row-level security por plano básico. CDN para assets estáticos. Cache Redis para dados fiscais (alíquotas, CNPJ lookup) que mudam raramente. Rate limiting por tenant para proteger cotas de APIs externas.",
+    "custos": "Maior custo variável: chamadas a APIs de NF-e de terceiros (Focus/eNotas ~R$0,10–0,30 por nota) e certificados digitais. Mitigação: emissão direta via webservice SEFAZ para NF-e de produto elimina custo por nota; manter adapter abstrato permite trocar de provedor. Armazenamento de XMLs em S3 Glacier para notas antigas reduz custo. Banco de dados gerenciado (RDS/Supabase) reduz overhead operacional. Tier gratuito da AWS/GCP cobre ambientes de staging. Monitoramento com OpenTelemetry + Grafana Cloud free tier.",
+    "monetizacao": "SaaS por assinatura mensal/anual com 3 planos: (1) Gratuito — até 5 NF-e/mês, sem Open Finance; (2) Profissional ~R$49/mês — NF-e ilimitada, importação bancária, relatórios avançados; (3) Premium ~R$99/mês — multi-CNPJ, API access, suporte prioritário. Upsell: emissão de certificado digital A1 via parceiro (~R$150/ano), contabilidade integrada via parceiro (revenue share), antecipação de recebíveis via fintech parceira.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com NestJS para estrutura modular alinhada a hexagonal; TypeORM para repositórios; Zod para validação nos adapters de entrada. Frontend web: React + Vite + TailwindCSS + React Query. Mobile: React Native (Expo). Banco de dados: PostgreSQL (Supabase em early stage, migrar para RDS em escala). Cache: Redis (Upstash serverless em early stage). Fila/EventBus: RabbitMQ (CloudAMQP) ou AWS SQS. Armazenamento: AWS S3 + CloudFront. Autenticação: Auth0 ou Supabase Auth. Infraestrutura: Docker + Kubernetes (EKS/GKE) ou Railway/Render em early stage. CI/CD: GitHub Actions. Observabilidade: OpenTelemetry + Grafana + Loki. NF-e: webservice SEFAZ direto + Focus NF-e como fallback municipal."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Gestão financeira de MEIs: controle de receitas e despesas, apuração de impostos (DAS/Simples Nacional), emissão de NF-e/NFS-e, fluxo de caixa e conformidade fiscal. O domínio não conhece nenhum sistema externo — apenas regras de negócio puras.\",\n  \"primary_ports\": [\n    \"IssueInvoiceUseCase: solicita emissão de nota fiscal com dados do tomador e serviço/produto\",\n    \"RegisterTransactionUseCase: registra receita ou despesa no fluxo de caixa\",\n    \"CalculateTaxLiabilityUseCase: apura DAS mensal com base nas receitas do período\",\n    \"GenerateFinancialReportUseCase: gera DRE simplificada, extrato e relatórios gerenciais\",\n    \"ManageClientUseCase: cadastro e manutenção de clientes e fornecedores\",\n    \"AuthenticateUserUseCase: autenticação e autorização do MEI na plataforma\",\n    \"ConfigureCompanyUseCase: configura CNPJ, atividades, regime tributário e certificado digital\"\n  ],\n  \"secondary_ports\": [\n    \"InvoiceGatewayPort: emite e cancela NF-e/NFS-e junto à autoridade fiscal\",\n    \"TransactionRepositoryPort: persiste e consulta transações financeiras\",\n    \"InvoiceRepositoryPort: persiste e consulta notas fiscais emitidas\",\n    \"ClientRepositoryPort: persiste e consulta clientes/fornecedores\",\n    \"UserRepositoryPort: persiste e consulta usuários e permissões\",\n    \"TaxAuthorityPort: consulta alíquotas, situação fiscal e transmite declarações\",\n    \"NotificationPort: envia notificações por e-mail, SMS ou push\",\n    \"DocumentStoragePort: armazena XMLs de NF-e, PDFs e comprovantes\",\n    \"PaymentGatewayPort: processa cobranças de assinatura e planos\",\n    \"CertificateVaultPort: armazena e recupera certificados digitais A1/A3 do MEI\",\n    \"BankingPort: importa extratos via Open Finance / OFX\",\n    \"EventBusPort: publica eventos de domínio para processamento assíncrono\"\n  ],\n  \"primary_adapters\": [\n    \"RestApiAdapter: API HTTP/JSON consumida pelo frontend e integrações de terceiros\",\n    \"WebAppAdapter: SPA React que aciona use cases via RES"
+}

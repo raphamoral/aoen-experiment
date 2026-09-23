@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo é específico e bem segmentado (fintechs, healthtechs, bancos, farmacêuticas) com domínios regulatórios nominados (LGPD, SOX, PCI-DSS, BACEN), e o modelo two-sided está identificado, mas a dor é mencionada de forma superficial ('expertise sem contratar CLT') sem articular consequências de não-conformidade, custos atuais ou por que as alternativas existentes (Upwork, TopTal, Big4, consultorias boutique) falham — além de não haver nenhuma estimativa de tamanho de mercado (TAM/SAM/SOM) que valide a oportunidade."
+}

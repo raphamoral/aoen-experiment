@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "clean_arch",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A entidade Template com versionamento e jurisdiction oferece configurabilidade real para o conteúdo dos contratos, e Tenant.usageLimits/plan sinaliza consciência multi-tenant, mas falta uma camada explícita de configuração comportamental por cliente: roles de Party estão hardcoded nas regras ('locador, locatário, fiador deve ser válido'), não há entidade TenantSettings/FeatureFlag para variar fluxos de assinatura ou validações por tenant, e nenhum mecanismo visível para onboardar um cliente com workflow diferente (ex: aprovação em 3 etapas vs. direta) sem alterar código."
+}

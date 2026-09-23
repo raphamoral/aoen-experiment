@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 91,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Web App criança, Mobile, Dashboard pais, Dashboard professor e API/white-label), cada uma explicitamente justificada por um perfil de usuário e segmento de mercado concreto (B2C, B2B, B2B2C), com lógica de negócio integralmente isolada em uma Service Layer central consumida via adaptadores de protocolo independentes, garantindo expansibilidade sem reescrita."
+}

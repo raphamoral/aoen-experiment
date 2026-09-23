@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A proposta apresenta múltiplas interfaces claramente justificadas por perfis reais (REST para LMS parceiros e front-end, GraphQL para dashboards de instituições, Webhook para integrações com Moodle/Canvas/Hotmart, CLI para operações em lote administrativas, Worker para emissão massiva), com lógica de negócio desacoplada via ports/adapters — permitindo adição de novos canais sem reescrever o core — perdendo apenas um ponto pela ausência de interface mobile nativa, relevante dado o perfil de alunos consumidores de certificados."
+}

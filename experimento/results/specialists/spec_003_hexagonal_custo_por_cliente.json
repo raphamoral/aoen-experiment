@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura não possui nenhum mecanismo de rastreamento de custo por tenant: não há porta (ex: ICostMeteringPort, ITenantUsagePort) nem adapter dedicado a mensurar consumo de recursos por cliente, operação ou transação, e o IAnalyticsPort descrito serve a análise estatística de saúde mental, não a unit economics — tornando impossível calcular margem por cliente ou conectar custo à precificação."
+}

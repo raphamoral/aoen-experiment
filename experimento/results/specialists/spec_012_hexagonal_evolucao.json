@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal (Ports & Adapters) está corretamente implementada: todas as tecnologias externas (Kafka, TimescaleDB, Redis, MQTT, OPC-UA) ficam atrás de interfaces secundárias substituíveis, o núcleo de domínio não referencia frameworks concretos, e múltiplos adaptadores primários permitem adicionar novos canais de entrada sem tocar na lógica central — o único ponto que impede nota máxima é a ausência explícita de estratégias de versionamento de contratos de porta (como seria a evolução de IDataPersistencePort sem quebrar adaptadores existentes) e de como bounded contexts internos se comunicam para evitar acoplamento crescente conforme o domínio expande."
+}

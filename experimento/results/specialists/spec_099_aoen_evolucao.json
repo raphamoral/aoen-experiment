@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 99,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra sólido pensamento evolutivo com interfaces explícitas (ISourceCollector, ISentimentEngine) e abstração de storage que permitem substituição independente de tecnologias-chave, e a BrandReputationService agnóstica de interface protege a lógica de negócio de frameworks externos — porém perde pontos por ausência explícita de mecanismos de escalabilidade horizontal (filas, event-driven pipeline) que seriam necessários na transição de centenas para milhares de usuários sem mudança arquitetural, e a proposta está incompleta (service layer cortada), impedindo avaliar se os contratos internos são totalmente reversíveis."
+}

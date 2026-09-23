@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 68,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo (escrow milestone-based + validação de marcos) é claramente identificado, isolado em serviços de domínio puros, agnóstico a fornecedores via adapters trocáveis, e resolve um gap real — liberação condicionada a evidências verificáveis — que plataformas genéricas de crowdfunding (Catarse, Kickante) e portais de transparência governamental não combinam; perde um ponto por não detalhar o mecanismo de validação das evidências de marcos, que é onde o diferenciador pode se tornar genérico ou frágil."
+}

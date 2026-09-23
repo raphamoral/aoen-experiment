@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural consistente do início ao fim: o padrão hexagonal é aplicado com disciplina em todas as camadas, a multi-tenancy aparece de forma transversal e coerente nos ports primários (ITenantOnboardingUseCase, IModelTrainingUseCase, IChurnReportUseCase) e secundários (IBillingPort, IAuditLogPort), o pipeline de ML forma uma cadeia lógica completa (IFeatureStorePort → IMLModelPort → IChurnScoreRepository), e as escolhas tecnológicas reforçam os objetivos declarados — gRPC para integração B2B com operadoras, Kafka para escala de eventos de assinantes, SageMaker em produção e MLflow em desenvolvimento via a mesma IMLModelPort; a única tensão menor está na sobreposição potencial entre pgvector no PostgreSQL e o Redis/IFeatureStorePort para armazenamento de features, que poderia ser uma estratégia intencional de dois níveis mas não está explicitada, além da proposta estar truncada no adapter Twilio."
+}

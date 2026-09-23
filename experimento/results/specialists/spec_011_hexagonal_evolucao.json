@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal (ports & adapters) está corretamente aplicada: portas secundárias abstraem toda infraestrutura (banco, pagamento, busca, auth, eventos), portas primárias isolam os casos de uso do domínio, e adaptadores concretos (PostgreSQL, REST, GraphQL, WebSocket) são substituíveis de forma independente — o único risco residual é que algoritmos de matching com alto acoplamento interno ao IMatchDiscoveryUseCase possam exigir refatoração expressiva ao evoluir de heurísticas simples para modelos de ML, mas a fronteira de porta ainda protege o restante do sistema."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 24,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (Dashboard Web, REST API, CLI, Webhooks/Slack/Teams, Portal de auto-serviço e Relatórios exportáveis), cada uma com perfil de usuário e caso de uso de mercado explicitamente justificados, sustentadas por uma Service Layer central que desacopla completamente a lógica de negócio dos adaptadores de interface, permitindo adição de novos canais sem tocar o domínio."
+}

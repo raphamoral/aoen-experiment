@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura descreve contextos funcionais ricos (Subscription com 'limites de uso', Analytics com métricas de eficácia) que criam infraestrutura potencial para rastreamento, mas nenhum dos bounded contexts, componentes ou times menciona explicitamente custo por operação (ex: custo por chamada LLM por cliente, custo de OCR por laudo, custo de storage por tenant) — os custos variáveis de commodity (OpenAI, Claude, S3) são listados como insumos de infra, sem nenhuma conexão com margem por cliente ou cálculo de unit economics."
+}

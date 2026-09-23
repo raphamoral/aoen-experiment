@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 9,
+  "justificativa": "O sistema isola corretamente os workloads pesados em processos dedicados e separados (repricer-worker como consumidor Kafka, scheduler como processos pontuais, pricing-engine como worker stateless), todos assíncronos e escaláveis independentemente via HPA no Kubernetes, com falha em qualquer worker não afetando a ingestion-api ou o dashboard; perde um ponto por não mencionar explicitamente mecanismos de fallback/circuit breaker caso o repricer-worker ou pricing-engine fique indisponível durante o processamento."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "O projeto prevê cinco interfaces distintas com perfis de usuário bem definidos (empresa, testador, validador, público, admin), mas todas são web e não há menção explícita de desacoplamento entre lógica de negócio e camada de apresentação, nem consideração de canais móveis, API pública ou CLI que ampliariam o alcance de mercado real."
+}

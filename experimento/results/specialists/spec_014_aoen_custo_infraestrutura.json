@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não faz nenhuma menção a custos de infraestrutura — não há estimativas de valores, nenhuma estratégia de otimização (scale-to-zero, spot, tiers de armazenamento) e nenhuma projeção de como os custos evoluem com o crescimento de sessões ou usuários; os provedores de STT, MT e TTS são citados apenas como opções técnicas plugáveis, sem qualquer análise de custo por minuto ou por chamada de API."
+}

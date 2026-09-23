@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura possui isolamento multi-tenant e rastreamento de quota de API por tenant (apiQuotaMonthly), o que cria a infraestrutura necessária para atribuição de custo, mas nenhuma entidade ou atributo mensura custo por operação/predição (ex: custo por ChurnPrediction gerada), tornando impossível calcular margem por tenant ou conectar consumo de recursos ao modelo de precificação."
+}

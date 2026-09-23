@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "A arquitetura demonstra separação útil em camadas de infra (filas BullMQ, Redis pub/sub, workers auto-escaláveis) e consciência de trocar provedores de IA (Whisper vs Google, DeepL vs GPT-4), mas não define camadas de abstração (portas/adaptadores) que isolem a lógica de negócio das dependências externas — o pipeline de transcrição/tradução parece acoplar-se diretamente às APIs dos fornecedores, tornando a troca custosa na prática, não apenas conceitual."
+}

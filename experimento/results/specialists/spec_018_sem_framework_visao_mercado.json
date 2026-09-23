@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "sem_framework",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 5,
+  "justificativa": "O público-alvo está identificado com razoável especificidade (operadoras de telecom, analistas de retenção, gerentes de CRM), mas a proposta não articula a dor em termos de impacto de negócio (ex: custo médio de churn, receita em risco), não cita tamanho de mercado, e não apresenta nenhuma diferenciação em relação a alternativas existentes como Salesforce Einstein, IBM SPSS ou soluções internas de BI que operadoras grandes já operam."
+}

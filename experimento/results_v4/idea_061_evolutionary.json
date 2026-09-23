@@ -1,0 +1,60 @@
+{
+  "ideia_idx": 61,
+  "ideia": "Plataforma de matching entre ONGs e voluntários por competências",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (capacidade de mudar com segurança e baixo custo)",
+      "Modularidade e baixo acoplamento entre domínios (Perfil, Vagas, Matching, Notificações, Billing)",
+      "Testabilidade e observabilidade",
+      "Segurança e privacidade de dados pessoais (LGPD/GDPR)",
+      "Confiabilidade e qualidade do matching (relevância, explicabilidade)",
+      "Desempenho na busca e no ranking",
+      "Eficiência de custo (ONGs têm orçamento limitado)",
+      "Acessibilidade e usabilidade (mobile-first, i18n)",
+      "Deployability (CI/CD com deploy diário e rollback rápido)"
+    ],
+    "fitness_functions": [
+      "Arquitetural (ArchUnit/dependency-cruiser no CI): módulos não podem importar internals de outros módulos, só contratos públicos; o build quebra se houver dependência cíclica",
+      "Contract tests (Pact/OpenAPI diff): o build falha em breaking change de API sem versionamento",
+      "Desempenho: p95 de busca/matching abaixo de 500 ms sob carga sintética (k6) a cada release, com regressão bloqueando o deploy",
+      "Qualidade do matching: dataset dourado com métricas de precision@k e NDCG monitoradas no CI; queda maior que X% bloqueia a troca de algoritmo",
+      "Segurança: SAST, DAST, scan de dependências e segredos em toda PR; teste automatizado de que PII nunca aparece em logs",
+      "LGPD: teste automatizado de exportação e exclusão de dados do titular concluído em até N minutos",
+      "Cobertura de testes por módulo com piso mínimo nos domínios centrais",
+      "DORA metrics como fitness function contínua: lead time, frequência de deploy, MTTR e change failure rate com limites definidos",
+      "Custo: alerta e falha do pipeline de FinOps se o custo por ONG ativa ou por match ultrapassar o orçamento definido",
+      "Acessibilidade: Lighthouse/axe no CI com score mínimo de 90",
+      "Resiliência: chaos test periódico (queda do provedor de e-mail ou do índice de busca) validando degradação graciosa",
+      "Reversibilidade: teste de rollback e de feature flags (toda funcionalidade nova é desligável sem redeploy)"
+    ],
+    "incremental_change": "Começar como monólito modular (modular monolith) com bounded contexts explícitos e um único deploy. Fase 0 (MVP): cadastro de ONG e voluntário, taxonomia de competências, vagas, matching baseado em regras e filtros (competência, disponibilidade, localização), candidatura e notificação por e-mail. Fase 1: ranking ponderado com explicabilidade, agenda e disponibilidade, avaliações e reputação. Fase 2: matching semântico com embeddings e busca vetorial, atrás da interface MatchingEngine, com shadow mode (executa o novo algoritmo em paralelo e compara antes de ativar) e A/B por feature flag. Fase 3: extrair para serviços só os módulos que a evidência mostrar necessários (por exemplo Matching, por perfil de carga e ciclo de mudança diferentes), usando o Strangler Fig pattern. Cada mudança entra por trunk-based development, feature flags, deploy canário e fitness functions no pipeline. Uma revisão trimestral de arquitetura (guided change) reavalia as fitness functions e as dimensões de mudança (dados, domínio, segurança, operação).",
+    "reversibility": "Reversíveis (two-way doors): provedor de nuvem, se a aplicação ficar em containers com IaC; provedor de e-mail, SMS e push atrás de adapters; algoritmo de matching atrás da interface MatchingEngine; motor de busca (Postgres FTS, pgvector ou OpenSearch); framework de frontend; provedor de autenticação, se o modelo de identidade for próprio e o IdP for um adapter; gateway de pagamento atrás de um PaymentPort; cache; decisão entre monólito e microsserviços. Difíceis de reverter (one-way doors, decididas no last responsible moment): modelo canônico de competências e taxonomia (mitigar com versionamento e mapeamento entre versões, tendo ESCO, O*NET ou uma taxonomia própria como semente); chaves de identidade e multitenancy (decidir cedo por tenant_id em todas as tabelas); residência e jurisdição dos dados (LGPD); política de consentimento e retenção de dados; contratos públicos de API já consumidos por terceiros (mitigar com versionamento semântico e deprecation policy). Um ADR (Architecture Decision Record) por decisão, registrando reversibilidade e gatilho de revisão.",
+    "coupling": "Acoplamento baixo por design orientado a domínio. Bounded contexts: Identidade e Acesso, Perfis (ONG e Voluntário), Competências (taxonomia), Oportunidades (vagas e projetos), Matching, Engajamento (candidaturas, agenda, avaliações), Notificações, Billing e Planos, Analytics e Impacto. Comunicação síncrona só por interfaces públicas em processo, como ports ou facades. Comunicação assíncrona por eventos de domínio (VoluntarioAtualizouPerfil, VagaPublicada, MatchAceito) num outbox pattern, com barramento in-process no início e migração posterior para fila ou broker sem mudar os produtores. Cada módulo é dono dos seus dados, com schemas separados no mesmo Postgres e sem joins entre schemas. Anti-corruption layers na integração com terceiros. Arquitetura hexagonal dentro de cada módulo. Os módulos mais voláteis (Matching, Notificações) ficam atrás de contratos estáveis, e as fitness functions impedem o acoplamento indevido.",
+    "interfaces": [
+      "API REST/JSON pública e versionada (OpenAPI) para os frontends web e mobile",
+      "GraphQL ou BFF opcional para as telas de descoberta e dashboard",
+      "Webhooks de saída para integrações de ONGs (CRM, Salesforce Nonprofit, planilhas)",
+      "MatchingEngine (porta interna): score(voluntario, oportunidade) e recommend(oportunidade, k)",
+      "SkillTaxonomyService (porta): busca, normalização e mapeamento de competências",
+      "NotificationPort (e-mail, WhatsApp, push) com adapters",
+      "PaymentPort / BillingPort (Stripe, com Stripe Billing para assinaturas)",
+      "IdentityProviderPort (OIDC/OAuth2; login social e SSO para ONGs maiores)",
+      "Barramento de eventos de domínio (contratos com schema versionado, como JSON Schema ou CloudEvents)",
+      "Importação e exportação de dados (CSV/JSON) e endpoint de direitos do titular (LGPD)",
+      "Integração opcional com LinkedIn, GitHub e Credly para validar competências",
+      "Painel administrativo interno e moderação",
+      "API de métricas de impacto (horas voluntariadas, competências mobilizadas)"
+    ],
+    "escalabilidade": "Escala vertical e horizontal incremental, guiada por fitness functions de desempenho. Estágio 1: aplicação stateless em containers atrás de um load balancer, com autoscaling horizontal, Postgres gerenciado com read replicas e cache (Redis) para perfis e resultados de matching. Estágio 2: busca e ranking em índice dedicado (pgvector no início, depois OpenSearch ou Qdrant se necessário), com cálculo de matching assíncrono e pré-computado por eventos (recalcula quando perfil ou vaga muda), servindo recomendações do cache. Estágio 3: extração do módulo de Matching e de Notificações como serviços independentes, workers em fila para cargas em lote (e-mails, reindexação, embeddings), CDN para assets e particionamento por tenant ou região se houver crescimento internacional. O tráfego é sazonal (campanhas, desastres, datas como Dia do Voluntário), então usa-se autoscaling e filas para absorver picos. Escalar só o que a métrica indicar, evitando otimização prematura.",
+    "custos": "Foco em custo variável e previsível. Monólito modular e Postgres gerenciado mantêm o custo inicial baixo (dezenas a poucas centenas de dólares por mês no MVP). Serverless ou containers com autoscaling e scale-to-zero em ambientes não produtivos. Principais vetores de custo: infraestrutura, e-mail/SMS/WhatsApp (custo por mensagem, com preferência por e-mail e push), embeddings e LLM se usados (cache agressivo, modelos pequenos, processamento em lote), taxas de pagamento, observabilidade (amostragem de traces e retenção limitada) e suporte e moderação (maior custo humano). Tags de custo por tenant e módulo e dashboards de FinOps, com fitness function de custo por match e por ONG ativa. Adiar microsserviços, Kubernetes e busca dedicada até que as métricas os justifiquem, pois cada um aumenta o custo operacional e cognitivo. Custo de conformidade (LGPD, DPO, auditorias) previsto desde o início. Uso de créditos de programas para nonprofits (AWS, Google, Microsoft) para reduzir a conta.",
+    "monetizacao": "Modelo freemium com o lado do voluntário sempre gratuito, para manter a liquidez do marketplace. ONGs pagam por assinatura SaaS: (1) Gratuito: ONG pequena verificada, número limitado de vagas ativas e matches por mês; (2) Pro (mensalidade): mais vagas, matching avançado com ranking explicável, gestão de agenda e candidaturas, relatórios de impacto, integrações; (3) Enterprise: SSO, API e webhooks, SLA, white-label, onboarding dedicado. Receitas adicionais: programa de voluntariado corporativo (empresas pagam para engajar colaboradores em ONGs, com relatórios de ESG e impacto, um segundo lado B2B de alto valor), destaque de vagas e patrocínio de campanhas, certificados e badges verificáveis, serviços profissionais de implantação e treinamento, e parcerias com fundações e governos (editais, contratos de impacto). Doações voluntárias opcionais na plataforma via Stripe. Sem cobrar comissão sobre trabalho voluntário, o que preserva a confiança e a missão. Métricas norteadoras: ONGs ativas, taxa de preenchimento de vagas, tempo até o primeiro match, retenção de voluntários, MRR e CAC/LTV do canal corporativo.",
+    "stack_sugerida": "Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Spring Boot, com arquitetura hexagonal e módulos por bounded context (alternativa: Python/FastAPI para o módulo de ML). Banco: PostgreSQL gerenciado com schemas por módulo, pgvector para embeddings e full-text search, Redis para cache e filas leves. Mensageria: outbox pattern com barramento in-process, evoluindo para SQS/SNS, RabbitMQ ou Kafka só se a necessidade surgir. Busca: Postgres FTS e pgvector primeiro, depois OpenSearch ou Qdrant. Matching: regras e pontuação ponderada primeiro, depois embeddings (modelos open source ou API) e re-ranking, com avaliação offline. Frontend: React com Next.js (TypeScript), PWA mobile-first, i18n e acessibilidade (WCAG); app nativo só depois de validado (React Native). Auth: Auth0, Clerk, Keycloak ou Cognito atrás de um adapter (OIDC). Pagamentos: Stripe Billing. E-mail e notificações: SES, Resend ou SendGrid, além de push e WhatsApp Business API. Infra: Docker, IaC (Terraform/Pulumi), AWS, GCP ou Azure, começando com um serviço gerenciado de containers (ECS Fargate, Cloud Run) e migrando para Kubernetes só quando necessário. CI/CD: GitHub Actions com trunk-based development, feature flags (Unleash, OpenFeature ou LaunchDarkly), deploy canário e fitness functions no pipeline (ArchUnit ou dependency-cruiser, Pact, k6, Semgrep, Trivy, Lighthouse). Observabilidade: OpenTelemetry, Grafana/Prometheus ou Datadog, Sentry, logs estruturados sem PII. Analytics: PostHog ou Metabase sobre réplica de leitura, com dbt quando o volume justificar. Documentação de decisões: ADRs versionados no repositório."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:46:26+00:00",
+    "runner": "runner.py"
+  }
+}

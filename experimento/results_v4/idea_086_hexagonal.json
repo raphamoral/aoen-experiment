@@ -1,0 +1,81 @@
+{
+  "ideia_idx": 86,
+  "ideia": "SaaS de análise de risco para seguradoras de nicho",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Avaliação e subscrição de risco (underwriting) para seguradoras de nicho (ex.: seguro rural, pet, cyber, eventos, equipamentos, embarcações). O núcleo contém as entidades e regras de negócio: Proponente, Apólice/Proposta, Objeto Segurado, Exposição, Modelo de Risco, Score de Risco, Regra de Subscrição, Prêmio Técnico, Acumulação de Risco e Sinistralidade. Ele é agnóstico de framework, banco de dados, provedores de dados e IA.",
+    "primary_ports": [
+      "SubmeterProposta (RiskAssessmentUseCase): recebe uma proposta e devolve score e decisão",
+      "ConsultarScoreDeRisco (RiskScoreQuery)",
+      "GerenciarModelosDeRisco (RiskModelManagement): cadastrar, versionar e publicar modelos e regras por nicho",
+      "SimularCenario (ScenarioSimulationUseCase): stress test e what-if de carteira",
+      "AnalisarCarteira (PortfolioAnalyticsQuery): concentração, acumulação e sinistralidade",
+      "RevisarDecisaoManual (UnderwriterReviewUseCase): fluxo de aprovação humana",
+      "GerenciarTenant (TenantAdministrationUseCase): onboarding de seguradoras, planos e usuários",
+      "EmitirRelatorioRegulatorio (RegulatoryReportingUseCase)"
+    ],
+    "secondary_ports": [
+      "RiskRepository (persistência de propostas, scores e decisões)",
+      "ModelRegistryRepository (modelos e regras versionados)",
+      "ExternalDataProvider (bureaus de crédito, dados climáticos, geoespaciais, sanções)",
+      "MLScoringEngine (inferência de modelos estatísticos e ML)",
+      "PolicyAdminGateway (sistema de administração de apólices da seguradora)",
+      "ReinsuranceGateway (dados de resseguro e tratados)",
+      "DocumentStorage (anexos, laudos, vistorias)",
+      "EventPublisher (eventos de domínio)",
+      "NotificationSender (e-mail, SMS, webhooks)",
+      "IdentityProvider (autenticação e autorização)",
+      "BillingGateway (cobrança e medição de uso)",
+      "AuditLog (trilha de auditoria imutável)",
+      "Clock e IdGenerator (determinismo em testes)",
+      "FeatureFlagProvider"
+    ],
+    "primary_adapters": [
+      "REST API (OpenAPI) para integração B2B",
+      "GraphQL BFF para o dashboard web",
+      "Web app SPA para subscritores e analistas",
+      "Webhook receiver para eventos de parceiros e corretores",
+      "CLI e scripts batch para carga em lote de propostas",
+      "Consumer de fila (Kafka/SQS) para processamento assíncrono",
+      "Adapter de testes automatizados (BDD e contract tests) que aciona as mesmas portas",
+      "Agendador (cron) para recálculo periódico de carteira",
+      "Adapter de agente de IA/MCP para consultas em linguagem natural"
+    ],
+    "secondary_adapters": [
+      "PostgresRiskRepository (com Row-Level Security por tenant)",
+      "S3/GCS DocumentStorage",
+      "SerasaBureauAdapter, ClimateAPIAdapter (INMET/Copernicus), GeoAdapter, SanctionsListAdapter",
+      "PythonMLScoringAdapter (MLflow, ONNX ou SageMaker endpoint) e RuleEngineAdapter (regras determinísticas)",
+      "SusepReportingAdapter e adapters para outros reguladores",
+      "PolicyAdminRestAdapter e SOAP legado para core systems de seguradoras",
+      "KafkaEventPublisher ou SNS",
+      "SendGrid/SES e Twilio para notificações",
+      "Auth0/Keycloak/Cognito IdentityProvider",
+      "StripeBillingAdapter",
+      "AppendOnlyAuditLogAdapter (WORM)",
+      "InMemory/Fake adapters para todos os secondary ports (testes e demo)",
+      "SystemClock e UUIDGenerator"
+    ],
+    "isolation": "O core (domínio e application services/use cases) não tem dependências de frameworks, ORM, SDKs ou protocolos de rede. Ele só conhece as interfaces (ports) que ele mesmo define. A regra de dependência aponta sempre de fora para dentro: adapters dependem dos ports, nunca o contrário. A composição ocorre em um composition root, onde a injeção de dependência liga adapters a ports. DTOs e mapeadores ficam nos adapters (anti-corruption layer), então os modelos externos, como o de um bureau, não vazam para o domínio. Cada nicho é um módulo/bounded context plugável, com regras de subscrição e modelos próprios. As fronteiras são verificadas por testes de arquitetura (ArchUnit, dependency-cruiser ou import-linter) no CI. Como todos os sistemas externos são tratados de forma simétrica, é possível trocar um provedor de dados ou um banco sem alterar o core, e o mesmo caso de uso pode ser acionado por API, fila, teste ou script.",
+    "interfaces": [
+      "API REST/OpenAPI versionada (/v1) com autenticação OAuth2/OIDC e API keys por tenant",
+      "Dashboard web para subscritores (fila de propostas, explicabilidade do score, override manual)",
+      "Portal de administração de modelos e regras (no-code/low-code por nicho)",
+      "Webhooks de saída (decisão emitida, limite de acumulação excedido)",
+      "Eventos assíncronos (AsyncAPI)",
+      "Upload em lote (CSV/Parquet) e SDKs (Python, TypeScript)",
+      "Relatórios e exportações (PDF, XLSX, BI via conector SQL)",
+      "Interface conversacional/MCP para consultas em linguagem natural"
+    ],
+    "escalabilidade": "Os use cases são stateless e escalam horizontalmente atrás de um load balancer, em containers (Kubernetes ou ECS/Fargate) com autoscaling por CPU e por profundidade de fila. A avaliação síncrona atende propostas individuais com baixa latência e p95 definido. O processamento pesado (lote, simulações de carteira, recálculo) é assíncrono via filas e workers separados, o que isola picos de carga. A inferência de ML é um serviço independente, escalável por GPU/CPU e com cache de scores idempotentes. Multi-tenancy usa banco compartilhado com RLS para a maioria dos clientes e schema ou banco dedicado para clientes enterprise ou com exigências regulatórias. Réplicas de leitura e CQRS com projeções analíticas (data warehouse) separam consultas de carteira da escrita transacional. Consumidores de eventos são idempotentes. Como cada nicho é um módulo, a implantação pode ser um monólito modular no início e extrair serviços conforme a demanda. Chamadas a provedores externos usam circuit breaker, retry com backoff e cache.",
+    "custos": "Os maiores custos são: (1) dados de terceiros (bureaus, clima, geoespacial), cobrados por consulta, então convém usar cache com TTL, deduplicação e cobrança repassada por uso; (2) computação de ML e simulações, controlada com instâncias spot, autoscaling até zero e lotes fora do horário de pico; (3) armazenamento e retenção regulatória de auditoria e documentos, com ciclo de vida em camadas (hot/warm/cold); (4) conformidade (LGPD, SUSEP, SOC 2, ISO 27001), com criptografia, gestão de chaves e auditorias; (5) integração e suporte a sistemas legados de cada seguradora, que pesa no onboarding. A arquitetura hexagonal reduz custo de manutenção e de troca de fornecedor, porque um provedor caro é substituído sem tocar no core. Um monólito modular inicial baixa o custo de infraestrutura e de operação. É preciso acompanhar o custo por tenant e por avaliação (unit economics) com tags e métricas de FinOps.",
+    "monetizacao": "Assinatura SaaS por tenant, em planos escalonados (Starter, Growth, Enterprise), combinada com cobrança por uso: preço por avaliação de risco, por simulação de carteira e por consulta a dados externos, com repasse de custo mais margem. Módulos adicionais pagos: modelos de risco por nicho, relatórios regulatórios, simulação de acumulação e resseguro, acesso à API e SLA premium. Serviços de onboarding e integração com o core da seguradora, cobrados como implantação. Enterprise com contrato anual, ambiente dedicado e customização de modelos. Possível receita de marketplace de modelos e dados de parceiros (resseguradores, insurtechs, provedores de dados) com revenue share.",
+    "stack_sugerida": "Backend: Kotlin/Java (Spring Boot, só na camada de adapters) ou TypeScript (NestJS) para o core e as APIs, com Python (FastAPI, scikit-learn/XGBoost, MLflow) para modelos de ML. Banco: PostgreSQL (RLS, JSONB) e PostGIS para geoespacial; Redis para cache; data warehouse (BigQuery ou Snowflake) para analytics. Mensageria: Kafka ou SQS/SNS. Armazenamento: S3. Frontend: React/Next.js com TypeScript. Identidade: Keycloak ou Auth0. Infra: AWS ou GCP com Kubernetes/ECS, Terraform, GitHub Actions, ArgoCD. Observabilidade: OpenTelemetry, Prometheus, Grafana, Sentry. Testes: JUnit/Vitest, Testcontainers, Pact (contract tests) e ArchUnit ou dependency-cruiser para as fronteiras. Pagamentos: Stripe. Segurança: Vault ou KMS, WAF e SAST/DAST."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:39:11+00:00",
+    "runner": "runner.py"
+  }
+}

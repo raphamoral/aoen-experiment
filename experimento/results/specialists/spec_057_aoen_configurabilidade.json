@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 57,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra consciência arquitetural com abstrações corretas (AnalysisEngine, DeviceAgent como interfaces) e menciona 'configurar regras' e 'período configurado' como parâmetros variáveis, mas não descreve explicitamente o modelo de configuração por tenant — ausência de referência a tabelas de configuração por cliente, feature flags por tenant, esquema de onboarding zero-código ou separação formal entre o que é fixo no código versus variável por linha de banco, deixando em aberto se um novo cliente (especialmente B2B escolar com políticas distintas) exigiria apenas uma nova row ou algum grau de intervenção técnica."
+}

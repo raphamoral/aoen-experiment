@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta descreve exclusivamente a arquitetura técnica do produto, sem qualquer menção a mercado-alvo, dor do cliente, tamanho de mercado ou diferenciação competitiva — os elementos centrais de visão de mercado estão completamente ausentes."
+}

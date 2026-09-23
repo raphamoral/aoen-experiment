@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista corretamente os componentes de infraestrutura (Confluent Cloud, TimescaleDB/InfluxDB, Auth0/Cognito, S3, CloudFront, Datadog, PagerDuty, Stripe), mas não apresenta nenhuma estimativa de custo em valores concretos ($/R$), nenhuma estratégia de otimização (scale-to-zero, instâncias spot, cold/warm/hot storage tiers para séries temporais) e nenhuma projeção de como os custos evoluem com o crescimento da base de sensores ou clientes."
+}

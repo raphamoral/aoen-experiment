@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta menciona workers assíncronos com Redis para geração de etiquetas, mas trata isso como evolução futura condicional ('quando o volume crescer'), o início é um servidor único sem qualquer separação — sem isolamento físico entre a API e o processamento pesado, sem fallback explícito caso a fila ou os workers falhem, e sem estratégia de escalabilidade independente para esse componente desde o dia zero."
+}

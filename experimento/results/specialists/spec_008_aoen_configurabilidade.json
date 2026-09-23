@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "O pipeline é explicitamente fixo no código e os parâmetros por tenant são listados como configuráveis (fase3_parametros_configuraveis), com boa separação entre lógica central e adapters — mas a proposta não descreve o mecanismo de gestão de configuração (tabela de tenant settings, admin de onboarding, feature flags) nem como integrações específicas por cliente (ERP SAP vs TOTVS, dispositivos IoT distintos) são parametrizadas sem desenvolvimento, o que deixa incerteza se o onboarding de um novo cliente é realmente zero-código na prática."
+}

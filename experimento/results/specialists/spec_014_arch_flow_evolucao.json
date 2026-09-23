@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva consistente: os 10 bounded contexts permitem evolução localizada, o mapeamento Wardley posiciona explicitamente o que é diferencial customizado versus commodity substituível, a opcionalidade de fornecedores (Deepgram/AssemblyAI, DeepL/Google, ElevenLabs/Azure, Auth0/Okta) torna decisões tecnológicas reversíveis, e as Platform Teams abstraem WebRTC e modelos de IA — reduzindo o acoplamento das equipes de produto às infraestruturas subjacentes; perde pontos por não evidenciar explicitamente anti-corruption layers entre os contextos externos (APIs de STT/TTS/tradução) e o núcleo de negócio, e pelo pipeline de áudio em tempo real introduzir acoplamento latente entre Audio Capture, Speech Recognition e Translation Engine que pode resistir à substituição independente em produção."
+}

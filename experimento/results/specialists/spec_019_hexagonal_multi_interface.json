@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê quatro interfaces distintas — REST API (pacientes via mobile/web), GraphQL (painel administrativo), CLI (operações de manutenção) e Webhook Receiver (integrações externas) — cada uma justificada por um perfil de usuário ou caso de uso real, com lógica de negócio totalmente desacoplada via ports/adapters hexagonais, permitindo adicionar novos canais sem tocar no core domain."
+}

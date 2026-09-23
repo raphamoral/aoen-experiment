@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 73,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra intenção sólida de configurabilidade — fluxo principal explicitamente declarado como fixo (fase3_fluxo_fixo), parâmetros variáveis por cliente identificados (idioma, critérios, pesos), e padrão de adaptadores trocáveis sem vendor hardcoded — mas não explicita o mecanismo de armazenamento de configuração por tenant (tabela de config, feature flags, schema de onboarding), a lista de parâmetros configuráveis está truncada e incompleta, e não há declaração explícita de que um novo cliente pode ser ativado apenas com inserção de dados, sem deploy ou intervenção de engenharia."
+}

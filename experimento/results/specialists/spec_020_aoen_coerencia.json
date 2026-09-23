@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta forma um sistema altamente coeso: as abstrações do core (IValidationEngine, IRewardEngine) habilitam diretamente os múltiplos mercados declarados em fase1; cada interface de fase2 mapeia explicitamente para um segmento de mercado identificado; o service layer centralizado é consistente com a filosofia de abstração de fase1 e evita duplicação de lógica entre as cinco interfaces; o fluxo fixo de fase3 ancora o core invariável enquanto os parâmetros configuráveis operacionalizam a extensibilidade prometida — cada decisão justifica a próxima, e o todo é coerente. A única nota discordante menor é a menção de NFTs como opção de recompensa num contexto predominantemente B2B enterprise, o que soa fora do tom do restante, mas é mitigada pela natureza abstrata do IRewardEngine."
+}

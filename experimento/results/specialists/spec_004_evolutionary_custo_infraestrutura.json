@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta menciona componentes de infraestrutura (PostgreSQL, Redis, Kubernetes, Terraform, feature flags) e cita abstrações que minimizam lock-in de provedor, mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia de otimização financeira (scale-to-zero, spot instances, storage tiering) e nenhuma projeção de crescimento de custos com a base de usuários."
+}

@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 8,
+  "ideia": "SaaS de gestão de resíduos industriais com rastreabilidade blockchain",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Cadeia de custódia imutável e auditável de resíduos industriais — registro criptograficamente verificável de cada etapa: geração, coleta, transporte, tratamento e disposição final. Sem esse rastreio, o produto é apenas outro CRUD de gestão.",
+    "fase1_mercado": "Indústrias geradoras de resíduos regulados (química, farmacêutica, petroquímica, mineração, metalurgia), operadores de logística reversa, consultores ambientais e órgãos reguladores (IBAMA, CETESB, agências estaduais). Dor central: provar conformidade com CONAMA 430, PNRS e LGPSR sem depender de papel.",
+    "fase1_extensivel": "Sim. O core é o serviço de registro de custódia — ele escreve em uma interface BlockchainAdapter. Hoje pode usar Hyperledger Fabric (privado, custo previsível); amanhã Polygon ou Ethereum. A lógica de negócio nunca chama a chain diretamente — chama a abstração. Trocar a rede = trocar o adapter, não reescrever o sistema.",
+    "fase2_interfaces": [
+      "Web Dashboard (gestores de conformidade ambiental e engenheiros de processo — desktop)",
+      "Mobile PWA / App (operadores de campo, motoristas de coleta — escaneiam QR code nos tambores e registram movimentações offline-first)",
+      "API REST + Webhooks (integração com ERPs: SAP, TOTVS, Oracle — automação de geração de manifesto)",
+      "Portal de Auditoria Read-Only (órgãos reguladores e auditores externos — acesso controlado por token temporário)",
+      "Integração IoT / RFID (balanças industriais, leitores de código, sensores de temperatura em transporte — ingestão automática de dados)"
+    ],
+    "fase2_justificativa_mercado": "Web Dashboard abre o mercado de gestores de compliance (decisores de compra). Mobile abre o mercado operacional e viabiliza adoção em campo sem treinamento intensivo. API REST abre integrações corporativas e desbloqueiam contratos enterprise com ERPs já em uso. Portal de Auditoria abre o canal B2G e torna o produto um ativo de relacionamento regulatório — diferencial competitivo alto. IoT fecha o ciclo de dados automáticos, eliminando erro humano e abrindo mercado de indústrias com alta automação.",
+    "fase2_service_layer": "Uma CustodyService centraliza toda lógica: criação de manifesto, validação de rotas permitidas, cálculo de conformidade, disparo de alertas. As interfaces (web, mobile, API, IoT) são clientes dessa camada via contratos bem definidos. Nenhuma interface contém regra de negócio — apenas apresentação e entrada de dados. Trocar React por Vue, ou adicionar interface de voz, não toca em nenhuma regra de custódia.",
+    "fase3_fluxo_fixo": "Geração do resíduo → Classificação por código (ABNT NBR 10.004) → Emissão de Manifesto → Rastreio de movimentação (GPS + QR) → Registro de tratamento/disposição → Emissão de Certificado de Destinação Final → Escrita imutável na blockchain → Disponibilização para auditoria. Esse pipeline nunca muda — o que muda são os parâmetros de cada etapa.",
+    "fase3_parametros_configuraveis": [
+      "Tipos e categorias de resíduos permitidos por cliente (lista branca)",
+      "Regulamentações aplicáveis (CONAMA, REACH, Basel Convention — por jurisdição)",
+      "Fluxo de aprovação (quem assina cada etapa: operador, supervisor, gestor ambiental)",
+      "Templates de manifesto e certificado (logo, campos obrigatórios por estado/país)",
+      "Destinatários autorizados (transportadores e tratadores homologados por cliente)",
+      "Alertas e limites (volume máximo sem aprovação, tempo máximo em trânsito)",
+      "Endpoints de integração ERP (URL, autenticação, formato de payload)",
+      "Portais governamentais para sync automático (SIGOR-SP, MTR Federal, estaduais)",
+      "Política de retenção de documentos (5 a 30 anos conforme regulação)",
+      "Fuso horário, idioma e moeda por unidade operacional"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel de configuração: define-se a empresa, suas unidades, os resíduos que gera, os destinatários homologados e as regulações aplicáveis. Um script de seed popula o banco com os parâmetros. Nenhum deploy, nenhuma linha de código nova. O sistema já opera no dia seguinte à configuração.",
+    "fase4_core_isolado": "O BlockchainWriter — processo assíncrono isolado que consome uma fila de eventos de custódia e escreve transações na rede. É o componente mais caro (gas fees ou custo de nó), mais lento (latência de confirmação) e mais crítico (se corrompido, a rastreabilidade falha). Roda em container dedicado, escala independentemente, com circuit breaker e dead-letter queue.",
+    "fase4_custo_total_cliente": "Core: ~R$0,10–0,80 por transação blockchain (Hyperledger Fabric em nó próprio dilui para ~R$0,05 em escala; Polygon público ~R$0,02–0,15 por tx). Infra proporcional: banco PostgreSQL ~R$8–25/cliente/mês (função do volume de manifesto), armazenamento de documentos S3/IPFS ~R$0,023/GB (manifesto PDF médio 200KB = R$0,004/documento), CDN ~R$0,01/GB transferido. Custo total estimado por cliente médio (500 manifestos/mês): R$80–200/mês. Margem viável com ticket mínimo de R$800/mês.",
+    "fase4_continuidade": "O BlockchainWriter falha → eventos permanecem na fila persistente (Redis Streams ou RabbitMQ com durabilidade). O restante do sistema continua: operadores registram movimentações, manifesto é emitido, PDF é gerado — tudo funciona. Quando o writer se recupera, processa a fila em ordem. O cliente não percebe interrupção operacional; apenas o hash blockchain chega com atraso. Monitoramento ativo com alertas se a fila ultrapassa threshold configurado.",
+    "fase4_manutencao": "O BlockchainAdapter é uma interface (write(event): TxHash, verify(txHash): boolean, getHistory(entityId): Event[]). Hoje implementada para Hyperledger Fabric. Para migrar para Polygon: implementa-se PolygonAdapter, rodam-se testes de contrato, faz-se feature flag por cliente, migra-se gradualmente. Zero downtime. O restante do sistema nunca sabe qual rede está sendo usada.",
+    "monetizacao": "SaaS por tier de volume: Starter (até 200 manifestos/mês) R$890/mês, Professional (até 2.000) R$2.490/mês, Enterprise (ilimitado + SLA + integração ERP) R$6.900+/mês. Add-ons: Portal de Auditoria para reguladores R$490/acesso/mês, Relatórios de Conformidade automatizados R$390/mês, API Premium com SLA 99,9% R$290/mês. Modelo de entrada: freemium com 30 manifestos/mês para consultores ambientais pequenos — pipeline de upsell para indústrias que os contratam.",
+    "stack_sugerida": "Backend: Node.js + TypeScript com NestJS (modularidade e DI nativa para o Service Layer). Banco: PostgreSQL (dados transacionais) + Redis (cache + filas). Blockchain: Hyperledger Fabric para enterprise (custo previsível) com adapter opcional para Polygon. Armazenamento de documentos: AWS S3 + IPFS para imutabilidade de PDFs. Fila assíncrona: BullMQ sobre Redis com dead-letter queue. Frontend: Next.js 14 (SSR para dashboards pesados). Mobile: React Native com WatermelonDB para offline-first. IoT: broker MQTT (Mosquitto) com bridge para a API. Infra: Docker + Kubernetes (EKS ou GKE) com namespaces por tier. Observabilidade: OpenTelemetry + Grafana + Loki. CI/CD: GitHub Actions."
+  }
+}

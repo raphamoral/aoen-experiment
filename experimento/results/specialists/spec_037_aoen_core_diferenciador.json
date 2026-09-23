@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 37,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor PricingEngine é claramente identificado como núcleo diferenciador, está isolado atrás de interface abstrata, é extensível (LLM → modelo proprietário → cotação real-time sem quebrar o sistema), e resolve um gap real — orçamento calibrado por região/padrão que formulários genéricos e planilhas não entregam — faltando apenas evidência de validação empírica da acurácia do motor para atingir nota máxima."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 87,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define uma camada de serviços com contratos tipados (lógico), mas o fluxo de reserva é descrito como sequencial e síncrono — pagamento, notificação e confirmação estão no mesmo pipeline transacional sem menção a filas, workers externos, processamento assíncrono ou fallback; uma falha no gateway de pagamento ou no envio de notificação bloqueia o fluxo inteiro, e não há indício de isolamento físico nem de escalabilidade independente para os processos pesados."
+}

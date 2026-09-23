@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "O isolamento é fisicamente real — workers são processos independentes consumindo filas (SQS/RabbitMQ), ml-service é um package separado deployável de forma autônoma no Kubernetes/ECS, e OCR/LLM são delegados a APIs externas; porém a proposta não menciona mecanismos explícitos de resiliência a falhas do worker (dead letter queues, retry policies, circuit breakers) nem comportamento de fallback para o usuário quando o processamento pesado falha, o que impede a nota máxima."
+}

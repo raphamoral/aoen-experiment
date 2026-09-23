@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista os componentes de infraestrutura (RDS Aurora, ElastiCache, S3, EKS, SageMaker, etc.) mas não apresenta nenhuma estimativa concreta de custo em valores monetários, nenhuma estratégia explícita de otimização financeira (spot instances, scale-to-zero, storage tiering, reserved instances) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

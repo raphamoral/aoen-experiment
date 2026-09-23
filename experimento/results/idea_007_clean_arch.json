@@ -1,0 +1,437 @@
+{
+  "ideia_idx": 7,
+  "ideia": "Plataforma de microlearning gamificado para treinamento corporativo",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "User": {
+        "description": "Colaborador que consome o conteúdo de aprendizagem",
+        "attributes": [
+          "id",
+          "name",
+          "email",
+          "role",
+          "organizationId",
+          "xpTotal",
+          "level",
+          "streakDays",
+          "badges"
+        ],
+        "rules": [
+          "XP acumulado determina nível",
+          "Streak requer atividade diária",
+          "Nível desbloqueia conteúdos avançados"
+        ]
+      },
+      "Organization": {
+        "description": "Empresa cliente da plataforma",
+        "attributes": [
+          "id",
+          "name",
+          "plan",
+          "maxUsers",
+          "customBranding",
+          "createdAt"
+        ],
+        "rules": [
+          "Plano define limites de usuários e funcionalidades",
+          "Isolamento total de dados entre organizações"
+        ]
+      },
+      "Course": {
+        "description": "Trilha de aprendizagem composta por módulos",
+        "attributes": [
+          "id",
+          "title",
+          "description",
+          "organizationId",
+          "category",
+          "estimatedDuration",
+          "xpReward",
+          "publishedAt"
+        ],
+        "rules": [
+          "Deve ter ao menos um módulo publicado para estar ativo",
+          "XP reward é fixado na criação"
+        ]
+      },
+      "Module": {
+        "description": "Unidade de microlearning (3-5 minutos)",
+        "attributes": [
+          "id",
+          "courseId",
+          "title",
+          "contentType",
+          "contentPayload",
+          "order",
+          "xpReward"
+        ],
+        "rules": [
+          "Duração máxima de 5 minutos",
+          "Tipos: video, quiz, flashcard, article"
+        ]
+      },
+      "Quiz": {
+        "description": "Avaliação associada a um módulo",
+        "attributes": [
+          "id",
+          "moduleId",
+          "questions",
+          "passingScore",
+          "maxAttempts"
+        ],
+        "rules": [
+          "Aprovação acima do passingScore concede XP",
+          "Tentativas limitadas por maxAttempts"
+        ]
+      },
+      "Achievement": {
+        "description": "Badge ou conquista desbloqueável",
+        "attributes": [
+          "id",
+          "name",
+          "description",
+          "iconUrl",
+          "condition",
+          "xpBonus"
+        ],
+        "rules": [
+          "Condição é uma regra de negócio pura avaliada na entidade User"
+        ]
+      },
+      "Enrollment": {
+        "description": "Vínculo entre User e Course",
+        "attributes": [
+          "id",
+          "userId",
+          "courseId",
+          "enrolledAt",
+          "completedAt",
+          "progress",
+          "score"
+        ],
+        "rules": [
+          "Progresso calculado por módulos concluídos",
+          "Conclusão exige todos os módulos obrigatórios"
+        ]
+      },
+      "Progress": {
+        "description": "Registro de avanço por módulo",
+        "attributes": [
+          "id",
+          "enrollmentId",
+          "moduleId",
+          "completedAt",
+          "xpEarned",
+          "attempts"
+        ],
+        "rules": [
+          "Imutável após conclusão",
+          "XP concedido apenas na primeira conclusão"
+        ]
+      },
+      "Leaderboard": {
+        "description": "Ranking de XP por escopo",
+        "attributes": [
+          "id",
+          "organizationId",
+          "scope",
+          "period",
+          "entries"
+        ],
+        "rules": [
+          "Escopo: global, por curso, por departamento",
+          "Período: semanal, mensal, all-time"
+        ]
+      }
+    },
+    "use_cases": {
+      "user_management": [
+        "RegisterUser: cria conta vinculada à organização via convite",
+        "AuthenticateUser: valida credenciais e emite token de sessão",
+        "UpdateUserProfile: atualiza dados pessoais e preferências",
+        "GetUserDashboard: agrega XP, streak, badges e cursos em andamento"
+      ],
+      "learning": [
+        "EnrollUserInCourse: cria Enrollment validando disponibilidade e limites do plano",
+        "CompleteModule: registra Progress, concede XP, verifica achievements, atualiza streak",
+        "SubmitQuizAttempt: avalia respostas, calcula score, concede XP se aprovado",
+        "GetCourseProgress: retorna progresso detalhado por módulo e percentual de conclusão",
+        "RecommendCourses: sugere cursos baseados em cargo, histórico e gaps de habilidade"
+      ],
+      "gamification": [
+        "AwardXP: incrementa XP do usuário e recalcula nível",
+        "UnlockAchievement: avalia condições e concede badge se critério atingido",
+        "UpdateStreak: verifica e incrementa ou reseta streak diário",
+        "GetLeaderboard: retorna ranking paginado por escopo e período"
+      ],
+      "content_management": [
+        "CreateCourse: valida estrutura e persiste rascunho para a organização",
+        "PublishCourse: valida completude e torna curso disponível para enrollment",
+        "CreateModule: adiciona módulo a curso existente com validação de duração",
+        "UploadContent: processa e armazena mídia (video, PDF, imagem)"
+      ],
+      "organization_admin": [
+        "InviteUsers: gera tokens de convite e envia notificações",
+        "AssignMandatoryCourse: vincula curso obrigatório a grupos ou cargos",
+        "GenerateComplianceReport: exporta relatório de conclusão por usuário/curso",
+        "ManageSubscription: altera plano, gerencia pagamento e limites"
+      ],
+      "analytics": [
+        "GetEngagementMetrics: taxa de conclusão, tempo médio, DAU/MAU por organização",
+        "GetLearningOutcomes: correlaciona conclusão de cursos com avaliações de desempenho",
+        "ExportReport: gera CSV/PDF de métricas para período selecionado"
+      ]
+    },
+    "interface_adapters": {
+      "controllers": {
+        "description": "Traduzem requisições HTTP/WebSocket em chamadas de Use Cases",
+        "components": [
+          "UserController: /users, /auth, /profile",
+          "CourseController: /courses, /modules, /enrollments",
+          "GamificationController: /leaderboard, /achievements, /xp",
+          "AdminController: /admin/users, /admin/reports, /admin/settings",
+          "WebhookController: recebe eventos de pagamento (Stripe), SSO (SAML/OIDC)"
+        ]
+      },
+      "presenters": {
+        "description": "Formatam saída dos Use Cases para o formato esperado pela UI",
+        "components": [
+          "UserPresenter: serializa User para DTO de resposta sem dados sensíveis",
+          "CoursePresenter: agrega Course + Enrollment + Progress em view model",
+          "LeaderboardPresenter: formata ranking com posição relativa do usuário atual",
+          "ReportPresenter: gera estrutura para renderização de tabelas e gráficos"
+        ]
+      },
+      "gateways": {
+        "description": "Implementam interfaces de repositório definidas na camada de Use Cases",
+        "components": [
+          "UserRepositoryImpl: implementa IUserRepository usando ORM/SQL",
+          "CourseRepositoryImpl: implementa ICourseRepository",
+          "ProgressRepositoryImpl: implementa IProgressRepository com cache Redis",
+          "LeaderboardRepositoryImpl: implementa ILeaderboardRepository com agregações",
+          "NotificationGatewayImpl: implementa INotificationService via email/push",
+          "StorageGatewayImpl: implementa IStorageService via S3-compatible",
+          "PaymentGatewayImpl: implementa IPaymentService via Stripe",
+          "SearchGatewayImpl: implementa ISearchService via Elasticsearch/Typesense"
+        ]
+      },
+      "view_models": {
+        "description": "DTOs de transferência entre camadas externas e Use Cases",
+        "examples": [
+          "EnrollmentViewModel: { courseId, userId, progress, nextModule }",
+          "DashboardViewModel: { user, activeEnrollments, recentAchievements, weeklyXP }",
+          "LeaderboardEntryViewModel: { rank, userId, displayName, xp, avatar }"
+        ]
+      }
+    },
+    "frameworks_drivers": {
+      "web_framework": {
+        "primary": "NestJS (Node.js) para API principal — DI nativo facilita inversão de dependência",
+        "alternative": "FastAPI (Python) para serviços de ML/recomendação",
+        "rationale": "Módulos isolados, decorators para Controllers, Guards para autenticação"
+      },
+      "database": {
+        "primary": "PostgreSQL — dados transacionais (users, enrollments, progress)",
+        "cache": "Redis — sessões, leaderboard em tempo real, rate limiting, streak locks",
+        "search": "Typesense — busca de cursos com filtros facetados",
+        "analytics": "ClickHouse — eventos de aprendizagem para analytics de alta volume"
+      },
+      "storage": {
+        "media": "AWS S3 / Cloudflare R2 — vídeos, PDFs, imagens",
+        "cdn": "Cloudflare CDN — entrega de conteúdo estático com baixa latência global"
+      },
+      "messaging": {
+        "queue": "BullMQ (Redis) — filas para processamento de vídeo, envio de emails, cálculo de XP assíncrono",
+        "events": "Redis Pub/Sub ou NATS — eventos de domínio entre serviços (AchievementUnlocked, CourseCompleted)"
+      },
+      "frontend": {
+        "web": "Next.js 14 (App Router) — SSR para SEO e performance",
+        "mobile": "React Native / Expo — app móvel iOS/Android",
+        "ui": "Tailwind CSS + shadcn/ui — design system componentizado"
+      },
+      "auth": {
+        "internal": "JWT + Refresh Token rotation com armazenamento em Redis",
+        "enterprise": "SAML 2.0 / OIDC para SSO corporativo (Okta, Azure AD, Google Workspace)"
+      },
+      "infrastructure": {
+        "containers": "Docker + Kubernetes (EKS ou GKE) para orquestração",
+        "iac": "Terraform para provisionamento de infraestrutura",
+        "ci_cd": "GitHub Actions — lint, test, build, deploy com ambientes de staging e produção",
+        "observability": "OpenTelemetry + Grafana + Loki + Tempo (traces, logs, métricas)"
+      },
+      "payments": "Stripe — assinaturas recorrentes, gestão de planos, webhooks de cobrança",
+      "email": "Resend ou AWS SES — transacionais e campanhas de engajamento",
+      "video_processing": "AWS MediaConvert ou Mux — transcodificação e streaming adaptativo (HLS)"
+    },
+    "dependency_rule": {
+      "summary": "As dependências de código-fonte apontam exclusivamente de fora para dentro. Nenhuma camada interna conhece a existência de camadas externas.",
+      "layers_dependency_direction": [
+        "Frameworks & Drivers → Interface Adapters → Use Cases → Entities",
+        "Entities: zero dependências externas, apenas linguagem pura",
+        "Use Cases: dependem somente de Entities e de interfaces abstratas (IUserRepository, INotificationService)",
+        "Interface Adapters: dependem de Use Cases e Entities, implementam as interfaces abstratas",
+        "Frameworks & Drivers: dependem de Interface Adapters, nunca acessam Use Cases ou Entities diretamente"
+      ],
+      "boundary_crossing": {
+        "inward": "Dados cruzam fronteiras como DTOs simples (sem comportamento), nunca como objetos de domínio expostos",
+        "dependency_inversion": "Use Cases definem interfaces (ports); Interface Adapters fornecem implementações (adapters) injetadas via DI container",
+        "example": "UseCase CompleteModule recebe IProgressRepository como parâmetro de construtor; ProgressRepositoryImpl (TypeORM) é injetado pelo NestJS DI — o Use Case nunca importa TypeORM"
+      },
+      "forbidden_imports": [
+        "Entities NÃO importam: nada além de value objects de domínio",
+        "Use Cases NÃO importam: Express, TypeORM, Stripe, Redis, AWS SDK",
+        "Entities e Use Cases NÃO importam: módulos de framework ou bibliotecas de infraestrutura"
+      ]
+    },
+    "testability": {
+      "entities": {
+        "strategy": "Testes unitários puros em memória, zero dependências externas",
+        "example": "user.awardXP(100) deve incrementar xpTotal e recalcular level sem banco de dados",
+        "tools": "Jest / Vitest — execução instantânea, sem setup"
+      },
+      "use_cases": {
+        "strategy": "Testes unitários com repositórios e serviços substituídos por in-memory fakes (não mocks com setup frágil)",
+        "example": "CompleteModuleUseCase testado com InMemoryProgressRepository, InMemoryUserRepository e FakeNotificationService",
+        "tools": "Jest + implementações Fake escritas à mão — determinísticas e sem I/O",
+        "coverage_target": "100% das regras de negócio cobertas nesta camada"
+      },
+      "interface_adapters": {
+        "strategy": "Testes de integração com banco de dados real (PostgreSQL em container Docker)",
+        "example": "ProgressRepositoryImpl.save() persiste e recupera corretamente via TypeORM",
+        "tools": "Jest + Testcontainers — banco isolado por suite de teste"
+      },
+      "e2e": {
+        "strategy": "Testes end-to-end cobrindo fluxos críticos via HTTP real",
+        "example": "POST /enrollments → GET /progress → POST /quiz-attempts (fluxo completo de conclusão de curso)",
+        "tools": "Supertest + ambiente de staging com seed de dados controlado"
+      },
+      "contract_tests": {
+        "strategy": "Pact para contratos entre frontend e API, garantindo compatibilidade sem deploy conjunto",
+        "tools": "Pact JS — consumer-driven contract testing"
+      }
+    },
+    "interfaces": [
+      "IUserRepository: findById, findByEmail, save, updateXP, listByOrganization",
+      "ICourseRepository: findById, findByOrganization, findPublished, save, publish",
+      "IEnrollmentRepository: findByUserId, findByCourseId, save, updateProgress",
+      "IProgressRepository: findByEnrollment, findByModule, save, sumXPByUser",
+      "IQuizRepository: findByModule, findById, save",
+      "ILeaderboardRepository: getTopN, getRankForUser, upsertEntry",
+      "IAchievementRepository: findAll, findByUser, save",
+      "INotificationService: sendEmail, sendPushNotification, sendInAppNotification",
+      "IStorageService: upload, getSignedUrl, delete",
+      "IPaymentService: createSubscription, cancelSubscription, getInvoices, handleWebhook",
+      "ISearchService: indexCourse, searchCourses, removeCourse",
+      "IAnalyticsService: trackEvent, getEngagementMetrics, exportReport",
+      "IVideoProcessingService: requestTranscode, getStreamUrl, getThumbnail",
+      "IAuthService: generateToken, validateToken, revokeToken, refreshToken",
+      "IRecommendationService: getRecommendedCourses, getSimilarCourses"
+    ],
+    "escalabilidade": {
+      "horizontal_scaling": "Instâncias stateless da API escaladas via Kubernetes HPA baseado em CPU/requisições por segundo",
+      "database": {
+        "read_replicas": "Leituras de relatórios e leaderboard direcionadas a réplicas read-only do PostgreSQL",
+        "connection_pooling": "PgBouncer para gerenciar pool de conexões e suportar alto volume de instâncias",
+        "partitioning": "Tabela progress particionada por organizationId e mês para manter queries rápidas"
+      },
+      "caching": {
+        "leaderboard": "Leaderboard calculado por job assíncrono (BullMQ) e servido do Redis — TTL de 5 minutos",
+        "course_catalog": "Catálogo de cursos cacheado no Redis com invalidação event-driven ao publicar curso",
+        "cdn": "Assets estáticos e vídeos servidos via CDN — zero carga nos servidores de aplicação"
+      },
+      "async_processing": {
+        "video_transcoding": "Upload dispara job na fila — processamento assíncrono sem bloquear request do usuário",
+        "xp_calculation": "Eventos de conclusão processados em fila para evitar contenção em updates de XP",
+        "notifications": "Envio de emails e push em workers separados com retry automático"
+      },
+      "multi_tenancy": "Isolamento por organizationId em todas as queries; row-level security no PostgreSQL para segurança adicional",
+      "global_distribution": "Múltiplas regiões AWS/GCP com roteamento por latência via Route53/Cloud DNS para clientes enterprise"
+    },
+    "custos": {
+      "infra_base": "Estimativa inicial: $800-1500/mês para tier de startup (EKS small, RDS t3.medium, ElastiCache t3.micro, S3)",
+      "video_storage": "Principal variável de custo — Cloudflare R2 reduz custo de egress em ~90% vs S3 puro",
+      "video_transcoding": "Mux cobra por minuto transcoded e entregue — prever $0.015/min de vídeo armazenado",
+      "scaling_cost": "Custo cresce sub-linearmente com usuários devido ao cache agressivo e CDN",
+      "optimization_strategies": [
+        "Limitar duração máxima de vídeo (5 min) reduz custo de storage e transcodificação",
+        "Reservar instâncias RDS e EC2/EKS por 1 ano reduz custo em 40%",
+        "ClickHouse self-hosted vs managed — economy a partir de 10B eventos/mês",
+        "Uso de Spot Instances para workers de processamento de vídeo"
+      ],
+      "unit_economics": "Meta de CAC payback < 6 meses; custo de infra por usuário ativo < $0.50/mês em escala"
+    },
+    "monetizacao": {
+      "model": "SaaS B2B com assinatura recorrente mensal/anual por número de usuários ativos",
+      "plans": {
+        "Starter": {
+          "price": "$3/usuário ativo/mês",
+          "limits": "Até 50 usuários, 10 cursos, suporte via email",
+          "target": "PMEs e times pequenos"
+        },
+        "Growth": {
+          "price": "$6/usuário ativo/mês",
+          "limits": "Até 500 usuários, cursos ilimitados, analytics básico, SSO OIDC",
+          "target": "Empresas em crescimento"
+        },
+        "Enterprise": {
+          "price": "Negociado (estimado $8-12/usuário/mês com volume)",
+          "limits": "Usuários ilimitados, white-label, SSO SAML, SLA 99.9%, CSM dedicado, relatórios de compliance",
+          "target": "Grandes corporações, setor regulado"
+        }
+      },
+      "additional_revenue": [
+        "Marketplace de cursos prontos — revenue share 70/30 com criadores de conteúdo",
+        "Módulo de IA para geração de cursos — add-on $2/usuário/mês",
+        "Relatórios avançados e integração com HR systems (SAP, Workday) — add-on Enterprise",
+        "Certificações com validade e blockchain proof — $5/certificado emitido"
+      ],
+      "pricing_psychology": "Cobrança apenas por usuários *ativos* no mês reduz objeção de compra e alinha incentivos — cliente paga conforme adoção"
+    },
+    "stack_sugerida": {
+      "backend": {
+        "runtime": "Node.js 22 LTS",
+        "framework": "NestJS 10",
+        "language": "TypeScript 5.x strict mode",
+        "orm": "Prisma (schema-first, type-safe) ou TypeORM",
+        "validation": "Zod para validação em fronteiras de entrada"
+      },
+      "frontend_web": {
+        "framework": "Next.js 14 (App Router)",
+        "language": "TypeScript",
+        "state": "Zustand para estado global + React Query para server state",
+        "ui": "Tailwind CSS + shadcn/ui + Radix UI primitives",
+        "video_player": "Video.js ou Mux Player para HLS adaptativo"
+      },
+      "mobile": {
+        "framework": "React Native 0.74 + Expo",
+        "navigation": "Expo Router (file-based)",
+        "offline": "WatermelonDB para progresso offline com sync"
+      },
+      "databases": {
+        "primary": "PostgreSQL 16",
+        "cache_queue": "Redis 7 (Upstash serverless ou ElastiCache)",
+        "search": "Typesense (self-hosted) ou Algolia (managed)",
+        "analytics": "ClickHouse Cloud"
+      },
+      "infrastructure": {
+        "cloud": "AWS (primário) com multi-region para Enterprise",
+        "containers": "Docker + Kubernetes (EKS) + Helm charts",
+        "iac": "Terraform + Terragrunt",
+        "secrets": "AWS Secrets Manager + Doppler para desenvolvimento local",
+        "cdn_storage": "Cloudflare R2 + Cloudflare CDN"
+      },
+      "devops": {
+        "ci_cd": "GitHub Actions",
+        "monitoring": "Grafana Cloud (métricas + logs + traces via OpenTelemetry)",
+        "error_tracking": "Sentry",
+        "feature_flags": "Unleash (self-hosted) ou Flagsmith"
+      },
+      "payments": "Stripe + Stripe Billing para assinaturas",
+      "video": "Mux para upload, transcodificação e streaming",
+      "email": "Resend + React Email para templates",
+      "testing": "Vitest (unit) + Testcontainers (integration) + Playwright (E2E)"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"User\": {\n      \"description\": \"Colaborador que consome o conteúdo de aprendizagem\",\n      \"attributes\": [\"id\", \"name\", \"email\", \"role\", \"organizationId\", \"xpTotal\", \"level\", \"streakDays\", \"badges\"],\n      \"rules\": [\"XP acumulado determina nível\", \"Streak requer atividade diária\", \"Nível desbloqueia conteúdos avançados\"]\n    },\n    \"Organization\": {\n      \"description\": \"Empresa cliente da plataforma\",\n      \"attributes\": [\"id\", \"name\", \"plan\", \"maxUsers\", \"customBranding\", \"createdAt\"],\n      \"rules\": [\"Plano define limites de usuários e funcionalidades\", \"Isolamento total de dados entre organizações\"]\n    },\n    \"Course\": {\n      \"description\": \"Trilha de aprendizagem composta por módulos\",\n      \"attributes\": [\"id\", \"title\", \"description\", \"organizationId\", \"category\", \"estimatedDuration\", \"xpReward\", \"publishedAt\"],\n      \"rules\": [\"Deve ter ao menos um módulo publicado para estar ativo\", \"XP reward é fixado na criação\"]\n    },\n    \"Module\": {\n      \"description\": \"Unidade de microlearning (3-5 minutos)\",\n      \"attributes\": [\"id\", \"courseId\", \"title\", \"contentType\", \"contentPayload\", \"order\", \"xpReward\"],\n      \"rules\": [\"Duração máxima de 5 minutos\", \"Tipos: video, quiz, flashcard, article\"]\n    },\n    \"Quiz\": {\n      \"description\": \"Avaliação associada a um módulo\",\n      \"attributes\": [\"id\", \"moduleId\", \"questions\", \"passingScore\", \"maxAttempts\"],\n      \"rules\": [\"Aprovação acima do passingScore concede XP\", \"Tentativas limitadas por maxAttempts\"]\n    },\n    \"Achievement\": {\n      \"description\": \"Badge ou conquista desbloqueável\",\n      \"attributes\": [\"id\", \"name\", \"description\", \"iconUrl\", \"condition\", \"xpBonus\"],\n      \"rules\": [\"Condição é uma regra de negócio pura avaliada na entidade User\"]\n    },\n    \"Enrollment\": {\n      \"description\": \"Vínculo entre User e Course\",\n      \"attributes\": [\"id\", \"userId\", \"courseId\", \"enrolledAt\", \"completedAt\", \"progress\", \"score\"],\n      \"rules\": [\"Progresso calculado por módulos concluído"
+}

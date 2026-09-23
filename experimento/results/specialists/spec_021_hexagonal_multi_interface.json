@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal (ports & adapters) garante desacoplamento total entre lógica de negócio e interfaces; os oito adaptadores primários cobrem perfis reais e distintos — técnicos de campo (REST/mobile), gestores (GraphQL/dashboard), dispositivos IoT (MQTT), monitoramento em tempo real (WebSocket), administradores (CLI) e integrações B2B (Webhook/gRPC) — todos justificáveis por alcance de mercado, com a pequena ressalva de que o Test Driver é motivado por conveniência técnica, não por demanda de mercado."
+}

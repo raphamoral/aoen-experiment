@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta planeja isolamento físico real via Strangler Fig Pattern (Horizonte 6–18 meses) com escala independente de GPU e processamento assíncrono sugerido pelo broker de mensagens (SQS/RabbitMQ/Kafka), mas o Horizonte 0–6 meses executa inferência de IA dentro do monólito modular com isolamento apenas lógico — falha no processamento de imagem pode afetar o restante da aplicação — e não há menção explícita a circuit breaker, padrão Bulkhead ou fallback degradado caso o worker de inferência esteja indisponível."
+}

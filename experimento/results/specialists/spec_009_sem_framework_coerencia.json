@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "A proposta conta uma história coerente do problema à solução — o gap de confiança em equipamentos usados justifica o processo de certificação, que justifica a taxa de avaliação, que justifica o custo dos avaliadores — mas há uma tensão não resolvida entre afirmar que 'Next.js elimina a necessidade de dois projetos separados' e imediatamente adicionar Node.js para lógica pesada, sem esclarecer se são serviços distintos ou workers do mesmo projeto; há também uma contradição leve entre 'no início não precisa pensar em escalabilidade' e já detalhar Redis, CDN e Bull como partes do design, o que sinaliza coerência de visão mas incoerência de timing declarado."
+}

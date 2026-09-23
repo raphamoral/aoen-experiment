@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 6,
+  "justificativa": "A camada de entidades apresenta coerência interna sólida — a cadeia Asset→IoTDevice→SensorReading e Asset→MaintenancePlan→MaintenanceOrder se reforçam mutuamente, e o Tenant ancora o modelo multi-tenant de forma consistente com a proposta SaaS — porém a proposta está truncada (use_cases cortados), não há visibilidade das camadas de infraestrutura que poderiam contradizer o princípio Clean Architecture declarado, e o modelo trata SensorReading como entidade de domínio comum sem endereçar a tensão arquitetural real do IoT em escala (ingestão de alto volume de time-series vs. modelo DDD tradicional), criando uma lacuna estrutural que impede avaliar se o todo é de fato coeso."
+}

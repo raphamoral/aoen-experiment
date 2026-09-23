@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "A proposta demonstra separação explícita entre fluxo fixo (código, 8 etapas invariáveis) e parâmetros configuráveis por tenant (prazo, motivos, transportadoras, política de resolução), com adapters intercambiáveis para carriers e integrações plugáveis para ERP/WMS — o que indica onboarding de novo lojista via configuração; perde 2 pontos porque a lista de parâmetros configuráveis está truncada (não é possível confirmar cobertura total), não há menção explícita a um mecanismo de registro de adapters por tenant sem deploy, e a proposta não descreve como um novo carrier ou nova plataforma de e-commerce é habilitada para um cliente específico em runtime, o que pode ainda exigir desenvolvimento pontual."
+}

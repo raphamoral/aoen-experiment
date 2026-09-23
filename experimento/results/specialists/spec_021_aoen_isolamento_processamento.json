@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve um fluxo sequencial de steps (gateway → motor de regras → alerta → OS) que sugere separação de responsabilidades, mas não menciona em nenhum momento filas de mensagens, workers isolados, processos separados, circuit breakers ou qualquer mecanismo que impeça o motor de predição de ML (o componente mais pesado) de derrubar o restante da aplicação em caso de sobrecarga ou falha — a Service Layer centralizada reforça o risco de falha em cascata."
+}

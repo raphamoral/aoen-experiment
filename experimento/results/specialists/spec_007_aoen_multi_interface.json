@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (Web App, Mobile, Slack/Teams, API REST, Widget embarcável e Relatórios por e-mail), cada uma com justificativa explícita de perfil de usuário e segmento de mercado, enquanto a LearningService centralizada garante desacoplamento total da lógica de negócio — permitindo adicionar novas interfaces sem duplicação de regras."
+}

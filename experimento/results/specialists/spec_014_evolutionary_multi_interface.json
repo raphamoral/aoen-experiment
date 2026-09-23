@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A proposta menciona adaptadores independentes para Zoom, Teams e Meet — o que demonstra consciência de múltiplos canais e desacoplamento via port/adapter — mas não justifica essas interfaces por perfis de usuário distintos nem aborda interfaces voltadas ao usuário final (web app, painel de administrador, API para integradores, mobile), deixando o critério de múltiplas interfaces apenas implícito na camada de integração, sem estratégia multi-canal orientada a mercado."
+}

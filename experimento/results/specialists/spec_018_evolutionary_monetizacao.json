@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta é exclusivamente técnico-arquitetural e não contém nenhuma menção a modelo de receita, precificação, tiers, métricas de negócio (MRR, LTV, CAC) ou como o produto gera valor financeiro — a única referência a custo ($0.002/assinante) é uma fitness function de eficiência de infraestrutura, não uma estratégia de monetização."
+}

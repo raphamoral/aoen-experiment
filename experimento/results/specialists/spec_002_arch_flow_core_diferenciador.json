@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado e isolado via mapeamento Wardley (genesis/custom separados do commodity): a combinação de motor de verificação de credenciais em órgãos reguladores reais (CVM, BACEN, OAB) + score de risco regulatório dinâmico + matching preditivo por perfil regulatório cria uma camada de confiança que nenhum marketplace genérico oferece — sem esses três componentes integrados, o produto seria indistinguível de um Upwork vertical; a extensibilidade é parcialmente endereçada (múltiplos órgãos, arquitetura de motor abstrato), mas o escopo atual ainda está amarrado ao mercado brasileiro sem evidência de abstração suficiente para expansão internacional ou novos frameworks regulatórios, o que impede a nota máxima."
+}

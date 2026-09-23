@@ -1,0 +1,88 @@
+{
+  "ideia_idx": 69,
+  "ideia": "SaaS de automação de testes de acessibilidade web com relatórios WCAG",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Auditoria automatizada de conformidade de acessibilidade web (WCAG 2.2 A/AA/AAA). O núcleo (inside) contém: Aggregates Project, Site, AuditRun, Schedule e Organization/Subscription; Entities Page, Violation e Report; Value Objects WcagCriterion, Severity, ConformanceLevel, Selector, Evidence e ScoreCard; Domain Services RuleEvaluator, ViolationDeduplicator, ConformanceScorer, RegressionDetector e RemediationAdvisor; Domain Events AuditRequested, AuditCompleted, ViolationRegressed e QuotaExceeded. Toda a lógica de regras, pontuação, mapeamento axe-rule → critério WCAG, comparação entre execuções e política de quotas fica aqui, sem conhecer HTTP, banco, navegador ou filas.",
+    "primary_ports": [
+      "RequestAuditUseCase (solicitar auditoria de URL/site/sitemap)",
+      "ScheduleRecurringAuditUseCase (agendar auditorias recorrentes)",
+      "GetAuditResultUseCase (consultar status e resultados)",
+      "GenerateReportUseCase (gerar relatório WCAG em formato escolhido)",
+      "CompareAuditsUseCase (detectar regressões entre execuções)",
+      "ManageProjectUseCase (CRUD de projetos, sites e configurações)",
+      "ManageSubscriptionUseCase (planos, quotas e uso)",
+      "ManageApiKeysAndWebhooksUseCase (chaves de API e webhooks)",
+      "ProcessAuditJobUseCase (consumo de jobs, acionado por scheduler/worker)"
+    ],
+    "secondary_ports": [
+      "PageRenderer (carregar página e devolver DOM renderizado, sem expor o navegador)",
+      "AccessibilityRuleEngine (executar regras de acessibilidade sobre um DOM)",
+      "SiteCrawler (descobrir páginas via sitemap/links)",
+      "AuditRepository / ProjectRepository / ViolationRepository / OrganizationRepository (persistência)",
+      "EvidenceStore (armazenar screenshots e snapshots de HTML)",
+      "ReportRenderer (renderizar PDF, HTML, CSV, JSON, VPAT/ACR)",
+      "JobQueue (enfileirar e consumir jobs)",
+      "Scheduler (disparar auditorias recorrentes)",
+      "NotificationSender (e-mail, Slack, Teams)",
+      "WebhookDispatcher (entrega assinada com retry)",
+      "BillingGateway (cobrança, planos e metering)",
+      "IdentityProvider (autenticação, SSO, RBAC)",
+      "IssueTracker (Jira, GitHub, Linear)",
+      "AiSuggestionProvider (sugestões de correção via LLM, opcional)",
+      "Clock, IdGenerator, EventPublisher, Logger/Metrics (portas utilitárias, para determinismo em testes)"
+    ],
+    "primary_adapters": [
+      "REST API (OpenAPI) para o dashboard web e integradores",
+      "GraphQL/BFF para a SPA do dashboard",
+      "CLI (a11y-audit) para CI/CD e scripts locais",
+      "GitHub Action / GitLab CI plugin (wrapper sobre a CLI ou API)",
+      "Extensão de navegador (Chrome/Firefox) para auditoria pontual",
+      "Worker consumidor de fila (aciona ProcessAuditJobUseCase)",
+      "Cron/Scheduler trigger (aciona ScheduleRecurringAuditUseCase)",
+      "Webhook de entrada (por exemplo, eventos do Stripe e do Git provider)",
+      "Adapter de teste (test driver in-memory / BDD) que aciona os casos de uso sem UI, igual aos demais adaptadores primários"
+    ],
+    "secondary_adapters": [
+      "PlaywrightPageRenderer (Chromium headless) — implementa PageRenderer",
+      "AxeCoreRuleEngine (axe-core) e PluginRuleEngine (Pa11y/IBM Equal Access/regras próprias) — implementam AccessibilityRuleEngine",
+      "SitemapAndLinkCrawler — implementa SiteCrawler",
+      "PostgresRepository (Drizzle/Prisma) — implementa os repositórios",
+      "S3/R2/GCS EvidenceStore — implementa EvidenceStore",
+      "PdfReportRenderer (Playwright print-to-PDF ou React-PDF), CsvReportRenderer, JsonReportRenderer e VpatReportRenderer — implementam ReportRenderer",
+      "RedisBullMQ ou SQS JobQueue — implementa JobQueue",
+      "CronScheduler (EventBridge/Cloud Scheduler) — implementa Scheduler",
+      "SesOrResendNotificationSender, SlackNotifier — implementam NotificationSender",
+      "HttpWebhookDispatcher com assinatura HMAC — implementa WebhookDispatcher",
+      "StripeBillingGateway — implementa BillingGateway",
+      "Auth0/Clerk/Keycloak IdentityProvider — implementa IdentityProvider",
+      "JiraIssueTracker, GithubIssueTracker — implementam IssueTracker",
+      "ClaudeAiSuggestionProvider — implementa AiSuggestionProvider",
+      "In-memory fakes de todas as portas (repositórios, fila, renderer, billing) para testes",
+      "SystemClock, UuidGenerator, OpenTelemetry — implementam as portas utilitárias"
+    ],
+    "isolation": "O core é um módulo sem dependências de framework ou I/O: não importa Playwright, axe-core, Postgres, Redis, Stripe nem HTTP. A regra de dependência aponta sempre de fora para dentro: adapters dependem das portas, e o core só conhece interfaces que ele mesmo define, com linguagem do domínio (por exemplo, PageRenderer.render(url): RenderedPage, em vez de browser.launch()). Cada porta usa DTOs/Value Objects do domínio, e os adapters traduzem formatos externos (o resultado do axe vira Violation e WcagCriterion) via anti-corruption layer. A injeção de dependência e a composição ocorrem numa composition root no limite externo. Tanto adapters primários quanto secundários são substituíveis; os testes acionam o core por uma porta primária e usam fakes nas secundárias, sem browser real, banco ou rede. Regras de import (dependency-cruiser/ArchUnit) e testes de arquitetura no CI garantem que o core não importe de adapters. Fontes externas tratadas de forma simétrica: axe-core, Stripe e Postgres são todos 'detalhes' atrás de portas.",
+    "interfaces": [
+      "Dashboard web (projetos, execuções, violações, tendências, score de conformidade)",
+      "API pública REST versionada com OpenAPI e chaves de API",
+      "CLI para pipelines de CI/CD com exit code por limiar de severidade",
+      "Plugins de CI (GitHub Actions, GitLab CI, Jenkins)",
+      "Extensão de navegador",
+      "Webhooks de saída (audit.completed, violation.regressed)",
+      "Relatórios exportáveis (PDF executivo, técnico, CSV, JSON, VPAT/ACR)",
+      "Widget/badge público de conformidade",
+      "Integrações (Slack, Teams, Jira, GitHub Issues)",
+      "Página de status de auditoria em tempo real (SSE/WebSocket)"
+    ],
+    "escalabilidade": "O núcleo é stateless, então a escala é horizontal por adapter. (1) Os adapters primários HTTP escalam atrás de load balancer com autoscaling. (2) A renderização é o gargalo (CPU e memória por navegador): auditorias assíncronas via JobQueue, com workers em pool de containers (ECS/Fargate, Cloud Run Jobs ou Kubernetes+KEDA) escalando por profundidade da fila, e um contexto de navegador isolado por job. (3) Um job por página ou lote de páginas permite paralelismo fino em sites grandes, e o fan-out/fan-in é feito pelo agregado AuditRun. (4) Há rate limiting e concorrência por tenant e por domínio-alvo (respeitando robots.txt e evitando DoS no site do cliente). (5) Resultados brutos são gravados em Postgres com particionamento por tenant/data, e as evidências vão para object storage com lifecycle. (6) Réplicas de leitura ou cache (Redis) para dashboards, e relatórios pré-computados. (7) Como as portas são estáveis, dá para trocar o adapter (por exemplo, Playwright local por um serviço de browser gerenciado, ou BullMQ por SQS) sem tocar no core; se necessário, extrair workers em serviços independentes. (8) Multi-tenancy via tenant_id em todo agregado, com row-level security, e opção de isolamento dedicado para planos enterprise.",
+    "custos": "Principais custos: (1) Computação de navegadores headless, o maior custo variável (estimativa de 5–20 s de CPU por página); mitigar com pool de browsers reaproveitados, workers spot/preemptíveis, limite de páginas por plano, cache por hash de DOM, auditoria incremental (só páginas alteradas) e scale-to-zero fora do horário de pico. (2) Armazenamento de screenshots/snapshots: lifecycle policy (S3 IA/Glacier), compressão e retenção por plano. (3) Banco Postgres gerenciado, com arquivamento de execuções antigas. (4) Egress de rede e relatórios PDF, com geração sob demanda e cache. (5) E-mail, Auth e observabilidade (planos por volume). (6) Chamadas a LLM opcionais, cobradas por uso e limitadas por plano. (7) Taxas de pagamento (Stripe ~2,9% + tarifa fixa). (8) Custos de suporte e de compliance (LGPD/GDPR, SOC 2 em planos enterprise). Recomendação: começar em modelo simples (monólito modular + 1 fila + workers Fargate/Cloud Run), medir custo por página auditada e definir preço com margem bruta de pelo menos 70%. Observação: testes automatizados cobrem apenas ~30–40% dos critérios WCAG, então é preciso posicionar o produto como triagem automatizada e ter cuidado com promessas de 'conformidade total' (risco jurídico e reputacional).",
+    "monetizacao": "Assinatura SaaS recorrente com metering por uso: (1) Free: 1 site, ~25 páginas/mês, sem agendamento, relatório básico com marca d'água. (2) Starter (~US$29–49/mês): poucos sites, varreduras semanais, relatórios PDF. (3) Pro (~US$99–199/mês): mais sites e páginas, auditorias diárias, CI/CD, integrações Jira/Slack, histórico e tendências. (4) Agency: white-label, multi-cliente e relatórios com a marca da agência. (5) Enterprise: SSO/SAML, SLA, VPAT/ACR, retenção longa, deploy dedicado ou self-hosted, contrato anual. Complementos: excedente de páginas cobrado por uso, sugestões de correção com IA como add-on, auditorias manuais/consultoria (WCAG completo com especialistas), selos/badges de conformidade e marketplace de integrações. Gatilhos de venda: exigências legais (ADA, European Accessibility Act, LBI brasileira), licitações e clientes B2B que pedem VPAT. Modelo PLG: CLI/extensão gratuitas como aquisição, com conversão para planos pagos por retenção de histórico e agendamento.",
+    "stack_sugerida": "TypeScript ponta a ponta com monólito modular (pnpm workspaces): packages/core (domínio + portas, zero dependências externas), packages/adapters-* e apps/api, apps/worker, apps/cli, apps/web. Backend: Node.js 22 + Fastify (ou NestJS apenas na camada de adapter primário), Zod para validação nas bordas. Frontend: Next.js/React + Tailwind + shadcn/ui (Radix, acessível por construção), TanStack Query. Auditoria: Playwright (Chromium headless) + @axe-core/playwright, com regras adicionais opcionais (IBM Equal Access, Pa11y). Persistência: PostgreSQL (Drizzle ORM, RLS multi-tenant) + Redis. Filas: BullMQ (início) → SQS/PubSub (escala). Evidências: S3/Cloudflare R2. Relatórios: React-PDF ou Playwright print-to-PDF. Auth: Clerk/Auth0 (SSO enterprise via WorkOS). Billing: Stripe Billing com usage-based metering. E-mail: Resend/SES. Infra: Docker, AWS ECS Fargate (workers spot) ou Cloud Run, Terraform/Pulumi, GitHub Actions. Observabilidade: OpenTelemetry + Grafana/Sentry. Testes: Vitest com fakes in-memory no core, contract tests por porta, testes de arquitetura (dependency-cruiser), Playwright E2E e um pipeline que testa o próprio produto contra WCAG (dogfooding)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T04:01:20+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 46,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta conta uma história arquitetural consistente de ponta a ponta — o core de CV+IA justifica os mercados, os mercados justificam as interfaces, as interfaces justificam a service layer, e a service layer justifica o pipeline fixo com parâmetros configuráveis — mas há uma tensão não endereçada entre a promessa de análise em tempo real (latência crítica) e a abstração de service layer distribuída, além de que a troca de modelos CV via adapter pattern é trivial em backend mas não-trivial em mobile nativo (requer re-build e publicação em stores), criando uma contradição silenciosa entre a extensibilidade declarada e a realidade do canal de distribuição primário."
+}

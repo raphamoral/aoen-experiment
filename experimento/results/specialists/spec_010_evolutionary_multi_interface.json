@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A proposta sinaliza corretamente o princípio API-first ('API-first desacopla backend de qualquer cliente') e prevê uma API pública na Fase 5 para ERPs/contadores, mas não articula estratégia deliberada de múltiplas interfaces — não há distinção de perfis de usuário por canal (MEI leigo no mobile vs. contador na web vs. integrador via API), nenhuma menção a interface mobile nativa, e a escolha dos canais não é justificada por alcance de mercado, mas aparece como consequência incidental da arquitetura."
+}

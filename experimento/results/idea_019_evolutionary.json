@@ -1,0 +1,124 @@
+{
+  "ideia_idx": 19,
+  "ideia": "App de agendamento inteligente para clínicas odontológicas",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability — núcleo da abordagem; arquitetura deve absorver novas features sem reescritas",
+      "Disponibilidade — clínicas operam em horário comercial; SLA 99,9% durante janela de uso",
+      "Escalabilidade elástica — carga previsível por horário comercial, picos em segundas e pós-feriados",
+      "Conformidade (LGPD) — dados de pacientes são sensíveis por lei",
+      "Desempenho percebido — confirmação de agendamento em < 2s para não perder o paciente",
+      "Observabilidade — multi-tenant exige rastreamento por clínica isolado",
+      "Testabilidade — fitness functions só funcionam se o sistema for inerentemente testável",
+      "Interoperabilidade — integração com WhatsApp, e-mail, Google Calendar, sistemas legados de prontuário"
+    ],
+    "fitness_functions": [
+      "Latência P95 < 2s para criação/confirmação de agendamento (automatizada, CI/CD)",
+      "Zero conflitos de agenda detectados pós-deploy (teste de invariante de domínio)",
+      "Cobertura de testes de domínio >= 85% — medida no pipeline, quebra o build se regredir",
+      "Nenhum dado de paciente trafegado sem criptografia — scanner de rede no ambiente de staging",
+      "Tenant isolation: query de uma clínica jamais retorna dados de outra (teste de contrato automatizado)",
+      "Tempo de onboarding de nova clínica < 10 minutos — teste de smoke end-to-end pós-deploy",
+      "Dependências externas (WhatsApp API, SMTP) com circuit breaker testado em chaos engineering mensal",
+      "Drift de schema de banco detectado antes do merge via migrações versionadas obrigatórias",
+      "Custo por tenant/mês monitorado via tag de billing cloud — alerta se ultrapassar threshold definido"
+    ],
+    "incremental_change": {
+      "estrategia": "Strangler Fig + Feature Toggles + Deploy independente por bounded context",
+      "fases": [
+        "Fase 1 — MVP: agendamento manual, notificação por e-mail/SMS, cadastro de clínica e paciente. Monolito modular em um único serviço para reduzir fricção operacional inicial.",
+        "Fase 2 — Inteligência básica: sugestão de horários baseada em histórico, lembretes automáticos, integração WhatsApp. Extrai módulo de notificações como serviço separado quando o volume justificar.",
+        "Fase 3 — Plataforma: API pública para integrações com prontuários, marketplace de add-ons, relatórios de BI. Extrai contextos de Agenda, Paciente e Faturamento como serviços quando o time crescer.",
+        "Fase 4 — IA avançada: predição de no-show, otimização de agenda por procedimento, chatbot de auto-agendamento."
+      ],
+      "principio": "Extrair serviços apenas quando a complexidade ou o time justificarem — Last Responsible Moment"
+    },
+    "reversibility": {
+      "reversiveis": [
+        "Escolha de banco de dados — PostgreSQL como padrão; migrações versionadas permitem trocar ou adicionar Aurora sem downtime",
+        "Provedor de mensageria — iniciar com Redis Streams, migrar para SQS/RabbitMQ conforme volume",
+        "Canal de notificação — abstração de interface de envio permite trocar Twilio por AWS SNS sem alterar domínio",
+        "Modelo de ML para sugestão de horários — pipeline separado, troca sem impacto no core",
+        "Provedor de cloud — evitar lock-in em serviços proprietários nas primeiras fases",
+        "Framework de frontend — componentes isolados permitem migração gradual"
+      ],
+      "irreversiveis_requerem_cuidado": [
+        "Modelo de dados multi-tenant (schema-per-tenant vs shared schema com tenant_id) — decidir na Fase 1 com análise de custo e isolamento",
+        "Estratégia de identidade/autenticação — mudança de provedor de IAM é custosa, avaliar antes do crescimento",
+        "Contratos de API pública (Fase 3) — breaking changes têm custo alto de ecossistema"
+      ]
+    },
+    "coupling": {
+      "modelo": "Acoplamento afferente/efferente controlado por bounded contexts (DDD)",
+      "taticas": [
+        "Comunicação interna entre contextos via eventos de domínio (ex: AgendamentoCriado, PacienteConfirmou)",
+        "Nunca compartilhar banco de dados entre contextos — cada contexto tem seu próprio schema",
+        "Anti-corruption layer para integrações com sistemas legados de prontuário",
+        "Consumer-driven contract tests para garantir compatibilidade entre produtor e consumidor de eventos",
+        "Contextos identificados: Agenda, Paciente, Clínica, Notificação, Faturamento, Autenticação, Analytics"
+      ]
+    },
+    "interfaces": [
+      "Web App (React/Next.js) — painel da clínica: agenda visual, gestão de pacientes, relatórios",
+      "Portal do Paciente (PWA) — auto-agendamento, histórico, confirmação/cancelamento",
+      "REST API v1 — integração com sistemas externos e futura API pública",
+      "Webhook system — notifica sistemas parceiros sobre eventos de agendamento",
+      "WhatsApp Business API — fluxo conversacional para confirmação e auto-agendamento",
+      "iCal/CalDAV feed — sincronização com Google Calendar e Apple Calendar do dentista",
+      "Admin Backoffice — gestão de tenants, billing, suporte (interno)"
+    ],
+    "escalabilidade": {
+      "modelo": "Escala horizontal stateless + banco de dados como único estado centralizado",
+      "detalhes": [
+        "Aplicação stateless containerizada (Docker/Kubernetes ou ECS) — escala horizontal sem fricção",
+        "Cache de disponibilidade de agenda no Redis — reduz carga no banco em consultas frequentes",
+        "Jobs de notificação em fila assíncrona — desacopla volume de envios do request HTTP",
+        "Read replicas para relatórios e analytics — não compete com operações transacionais",
+        "CDN para assets do frontend — latência zero para recursos estáticos",
+        "Auto-scaling baseado em métricas de CPU e fila — resposta a picos de segunda-feira de manhã",
+        "Multi-tenancy via tenant_id com índices compostos — escala para milhares de clínicas no mesmo banco"
+      ]
+    },
+    "custos": {
+      "principios": [
+        "Shared infrastructure multi-tenant reduz custo por clínica à medida que a base cresce",
+        "Serverless para jobs de notificação e relatórios — paga apenas pelo uso, não por instância ociosa",
+        "Observabilidade de custo por tenant desde o início — tags de billing por cliente no cloud",
+        "Managed services (RDS, ElastiCache, SES) reduzem custo operacional de time pequeno",
+        "Ambientes de staging/dev com instâncias menores e desligamento automático fora do horário",
+        "Benchmark de custo como fitness function — alerta antes de escalar arquitetura cara"
+      ],
+      "estimativa_inicial": "Stack mínima viável em < $200/mês até 50 clínicas ativas com tráfego moderado"
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS por assinatura mensal por clínica",
+      "tiers": [
+        "Starter ($79/mês) — 1 dentista, agendamento básico, notificações por e-mail/SMS, até 200 agendamentos/mês",
+        "Pro ($149/mês) — até 5 dentistas, WhatsApp, lembretes inteligentes, relatórios básicos, agendamentos ilimitados",
+        "Clinic ($299/mês) — dentistas ilimitados, API de integração, BI avançado, suporte prioritário, multi-unidade",
+        "Enterprise (negociado) — white-label, SLA customizado, integração com prontuário, suporte dedicado"
+      ],
+      "receitas_adicionais": [
+        "Confirmação por WhatsApp cobrada por mensagem acima de cota — modelo pay-as-you-go",
+        "Marketplace de integrações com sistemas de prontuário — revenue share com parceiros",
+        "Módulo de BI e relatórios avançados como add-on"
+      ],
+      "metricas_saas": "North star: agendamentos realizados via plataforma/mês. KPIs: churn < 3%, NRR > 110%, CAC payback < 6 meses"
+    },
+    "stack_sugerida": {
+      "backend": "Node.js com TypeScript (NestJS) ou Python (FastAPI) — maturidade de ecossistema e contratação",
+      "frontend": "Next.js (React) — SSR para SEO do portal do paciente, App Router para performance",
+      "banco_principal": "PostgreSQL (RDS/Neon) — ACID, JSON support, extensões para geo se necessário",
+      "cache_fila": "Redis (ElastiCache ou Upstash) — cache de agenda + filas de notificação com BullMQ",
+      "autenticacao": "Auth0 ou Clerk — IAM como serviço, evita reescrever autenticação; multi-tenant nativo",
+      "notificacoes": "AWS SES (e-mail) + Twilio ou Z-API (WhatsApp) com abstração de interface",
+      "infraestrutura": "AWS ECS Fargate ou Railway/Render na Fase 1 — escala para EKS na Fase 3 se necessário",
+      "observabilidade": "OpenTelemetry + Grafana Cloud ou Datadog — traces, métricas e logs desde o dia 1",
+      "ci_cd": "GitHub Actions com deploy por ambiente — fitness functions executadas em cada PR",
+      "ml_fase2": "Python microservice com scikit-learn ou serviço gerenciado (Vertex AI) para predição de no-show",
+      "principio_stack": "Escolhas mainstream reduzem risco de contratação e aumentam evolvability — nenhuma tecnologia exótica nas primeiras fases"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Evolvability — núcleo da abordagem; arquitetura deve absorver novas features sem reescritas\",\n    \"Disponibilidade — clínicas operam em horário comercial; SLA 99,9% durante janela de uso\",\n    \"Escalabilidade elástica — carga previsível por horário comercial, picos em segundas e pós-feriados\",\n    \"Conformidade (LGPD) — dados de pacientes são sensíveis por lei\",\n    \"Desempenho percebido — confirmação de agendamento em < 2s para não perder o paciente\",\n    \"Observabilidade — multi-tenant exige rastreamento por clínica isolado\",\n    \"Testabilidade — fitness functions só funcionam se o sistema for inerentemente testável\",\n    \"Interoperabilidade — integração com WhatsApp, e-mail, Google Calendar, sistemas legados de prontuário\"\n  ],\n  \"fitness_functions\": [\n    \"Latência P95 < 2s para criação/confirmação de agendamento (automatizada, CI/CD)\",\n    \"Zero conflitos de agenda detectados pós-deploy (teste de invariante de domínio)\",\n    \"Cobertura de testes de domínio >= 85% — medida no pipeline, quebra o build se regredir\",\n    \"Nenhum dado de paciente trafegado sem criptografia — scanner de rede no ambiente de staging\",\n    \"Tenant isolation: query de uma clínica jamais retorna dados de outra (teste de contrato automatizado)\",\n    \"Tempo de onboarding de nova clínica < 10 minutos — teste de smoke end-to-end pós-deploy\",\n    \"Dependências externas (WhatsApp API, SMTP) com circuit breaker testado em chaos engineering mensal\",\n    \"Drift de schema de banco detectado antes do merge via migrações versionadas obrigatórias\",\n    \"Custo por tenant/mês monitorado via tag de billing cloud — alerta se ultrapassar threshold definido\"\n  ],\n  \"incremental_change\": {\n    \"estrategia\": \"Strangler Fig + Feature Toggles + Deploy independente por bounded context\",\n    \"fases\": [\n      \"Fase 1 — MVP: agendamento manual, notificação por e-mail/SMS, cadastro de clínica e paciente. Monolito modular em um único serviço para reduzir fricção oper"
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "O projeto lista 7 telas bem distintas e justificadas por perfis reais (empresa vs. freelancer vs. público), mas todas estão contidas em um único canal web (Next.js), sem qualquer menção a mobile (relevante para freelancers em campo), API pública para integrações enterprise, ou desacoplamento explícito da lógica de negócio que permita adicionar novos canais sem reescrita."
+}

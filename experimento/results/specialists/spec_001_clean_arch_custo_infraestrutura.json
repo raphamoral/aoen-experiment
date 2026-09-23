@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "clean_arch",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista componentes de infraestrutura (PostgreSQL, Redis, RabbitMQ/Kafka, WebSocket, Google Maps API), mas não apresenta nenhuma estimativa de custo em valores concretos, nenhuma estratégia de otimização de custos (scale-to-zero, spot instances, storage tiers) e nenhuma projeção de crescimento de custos conforme a base de usuários escala."
+}

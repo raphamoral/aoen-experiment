@@ -1,0 +1,85 @@
+{
+  "ideia_idx": 61,
+  "ideia": "Plataforma de matching entre ONGs e voluntários por competências",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Matching de competências entre demandas de ONGs e perfis de voluntários. O núcleo contém as entidades Voluntário, ONG, Oportunidade (vaga ou projeto), Competência (taxonomia com níveis de proficiência), Candidatura, Match e Engajamento. As regras são: cálculo de aderência (competências exigidas x oferecidas, disponibilidade, localização, causa), ciclo de vida da candidatura (proposta, aceite, execução, conclusão, avaliação), verificação de ONGs e reputação de voluntários. Todo o núcleo é puro, sem I/O.",
+    "primary_ports": [
+      "GerenciarPerfilVoluntario (cadastrar, atualizar competências, disponibilidade)",
+      "GerenciarPerfilONG (cadastro, verificação, dados institucionais)",
+      "PublicarOportunidade (criar, editar, encerrar demanda com competências exigidas)",
+      "BuscarMatches (recomendar voluntários para oportunidade e oportunidades para voluntário)",
+      "GerenciarCandidatura (candidatar, convidar, aceitar, recusar, concluir)",
+      "RegistrarHorasEAvaliacao (horas voluntariadas, feedback, certificados)",
+      "AdministrarPlataforma (moderação, taxonomia de competências, planos)",
+      "GerenciarAssinatura (planos, upgrade, cancelamento)",
+      "ConsultarRelatoriosImpacto (métricas por ONG e por voluntário)"
+    ],
+    "secondary_ports": [
+      "RepositorioVoluntarios",
+      "RepositorioONGs",
+      "RepositorioOportunidades",
+      "RepositorioCandidaturas",
+      "IndiceDeBuscaDeCompetencias (busca por texto e por similaridade)",
+      "MotorDeSimilaridadeSemantica (embeddings de competências e descrições)",
+      "ProvedorDeIdentidade (autenticação e autorização)",
+      "NotificadorDeMensagens (email, push, WhatsApp)",
+      "GatewayDePagamento (cobrança e assinaturas)",
+      "VerificadorDeONG (consulta a registros oficiais, por exemplo CNPJ)",
+      "ArmazenamentoDeArquivos (currículos, certificados, documentos)",
+      "PublicadorDeEventos (event bus)",
+      "Relogio e GeradorDeIds (para testes determinísticos)",
+      "ProvedorDeAgendaCalendario",
+      "RegistroDeAuditoriaLGPD"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL (backend do front-end web)",
+      "SPA/PWA web para voluntários e ONGs",
+      "App mobile (React Native ou Flutter) via a mesma API",
+      "Painel administrativo (backoffice)",
+      "CLI e scripts de importação em lote (ONGs migrando bases)",
+      "Webhooks de entrada (Stripe, provedor de identidade)",
+      "Consumidores de fila/eventos (jobs agendados de recomputação de matches)",
+      "Bot de chat (WhatsApp/Telegram) para candidatura rápida",
+      "Suíte de testes automatizados (BDD e contrato) e harness de simulação, que dirigem o core como qualquer outro ator",
+      "API pública para integrações de parceiros (LinkedIn, plataformas de RH corporativo)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios) via adapter SQL",
+      "Adapter em memória dos repositórios (testes e desenvolvimento local)",
+      "OpenSearch/Elasticsearch ou pgvector (índice de busca e similaridade)",
+      "Adapter de embeddings (API de modelo de linguagem ou modelo local) e fake determinístico para testes",
+      "Keycloak/Auth0/Cognito (identidade), com OIDC",
+      "SES/SendGrid (email), FCM/APNs (push), Twilio/WhatsApp Business API",
+      "Stripe/Pagar.me/Mercado Pago (pagamentos e assinaturas)",
+      "Adapter de consulta à Receita Federal ou BrasilAPI (verificação de CNPJ)",
+      "S3 ou compatível (arquivos)",
+      "Kafka/RabbitMQ/SQS ou outbox em Postgres (eventos)",
+      "Google Calendar/Outlook (agenda)",
+      "Armazenamento de auditoria imutável",
+      "Relógio do sistema e gerador de UUID/ULID, com fakes para testes"
+    ],
+    "isolation": "O core (domínio + casos de uso) fica em um módulo sem dependências de framework, banco, HTTP ou SDKs. Ele só conhece as interfaces das portas, que pertencem ao core. A regra de dependência aponta sempre para dentro: adapters dependem das portas e nunca o contrário. Os adapters são ligados por injeção de dependência em uma composition root, a única parte que conhece implementações concretas. Entidades e DTOs de transporte e de persistência são separados, com mapeadores nos adapters. Eventos de domínio ficam no core e a publicação é feita por um adapter (padrão outbox). Testes de arquitetura (ArchUnit, dependency-cruiser ou import-linter) quebram o build se o core importar código externo. Cada porta tem testes de contrato reutilizáveis que todo adapter, real ou fake, precisa passar. Todos os sistemas externos recebem o mesmo tratamento, sejam banco, pagamento ou notificação, o que permite trocar qualquer um sem tocar no core.",
+    "interfaces": [
+      "Portal do voluntário (perfil, descoberta de oportunidades, candidaturas, histórico e certificados)",
+      "Portal da ONG (publicação de oportunidades, ranking de voluntários sugeridos, gestão de candidaturas)",
+      "App mobile com notificações push",
+      "Painel administrativo (moderação, verificação de ONGs, taxonomia de competências)",
+      "API REST/GraphQL documentada com OpenAPI para integradores",
+      "Webhooks de saída para parceiros",
+      "Dashboard de impacto e relatórios exportáveis (PDF/CSV)",
+      "Bot de WhatsApp/Telegram",
+      "CLI para importação em lote e operações de manutenção"
+    ],
+    "escalabilidade": "Monólito modular hexagonal no início, com deploy stateless atrás de load balancer e escala horizontal simples. Como as portas isolam o core, os módulos mais pesados podem ser extraídos em serviços sem reescrever o domínio, começando pelo matching e pelas notificações. Leituras e recomendações usam índice de busca dedicado e cache (Redis) com invalidação por eventos. O cálculo de matches é assíncrono via fila e workers escaláveis de forma independente, com recomputação incremental quando perfis ou oportunidades mudam. O Postgres escala com réplicas de leitura e, depois, particionamento por região ou tenant. Os arquivos ficam em object storage com CDN. Os adapters isolam limites de terceiros com circuit breaker, retry e rate limiting. Como o acesso é sazonal (campanhas, desastres, fim de ano), o autoscaling absorve os picos. Multi-tenancy lógico por organização, com possibilidade de isolar clientes enterprise.",
+    "custos": "Os custos iniciais são baixos com um monólito modular, um Postgres gerenciado e containers serverless ou pequenas VMs. Os itens que mais pesam são: (1) embeddings e LLM, controlados com cache, geração em lote e modelos pequenos; (2) notificações, especialmente WhatsApp, cobrado por conversa, então convém priorizar email e push e usar WhatsApp só para eventos críticos; (3) índice de busca, mitigado começando com pgvector no próprio Postgres; (4) taxas de pagamento, entre 3% e 5% por transação. Também contam o custo de verificação de ONGs (manual ou semiautomática), moderação e suporte, o armazenamento de arquivos (barato) e a conformidade com LGPD (DPO, auditoria, retenção de dados). Como o uso é sazonal, o autoscaling e as instâncias spot mantêm o custo proporcional ao uso. A arquitetura hexagonal permite trocar fornecedores por custo sem reescrever o core. Um teto de gasto por adapter e a observabilidade de custo por tenant ajudam no controle.",
+    "monetizacao": "Modelo freemium com lado voluntário gratuito, para maximizar a oferta de talentos, e cobrança do lado da demanda. (1) Assinatura para ONGs: plano gratuito com poucas oportunidades ativas e matches limitados; planos pagos com mais vagas, ranking avançado, gestão de equipes, relatórios de impacto e integrações. Desconto ou plano social para ONGs pequenas. (2) Plano corporativo: empresas que patrocinam programas de voluntariado dos funcionários (ESG), com dashboards de impacto, campanhas e white-label. (3) Voluntário premium opcional: destaque de perfil, certificados verificados e trilhas de capacitação. (4) Serviços: vagas destacadas, onboarding e consultoria de projetos. (5) API para parceiros e plataformas de RH. (6) Cursos e certificações de competências com parceiros. (7) Comissão em doações ou campanhas intermediadas, se aplicável. A receita vem principalmente de ONGs médias e grandes e de empresas, mantendo o acesso gratuito para pequenas ONGs e para voluntários.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (módulos por porta e adapter) ou Kotlin/Spring Boot, ou Java com ArchUnit; o core em pacote puro sem dependências. Banco: PostgreSQL com pgvector (busca semântica) e extensão de busca textual, migrando para OpenSearch se necessário. Cache e filas: Redis, mais SQS/RabbitMQ (ou Kafka em maior escala), com padrão outbox. Identidade: Keycloak ou Auth0 (OIDC). Front-end: Next.js/React com PWA, mobile em React Native. Pagamentos: Stripe e/ou Pagar.me. Notificações: SES, FCM e Twilio. Infra: Docker, Kubernetes ou ECS/Cloud Run, Terraform, CDN e S3. Observabilidade: OpenTelemetry, Grafana/Prometheus e Sentry. CI/CD: GitHub Actions com testes de arquitetura, testes de contrato por porta e testes end-to-end contra adapters em memória. Segurança e conformidade: LGPD, criptografia em repouso e em trânsito, RBAC e trilha de auditoria."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:45:33+00:00",
+    "runner": "runner.py"
+  }
+}

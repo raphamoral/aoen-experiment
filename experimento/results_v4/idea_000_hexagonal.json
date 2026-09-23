@@ -1,0 +1,83 @@
+{
+  "ideia_idx": 0,
+  "ideia": "Plataforma de telemedicina veterinária com IA para diagnóstico por imagem",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Cuidado clínico veterinário à distância: gestão do ciclo de teleconsulta (paciente animal, tutor, veterinário, prontuário) e do ciclo de diagnóstico assistido por IA a partir de imagens (radiografia, ultrassom, dermatologia, citologia). Subdomínios: Consulta (agendamento, sessão, encerramento), Paciente/Prontuário (animal, tutor, histórico, prescrições), Estudo de Imagem (recebimento, laudo, revisão humana), Diagnóstico Assistido (inferência, confiança, explicabilidade, aprovação pelo veterinário), Faturamento/Assinatura e Conformidade (consentimento, rastreabilidade, regras do CFMV sobre telemedicina veterinária).",
+    "primary_ports": [
+      "AgendarTeleconsultaPort (agendar, remarcar, cancelar)",
+      "ConduzirTeleconsultaPort (iniciar sessão, registrar anamnese, encerrar)",
+      "SubmeterEstudoDeImagemPort (enviar imagens e metadados clínicos)",
+      "SolicitarDiagnosticoAssistidoPort (disparar análise por IA)",
+      "RevisarLaudoPort (aprovar, editar ou rejeitar sugestão da IA)",
+      "GerenciarProntuarioPort (consultar e atualizar histórico do animal)",
+      "EmitirReceitaEAtestadoPort",
+      "GerenciarClinicaEAssinaturaPort (multi-tenant, planos, usuários)",
+      "ConsultarRelatoriosPort (métricas clínicas e operacionais)"
+    ],
+    "secondary_ports": [
+      "RepositorioDePacientesPort / RepositorioDeConsultasPort / RepositorioDeLaudosPort (persistência)",
+      "ArmazenamentoDeImagensPort (objetos DICOM/JPEG/PNG)",
+      "MotorDeInferenciaDiagnosticaPort (modelo de IA: classificar, detectar, segmentar)",
+      "RegistroDeModelosPort (versionamento e rastreio do modelo usado em cada laudo)",
+      "VideoconferenciaPort (sala, tokens, gravação)",
+      "NotificacaoPort (e-mail, SMS, WhatsApp, push)",
+      "PagamentoPort (cobrança, assinatura, repasse)",
+      "IdentidadeEAutorizacaoPort (autenticação, papéis, tenant)",
+      "AssinaturaDigitalPort (ICP-Brasil para receitas e laudos)",
+      "FilaDeEventosPort (publicação e consumo de eventos de domínio)",
+      "RelogioPort e GeradorDeIdPort (determinismo em testes)",
+      "AuditoriaPort (trilha imutável de acessos e decisões)",
+      "PACSPort (integração com sistemas de imagem de clínicas)",
+      "IntegracaoComSistemasDeGestaoPort (ERPs e softwares veterinários)"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL para o app web do veterinário",
+      "App web (SPA/PWA) do tutor",
+      "App mobile do tutor (captura guiada de fotos)",
+      "Adaptador de CLI/scripts administrativos e de migração",
+      "Webhooks de entrada (pagamento, videoconferência, PACS)",
+      "Consumidores de fila que acionam casos de uso (ex.: estudo recebido → solicitar diagnóstico)",
+      "API pública para clínicas parceiras e integradores (chave de API, OAuth2)",
+      "Adaptador de testes (suítes de aceitação e BDD que dirigem o core sem UI)",
+      "Bot de WhatsApp para triagem e envio de fotos"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios) com Row-Level Security por tenant",
+      "S3-compatível (AWS S3, Cloudflare R2 ou MinIO) para imagens, com URLs pré-assinadas",
+      "Adaptador de inferência: serviço próprio em PyTorch/ONNX servido via Triton ou KServe em GPU",
+      "Adaptador de inferência alternativo: API de modelo multimodal de terceiros (fallback ou comparação)",
+      "MLflow ou registro de modelos equivalente",
+      "Twilio Video, LiveKit ou Daily (videoconferência)",
+      "SES/SendGrid, Twilio e WhatsApp Business API (notificações)",
+      "Stripe ou Asaas/Pagar.me (pagamentos, PIX e boleto no Brasil)",
+      "Keycloak, Auth0 ou Cognito (identidade)",
+      "Provedor de assinatura ICP-Brasil (ex.: Vidaas, BirdID)",
+      "Kafka, RabbitMQ ou SQS/SNS (eventos)",
+      "Adaptador DICOMweb/Orthanc para PACS",
+      "Adaptadores em memória (fakes) para todos os ports, usados em testes",
+      "Armazenamento de auditoria append-only (S3 Object Lock ou tabela particionada)"
+    ],
+    "isolation": "O core (domínio + casos de uso) é um módulo sem dependência de framework, banco, SDK de nuvem ou biblioteca de IA. Dependências apontam sempre de fora para dentro: adapters importam os ports, nunca o contrário. Entidades e value objects (Animal, Tutor, Consulta, EstudoDeImagem, Laudo, NivelDeConfianca) ficam no domínio; casos de uso orquestram apenas por ports. O modelo de IA é tratado como um sistema externo qualquer, atrás de MotorDeInferenciaDiagnosticaPort, e sua saída é uma sugestão (SugestaoDiagnostica) que só vira Laudo após aprovação do veterinário, regra de negócio que vive no core. DTOs e mapeadores traduzem nas fronteiras, então nenhum tipo externo (payload do Stripe, tensor, DICOM cru) entra no domínio. A composição é feita em um composition root, e o isolamento é verificado por testes de arquitetura (ArchUnit, import-linter ou dependency-cruiser) no CI. Todos os sistemas externos são tratados de forma simétrica, com o mesmo padrão de port e adapter, o que permite trocar Twilio por LiveKit, ou o modelo interno por um de terceiros, sem tocar no core.",
+    "interfaces": [
+      "Portal do veterinário: fila de casos, visualizador de imagens com overlays de IA, editor de laudo, sala de vídeo",
+      "Portal/app do tutor: agendamento, envio guiado de fotos e exames, pagamento, acesso a receitas e histórico",
+      "Portal da clínica (admin): usuários, planos, faturamento, métricas",
+      "API REST/OpenAPI e webhooks para integradores",
+      "Bot de WhatsApp para triagem",
+      "Painel de MLOps: monitoramento de acurácia, drift e revisão de discordâncias entre IA e veterinário",
+      "CLI para operações e migrações",
+      "Contratos de teste: suítes de aceitação executáveis contra os primary ports"
+    ],
+    "escalabilidade": "O core é stateless e escala horizontalmente atrás de balanceador. Cargas com perfis diferentes são separadas em serviços ou workers independentes: API síncrona, workers de inferência em GPU com autoscaling por profundidade de fila (KEDA), processamento de imagens e vídeo. A inferência é assíncrona: o estudo é enfileirado, o resultado retorna por evento, o que absorve picos e permite batching em GPU. Imagens vão direto do cliente ao storage por URL pré-assinada, sem passar pela API. PostgreSQL com réplicas de leitura, particionamento por tenant e data, e cache (Redis) para leituras quentes. Videoconferência escala no provedor gerenciado (SFU). Como a arquitetura é hexagonal, começa como monólito modular e extrai adapters ou módulos para serviços conforme a carga, sem reescrever o core. Multi-região pode ser adotada para latência e residência de dados (LGPD). Idempotência nos casos de uso e eventos de domínio garantem reprocessamento seguro.",
+    "custos": "Principais fatores: (1) GPU de inferência, o maior custo variável. Mitigar com modelos quantizados (ONNX/TensorRT), batching, spot instances, scale-to-zero fora do horário e cascata de modelos (leve primeiro, pesado só quando necessário). (2) Armazenamento de imagens e DICOM: ciclo de vida com tiers frios (Glacier/Infrequent Access), compressão sem perda e política de retenção. (3) Videoconferência: cobrada por minuto/participante, com avaliação de LiveKit self-hosted em volume alto. (4) Taxas de pagamento (~2,9% + fixo no cartão; PIX costuma ser mais barato). (5) Mensagens WhatsApp/SMS por conversa. (6) Conformidade: auditoria, backup, criptografia, certificados ICP-Brasil, seguro de responsabilidade. (7) Anotação e revisão de dados por veterinários especialistas para treinar e validar modelos, custo recorrente relevante. (8) Time de ML e MLOps. Como o custo de IA por estudo é mensurável, o adapter de inferência deve emitir métricas por tenant para permitir precificação por uso e cálculo de margem. Começar com monólito modular e serviços gerenciados reduz o custo operacional inicial.",
+    "monetizacao": "Modelo híbrido: (a) assinatura SaaS por clínica em planos escalonados (Starter, Pro, Enterprise), por número de veterinários e volume de estudos inclusos; (b) cobrança por uso de IA (pay-per-analysis) acima da franquia; (c) comissão ou taxa por teleconsulta paga pelo tutor (marketplace de veterinários e plantão 24h); (d) assinatura de tutor (plano de saúde pet com teleconsultas ilimitadas de triagem); (e) API e white-label para redes de clínicas, pet shops, seguradoras pet e planos de saúde animal; (f) segundo parecer de especialistas (radiologistas e dermatologistas veterinários) como serviço premium; (g) licenciamento de insights anonimizados e agregados, com consentimento explícito e conforme a LGPD, para indústria farmacêutica e de ração. Teste gratuito ou freemium com número limitado de análises de IA para aquisição.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Kotlin/Java (Spring Boot) organizado como monólito modular hexagonal (pacotes domain / application / ports / adapters), com testes de arquitetura no CI. ML: PyTorch, MONAI para imagens médicas, exportação ONNX/TensorRT, serving com NVIDIA Triton ou KServe, MLflow/DVC para versionamento, Label Studio para anotação. Dados: PostgreSQL (RLS), Redis, S3/R2, Orthanc para DICOM. Mensageria: SQS/SNS ou RabbitMQ, evoluindo para Kafka. Frontend: React/Next.js (TypeScript) com visualizador OHIF/Cornerstone.js; mobile em React Native ou Flutter. Vídeo: LiveKit ou Twilio. Identidade: Keycloak ou Auth0. Pagamentos: Stripe (internacional) e Asaas/Pagar.me (Brasil). Infra: Kubernetes (EKS/GKE) com nós GPU e KEDA, Terraform, GitHub Actions, ArgoCD. Observabilidade: OpenTelemetry, Prometheus/Grafana, Loki, Sentry, além de monitoramento de drift de modelo (Evidently). Segurança e conformidade: criptografia em repouso e em trânsito, KMS, RLS por tenant, trilha de auditoria imutável, LGPD e diretrizes do CFMV. Testes: pytest/JUnit com fakes em memória dos ports, testes de contrato por adapter e BDD sobre os primary ports."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T01:39:39+00:00",
+    "runner": "runner.py"
+  }
+}

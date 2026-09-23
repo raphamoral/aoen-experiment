@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador existe — o laudo técnico certificado como camada de confiança entre compradores e vendedores — mas a proposta arquitetural o trata como um step de workflow (upload de PDF + selo) em vez de isolá-lo como núcleo proprietário extensível; sem um modelo de dados de avaliação estruturado, histórico de confiabilidade dos avaliadores ou lógica que impeça substituição por qualquer processo manual equivalente, o diferenciador é frágil e não está arquiteturalmente separado do restante do CRUD."
+}

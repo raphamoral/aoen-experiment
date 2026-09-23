@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona 'usage-based pricing' no contexto BillingSubscription e rastreia bounties por campanha no RewardsPayout — o que implica alguma consciência de custo variável por operação — mas não há nenhum mecanismo explícito de alocação de custo por tenant: os componentes de IA (matching, deduplicação, sugestão de casos) não têm custo por chamada modelado, a infraestrutura de cloud/storage/CDN é listada como commodity sem rastreamento por cliente, e o contexto de AnalyticsReporting foca em métricas de cobertura e ROI para o cliente final, não em margem por tenant para o negócio."
+}

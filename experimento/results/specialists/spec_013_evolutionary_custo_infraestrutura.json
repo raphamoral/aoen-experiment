@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta demonstra consciência de custo apenas superficialmente — existe uma fitness function ('custo por reserva processada') e uma menção a evitar lock-in de cloud via Terraform, mas não há nenhuma estimativa concreta em dólares/reais por componente (compute, RDS, CDN, storage), nenhuma estratégia explícita de otimização (scale-to-zero, spot/preemptible, storage tiering) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

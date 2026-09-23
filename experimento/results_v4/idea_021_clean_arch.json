@@ -1,0 +1,55 @@
+{
+  "ideia_idx": 21,
+  "ideia": "SaaS de gestão de manutenção predial preventiva com IoT",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": "Camadas internas, sem dependência de framework. Entidades: Organizacao (tenant), Edificio, Pavimento, Ambiente, Ativo (HVAC, elevador, bomba, gerador, quadro elétrico) com criticidade e vida útil, Sensor (tipo, unidade, limites operacionais), Leitura (valor, timestamp, qualidade), RegraDeAlerta (limiares, tendência, anomalia), Alerta (severidade, ciclo de vida), PlanoDeManutencao (gatilho por calendário, uso ou condição), OrdemDeServico (estados: aberta, atribuída, em execução, concluída, verificada), Tarefa/Checklist, Tecnico, EquipeTerceirizada, Fornecedor, PecaEstoque, Contrato/SLA, Assinatura/Plano comercial, Usuario/Papel/Permissao. Value objects: LimiteOperacional, Periodicidade, Severidade, Custo, JanelaDeManutencao. Regras de negócio puras: cálculo de saúde do ativo, elegibilidade de gatilho preventivo, transições válidas de OS, cálculo de MTBF, MTTR e disponibilidade.",
+    "use_cases": [
+      "CadastrarEdificioEAtivos",
+      "RegistrarEParearSensor (provisionamento de dispositivo)",
+      "IngerirLeituraDeSensor (validação, normalização e persistência de séries temporais)",
+      "AvaliarRegrasDeAlerta (limiar, tendência, detecção de anomalia)",
+      "GerarAlertaEEscalar",
+      "CriarPlanoDePreventiva",
+      "GerarOrdemDeServicoPorCalendario",
+      "GerarOrdemDeServicoPorCondicao (disparada por IoT)",
+      "AtribuirOrdemDeServico (por competência, carga e SLA)",
+      "ExecutarEConcluirOS (checklist, fotos, assinatura, peças usadas)",
+      "PreverFalha / CalcularSaudeDoAtivo (manutenção preditiva)",
+      "GerenciarEstoqueDePecas",
+      "GerenciarContratosESLA",
+      "EmitirRelatoriosEIndicadores (MTBF, MTTR, custo por ativo, conformidade preventiva x corretiva)",
+      "NotificarStakeholders",
+      "GerenciarTenantsAssinaturaEUsuarios",
+      "ExportarDadosParaAuditoriaECompliance (ex.: PMOC, NBR 5674)"
+    ],
+    "interface_adapters": "Controllers REST/GraphQL e handlers de mensagens que convertem requisições em Input DTOs dos casos de uso. Presenters/ViewModels que formatam Output DTOs para web, mobile e relatórios. Gateways/repositórios que implementam as portas: RepositorioDeAtivos, RepositorioDeOS, RepositorioDeLeituras (série temporal), RepositorioDeUsuarios. Adaptadores de mensageria (MQTT, AMQP ou Kafka) para entrada de telemetria, com tradução de payloads de fabricantes diferentes (Anti-Corruption Layer). Adaptadores de notificação (e-mail, SMS, WhatsApp, push). Adaptadores de armazenamento de arquivos (fotos, laudos). Adaptador de cobrança (gateway de pagamento). Adaptadores de integração com ERP, CMMS legado, BMS/BAS (BACnet, Modbus, OPC-UA) e SSO (OIDC/SAML). Adaptador de modelo de ML para predição, atrás de uma porta PreditorDeFalhas. Mappers entre entidade, modelo de persistência e DTO. Anti-corruption layers para APIs externas.",
+    "frameworks_drivers": "Camada externa, substituível. Web: React/Next.js (painel) e app mobile React Native/Flutter com modo offline para técnicos. API: NestJS ou FastAPI, usada só como mecanismo de entrega. Banco relacional: PostgreSQL (multi-tenant com RLS). Série temporal: TimescaleDB ou InfluxDB. Cache e filas: Redis e RabbitMQ ou Kafka. Broker IoT: EMQX ou AWS IoT Core / Azure IoT Hub (MQTT/TLS com certificados por dispositivo). Gateways de borda: ESP32 ou Raspberry Pi com LoRaWAN/Zigbee/BACnet. Objetos: S3 ou compatível. Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki. Infra: Docker, Kubernetes ou ECS, Terraform, CI/CD. Auth: Keycloak ou Auth0. Pagamentos: Stripe ou Asaas/Pagar.me. Notificações: SES, Twilio ou Z-API, FCM.",
+    "dependency_rule": "As dependências de código-fonte apontam sempre para dentro: Frameworks & Drivers → Interface Adapters → Use Cases → Entities. Os casos de uso declaram portas (interfaces) para repositórios, notificações, relógio, publicação de eventos, armazenamento e preditor de falhas. Os adaptadores implementam essas portas (inversão de dependência). A composição acontece na Composition Root, na camada externa, por injeção de dependência manual ou por contêiner. Entidades e casos de uso não importam ORM, SDK de nuvem, cliente MQTT nem HTTP. Os limites são cruzados por DTOs simples, sem entidades vazando para a UI ou o banco. Regras são impostas por estrutura de pacotes/módulos separados (monorepo com workspaces) e verificadas por ferramentas como ArchUnit, dependency-cruiser ou import-linter, que quebram o CI em caso de violação.",
+    "testability": "Entidades: testes unitários puros e rápidos, sem mocks. Casos de uso: testados com fakes e in-memory das portas (repositórios, relógio, notificador), o que permite simular cenários IoT como uma leitura fora do limite gerando alerta e depois OS, sem broker nem banco. Adaptadores: testes de contrato para cada porta, executados contra a implementação real via Testcontainers (Postgres, Timescale, RabbitMQ, MQTT). Simulador de dispositivos IoT para testes de carga e ponta a ponta. Testes de API e de UI (Playwright) apenas na periferia. Pirâmide: muitos testes de domínio e de casos de uso, poucos de integração e E2E. Property-based testing para regras de limiar e recorrência. Relógio injetável para testar planos preventivos por calendário. CI executa a suíte do núcleo em segundos, sem infraestrutura.",
+    "interfaces": [
+      "API REST/GraphQL pública e versionada (multi-tenant, OpenAPI)",
+      "Portal web de gestão (dashboards, mapa de ativos, calendário de preventivas)",
+      "App mobile do técnico (offline-first, QR code/NFC do ativo, checklist, fotos)",
+      "Portal do síndico/cliente (chamados, laudos, indicadores)",
+      "Ingestão de telemetria via MQTT/HTTPS/LoRaWAN",
+      "Webhooks de saída (eventos de alerta e OS)",
+      "Integração com BMS/BAS (BACnet, Modbus, OPC-UA)",
+      "Integrações com ERP, contabilidade e CMMS via API/CSV",
+      "Notificações (e-mail, SMS, WhatsApp, push)",
+      "SSO (OIDC/SAML)",
+      "Portas internas: RepositorioDeAtivos, RepositorioDeOS, RepositorioDeLeituras, Notificador, PublicadorDeEventos, RelogioProvider, ArmazenamentoDeArquivos, PreditorDeFalhas, GatewayDeCobranca",
+      "Painel administrativo interno (backoffice do SaaS)"
+    ],
+    "escalabilidade": "Monolito modular alinhado às fronteiras dos casos de uso no início, com extração posterior para serviços quando necessário, o que a Clean Architecture facilita. O pipeline de telemetria (alto volume, escrita intensiva) é separado do núcleo transacional (baixo volume, consistência forte): dispositivos → broker → fila/stream → workers de ingestão e avaliação de regras com escala horizontal. Séries temporais com particionamento por tempo e tenant, compressão, downsampling e retenção em camadas (quente, morna, fria). Pré-agregação na borda para reduzir tráfego. Multi-tenancy com RLS e possibilidade de isolamento por schema ou banco para clientes enterprise. Autoescalonamento de workers por profundidade de fila. Processamento assíncrono orientado a eventos (alerta → OS → notificação) com idempotência e outbox pattern. Cache de leitura para dashboards. Réplicas de leitura para relatórios. Multi-região opcional para latência e resiliência. Modelos de ML treinados offline e servidos em lote ou sob demanda.",
+    "custos": "Principais vetores: (1) volume de telemetria (mensagens IoT, armazenamento de séries temporais e egress), que é o maior risco de margem, mitigado com amostragem adaptativa, envio por exceção (report-by-exception), agregação na borda e retenção escalonada; (2) infraestrutura de nuvem, que começa baixa com monolito e banco gerenciado e cresce com a telemetria; (3) hardware de sensores e gateways, que pode ser vendido, alugado (comodato) ou ficar por conta do cliente, e afeta o caixa; (4) conectividade (LoRaWAN, NB-IoT, chips), cara em escala; (5) notificações (WhatsApp e SMS têm custo por mensagem, então priorizar push e e-mail); (6) suporte e onboarding, com instalação e calibração de sensores em campo; (7) conformidade (LGPD, segurança, backups, auditoria); (8) ML e treino de modelos, custo controlado ao começar com regras e limiares antes de modelos preditivos. Recomenda-se medir o custo unitário por sensor e por edifício desde o início, para calibrar preços.",
+    "monetizacao": "Assinatura SaaS recorrente (MRR) em camadas: Essencial (gestão de ativos, OS e preventivas por calendário), Profissional (IoT, alertas e indicadores) e Enterprise (manutenção preditiva, integrações BMS/ERP, SSO, SLA dedicado, isolamento de dados). Precificação híbrida: base por edifício ou área (m²) mais variável por sensor/ativo monitorado e por volume de telemetria acima da franquia. Receita adicional: venda ou aluguel de kits de sensores e gateways (hardware-as-a-service), instalação e onboarding, módulos premium (relatórios de compliance PMOC/NBR 5674, ESG e eficiência energética), marketplace de fornecedores e técnicos com comissão, API para integradores (planos pagos) e white-label para administradoras e facilities. Foco inicial em administradoras de condomínios, shoppings, hospitais, data centers e facilities, com contratos anuais e desconto por volume.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (ou Python com FastAPI), organizado em núcleo de domínio e casos de uso sem framework, mais adaptadores. Frontend: Next.js/React com TypeScript e Tailwind. Mobile: React Native ou Flutter com armazenamento offline (SQLite/WatermelonDB). Dados: PostgreSQL com RLS, TimescaleDB para telemetria, Redis, S3. Mensageria: EMQX/AWS IoT Core (MQTT) mais RabbitMQ ou Kafka/Redpanda. Auth: Keycloak ou Auth0. Infra: AWS (ou Azure/GCP), Docker, Kubernetes ou ECS Fargate, Terraform, GitHub Actions. Observabilidade: OpenTelemetry, Grafana, Prometheus, Sentry. ML: Python (scikit-learn, Prophet, PyTorch) servido via serviço isolado atrás da porta PreditorDeFalhas. Testes: Jest/Vitest, Testcontainers, Playwright, k6 e simulador de dispositivos MQTT. Qualidade arquitetural: dependency-cruiser ou ArchUnit no CI, monorepo (Nx ou Turborepo) com pacotes domain, application, adapters e infrastructure."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "99d475cb3837",
+    "gerado_em": "2026-09-21T02:27:32+00:00",
+    "runner": "runner.py"
+  }
+}

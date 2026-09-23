@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "A proposta demonstra consciência prática de escalabilidade (Redis para hot data, fila como válvula de escape) e um MVP bem delimitado, mas carece de qualquer padrão arquitetural que proteja a lógica de negócio de frameworks e serviços externos — sem menção a portas/adaptadores, repositórios abstratos ou camada de domínio isolada, o que significa que trocar o Google Maps, migrar de Express para outro runtime ou separar um módulo em serviço independente exigirá cirurgia em código acoplado; a estratégia de escala é reativa ('coloco filas se crescer') em vez de ser uma decisão de design antecipada e reversível."
+}

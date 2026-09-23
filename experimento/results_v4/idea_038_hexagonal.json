@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 38,
+  "ideia": "SaaS de monitoramento de concorrentes para e-commerce",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Inteligência competitiva de preços e catálogo para e-commerce. Entidades e agregados: Tenant/Conta, Loja (seller monitorada), Concorrente, ProdutoMonitorado (SKU próprio), ProdutoConcorrente, Correspondência (matching entre SKU próprio e SKU do concorrente), Snapshot de Oferta (preço, promoção, estoque, frete, avaliação, data/hora), Regra de Alerta, Alerta, Estratégia de Precificação (recomendação de preço), Plano/Assinatura e Cota de uso. Regras de negócio no core: normalização de preço e moeda, detecção de variação relevante, matching de produtos, avaliação de regras de alerta, cálculo de recomendação de preço, controle de cotas por plano e políticas de frequência de coleta.",
+    "primary_ports": [
+      "GerenciarConcorrentesUseCase (cadastrar, pausar e remover concorrentes e URLs monitoradas)",
+      "GerenciarCatalogoMonitoradoUseCase (importar SKUs próprios e confirmar ou rejeitar matching)",
+      "ConsultarHistoricoPrecosQuery (série temporal, comparativos, posição de preço no mercado)",
+      "ConfigurarRegrasAlertaUseCase (criar, editar e desativar regras)",
+      "ReceberResultadoColetaUseCase (entrada de snapshots coletados por scrapers ou provedores)",
+      "AgendarColetaUseCase (disparar ou reagendar coletas)",
+      "GerarRecomendacaoPrecoUseCase",
+      "GerarRelatorioUseCase",
+      "GerenciarAssinaturaUseCase (plano, cotas, upgrade)",
+      "GerenciarTenantEUsuariosUseCase",
+      "ProcessarEventoCobrancaUseCase (eventos vindos do gateway de pagamento)"
+    ],
+    "secondary_ports": [
+      "ColetorDePaginasPort (obter dados brutos de página ou API de um concorrente)",
+      "ExtratorDeProdutoPort (transformar HTML ou JSON bruto em oferta estruturada)",
+      "RepositorioDeSnapshotsPort (série temporal)",
+      "RepositorioDeCatalogoPort (produtos, concorrentes, matching)",
+      "RepositorioDeTenantsPort",
+      "RepositorioDeRegrasEAlertasPort",
+      "MatchingDeProdutosPort (similaridade por EAN/GTIN, título, atributos, embeddings)",
+      "NotificadorPort (e-mail, Slack, WhatsApp, webhook)",
+      "AgendadorPort (jobs de coleta recorrentes)",
+      "FilaDeMensagensPort / PublicadorDeEventosPort",
+      "ArmazenamentoDeObjetosPort (HTML bruto, screenshots, exports)",
+      "GatewayDePagamentoPort",
+      "ProvedorDeIdentidadePort (autenticação e autorização)",
+      "ProvedorDeProxyPort (rotação de IPs, geolocalização)",
+      "ConectorDeMarketplaceEPlataformaPort (APIs oficiais: Mercado Livre, Amazon, Shopify, VTEX, etc.)",
+      "RelogioPort e GeradorDeIdPort (determinismo em testes)",
+      "CachePort",
+      "AuditoriaETelemetriaPort (logs, métricas, traces)"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL (controllers HTTP)",
+      "Dashboard web (SPA/SSR consumindo a API)",
+      "CLI administrativa e de operação",
+      "Consumidor de webhooks de entrada (gateway de pagamento, plataformas de e-commerce)",
+      "Consumidor de fila/eventos (resultados de coleta)",
+      "Scheduler/cron trigger (dispara casos de uso de coleta e relatórios)",
+      "Adaptador de testes automatizados (BDD/contract tests chamando as portas diretamente, sem UI)",
+      "Scripts de importação em lote (CSV/planilhas)",
+      "Integrações de terceiros (Zapier/Make, Google Sheets add-on, plugin de ERP)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (catálogo, tenants, regras) via repositórios",
+      "TimescaleDB ou ClickHouse (snapshots/série temporal)",
+      "Redis (cache, rate limit, locks)",
+      "Scraper com Playwright/Puppeteer e HTTP client (ColetorDePaginasPort)",
+      "Adaptadores de extração por site (CSS/XPath, JSON-LD, schema.org) e extrator baseado em LLM como fallback",
+      "Provedores de proxy/scraping (Bright Data, Oxylabs, ScraperAPI, Zyte)",
+      "APIs oficiais de marketplaces e plataformas (Mercado Livre, Amazon SP-API, Shopify, VTEX)",
+      "Matching por GTIN/EAN + similaridade textual (Postgres pg_trgm/OpenSearch) + embeddings (pgvector)",
+      "E-mail (SES/SendGrid/Resend), Slack, WhatsApp Business API, webhooks de saída",
+      "Kafka/RabbitMQ/SQS ou NATS (mensageria)",
+      "Temporal, BullMQ ou Celery (orquestração e agendamento)",
+      "S3/GCS/R2 (objetos)",
+      "Stripe ou Pagar.me/Asaas (cobrança)",
+      "Auth0/Keycloak/Clerk/Cognito (identidade)",
+      "OpenTelemetry + Prometheus/Grafana/Sentry",
+      "Adaptadores in-memory/fakes de todas as portas para testes e desenvolvimento local"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não importa nenhum framework, driver, SDK ou biblioteca de I/O; depende apenas de interfaces (ports) definidas dentro dele. Regra de dependência: adapters → ports → core, verificada por testes de arquitetura (ArchUnit/dependency-cruiser/import-linter) no CI. DTOs e modelos externos (HTML de concorrente, payload do gateway, resposta de marketplace) são traduzidos por anti-corruption layers nos adapters para tipos do domínio. O core recebe relógio, IDs e aleatoriedade por porta. Toda a composição acontece em um composition root, que injeta os adapters (reais em produção, fakes em testes). Assim, trocar scraper por API oficial, Postgres por ClickHouse ou Stripe por Asaas não altera o core. Como os adapters primários são simétricos, o mesmo caso de uso pode ser acionado por UI, API, fila, cron ou teste automatizado.",
+    "interfaces": [
+      "Dashboard web: visão geral de mercado, comparativo de preços por SKU, gráficos de histórico, mapa de posição de preço",
+      "Central de alertas e regras (queda de preço, ruptura de estoque, nova promoção, novo concorrente)",
+      "Tela de matching de produtos (revisão humana de correspondências sugeridas)",
+      "API pública REST/GraphQL com chaves de API e webhooks de saída",
+      "Notificações por e-mail, Slack e WhatsApp",
+      "Relatórios agendados (PDF/CSV/Excel) e exportação",
+      "Integrações: Shopify, VTEX, Mercado Livre, Google Sheets, Zapier/Make, ERPs",
+      "Painel de cobrança, plano e consumo de cotas",
+      "CLI e console administrativo interno (operação de coletores, reprocessamento, backoffice)"
+    ],
+    "escalabilidade": "Adapters primários e secundários são separados em processos independentes que escalam horizontalmente: (1) API/dashboard stateless atrás de load balancer; (2) workers de coleta escalados por profundidade de fila e por domínio alvo, com rate limit e política de politeness por concorrente; (3) pipeline assíncrono coleta → extração → normalização → detecção de mudança → alertas, com filas e idempotência por (produto, timestamp); (4) armazenamento de snapshots em banco de séries temporais com particionamento por tenant e tempo, compressão e retenção por plano, guardando apenas mudanças (delta) para reduzir volume; (5) deduplicação de coleta: um mesmo produto de concorrente é coletado uma vez e compartilhado entre tenants que o monitoram; (6) frequência de coleta adaptativa (mais frequente para produtos voláteis ou de alto interesse); (7) cache e read models (CQRS) para dashboards; (8) multi-tenancy com isolamento lógico (tenant_id + row-level security) e possibilidade de shards dedicados para clientes enterprise; (9) evolução do monolito modular (um processo com core único e adapters) para serviços separados por porta apenas quando houver necessidade, sem alterar o core.",
+    "custos": "Principais custos: (a) coleta, que é o maior, incluindo proxies residenciais, serviços anti-bot/CAPTCHA e compute de navegador headless; mitigar com APIs oficiais quando existirem, HTTP simples antes de headless, coleta compartilhada entre tenants, frequência adaptativa e cache de páginas inalteradas (ETag/hash); (b) armazenamento de séries temporais e HTML bruto, mitigado com compressão, delta storage, retenção por plano e lifecycle para storage frio; (c) compute dos workers, com spot/preemptible instances e autoscaling; (d) LLM/embeddings para matching e extração, mitigado com cache, uso apenas como fallback e modelos menores; (e) envio de notificações (WhatsApp e SMS têm custo por mensagem); (f) observabilidade e suporte. Riscos jurídicos e de compliance (termos de uso dos sites, LGPD/GDPR, robots.txt) devem ser tratados no design e precificados. Controlar margem por tenant com metering de custo por coleta e cotas por plano. Estimativa de partida: MVP em nuvem com custo fixo baixo (dezenas a poucas centenas de USD/mês) e custo variável dominado por proxies, proporcional ao número de URLs × frequência.",
+    "monetizacao": "Assinatura recorrente SaaS (MRR) escalonada por número de produtos/URLs monitorados, frequência de coleta (diária, horária, tempo real), número de concorrentes, retenção de histórico e usuários. Exemplo: Starter (até 100 SKUs, coleta diária), Growth (1.000 SKUs, várias coletas por dia, alertas avançados, API), Scale/Enterprise (ilimitado sob contrato, SLA, SSO, integrações, ambiente dedicado). Complementos: recomendação/repricing automático (com sincronização de preços para Shopify/VTEX/Mercado Livre), pacotes de SKUs extras, relatórios de mercado, acesso à API e dados históricos, white-label para agências. Trial gratuito de 14 dias e plano freemium limitado para aquisição. Possível modelo híbrido com cobrança por uso (overage por URL/coleta). Métricas-chave: MRR, churn, custo de coleta por SKU, margem bruta por plano.",
+    "stack_sugerida": "Linguagem e estrutura: TypeScript (Node.js) ou Kotlin/Java, ou Python para workers de scraping e ML. Monolito modular com pacotes separados domain/application/adapters e composition root, com testes de arquitetura. Backend: NestJS ou Fastify (apenas como adapter primário HTTP), OpenAPI. Frontend: Next.js/React com TanStack Query e biblioteca de gráficos. Dados: PostgreSQL (com pgvector e RLS) + TimescaleDB ou ClickHouse para séries temporais + Redis. Coleta: Playwright, Crawlee, Scrapy, mais provedor de proxy. Mensageria e orquestração: SQS/RabbitMQ ou Kafka + Temporal ou BullMQ. Storage: S3/R2. Infra: Docker, Kubernetes (ou ECS/Fargate/Cloud Run no início), Terraform, GitHub Actions. Pagamentos: Stripe (internacional) ou Asaas/Pagar.me (Brasil). Auth: Clerk/Auth0/Keycloak. Observabilidade: OpenTelemetry, Grafana, Prometheus, Sentry. Testes: contract tests por porta, fakes in-memory, testes de arquitetura (dependency-cruiser/ArchUnit) e e2e com Playwright."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:59:51+00:00",
+    "runner": "runner.py"
+  }
+}

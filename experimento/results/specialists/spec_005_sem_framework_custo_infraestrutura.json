@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "A proposta identifica corretamente o principal custo variável (D4Sign por envelope), cita as plataformas de hosting e dá uma estimativa global de R$ 300-600/mês, mas não apresenta breakdown por componente (quanto custa Railway/Render, Redis, RDS PostgreSQL, S3 por GB/operação, banda de saída), não há projeção de como esses custos escalam com volume de contratos ou usuários, e não existe estratégia explícita de otimização de custo como scale-to-zero, tiers de armazenamento S3 (Standard → Glacier para contratos antigos) ou limites de gasto por serviço."
+}

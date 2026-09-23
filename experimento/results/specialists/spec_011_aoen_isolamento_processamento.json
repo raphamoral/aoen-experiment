@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta oferece apenas isolamento lógico via MatchEnginePort (padrão port/adapter), o que permite trocar a implementação do scoring, mas não isola o processo pesado fisicamente — a MatchmakingService centralizada executa scoring, geração de matches e métricas no mesmo processo, sem menção a filas, workers assíncronos, circuit breakers ou fallback caso o motor de compatibilidade falhe ou fique lento."
+}

@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 9,
+  "ideia": "Marketplace de equipamentos médicos usados com certificação de qualidade",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de certificação de qualidade de equipamentos médicos usados: o processo estruturado de inspeção, laudo técnico, rastreabilidade e emissão de certificado digital vinculado ao equipamento. Sem isso, é apenas um classificado — o certificado é o produto.",
+    "fase1_mercado": "Compradores: clínicas, hospitais de pequeno/médio porte, laboratórios e consultórios que precisam de equipamentos regulamentados com custo reduzido. Vendedores: hospitais desinvestindo ativos, distribuidores de seminovos, técnicos especializados. Mercado secundário: empresas de manutenção e assistência técnica credenciada.",
+    "fase1_extensivel": "Sim. O core é o fluxo de certificação, não o inspetor humano nem a tecnologia de laudo. Pode ser executado por: (1) rede própria de inspetores credenciados, (2) parceiros técnicos terceirizados via API de parceiro, (3) no futuro, análise assistida por IA com imagens e histórico de uso. A troca de executor não altera o fluxo nem a rastreabilidade do certificado.",
+    "fase2_interfaces": [
+      "Web app (marketplace público) — listagem, busca, compra e venda",
+      "Portal do inspetor (PWA mobile-first) — registro de vistoria em campo, upload de fotos, preenchimento de checklist, emissão de laudo",
+      "Portal do vendedor — cadastro de equipamentos, acompanhamento de certificação, gestão de anúncios",
+      "Portal do comprador — histórico de compras, certificados vinculados, solicitação de garantia",
+      "Painel administrativo — gestão de inspetores credenciados, filas de certificação, configuração por categoria de equipamento",
+      "API REST pública — integração com sistemas de gestão hospitalar (ERP/CMMS) para consulta de certificados e compras B2B",
+      "Notificações via WhatsApp/e-mail — atualizações de status de certificação e transações"
+    ],
+    "fase2_justificativa_mercado": "Web app abre o mercado de compradores individuais e PMEs; portal do inspetor viabiliza operação de campo sem app nativo (custo zero de distribuição); portal do vendedor converte hospitais e distribuidores em fornecedores recorrentes; API REST abre o mercado enterprise/B2B onde a compra é feita dentro do sistema do cliente; WhatsApp captura o mercado brasileiro de gestores que operam pelo celular sem acessar portais.",
+    "fase2_service_layer": "Uma CertificationService centraliza toda a lógica: criação de ordem de certificação, transições de estado (solicitado → agendado → em vistoria → laudado → certificado → publicado), emissão de certificado digital e vinculação ao equipamento. Todas as interfaces chamam essa mesma service layer via casos de uso — nenhuma interface contém regra de negócio. Trocar o canal não altera o fluxo de certificação.",
+    "fase3_fluxo_fixo": "Cadastro do equipamento → solicitação de certificação → atribuição de inspetor → execução de checklist por categoria → geração de laudo → emissão de certificado digital com hash → publicação do anúncio com certificado vinculado → transação → transferência de titularidade do certificado para o comprador.",
+    "fase3_parametros_configuraveis": [
+      "Checklist de inspeção por categoria de equipamento (ex: ultrassom, bisturi elétrico, monitor multiparâmetro)",
+      "Critérios de aprovação/reprovação por categoria (limites de desgaste, vida útil restante mínima)",
+      "Tabela de preços da certificação por tipo e complexidade do equipamento",
+      "Prazo de validade do certificado por categoria",
+      "Normas regulatórias aplicáveis por país/região (ANVISA RDC 551, FDA 21 CFR, CE MDR)",
+      "Percentual de comissão por categoria e faixa de preço",
+      "SLA de atribuição e conclusão de certificação por região",
+      "Templates de certificado (logo, campos obrigatórios por regulação)",
+      "Métodos de pagamento habilitados por região",
+      "Regras de garantia pós-venda por categoria"
+    ],
+    "fase3_novo_cliente": "Novo segmento de equipamento ou nova região = nova entrada no painel administrativo: define checklist, critérios, norma aplicável, prazo e preço. Nenhum deploy. Novo vendedor corporativo (ex: rede hospitalar) = cadastro com CNPJ, configuração de comissão negociada e limite de listagens simultâneas — tudo via painel. O código não muda.",
+    "fase4_core_isolado": "O motor de certificação é isolado como serviço assíncrono independente: recebe eventos de 'solicitação de certificação', processa o fluxo de estados, persiste laudos e emite certificados digitais. Roda em worker separado com fila de mensagens (ex: BullMQ/Redis). O marketplace continua funcionando — exibindo anúncios já certificados e recebendo novas solicitações na fila — mesmo que o worker de certificação esteja em manutenção.",
+    "fase4_custo_total_cliente": "Por transação concluída: armazenamento de fotos de vistoria (~20 fotos, ~5 MB cada = ~100 MB por equipamento, ~$0,002/mês no S3); geração de PDF do certificado (~$0,001 por emissão via serviço de renderização ou biblioteca local); envio de notificações (~$0,01 por ciclo de 5 notificações via WhatsApp Business API); custo proporcional de banco de dados (~$0,005/mês por equipamento ativo no catálogo); CDN para fotos (~$0,0005 por GB servido). Custo variável total estimado por equipamento certificado e vendido: R$ 0,50 a R$ 2,00. Custo fixo rateado por volume (infra base): diluído acima de 200 transações/mês. Permite precificação de certificação a partir de R$ 80-150 por equipamento com margem superior a 95%.",
+    "fase4_continuidade": "O worker de certificação consome eventos de uma fila persistente (Redis/BullMQ). Se o worker cai: (1) o marketplace continua exibindo equipamentos já certificados, (2) novas solicitações ficam enfileiradas sem perda, (3) vendedores recebem status 'em processamento' sem erro visível. Quando o worker volta, processa a fila do ponto onde parou. Zero perda de dados, zero downtime percebido pelo comprador.",
+    "fase4_manutencao": "O motor de certificação é desacoplado por interface: recebe um CertificationJob e emite um CertificationResult. Internamente pode usar qualquer gerador de PDF, qualquer provedor de assinatura digital ou qualquer modelo de IA para análise de imagem — sem alterar o contrato com o resto do sistema. Troca de tecnologia = reimplementar o worker, não o marketplace.",
+    "monetizacao": "Primário: taxa de certificação por equipamento (R$ 80–500 dependendo da complexidade, paga pelo vendedor). Secundário: comissão sobre transação (3–8% do valor de venda). Terciário: assinatura mensal para vendedores recorrentes (hospitais, distribuidores) com volume mínimo garantido e SLA premium de certificação. Futuro: licenciamento do motor de certificação como white-label para marketplaces verticais de outros países ou para gestoras de ativos hospitalares.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com NestJS — service layer clara, injeção de dependência nativa, suporte a workers; Filas: BullMQ + Redis para o motor de certificação assíncrono; Banco: PostgreSQL (dados transacionais + histórico de certificações com rastreabilidade); Armazenamento: AWS S3 ou Cloudflare R2 para fotos e PDFs de laudos; Frontend: Next.js (marketplace público com SSR para SEO + SPAs internas para portais); Mobile/PWA: React + PWA para portal do inspetor (sem app store); Geração de certificados: PDF com Puppeteer ou react-pdf; Assinatura digital: ICP-Brasil via integração com provedor (ex: BirdID ou Certisign) ou hash SHA-256 com timestamp para certificação não-regulada; Notificações: Twilio (WhatsApp Business API) + SendGrid; Infra: Railway ou Render para início (zero DevOps), migração para ECS/Fargate quando o volume justificar isolamento de workers."
+  }
+}

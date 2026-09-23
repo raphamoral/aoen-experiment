@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma entidade, atributo ou regra voltada à mensuração de custo por cliente ou por operação — o único dado financeiro modelado é o `bountyPool` no `Project`, que representa receita/despesa do cliente, não o custo da plataforma para servi-lo, tornando impossível calcular margem por tenant ou LTV operacional."
+}

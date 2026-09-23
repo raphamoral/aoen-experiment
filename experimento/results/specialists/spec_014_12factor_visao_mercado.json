@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural descreve com riqueza técnica a plataforma, e o nome do produto sugere um mercado (reuniões corporativas multilíngues), mas não há definição explícita do público-alvo, tamanho de mercado, articulação da dor do cliente, nem diferenciação frente a concorrentes como Kudo, Interprefy ou Microsoft Teams com tradução integrada."
+}

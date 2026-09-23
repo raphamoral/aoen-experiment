@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 61,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — sem estimativas de valores para servidores, banco de dados, embeddings via API (OpenAI/Cohere), CDN, armazenamento ou banda, sem estratégia de otimização (scale-to-zero, spot instances, tiers de storage) e sem qualquer projeção de como os custos escalam com o crescimento da base de ONGs, voluntários e empresas."
+}

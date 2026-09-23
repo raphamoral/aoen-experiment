@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta define entidades como 'objetos de negócio puros, sem dependências externas', o que sugere uma base arquitetural compatível com múltiplas interfaces (Clean Architecture), mas não menciona explicitamente nenhuma interface concreta (web, mobile, API, CLI), não apresenta perfis de usuário que justifiquem canais distintos e não demonstra raciocínio de alcance de mercado — o desacoplamento parece uma escolha técnica, não uma decisão estratégica orientada a múltiplos contextos de uso."
+}

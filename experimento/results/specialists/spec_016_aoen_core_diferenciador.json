@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador — motor de orquestração autônoma de devoluções — está claramente identificado (fase1_core), isolado do restante via service layer (nenhuma interface carrega regra de negócio), é extensível por design (transportadoras como adapters intercambiáveis, ERP/WMS plugável, canais configuráveis, sem hard-code de fornecedor), e resolve um problema real não endereçado pelas alternativas atuais (portais de transportadora resolvem rastreamento, ERPs resolvem estoque, mas nenhum decide automaticamente o melhor fluxo fim-a-fim com base em custo, SLA, política e histórico do produto); o único ponto que impede nota 10 é a ausência de uma descrição explícita do mecanismo de decisão do motor (regras, ML, heurística) que tornaria a proposta de valor genuinamente insubstituível frente a um concorrente que implemente um rules engine similar."
+}

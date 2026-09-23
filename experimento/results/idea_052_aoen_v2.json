@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 52,
+  "ideia": "SaaS de gestão de qualidade para indústria alimentícia com APPCC",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de monitoramento de Pontos Críticos de Controle (PCCs) com rastreabilidade automática de não-conformidades, geração de evidências auditáveis e acionamento de fluxos corretivos — sem isso, o produto é apenas um formulário digital",
+    "fase1_mercado": "Indústrias alimentícias de médio porte sujeitas a auditorias regulatórias (ANVISA, MAPA, FSSC 22000, BRC, SIF) que hoje gerenciam APPCC em papel ou planilha: frigoríficos, laticínios, processadoras de alimentos, cozinhas industriais e redes de food service com cozinhas centrais",
+    "fase1_extensivel": "Sim. O core é um pipeline de eventos: coleta de dado → avaliação de limite → disparo de ação. A coleta pode vir de sensor IoT, entrada manual, integração com equipamento (CLP/SCADA) ou API de laboratório. A avaliação de limite usa regras configuráveis por PCC, não hardcoded. Trocar a fonte de dados não quebra o motor de conformidade",
+    "fase2_interfaces": [
+      "Web App (dashboard de qualidade para gestores e auditores internos)",
+      "PWA Mobile (operador de chão de fábrica registra monitoramentos e ações corretivas offline-first)",
+      "API REST/Webhook (integração com ERPs como TOTVS, SAP, Bling e sistemas MES)",
+      "Painel de Auditoria PDF/Excel (relatórios APPCC exportáveis para auditorias externas e certificadoras)",
+      "Integração IoT passiva (recepção de leituras automáticas de sensores de temperatura, pH, cloro via MQTT/HTTP)"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de gestores e coordenadores de qualidade que precisam de visibilidade em tempo real. PWA Mobile abre o mercado de operação em fábrica onde não há computador e há risco de perda de sinal. API abre integrações com clientes enterprise que já têm ERP e não vão digitar dados duas vezes. Exportação PDF/Excel é o que fecha contratos: o cliente compra o produto quando percebe que ele gera a documentação que a auditoria exige. IoT abre o mercado de plantas com sensores já instalados que precisam de camada de conformidade em cima",
+    "fase2_service_layer": "Uma CamadaDeServiço central expõe casos de uso como: registrarMonitoramento(), avaliarConformidade(), acionarCorreção(), gerarRelatorioAuditoria(). Cada interface chama apenas essa camada. O Web App, o Mobile e a API REST são adaptadores que traduzem seus formatos para os contratos da service layer. Nenhuma interface contém lógica de negócio — trocar o frontend não afeta as regras de APPCC",
+    "fase3_fluxo_fixo": "Coleta de monitoramento → validação contra limites do PCC → classificação (conforme / não-conforme / crítico) → registro imutável com timestamp e operador → se não-conforme: abertura obrigatória de ação corretiva → encerramento com evidência → geração de rastro auditável. Este fluxo é invariável para qualquer cliente",
+    "fase3_parametros_configuraveis": [
+      "Plano APPCC do cliente (PCCs, perigos, limites críticos e limites operacionais por PCC)",
+      "Frequência de monitoramento por PCC (ex: temperatura câmara fria a cada 2h)",
+      "Ações corretivas pré-definidas por tipo de desvio",
+      "Responsáveis por etapa e escalonamento de alertas (quem notifica se não houver resposta em X minutos)",
+      "Templates de relatório (cabeçalho, logo, campos exigidos pela certificadora)",
+      "Padrão regulatório aplicável (ANVISA RDC 275, FSSC 22000, BRC Food, Halal, Kosher)",
+      "Integrações ativas (quais webhooks/ERPs estão conectados)",
+      "Retenção de registros (quantos anos manter, por exigência legal ou contratual)",
+      "Unidades de medida e idioma da interface"
+    ],
+    "fase3_novo_cliente": "Onboarding via wizard de configuração: o cliente define sua planta (setores, linhas), cadastra os PCCs com limites críticos, define responsáveis e frequências. O sistema instancia um tenant isolado usando esse plano como configuração. Nenhum código é escrito. Um técnico de implantação consegue ativar um cliente novo em uma sessão de 2 a 4 horas",
+    "fase4_core_isolado": "O Worker de Avaliação de Conformidade — processo assíncrono que consome eventos de monitoramento de uma fila (ex: Redis Streams ou RabbitMQ), avalia contra os limites do PCC configurado, persiste o registro imutável e dispara ações corretivas ou alertas. Este worker roda isolado do Web App e da API, escala horizontalmente por carga e pode ser reiniciado sem afetar as interfaces",
+    "fase4_custo_total_cliente": "Custo core: processamento do worker (~0,001 USD por evento de monitoramento avaliado, depende de volume de PCCs e frequência). Custo de infra proporcional: banco de dados (PostgreSQL com schema por tenant ou banco separado para enterprise: ~5–15 USD/mês/cliente PME). Armazenamento: registros de auditoria + evidências fotográficas (~0,023 USD/GB/mês S3-compatible, estimativa de 2–5 GB/ano por cliente médio = ~0,10–0,12 USD/mês). Notificações: e-mail/SMS (~0,50–2 USD/mês dependendo do volume de alertas). Banda: desprezível para clientes PME. Total estimado PME: 8–25 USD/mês de custo real, suportando precificação a partir de 199–499 BRL/mês com margem saudável",
+    "fase4_continuidade": "O Worker de Conformidade opera de forma assíncrona sobre uma fila durável. Se o worker cair, os eventos ficam na fila até ele se recuperar — nenhum monitoramento é perdido. O Web App e a API continuam funcionando (leitura de histórico e novos registros entram na fila). A falha do worker não torna o sistema inacessível, apenas atrasa a avaliação de conformidade em tempo real. Alertas críticos têm circuito alternativo (fallback direto via webhook/SMS sem passar pelo worker)",
+    "fase4_manutencao": "O Worker é descoberto via contrato de fila (formato de mensagem versionado). Para trocar o motor de avaliação (ex: migrar de regras simples para regras baseadas em ML para predição de desvios), basta subir a nova versão do worker consumindo a mesma fila enquanto a antiga ainda roda — blue/green no nível do consumer. O restante do sistema não sabe nem se importa com a implementação interna do worker",
+    "monetizacao": "SaaS por tenant com planos baseados em volume: Starter (até 5 PCCs, 2 usuários, sem IoT) ~199 BRL/mês; Profissional (PCCs ilimitados, 10 usuários, integração IoT básica, relatórios de auditoria) ~499–799 BRL/mês; Enterprise (multi-planta, API REST, SSO, SLA, suporte dedicado) ~1.500–4.000 BRL/mês. Receita adicional: onboarding pago (implantação do plano APPCC: 1.500–5.000 BRL one-time), integração customizada com ERP (projeto), e licença white-label para consultorias de segurança alimentar revenderem a seus clientes",
+    "stack_sugerida": "Backend: Node.js (NestJS) com TypeScript — service layer limpa e tipada. Banco: PostgreSQL (multi-tenant por schema) + Redis para filas e cache de configuração. Worker: processo NestJS isolado consumindo Redis Streams. Frontend Web: Next.js (SSR para dashboards pesados em dados). Mobile PWA: Next.js com service worker para offline-first. Armazenamento de evidências: S3-compatible (Cloudflare R2 para custo baixo). Notificações: Resend (e-mail) + Twilio (SMS crítico). Infra: Railway ou Render para iniciar (simplicidade operacional); migrar para AWS ECS/Fargate quando multi-tenant enterprise exigir. IoT ingest: endpoint HTTP simples ou broker MQTT (EMQX cloud). Observabilidade: Sentry (erros) + Prometheus/Grafana (custo por tenant)."
+  }
+}

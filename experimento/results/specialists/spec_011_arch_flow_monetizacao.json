@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O projeto menciona elementos de monetização (planos de assinatura e success fee no bounded context 'Billing', e um 'Team Growth & Monetization'), mas não detalha tiers, valores, estrutura de preços, nem aborda métricas de sustentabilidade como MRR, churn, LTV ou CAC — ficando no nível de intenção sem especificação viável."
+}

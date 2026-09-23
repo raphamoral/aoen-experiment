@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "As entidades formam uma cadeia de negócio coesa e autoexplicativa (Client→Project→Bid→Contract→Escrow→Review), onde cada regra reforça o contexto de compliance — KYC obrigatório antes de publicar projetos, certificações com validade no Freelancer, imutabilidade contratual pós-assinatura e liberação de Escrow condicionada à aprovação de milestones são decisões que se reforçam mutuamente e contam uma história consistente; porém, a proposta está truncada antes de expor camadas de serviço, infraestrutura e escolhas tecnológicas, o que impede avaliar se as decisões arquiteturais mais amplas mantêm a mesma coerência do modelo de domínio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador existe implicitamente (pipeline ML para churn telecom com ingestão em stream + feature store + treinamento por tenant), mas a proposta o trata como infraestrutura genérica — nunca isola o núcleo preditivo como componente estratégico, não explica por que os modelos são superiores a alternativas (AWS Fraud Detector, Salesforce Einstein, churn genérico), e não descreve nenhuma propriedade única do domínio telecom (ex: features de ARPU, handoff, roaming, portabilidade) que tornaria o produto insubstituível."
+}

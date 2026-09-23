@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta indica separação de contextos (Speech Recognition, Translation Engine, Speech Synthesis como bounded contexts distintos), uso de Kafka para eventos de sessão e times de plataforma dedicados (AI/ML Platform, Audio Infrastructure Platform) — elementos que sugerem processamento assíncrono e alguma separação física via serviços externos (Deepgram, DeepL, ElevenLabs); porém, não há menção explícita a Bulkhead, circuit breakers, filas de trabalho dedicadas para o pipeline STT→Tradução→TTS, nem ao comportamento do sistema em caso de falha de qualquer uma dessas etapas pesadas (ex: o que acontece com a reunião se o Deepgram cair?), tornando o isolamento parcialmente estrutural mas sem resiliência a falhas documentada."
+}

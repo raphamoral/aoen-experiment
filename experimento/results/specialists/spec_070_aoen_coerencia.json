@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 70,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões se reforçam com forte consistência narrativa — o diferenciador clínico-temporal justifica a separação em AgendamentoService/ProntuarioService, que sustenta as cinco interfaces, cada uma mapeada a um stakeholder do mercado-alvo declarado, e o pipeline invariante da fase 3 fecha o ciclo coerentemente — mas a afirmação de que PostgreSQL e MongoDB são intercambiáveis na camada de persistência introduz uma tensão não resolvida: prontuários clínicos exigem consistência forte (ACID), e trocar para um modelo de documento com consistência eventual não é uma simples substituição de adaptador, contradizendo silenciosamente a seriedade clínica que o próprio core reivindica como diferenciador."
+}

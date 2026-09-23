@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 27,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 1,
+  "justificativa": "A proposta identifica segmentos de mercado e lista integrações com provedores de pagamento (Stripe, PagSeguro, fatura) como infraestrutura técnica, mas não define nenhum modelo de monetização — ausência total de tiers, faixas de preço, métrica de cobrança (por evento, por participante, por seat, por consumo), conexão entre valor entregue e receita, ou indicadores de sustentabilidade como MRR, LTV ou CAC."
+}

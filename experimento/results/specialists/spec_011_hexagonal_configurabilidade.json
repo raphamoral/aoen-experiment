@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A arquitetura expõe configurabilidade apenas no nível do usuário final (preferências de notificação, tese do investidor, planos de assinatura), mas não define nenhum mecanismo explícito de configuração por tenant — ausência de feature flags por cliente, de regras de matching/pipeline parametrizáveis por organização e de estratégia de isolamento multi-tenant (row-level security, schema ou banco separado), o que tornaria obrigatório alterar código para onboar um cliente com critérios de matching, estágios de deal ou regionalizações distintos."
+}

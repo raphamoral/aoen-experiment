@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 29,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra configurabilidade operacional relevante — scoring parametrizável por região/tipo de instalação, camada de verificação plugável e admin panel para regiões/comissões — mas não descreve isolamento de tenant nem esquema de configuração por cliente B2B: uma nova integração via API pública (parceiro imobiliário, fintech) provavelmente exigiria desenvolvimento específico, não apenas uma nova row de configuração."
+}

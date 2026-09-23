@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona um contexto dedicado de 'Notification & Workflow' que sugere consciência de processamento assíncrono, mas nenhum processo computacionalmente pesado (previsão de preço por ML, scoring de fornecedores, integrações com ERPs, matching de fornecedores) possui isolamento físico explicitamente descrito — sem filas, workers dedicados, circuit breakers ou estratégias de fallback — indicando que cargas pesadas provavelmente rodam acopladas ao fluxo principal, criando risco de contágio de falhas."
+}

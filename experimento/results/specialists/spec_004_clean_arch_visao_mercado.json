@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O título e as entidades revelam um público-alvo implícito (compradores corporativos de TI e fornecedores homologados), mas a proposta é puramente arquitetural e não articula a dor do cliente, o tamanho de mercado, diferenciação frente a alternativas como SAP Ariba ou Coupa, nem uma proposta de valor explícita que justifique adoção."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "A proposta arquitetural descreve um pipeline IoT bem estruturado com um Processing Service que calcula AQI/PM2.5/NO2 e um Alert Engine — candidatos naturais ao núcleo diferenciador — mas em nenhum momento explica por que esses cálculos são únicos, quais algoritmos proprietários ou modelos preditivos os distinguem de soluções como IQAir, Awair Industrial ou qualquer plataforma genérica de telemetria com regras de alerta, tornando o produto indistinguível de um CRUD sofisticado de séries temporais com notificações."
+}

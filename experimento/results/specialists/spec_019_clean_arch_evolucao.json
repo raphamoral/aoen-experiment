@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta demonstra sólida aderência à Clean Architecture — entidades sem dependências externas e casos de uso com contratos claros de input/output permitem evolução independente das camadas internas — mas perde pontos por não evidenciar a camada de adaptadores/portas (onde ocorre o real desacoplamento de banco e frameworks), por rigidez em valores fixos como o enum de canais em Reminder (adicionar Telegram exige alterar a entidade) e por ausência de padrões de eventos de domínio que permitiriam extensão por adição em vez de modificação."
+}

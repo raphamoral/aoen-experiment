@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 32,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta apresenta coerência estrutural sólida: as interfaces plugáveis (SentimentAnalyzer, ReviewSource) derivam diretamente dos requisitos multi-fonte e multi-modelo declarados; o ReviewInsightService como camada única de lógica é a consequência arquitetural natural de servir cinco interfaces distintas sem duplicar regras; cada interface da fase 2 mapeia explicitamente para um segmento de mercado identificado na fase 1, criando alinhamento entre decisão técnica e objetivo de negócio; os eventos de domínio (AlertTriggered, ReportReady) são o mecanismo coerente que habilita webhooks e relatórios assíncronos sem acoplar as interfaces — a história do problema à solução é legível e cada parte justifica as outras, com desconto apenas pela fase 3 truncada e pela ausência de tratamento arquitetural explícito para multi-tenancy, que é uma tensão real entre atender hotéis independentes e redes com 30+ propriedades no mesmo pipeline."
+}

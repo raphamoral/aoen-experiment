@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 34,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente, por simulação ou por tenant — o conceito de 'tenant' aparece exclusivamente para carregamento de regras fiscais por jurisdição, não para rastreamento de consumo de recursos; não há cálculo de custo por operação (ex: custo de cada execução Monte Carlo), nenhuma conexão entre consumo de infra e modelo de precificação, e nenhuma estrutura de unit economics (CAC, LTV, margem por segmento)."
+}

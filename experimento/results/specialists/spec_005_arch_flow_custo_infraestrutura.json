@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista componentes de infraestrutura (AWS S3 com Object Lock, Auth0/Keycloak, SendGrid, Twilio, Stripe/Iugu, AWS/GCP) e menciona S3 Object Lock para imutabilidade, mas não apresenta nenhuma estimativa concreta de custo em valores monetários, nenhuma estratégia de otimização (scale-to-zero, spot instances, storage tiering) e nenhuma projeção de como os custos escalam com crescimento da base de usuários."
+}

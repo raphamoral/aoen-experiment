@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A proposta menciona canais omnichannel (SMS, WhatsApp, e-mail) e destaca o fluxo interativo via WhatsApp como componente customizado — o que indica consciência de múltiplos pontos de contato — mas não define explicitamente interfaces distintas para perfis de usuário diferentes (ex: portal web para a clínica, app mobile para o paciente, API para integrações), não articula desacoplamento da lógica de negócio em relação às interfaces, e não justifica as escolhas de interface por alcance de mercado, tratando os canais como camada de notificação e não como superfícies de interação de primeira classe."
+}

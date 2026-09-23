@@ -1,0 +1,93 @@
+{
+  "ideia_idx": 88,
+  "ideia": "Plataforma de supply chain finance para pequenos fornecedores",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Financiamento de cadeia de suprimentos (supply chain finance). O núcleo cobre o ciclo de vida de recebíveis: cadastro de fornecedores, compradores âncora e financiadores; emissão e validação de faturas (aceite do comprador); antecipação de recebíveis e desconto dinâmico (early payment); precificação e análise de risco/crédito; alocação de ofertas de financiamento; liquidação e conciliação; e compliance (KYC/AML). Entidades e agregados: Supplier, Buyer, Funder, Invoice/Receivable, FinancingOffer, Advance, Settlement, RiskAssessment, LedgerEntry. Regras centrais: elegibilidade, cálculo de taxa e deságio, limites de exposição, prevenção de duplicidade de cessão de recebíveis, máquina de estados da fatura e ledger de partidas dobradas.",
+    "primary_ports": [
+      "SupplierOnboardingPort (cadastro e KYC do fornecedor)",
+      "InvoiceSubmissionPort (envio e consulta de faturas)",
+      "InvoiceApprovalPort (aceite ou contestação pelo comprador âncora)",
+      "FinancingRequestPort (solicitar antecipação e aceitar oferta)",
+      "OfferMarketplacePort (financiadores publicam ofertas e limites de crédito)",
+      "SettlementPort (registrar liquidação e conciliar pagamento)",
+      "PortfolioReportingPort (posição, exposição e extratos)",
+      "BillingAdminPort (planos, tarifas e administração do tenant)",
+      "ComplianceReviewPort (revisão manual de alertas de KYC/AML)"
+    ],
+    "secondary_ports": [
+      "ReceivableRepositoryPort (persistência de agregados)",
+      "LedgerRepositoryPort (livro-razão imutável)",
+      "EventPublisherPort (eventos de domínio / outbox)",
+      "CreditScoringPort (score e risco do fornecedor e do comprador)",
+      "KycAmlPort (verificação de identidade, sanções e PEP)",
+      "ERPIntegrationPort (importação de faturas, POs e notas de recebimento)",
+      "TaxAuthorityInvoicePort (validação de nota fiscal eletrônica)",
+      "PaymentRailPort (PIX, TED, boleto, ACH/SEPA, pagamentos e recebimentos)",
+      "FundingProviderPort (bancos, FIDCs, fundos e investidores)",
+      "RegistryPort (registro e checagem de recebíveis em registradoras, contra dupla cessão)",
+      "DocumentStoragePort (contratos, cessões e comprovantes)",
+      "SignaturePort (assinatura eletrônica de contratos de cessão)",
+      "NotificationPort (e-mail, SMS, WhatsApp e push)",
+      "IdentityProviderPort (autenticação e autorização)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)",
+      "AuditLogPort (trilha de auditoria regulatória)",
+      "FxRatePort (câmbio, para operações multimoeda)"
+    ],
+    "primary_adapters": [
+      "REST/JSON API (OpenAPI) para o portal web",
+      "GraphQL BFF para o portal do fornecedor (SPA)",
+      "Portal do comprador âncora (aprovação em lote)",
+      "Console do financiador (ofertas e carteira)",
+      "Backoffice de operações e compliance",
+      "App mobile do fornecedor",
+      "Bot de WhatsApp para consulta e aceite de antecipação",
+      "Webhooks de entrada (ERPs e bancos)",
+      "CLI e scripts de administração e migração",
+      "Consumidores de fila para importação em lote (CSV/SFTP, EDI)",
+      "Test harness / testes de aceitação BDD que dirigem os casos de uso diretamente",
+      "Adapters de agendamento (cron/jobs de vencimento e conciliação)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL adapter (repositórios e ledger com append-only)",
+      "Kafka/SNS-SQS adapter (eventos e outbox pattern)",
+      "Adapters de ERP: SAP, TOTVS, Oracle NetSuite, Omie, Conta Azul, QuickBooks",
+      "Adapter de SEFAZ / NF-e (ou e-invoicing local)",
+      "Adapter de registradoras de recebíveis (CERC, TAG, CIP, conforme jurisdição)",
+      "Adapters de bureaus de crédito (Serasa, Boa Vista, Dun & Bradstreet)",
+      "Adapters KYC/AML (Idwall, Onfido, ComplyAdvantage)",
+      "Adapters de pagamento: PIX/Open Finance, Stripe Connect, Adyen, banco parceiro (BaaS)",
+      "Adapters de financiadores (API de bancos, FIDCs e fundos)",
+      "S3/GCS para documentos",
+      "DocuSign/ClickSign para assinatura",
+      "SES/SendGrid e Twilio (e-mail, SMS e WhatsApp)",
+      "Keycloak/Auth0/Cognito para identidade",
+      "Adapters in-memory e fakes para testes",
+      "Adapter de scoring interno (modelo ML) e externo intercambiáveis",
+      "Adapter de auditoria (append-only, WORM storage)"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) é uma biblioteca pura, sem dependência de framework, banco, HTTP ou SDK de terceiros. Regras de dependência: adapters dependem de ports, ports pertencem ao core, e nunca o contrário (Dependency Inversion). As portas primárias são implementadas pelos casos de uso, e as secundárias são interfaces declaradas no core e implementadas fora dele. A composição ocorre apenas na composition root, por injeção de dependência. Os DTOs de cada adapter são traduzidos por anti-corruption layers, então nenhum modelo de ERP, banco ou registradora vaza para o domínio. Valores monetários usam um tipo Money (decimal com moeda), e tempo e IDs entram por ports (ClockPort, IdGeneratorPort). Fitness tests de arquitetura (ArchUnit, dependency-cruiser ou import-linter) quebram o build se o core importar infraestrutura. Os testes do core rodam com adapters fake em memória, em milissegundos, e os mesmos testes de contrato validam adapters reais e fakes. Cada integração externa (ERP, banco, registradora) é tratada simetricamente como um adapter substituível.",
+    "interfaces": [
+      "Portal web do fornecedor (upload de faturas, simulação de antecipação, aceite de oferta, extratos)",
+      "Portal do comprador âncora (aprovação de faturas, gestão de fornecedores, upload em lote)",
+      "Console do financiador (ofertas, limites, carteira e exposição)",
+      "Backoffice de risco, operações e compliance",
+      "API pública REST + webhooks para ERPs e parceiros (embedded finance)",
+      "App mobile e bot de WhatsApp para pequenos fornecedores",
+      "Integrações via SFTP/CSV/EDI para compradores de grande porte",
+      "Dashboards de BI e relatórios regulatórios",
+      "CLI para operações e scripts de migração",
+      "Contratos de eventos assíncronos (InvoiceApproved, AdvanceDisbursed, SettlementReceived)"
+    ],
+    "escalabilidade": "Monólito modular hexagonal no início, com bounded contexts (Onboarding, Invoicing, Financing, Risk, Settlement, Ledger) já separados por portas, e extração seletiva para serviços quando houver necessidade. Aplicação stateless com escala horizontal em contêineres (autoscaling por CPU/fila). Processamento assíncrono orientado a eventos com outbox pattern, para importações em lote, scoring e conciliação. Escrita no PostgreSQL com particionamento por tenant e data, réplicas de leitura e CQRS para relatórios (projeções em read models). Ledger append-only e idempotência em todas as operações financeiras (chaves de idempotência). Cache (Redis) para ofertas e cotações. Multi-tenancy por tenant_id com possibilidade de isolamento por schema para grandes compradores. Filas com backpressure e retry/DLQ por adapter, além de circuit breakers para provedores externos. Como o core é independente, adapters lentos ou instáveis escalam ou são trocados isoladamente. Picos previsíveis (fim de mês, vencimentos) tratados com jobs agendados e capacidade elástica.",
+    "custos": "Principais custos: (1) custo de capital e funding, que é o maior e é repassado ao fornecedor ou coberto pelos financiadores parceiros, e o modelo de marketplace evita o balanço próprio; (2) risco de crédito e inadimplência, mitigado por seguro de crédito, cessão sem coobrigação, foco no risco do comprador âncora e limites de exposição; (3) custos por transação de KYC/AML, bureaus, registradoras, NF-e e trilhos de pagamento, com pricing variável por chamada e negociação de volume; (4) infraestrutura de nuvem (baixa no início, com monólito modular, PostgreSQL gerenciado e serverless para jobs); (5) compliance regulatório (licenças, SCD/IP ou parceria BaaS, auditorias, LGPD/PCI), com bancos parceiros reduzindo o custo inicial; (6) onboarding e suporte ao pequeno fornecedor, reduzido com autoatendimento, WhatsApp e integração automática com ERP; (7) equipe de risco e dados. O custo de aquisição cai quando o comprador âncora traz sua base de fornecedores (efeito de rede). Custos de integração são amortizados pelos adapters reutilizáveis de ERP.",
+    "monetizacao": "1) Taxa de desconto/deságio (spread) sobre cada antecipação, dividida entre a plataforma e o financiador (principal receita, em bps do valor financiado). 2) Take rate de marketplace sobre volume financiado por financiadores parceiros. 3) SaaS por assinatura para compradores âncora (gestão do programa, integração ERP, aprovação em lote, relatórios), com planos por número de fornecedores ativos. 4) Taxas por serviço: originação, emissão de cessão, conciliação e saques via PIX/TED. 5) Receita de dados e scoring (relatórios de risco e API de crédito para financiadores). 6) Plano premium para fornecedores (limites maiores, taxas reduzidas e ferramentas de capital de giro). 7) Embedded finance/White label: licenciamento da plataforma para bancos e ERPs, com revenue share. 8) Ganhos de float e interchange em contas digitais, quando houver parceria BaaS.",
+    "stack_sugerida": "Linguagem/Framework: Kotlin (Spring Boot, usado só nos adapters) ou TypeScript (NestJS) com core em módulo puro; alternativa Go. Arquitetura: monólito modular hexagonal com fitness tests (ArchUnit ou dependency-cruiser). Banco: PostgreSQL (ledger append-only, particionamento, RLS multi-tenant), Redis para cache e idempotência. Mensageria: Kafka ou AWS SNS/SQS com outbox (Debezium). Frontend: React/Next.js com TypeScript e design system próprio; app mobile em React Native; bot de WhatsApp via API oficial. API: REST com OpenAPI, GraphQL BFF opcional, webhooks assinados. Identidade: Keycloak ou Auth0 (OIDC, MFA). Infra: AWS ou GCP, com Kubernetes (EKS/GKE) ou ECS/Fargate, Terraform, GitHub Actions, ArgoCD. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry, logs estruturados e trilha de auditoria imutável. Segurança: KMS, Vault, criptografia de dados sensíveis, WAF, LGPD. Dados/ML: dbt, data warehouse (BigQuery/Snowflake) e modelos de scoring em Python (serviço atrás de CreditScoringPort). Testes: unitários com fakes em memória, testes de contrato para adapters, Testcontainers, BDD (Cucumber) dirigindo as portas primárias, e testes de carga (k6). Integrações: Stripe Connect/Adyen ou BaaS local (PIX), ClickSign/DocuSign, Idwall/Onfido, CERC/TAG."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:43:02+00:00",
+    "runner": "runner.py"
+  }
+}

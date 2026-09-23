@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está razoavelmente segmentado (PME a enterprise, verticais prioritárias de moda e eletrônicos) e a dor é mencionada (processo manual, custo opaco, experiência ruim), mas faltam dados de tamanho de mercado (TAM/SAM), métricas que quantifiquem a dor (ex: % de GMV perdido em devoluções mal gerenciadas) e qualquer análise competitiva explícita que justifique diferenciação frente a soluções como Returnly, AfterShip Returns ou processos nativos de marketplaces."
+}

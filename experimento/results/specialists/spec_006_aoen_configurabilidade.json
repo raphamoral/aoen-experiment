@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra sinais arquiteturais positivos — AnalysisEngine abstraída, base de conhecimento clínico versionada separadamente e dashboard B2B com customização de protocolos — mas não especifica um modelo de configuração multi-tenant explícito: não há menção a schema de tenant settings, feature flags por cliente, isolamento de dados por tenant nem garantia formal de que novo cliente = nova row sem deploy; a configurabilidade fica implícita e parcial, cobrindo protocolos clínicos mas deixando aberto se comportamentos como canais ativos, integrações habilitadas ou thresholds de análise são dirigidos por configuração ou por código."
+}

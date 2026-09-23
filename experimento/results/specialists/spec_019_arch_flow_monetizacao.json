@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "O documento menciona 'Pagamentos e Planos' como subdomínio genérico com conceitos de Assinatura, Plano, Fatura e Inadimplência, e cita Stripe/Pagar.me como commodity — mas não define tiers de preço, valores, lógica de cobrança por uso ou por clínica, nem discute sustentabilidade econômica, LTV, CAC ou MRR."
+}

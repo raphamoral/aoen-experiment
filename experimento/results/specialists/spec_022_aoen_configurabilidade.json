@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 22,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra separação explícita entre fluxo canônico imutável (código) e parâmetros por tenant (configuração), com Service Layer centralizada e adaptadores plugáveis — arquitetura correta para multi-tenant —, mas perde pontos porque adicionar novos fornecedores exige desenvolvimento de adaptador (não é pura configuração), a lista de parâmetros configuráveis está truncada impedindo avaliar cobertura real, e não há declaração explícita de que onboarding de novo cliente é zero-code/zero-deploy."
+}

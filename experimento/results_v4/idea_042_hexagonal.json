@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 42,
+  "ideia": "SaaS de automação de relatórios ESG para empresas listadas",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão e automação de relatórios de sustentabilidade (ESG) para companhias listadas. O core abrange: (1) Coleta e consolidação de indicadores ambientais (E), sociais (S) e de governança (G); (2) Mapeamento de indicadores para frameworks e normas (GRI, SASB, TCFD, ISSB IFRS S1/S2, CSRD/ESRS, CVM 193/194, B3); (3) Cálculo de métricas, como emissões Escopo 1/2/3 e intensidade de carbono; (4) Validação, trilha de auditoria e versionamento de dados; (5) Geração e aprovação de relatórios (workflow de revisão); (6) Materialidade e metas. Entidades principais: Organização, Período de Reporte, Indicador, Evidência, Framework, Relatório, Fluxo de Aprovação, Trilha de Auditoria.",
+    "primary_ports": [
+      "IngestESGDataUseCase (importar/registrar dados de indicadores)",
+      "ManageIndicatorCatalogUseCase (catálogo de indicadores e mapeamento entre frameworks)",
+      "CalculateMetricsUseCase (emissões, intensidade, variações)",
+      "ValidateDataQualityUseCase (regras de consistência e completude)",
+      "GenerateReportUseCase (gerar relatório por framework e período)",
+      "ReviewAndApproveReportUseCase (workflow multi-nível de aprovação)",
+      "PublishReportUseCase (publicar/protocolar em reguladores e site de RI)",
+      "AssessMaterialityUseCase (matriz de materialidade)",
+      "QueryAuditTrailUseCase (consulta a trilha de auditoria e evidências)",
+      "ManageTenantAndAccessUseCase (organizações, papéis, permissões)",
+      "ManageSubscriptionUseCase (planos, limites, faturamento)"
+    ],
+    "secondary_ports": [
+      "ReportRepositoryPort (persistência de relatórios e versões)",
+      "IndicatorDataRepositoryPort (persistência de dados e séries históricas)",
+      "EvidenceStoragePort (armazenamento de documentos e evidências)",
+      "ERPDataSourcePort (SAP, Oracle, TOTVS)",
+      "HRSystemPort (dados sociais: diversidade, turnover, segurança)",
+      "EnergyAndUtilitiesDataPort (consumo de energia, água, resíduos, IoT)",
+      "EmissionFactorProviderPort (fatores de emissão: GHG Protocol, IPCC, base nacional)",
+      "FrameworkCatalogPort (versões de GRI, SASB, ISSB, ESRS, CVM)",
+      "DocumentRendererPort (PDF, XHTML/iXBRL, DOCX, XLSX)",
+      "LLMNarrativePort (rascunho assistido de narrativas, com revisão humana)",
+      "NotificationPort (e-mail, Slack/Teams)",
+      "IdentityProviderPort (SSO SAML/OIDC)",
+      "RegulatoryFilingPort (CVM, B3, SEC/ESEF)",
+      "BillingGatewayPort (cobrança recorrente)",
+      "EventBusPort (publicação de eventos de domínio)",
+      "AuditLogPort (registro imutável)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON, OpenAPI)",
+      "GraphQL API para o dashboard",
+      "Web App SPA (dashboard e editor de relatórios)",
+      "CLI e scripts de automação/batch (fechamento de período)",
+      "Importadores de arquivo (CSV/XLSX, upload por interface)",
+      "Webhooks de entrada (ERP, RH)",
+      "Consumidores de fila e mensageria (ingestão assíncrona)",
+      "Agendador (cron) para coleta e geração periódica",
+      "Suíte de testes (BDD e contrato), que aciona as mesmas portas primárias por meio de fakes/in-memory",
+      "Conector MCP/API para agentes de IA (opcional)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios de relatório e indicadores)",
+      "Banco colunar ou série temporal, como ClickHouse ou TimescaleDB (analytics de séries)",
+      "S3/GCS/MinIO (evidências e artefatos)",
+      "Conectores SAP, Oracle, TOTVS e Workday (REST, OData, SFTP)",
+      "Adaptadores para bases de fatores de emissão (GHG Protocol, IPCC, Ecoinvent, base nacional)",
+      "Renderizadores de documentos (WeasyPrint/Puppeteer para PDF; Arelle e conversores iXBRL)",
+      "Adaptador de LLM, como a API Claude com guardrails e citação de evidências",
+      "SendGrid/SES e Slack/Teams (notificações)",
+      "Keycloak/Auth0/Azure AD (identidade)",
+      "Stripe (cobrança)",
+      "Kafka/RabbitMQ/SQS (barramento de eventos)",
+      "Adaptadores de protocolo com CVM e B3",
+      "Log de auditoria append-only (tabela imutável com hash encadeado ou serviço WORM)",
+      "Adaptadores In-Memory/Fake para testes e desenvolvimento local"
+    ],
+    "isolation": "O núcleo (domínio + casos de uso) é um módulo sem dependência de frameworks, ORMs, SDKs ou protocolos; só conhece as interfaces (portas) definidas por ele. A regra de dependência aponta sempre para dentro: adaptadores dependem das portas, nunca o contrário. Aplicam-se DTOs e mapeadores nas fronteiras, para que modelos externos (SAP, APIs de reguladores, respostas de LLM) não vazem para o domínio, e uma camada anti-corrupção converte linguagens externas. Tempo, IDs e aleatoriedade entram por portas, o que torna o núcleo determinístico. A injeção de dependência é feita na raiz de composição (composition root). O isolamento é imposto por testes de arquitetura (ArchUnit, dependency-cruiser, import-linter) no CI. Contract tests garantem que todo adaptador de uma mesma porta seja intercambiável. Os mesmos casos de uso são acionados por UI, API, CLI ou testes automatizados, com fakes no lugar dos adaptadores reais. Saídas de LLM passam por uma porta com validação e revisão humana obrigatória antes de entrar em relatório oficial.",
+    "interfaces": [
+      "Dashboard web de indicadores ESG e status de coleta",
+      "Editor colaborativo de relatórios, com comentários e histórico de versões",
+      "Painel de workflow de aprovação",
+      "Portal de fornecedores e áreas internas para envio de dados",
+      "Visualização de trilha de auditoria e evidências (modo auditor externo)",
+      "Matriz de materialidade interativa",
+      "API pública REST/GraphQL e webhooks",
+      "CLI para automação",
+      "Exportação em PDF, DOCX, XLSX e iXBRL",
+      "Integração com Slack/Teams para alertas",
+      "Portal administrativo (tenants, planos, uso)"
+    ],
+    "escalabilidade": "Multi-tenant com isolamento lógico (tenant_id e row-level security) e opção de isolamento físico para clientes enterprise. A carga é sazonal, com picos no fechamento anual, então usa-se escala horizontal e autoscaling de serviços stateless. Ingestão e geração de relatórios são assíncronas (filas, workers), com idempotência e reprocessamento. Cálculos pesados e renderização de documentos rodam em workers dedicados. Há cache de catálogos de frameworks e fatores de emissão. Os relatórios seguem event sourcing/versionamento imutável por período. Réplicas de leitura e um armazenamento analítico separado atendem os dashboards. Como cada dependência externa fica atrás de uma porta, é possível trocar um adaptador (por exemplo o banco, o provedor de LLM ou o renderizador) sem tocar o core. Começa como monólito modular (bounded contexts e módulos alinhados às portas) e extrai serviços conforme a necessidade, como ingestão e renderização.",
+    "custos": "Os principais custos são: (1) computação e armazenamento, moderados, com pico sazonal, o que favorece autoscaling e serverless para workers; (2) armazenamento de evidências, com ciclo de vida (tiering para camadas frias, retenção regulatória); (3) LLM, controlado por cache, contexto enxuto, modelos menores para tarefas simples e limites por plano; (4) licenças de dados de fatores de emissão e catálogos de frameworks; (5) conformidade e segurança (SOC 2, ISO 27001, LGPD, auditorias e pentests); (6) custo de manter conectores com ERPs (variedade de sistemas), que é o maior custo de engenharia e onboarding; (7) suporte e customer success, relevantes para clientes enterprise; (8) observabilidade e backups. A arquitetura hexagonal reduz custo de mudança e de troca de fornecedor, e o monólito modular inicial reduz o custo operacional. É preciso monitorar o custo por tenant para proteger a margem.",
+    "monetizacao": "Assinatura SaaS recorrente (B2B) em planos por camadas: Essencial (1 framework, poucos usuários), Profissional (multi-framework, integrações, workflow) e Enterprise (SSO, isolamento dedicado, SLA, auditoria avançada). Variáveis de precificação: número de entidades/subsidiárias, frameworks ativos, volume de dados/integrações e usuários. Complementos: pacote de conectores premium (ERP), módulo de IA para narrativas, módulo de materialidade e metas, portal de fornecedores (Scope 3), onboarding e implantação pagos, consultoria e serviços de assurance em parceria com auditorias, marketplace de parceiros e acesso via API por consumo. Contratos anuais com reajuste, e potencial de venda via consultorias e auditorias (canal).",
+    "stack_sugerida": "Backend: TypeScript (NestJS, com módulos hexagonais) ou Kotlin/Java (Spring Boot) ou Python (FastAPI) para o núcleo e os cálculos; o domínio em código puro, sem framework. Frontend: React + Next.js, TypeScript, com bibliotecas de gráficos e editor rico (TipTap). Dados: PostgreSQL (com RLS), Redis, ClickHouse/TimescaleDB para analytics, S3 para evidências. Mensageria/Workers: SQS/Kafka + BullMQ/Celery, Temporal para workflows longos. Documentos: Puppeteer/WeasyPrint e Arelle para iXBRL. IA: API Claude, com camada de RAG sobre evidências e guardrails. Identidade: Keycloak/Auth0. Cobrança: Stripe. Infra: AWS ou GCP, Kubernetes ou ECS/Cloud Run, Terraform, GitHub Actions. Observabilidade: OpenTelemetry, Grafana, Sentry. Testes: Vitest/Jest ou JUnit/pytest, testes de contrato (Pact), testes de arquitetura (dependency-cruiser/ArchUnit) e adaptadores in-memory."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:07:39+00:00",
+    "runner": "runner.py"
+  }
+}

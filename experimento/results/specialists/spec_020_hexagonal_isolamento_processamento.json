@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A presença do Kafka/SQS Adapter e do port IEventPublisher indica intenção de processamento assíncrono, mas a proposta não especifica explicitamente workers físicos separados para processos pesados (deduplicação de bugs, cálculo de gamificação, distribuição de recompensas), não detalha mecanismos de fallback em caso de falha dos workers, e não menciona estratégia de escalonamento independente — ficando no meio-termo entre menção assíncrona sem isolamento físico real garantido."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 1,
+  "justificativa": "A proposta menciona custo de GPU como trigger para decisão arquitetural (> 30% da infra total), demonstrando alguma consciência de custos, mas não apresenta nenhuma estimativa concreta em dólares/reais, nenhuma estratégia de otimização (spot instances, scale-to-zero, storage tiers) e nenhuma projeção de crescimento de custos com a base de usuários."
+}

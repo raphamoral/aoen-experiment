@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 62,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê seis interfaces distintas (Web Dashboard, Portal do Artista, API REST, Importação CSV, E-mail/PDF e Webhooks), cada uma justificada por um perfil de usuário ou caso de uso de mercado concreto, com lógica de negócio centralizada na RoyaltyService e acessada via DTOs — garantindo que novas interfaces possam ser adicionadas sem duplicar regras de cálculo."
+}

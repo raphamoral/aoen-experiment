@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta define apenas entidades de domínio de negócio (MEI, NotaFiscal, Lancamento, DAS, etc.) sem qualquer mensuração de custo por cliente — não há rastreamento de consumo por tenant, custo por operação (ex: emissão de NF, cálculo de DAS), nem conexão entre uso de recursos e modelo de precificação."
+}

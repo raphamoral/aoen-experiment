@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta demonstra sólida consciência evolutiva ao separar bounded contexts coesos, usar o mapa Wardley (genesis→commodity) para guiar build vs. buy e listar alternativas explícitas de fornecedores nos commodities — sinalizando reversibilidade de fornecedor; porém perde pontos por não especificar o mecanismo de comunicação entre contextos (eventos assíncronos vs. chamadas síncronas diretas), não mencionar portas/adaptadores ou anti-corruption layers para isolar a lógica de negócio dos SDKs externos (ex: Stripe, Auth0), e não explicitar estratégia de escalabilidade horizontal (CQRS, event sourcing, sharding), o que mantém riscos de acoplamento tecnológico nos contextos de maior complexidade (Booking Engine, Pricing & Availability e Payment & Settlement)."
+}

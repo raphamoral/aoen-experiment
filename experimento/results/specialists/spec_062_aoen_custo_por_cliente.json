@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 62,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta descreve infraestrutura e fluxo de processamento, mas não prevê nenhuma mensuração de custo por cliente/tenant — não há cálculo de custo por operação, rastreamento de consumo por tenant, nem conexão entre custo unitário e modelo de precificação."
+}

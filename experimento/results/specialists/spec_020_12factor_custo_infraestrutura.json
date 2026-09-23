@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista componentes de infraestrutura robustos (RDS, Redis, SQS, S3, EKS, Cloudflare, Datadog) e menciona boas práticas como escala horizontal e workers assíncronos, mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia explícita de otimização de custos (instâncias spot, reserved instances, scale-to-zero, storage tiering) e nenhuma projeção de crescimento de custos em função da base de usuários."
+}

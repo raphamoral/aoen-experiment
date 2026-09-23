@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A entidade Tenant possui 'usageLimits' e 'billingStatus', sinalizando consciência de limites por plano e estado de cobrança, mas nenhum atributo ou mecanismo rastreia custo real por operação ou por tenant — não há cálculo de 'esta análise custou R$X de IA + R$Y de storage para este tenant', tornando impossível derivar margem por cliente a partir da arquitetura proposta."
+}

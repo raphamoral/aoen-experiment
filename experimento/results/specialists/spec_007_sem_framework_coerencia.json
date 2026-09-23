@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam um sistema coeso e auto-reforçante: React+Node.js justifica velocidade de entrega, PostgreSQL sustenta os relatórios complexos exigidos pelos dashboards, Redis aparece uma vez e serve dois propósitos (cache de ranking + filas Bull), o serviço externo de vídeo elimina complexidade de encoding que contradizeria a estratégia de custo enxuto, a sequência de build incremental é consistente com a contenção de custos na VPS, e o modelo de cobrança por colaborador ativo espelha exatamente a unidade de valor entregue — a única lacuna que impede nota máxima é a ausência de qualquer menção explícita a isolamento multi-tenant (como dados de empresas diferentes são segregados no mesmo PostgreSQL), que é uma decisão arquitetural central para um SaaS B2B e cria uma ambiguidade relevante no coração do sistema."
+}

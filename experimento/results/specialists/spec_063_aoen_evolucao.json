@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 63,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra princípios evolutivos sólidos — adapter pattern explícito para troca de provedor de IA, service layer isolado consumido por todas as interfaces sem lógica de negócio vazando para controllers, fila de inferência que viabiliza escala assíncrona, e parametrização por tenant que permite customização sem alteração de código — mas perde pontos por não explicitar abstração da camada de persistência (nenhum Repository ou Database Port mencionado, deixando em aberto se trocar o banco exige reescrita), e o pipeline de 9 etapas com fluxo fixo não descreve mecanismo de extensão de steps (ex: adicionar enriquecimento geoespacial na fase futura exigiria alterar o fluxo central em vez de apenas plugar um novo processor)."
+}

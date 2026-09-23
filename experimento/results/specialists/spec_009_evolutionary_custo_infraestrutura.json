@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona um fitness function de monitoramento de custo por transação com alerta de crescimento >15% MoM, demonstrando consciência FinOps mínima, mas não apresenta nenhuma estimativa concreta de custo por componente (servidores, banco, CDN, storage, banda), nenhuma estratégia explícita de otimização (spot instances, scale-to-zero, storage tiering) e nenhuma projeção de crescimento de custos em função da base de usuários."
+}

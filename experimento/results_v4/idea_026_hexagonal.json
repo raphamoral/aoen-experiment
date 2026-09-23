@@ -1,0 +1,90 @@
+{
+  "ideia_idx": 26,
+  "ideia": "App de acompanhamento pós-operatório com IA e teleconsulta",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Continuidade do cuidado pós-operatório: gestão do Plano de Recuperação do paciente após cirurgia (protocolos por procedimento, check-ins de sintomas, monitoramento de sinais vitais e feridas, detecção de risco e escalonamento, alertas à equipe clínica, agendamento e condução de teleconsultas, registro clínico e trilha de auditoria). Agregados principais: Paciente, Cirurgia/Procedimento, PlanoDeRecuperação, CheckIn, Sintoma, Alerta, Teleconsulta, Prescrição/Orientação e Consentimento. Serviços de domínio: AvaliadorDeRisco (regras clínicas determinísticas, com a IA apenas como apoio consultivo), PolíticaDeEscalonamento e MotorDeProtocolo.",
+    "primary_ports": [
+      "GerenciarPlanoDeRecuperacao (criar plano a partir da cirurgia, ajustar protocolo, dar alta)",
+      "RegistrarCheckIn (sintomas, dor, fotos da ferida, sinais vitais)",
+      "ConversarComAssistenteIA (perguntas do paciente e triagem guiada)",
+      "AvaliarRiscoEEscalonar (consultar alertas, reconhecer, priorizar)",
+      "AgendarTeleconsulta",
+      "ConduzirTeleconsulta (iniciar, encerrar, registrar notas e conduta)",
+      "PainelClinico (fila de pacientes por risco, revisão de casos)",
+      "GerenciarConsentimentoLGPD (consentimento, acesso, exportação e exclusão de dados)",
+      "AdministrarTenant (clínicas, usuários, papéis, planos e faturamento)"
+    ],
+    "secondary_ports": [
+      "RepositorioDePacientesEPlanos (persistência de agregados)",
+      "RepositorioDeCheckIns (série temporal)",
+      "ProvedorDeIA (LLM/visão para triagem, resumo e análise de imagem da ferida)",
+      "ProvedorDeVideo (sala de teleconsulta, gravação opcional)",
+      "GatewayDeNotificacoes (push, SMS, WhatsApp, e-mail)",
+      "GatewayDeMensageria/EventBus (eventos de domínio)",
+      "ProvedorDeIdentidade (autenticação, autorização, MFA)",
+      "ArmazenamentoDeMidia (fotos e documentos criptografados)",
+      "IntegracaoProntuario (HL7 FHIR com EHR/HIS/PEP)",
+      "IntegracaoWearables (Apple Health, Google Health Connect, dispositivos IoT)",
+      "GatewayDePagamento (assinaturas, cobrança por teleconsulta, repasse)",
+      "ServicoDeAgenda (calendário e disponibilidade dos médicos)",
+      "ServicoDeAssinaturaDigital (receitas e atestados, ICP-Brasil)",
+      "RepositorioDeAuditoria (log imutável)",
+      "RelogioPort (tempo controlável para testes)",
+      "Observabilidade (métricas, logs e traces)"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL (BFF) para os apps",
+      "App móvel do paciente (React Native/Flutter)",
+      "Portal web do paciente (PWA)",
+      "Painel web da equipe clínica (React/Next.js)",
+      "Console administrativo web do tenant",
+      "Webhook de entrada (WhatsApp Business, provedor de vídeo, gateway de pagamento)",
+      "Bot de WhatsApp/SMS",
+      "Consumidores de eventos e filas",
+      "Agendadores (cron) para check-ins programados e verificação de inatividade",
+      "CLI e scripts de operação e migração",
+      "Suíte de testes automatizados (BDD/contrato) usando as mesmas portas primárias",
+      "Adaptador de entrada FHIR (subscriptions)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (com row-level security por tenant) e TimescaleDB para série temporal",
+      "Adaptador de LLM (Anthropic Claude, com fallback para outro provedor) e modelo de visão para feridas, com anonimização prévia",
+      "Twilio Video / Daily / Zoom SDK / Jitsi para teleconsulta",
+      "Firebase Cloud Messaging, APNs, Twilio (SMS/WhatsApp), Amazon SES/SendGrid",
+      "Kafka / NATS / SQS+SNS como barramento de eventos",
+      "Keycloak / Auth0 / Cognito (OIDC)",
+      "S3 ou GCS com criptografia KMS e URLs assinadas",
+      "Cliente FHIR/HL7 para PEPs (Tasy, MV, Epic)",
+      "Adaptadores de Apple HealthKit e Google Health Connect",
+      "Stripe / Pagar.me / Asaas",
+      "Google Calendar / Outlook API",
+      "Provedor de assinatura digital (ICP-Brasil, ex.: BirdID, Vidaas)",
+      "Armazenamento de auditoria append-only (tabela WORM ou S3 Object Lock)",
+      "Adaptadores em memória e fakes (repositórios, IA determinística, relógio fixo) para testes",
+      "OpenTelemetry + Grafana/Datadog/Sentry"
+    ],
+    "isolation": "O core (domínio + casos de uso) não depende de nenhum framework, banco, SDK ou protocolo. Ele expõe apenas portas primárias (interfaces de casos de uso) e declara portas secundárias (interfaces de saída) na linguagem do domínio. A regra de dependência aponta sempre para dentro: os adapters conhecem as portas, e o core nunca conhece os adapters. A composição é feita numa raiz de composição (composition root), com injeção de dependência. Os DTOs e mapeamentos ficam nos adapters (anti-corruption layer), então FHIR, payloads de LLM e webhooks nunca vazam para o modelo de domínio. As decisões clínicas críticas (escalonamento, limiares de risco) são regras determinísticas dentro do core, e a IA entra apenas como uma porta consultiva, com saída validada e reprodutível. Testes de arquitetura (ArchUnit, dependency-cruiser) impedem imports proibidos, e a mesma suíte de testes de casos de uso roda contra adaptadores em memória e contra os reais (testes de contrato por porta). O isolamento multi-tenant e a conformidade com a LGPD são propriedades do contexto de execução passado às portas, não de código de infraestrutura no domínio.",
+    "interfaces": [
+      "App móvel do paciente (check-in diário, chat com IA, fotos, teleconsulta, lembretes de medicação)",
+      "Portal web do paciente (PWA) e acesso de cuidadores/familiares com consentimento",
+      "Painel clínico (fila priorizada por risco, linha do tempo do paciente, alertas, videochamada, notas)",
+      "Console administrativo (clínicas, protocolos, usuários, faturamento, relatórios)",
+      "Canais conversacionais (WhatsApp/SMS)",
+      "API pública REST/FHIR para integrações com hospitais e PEPs",
+      "Webhooks de saída para sistemas de terceiros",
+      "CLI/scripts para operação e testes",
+      "Dashboards de indicadores (readmissão, adesão, NPS, tempo de resposta)"
+    ],
+    "escalabilidade": "Monolito modular hexagonal no início (um bounded context por módulo: Recuperação, Triagem/Risco, Teleconsulta, Faturamento), extraível para serviços à medida que a carga exigir, já que as fronteiras são portas. Os adaptadores primários e o core são stateless e escalam horizontalmente atrás de um balanceador (Kubernetes/ECS com HPA). Cargas assíncronas (análise de IA, notificações, processamento de imagens, integração FHIR) saem por eventos e filas com workers independentes, com idempotência e retries. O banco usa réplicas de leitura, particionamento da série temporal por tenant/tempo e cache (Redis) para o painel. O vídeo é delegado a um provedor WebRTC gerenciado (SFU), sem carregar a mídia na aplicação. Multi-tenancy com isolamento lógico (RLS) para a maioria e opção de banco dedicado para hospitais grandes. Implantação multi-região no Brasil para latência e residência de dados. Filas de prioridade garantem que alertas críticos não esperem processamento em lote, e o circuit breaker e o fallback por porta (ex.: trocar de provedor de IA ou de vídeo) evitam que uma falha externa derrube o sistema.",
+    "custos": "Os principais vetores são: (1) tokens/inferência de IA, que se controlam com regras determinísticas antes de chamar o LLM, modelos menores para triagem simples, cache, resumos incrementais e limites por paciente; (2) minutos de vídeo, otimizados com chamadas 1:1, gravação apenas sob demanda e provedor com preço por minuto; (3) armazenamento de imagens e mídia, com compressão, ciclos de vida (tiering) e retenção conforme a norma; (4) mensageria, já que o WhatsApp/SMS é pago por mensagem, então convém priorizar push e reservar o WhatsApp para casos críticos; (5) conformidade e segurança (LGPD, criptografia, auditoria, pentests, DPO, eventual certificação ISO 27001/SOC 2 e registro na ANVISA se houver classificação como SaMD); (6) integrações com PEPs, que exigem esforço de implantação; (7) suporte clínico, se houver equipe própria de enfermagem. Custo variável por paciente ativo, com margem que melhora com o volume; FinOps com tags por tenant para calcular a margem unitária. A arquitetura hexagonal reduz o custo de troca de fornecedores, o que ajuda na negociação e evita lock-in.",
+    "monetizacao": "B2B2C, com o hospital/clínica/cirurgião como cliente pagante: (1) assinatura SaaS por clínica com faixas de pacientes ativos; (2) preço por episódio de cuidado (por cirurgia acompanhada), alinhado ao valor entregue; (3) cobrança por teleconsulta ou repasse de comissão, quando a consulta for agendada pela plataforma; (4) contratos com operadoras de saúde e seguradoras, com preço por paciente por mês e modelo de risco compartilhado ligado à redução de readmissões e complicações; (5) módulos premium (análise de imagem de ferida, wearables, integração com PEP, white label, relatórios avançados e API); (6) plano de implantação/integração pago uma vez; (7) opcional: assinatura do paciente para acompanhamento estendido ou cuidadores adicionais. Métricas de valor: queda de readmissões, de idas evitáveis ao pronto-socorro e do tempo do médico por paciente.",
+    "stack_sugerida": "Backend: TypeScript (NestJS usado apenas nos adaptadores, com o core em TS puro) ou Kotlin/Java (Spring nos adaptadores); alternativa Go. Estrutura em monorepo com pacotes domain, application (portas e casos de uso) e adapters-in/adapters-out, e dependency-cruiser/ArchUnit no CI. Dados: PostgreSQL + TimescaleDB, Redis, S3/GCS com KMS. Mensageria: NATS ou Kafka (SQS/SNS no início). IA: Anthropic Claude via adaptador (com abstração para outros provedores), pipeline de anonimização, avaliação contínua (evals) e guardrails, com humano no circuito. Vídeo: Twilio Video ou Daily. Identidade: Keycloak ou Auth0 com MFA. Interoperabilidade: HL7 FHIR R4. Frontend: React/Next.js (painel e portal), React Native ou Flutter (app). Infra: AWS ou GCP em região Brasil (ex.: sa-east-1), Kubernetes/ECS, Terraform, GitHub Actions. Observabilidade: OpenTelemetry, Grafana/Datadog, Sentry. Segurança e conformidade: LGPD, criptografia em trânsito e em repouso, RLS multi-tenant, log de auditoria imutável, gestão de segredos (Vault/Secrets Manager), considerar enquadramento na RDC ANVISA para SaMD. Testes: Vitest/JUnit, testes de contrato por porta, BDD, e2e com Playwright/Detox."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:37:09+00:00",
+    "runner": "runner.py"
+  }
+}

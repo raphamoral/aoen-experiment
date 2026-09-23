@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra forte base evolutiva com serviços stateless, backing services substituíveis via variáveis de ambiente, versionamento de modelos ML e packages independentes no monorepo, mas não detalha abstrações de domínio (ports & adapters ou similar) que isolem explicitamente a lógica de negócio de frameworks externos, nem estratégias de versionamento de API para evolução sem breaking changes com clientes existentes."
+}

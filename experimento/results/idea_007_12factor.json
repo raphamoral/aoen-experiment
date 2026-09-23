@@ -1,0 +1,57 @@
+{
+  "ideia_idx": 7,
+  "ideia": "Plataforma de microlearning gamificado para treinamento corporativo",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único (ex: Turborepo ou Nx) com múltiplos serviços versionados em Git. Branches por ambiente (main → prod, develop → staging). Cada serviço é um package independente dentro do monorepo, com seu próprio Dockerfile e pipeline. Nunca há código compartilhado por cópia — apenas por pacotes internos publicados.",
+    "dependencies": "Cada serviço declara dependências explicitamente via package.json (Node), requirements.txt + pip-compile (Python) ou go.mod (Go). Zero dependências implícitas do sistema operacional. Imagens Docker baseadas em alpine com versões pinadas. Dependências de sistema isoladas no container. Lockfiles (package-lock.json, poetry.lock) versionados no repositório.",
+    "config": "100% via variáveis de ambiente — nunca hardcoded no código. Separação estrita por ambiente usando arquivos .env não versionados (apenas .env.example no repo). Secrets gerenciados via AWS Secrets Manager ou HashiCorp Vault, injetados no runtime. Configurações de feature flags via LaunchDarkly ou env vars booleanas. Validação de env vars na inicialização do processo com bibliotecas como zod-env ou pydantic-settings.",
+    "backing_services": {
+      "banco_de_dados_primario": "PostgreSQL (RDS Aurora Serverless v2) — dados de usuários, cursos, progresso, gamificação",
+      "cache": "Redis (ElastiCache) — sessões, rankings em tempo real, rate limiting",
+      "fila_de_mensagens": "RabbitMQ ou AWS SQS — eventos assíncronos (conclusão de módulo, conquistas, notificações)",
+      "armazenamento_de_objetos": "AWS S3 — vídeos, imagens, PDFs de conteúdo",
+      "cdn": "CloudFront ou Cloudflare — entrega de assets estáticos e vídeos",
+      "email": "SendGrid ou AWS SES — notificações e relatórios",
+      "busca": "Elasticsearch ou OpenSearch — busca de conteúdo e catálogo de cursos",
+      "observabilidade": "Datadog ou Grafana Stack (Loki + Prometheus + Tempo)",
+      "autenticacao": "Auth0 ou Keycloak — SSO, OAuth2, SAML para integração corporativa"
+    },
+    "build_release_run": "Pipeline CI/CD em três estágios estritamente separados. BUILD: GitHub Actions compila artefatos, roda testes unitários e de integração, gera imagem Docker imutável tagueada com SHA do commit. RELEASE: imagem combinada com config do ambiente alvo, publicada no ECR com tag semântica (v1.2.3-sha). RUN: Kubernetes (EKS) faz rollout da release via Helm charts — nunca há mudança de código em produção sem passar pelo pipeline completo. Rollback = deploy de release anterior.",
+    "processes": "Cada serviço roda como processos stateless e share-nothing. Estado persiste exclusivamente em backing services externos. Sessões armazenadas no Redis, nunca em memória local. Uploads de arquivos vão diretamente para S3 via presigned URLs. Processos de worker consomem filas sem estado local. Sticky sessions são proibidas — qualquer instância pode atender qualquer requisição.",
+    "concurrency": "Escala horizontal via tipos de processo distintos: web workers (API REST/GraphQL), background workers (processamento de eventos, cálculo de rankings, envio de notificações), scheduler (jobs periódicos via cron — relatórios semanais, expiração de streaks), media processor (transcodificação de vídeos). Kubernetes HPA escala cada tipo independentemente baseado em CPU/memória/tamanho de fila. KEDA para autoscaling baseado em métricas de fila SQS/RabbitMQ.",
+    "disposability": "Containers inicializam em menos de 5 segundos. Shutdown gracioso: ao receber SIGTERM, serviço para de aceitar novas requisições, drena conexões ativas em até 30 segundos, finaliza. Health checks liveness e readiness configurados no Kubernetes. Filas de mensagens com dead-letter queue para reprocessamento. Circuit breaker (resilience4j ou opossum) para dependências externas. Retry com exponential backoff e jitter para chamadas entre serviços.",
+    "interfaces": [
+      "API REST (versioned: /api/v1) — CRUD de cursos, usuários, progresso",
+      "API GraphQL — queries flexíveis para dashboard e relatórios",
+      "WebSocket (Socket.io) — eventos em tempo real: rankings ao vivo, notificações de conquistas",
+      "Web App (Next.js/React) — plataforma principal do aprendiz",
+      "Admin Panel (React + Ant Design) — gestão de conteúdo e relatórios para RH",
+      "Mobile App (React Native) — microlearning no mobile com suporte offline",
+      "Webhooks — integração com sistemas de RH externos (HRIS, LMS legados)",
+      "SCORM/xAPI Importer — importação de conteúdos existentes das empresas",
+      "SSO/SAML Endpoint — integração com Azure AD, Okta para login corporativo"
+    ],
+    "escalabilidade": "Escala horizontal stateless em todas as camadas. API layer: múltiplas réplicas atrás de load balancer (ALB). Workers: autoscaling baseado em tamanho de fila. Banco de dados: Aurora com read replicas para queries de leitura intensiva (rankings, relatórios). Cache Redis Cluster para rankings globais e dados quentes. CDN absorve 90%+ do tráfego de assets. Arquitetura multi-tenant com isolamento por schema PostgreSQL (tenant por schema) ou row-level security. Capacidade de atingir milhares de usuários simultâneos sem refatoração arquitetural.",
+    "custos": "Modelo serverless-first onde possível: Aurora Serverless v2 escala para zero fora do horário comercial reduzindo custo em ~60%. Spot Instances para workers de background e processamento de mídia. Reserved Instances para componentes base (API, cache). S3 Intelligent-Tiering para assets de conteúdo antigo. CloudFront reduz custo de egress de S3. Estimativa base para 500 usuários ativos: ~$300-600/mês AWS. Para 10.000 usuários: ~$1.500-3.000/mês. Observabilidade com retenção escalonada de logs (7 dias hot, 30 dias warm, S3 Glacier para auditoria).",
+    "monetizacao": "SaaS B2B com modelo por assento (seat-based pricing): plano Starter ($8/usuário/mês até 50 users), plano Growth ($6/usuário/mês até 500 users), plano Enterprise (contrato anual, pricing customizado, SLA garantido, SSO/SAML incluído). Add-ons: criação ilimitada de conteúdo customizado, relatórios avançados de analytics, white-label. Cobrança anual com desconto de 20% para reduzir churn. Free trial de 14 dias sem cartão. Integração com Stripe para billing automatizado e gestão de assinaturas.",
+    "stack_sugerida": {
+      "backend_api": "Node.js + Fastify (TypeScript) — alta performance, baixa latência",
+      "workers": "Node.js + BullMQ sobre Redis para jobs e filas",
+      "frontend_web": "Next.js 14 (App Router) + TailwindCSS + shadcn/ui",
+      "mobile": "React Native + Expo",
+      "banco_de_dados": "PostgreSQL 16 via AWS Aurora Serverless v2",
+      "cache_sessoes": "Redis 7 via AWS ElastiCache",
+      "fila": "AWS SQS + SNS para event-driven entre serviços",
+      "armazenamento": "AWS S3 + CloudFront",
+      "autenticacao": "Auth0 (planos iniciais) ou Keycloak self-hosted (Enterprise)",
+      "infra_iac": "Terraform + Helm + ArgoCD (GitOps)",
+      "orquestracao": "Kubernetes (AWS EKS)",
+      "ci_cd": "GitHub Actions",
+      "observabilidade": "OpenTelemetry → Grafana Cloud (Loki + Tempo + Prometheus)",
+      "billing": "Stripe + Stripe Billing Portal",
+      "linguagem_tipagem": "TypeScript end-to-end com zod para validação de schema"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único (ex: Turborepo ou Nx) com múltiplos serviços versionados em Git. Branches por ambiente (main → prod, develop → staging). Cada serviço é um package independente dentro do monorepo, com seu próprio Dockerfile e pipeline. Nunca há código compartilhado por cópia — apenas por pacotes internos publicados.\",\n\n  \"dependencies\": \"Cada serviço declara dependências explicitamente via package.json (Node), requirements.txt + pip-compile (Python) ou go.mod (Go). Zero dependências implícitas do sistema operacional. Imagens Docker baseadas em alpine com versões pinadas. Dependências de sistema isoladas no container. Lockfiles (package-lock.json, poetry.lock) versionados no repositório.\",\n\n  \"config\": \"100% via variáveis de ambiente — nunca hardcoded no código. Separação estrita por ambiente usando arquivos .env não versionados (apenas .env.example no repo). Secrets gerenciados via AWS Secrets Manager ou HashiCorp Vault, injetados no runtime. Configurações de feature flags via LaunchDarkly ou env vars booleanas. Validação de env vars na inicialização do processo com bibliotecas como zod-env ou pydantic-settings.\",\n\n  \"backing_services\": {\n    \"banco_de_dados_primario\": \"PostgreSQL (RDS Aurora Serverless v2) — dados de usuários, cursos, progresso, gamificação\",\n    \"cache\": \"Redis (ElastiCache) — sessões, rankings em tempo real, rate limiting\",\n    \"fila_de_mensagens\": \"RabbitMQ ou AWS SQS — eventos assíncronos (conclusão de módulo, conquistas, notificações)\",\n    \"armazenamento_de_objetos\": \"AWS S3 — vídeos, imagens, PDFs de conteúdo\",\n    \"cdn\": \"CloudFront ou Cloudflare — entrega de assets estáticos e vídeos\",\n    \"email\": \"SendGrid ou AWS SES — notificações e relatórios\",\n    \"busca\": \"Elasticsearch ou OpenSearch — busca de conteúdo e catálogo de cursos\",\n    \"observabilidade\": \"Datadog ou Grafana Stack (Loki + Prometheus + Tempo)\",\n    \"autenticacao\": \"Auth0 ou Keycloak — SSO, OAuth2, SAML para integração corporativa\"\n  },\n\n  \"build_releas"
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A arquitetura reconhece o conceito de Tenant apenas no contexto de Identidade e Acesso (RBAC), mas não há qualquer mecanismo, contexto ou linguagem ubíqua voltada ao rastreamento de consumo de recursos por tenant — os custos de infra (AWS/GCP, Twilio, Auth0) são listados como utilidades genéricas sem decomposição por cliente, e o contexto de Relatórios foca em KPIs de agenda (ocupação, cancelamento), não em custo por operação ou margem por cliente."
+}

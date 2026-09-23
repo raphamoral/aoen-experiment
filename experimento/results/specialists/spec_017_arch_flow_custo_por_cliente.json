@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura prevê cobrança por volume de certificados emitidos (Billing & Subscriptions), o que é um pré-requisito para unit economics, mas não há nenhuma mensuração de custo por tenant — nenhum cálculo de quanto cada operação (assinatura, geração de PDF, ancoragem blockchain, verificação pública) custa internamente por cliente, nenhum mecanismo de rastreamento de consumo por tenant, e nenhuma conexão explícita entre custo real por instituição e o modelo de precificação adotado."
+}

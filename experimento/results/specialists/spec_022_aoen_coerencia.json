@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 22,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: o princípio de adaptadores da Fase 1 (fornecedores plugáveis) espelha exatamente a Service Layer da Fase 2 (interfaces intercambiáveis), e o fluxo canônico da Fase 3 mapeia diretamente para os serviços declarados (CatalogService → Descoberta, OrderService → Pedido, TraceabilityService → Rastreamento), com cada segmento de mercado identificado na Fase 1 encontrando sua interface correspondente na Fase 2 — a única tensão não resolvida é entre o 'fluxo canônico imutável' e o canal WhatsApp/Bot, cujo modelo conversacional é inerentemente não-linear e exigiria mapeamento explícito de estados para o pipeline fixo, algo que a proposta não endereça."
+}

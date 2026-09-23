@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta inclui uma única métrica de custo unitário como fitness function ($0.002/assinante analisado), o que demonstra consciência de custo, mas não apresenta estimativas por componente de infraestrutura, não nomeia estratégias concretas de otimização (spot instances, reserved capacity, storage tiers, scale-to-zero) e não modela como os custos evoluem à medida que novos tenants e volumes de dados são incorporados."
+}

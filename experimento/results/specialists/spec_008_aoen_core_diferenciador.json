@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador — cadeia de custódia criptograficamente verificável via BlockchainAdapter — está claramente identificado, isolado da lógica de negócio, desacoplado de fornecedor (adapter pattern), e resolve um problema real e regulatório que sistemas CRUD tradicionais não resolvem: a prova irrefutável e imutável de conformidade ambiental; perde um ponto por não detalhar como o diferenciador resiste à entrada de players como SAP/TOTVS que poderiam embutir funcionalidade similar nativamente."
+}

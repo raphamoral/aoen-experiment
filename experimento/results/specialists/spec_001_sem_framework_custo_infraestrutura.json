@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta identificou corretamente os principais vetores de custo (servidores contínuos, Google Maps API por requisição, bandwidth de localização, crescimento de histórico, SMS/push), demonstrando consciência do problema, mas não apresentou nenhum valor estimado em dólares ou reais por componente, nenhuma estratégia de otimização (scale-to-zero, spot instances, tiering de armazenamento, limitar frequência de updates de localização), e nenhuma projeção de como os custos escalam com o número de entregadores ou entregas — o Redis como cache é uma decisão de performance que indiretamente reduz custo de DB, mas não foi justificada sob essa ótica."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona uma 'fila de revisão/aprovação interna' no fluxo fixo, sinalizando alguma consciência de processamento assíncrono, mas não especifica workers separados, filas técnicas (ex: RabbitMQ, SQS, BullMQ) nem isolamento físico para processos pesados como geração de PDF/DOCX e merge de templates — tarefas CPU/memória intensivas que, se rodando no mesmo processo da API, podem causar degradação ou queda total do serviço em picos de carga."
+}

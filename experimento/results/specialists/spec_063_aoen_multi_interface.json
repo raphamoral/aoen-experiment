@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 63,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces (mobile, WhatsApp, dashboard web, REST API e PDF) cada uma explicitamente justificada por um segmento de mercado distinto, com lógica de diagnóstico inteiramente encapsulada no PestAnalysisService — qualquer nova interface é apenas um renderizador que consome o mesmo serviço sem alterar regras de negócio."
+}

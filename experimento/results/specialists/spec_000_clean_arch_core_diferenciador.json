@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador — análise de imagem diagnóstica por IA (entidades ImagemDiagnostica + LaudoIA) — está claramente identificado e isolado em entidades próprias com regras específicas (confiança mínima, achados ordenados, laudo IA não substitui veterinário), e o atributo 'modeloUsado' em LaudoIA sinaliza intenção de extensibilidade multi-provedor; porém, a proposta não evidencia camadas de abstração que protejam o núcleo de acoplamento (ex: porta/adaptador para o modelo de IA), não justifica explicitamente por que soluções existentes de telemedicina veterinária falham nesse ponto, e não detalha o que torna o pipeline de inferência proprietário ou defensável competitivamente."
+}

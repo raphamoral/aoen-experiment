@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A cadeia de valor, os bounded contexts, a evolução de componentes e a topologia de times se reforçam com alta coesão — cada time stream-aligned possui contextos com afinidade de domínio real (ex: Asset Registry + Predictive Maintenance no Asset Intelligence, Work Order + Notification no Field Operations), as escolhas de commodity (MQTT gerenciado, time-series, Auth0) são consistentes com maturidade de mercado, e o pipeline IoT→predição→OS→feedback fecha o loop da proposta de valor declarada; a nota não é 10 porque há duas tensões visíveis: o Billing & Subscription é declarado como bounded context mas não aparece atribuído a nenhum time, criando um órfão arquitetural, e o digital twin classificado como genesis introduz uma dependência imatura no núcleo preditivo sem que a proposta explicite como o risco de imaturidade é mitigado durante a evolução do produto."
+}

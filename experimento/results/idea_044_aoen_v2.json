@@ -1,0 +1,43 @@
+{
+  "ideia_idx": 44,
+  "ideia": "Plataforma de recrutamento técnico com avaliação automatizada de código",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de avaliação técnica automatizada: recebe submissões de código, executa em sandbox isolado, avalia corretude, performance e qualidade, e gera relatório objetivo e acionável para o recrutador — sem envolvimento humano técnico no meio do processo.",
+    "fase1_mercado": "Empresas de tecnologia (startups a enterprises) que contratam engenheiros de software em volume. Secondarily: consultorias de recrutamento técnico e plataformas de emprego que querem adicionar triagem técnica como diferencial.",
+    "fase1_extensivel": "Sim. O core é uma interface abstrata de avaliação (IEvaluationEngine) com implementações plugáveis: executor de código (Judge0, Piston, containers próprios), analisador de qualidade (Claude API, GPT-4, modelos locais), e banco de desafios (biblioteca própria ou integração com GitHub/HackerRank). Trocar qualquer fornecedor não afeta o restante do sistema.",
+    "fase2_interfaces": [
+      "Portal web do candidato: editor de código online com environment de testes e timer",
+      "Dashboard do recrutador: gestão de vagas, candidatos, relatórios comparativos e ranking",
+      "API REST para integração com ATS (Greenhouse, Lever, Workday, SAP SuccessFactors)",
+      "Widget embarcável: tela de challenge incorporável em sites de carreira da empresa-cliente",
+      "Webhooks de notificação: integração com Slack, Teams, email para alertas de conclusão"
+    ],
+    "fase2_justificativa_mercado": "Portal do candidato: reduz fricção de participação e aumenta taxa de conclusão. Dashboard do recrutador: é a interface principal de retenção — quem usa diariamente não troca de plataforma facilmente. API para ATS: abre o mercado enterprise que já tem processos estabelecidos e não abandona seu ATS. Widget embarcável: abre o mercado de empresas que querem white-label e experiência nativa na própria marca. Webhooks: reduz custo de adoção ao se encaixar nos workflows existentes das equipes de RH.",
+    "fase2_service_layer": "Camada de serviços centralizada (ChallengeService, EvaluationService, CandidateService, ReportService) exposta como API interna. Todas as interfaces (portal web, dashboard, widget, API externa) consomem esses serviços — nenhuma interface contém lógica de negócio. Regras de scoring, critérios de aprovação e geração de relatório vivem exclusivamente na service layer.",
+    "fase3_fluxo_fixo": "Vaga criada → candidato convidado → acessa challenge → escreve código no editor → submete antes do timeout → sistema enfileira para avaliação → sandbox executa código contra casos de teste → IA analisa qualidade → relatório consolidado gerado → recrutador notificado → candidato avança ou é reprovado.",
+    "fase3_parametros_configuraveis": [
+      "Biblioteca de desafios ativados por vaga (slug identificador)",
+      "Linguagens de programação permitidas por desafio",
+      "Tempo limite de execução do código (ex: 2000ms)",
+      "Tempo total disponível para o candidato (ex: 90min)",
+      "Peso dos critérios de scoring: corretude (%), performance (%), qualidade de código (%), cobertura de edge cases (%)",
+      "Número mínimo de casos de teste para aprovação",
+      "Prompt customizado para análise de IA (critérios específicos da empresa)",
+      "Threshold de aprovação automática (ex: score >= 75)",
+      "Branding: logo, cores, domínio customizado, nome da empresa no email",
+      "Templates de email/notificação",
+      "Webhooks de destino por evento (submissão, aprovação, reprovação)",
+      "Permissões de acesso por papel (recrutador, hiring manager, admin)",
+      "Idioma da interface do candidato",
+      "Número máximo de tentativas por desafio"
+    ],
+    "fase3_novo_cliente": "Novo cliente = criar registro de tenant com ID único → configurar parâmetros via painel admin (ou importar JSON de configuração) → selecionar desafios da biblioteca ou criar novos via editor no dashboard → configurar branding e domínio → gerar API key para integração ATS → ativar. Zero código novo. Onboarding completo em menos de 1 hora.",
+    "fase4_core_isolado": "Evaluation Workers: processo assíncrono isolado que consome fila de jobs (Redis/SQS), executa código em container sandbox efêmero (Docker com seccomp + network disabled), chama IA para análise de qualidade, persiste resultado no banco e emite evento de conclusão. Roda em pool de workers escalável independentemente do restante da aplicação.",
+    "fase4_custo_total_cliente": "Custo por avaliação: execução em sandbox ~$0.002 (compute 500ms avg, container efêmero) + análise IA ~$0.02 (Claude Haiku, ~2k tokens entrada/saída) = ~$0.022/avaliação. Infra proporcional: banco PostgreSQL particionado por tenant, armazenamento de submissões S3/R2 (~10KB por código = $0.00023/submissão), banda de saída para relatório PDF ~$0.001. Total estimado: ~$0.025 por avaliação completa. Cliente com 100 avaliações/mês = ~$2.50 em custo variável. Permite precificar plano starter em $49/mês com margem saudável.",
+    "fase4_continuidade": "Evaluation Workers são desacoplados por fila assíncrona. Se os workers caírem: portal do candidato continua aceitando submissões (enfileiradas), dashboard do recrutador continua funcionando (dados históricos disponíveis), relatórios pendentes são processados quando workers voltam. Circuit breaker com fallback: se IA de análise falhar, sistema entrega relatório parcial (só execução e casos de teste) sem bloquear o fluxo.",
+    "fase4_manutencao": "EvaluationEngine é injetado via interface (ICodeExecutor, IQualityAnalyzer). Trocar de Judge0 para executor próprio: implementar ICodeExecutor, configurar feature flag por tenant, migrar gradualmente via A/B. Trocar modelo de IA: implementar IQualityAnalyzer com novo provider, rodar em paralelo para comparação de qualidade, promover quando validado. Sem downtime, sem mudança de interface pública.",
+    "monetizacao": "Plano Starter ($49/mês): 1 vaga ativa, 50 avaliações/mês, biblioteca padrão de desafios. Plano Growth ($199/mês): 10 vagas, 500 avaliações, desafios customizados, relatórios comparativos, 1 integração ATS. Plano Scale ($599/mês): vagas ilimitadas, 2000 avaliações, white-label, API completa, SSO, suporte prioritário. Enterprise (contrato anual): volume customizado, SLA, deploy dedicado, curadoria de desafios por especialistas. Add-on: pacotes de avaliações extras ($0.15/avaliação acima do plano). Margem bruta alvo: 75%+.",
+    "stack_sugerida": "Backend: FastAPI (Python) para API principal + Celery + Redis para fila de avaliação. Execução de código: Docker containers efêmeros com seccomp profiles (sem rede, sem filesystem write, CPU/memória limitados). IA: Anthropic Claude API (Haiku para volume, Sonnet para análise profunda). Banco: PostgreSQL (dados estruturados, row-level security por tenant) + Redis (filas, cache de sessão). Storage: Cloudflare R2 (submissões de código, relatórios PDF). Frontend: Next.js 14 com editor Monaco (VS Code engine). Infra: Kubernetes (GKE ou EKS) com HPA nos Evaluation Workers, Terraform para IaC. Observabilidade: OpenTelemetry + custo por tenant trackado via tags nos spans."
+  }
+}

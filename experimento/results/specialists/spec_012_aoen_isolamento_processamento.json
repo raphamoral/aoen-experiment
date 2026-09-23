@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta define uma abstração de pipeline (Ingestão → Normalização → Análise → Alerta → Relatório) e modelos de análise intercambiáveis, o que indica separação lógica de responsabilidades, mas não menciona em nenhum momento filas de mensagens, workers independentes, processamento assíncrono ou qualquer mecanismo de isolamento físico — o motor de ML/anomaly detection, que é computacionalmente pesado, aparentemente roda acoplado ao fluxo principal sem fallback caso falhe."
+}

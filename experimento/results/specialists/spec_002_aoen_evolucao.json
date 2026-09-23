@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra sólidos princípios evolutivos — a service layer desacoplada de protocolos, o adapter pattern para provedores de IA e o motor de matching extensível via tags sem alteração de código são decisões genuinamente reversíveis e aditivas; porém, a ausência de menção explícita à substituibilidade do banco de dados, estratégia de escalabilidade horizontal do grafo de matching (potencial gargalo acima de milhares de usuários simultâneos) e a descrição do fluxo core como 'imutável no código' introduzem rigidez que pode exigir intervenção estrutural em saltos de escala ou mudanças de modelo de negócio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador existe e é real — a combinação de extração de dados laboratoriais via OCR com personalização nutricional por LLM/embeddings resolve um problema que apps de nutrição convencionais (baseados em questionários genéricos) não resolvem — e a arquitetura demonstra extensibilidade ao listar múltiplos fornecedores alternativos para cada componente crítico (Textract/Document AI, OpenAI/Anthropic, pgvector/Pinecone); porém o núcleo não está explicitamente isolado como bounded context próprio — ele emerge difusamente da combinação de backing services (ocr_exames + banco_vetorial + ia_llm + ml-service) sem que a proposta declare formalmente 'este pipeline é a razão de existir do produto e tudo mais é commodity', o que fragiliza a separação conceitual entre o core diferenciador e a infraestrutura de suporte."
+}

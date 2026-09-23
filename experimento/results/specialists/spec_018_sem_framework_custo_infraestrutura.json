@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 6,
+  "justificativa": "A proposta apresenta estimativa concreta parcial ($100–200/mês para servidor principal), cita instâncias spot para workers Celery e faz escolha arquitetural consciente de custo (S3+Parquet em vez de data warehouse), mas o texto foi truncado antes de completar a seção de custos, não há breakdown por componente (Redis, S3, banda, CDN estão ausentes) e falta qualquer projeção de crescimento de custo por número de tenants."
+}

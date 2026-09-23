@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 93,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não faz nenhuma menção a mensuração de custo por cliente, custo por operação ou rastreamento de consumo por tenant — a única pista de custo variável é a menção implícita de 'LLMs via API (v3)', mas isso é descrito como escolha técnica de implementação, não como componente de unit economics; não há cálculo de margem por cliente, sem vínculo entre custo e modelo de precificação."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 6,
+  "justificativa": "O modelo menciona plano mensal por corretor/imobiliária com limite de contratos inclusos e cita um valor de referência (R$ 99/mês), conectando a cobrança ao uso real do produto, além de considerar o custo variável do serviço de assinatura digital — mas falta detalhamento de tiers diferenciados, análise de LTV/CAC/churn e projeção de sustentabilidade margem x custo por cliente."
+}

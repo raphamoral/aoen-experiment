@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura prevê multi-tenancy (Tenant Management BC) e um Analytics & ROI BC, o que cria infraestrutura necessária para rastrear consumo por tenant, mas nenhum dos bounded contexts, camadas de evolução ou times descreve explicitamente mensuração de custo por operação, por tenant ou por recurso consumido — o Analytics & ROI foca no ROI do cliente e-commerce (lift de margem do lojista), não no custo unitário do SaaS por cliente, e a camada commodity lista infraestrutura total (AWS, Redis, PostgreSQL) sem qualquer mecanismo de atribuição de custo por tenant."
+}

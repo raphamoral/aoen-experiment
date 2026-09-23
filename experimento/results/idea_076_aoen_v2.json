@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 76,
+  "ideia": "Marketplace de serviços de reabilitação pós-COVID com teleconsulta",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de matching inteligente entre pacientes com sequelas pós-COVID e especialistas em reabilitação (fisioterapeutas, neurologistas, psicólogos, pneumologistas), combinado com infraestrutura de teleconsulta integrada e protocolos de acompanhamento longitudinal de evolução clínica.",
+    "fase1_mercado": "B2C: pacientes com Long COVID buscando acesso a especialistas sem deslocamento físico (fadiga, dispneia e neurobruma limitam mobilidade). B2B: planos de saúde e operadoras que precisam reduzir custo de sinistralidade com reabilitação estruturada; hospitais e clínicas que querem expandir atendimento sem aumentar espaço físico.",
+    "fase1_extensivel": "Sim. O motor de matching é abstraído como interface: pode ser regras determinísticas (v1), modelo de ML supervisionado (v2) ou LLM com embeddings clínicos (v3). A teleconsulta é plugável via adaptadores — Daily.co, Twilio, Zoom SDK ou WebRTC próprio. Prontuário e protocolos clínicos seguem um schema canônico, substituível por FHIR quando necessário para integração hospitalar.",
+    "fase2_interfaces": [
+      "Web app responsivo para pacientes (triagem, agendamento, teleconsulta, histórico)",
+      "Dashboard web para profissionais de saúde (agenda, prontuário, evolução, faturamento)",
+      "Painel administrativo para clínicas/gestores (gestão de equipe, relatórios, configuração de protocolos)",
+      "API REST + webhooks para integração com planos de saúde e sistemas hospitalares (HIS/EHR)",
+      "Canal WhatsApp/chatbot para triagem inicial e lembretes (pacientes de baixa digitalização)",
+      "App mobile (iOS/Android) para pacientes com síndrome de fadiga crônica que não toleram desktop"
+    ],
+    "fase2_justificativa_mercado": "Web app paciente: mercado direto D2C, autocadastro sem fricção. Dashboard profissional: aquisição pelo lado da oferta — profissional traz sua carteira de pacientes. Painel gestor: entrada B2B em clínicas, abre contrato recorrente de licença por sede. API para planos: ticket enterprise, volume alto, margem previsível. WhatsApp: mercado de menor renda e maior idade, sem smartphone premium — aumenta total addressable market sem novo app. Mobile: fidelização e adesão ao tratamento, reduz churn por abandono de protocolo.",
+    "fase2_service_layer": "Uma Service Layer central (MatchingService, SessionService, ProtocolService, BillingService, NotificationService) é consumida por todos os adaptadores de interface via contratos bem definidos. Nenhuma interface contém lógica de negócio: o web app chama SessionService.schedule(), o WhatsApp bot chama o mesmo endpoint. Troca de canal não requer reescrita de regra clínica.",
+    "fase3_fluxo_fixo": "Triagem de sintomas → score de gravidade → matching com especialistas disponíveis → agendamento de sessão → execução da teleconsulta → registro de evolução clínica → geração de relatório de progresso → faturamento → próxima sessão recomendada. Este pipeline é imutável no código; apenas os parâmetros variam.",
+    "fase3_parametros_configuraveis": [
+      "Especialidades habilitadas por tenant (fisioterapia, neurologia, psicologia, nutrição, fonoaudiologia)",
+      "Protocolos clínicos e questionários de triagem por especialidade",
+      "Duração padrão de sessão por tipo (30min, 45min, 60min)",
+      "Janelas de disponibilidade e fuso horário por profissional",
+      "Regras de matching: peso por score clínico, por proximidade de horário, por avaliação do profissional",
+      "Meios de pagamento aceitos por tenant (cartão, plano de saúde, boleto, PIX)",
+      "Tabela de preços e percentual de repasse ao profissional",
+      "Número máximo de sessões cobertas por plano de saúde integrado",
+      "Templates de notificação (e-mail, SMS, WhatsApp) por idioma",
+      "Branding e domínio customizado por clínica parceira (white-label)"
+    ],
+    "fase3_novo_cliente": "Novo tenant é criado via painel admin: seleciona especialidades, carrega protocolos em formato YAML/JSON, define tabela de preços, configura meios de pagamento via credenciais OAuth, ativa integrações disponíveis. Nenhum deploy necessário — o sistema lê a configuração do tenant em runtime e adapta o fluxo fixo aos parâmetros fornecidos.",
+    "fase4_core_isolado": "O motor de matching e o orquestrador de teleconsulta rodam como workers assíncronos isolados (processos separados via fila de mensagens). Matching Worker: consome eventos de 'nova solicitação', executa algoritmo pesado (ML ou LLM), publica resultado. Session Worker: gerencia sala de vídeo, gravação opcional, transcrição e geração de sumário clínico pós-consulta via LLM. Ambos escalam horizontalmente e independentemente da API principal.",
+    "fase4_custo_total_cliente": "Custo por sessão realizada: vídeo (Daily.co ~$0.0045/min × 45min = ~$0.20/sessão), LLM para sumário clínico (~$0.05/sessão com GPT-4o mini ou Claude Haiku), armazenamento de prontuário/evolução (~$0.002/paciente/mês no S3), transcrição opcional (~$0.006/min × 45min = ~$0.27/sessão), banda CDN (~$0.01/sessão), infra proporcional de servidor (~$0.03/sessão em ECS Fargate). Custo operacional total estimado: ~$0.57–$0.80 por sessão. Para um paciente com 8 sessões/mês: ~$4.80–$6.40/mês de custo de infra. Plano mínimo vendável a R$49/sessão cobre custo com margem saudável.",
+    "fase4_continuidade": "O Matching Worker e o Session Worker são assíncronos: falha no worker não derruba a API principal nem o agendamento. Filas com dead-letter queue preservam solicitações não processadas. Teleconsulta usa sala WebRTC direta (peer-to-peer via TURN server) — se o Session Worker cair, a chamada em andamento não é interrompida. Modo degradado: matching cai para regras determinísticas (sem ML) se o worker ML estiver indisponível, garantindo que o paciente ainda consiga agendar.",
+    "fase4_manutencao": "O motor de matching é encapsulado atrás de uma interface IMatchingStrategy. Trocar de modelo (regras → ML → LLM) requer apenas nova implementação da interface e deploy do novo worker — sem downtime, sem alteração na API principal. Feature flag por tenant permite rollout gradual. Teleconsulta segue mesmo padrão via IVideoProvider — migrar de Daily.co para Twilio é trocar o adaptador, não o fluxo de negócio.",
+    "monetizacao": "B2C: comissão de 15–25% sobre cada sessão realizada (marketplace take-rate). B2B clínicas: SaaS mensal por número de profissionais ativos ($49–$199/profissional/mês) + take-rate reduzido (8%). B2B planos de saúde: contrato enterprise de licença anual por volume de vidas cobertas + API de integração. White-label: mensalidade fixa por domínio customizado ($299–$999/mês). Receita recorrente previsível via protocolos de 8–16 sessões por paciente.",
+    "stack_sugerida": "Backend: Node.js (Fastify) ou Python (FastAPI) para API principal; workers em Python para ML/LLM. Banco: PostgreSQL (dados relacionais de agendamento e prontuário) + Redis (cache de disponibilidade e sessões ativas). Fila: Amazon SQS ou RabbitMQ para comunicação entre workers. Vídeo: Daily.co SDK (WebRTC gerenciado) com fallback para Twilio Video. LLM: Claude Haiku (sumários clínicos, triagem) com prompt caching para reduzir custo. Storage: S3 para documentos e gravações opcionais. Frontend: Next.js (web app paciente + dashboard profissional) + React Native (mobile). Infra: AWS ECS Fargate (containers sem gerenciar servidor) + CloudFront CDN. Auth: Auth0 ou Cognito com suporte a múltiplos tenants. Pagamentos: Stripe Connect (split automático clínica/profissional) + integração com operadoras via TISS."
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "ideia_idx": 14,
+  "ideia": "Plataforma de tradução simultânea para reuniões corporativas multilíngues",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Latência ultrabaixa fim-a-fim (alvo: < 1,5 s do áudio de entrada à legenda/voz traduzida)",
+      "Evolvability (capacidade de trocar provedores de ASR, MT e TTS sem reescrever o núcleo)",
+      "Qualidade de tradução e terminologia corporativa (glossários por cliente, contexto da reunião)",
+      "Segurança e privacidade (criptografia ponta a ponta, isolamento por tenant, LGPD/GDPR, SOC 2)",
+      "Disponibilidade e resiliência (degradação graciosa: se a voz falhar, cai para legenda)",
+      "Elasticidade (picos concentrados em horário comercial, por fuso horário)",
+      "Observabilidade (métricas de qualidade e latência por idioma, por provedor e por reunião)",
+      "Interoperabilidade (Zoom, Teams, Google Meet, WebRTC nativo)",
+      "Eficiência de custo (custo por minuto traduzido monitorado como característica de primeira classe)"
+    ],
+    "fitness_functions": [
+      "Latência: teste sintético contínuo em produção; falha o pipeline de deploy se o p95 do pipeline ASR→MT→saída passar de 1,5 s",
+      "Qualidade: conjunto dourado de áudios por par de idiomas, com WER (ASR) e COMET/BLEU (MT) executado a cada troca de modelo ou provedor; bloqueia a promoção se regredir mais de X%",
+      "Acoplamento: ArchUnit/import-linter/dependency-cruiser no CI proíbem o domínio de importar SDKs de provedores; o domínio só depende de portas (interfaces)",
+      "Contrato: testes de contrato (Pact) entre serviços e adaptadores de provedores, com versionamento de esquema de eventos verificado no CI",
+      "Custo: alerta e bloqueio de rollout se o custo por minuto traduzido ultrapassar a meta; comparação de custo em testes A/B entre provedores",
+      "Segurança: SAST/DAST, varredura de dependências e testes automáticos de isolamento entre tenants; verificação de que nenhum áudio é persistido sem consentimento",
+      "Resiliência: chaos engineering (queda de provedor de ASR, partição de rede) com verificação de failover automático em menos de 3 s",
+      "Escalabilidade: teste de carga periódico com N reuniões simultâneas; o autoscaling deve manter o p95 de latência dentro da meta",
+      "Modularidade: métrica de instabilidade e abstração dos módulos, e detecção de dependências cíclicas no CI",
+      "Disponibilidade: SLO de 99,9% com error budget; freio de deploys quando o orçamento se esgota"
+    ],
+    "incremental_change": "Começar com um monólito modular (arquitetura hexagonal) em vez de microsserviços prematuros. Fase 1 (MVP): legendas traduzidas em tempo real para um par de idiomas (ex.: PT↔EN) via app web/WebRTC, com provedores gerenciados de ASR/MT. Fase 2: mais idiomas, glossários por cliente, transcrição e resumo pós-reunião, integração com Zoom/Teams/Meet via bots ou SDKs. Fase 3: tradução de voz (TTS) e clonagem de voz opcional, canais de áudio por idioma. Fase 4: modelos próprios ou fine-tuned por domínio, execução em edge e SSO/SCIM corporativo. Extrair serviços apenas quando fitness functions e métricas mostrarem gargalo real (ex.: o pipeline de mídia é o primeiro candidato, pois tem perfil de escala diferente). Estratégia de deploy com feature flags, canary releases, shadow traffic e strangler fig para migrar partes gradualmente. Cada fase passa por revisão das fitness functions antes de avançar.",
+    "reversibility": "Reversíveis (two-way doors): escolha de provedor de ASR/MT/TTS (atrás de portas e adaptadores), modelo de LLM para pós-edição, provedor de cloud para cargas stateless (containers), formato de legendas, UI e frameworks de front-end, estratégia de cache, esquema de planos e preços. Semi-reversíveis: broker de mensageria (mitigado com abstração de eventos), banco de dados relacional (custo moderado de migração). Difíceis de reverter (decidir no last responsible moment): protocolo de transporte de mídia em tempo real (WebRTC/SFU próprio vs. gerenciado), modelo de multi-tenancy e residência de dados, formato de armazenamento de transcrições e áudio, contratos públicos de API/SDK, e a decisão de treinar modelos próprios. Registrar essas decisões em ADRs com os gatilhos que as revisitariam.",
+    "coupling": "Baixo acoplamento por portas e adaptadores: o núcleo de domínio (sessão, reunião, glossário, tradução) define interfaces como SpeechRecognizer, Translator e Synthesizer, e cada provedor é um adaptador substituível. Comunicação assíncrona orientada a eventos (esquemas versionados, ex.: CloudEvents/Protobuf) entre contextos delimitados (DDD): Mídia/Streaming, Tradução, Reuniões e Tenants, Faturamento, Analytics. Streaming em tempo real via gRPC/WebSocket somente no caminho crítico de latência. Anti-corruption layer para integrações com Zoom/Teams/Meet. Cada contexto é dono de seus dados (sem banco compartilhado). Contratos com compatibilidade retroativa e política de depreciação explícita.",
+    "interfaces": [
+      "API REST/GraphQL de gestão (tenants, reuniões, glossários, usuários, faturamento)",
+      "API de streaming em tempo real (WebSocket/gRPC/WebRTC) para envio de áudio e recebimento de legendas ou áudio traduzido",
+      "Webhooks e eventos (reunião iniciada/encerrada, transcrição pronta, limite de uso atingido)",
+      "SDK JavaScript/mobile para incorporar a tradução em aplicações de terceiros",
+      "Integrações/apps para Zoom, Microsoft Teams e Google Meet",
+      "Porta SpeechRecognizer (adaptadores: Deepgram, Whisper, Google STT, Azure Speech, etc.)",
+      "Porta Translator (adaptadores: DeepL, Google Translate, LLMs, modelos próprios)",
+      "Porta Synthesizer (adaptadores: ElevenLabs, Azure TTS, Google TTS)",
+      "Porta de identidade (SAML/OIDC/SCIM)",
+      "Porta de armazenamento (S3-compatible) e de mensageria (Kafka/NATS/Redis Streams)",
+      "Console administrativo e painel de analytics/uso"
+    ],
+    "escalabilidade": "Escala horizontal por reunião/sessão: cada sessão é uma unidade independente de processamento, o que permite particionar por tenant/região. Serviços de mídia stateless atrás de SFU/balanceador com afinidade de sessão, autoscaling em Kubernetes com KEDA baseado em sessões ativas e profundidade de fila. Implantação multirregião próxima dos participantes para reduzir latência, com roteamento por geolocalização. Streaming com backpressure e buffers limitados; degradação graciosa (legenda em vez de voz, modelo mais leve sob carga). Cache de traduções e glossários frequentes. Inferência em GPU com pools separados para tempo real e batch (pós-reunião). Dados quentes em Redis, persistentes em PostgreSQL particionado, e áudio/transcrições em object storage com ciclo de vida definido. Sharding por tenant para clientes enterprise, com opção de célula dedicada (cell-based architecture) para isolamento e residência de dados.",
+    "custos": "Os maiores custos são ASR, MT/LLM e TTS (por minuto de áudio), além de GPU e banda de mídia. Medir custo por minuto traduzido por idioma, provedor e tenant desde o dia 1 (FinOps). Mitigações: roteamento dinâmico entre provedores conforme custo/qualidade, detecção de atividade de voz (VAD) para não enviar silêncio, cache de tradução, modelos menores para pares comuns, instâncias spot/reservadas para cargas batch, TTS apenas sob demanda (legendas como padrão), retenção mínima de áudio e política de ciclo de vida do armazenamento. Começar com provedores gerenciados (custo variável, sem CAPEX) e migrar para modelos auto-hospedados apenas quando o volume tornar o break-even favorável, decisão guiada por fitness function de custo. Considerar também custos de conformidade (auditorias SOC 2/ISO 27001, residência de dados) e de suporte enterprise.",
+    "monetizacao": "Modelo híbrido de assinatura + consumo: (1) planos por assento/organização (Starter, Business, Enterprise) com minutos incluídos; (2) cobrança por minuto excedente e por idioma adicional; (3) sobretaxa para tradução de voz (TTS) e clonagem de voz em relação às legendas; (4) add-ons: glossários customizados, resumos e atas pós-reunião, analytics, retenção estendida; (5) Enterprise: SSO/SCIM, SLA, residência de dados, célula dedicada, contrato anual e suporte prioritário; (6) API/SDK para parceiros e integradores com preço por uso; (7) possível marketplace/revenda com plataformas de videoconferência e intérpretes humanos para revisão (modelo híbrido premium). Trial gratuito limitado por minutos para aquisição self-service (PLG), com expansão via vendas para contas corporativas. Faturamento e metering via Stripe Billing com eventos de uso.",
+    "stack_sugerida": "Frontend: React/Next.js + TypeScript, WebRTC (LiveKit ou mediasoup como SFU), SDK JS. Backend: monólito modular em Go ou Kotlin/Java (Spring) para o núcleo, com serviço de mídia/streaming em Go ou Rust; Python para componentes de ML. Tempo real: LiveKit (gerenciado ou auto-hospedado), gRPC, WebSocket. IA: ASR (Deepgram/Whisper/Azure Speech), MT (DeepL/Google/LLMs como Claude para pós-edição contextual e glossários), TTS (ElevenLabs/Azure), todos atrás de portas. Mensageria: NATS JetStream ou Kafka. Dados: PostgreSQL (com RLS para multi-tenancy), Redis, S3-compatible object storage, ClickHouse para analytics. Infra: Kubernetes (EKS/GKE) + KEDA, Terraform, ArgoCD (GitOps), pools de GPU. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry, tracing distribuído. Segurança: Vault/KMS, mTLS, OIDC/SAML (Keycloak/Auth0), WAF. Qualidade/CI: GitHub Actions, Pact, testes de carga (k6), harness de avaliação de qualidade (WER/COMET), feature flags (OpenFeature/Unleash). Cobrança: Stripe Billing com metered usage."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T02:14:27+00:00",
+    "runner": "runner.py"
+  }
+}

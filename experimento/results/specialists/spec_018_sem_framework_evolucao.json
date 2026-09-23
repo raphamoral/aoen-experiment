@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "Há separação razoável em camadas (API, workers, frontend, banco), mas a proposta não define abstrações entre lógica de negócio e frameworks — 'Python para tudo' em ML sugere acoplamento direto a bibliotecas específicas (scikit-learn, pandas), a estratégia de tabela-por-tenant no PostgreSQL cria fricção para migrar ou escalar horizontalmente acima de centenas de tenants, e a ausência de ports & adapters explícitos tornaria a troca de componentes-chave (broker de tarefas, modelo de ML, banco) uma cirurgia de código em vez de uma substituição localizada."
+}

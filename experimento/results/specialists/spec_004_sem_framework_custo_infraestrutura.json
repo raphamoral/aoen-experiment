@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "A proposta apresenta estimativas parciais em reais para três componentes (servidor R$500-800/mês, RDS R$300-500/mês, Redis R$150/mês), mas a seção de custos está visivelmente truncada, faltam componentes críticos como CDN, armazenamento, banda de saída (egress) e e-mail transacional, e não há nenhuma estratégia de otimização (spot instances, scale-to-zero, reserved instances) nem projeção de crescimento de custos conforme a base de usuários escala."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 64,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê cinco interfaces distintas (Portal do Pregoeiro, Portal do Fornecedor, Painel Mobile do Gestor, Portal de Transparência e API REST), cada uma justificada por um perfil de usuário e caso de uso real de mercado, com lógica de negócio centralizada na LicitaçãoService e motor de conformidade desacoplado das interfaces, permitindo adicionar novos canais sem reescrever regras de negócio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 89,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural é tecnicamente sofisticada e identifica segmentos de mercado (agrônomos, produtores, cooperativas, B2B via API), mas não menciona nenhum modelo de monetização — não há tiers de preço, valores, lógica de cobrança (por talhão, por usuário, por API call), nem métricas de negócio como MRR, CAC, LTV ou churn; a segmentação de mercado existe, mas não foi convertida em estratégia de captura de valor."
+}

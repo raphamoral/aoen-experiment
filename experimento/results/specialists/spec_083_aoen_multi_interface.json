@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 83,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define sete interfaces distintas (Web App, Mobile, API, Portal do Fornecedor, Portal da Certificadora, Widget e Dashboard ESG), cada uma explicitamente justificada por perfil de usuário e oportunidade de mercado real, com lógica de negócio centralizada em uma service layer desacoplada que permite adicionar novas interfaces sem reescrever domínio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 79,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê 7 interfaces distintas, cada uma justificada por um perfil de usuário real e estratégia de mercado explícita (viral loop via Portal do Fornecedor, stickiness regulatório via Portal do Distribuidor, expansão enterprise via API REST), com lógica de negócio totalmente desacoplada em uma Service Layer estável que permite adicionar novas interfaces sem tocar em regras de negócio."
+}

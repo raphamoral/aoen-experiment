@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta menciona Node.js puro no backend sem qualquer separação de processos pesados (geração de QR Code, envio de notificações, processamento de pagamentos Stripe) do fluxo principal — tudo roda no mesmo processo, sem filas, workers ou qualquer mecanismo de isolamento físico ou lógico explícito."
+}

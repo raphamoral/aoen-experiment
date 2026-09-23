@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de disponibilidade em tempo real com prevenção de conflitos distribuídos é claramente identificado, isolado como interface abstrata agnóstica ao tipo de recurso, extensível via plugins trocáveis sem vendor lock-in, e resolve um problema genuíno que soluções genéricas de agenda não endereçam — coordenação de ocupação física simultânea entre espaços descentralizados; perde um ponto por não evidenciar o mecanismo técnico específico que garante consistência do lock temporário em ambiente distribuído."
+}

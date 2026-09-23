@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "hexagonal",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista componentes de custo com alguns valores unitários concretos (OpenAI Vision ~$0.03/imagem, S3 ~$0.023/GB/mês) e menciona redundância como 10-15% do total, mas não apresenta estimativa de custo mensal total, não define estratégias de otimização explícitas (spot instances, scale-to-zero, storage tiering, reserved instances) e não projeta como os custos escalam com o crescimento da base de usuários ou volume de consultas."
+}

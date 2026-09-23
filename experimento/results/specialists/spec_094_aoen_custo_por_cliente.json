@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 94,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente arquitetura funcional e posicionamento de mercado — não há qualquer menção a rastreamento de consumo por tenant, custo por operação, margem por cliente ou mecanismo que conecte uso de recursos ao modelo de precificação; custos de infraestrutura sequer são citados, quanto mais decompostos por cliente."
+}

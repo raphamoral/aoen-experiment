@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente entidades de domínio e regras de negócio, sem qualquer menção a filas, workers, processos separados, mecanismos de fallback ou isolamento físico para operações computacionalmente pesadas como transcrição em tempo real e tradução via provedores externos — processos que, se colapsarem junto à aplicação principal, derrubam toda a plataforma."
+}

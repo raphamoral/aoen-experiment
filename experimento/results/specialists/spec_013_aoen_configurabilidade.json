@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A separação entre fluxo fixo e parâmetros configuráveis está explicitamente declarada e a arquitetura plugin-based para gateways e mecanismos de acesso é sólida, mas a lista de 'fase3_parametros_configuraveis' está truncada no input — sem saber o escopo completo dos parâmetros (ex: regras de precificação, políticas de cancelamento, permissões por role), não é possível confirmar que o onboarding de novo tenant é 100% configuração sem deploy."
+}

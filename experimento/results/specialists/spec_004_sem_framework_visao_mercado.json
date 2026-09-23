@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "sem_framework",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo está identificado com alguma especificidade (analistas de compras e gestores de TI em médias e grandes empresas; distribuidores e revendas de TI), e o desafio do mercado bilateral é reconhecido, mas a dor do cliente é articulada apenas superficialmente ('eficiência e transparência') sem evidências de por que as soluções atuais falham, não há estimativa de tamanho de mercado (TAM/SAM), e não existe qualquer menção a alternativas concorrentes (ex: SAP Ariba, plataformas de e-procurement, pregões eletrônicos) nem diferenciação clara frente a elas."
+}

@@ -1,0 +1,184 @@
+{
+  "ideia_idx": 10,
+  "ideia": "App de gestão financeira para MEIs com emissão automática de nota fiscal",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "MEI cadastra-se → configura perfil fiscal → registra receitas/despesas → emite nota fiscal automaticamente → acompanha obrigações tributárias (DAS/DASN) → visualiza saúde financeira → toma decisões de negócio",
+    "bounded_contexts": [
+      "Identity & Onboarding: registro de MEI, validação CNPJ via Receita Federal, perfil fiscal (CNAE, regime tributário)",
+      "Financial Ledger: lançamento de receitas e despesas, categorização, conciliação bancária via Open Finance",
+      "Invoice Emission (NF-e/NFS-e): geração, assinatura digital, envio à SEFAZ/prefeitura, consulta de status, cancelamento",
+      "Tax Compliance: cálculo automático do DAS, alertas de vencimento, DASN-SIMEI, limite de faturamento anual",
+      "Reporting & Analytics: fluxo de caixa, DRE simplificado, projeções, indicadores de saúde financeira",
+      "Subscription & Billing: planos SaaS, cobrança recorrente, upgrades/downgrades, trial",
+      "Notification & Alerts: lembretes de vencimentos, alertas de limite de faturamento, notificações de NF emitida"
+    ],
+    "component_evolution": {
+      "genesis": [
+        "Assistente fiscal conversacional (IA para tirar dúvidas tributárias do MEI)",
+        "Previsão inteligente de fluxo de caixa baseada em histórico"
+      ],
+      "custom_built": [
+        "Orquestrador de emissão de NF-e/NFS-e (lida com variações por município)",
+        "Motor de cálculo de DAS com regras do Simples Nacional",
+        "Dashboard financeiro simplificado para perfil não-contábil"
+      ],
+      "product": [
+        "Integração Open Finance (Pluggy, Belvo) — produto maduro no mercado",
+        "Assinatura digital de documentos fiscais (certificado A1/A3)",
+        "Motor de notificações (email, push, WhatsApp)"
+      ],
+      "commodity": [
+        "Autenticação e autorização (Auth0 ou Cognito)",
+        "Infraestrutura cloud (AWS/GCP — serverless + managed DB)",
+        "Processamento de pagamentos (Stripe ou Pagar.me)",
+        "Envio de email transacional (SendGrid, SES)",
+        "Armazenamento de documentos (S3-compatible)"
+      ]
+    },
+    "team_topology": {
+      "stream_aligned_teams": [
+        {
+          "team": "MEI Onboarding & Identity",
+          "ownership": "Bounded contexts: Identity & Onboarding, Subscription & Billing",
+          "mission": "Reduzir fricção no cadastro e aumentar ativação"
+        },
+        {
+          "team": "Financial Core",
+          "ownership": "Bounded contexts: Financial Ledger, Reporting & Analytics",
+          "mission": "Entregar clareza financeira ao MEI com mínimo esforço"
+        },
+        {
+          "team": "Fiscal & NF",
+          "ownership": "Bounded contexts: Invoice Emission, Tax Compliance",
+          "mission": "Automatizar obrigações fiscais com zero erro de compliance"
+        }
+      ],
+      "platform_team": {
+        "team": "Platform Engineering",
+        "ownership": "Infraestrutura cloud, CI/CD, observabilidade, service mesh, developer portal",
+        "interaction_mode": "X-as-a-Service para os stream-aligned teams"
+      },
+      "enabling_team": {
+        "team": "Tax & Compliance Enablement",
+        "ownership": "Conhecimento tributário, atualizações de legislação, testes de compliance fiscal",
+        "interaction_mode": "Colaboração temporária com a Fiscal & NF team em mudanças regulatórias"
+      },
+      "complicated_subsystem_team": {
+        "team": "NF-e Integration Specialists",
+        "ownership": "Biblioteca interna de integração com SEFAZ e prefeituras (NFS-e por município)",
+        "rationale": "Complexidade alta e variável por UF/município justifica time especializado"
+      }
+    },
+    "flow_optimization": {
+      "estrategia": "Eliminar handoffs manuais entre emissão de NF e lançamento financeiro — uma NF emitida dispara automaticamente o lançamento no ledger",
+      "automacoes_de_fluxo": [
+        "Emissão de NF-e/NFS-e em 1 clique com dados pré-preenchidos do cliente recorrente",
+        "Cálculo e exibição do DAS assim que o faturamento mensal é atualizado",
+        "Conciliação bancária automática via Open Finance reduz lançamentos manuais",
+        "Alerta proativo ao atingir 80% do limite de faturamento MEI (R$ 81k/ano)"
+      ],
+      "reducao_de_cognitive_load": "Interface otimizada para usuário não-contábil — terminologia simplificada, fluxos guiados, sem exposição de tecnicismos fiscais",
+      "feedback_loops": "Evento de NF emitida → webhook → atualização de ledger → recalculo de projeção → notificação em tempo real no dashboard"
+    },
+    "interfaces": [
+      "Web App SPA (React) — interface principal para desktop/tablet",
+      "Mobile App (React Native) — emissão de NF e consulta de fluxo de caixa on-the-go",
+      "API REST pública v1 — para integrações de parceiros (contadores, ERPs simples)",
+      "Webhooks — notificações de eventos fiscais para sistemas externos",
+      "Integração Open Finance (Pluggy/Belvo) — leitura de extratos bancários",
+      "Integração SEFAZ estadual — NF-e (XML + DANFE)",
+      "Integração APIs municipais — NFS-e (variável por prefeitura, >5000 municípios)",
+      "Integração Receita Federal — validação de CNPJ, consulta situação MEI",
+      "Integração gateway de pagamento — cobrança do plano SaaS"
+    ],
+    "escalabilidade": {
+      "modelo": "Event-driven + serverless-first para componentes de alta variação de carga",
+      "estrategia_por_contexto": {
+        "Invoice Emission": "Processamento assíncrono via fila (SQS/RabbitMQ) — picos de emissão no fim do mês são absorvidos sem degradação",
+        "Financial Ledger": "CQRS — write model otimizado para consistência, read model otimizado para queries analíticas (PostgreSQL + read replicas)",
+        "Tax Compliance": "Stateless microservice com cálculos cacheados por período — baixo custo computacional",
+        "Notifications": "Pub/Sub (SNS ou similar) — desacoplado de todos os contextos, escala independentemente"
+      },
+      "multi_tenancy": "Row-level isolation por tenant_id no PostgreSQL para fase inicial; sharding por tenant quando >100k MEIs ativos",
+      "cdn_e_edge": "Assets estáticos e PDF de DANFE servidos via CDN (CloudFront/Cloudflare) — reduz latência e custo de egress"
+    },
+    "custos": {
+      "infraestrutura_base": "Serverless + managed services minimizam custo fixo — pay-per-use alinhado com crescimento da base",
+      "maiores_drivers_de_custo": [
+        "Emissão de NF-e: custo por chamada à SEFAZ é zero, mas processamento XML e armazenamento de XMLs escalam com volume",
+        "Open Finance: provedores como Pluggy cobram por conexão ativa — otimizar sync incremental vs. full refresh",
+        "Certificado digital A1: custo por usuário se oferecer certificado gerenciado como feature"
+      ],
+      "otimizacoes": [
+        "Cache agressivo de validações de CNPJ (dados mudam raramente)",
+        "Compressão e cold storage para XMLs de NF com mais de 90 dias",
+        "Pooling de conexões banco de dados (RDS Proxy) para reduzir custo de instâncias",
+        "Tier gratuito de AWS/GCP para bootstrapping inicial"
+      ],
+      "estimativa_inicial": "< R$ 2.000/mês para os primeiros 1.000 MEIs ativos com arquitetura serverless bem configurada"
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS por assinatura mensal/anual com planos escalonados",
+      "planos": [
+        {
+          "nome": "Essencial",
+          "preco": "R$ 29/mês",
+          "features": "Até 10 NFs/mês, fluxo de caixa básico, alertas DAS"
+        },
+        {
+          "nome": "Profissional",
+          "preco": "R$ 59/mês",
+          "features": "NFs ilimitadas, conciliação bancária via Open Finance, relatórios avançados"
+        },
+        {
+          "nome": "Pro + Contador",
+          "preco": "R$ 89/mês",
+          "features": "Tudo do Profissional + acesso compartilhado com contador, exportação contábil"
+        }
+      ],
+      "receitas_adicionais": [
+        "Certificado digital A1 gerenciado — R$ 99/ano por MEI (margem sobre custo de AC)",
+        "Marketplace de contadores parceiros — comissão por lead qualificado",
+        "Antecipação de recebíveis (parceria com fintech) — receita de spread"
+      ],
+      "growth": "Freemium com trial 30 dias no plano Profissional — reduz fricção de adoção; upsell natural quando MEI atinge limite do plano Essencial"
+    },
+    "stack_sugerida": {
+      "frontend": {
+        "web": "React 18 + TypeScript + Vite + TailwindCSS + React Query",
+        "mobile": "React Native + Expo (code sharing com web via monorepo Turborepo)"
+      },
+      "backend": {
+        "api_gateway": "AWS API Gateway ou Kong — roteamento, rate limiting, autenticação centralizada",
+        "servicos": "Node.js 20 + Fastify (microserviços leves) ou NestJS (contextos com mais regras de negócio)",
+        "nfe_worker": "Java 17 ou .NET 8 — ecossistema maduro de libs NF-e (NFe4j, DFe.NET)",
+        "eventos": "AWS SQS + SNS (gerenciado) ou RabbitMQ (self-hosted se custo for crítico)"
+      },
+      "dados": {
+        "principal": "PostgreSQL 16 (RDS ou Supabase) — ACID, row-level security nativo para multi-tenancy",
+        "cache": "Redis (ElastiCache) — sessões, rate limiting, cache de validações",
+        "analytics": "ClickHouse ou BigQuery — queries analíticas de fluxo de caixa sem impactar DB transacional",
+        "storage": "AWS S3 — XMLs NF-e, PDFs DANFE, documentos do MEI"
+      },
+      "infraestrutura": {
+        "cloud": "AWS (primary) — maturidade de serviços managed no Brasil (sa-east-1)",
+        "containers": "AWS Lambda para workloads event-driven; ECS Fargate para serviços stateful",
+        "iac": "Terraform + Terragrunt — infraestrutura como código reproduzível",
+        "ci_cd": "GitHub Actions → ECR/Lambda deploy com ambiente de staging obrigatório",
+        "observabilidade": "OpenTelemetry + Grafana Cloud (métricas, traces, logs) ou Datadog"
+      },
+      "seguranca": {
+        "autenticacao": "Auth0 ou AWS Cognito — OAuth2/OIDC, MFA nativo",
+        "secrets": "AWS Secrets Manager — certificados A1, chaves de integração",
+        "compliance": "Dados em repouso criptografados (AES-256), TLS 1.3 em trânsito, LGPD data residency em sa-east-1"
+      },
+      "integracao_fiscal": {
+        "nfe": "Biblioteca open-source NFe4j (Java) ou API terceira (Focus NFe, eNotas) como fallback gerenciado",
+        "nfse": "eNotas API ou Notazz — abstraem variações municipais (recomendado para fase inicial)",
+        "open_finance": "Pluggy SDK — agregador bancário com cobertura dos principais bancos BR"
+      }
+    }
+  },
+  "raw": "```json\n{\n  \"value_chain\": \"MEI cadastra-se → configura perfil fiscal → registra receitas/despesas → emite nota fiscal automaticamente → acompanha obrigações tributárias (DAS/DASN) → visualiza saúde financeira → toma decisões de negócio\",\n\n  \"bounded_contexts\": [\n    \"Identity & Onboarding: registro de MEI, validação CNPJ via Receita Federal, perfil fiscal (CNAE, regime tributário)\",\n    \"Financial Ledger: lançamento de receitas e despesas, categorização, conciliação bancária via Open Finance\",\n    \"Invoice Emission (NF-e/NFS-e): geração, assinatura digital, envio à SEFAZ/prefeitura, consulta de status, cancelamento\",\n    \"Tax Compliance: cálculo automático do DAS, alertas de vencimento, DASN-SIMEI, limite de faturamento anual\",\n    \"Reporting & Analytics: fluxo de caixa, DRE simplificado, projeções, indicadores de saúde financeira\",\n    \"Subscription & Billing: planos SaaS, cobrança recorrente, upgrades/downgrades, trial\",\n    \"Notification & Alerts: lembretes de vencimentos, alertas de limite de faturamento, notificações de NF emitida\"\n  ],\n\n  \"component_evolution\": {\n    \"genesis\": [\n      \"Assistente fiscal conversacional (IA para tirar dúvidas tributárias do MEI)\",\n      \"Previsão inteligente de fluxo de caixa baseada em histórico\"\n    ],\n    \"custom_built\": [\n      \"Orquestrador de emissão de NF-e/NFS-e (lida com variações por município)\",\n      \"Motor de cálculo de DAS com regras do Simples Nacional\",\n      \"Dashboard financeiro simplificado para perfil não-contábil\"\n    ],\n    \"product\": [\n      \"Integração Open Finance (Pluggy, Belvo) — produto maduro no mercado\",\n      \"Assinatura digital de documentos fiscais (certificado A1/A3)\",\n      \"Motor de notificações (email, push, WhatsApp)\"\n    ],\n    \"commodity\": [\n      \"Autenticação e autorização (Auth0 ou Cognito)\",\n      \"Infraestrutura cloud (AWS/GCP — serverless + managed DB)\",\n      \"Processamento de pagamentos (Stripe ou Pagar.me)\",\n      \"Envio de email transacional (SendGrid, SES)\",\n      \"Armazenamen"
+}

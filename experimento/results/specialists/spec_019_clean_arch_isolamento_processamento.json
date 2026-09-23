@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta não menciona nenhum mecanismo de isolamento de processamento: notificações (SMS/EMAIL/WHATSAPP) e disparo de lembretes aparecem como passos síncronos e inline no use case ScheduleAppointment, sem filas, workers separados, processos independentes ou qualquer fallback — uma falha no envio de notificação pode bloquear ou derrubar o fluxo de agendamento inteiro."
+}

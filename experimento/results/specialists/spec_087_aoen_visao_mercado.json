@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 87,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está razoavelmente definido (operadores e jogadores com dores específicas — perda de receita por gestão manual e fricção na reserva), e a justificativa de mercado por canal (fase2_justificativa_mercado) demonstra segmentação real com lógica de adoção por perfil, mas faltam três elementos críticos para nota alta: tamanho de mercado quantificado (TAM/SAM/SOM ausentes), análise explícita de concorrentes diretos (nenhuma alternativa existente é nomeada ou confrontada) e aprofundamento da dor — 'perde receita por gestão manual' é verdadeiro mas não é sustentado por dados, benchmarks ou evidências de validação com clientes."
+}

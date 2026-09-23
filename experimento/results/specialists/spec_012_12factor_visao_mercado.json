@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta menciona 'indústrias' como público-alvo e o contexto de monitoramento de qualidade do ar, mas não articula a dor específica do cliente, não apresenta tamanho de mercado, não há diferenciação frente a concorrentes existentes, e a proposta de valor é implícita — a descrição é inteiramente técnica/arquitetural, sem nenhuma análise de mercado real."
+}

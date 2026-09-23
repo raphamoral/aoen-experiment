@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A separação explícita entre fluxo fixo no código e parâmetros configuráveis por cliente demonstra maturidade arquitetural real, e o portal self-service sugere onboarding sem suporte técnico do vendor — mas a proposta não confirma que a criação de um novo tenant é exclusivamente uma operação de banco de dados: a substituibilidade do PredictionEngine parece ser escolha de deploy, não configuração por tenant em runtime, e a lista de parâmetros configuráveis foi truncada, impedindo avaliar se cobre edge cases como modelos de feature customizados por operadora ou regras de segmentação arbitrárias."
+}

@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 43,
+  "ideia": "App de comparação de planos de saúde com recomendação personalizada",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de recomendação personalizada: recebe perfil do usuário (idade, condições de saúde, frequência de uso, dependentes, orçamento, região) e retorna um ranking de planos com justificativa legível. Sem esse motor, o produto é apenas uma tabela de preços — commodity sem valor percebido.",
+    "fase1_mercado": "Primário: pessoas físicas em período de escolha ou portabilidade de plano (alta ansiedade decisória, baixo letramento em saúde). Secundário: RH de PMEs gerenciando benefícios de equipes. Terciário: corretoras de saúde que precisam de ferramenta white-label para apresentar propostas a clientes.",
+    "fase1_extensivel": "Sim. O core é uma interface de recomendação com contrato fixo (entrada: perfil estruturado → saída: ranking com score + justificativa). A implementação é plugável: hoje regras configuráveis + LLM para linguagem natural, amanhã modelo próprio treinado com dados históricos. A fonte de dados de planos também é abstraída por um adapter — troca de fornecedor (ANS, agregadores, seguradoras diretas) sem alterar o motor.",
+    "fase2_interfaces": [
+      "Web App (SPA) — fluxo guiado para pessoa física",
+      "API REST — integração para corretoras e plataformas de RH",
+      "Widget embarcável (iframe/JS snippet) — para portais de benefícios e marketplaces de saúde",
+      "WhatsApp Bot — canal assistido para usuários de baixa familiaridade digital",
+      "PDF exportável — relatório comparativo para apresentações de corretoras"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado B2C direto (maior volume, menor ticket). API abre o mercado B2B com corretoras e plataformas de RH (menor volume, ticket alto, recorrente). Widget embarcável abre parcerias com portais de emprego, bancos e marketplaces que já têm audiência — distribuição sem CAC. WhatsApp Bot abre o mercado de usuários 50+ e regiões com menor acesso a web, especialmente para planos populares. PDF exportável é canal de fechamento para o mercado de corretagem, onde a proposta impressa ainda é o padrão.",
+    "fase2_service_layer": "Uma única RecommendationService recebe um ProfileDTO e retorna um RankedPlansDTO. Todas as interfaces chamam esse serviço via contrato interno — nenhuma interface conhece a lógica de scoring, regras de elegibilidade ou estrutura dos planos. A Web App, a API pública, o bot e o widget são apenas adaptadores de entrada/saída. Troca de interface não toca regra de negócio; mudança no motor não toca nenhuma interface.",
+    "fase3_fluxo_fixo": "1. Coletar perfil do usuário (campos obrigatórios + opcionais). 2. Normalizar perfil em ProfileDTO canônico. 3. Buscar planos elegíveis para a região/faixa etária. 4. Aplicar scoring ponderado por dimensões (cobertura, rede credenciada, carência, custo efetivo, reputação). 5. Gerar justificativa textual para o top-N. 6. Retornar ranking paginado com metadados. Esse fluxo é imutável — o que muda são os parâmetros que alimentam cada etapa.",
+    "fase3_parametros_configuraveis": [
+      "Pesos de cada dimensão de scoring (ex: cliente corporativo prioriza rede ampla; cliente individual prioriza custo)",
+      "Planos habilitados para exibição (whitelist por cliente/parceiro)",
+      "Regiões e estados atendidos",
+      "Número de planos retornados no ranking (top-3, top-5, top-10)",
+      "Branding e identidade visual (logo, cores, domínio personalizado para white-label)",
+      "Campos obrigatórios do perfil (corretora pode exigir campos extras para compliance)",
+      "Tom da justificativa (técnico para corretores, simplificado para usuário final)",
+      "Integrações de saída habilitadas (CRM, e-mail, WhatsApp)",
+      "Faixa de preço máximo exibida",
+      "Regras de destaque (ex: parceiro comercial promove determinadas operadoras)"
+    ],
+    "fase3_novo_cliente": "Novo cliente é um registro em tabela de tenants com seu conjunto de parâmetros (JSON de configuração). Onboarding = preencher formulário de configuração no painel admin → gerar API key → o motor já serve o novo contexto na próxima requisição. Zero código novo, zero deploy, zero intervenção de engenharia.",
+    "fase4_core_isolado": "O processo de scoring e geração de justificativa (que usa LLM) roda como worker assíncrono isolado. Fluxo: Web/API recebe requisição → persiste job na fila (Redis/SQS) → retorna job_id imediatamente → worker consome a fila, executa o motor de recomendação + chamada LLM → persiste resultado → client faz polling ou recebe webhook. O motor nunca está no caminho crítico síncrono da aplicação principal.",
+    "fase4_custo_total_cliente": "Custo core por query: chamada LLM (~$0.001–$0.005 por recomendação dependendo do modelo) + busca e scoring (~$0.0005 em CPU). Infra proporcional: banco de dados por tenant (~$0.50–$2/mês para dados de perfil e histórico) + armazenamento de PDFs gerados (~$0.023/GB/mês S3) + banda de saída (~$0.09/GB). Custo operacional fixo rateado: servidor de API (instância $50/mês ÷ N tenants) + fila de mensagens ($0–$5/mês). Resumo por usuário ativo/mês: ~$0.10–$0.80 dependendo do volume de queries. Margem viável com ticket de $15–$30/mês por usuário B2C ou $200–$500/mês por tenant B2B.",
+    "fase4_continuidade": "O worker de recomendação falhar não derruba a API nem as interfaces. O sistema retorna o job_id e o status 'processing'; o front exibe loading state. Recomendações recentes ficam em cache (Redis TTL 24h) — falha do LLM retorna resultado cacheado ou fallback com ranking simplificado por regras determinísticas sem LLM. Dead letter queue captura jobs com falha para reprocessamento sem perda.",
+    "fase4_manutencao": "O motor é invocado via interface interna RecommendationEngine com método score(profile, plans). Trocar o LLM (ex: de OpenAI para Anthropic, ou para modelo self-hosted) = trocar o adapter que implementa essa interface. Trocar o modelo de scoring (de regras para ML) = nova implementação da mesma interface. Feature flag controla qual implementação está ativa — possível rollout gradual com A/B entre versões do motor sem parar o sistema.",
+    "monetizacao": "B2C: assinatura mensal ($15–$29/mês) com trial gratuito limitado a 3 comparações. B2B corretoras: licença por corretor ($99–$199/corretor/mês) com white-label incluído. B2B empresas (RH): assinatura por faixa de funcionários ($299–$999/mês). Revenue share: comissão de indicação quando usuário contrata plano via link rastreado (~3–8% da primeira mensalidade, pago pela operadora). Dados agregados anonimizados: relatórios de mercado para operadoras e consultorias (produto adicional, $500–$2000/relatório).",
+    "stack_sugerida": "API: Node.js (Fastify) ou Python (FastAPI) — ambos com ecossistema maduro para integração com LLMs. Motor de recomendação: Python (pandas + scikit-learn para scoring determinístico; LangChain/Anthropic SDK para justificativas em linguagem natural). Fila assíncrona: BullMQ (Redis) para baixo volume inicial, migra para SQS sem trocar contrato. Banco: PostgreSQL com schema multi-tenant (row-level security por tenant_id) — dados estruturados de perfis e planos. Cache: Redis para resultados recentes e rate limiting. Frontend Web: Next.js (SSR para SEO no mercado B2C + SPA para dashboard B2B). Widget embarcável: Vanilla JS + Web Components (zero dependência no cliente). Infra: Railway ou Render para início (baixo overhead ops), migra para ECS/GKE ao atingir escala. Observabilidade: OpenTelemetry + Grafana — custo por tenant mensurável desde o dia zero."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 33,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra separação explícita entre fluxo fixo e parâmetros configuráveis (quorum, janela de votação, canais, frações ideais), com service layer centralizado e interfaces abstratas que isolam o domínio de decisões tecnológicas — arquitetura claramente orientada a configuração; perde pontos porque a lista de parâmetros configuráveis está truncada no JSON (termina em 'Canais de notif...'), não há descrição do mecanismo de provisionamento de tenant (sem menção a schema de configuração, admin panel ou 'novo cliente = nova row'), e as interfaces abstratas (IVotingEngine, IFinancialLedger) abrem a possibilidade de implementações distintas por cliente que exigiriam código, não apenas configuração."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 51,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Web App, API REST/GraphQL, White-Label, E-mail/Link e CLI/SDK), cada uma com perfil de usuário e caso de uso real explicitamente justificados por segmento de mercado, e a lógica de negócio está totalmente desacoplada via DiligenceService centralizada, permitindo adicionar novas interfaces sem reescrever regras de negócio."
+}

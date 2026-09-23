@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 29,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê 6 interfaces distintas (Web App, Mobile App, Dashboard do Profissional, Admin Panel, WhatsApp Bot e API pública), cada uma explicitamente justificada por um perfil de usuário ou vetor de mercado diferente, com uma Service Layer central agnóstica de transporte que desacopla completamente a lógica de negócio das interfaces, permitindo adição de novos canais sem reescrita do core."
+}

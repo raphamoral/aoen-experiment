@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 57,
+  "ideia": "App de controle parental inteligente com relatórios de bem-estar digital",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Bem-estar digital de crianças e adolescentes sob supervisão parental. Subdomínios: (1) Políticas de Uso (regras, limites de tempo, janelas de horário, categorias bloqueadas); (2) Monitoramento de Atividade (sessões de uso, eventos de app/web, localização opcional); (3) Análise de Bem-Estar (classificação de conteúdo, detecção de padrões de risco como cyberbullying, aliciamento, uso excessivo noturno, cálculo de score de bem-estar); (4) Relatórios (consolidação semanal/mensal, tendências, recomendações); (5) Família e Consentimento (responsáveis, dependentes, vínculos, consentimento LGPD/COPPA/GDPR-K e adequação à idade); (6) Alertas e Intervenções (regras de notificação, escalonamento, ações automáticas).",
+    "primary_ports": [
+      "ManageFamilyUseCase (criar família, convidar responsáveis, cadastrar dependentes)",
+      "ManageConsentUseCase (conceder, revogar e auditar consentimento)",
+      "DefineUsagePolicyUseCase (criar, editar e agendar regras e limites)",
+      "IngestActivityEventsUseCase (receber eventos de uso dos dispositivos)",
+      "RequestTemporaryAccessUseCase (criança solicita mais tempo; responsável aprova ou nega)",
+      "GenerateWellbeingReportUseCase (gerar e consultar relatórios)",
+      "QueryDashboardUseCase (consultar métricas e histórico em tempo quase real)",
+      "ManageAlertsUseCase (configurar, receber e reconhecer alertas)",
+      "ExportOrEraseDataUseCase (portabilidade e direito ao esquecimento)",
+      "ManageSubscriptionUseCase (planos, upgrade, cancelamento)",
+      "RunScheduledJobsUseCase (fechamento de sessões, geração periódica de relatórios, retenção de dados)"
+    ],
+    "secondary_ports": [
+      "FamilyRepository / PolicyRepository / ActivityRepository / ReportRepository (persistência)",
+      "TimeSeriesActivityStore (série temporal de eventos)",
+      "ContentClassifierPort (classificação de URLs, apps e texto)",
+      "RiskDetectionModelPort (detecção de padrões de risco e geração de insights)",
+      "NotificationPort (push, e-mail, SMS, mensageria)",
+      "DeviceEnforcementPort (aplicar bloqueio ou limite no dispositivo)",
+      "IdentityPort (autenticação, SSO, MFA)",
+      "PaymentGatewayPort (cobrança e assinaturas)",
+      "ReportRenderingPort (PDF, HTML)",
+      "FileStoragePort (arquivos de relatório e exportações)",
+      "EventPublisherPort / EventSubscriberPort (eventos de domínio)",
+      "ClockPort (tempo, essencial para testar regras por horário)",
+      "FeatureFlagPort",
+      "AuditLogPort (trilha imutável de acesso a dados de menores)",
+      "EncryptionKeyPort (KMS)",
+      "AppStoreCatalogPort (metadados e faixa etária de apps)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API (BFF) para os apps web e mobile",
+      "App móvel do responsável (iOS/Android)",
+      "Dashboard web do responsável",
+      "Agente do dispositivo da criança (Android, iOS, Windows, macOS) enviando eventos via gRPC ou HTTPS",
+      "Webhook receiver (pagamentos, provedores de identidade)",
+      "Scheduler/Cron (jobs periódicos)",
+      "Consumidor de fila/eventos (ingestão assíncrona)",
+      "CLI administrativa e scripts de operação",
+      "Suíte de testes automatizados (unitários, contrato e aceitação, usando os mesmos casos de uso)",
+      "Painel de suporte/backoffice"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL adapter (famílias, políticas, assinaturas, relatórios)",
+      "TimescaleDB ou ClickHouse adapter (eventos de atividade)",
+      "Redis adapter (cache de políticas e rate limiting)",
+      "Kafka/NATS/SQS adapter (barramento de eventos)",
+      "Firebase Cloud Messaging / APNs adapters (push)",
+      "SES/SendGrid adapter (e-mail) e Twilio adapter (SMS)",
+      "Adapter de modelo de IA (API do Claude ou modelo ONNX/TensorFlow próprio) para classificação de conteúdo e detecção de risco",
+      "Adapter de listas de categorização de URLs (provedor terceiro)",
+      "MDM/Device Policy adapters (Android Device Policy, Apple Screen Time/Family Controls, Windows Family Safety)",
+      "Auth0/Keycloak/Cognito adapter",
+      "Stripe adapter (assinaturas, e Pix/boleto via provedor local para o Brasil)",
+      "S3/GCS adapter (relatórios e exportações)",
+      "Adapter de renderização de PDF (headless Chromium ou WeasyPrint)",
+      "AWS KMS/Vault adapter",
+      "Adapter de trilha de auditoria (append-only)",
+      "Adapters in-memory e fakes (repositórios, relógio fixo, notificador falso) para testes e desenvolvimento local",
+      "Adapters de observabilidade (OpenTelemetry, Prometheus, Grafana, Sentry)"
+    ],
+    "isolation": "O core (domínio + casos de uso) fica em módulo sem dependências de framework, banco, SDK de nuvem ou rede. Dependências apontam sempre para dentro: adapters conhecem as portas, o core nunca conhece adapters. Portas primárias são interfaces de casos de uso com DTOs próprios; portas secundárias são interfaces definidas na linguagem do domínio (por exemplo, ClassificarConteudo, e não CallOpenAiApi). Toda injeção de dependência ocorre na composition root, fora do core. Regras de negócio, incluindo limites de tempo, janelas de horário, cálculo do score e política de consentimento, são funções puras testáveis com ClockPort e fakes, sem I/O. O mapeamento entre modelos externos (payloads de SDK, linhas de banco, eventos do agente) e entidades do domínio ocorre exclusivamente nos adapters (anti-corruption layer). Testes de arquitetura (ArchUnit, dependency-cruiser ou import-linter) impedem imports proibidos no build. Testes de contrato garantem que qualquer adapter de uma mesma porta seja intercambiável, tratando simetricamente banco, IA, push e pagamento. Dados de menores são tratados como sensíveis: minimização, pseudonimização e criptografia por envelope aplicadas na fronteira dos adapters, com AuditLogPort acionado pelo core em todo acesso.",
+    "interfaces": [
+      "App móvel do responsável: painel, regras, alertas, aprovação de pedidos de tempo extra",
+      "Dashboard web: relatórios detalhados, comparativos e exportação",
+      "Agente do dispositivo da criança: coleta de eventos, aplicação de bloqueios, tela amigável de pedido de mais tempo",
+      "API pública/parceiros (REST + webhooks) para escolas, terapeutas e integrações",
+      "Relatórios semanais em PDF e e-mail",
+      "Notificações push em tempo real para alertas de risco",
+      "Portal de privacidade (consentimento, exportação e exclusão de dados)",
+      "Backoffice de suporte e moderação",
+      "CLI e scripts operacionais"
+    ],
+    "escalabilidade": "Escala horizontal por adapter, sem alterar o core. (1) Ingestão: agentes enviam eventos em lotes para gateway stateless, que publica em Kafka/SQS; consumidores escalam por partição, com chave família_id. (2) Armazenamento: eventos brutos em banco de séries temporais com particionamento por tempo e retenção em camadas (quente, morno e frio em S3/Parquet), com agregados pré-computados para dashboards. (3) Processamento: classificação e detecção de risco assíncronas em workers autoscaling (KEDA) com cache de classificações por domínio/app, evitando chamar o modelo a cada evento. (4) Leitura: CQRS leve, com read models otimizados para dashboards e Redis para políticas quentes. (5) Cópia local das políticas no dispositivo, para que o bloqueio funcione offline e a latência do backend não afete a aplicação de regras. (6) Multi-tenant por família com sharding por family_id e, se necessário, residência de dados por região. (7) Evolução: começa como monólito modular hexagonal em um único deploy e extrai serviços (ingestão, análise, relatórios) só quando métricas justificarem, pois as portas já delimitam as fronteiras.",
+    "custos": "Principais custos: (1) Ingestão e armazenamento de eventos, que crescem com o número de dispositivos; mitigar com agregação no agente, amostragem, compressão e retenção em camadas (ex.: bruto 30-90 dias, agregados por 1-2 anos). (2) Inferência de IA: usar regras e listas de categorização primeiro, cache por domínio/app e modelo pequeno ou local para o grosso, reservando LLM apenas para casos ambíguos, resumos de relatório e recomendações, com processamento em lote. (3) Notificações: push é barato, SMS é caro, então deve ser reservado a alertas críticos. (4) Conformidade: LGPD/COPPA/GDPR-K exigem auditoria, DPO, criptografia e possível verificação de consentimento parental, com custo fixo relevante. (5) Taxas de pagamento e lojas de apps (15-30% em compras dentro do app iOS/Android; considerar cobrança via web). (6) Desenvolvimento de agentes por plataforma, especialmente iOS, restrito pelas APIs Screen Time/Family Controls e sujeito a aprovação da Apple. (7) Suporte ao cliente. Alavancas de custo: começar em nuvem gerenciada com autoscaling, instâncias spot para workers de lote, adapters de baixo custo no MVP (Postgres único, fila simples) e medir custo por família ativa como métrica central.",
+    "monetizacao": "Modelo freemium com assinatura recorrente por família (não por dispositivo, para reduzir atrito). Gratuito: 1 dependente, limites de tempo básicos e relatório semanal simples. Premium familiar (ex.: R$ 19-39/mês ou R$ 190-390/ano): dependentes e dispositivos ilimitados, filtros avançados, detecção de risco por IA, relatórios detalhados e histórico longo, alertas em tempo real e localização. Plano Família+ ou Escola/Clínica: painel multi-dependente para instituições, escolas e psicólogos infantis, com cobrança por aluno/assento e API. Receitas adicionais: parcerias B2B2C com operadoras de telecom e planos de saúde/educação (bundle), conteúdo educativo de bem-estar digital e programas de recompensa. Princípio ético: nunca vender ou monetizar dados de menores nem usar publicidade comportamental, o que também funciona como diferencial de confiança. Métricas-chave: conversão free→premium, churn mensal, LTV/CAC, custo por família ativa.",
+    "stack_sugerida": "Core e backend: Kotlin (Spring Boot, com módulos separados por Gradle) ou TypeScript (NestJS) com estrutura de pacotes domain / application (portas e casos de uso) / adapters, mais testes de arquitetura (ArchUnit ou dependency-cruiser). Dados: PostgreSQL (transacional), TimescaleDB ou ClickHouse (eventos), Redis (cache), S3 (arquivos e cold storage em Parquet). Mensageria: Kafka (ou SQS/SNS no MVP). IA: regras + categorização por provedor de listas + modelo leve (ONNX) e LLM via API para resumos e casos ambíguos, sempre atrás de ContentClassifierPort e RiskDetectionModelPort. Clientes: Kotlin nativo com Android Device Policy/UsageStats/Accessibility para o agente Android; Swift com Family Controls/Screen Time API para iOS; React Native ou Flutter para o app do responsável; Next.js/React para o dashboard web. Contratos: OpenAPI/GraphQL e Protobuf/gRPC para agentes. Identidade: Keycloak ou Auth0 com MFA. Pagamentos: Stripe (cartão) mais provedor local para Pix. Infra: AWS ou GCP, Kubernetes (EKS/GKE) com KEDA, Terraform, GitHub Actions, secrets em Vault/KMS. Observabilidade: OpenTelemetry, Prometheus, Grafana, Sentry. Qualidade: testes de contrato por porta, testes de aceitação via portas primárias com adapters in-memory, e testes de carga (k6) na ingestão."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:37:51+00:00",
+    "runner": "runner.py"
+  }
+}

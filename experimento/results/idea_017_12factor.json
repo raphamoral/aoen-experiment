@@ -1,0 +1,54 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo com workspaces (pnpm/nx) contendo serviços distintos: api-gateway, cert-service, verification-service, notification-service, frontend-web. Um repositório Git, múltiplos deploys por ambiente (staging, production) via variáveis de ambiente. CI/CD promove o mesmo artefato imutável entre ambientes.",
+    "dependencies": "Cada serviço declara dependências explícitas via package.json (Node/TS) ou pyproject.toml (Python workers). Sem dependências implícitas do sistema — tudo containerizado via Docker. Lockfiles (pnpm-lock.yaml, poetry.lock) versionados. Imagens base fixadas por digest SHA256. Dependências de sistema isoladas na imagem Docker.",
+    "config": "Zero configuração hardcoded. Todas as variáveis sensíveis (DATABASE_URL, JWT_SECRET, SMTP_PASSWORD, STORAGE_BUCKET, BLOCKCHAIN_RPC_URL) injetadas via variáveis de ambiente. Gerenciadas por HashiCorp Vault ou AWS Secrets Manager em produção, .env local em dev. Validação de schema na startup via Zod/Pydantic — falha rápida se config inválida.",
+    "backing_services": {
+      "banco_de_dados": "PostgreSQL (RDS/Supabase) — cursos, usuários, certificados",
+      "cache": "Redis (ElastiCache) — sessões, rate limiting, filas de jobs",
+      "fila_mensagens": "BullMQ sobre Redis ou AWS SQS — emissão assíncrona de certificados",
+      "armazenamento": "S3-compatible (AWS S3 ou Cloudflare R2) — PDFs, assets de cursos",
+      "email": "AWS SES ou Resend — notificações de certificação",
+      "blockchain_anchor": "Serviço externo via RPC (Ethereum/Polygon ou Chainlink) — ancoragem de hash para verificação pública imutável",
+      "cdn": "Cloudflare — assets estáticos e verificação pública de alta performance",
+      "observabilidade": "OpenTelemetry + Grafana Cloud (traces, métricas, logs)"
+    },
+    "build_release_run": "Build: Docker multi-stage build gera imagem imutável com hash de conteúdo como tag. Release: GitHub Actions combina imagem + config de ambiente → artefato de release versionado (nunca modificar release em produção). Run: containers orquestrados via Kubernetes (EKS/GKE) ou Railway/Render para menor overhead operacional. Rollback = redeployar release anterior.",
+    "processes": "Processos stateless e share-nothing. Estado persistido exclusivamente em backing services (PostgreSQL, Redis). Sessões armazenadas em Redis, não em memória do processo. Uploads de arquivo vão direto para S3 via presigned URL — sem disco local. Cada processo pode ser morto e reiniciado sem perda de dados.",
+    "port_binding": "Cada serviço exporta sua funcionalidade via HTTP/gRPC em porta declarada (API Gateway: 3000, Cert Service: 3001, Verification Service: 3002). Serviços se comunicam via HTTP interno. O API Gateway é o único ponto de entrada externo — exposto via load balancer. Nenhuma dependência de servidor de aplicação externo.",
+    "concurrency": "Escala horizontal por tipo de workload: processos web (API) escalam em réplicas stateless para tráfego HTTP; processos worker (emissão de certificados, ancoragem blockchain) escalam independentemente via HPA no Kubernetes baseado em profundidade de fila. Node.js cluster mode para CPUs múltiplas. Certificados emitidos em lote processados por worker pool.",
+    "disposability": "Startup < 5s por container (health check /healthz). Shutdown gracioso: SIGTERM drena conexões abertas, finaliza jobs em andamento, fecha pool de DB antes de encerrar (timeout 30s). Jobs de certificação são idempotentes — reprocessamento seguro em caso de falha. Liveness e readiness probes no Kubernetes. Circuit breaker para chamadas blockchain.",
+    "dev_prod_parity": "Docker Compose local replica exatamente a stack de produção (PostgreSQL, Redis, MinIO para S3-local). Mesmas versões de serviços via imagens fixadas. Migrations executadas identicamente em todos os ambientes via Flyway/Prisma Migrate. Seed de dados de teste via script isolado. Tempo entre commit e deploy < 1h.",
+    "logs": "Processos escrevem logs não-bufferizados em stdout/stderr como stream de eventos JSON estruturado (timestamp, level, service, traceId, userId). Nenhuma escrita em arquivo de log pelo processo. Infraestrutura coleta via FluentBit → OpenSearch ou Loki. Correlation IDs propagados via headers HTTP para rastreabilidade fim-a-fim.",
+    "admin_processes": "Tarefas admin executadas como processos pontuais no mesmo ambiente/release: migrações de banco (prisma migrate deploy), reemissão em lote de certificados, auditoria de ancoragens blockchain. Executados via kubectl run job ou CLI dedicada. Nunca via acesso SSH direto ao container de produção.",
+    "interfaces": [
+      "Portal Web (Next.js) — emissores de cursos e alunos",
+      "API REST pública — integração com plataformas LMS (Moodle, Canvas)",
+      "Página de verificação pública — URL única por certificado, sem login, indexável por mecanismos de busca",
+      "Widget embed — emissores incorporam verificador no próprio site",
+      "API de verificação — empregadores consultam autenticidade programaticamente",
+      "Dashboard admin — gestão de emissores, auditoria, relatórios financeiros"
+    ],
+    "escalabilidade": "Verificação pública (leitura) escala via CDN + cache Redis com TTL longo — praticamente sem custo por requisição adicional. Emissão de certificados escala via workers assíncronos — picos de emissão (fim de curso) não afetam a API web. Ancoragem blockchain batched a cada N certificados ou intervalo de tempo para reduzir custos de gas. Banco de dados escala via read replicas para consultas de verificação.",
+    "custos": "Infraestrutura base ~$150-400/mês (2 instâncias app + RDS small + Redis cache + S3). Custos blockchain marginais via batching (1 transação por lote vs 1 por certificado). CDN absorve picos de verificação sem custo linear. Escala de custo é sublinear ao volume — verificações custam próximo de zero após cache aquecido. Maior custo variável: envio de e-mails e armazenamento de PDFs.",
+    "monetizacao": "SaaS B2B por assinatura: plano Starter (até 500 certificados/mês), Profissional (5.000/mês), Enterprise (ilimitado + SLA + API dedicada + white-label). Taxa por emissão acima do plano como overage. Receita adicional: verificação premium via API para RH/empresas (pay-per-query). Setup fee para integrações LMS enterprise. Possível marketplace de templates de certificado.",
+    "stack_sugerida": {
+      "frontend": "Next.js 14 (App Router) + Tailwind CSS + shadcn/ui — SSR para SEO na página de verificação pública",
+      "api_gateway": "Node.js + Fastify — alta performance, baixo overhead",
+      "cert_service": "Node.js + BullMQ — geração de PDF via Puppeteer/PDFKit, worker assíncrono",
+      "verification_service": "Node.js + Fastify — leitura otimizada, cacheada, pública",
+      "blockchain_anchor": "Node.js + ethers.js — ancoragem de Merkle root em Polygon (baixo custo de gas)",
+      "banco_de_dados": "PostgreSQL 16 + Prisma ORM",
+      "cache_filas": "Redis 7 (Upstash serverless ou ElastiCache)",
+      "armazenamento": "Cloudflare R2 (sem egress fee) para PDFs e assets",
+      "infra": "Railway ou Render para MVP; Kubernetes (EKS) para escala enterprise",
+      "ci_cd": "GitHub Actions → Docker Hub/GHCR → deploy automático",
+      "observabilidade": "OpenTelemetry + Grafana Cloud",
+      "autenticacao": "JWT + refresh tokens; OAuth2 social login via Auth.js"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo com workspaces (pnpm/nx) contendo serviços distintos: api-gateway, cert-service, verification-service, notification-service, frontend-web. Um repositório Git, múltiplos deploys por ambiente (staging, production) via variáveis de ambiente. CI/CD promove o mesmo artefato imutável entre ambientes.\",\n\n  \"dependencies\": \"Cada serviço declara dependências explícitas via package.json (Node/TS) ou pyproject.toml (Python workers). Sem dependências implícitas do sistema — tudo containerizado via Docker. Lockfiles (pnpm-lock.yaml, poetry.lock) versionados. Imagens base fixadas por digest SHA256. Dependências de sistema isoladas na imagem Docker.\",\n\n  \"config\": \"Zero configuração hardcoded. Todas as variáveis sensíveis (DATABASE_URL, JWT_SECRET, SMTP_PASSWORD, STORAGE_BUCKET, BLOCKCHAIN_RPC_URL) injetadas via variáveis de ambiente. Gerenciadas por HashiCorp Vault ou AWS Secrets Manager em produção, .env local em dev. Validação de schema na startup via Zod/Pydantic — falha rápida se config inválida.\",\n\n  \"backing_services\": {\n    \"banco_de_dados\": \"PostgreSQL (RDS/Supabase) — cursos, usuários, certificados\",\n    \"cache\": \"Redis (ElastiCache) — sessões, rate limiting, filas de jobs\",\n    \"fila_mensagens\": \"BullMQ sobre Redis ou AWS SQS — emissão assíncrona de certificados\",\n    \"armazenamento\": \"S3-compatible (AWS S3 ou Cloudflare R2) — PDFs, assets de cursos\",\n    \"email\": \"AWS SES ou Resend — notificações de certificação\",\n    \"blockchain_anchor\": \"Serviço externo via RPC (Ethereum/Polygon ou Chainlink) — ancoragem de hash para verificação pública imutável\",\n    \"cdn\": \"Cloudflare — assets estáticos e verificação pública de alta performance\",\n    \"observabilidade\": \"OpenTelemetry + Grafana Cloud (traces, métricas, logs)\"\n  },\n\n  \"build_release_run\": \"Build: Docker multi-stage build gera imagem imutável com hash de conteúdo como tag. Release: GitHub Actions combina imagem + config de ambiente → artefato de release versionado (nunca modificar rel"
+}

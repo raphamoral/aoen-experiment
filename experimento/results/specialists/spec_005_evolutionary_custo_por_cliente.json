@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "A fitness function 'custo de infraestrutura por contrato processado ≤ R$0,08' avança além do custo total de infra — é um valor concreto por operação — mas permanece agregado (não por tenant), sem decomposição dos componentes de custo (storage, assinatura digital, notificação etc.), sem rastreamento de consumo por cliente individual, e sem conexão explícita com margem por tenant no modelo de precificação."
+}

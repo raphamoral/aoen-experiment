@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 8,
+  "justificativa": "O isolamento é físico e real: treinamento como Kubernetes Jobs separados com GPU nodes sob demanda, workers de ML consumindo Kafka/SQS de forma assíncrona e independente da API REST stateless, com escalonamento horizontal distinto por tipo de workload — porém a proposta não explicita mecanismos de fallback em caso de falha do processamento pesado (ex: retry policy, dead-letter queue, degradação graciosa para predições em batch ou uso do último modelo válido), o que impede a nota máxima."
+}

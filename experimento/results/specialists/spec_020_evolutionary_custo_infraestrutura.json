@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — sem estimativas de valores, sem estratégia de otimização (spot instances, scale-to-zero, storage tiers) e sem projeção de como os custos evoluem com o crescimento da base de usuários; os componentes técnicos (PostgreSQL, LaunchDarkly, serviços extraídos) são citados sem qualquer dimensionamento ou referência financeira."
+}

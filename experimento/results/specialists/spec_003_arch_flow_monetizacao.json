@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona implicitamente um modelo de assinatura recorrente (\"empresa renova e expande plano\" na value chain e um contexto de Billing) e diferencia empresa de colaborador como personas, mas não define tiers, faixas de preço, métricas SaaS (MRR, churn, LTV, CAC) nem conecta explicitamente o modelo de cobrança ao valor entregue — falta estrutura concreta de monetização."
+}

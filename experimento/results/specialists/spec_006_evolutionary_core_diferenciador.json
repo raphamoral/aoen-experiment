@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador — combinação de OCR/LLM para parsing de exames laboratoriais com motor de recomendações clínicas — está claramente identificado e arquiteturalmente isolado em módulos explícitos, protegido por fitness functions específicas (mutation testing >85%, contract tests, revisão clínica trimestral); perde pontos porque a extensibilidade do núcleo é apenas parcialmente endereçada (um único chaos test de fallback para modelo local não constitui estratégia multi-provider robusta) e a proposta não articula explicitamente o fosso competitivo — o que impede que um concorrente replique o motor de regras clínicas + LLM com os mesmos laboratórios e dados."
+}

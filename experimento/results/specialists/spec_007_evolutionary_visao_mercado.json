@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O documento identifica implicitamente um público-alvo corporativo e cita casos de uso pontuais (onboarding em massa, compliance anual), mas trata-se de um artefato arquitetural — não há tamanho de mercado (TAM/SAM/SOM), a dor do cliente nunca é articulada explicitamente, não existe análise de diferenciação frente a concorrentes (TalentLMS, Cornerstone, Udemy Business) e a proposta de valor da gamificação é assumida, não argumentada."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 73,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "O fluxo fixo menciona explicitamente 'enfileiramento para análise' antes das etapas computacionalmente pesadas (STT, extração de métricas, scoring, geração de feedback por LLM), o que sinaliza processamento assíncrono via fila — fortemente indicativo de workers separados; contudo, a proposta não especifica isolamento físico real (processos/containers distintos), não descreve nenhum mecanismo de fallback caso um worker falhe (ex: DLQ, retry com backoff, degradação graciosa), e não menciona política de escalonamento independente do tier de processamento versus o tier de API/interface, ficando acima do nível 5 pela presença estrutural da fila no fluxo, mas aquém do nível 10 pela ausência de garantias explícitas de resiliência e escala independente."
+}

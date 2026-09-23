@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal é implementada com rigor exemplar — core isolado de frameworks, dependências invertidas via ports, múltiplos adapters intercambiáveis por port (ex: 3 adaptadores de notificação, 2 de calendário) e DI em runtime garantem substituição independente de qualquer componente; a separação IAgendamentoService/IConsultaQueryService sinaliza CQRS e o IEventoPort via RabbitMQ viabiliza escala assíncrona, perdendo apenas um ponto pela ausência explícita de estratégia de versionamento dos ports e de fronteiras de decomposição em serviços independentes caso a escala exija."
+}

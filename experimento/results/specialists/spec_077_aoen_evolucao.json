@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 77,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte separação de responsabilidades com adaptadores plugáveis por protocolo, Service Layer desacoplada das interfaces, motor de regras configurável por cliente e pipeline fixo com parâmetros externalizados — o que permite substituição independente de componentes e crescimento sem reescrita; perde pontos por não detalhar explicitamente estratégia de escalabilidade horizontal (10→10.000 usuários), inversão de dependência formal na camada de domínio, ou política de reversibilidade para decisões de banco de série temporal e broker de mensagens."
+}

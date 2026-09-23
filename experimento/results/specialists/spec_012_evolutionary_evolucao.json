@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva exemplar: estratégia incremental em 4 fases com bounded contexts explícitos, adapter pattern sobre tecnologias voláteis (broker, protocolo, cloud, frontend), anti-corruption layer protegendo o domínio de fabricantes externos, decisões custosas adiadas ao 'last responsible moment' com critérios objetivos (volume real), e versionamento obrigatório do evento canônico desde o início — o único vetor de acoplamento irreversível gerenciado é a estrutura desse evento compartilhado, o que justifica não atingir nota máxima."
+}

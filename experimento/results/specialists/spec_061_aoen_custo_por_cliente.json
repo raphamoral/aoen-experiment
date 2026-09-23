@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 61,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente arquitetura técnica (service layer, interfaces, algoritmo de matching) sem nenhuma menção a rastreamento de custo por tenant, custo por operação de matching, consumo de recursos por cliente ou conexão entre custos e modelo de precificação — unit economics está completamente ausente."
+}

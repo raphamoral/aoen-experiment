@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A presença de IReturnPolicyUseCase e da entidade ReturnPolicy indica configurabilidade de regras de elegibilidade por seller, mas a proposta não descreve nenhum mecanismo de seleção de adaptadores por tenant via configuração (ex.: qual transportadora, qual gateway de pagamento ou quais steps do workflow cada cliente usa), nem um registry de tenants — o que significa que onboarding de um novo cliente com stack diferente (ex.: Shopify + Asaas + FedEx) provavelmente ainda exige código ou variável de ambiente, ficando na metade do caminho entre hardcoded e configuração total."
+}

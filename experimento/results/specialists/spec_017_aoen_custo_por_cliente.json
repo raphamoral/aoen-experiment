@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta é inteiramente arquitetural — descreve interfaces, service layer e pipeline de emissão, mas não menciona custo por operação, custo por tenant, rastreamento de consumo por cliente nem qualquer conexão entre custos e modelo de precificação; custos simplesmente não existem no documento."
+}

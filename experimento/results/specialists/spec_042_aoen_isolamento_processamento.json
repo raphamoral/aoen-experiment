@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 42,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta centraliza toda a lógica pesada (chamadas LLM, cálculo de indicadores, geração de XBRL/PDF) em uma única ESGReportService sem mencionar filas de mensagens, workers isolados, processamento assíncrono ou qualquer mecanismo de fallback — sugerindo que uma falha ou saturação no pipeline de geração derrubaria toda a camada de serviço, incluindo as interfaces Web e API."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O documento identifica superficialmente o segmento 'last-mile deliveries', mas é inteiramente arquitetural: não articula a dor do cliente, não dimensiona o mercado, não posiciona o produto frente a concorrentes como Onfleet ou Route4Me, e não apresenta proposta de valor — apenas descreve o que o sistema faz tecnicamente."
+}

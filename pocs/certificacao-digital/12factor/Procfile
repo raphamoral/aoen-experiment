@@ -1,0 +1,6 @@
+# Factor VI: processos stateless e sem compartilhamento de estado
+# Factor VIII: concorrência via múltiplos workers Gunicorn (escala horizontal)
+web: gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --access-logfile - --error-logfile -
+
+# Factor V (release phase): migrações rodam na fase de release, antes dos workers subirem
+release: alembic upgrade head

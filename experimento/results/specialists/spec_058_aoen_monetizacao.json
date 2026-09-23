@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 58,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta identifica segmentos de mercado relevantes e menciona cálculo de prêmio e subsídio governamental, mas não define nenhum modelo de receita explícito para a plataforma (comissão sobre prêmio, SaaS fee, take-rate por apólice, revenue share com seguradoras), não apresenta tiers de planos, não cita valores indicativos, e não toca em métricas de sustentabilidade como CAC, LTV, churn ou MRR — o que foi descrito é o funcionamento do produto de seguro, não o modelo de negócio de quem opera a plataforma."
+}

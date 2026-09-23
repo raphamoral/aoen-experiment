@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente entidades de domínio e regras de negócio, sem mencionar nenhuma interface de usuário — web, mobile, CLI ou API — nem perfis de usuário distintos (cliente, lojista, operador logístico), tornando impossível avaliar múltiplos canais, justificativa de mercado ou desacoplamento entre lógica e apresentação."
+}

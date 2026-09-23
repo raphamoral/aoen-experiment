@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta menciona implicitamente múltiplos pontos de contato (URL pública de verificação, integração LMS, LinkedIn, webhooks), mas não define explicitamente interfaces por perfil de usuário (ex: emissor, verificador, administrador de tenant), não justifica as escolhas de canal por alcance de mercado e, embora a arquitetura modular sugira algum desacoplamento, não há declaração explícita de uma camada de apresentação independente da lógica de negócio."
+}

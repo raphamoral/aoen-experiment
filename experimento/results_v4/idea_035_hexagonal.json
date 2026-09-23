@@ -1,0 +1,85 @@
+{
+  "ideia_idx": 35,
+  "ideia": "SaaS de detecção de fraudes em transações de marketplace",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Avaliação de risco de fraude em transações de marketplace. O core (inside) contém: Transaction, Buyer, Seller, Device, RiskAssessment, FraudCase e Rule/Policy como entidades e value objects. Os serviços de domínio são RiskScoringService (combina sinais em um score), RuleEvaluationEngine (regras determinísticas e limiares por tenant), DecisionPolicy (aprovar, revisar manualmente ou bloquear) e CaseManagementService (ciclo de vida da investigação e feedback de rótulos). O domínio é multi-tenant: cada marketplace é um Tenant com suas políticas, limiares e regras próprias.",
+    "primary_ports": [
+      "AssessTransactionPort (avaliação síncrona de risco em tempo real, com baixa latência)",
+      "BatchAssessmentPort (reavaliação em lote e backfill de histórico)",
+      "ManageRulesPort (CRUD, versionamento e simulação de regras e políticas por tenant)",
+      "ReviewCasePort (fila de revisão manual, decisão do analista e rotulagem)",
+      "ReportFeedbackPort (chargebacks e confirmações de fraude ou de legitimidade)",
+      "QueryAnalyticsPort (métricas, taxa de fraude, falsos positivos)",
+      "ManageTenantPort (onboarding, API keys, planos e cotas)"
+    ],
+    "secondary_ports": [
+      "TransactionHistoryRepositoryPort (persistência de transações e avaliações)",
+      "CaseRepositoryPort (persistência de casos de investigação)",
+      "RuleRepositoryPort (persistência de regras e políticas versionadas)",
+      "FeatureStorePort (features em tempo real: velocidade, agregações por comprador, vendedor, dispositivo e cartão)",
+      "MLModelScoringPort (inferência de modelos de ML, com versionamento e champion/challenger)",
+      "DeviceIntelligencePort (reputação de dispositivo, IP e fingerprint)",
+      "IdentityVerificationPort (KYC/KYB de compradores e vendedores)",
+      "BlocklistAllowlistPort (listas de bloqueio e de permissão)",
+      "EventPublisherPort (publicação de eventos de domínio como RiskAssessed, CaseOpened e TransactionBlocked)",
+      "NotificationPort (alertas a analistas e webhooks para o marketplace)",
+      "BillingUsagePort (medição de uso e cobrança)",
+      "AuditLogPort (trilha de auditoria imutável, para LGPD/GDPR e PCI)",
+      "ClockPort e IdGeneratorPort (tempo e identificadores determinísticos, para testes)",
+      "SecretsPort e ConfigPort (segredos e configuração por tenant)"
+    ],
+    "primary_adapters": [
+      "REST/HTTP API (sincrônica, autenticada por API key ou OAuth2)",
+      "gRPC API (baixa latência para integração servidor a servidor)",
+      "Consumidor Kafka (eventos de transação em streaming)",
+      "Worker de lote (CSV/Parquet em S3, acionado por agendador)",
+      "Backoffice Web (SPA React para analistas e administradores, via BFF GraphQL ou REST)",
+      "CLI para operações e scripts de automação",
+      "Receptor de webhooks (chargebacks de PSPs como Stripe e Adyen)",
+      "SDKs clientes (Node, Python, Java, PHP)",
+      "Test harness (testes de contrato e de aceitação que dirigem o core sem infraestrutura)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios de transações, casos e regras)",
+      "Redis ou Aerospike (feature store online e cache de decisão)",
+      "Feast/ClickHouse (feature store offline e analytics)",
+      "Serviço de inferência (ONNX Runtime, Triton ou SageMaker) para MLModelScoringPort",
+      "Adaptadores de provedores externos (Sift, Arkose, MaxMind, Onfido, Serasa, etc.), cada um atrás de sua porta, com circuit breaker e fallback",
+      "Kafka ou Redpanda (EventPublisher)",
+      "Dispatcher de webhooks e adaptadores de e-mail, Slack e SMS (NotificationPort)",
+      "Stripe Billing (BillingUsagePort)",
+      "S3 com Object Lock ou tabela append-only (AuditLogPort)",
+      "AWS Secrets Manager ou Vault (SecretsPort)",
+      "Adaptadores in-memory e fakes (repositórios, feature store e scoring determinístico) para testes e desenvolvimento local",
+      "SystemClock e UUID/ULID generator, com versões fixas para testes"
+    ],
+    "isolation": "O core é uma biblioteca de domínio sem dependências de framework, banco, rede ou SDKs de terceiros. As dependências apontam sempre para dentro (Dependency Inversion): adapters conhecem as portas, e o core nunca conhece adapters. Os casos de uso (application services) implementam as portas primárias e orquestram o domínio por meio das portas secundárias, injetadas por construtor na composition root, que é o único lugar que instancia adapters concretos. DTOs e schemas externos (JSON, Protobuf, linhas SQL) são traduzidos por mappers nos adapters (anti-corruption layer), então o modelo de domínio não vaza. Erros de infraestrutura viram falhas de domínio tipadas, e o core define a política de degradação (por exemplo, se o modelo de ML estiver indisponível, usa só as regras, com timeout e fail-open ou fail-closed configurável por tenant). O isolamento é imposto em CI por testes de arquitetura (ArchUnit, dependency-cruiser ou import-linter). Como os dois lados são simétricos, um teste, um script e um cliente HTTP acionam o mesmo caso de uso, e um repositório in-memory ou PostgreSQL entra pela mesma porta.",
+    "interfaces": [
+      "POST /v1/assessments (avaliação síncrona; retorna score, decisão e razões explicáveis)",
+      "POST /v1/assessments:batch",
+      "GET /v1/assessments/{id}",
+      "POST /v1/feedback/chargebacks",
+      "POST /v1/webhooks/psp/{provider}",
+      "CRUD /v1/rules e POST /v1/rules/{id}:simulate",
+      "GET /v1/cases e PATCH /v1/cases/{id} (decisão do analista)",
+      "GET /v1/analytics/metrics",
+      "Webhooks de saída (assessment.blocked, case.opened, case.resolved)",
+      "Tópicos de eventos: transactions.in e assessments.out",
+      "gRPC AssessmentService.Assess",
+      "Console web de revisão de casos e gestão de regras",
+      "CLI (fraudctl assess, fraudctl rules deploy)",
+      "SDKs e OpenAPI/AsyncAPI publicados como contrato"
+    ],
+    "escalabilidade": "O caminho de avaliação em tempo real é stateless e escala horizontalmente atrás de um load balancer (Kubernetes com HPA por RPS e latência p99). O estado fica nas portas secundárias: feature store em Redis/Aerospike com sharding por tenant e entidade, PostgreSQL com read replicas e particionamento por tenant e tempo, e ClickHouse para analytics. O caminho síncrono (meta de p99 abaixo de 100–150 ms) é separado do assíncrono: escritas de histórico, atualização de features, notificações e cobrança saem do caminho crítico via Kafka, com particionamento por tenant ou entidade. O ML roda como serviço de inferência independente, com autoscaling próprio e cache de decisão. Há bulkheads e rate limiting por tenant contra noisy neighbors, circuit breakers em provedores externos e deploy multi-AZ. Tenants grandes podem ganhar células ou clusters dedicados (cell-based architecture). Como os adapters são trocáveis, um gargalo pode ser resolvido substituindo o adapter, sem tocar no core.",
+    "custos": "Os maiores custos são: (1) inferência de ML e infraestrutura de baixa latência (Redis/Aerospike em memória, nós de inferência sempre ativos); (2) provedores de dados externos cobrados por consulta (device intelligence, KYC, bureau), que podem ser mitigados com cache, chamada condicional (só em transações de risco médio) e roteamento por custo/benefício; (3) armazenamento e retenção de dados de transação e auditoria, com tiering em S3 e políticas de retenção; (4) egress e tráfego entre AZs; (5) analistas humanos de revisão, reduzidos com automação e priorização de fila; (6) compliance (PCI DSS, LGPD/GDPR, SOC 2). Em fase inicial, um monolito modular hexagonal em um único deploy com adapters in-memory ou PostgreSQL mantém o custo baixo, e os componentes podem ser extraídos depois. Vale usar instâncias reservadas ou spot para o treino em lote e monitorar o custo por avaliação (unit economics) por tenant.",
+    "monetizacao": "Modelo híbrido: (1) assinatura por plano (Starter, Growth e Enterprise) com franquia mensal de transações avaliadas; (2) cobrança por uso excedente, por avaliação (ex.: US$ 0,005–0,03 por transação, com desconto por volume); (3) add-ons pagos, como revisão manual gerenciada, modelos customizados por tenant, device intelligence premium, KYC e SLA dedicado; (4) opcionalmente, um modelo de revenue share ou success fee sobre fraude evitada, com garantia contra chargebacks, para marketplaces de maior porte; (5) plano Enterprise com implantação dedicada (VPC/célula isolada), suporte 24/7 e contrato anual. Há trial gratuito em modo sombra (shadow mode), que mostra o valor sem risco. O go-to-market é por integrações com plataformas de marketplace e PSPs.",
+    "stack_sugerida": "Linguagem e núcleo: Kotlin/Java (Spring Boot usado só nos adapters, com ArchUnit) ou Go/TypeScript (NestJS com módulos hexagonais); o core é código puro. API: REST com OpenAPI + gRPC. Mensageria e streaming: Kafka/Redpanda, com Flink ou Kafka Streams para features em tempo real. Dados: PostgreSQL (transacional), Redis/Aerospike (feature store online), ClickHouse (analytics), S3 (data lake e auditoria). ML: Python (scikit-learn, XGBoost/LightGBM, PyTorch para grafos), MLflow para versionamento, e ONNX Runtime/Triton para servir. Backoffice: React + TypeScript. Infra: AWS (EKS, MSK, RDS, ElastiCache), Terraform, ArgoCD. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry. Segurança: OAuth2/OIDC (Keycloak ou Auth0), Vault/Secrets Manager, KMS, mTLS. Cobrança: Stripe Billing. Testes: adapters in-memory para testes de aceitação, Testcontainers para testes de integração e Pact para contratos."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:54:20+00:00",
+    "runner": "runner.py"
+  }
+}

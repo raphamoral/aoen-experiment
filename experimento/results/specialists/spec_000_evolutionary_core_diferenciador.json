@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — inferência de IA especializada para imagens veterinárias — é claramente identificado, arquiteturalmente isolado (domínio Diagnóstico via DDD, extração como serviço independente no Horizonte 2) e extensível (modelos exportados em ONNX desacoplam do framework de treino, permitindo troca sem lock-in), porém a proposta não articula explicitamente por que alternativas existentes (adaptações de IA médica humana ou plataformas genéricas de DICOM) não resolvem o problema de forma equivalente, deixando a insubstituibilidade competitiva implícita em vez de demonstrada."
+}

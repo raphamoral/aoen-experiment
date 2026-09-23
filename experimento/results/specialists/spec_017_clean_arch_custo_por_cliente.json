@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura expõe planos por Issuer (FREE|STARTER|PROFESSIONAL|ENTERPRISE) e registra cada Verification individualmente, o que permitiria contar operações por tenant, mas não há qualquer cálculo de custo por operação, rastreamento de consumo de recursos por Issuer, ou conexão entre o que cada tenant consome e a margem gerada — os custos de infra simplesmente não aparecem na modelagem."
+}

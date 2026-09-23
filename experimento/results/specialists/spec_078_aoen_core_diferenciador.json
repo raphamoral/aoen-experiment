@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 78,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O motor de scoring alternativo por IA é explicitamente identificado como o núcleo diferenciador, está arquiteturalmente isolado atrás de uma interface abstrata (ScoreProvider) com implementações plugáveis, não depende de nenhum fornecedor único, e resolve de forma direta um problema real e mensurável — exclusão de ~40% da população economicamente ativa pelo modelo de crédito tradicional — que nenhum banco convencional resolve por design."
+}

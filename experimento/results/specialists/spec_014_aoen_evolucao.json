@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida: padrão ports-and-adapters bem aplicado (provedores STT/MT/TTS plugáveis, interfaces como adaptadores de protocolo, lógica de negócio isolada na Service Layer com contratos estáveis), o que permite substituição de componentes e adição de interfaces sem tocar no core — porém perde pontos por não endereçar evolução da camada de dados (migrações, versionamento de schema), por declarar o pipeline core explicitamente 'imutável' sem estratégia de extensão caso o fluxo precise evoluir, e por não detalhar mecanismo de versionamento dos contratos da Service Layer nem a estratégia de escalonamento horizontal que viabilizaria crescimento de 10 para 10.000 usuários sem mudança arquitetural."
+}

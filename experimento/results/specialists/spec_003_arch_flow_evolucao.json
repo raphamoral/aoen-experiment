@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A separação explícita por bounded contexts com domínios classificados (core/suporte/genérico) e o mapeamento Wardley de evolução de componentes (genesis→commodity) demonstram design evolutivo deliberado — componentes como IAM, Billing e CDN são substituíveis por serem tratados como commodity; porém, a proposta não descreve explicitamente padrões de portas e adaptadores (hexagonal/clean architecture) para proteger a lógica de negócio de dependências externas, nem mecanismos de integração entre bounded contexts (eventos de domínio, anti-corruption layers), o que deixa aberta a possibilidade de acoplamento tácito especialmente no pipeline crítico Anonymization→Analytics."
+}

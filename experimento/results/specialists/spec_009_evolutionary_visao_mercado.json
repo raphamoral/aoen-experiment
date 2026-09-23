@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O nome do produto sugere um público no setor de equipamentos médicos e aponta certificação como diferencial implícito, mas a proposta não articula personas de comprador/vendedor, não quantifica o tamanho de mercado, não descreve a dor do cliente de forma explícita e não compara com alternativas existentes — todo o detalhamento presente é exclusivamente técnico-arquitetural."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O produto identifica rastreamento em tempo real como núcleo diferenciador e o isola via domínio Tracking com TimescaleDB + Redis + WebSocket, com fitness functions mensuráveis (P99 < 500ms, precisão > 99.5%), mas não explicita por que essa combinação é insubstituível frente a concorrentes como Onfleet ou Tookan — falta articular o mecanismo proprietário (ex: algoritmo de predição, sharding geográfico como IP próprio) que tornaria o núcleo genuinamente difícil de replicar."
+}

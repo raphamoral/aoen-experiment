@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define seis interfaces distintas (Web Dashboard, Mobile PWA, API REST/GraphQL, Gateway IoT, Canal de alertas e Portal white-label), cada uma justificada por um perfil de usuário e segmento de mercado específico, com toda a lógica de negócio centralizada em uma Service Layer desacoplada que permite adicionar ou substituir qualquer interface sem tocar nas regras de negócio."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 53,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O diferenciador está claramente identificado (pipeline hábito → impacto → score), arquiteturalmente isolado atrás de interfaces abstratas (ImpactCalculator, GamificationEngine), genuinamente extensível sem lock-in de fornecedor, e resolve um gap real — nenhuma ferramenta de habit tracking existente traduz comportamento individual em métrica ESG auditável para compliance corporativo (CSRD/GRI); perde um ponto porque a proposta não explicita o que torna o algoritmo de conversão hábito→impacto defensável contra incumbentes ESG bem capitalizados que poderiam replicar a mesma arquitetura."
+}

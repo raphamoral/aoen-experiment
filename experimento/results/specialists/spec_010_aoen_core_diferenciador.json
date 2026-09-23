@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O FiscalAdapter abstrato é o núcleo diferenciador com clareza cirúrgica: está explicitamente isolado da lógica de negócio, é extensível por design (troca de provedor sem impacto sistêmico), resolve uma dor real e mensurável (burocracia fiscal municipalizada que gera multas), e sem ele o produto colapsa para um app de finanças pessoais com CNPJ — exatamente o critério de insubstituibilidade que define um core genuíno."
+}

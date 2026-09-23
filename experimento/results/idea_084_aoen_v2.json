@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 84,
+  "ideia": "App de diagnóstico automotivo por OBD com recomendação de oficinas",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de correlação entre dados brutos OBD (DTCs + parâmetros ao vivo) e recomendação qualificada de oficinas: lê o veículo, interpreta a falha com contexto (modelo, ano, histórico), classifica urgência e mapeia oficinas com capacidade técnica comprovada para aquele problema específico — sem esse fluxo o produto não existe.",
+    "fase1_mercado": "Primário B2C: proprietários de veículos sem conhecimento técnico que recebem a luz de check engine e não sabem o que fazer. Secundário B2B: oficinas independentes que precisam de leads qualificados pré-diagnosticados. Terciário B2B2B: seguradoras, frotas e concessionárias que precisam de telemetria e triagem automatizada.",
+    "fase1_extensivel": "Sim. A interpretação de DTCs é uma interface — pode ser servida por banco próprio de códigos OBD-II/CAN, LLM (GPT/Claude via API), ou parceiro especializado (AutoMD, ALLDATA). O matching de oficinas é outra interface — pode consumir Google Places, banco próprio com ranking proprietário, ou rede credenciada. Trocar o provedor não quebra o núcleo.",
+    "fase2_interfaces": [
+      "App mobile iOS/Android com leitor Bluetooth OBD-II (ELM327) — interface primária do condutor",
+      "Dashboard web para oficinas — gestão de perfil, serviços, capacidade técnica e leads recebidos",
+      "API REST/Webhook — integração com seguradoras, apps de frotas e concessionárias (B2B2B)",
+      "Bot WhatsApp — canal de menor fricção para usuários sem smartphone ou com baixa digitalização",
+      "Portal de administração interno — onboarding de clientes B2B, configuração de parâmetros, monitoramento de custos"
+    ],
+    "fase2_justificativa_mercado": "App mobile abre o mercado B2C de massa (80M+ veículos no Brasil com OBD-II obrigatório pós-2010). Dashboard web abre o mercado B2B de oficinas independentes (600k+ no Brasil) que pagam por leads qualificados. API abre o mercado B2B2B enterprise de seguradoras e frotas, onde ticket médio é 10-100x maior. Bot WhatsApp reduz barreira de adoção em regiões com menor letramento digital, expandindo o TAM sem novo código de negócio.",
+    "fase2_service_layer": "Uma Service Layer centralizada expõe contratos internos: DiagnosticService (leitura + interpretação OBD), VehicleService (perfil e histórico do veículo), WorkshopMatchingService (busca e ranking de oficinas), NotificationService (push, SMS, WhatsApp), QuoteService (orçamentos). Cada interface — mobile, web, API, bot — consome esses serviços via chamadas internas. Nenhuma interface contém lógica de negócio. Trocar o canal não requer alterar as regras de diagnóstico ou matching.",
+    "fase3_fluxo_fixo": "Conexão OBD → Captura de DTCs e parâmetros ao vivo (RPM, temperatura, O2) → Enriquecimento com perfil do veículo (marca/modelo/ano/km) → Classificação de severidade (crítico/atenção/informativo) → Geração de diagnóstico humanizado → Matching de oficinas por proximidade + especialidade + avaliação → Entrega da recomendação rankeada → Coleta de feedback pós-atendimento. Esse pipeline é invariante — apenas os parâmetros mudam.",
+    "fase3_parametros_configuraveis": [
+      "raio_busca_oficinas_km: raio padrão de busca por cliente/região",
+      "provedores_diagnostico: lista ordenada de provedores DTC (banco próprio, LLM, ALLDATA)",
+      "peso_ranking_oficina: pesos de avaliação, distância, preço e especialidade no score",
+      "nivel_detalhe_diagnostico: simplificado (B2C leigo) ou técnico (mecânico/frota)",
+      "canais_notificacao_ativos: push, email, SMS, WhatsApp por perfil de cliente",
+      "politica_urgencia: thresholds de DTCs que disparam alerta imediato vs. informativo",
+      "modelo_ia_interpretacao: claude-sonnet / gpt-4o / modelo local por custo-benefício",
+      "integracao_parceiros: Google Places, banco próprio, rede credenciada exclusiva",
+      "idioma_e_locale: PT-BR, ES, EN para expansão regional",
+      "plano_tier: free (X diagnósticos/mês), pro, enterprise com cotas e features distintas"
+    ],
+    "fase3_novo_cliente": "Novo cliente B2B (seguradora, frota, concessionária) é onboardado via painel administrativo: cria-se um tenant com os parâmetros configuráveis acima, define-se o plano e cota de uso, gera-se API key. Nenhum deploy novo. Novo mercado regional: ajusta locale, raio de busca e provedor de oficinas via configuração. Novo canal de distribuição: o bot ou app branco do parceiro consome a mesma Service Layer via API key com parâmetros do tenant.",
+    "fase4_core_isolado": "Worker assíncrono de diagnóstico: processo separado que recebe jobs via fila (RabbitMQ/SQS), executa a interpretação OBD + chamada ao provedor de IA + matching de oficinas e retorna resultado. Isolado em container próprio, escalável horizontalmente. Se o worker cair, o restante do sistema (autenticação, histórico, dashboard de oficinas, API de consulta de resultados já processados) continua operando.",
+    "fase4_custo_total_cliente": "Custo do core por diagnóstico: chamada LLM ~$0.002-0.01 (GPT-4o-mini / Claude Haiku) + consulta banco DTC $0.001 + matching de oficinas (Google Places API) $0.002-0.017 por chamada. Custo de infra proporcional: banco de dados (RDS) ~$0.10/GB/mês rateado por tenant + armazenamento de histórico OBD (S3) ~$0.023/GB + banda de resposta ~$0.09/GB. Custo operacional: suporte, notificações push/SMS (~$0.001-0.05 por mensagem). Estimativa por usuário ativo mensal com 4 diagnósticos: $0.08-0.25 de core + $0.02-0.05 de infra = $0.10-0.30/usuário/mês. Viabiliza monetização a partir de R$5-10/mês com margem positiva.",
+    "fase4_continuidade": "Fila de jobs persiste os diagnósticos pendentes. Se o worker de IA cair, os jobs ficam enfileirados e são processados quando o serviço volta — o usuário recebe notificação de 'diagnóstico em processamento'. O app retorna os dados brutos OBD imediatamente (sem latência), enquanto a interpretação qualificada chega de forma assíncrona. Circuit breaker: se o provedor de IA falhar, fallback automático para banco de DTCs local com interpretação simplificada.",
+    "fase4_manutencao": "O provedor de interpretação (LLM, banco DTC, ALLDATA) é abstraído atrás de uma interface DiagnosticProvider com método interpret(dtcs, vehicleContext). Trocar de GPT-4o para Claude ou para modelo local = implementar novo adapter + mudar parâmetro de configuração do tenant. Zero downtime: novo adapter entra em paralelo, tráfego migrado progressivamente via feature flag por tenant. Histórico de diagnósticos já processados não é afetado — é imutável no banco.",
+    "monetizacao": "B2C Freemium: 2 diagnósticos/mês grátis; plano Pro R$19,90/mês com diagnósticos ilimitados + histórico + alertas preventivos. B2B Oficinas: assinatura R$99-299/mês por leads qualificados pré-diagnosticados (CPL muito superior ao lead genérico). B2B2B Enterprise: licença por volume de veículos/mês para seguradoras e frotas (R$2-8/veículo/mês). Comissão por agendamento: 5-10% do valor do serviço quando o agendamento ocorre dentro do app. Data insights anonimizados para montadoras e seguradoras (receita recorrente com custo marginal zero).",
+    "stack_sugerida": "Mobile: React Native (iOS + Android com único código, bluetooth BLE para OBD). Backend: Node.js + Fastify (API gateway e Service Layer) + Python (worker de diagnóstico com LangChain/Anthropic SDK). Fila: AWS SQS ou RabbitMQ. Banco: PostgreSQL (RDS) multi-tenant com row-level security + Redis (cache de DTCs e sessões OBD). IA: Claude Haiku (custo baixo, alta velocidade) com fallback para banco DTC local SQLite embutido. Oficinas: Google Places API + banco proprietário de credenciamento. Infra: AWS ECS Fargate (workers auto-scaling) + CloudFront CDN + S3 histórico OBD. Observabilidade: Datadog ou Grafana Cloud com custo por tenant isolado. WhatsApp: Twilio ou Meta Cloud API."
+  }
+}

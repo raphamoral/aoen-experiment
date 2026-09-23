@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "O roadmap incremental e a estratégia de escala reativa demonstram algum pensamento evolutivo, mas a arquitetura não define fronteiras modulares explícitas nem camadas de abstração sobre dependências externas críticas (APIs de transportadoras), o que significa que trocar ou adicionar uma transportadora, ou migrar partes do sistema, provavelmente exige alterações espalhadas pela base de código em vez de mudanças isoladas."
+}

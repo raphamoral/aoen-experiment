@@ -1,0 +1,121 @@
+{
+  "ideia_idx": 19,
+  "ideia": "App de agendamento inteligente para clínicas odontológicas",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Paciente percebe necessidade → Busca clínica → Solicita agendamento → Clínica confirma disponibilidade → Agendamento confirmado → Lembretes automáticos → Consulta realizada → Pós-consulta e retorno agendado. O núcleo de valor está na redução de fricção entre a intenção do paciente e a confirmação do agendamento, maximizando a taxa de ocupação da cadeira odontológica.",
+    "bounded_contexts": [
+      "Agendamento (Core Domain): Orquestra o fluxo principal — busca de disponibilidade, criação, confirmação e cancelamento de consultas. Linguagem ubíqua: Slot, Consulta, Janela de Disponibilidade, Conflito, Reagendamento.",
+      "Agenda da Clínica (Core Domain): Gerencia calendários de dentistas, salas e equipamentos. Resolve conflitos de recursos. Linguagem ubíqua: Dentista, Sala, Equipamento, Bloqueio, Turno, Capacidade.",
+      "Pacientes (Supporting Domain): Cadastro, histórico de consultas e preferências. Linguagem ubíqua: Paciente, Ficha, Histórico, Preferência de Contato.",
+      "Notificações e Lembretes (Supporting Domain): Disparos omnichannel (SMS, WhatsApp, e-mail) para confirmação, lembrete e pós-consulta. Linguagem ubíqua: Lembrete, Canal, Template, Confirmação de Presença.",
+      "Inteligência de Agendamento (Core Domain / Genesis→Custom): Motor de sugestão de horários otimizados usando ML — minimiza ociosidade, considera preferências do paciente e padrões de no-show. Linguagem ubíqua: Score de Disponibilidade, Predição de No-Show, Slot Ótimo.",
+      "Pagamentos e Planos (Generic Subdomain): Cobranças de assinatura das clínicas e, opcionalmente, copagamentos de pacientes. Linguagem ubíqua: Assinatura, Plano, Fatura, Inadimplência.",
+      "Relatórios e Analytics (Supporting Domain): KPIs de ocupação, taxa de cancelamento, receita projetada. Linguagem ubíqua: Taxa de Ocupação, Churn de Agendamentos, Receita por Cadeira.",
+      "Identidade e Acesso (Generic Subdomain): Autenticação de clínicas, dentistas e pacientes. RBAC por papel. Linguagem ubíqua: Tenant, Papel, Permissão, Sessão."
+    ],
+    "component_evolution": {
+      "genesis": [
+        "Motor de predição de no-show com ML proprietário",
+        "Sugestão proativa de horário baseada em perfil comportamental do paciente"
+      ],
+      "custom_built": [
+        "Orquestrador de agendamento com resolução de conflitos multi-recurso",
+        "Algoritmo de otimização de agenda da clínica",
+        "Fluxo de confirmação interativa via WhatsApp"
+      ],
+      "product_rental": [
+        "Sistema de gestão de pacientes (adaptar soluções existentes)",
+        "Dashboard analytics (Metabase, Redash ou similar)",
+        "Plataforma de notificações (Twilio, Vonage)"
+      ],
+      "commodity_utility": [
+        "Autenticação e SSO (Auth0, Cognito)",
+        "Infraestrutura cloud (AWS/GCP)",
+        "Envio de e-mail (SES, SendGrid)",
+        "Armazenamento de arquivos (S3)",
+        "Pagamentos (Stripe, Pagar.me)",
+        "Sincronização de calendário (Google Calendar API, iCal)"
+      ]
+    },
+    "team_topology": {
+      "stream_aligned_teams": [
+        "Time Agendamento: Responsável pelos bounded contexts Agendamento + Agenda da Clínica. Entrega o fluxo principal de valor. Ciclo de feedback direto com clientes.",
+        "Time Paciente & Engajamento: Responsável por Pacientes + Notificações. Foco na experiência do paciente e redução de no-shows.",
+        "Time Growth & Analytics: Responsável por Relatórios + Monetização. Foco em conversão e retenção de clínicas."
+      ],
+      "platform_team": [
+        "Time Plataforma: Fornece infraestrutura self-service — CI/CD, observabilidade, autenticação, fila de mensagens. Reduz carga cognitiva dos times stream-aligned."
+      ],
+      "complicated_subsystem_team": [
+        "Time de Inteligência de Agendamento: Especialistas em ML/DS dedicados ao motor de otimização. Interagem com Time Agendamento via API bem definida."
+      ],
+      "enabling_team": [
+        "Time de Habilitação (temporário): Apoia onboarding de novas clínicas e dissemina práticas de DDD e event-driven nos primeiros 6 meses."
+      ],
+      "interacao_entre_times": "X-as-a-Service entre Plataforma e times stream-aligned; Colaboração pontual entre Inteligência de Agendamento e Time Agendamento para integração do motor ML; Facilitação do Enabling Team nos primeiros ciclos."
+    },
+    "flow_optimization": {
+      "event_driven_architecture": "Eventos de domínio (AgendamentoCriado, ConsultaConfirmada, PacienteNoShow) desacoplam os bounded contexts, permitindo que cada time evolua independentemente sem coordenação síncrona excessiva.",
+      "async_notifications": "Lembretes e confirmações são processados de forma assíncrona via fila de mensagens, eliminando bloqueio no fluxo principal de agendamento.",
+      "lei_de_conway": "Estrutura de times espelha a arquitetura de serviços — cada time possui ownership claro de seu domínio, evitando dependências de deploy entre equipes.",
+      "feedback_loops": "Ciclos curtos: monitoramento de taxa de confirmação em tempo real alimenta o motor ML; alertas de baixa ocupação disparam automações de lembrete.",
+      "cognitive_load_reduction": "Times stream-aligned consomem plataforma self-service para infraestrutura comum, focando 100% do ciclo cognitivo no domínio de negócio."
+    },
+    "interfaces": [
+      "Portal Web do Paciente (PWA): Busca de clínica, escolha de horário, confirmação e histórico de consultas.",
+      "App Mobile do Paciente (React Native): Agendamento, lembretes push, confirmação interativa.",
+      "Dashboard da Clínica (Web SPA): Gestão de agenda, visualização de ocupação, configuração de regras de disponibilidade.",
+      "API REST + Webhook (B2B): Integração com sistemas de prontuário eletrônico (ex: Dental Office, PlusOdonto) e ERPs de clínicas.",
+      "Interface WhatsApp/SMS: Fluxo conversacional para confirmação e reagendamento sem necessidade de app.",
+      "Google Calendar / iCal Sync: Sincronização bidirecional da agenda do dentista.",
+      "Admin Portal (interno): Gestão de tenants, monitoramento de SLAs e suporte."
+    ],
+    "escalabilidade": {
+      "modelo": "Multi-tenant SaaS com isolamento por schema no banco de dados (PostgreSQL row-level security por tenant_id). Tenants grandes podem ser migrados para schemas dedicados.",
+      "servicos": "Arquitetura modular (Modular Monolith no MVP evoluindo para microserviços conforme os bounded contexts Genesis/Custom exigirem escala independente). Motor ML roda como serviço separado desde o início.",
+      "horizontal_scaling": "Stateless services horizontalmente escaláveis via Kubernetes. Workers de notificação escalam por fila de mensagens (KEDA para auto-scaling baseado em tamanho de fila).",
+      "banco_de_dados": "PostgreSQL para dados transacionais + Redis para cache de slots disponíveis (hot path de agendamento). TimescaleDB ou Redshift para analytics histórico.",
+      "cdn_e_latencia": "Assets estáticos via CDN (CloudFront). API de busca de disponibilidade cacheada agressivamente com TTL curto para reduzir latência percebida.",
+      "limites_de_crescimento": "Até ~5.000 clínicas ativas: monolito modular. Acima disso: extração de Agendamento e Motor ML como serviços independentes com seus próprios data stores."
+    },
+    "custos": {
+      "infraestrutura_base": "ECS/EKS + RDS PostgreSQL Multi-AZ + ElastiCache Redis. Estimativa inicial: USD 800–2.000/mês para até 500 clínicas ativas.",
+      "notificacoes": "Custo variável — WhatsApp Business API (~USD 0,005–0,08 por mensagem), SMS (~USD 0,01–0,05). Impacto direto no plano de precificação.",
+      "ml_inference": "GPU spot instances ou SageMaker endpoints para o motor de predição. Amortizado pelo volume — custo relevante apenas acima de 10k agendamentos/dia.",
+      "principais_alavancas_de_custo": [
+        "Volume de notificações enviadas (principal variável)",
+        "Retenção de dados históricos para ML",
+        "SLA de disponibilidade (99,9% vs 99,99%)"
+      ],
+      "otimizacao": "Cache agressivo de slots disponíveis reduz leituras no banco. Consolidação de notificações (digest) reduz custo de mensageria sem impactar UX."
+    },
+    "monetizacao": {
+      "modelo_principal": "Assinatura mensal por clínica (SaaS B2B). Estrutura em tiers:",
+      "tiers": [
+        "Starter (1 dentista, até 200 agendamentos/mês): R$ 149/mês — funcionalidades core sem IA.",
+        "Pro (até 5 dentistas, agendamentos ilimitados + IA de otimização): R$ 399/mês.",
+        "Enterprise (multi-unidade, API, integração com prontuário, SLA dedicado): R$ 999+/mês ou contrato anual com desconto."
+      ],
+      "receitas_complementares": [
+        "Add-on de notificações extras (acima do limite do plano): R$ 0,15/mensagem WhatsApp.",
+        "Marketplace de integrações (comissão de parceiros de prontuário eletrônico).",
+        "Relatórios avançados e benchmarking de mercado como add-on premium."
+      ],
+      "metricas_chave": "NRR (Net Revenue Retention) via expansão de plano conforme a clínica cresce. CAC recuperado em 3–6 meses no plano Pro com churn abaixo de 3% ao mês."
+    },
+    "stack_sugerida": {
+      "backend": "Node.js (NestJS) ou Go para serviços de alta performance. NestJS favorece produtividade inicial; Go para Motor ML e serviços de alta throughput.",
+      "frontend": "Next.js (App Router) para portal de paciente e dashboard da clínica — SSR para SEO e performance.",
+      "mobile": "React Native (Expo) para app de paciente — code sharing com frontend web.",
+      "banco_de_dados": "PostgreSQL (principal) + Redis (cache de disponibilidade) + TimescaleDB (métricas e analytics).",
+      "mensageria": "RabbitMQ (MVP) ou AWS SQS/SNS. Migrar para Kafka se volume de eventos ultrapassar 10k/s.",
+      "ml_e_ia": "Python (FastAPI) para Motor de Inteligência de Agendamento. scikit-learn/XGBoost para predição de no-show. LLM (Claude API) para triagem conversacional via WhatsApp.",
+      "infra_e_devops": "AWS (ECS Fargate + RDS + ElastiCache + SQS). Terraform para IaC. GitHub Actions para CI/CD. Datadog ou Grafana + Prometheus para observabilidade.",
+      "autenticacao": "Auth0 ou AWS Cognito (commodity — não construir internamente).",
+      "notificacoes": "Twilio (SMS + WhatsApp Business API) + Amazon SES (e-mail).",
+      "pagamentos": "Stripe (global) ou Pagar.me (Brasil) — integração via evento de domínio, sem acoplamento ao core."
+    }
+  },
+  "raw": "```json\n{\n  \"value_chain\": \"Paciente percebe necessidade → Busca clínica → Solicita agendamento → Clínica confirma disponibilidade → Agendamento confirmado → Lembretes automáticos → Consulta realizada → Pós-consulta e retorno agendado. O núcleo de valor está na redução de fricção entre a intenção do paciente e a confirmação do agendamento, maximizando a taxa de ocupação da cadeira odontológica.\",\n\n  \"bounded_contexts\": [\n    \"Agendamento (Core Domain): Orquestra o fluxo principal — busca de disponibilidade, criação, confirmação e cancelamento de consultas. Linguagem ubíqua: Slot, Consulta, Janela de Disponibilidade, Conflito, Reagendamento.\",\n    \"Agenda da Clínica (Core Domain): Gerencia calendários de dentistas, salas e equipamentos. Resolve conflitos de recursos. Linguagem ubíqua: Dentista, Sala, Equipamento, Bloqueio, Turno, Capacidade.\",\n    \"Pacientes (Supporting Domain): Cadastro, histórico de consultas e preferências. Linguagem ubíqua: Paciente, Ficha, Histórico, Preferência de Contato.\",\n    \"Notificações e Lembretes (Supporting Domain): Disparos omnichannel (SMS, WhatsApp, e-mail) para confirmação, lembrete e pós-consulta. Linguagem ubíqua: Lembrete, Canal, Template, Confirmação de Presença.\",\n    \"Inteligência de Agendamento (Core Domain / Genesis→Custom): Motor de sugestão de horários otimizados usando ML — minimiza ociosidade, considera preferências do paciente e padrões de no-show. Linguagem ubíqua: Score de Disponibilidade, Predição de No-Show, Slot Ótimo.\",\n    \"Pagamentos e Planos (Generic Subdomain): Cobranças de assinatura das clínicas e, opcionalmente, copagamentos de pacientes. Linguagem ubíqua: Assinatura, Plano, Fatura, Inadimplência.\",\n    \"Relatórios e Analytics (Supporting Domain): KPIs de ocupação, taxa de cancelamento, receita projetada. Linguagem ubíqua: Taxa de Ocupação, Churn de Agendamentos, Receita por Cadeira.\",\n    \"Identidade e Acesso (Generic Subdomain): Autenticação de clínicas, dentistas e pacientes. RBAC por papel. Linguagem u"
+}

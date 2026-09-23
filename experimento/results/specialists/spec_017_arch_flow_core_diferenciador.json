@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado no motor de assinatura digital com chave privada da instituição combinado ao portal de verificação pública offline (QR auto-contido), separado explicitamente como 'custom_built' e extensível por suportar Ed25519/RSA e W3C Verifiable Credentials/DID — mas perde dois pontos porque a ancoragem blockchain está relegada a 'genesis' (opcional/futuro) sem explicar por que a assinatura criptográfica por si só já resolve o problema de confiança sem blockchain, deixando ambiguidade sobre o que é realmente insubstituível."
+}

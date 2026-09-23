@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 2,
+  "justificativa": "A proposta descreve um marketplace CRUD genérico de conexão empresa-freelancer sem nenhum componente tecnológico diferenciador — não há motor de matching especializado em compliance, validação automatizada de certificações regulatórias, ou qualquer mecanismo que o torne insubstituível frente a Upwork, Workana ou LinkedIn com filtros de especialidade."
+}

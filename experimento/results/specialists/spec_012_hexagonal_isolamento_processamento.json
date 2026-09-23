@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta indica processamento assíncrono via KafkaAdapter (IEventBusPort) e jobs recorrentes via SchedulerAdapter, além de portas dedicadas para operações pesadas (IMLModelPort, IReportGenerationPort), mas não descreve isolamento físico explícito em workers/processos separados, ausência de mecanismo de fallback quando ML ou geração de relatórios falha, e nenhuma estratégia de escalonamento independente para os consumers — caracterizando menção ao padrão assíncrono sem garantia real de resiliência ao isolamento."
+}

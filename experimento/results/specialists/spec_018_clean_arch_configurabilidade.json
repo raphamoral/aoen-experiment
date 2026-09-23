@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "clean_arch",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A entidade Tenant expõe campos configuráveis úteis (dataRetentionDays, apiQuotaMonthly, customModelEnabled, plan), mas as regras de negócio críticas estão hardcoded — thresholds de risco (30%/70%), validade de predição (30 dias), limite de ações simultâneas (3), limiar de re-treinamento (accuracy < 0.75) e janela mínima de histórico (6 meses) — impedindo que uma nova operadora com parâmetros distintos seja onboardada apenas com configuração."
+}

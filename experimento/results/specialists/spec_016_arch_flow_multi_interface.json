@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "A proposta prevê múltiplas interfaces com justificativas de perfil real (MerchantPortal para lojistas, CustomerCommunication para consumidores, IntegrationHub/APIs para desenvolvedores), e há indícios de desacoplamento via bounded contexts e Integration Platform Team, mas falta explicitação de interfaces mobile/CLI/API-first para o cliente final, ausência de menção a SDKs para consumidor, e nenhuma justificativa de alcance de mercado que motive a escolha dos canais além da conveniência operacional."
+}

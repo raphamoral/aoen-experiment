@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 70,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Web Dashboard, Mobile veterinário, Portal PWA, WhatsApp Bot e API REST), cada uma justificada por um perfil de usuário e vetor de mercado específicos, com a lógica de negócio centralizada exclusivamente nos Services — garantindo desacoplamento total e expansibilidade sem reescrita."
+}

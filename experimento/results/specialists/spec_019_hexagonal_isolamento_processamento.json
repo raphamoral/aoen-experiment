@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona infraestrutura assíncrona real (RabbitMQEventAdapter para IEventoPort e RedisFilaEsperaAdapter via pub/sub), o que indica intenção de desacoplamento temporal, mas não especifica workers separados como processos físicos distintos, não descreve fallback em caso de falha dos consumidores, e processos computacionalmente caros como IRelatorioService (relatórios de ocupação, receita e cancelamentos) aparecem como primary port síncrono sem qualquer menção a isolamento físico, execução em background ou circuit breaker — ficando assim no meio-termo: assíncrono parcialmente, mas sem isolamento físico real nem resiliência declarada para cargas pesadas."
+}

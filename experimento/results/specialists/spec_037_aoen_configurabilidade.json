@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 37,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "O pipeline de 7 etapas declarado como invariável ('muda apenas o que alimenta cada etapa') com parâmetros explicitamente enumerados (região, padrão de acabamento, margem/BDI) e PricingEngine abstraída por interface demonstram separação código/configuração bem pensada — mas a proposta não especifica como essa configuração é armazenada e gerenciada por tenant (ausência de modelo de tenant table, config store, ou painel de onboarding), deixando em aberto se novo cliente realmente exige zero código ou ainda depende de intervenção técnica para provisionar os parâmetros no sistema."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura possui componentes que poderiam viabilizar unit economics (billing-service, Stripe, Prometheus+Grafana, APIs de IA com custo variável por chamada), mas nenhuma parte da proposta descreve rastreamento de consumo por tenant, cálculo de custo por operação (ex: 'cada minuto traduzido custa R$X de Whisper + R$Y de compute') ou conexão entre custo real de servir cada cliente e o modelo de precificação — os custos de infraestrutura são tratados como lista de serviços totais, não como unit economics por cliente."
+}

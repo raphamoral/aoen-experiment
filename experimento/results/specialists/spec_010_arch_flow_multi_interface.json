@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta não define explicitamente múltiplas interfaces de usuário: não há distinção entre web, mobile ou API, nenhuma justificativa por perfil de usuário ou alcance de mercado, e nenhuma menção a desacoplamento entre lógica de negócio e camada de apresentação — os únicos indícios multi-canal são os canais de notificação (push, email, WhatsApp), que são output passivo, não interfaces interativas."
+}

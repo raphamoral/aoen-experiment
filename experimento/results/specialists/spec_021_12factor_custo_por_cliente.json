@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta lista exclusivamente componentes de infraestrutura (PostgreSQL, Kafka, Redis, S3, etc.) e descreve APM/observabilidade como rastreamento de performance técnica (métricas, logs, traces), sem qualquer menção a rastreamento de consumo por tenant, atribuição de custo por cliente, custo por operação ou conexão entre custo e modelo de precificação — é FinOps de infraestrutura, não Unit Economics."
+}

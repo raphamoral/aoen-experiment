@@ -1,0 +1,447 @@
+{
+  "ideia_idx": 19,
+  "ideia": "App de agendamento inteligente para clínicas odontológicas",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio com regras críticas de empresa, sem dependências externas",
+      "lista": [
+        {
+          "nome": "Patient",
+          "atributos": [
+            "id",
+            "name",
+            "phone",
+            "email",
+            "birthDate",
+            "medicalHistory"
+          ],
+          "regras": [
+            "Paciente deve ter CPF válido",
+            "Histórico médico é imutável após assinatura"
+          ]
+        },
+        {
+          "nome": "Appointment",
+          "atributos": [
+            "id",
+            "patientId",
+            "dentistId",
+            "procedureId",
+            "scheduledAt",
+            "duration",
+            "status"
+          ],
+          "regras": [
+            "Agendamento não pode sobrepor outro",
+            "Cancelamento só até 24h antes",
+            "Status: SCHEDULED | CONFIRMED | CANCELLED | COMPLETED | NO_SHOW"
+          ]
+        },
+        {
+          "nome": "Dentist",
+          "atributos": [
+            "id",
+            "name",
+            "cro",
+            "specialties",
+            "availability"
+          ],
+          "regras": [
+            "CRO deve ser válido e ativo",
+            "Disponibilidade define slots possíveis"
+          ]
+        },
+        {
+          "nome": "Procedure",
+          "atributos": [
+            "id",
+            "name",
+            "defaultDuration",
+            "requiredEquipment",
+            "price"
+          ],
+          "regras": [
+            "Duração mínima de 15 minutos",
+            "Preço não pode ser negativo"
+          ]
+        },
+        {
+          "nome": "Slot",
+          "atributos": [
+            "dentistId",
+            "startTime",
+            "endTime",
+            "isAvailable"
+          ],
+          "regras": [
+            "Slot deve pertencer à disponibilidade do dentista",
+            "Slot não pode existir em horário bloqueado"
+          ]
+        },
+        {
+          "nome": "Clinic",
+          "atributos": [
+            "id",
+            "name",
+            "cnpj",
+            "operatingHours",
+            "timezone"
+          ],
+          "regras": [
+            "CNPJ deve ser válido",
+            "Horários devem respeitar timezone da clínica"
+          ]
+        },
+        {
+          "nome": "Reminder",
+          "atributos": [
+            "id",
+            "appointmentId",
+            "channel",
+            "scheduledAt",
+            "sentAt",
+            "status"
+          ],
+          "regras": [
+            "Lembrete deve ser enviado antes do agendamento",
+            "Canal: SMS | EMAIL | WHATSAPP"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Regras de aplicação específicas do sistema, orquestram entidades",
+      "lista": [
+        {
+          "nome": "ScheduleAppointment",
+          "input": "patientId, dentistId, procedureId, preferredDateTime",
+          "output": "Appointment | ConflictError | UnavailableSlotError",
+          "passos": [
+            "Verificar disponibilidade do dentista",
+            "Checar conflitos no slot",
+            "Criar Appointment",
+            "Disparar Reminder",
+            "Notificar paciente"
+          ]
+        },
+        {
+          "nome": "SuggestAvailableSlots",
+          "input": "dentistId, procedureId, dateRange",
+          "output": "List<Slot>",
+          "passos": [
+            "Buscar disponibilidade do dentista",
+            "Filtrar slots ocupados",
+            "Aplicar duração do procedimento",
+            "Retornar slots livres ordenados"
+          ]
+        },
+        {
+          "nome": "CancelAppointment",
+          "input": "appointmentId, reason",
+          "output": "void | CancellationNotAllowedError",
+          "passos": [
+            "Verificar regra de 24h",
+            "Atualizar status para CANCELLED",
+            "Liberar slot",
+            "Notificar dentista e paciente"
+          ]
+        },
+        {
+          "nome": "RescheduleAppointment",
+          "input": "appointmentId, newDateTime",
+          "output": "Appointment | ConflictError",
+          "passos": [
+            "Cancelar agendamento original",
+            "Criar novo agendamento",
+            "Transferir dados do procedimento"
+          ]
+        },
+        {
+          "nome": "RegisterPatient",
+          "input": "name, cpf, phone, email, birthDate",
+          "output": "Patient | DuplicateCPFError",
+          "passos": [
+            "Validar CPF único",
+            "Criar entidade Patient",
+            "Persistir"
+          ]
+        },
+        {
+          "nome": "ManageDentistAvailability",
+          "input": "dentistId, weeklySchedule, exceptions",
+          "output": "List<Slot>",
+          "passos": [
+            "Definir janelas de disponibilidade",
+            "Calcular slots recorrentes",
+            "Aplicar exceções (feriados, bloqueios)"
+          ]
+        },
+        {
+          "nome": "SendAppointmentReminder",
+          "input": "appointmentId",
+          "output": "Reminder",
+          "passos": [
+            "Recuperar dados do agendamento",
+            "Selecionar canal preferido do paciente",
+            "Enfileirar envio"
+          ]
+        },
+        {
+          "nome": "GenerateOccupancyReport",
+          "input": "clinicId, dateRange",
+          "output": "OccupancyReport",
+          "passos": [
+            "Agregar agendamentos por dentista",
+            "Calcular taxa de ocupação",
+            "Identificar horários de pico"
+          ]
+        },
+        {
+          "nome": "CheckInPatient",
+          "input": "appointmentId",
+          "output": "Appointment",
+          "passos": [
+            "Confirmar presença",
+            "Atualizar status para IN_PROGRESS",
+            "Registrar hora de chegada"
+          ]
+        },
+        {
+          "nome": "MarkNoShow",
+          "input": "appointmentId",
+          "output": "Appointment",
+          "passos": [
+            "Atualizar status para NO_SHOW",
+            "Registrar no histórico do paciente",
+            "Opcionalmente cobrar taxa"
+          ]
+        }
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Convertem dados entre o formato das use cases/entidades e o formato externo (HTTP, DB, etc.)",
+      "controllers": [
+        "AppointmentController — HTTP handlers para agendamento",
+        "PatientController — HTTP handlers para pacientes",
+        "DentistController — HTTP handlers para dentistas",
+        "ClinicController — HTTP handlers para configuração da clínica",
+        "ReportController — HTTP handlers para relatórios"
+      ],
+      "presenters": [
+        "AppointmentPresenter — formata Appointment para resposta HTTP/JSON",
+        "SlotPresenter — formata slots disponíveis para exibição no calendário",
+        "ReportPresenter — formata dados agregados para dashboard"
+      ],
+      "gateways": [
+        "AppointmentRepositoryGateway — interface para persistência de Appointment",
+        "PatientRepositoryGateway — interface para persistência de Patient",
+        "DentistRepositoryGateway — interface para persistência de Dentist",
+        "NotificationGateway — interface para envio de notificações",
+        "CalendarGateway — interface para integração com Google Calendar / Outlook"
+      ],
+      "dto": [
+        "ScheduleAppointmentRequestDTO",
+        "AppointmentResponseDTO",
+        "SlotResponseDTO",
+        "PatientRequestDTO",
+        "OccupancyReportDTO"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa; detalhes de implementação que podem ser trocados sem afetar regras de negócio",
+      "web_framework": "NestJS (Node.js) — inversão de dependência nativa via DI container",
+      "banco_de_dados": {
+        "principal": "PostgreSQL com TypeORM — dados relacionais de agendamentos",
+        "cache": "Redis — cache de slots disponíveis e sessões",
+        "search": "Opcional: Elasticsearch para busca de pacientes em escala"
+      },
+      "notificacoes": {
+        "email": "SendGrid / AWS SES",
+        "sms": "Twilio",
+        "whatsapp": "Twilio WhatsApp API ou Meta Cloud API",
+        "push": "Firebase Cloud Messaging"
+      },
+      "autenticacao": "Auth0 ou Keycloak (multi-tenant por clínica)",
+      "infraestrutura": {
+        "cloud": "AWS ou GCP",
+        "containers": "Docker + Kubernetes (EKS/GKE)",
+        "ci_cd": "GitHub Actions",
+        "monitoramento": "Datadog ou AWS CloudWatch",
+        "filas": "AWS SQS ou RabbitMQ para envio assíncrono de lembretes"
+      },
+      "frontend": {
+        "web": "Next.js (React) — painel da clínica e calendário",
+        "mobile": "React Native — app do paciente para self-scheduling"
+      },
+      "integrações_externas": [
+        "Google Calendar API",
+        "iCalendar / WebDAV",
+        "CFM API (validação de CRO)",
+        "Pagar.me ou Stripe para cobrança de taxa de no-show"
+      ]
+    },
+    "dependency_rule": {
+      "descricao": "A Regra de Dependência: camadas internas não conhecem camadas externas",
+      "aplicacao": {
+        "entities": "Nenhuma dependência externa. Puras classes/value objects com regras de negócio. Sem imports de frameworks.",
+        "use_cases": "Dependem apenas de Entities e de interfaces abstratas (ports). Nunca importam TypeORM, Express, Axios ou qualquer lib externa.",
+        "interface_adapters": "Dependem de Use Cases (via interfaces) e de Entities. Controllers chamam Use Cases. Gateways implementam interfaces definidas na camada de Use Cases.",
+        "frameworks_drivers": "Implementam as interfaces definidas pelas camadas internas. São os únicos que importam NestJS, TypeORM, Twilio, etc.",
+        "inversao_de_dependencia": "Use Cases definem interfaces (IAppointmentRepository, INotificationService). Frameworks implementam essas interfaces. DI container injeta as implementações corretas em runtime.",
+        "exemplo_fluxo": "HTTP Request → NestJS Controller → ScheduleAppointmentUseCase (interface) → Appointment Entity → AppointmentRepositoryGateway (interface) ← PostgresAppointmentRepository (implementação)"
+      }
+    },
+    "testability": {
+      "descricao": "Sistema testável por camada, sem dependências externas reais nos testes unitários",
+      "unit_tests": {
+        "entities": "Testes puros de regras de negócio. Ex: testar que Appointment lança erro ao sobrepor slots. Zero mocks.",
+        "use_cases": "Injetar mocks/fakes das interfaces de repositório e notificação. Testar lógica de orquestração isoladamente.",
+        "exemplo": "ScheduleAppointmentUseCase recebe FakeAppointmentRepository e FakeNotificationService em memória"
+      },
+      "integration_tests": {
+        "descricao": "Testar Interface Adapters com banco de dados real (PostgreSQL em container Docker)",
+        "ferramentas": "Jest + Testcontainers ou Docker Compose para banco isolado por suite"
+      },
+      "e2e_tests": {
+        "descricao": "Testar fluxos completos via HTTP com aplicação rodando",
+        "ferramentas": "Supertest + Jest, banco de dados de teste dedicado"
+      },
+      "contract_tests": {
+        "descricao": "Garantir contratos de APIs externas (Twilio, Google Calendar)",
+        "ferramentas": "Pact (Consumer-Driven Contract Testing)"
+      },
+      "beneficio_clean_arch": "Trocar PostgreSQL por SQLite em memória nos testes unitários de Use Cases sem alterar uma linha de lógica de negócio"
+    },
+    "interfaces": [
+      "IAppointmentRepository — CRUD de agendamentos",
+      "IPatientRepository — CRUD de pacientes",
+      "IDentistRepository — CRUD e disponibilidade de dentistas",
+      "ISlotCalculator — cálculo de slots disponíveis",
+      "INotificationService — envio de lembretes multicanal",
+      "ICalendarIntegration — sync com Google Calendar / Outlook",
+      "IPaymentGateway — cobrança de taxa de no-show",
+      "IAuthProvider — autenticação e autorização multi-tenant",
+      "IReportGenerator — geração de relatórios de ocupação",
+      "IEventPublisher — publicação de eventos de domínio (DomainEvent)"
+    ],
+    "escalabilidade": {
+      "horizontal": "Stateless API pods no Kubernetes; escala automática via HPA baseada em CPU/requests por segundo",
+      "multi_tenant": "Isolamento por clinicId em todas as queries; possibilidade de schema-per-tenant no PostgreSQL para clínicas premium",
+      "filas_assinocrnas": "Lembretes e notificações processados por workers independentes via SQS, sem bloquear a API",
+      "cache": "Slots disponíveis cacheados no Redis com TTL curto (30s–2min), reduzindo queries ao banco em horários de pico",
+      "read_replicas": "PostgreSQL com read replicas para relatórios e consultas pesadas, separando carga de escrita",
+      "event_driven": "Domain Events (AppointmentScheduled, AppointmentCancelled) publicados em fila para integração com outros sistemas e analytics",
+      "sharding": "Em escala extrema, particionamento por clinicId ou região geográfica",
+      "cdn": "Assets estáticos do frontend via CloudFront / CDN global"
+    },
+    "custos": {
+      "infra_basica": "Estimativa inicial: ~$200–400/mês (AWS RDS t3.medium + ECS Fargate 2 tasks + ElastiCache t3.micro + SES)",
+      "notificacoes": "Twilio SMS: ~$0.0079/SMS; WhatsApp: ~$0.005/mensagem; custo cresce linearmente com volume de agendamentos",
+      "otimizacoes": [
+        "Redis cache reduz ~60–70% das queries de slots, diminuindo custos de RDS",
+        "SQS para lembretes evita timeout e permite retry sem custo extra",
+        "Serverless (Lambda) para workers de notificação em clínicas pequenas (pay-per-use)",
+        "Reserved Instances RDS para clínicas com volume previsível (até 40% de desconto)"
+      ],
+      "modelo_custo_por_tier": {
+        "starter": "Compartilhado, ~$15–30/clínica/mês infra",
+        "professional": "Tenant dedicado, ~$80–150/clínica/mês infra",
+        "enterprise": "Infraestrutura dedicada + SLA, custo negociado"
+      }
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS por assinatura mensal (MRR) com planos escalonados por volume de agendamentos ou número de dentistas",
+      "planos": [
+        {
+          "nome": "Starter",
+          "preco": "R$ 149/mês",
+          "limite": "1 dentista, até 200 agendamentos/mês",
+          "features": [
+            "Agendamento online",
+            "Lembretes por email",
+            "App do paciente"
+          ]
+        },
+        {
+          "nome": "Professional",
+          "preco": "R$ 399/mês",
+          "limite": "Até 5 dentistas, agendamentos ilimitados",
+          "features": [
+            "Tudo do Starter",
+            "WhatsApp + SMS",
+            "Relatórios avançados",
+            "Integração Google Calendar"
+          ]
+        },
+        {
+          "nome": "Enterprise",
+          "preco": "R$ 999+/mês",
+          "limite": "Dentistas ilimitados, multi-unidade",
+          "features": [
+            "Tudo do Professional",
+            "API access",
+            "SLA 99.9%",
+            "Suporte dedicado",
+            "White-label"
+          ]
+        }
+      ],
+      "receitas_adicionais": [
+        "Taxa de setup/onboarding: R$ 500–1.500 (one-time)",
+        "Add-on: Confirmação por WhatsApp Business: R$ 99/mês",
+        "Add-on: Prontuário eletrônico integrado: R$ 199/mês",
+        "Revenue share em pagamentos online de consultas (1.5–2.5%)",
+        "Marketplace de supplies odontológicos com comissão"
+      ],
+      "metricas_chave": [
+        "MRR",
+        "Churn Rate",
+        "CAC",
+        "LTV",
+        "NPS",
+        "Taxa de redução de no-shows"
+      ]
+    },
+    "stack_sugerida": {
+      "backend": {
+        "runtime": "Node.js 20 LTS",
+        "framework": "NestJS 10 (suporte nativo a DI, decorators, módulos — alinha com Clean Arch)",
+        "linguagem": "TypeScript 5 (tipagem forte para garantir contratos entre camadas)",
+        "orm": "TypeORM ou Prisma (isolado na camada de Frameworks & Drivers)",
+        "validacao": "class-validator + class-transformer nos DTOs da camada de Interface Adapters",
+        "testes": "Jest + Supertest + Testcontainers"
+      },
+      "banco_de_dados": {
+        "principal": "PostgreSQL 16",
+        "cache": "Redis 7",
+        "migrations": "TypeORM Migrations ou Flyway"
+      },
+      "frontend_web": {
+        "framework": "Next.js 14 (App Router)",
+        "ui": "shadcn/ui + Tailwind CSS",
+        "calendario": "FullCalendar.io ou react-big-calendar",
+        "estado": "Zustand ou TanStack Query"
+      },
+      "mobile": {
+        "framework": "React Native + Expo",
+        "navegacao": "React Navigation"
+      },
+      "infra": {
+        "cloud": "AWS",
+        "containers": "Docker + ECS Fargate (ou EKS em escala)",
+        "iac": "Terraform",
+        "ci_cd": "GitHub Actions",
+        "secrets": "AWS Secrets Manager",
+        "monitoramento": "Datadog APM + Logs",
+        "alertas": "PagerDuty"
+      },
+      "comunicacao": {
+        "api_style": "REST + OpenAPI 3.0 (documentação via Swagger)",
+        "eventos_internos": "AWS SQS + SNS",
+        "websocket": "Socket.io para atualizações em tempo real no calendário da clínica"
+      }
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio com regras críticas de empresa, sem dependências externas\",\n    \"lista\": [\n      {\n        \"nome\": \"Patient\",\n        \"atributos\": [\"id\", \"name\", \"phone\", \"email\", \"birthDate\", \"medicalHistory\"],\n        \"regras\": [\"Paciente deve ter CPF válido\", \"Histórico médico é imutável após assinatura\"]\n      },\n      {\n        \"nome\": \"Appointment\",\n        \"atributos\": [\"id\", \"patientId\", \"dentistId\", \"procedureId\", \"scheduledAt\", \"duration\", \"status\"],\n        \"regras\": [\"Agendamento não pode sobrepor outro\", \"Cancelamento só até 24h antes\", \"Status: SCHEDULED | CONFIRMED | CANCELLED | COMPLETED | NO_SHOW\"]\n      },\n      {\n        \"nome\": \"Dentist\",\n        \"atributos\": [\"id\", \"name\", \"cro\", \"specialties\", \"availability\"],\n        \"regras\": [\"CRO deve ser válido e ativo\", \"Disponibilidade define slots possíveis\"]\n      },\n      {\n        \"nome\": \"Procedure\",\n        \"atributos\": [\"id\", \"name\", \"defaultDuration\", \"requiredEquipment\", \"price\"],\n        \"regras\": [\"Duração mínima de 15 minutos\", \"Preço não pode ser negativo\"]\n      },\n      {\n        \"nome\": \"Slot\",\n        \"atributos\": [\"dentistId\", \"startTime\", \"endTime\", \"isAvailable\"],\n        \"regras\": [\"Slot deve pertencer à disponibilidade do dentista\", \"Slot não pode existir em horário bloqueado\"]\n      },\n      {\n        \"nome\": \"Clinic\",\n        \"atributos\": [\"id\", \"name\", \"cnpj\", \"operatingHours\", \"timezone\"],\n        \"regras\": [\"CNPJ deve ser válido\", \"Horários devem respeitar timezone da clínica\"]\n      },\n      {\n        \"nome\": \"Reminder\",\n        \"atributos\": [\"id\", \"appointmentId\", \"channel\", \"scheduledAt\", \"sentAt\", \"status\"],\n        \"regras\": [\"Lembrete deve ser enviado antes do agendamento\", \"Canal: SMS | EMAIL | WHATSAPP\"]\n      }\n    ]\n  },\n  \"use_cases\": {\n    \"descricao\": \"Regras de aplicação específicas do sistema, orquestram entidades\",\n    \"lista\": [\n      {\n        \"nome\": \"ScheduleAppointment\",\n        \"input\": \"patientId, dentistId, "
+}

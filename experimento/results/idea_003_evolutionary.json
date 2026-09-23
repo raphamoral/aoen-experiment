@@ -1,0 +1,116 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Anonimidade (core): garantia técnica e legal de que relatórios individuais não podem ser rastreados",
+      "Privacidade por design: dados sensíveis de saúde nunca em plain text, LGPD/GDPR como restrição estrutural",
+      "Disponibilidade (99,9%): colaboradores precisam reportar a qualquer momento, inclusive em crises",
+      "Evolucionabilidade: produto novo em domínio sensível, hipóteses mudarão frequentemente",
+      "Auditabilidade: trilha de auditoria imutável para demonstrar conformidade regulatória",
+      "Observabilidade operacional: logs e métricas de sistema sem expor conteúdo de usuários",
+      "Escalabilidade elástica: base de clientes B2B cresce em picos (onboarding de empresas)",
+      "Segurança em profundidade: múltiplas camadas, não apenas perímetro"
+    ],
+    "fitness_functions": [
+      "k-anonimidade >= 5: relatórios de um grupo só são exibidos quando há no mínimo 5 respostas no segmento (automatizado como teste de integração)",
+      "Zero PII detectável em tabelas de respostas: scanner automatizado (presidio/custom NLP) roda em CI para detectar vazamento de dados identificáveis",
+      "Latência p95 < 400ms para submissão de formulário (monitoramento contínuo via sintético)",
+      "Cobertura de testes de segurança: SAST/DAST obrigatório no pipeline, bloqueante para deploy em produção",
+      "Data residency compliance: validação automatizada que dados de tenants BR ficam em região BR (AWS sa-east-1)",
+      "Tempo de retenção de dados: job diário verifica e purga dados além da política contratada por tenant",
+      "Availability SLA: alertas quando janela de 30 dias cai abaixo de 99,9%",
+      "Anonymization pipeline lag < 2s: tempo entre submissão e dado disponível no dashboard anonimizado",
+      "Zero cross-tenant data leakage: teste de contrato verificando isolamento por tenant em cada deploy",
+      "Dependency vulnerability score: nenhuma CVE crítica em dependências (Dependabot + bloqueio de pipeline)"
+    ],
+    "incremental_change": {
+      "fase_1_mvp": "Modular monolith com três módulos bem separados: (1) Coleta anônima, (2) Engine de anonimização/agregação, (3) Dashboard de relatórios. Fronteira clara entre módulos via interfaces internas permite extrair serviços depois sem reescrever.",
+      "fase_2_escala": "Extrair o módulo de anonimização como serviço independente quando throughput exigir escala independente. Strangler fig: novo serviço recebe eventos via fila, monolith continua operando em paralelo durante migração.",
+      "fase_3_multitenancy_avancado": "Introduzir pipeline de analytics separado (CQRS) quando relatórios complexos impactarem latência de coleta. Decisão adiada para o último momento responsável.",
+      "feature_flags": "Todas as novas funcionalidades lançadas via flags (LaunchDarkly ou Unleash self-hosted), permitindo rollout gradual por empresa e rollback imediato sem redeploy.",
+      "contratos_entre_modulos": "Consumer-driven contracts (Pact) para garantir que refatorações não quebram interfaces — fitness function automatizada."
+    },
+    "reversibility": {
+      "reversiveis": [
+        "Escolha de framework frontend (React hoje, migrável via microfrontend incremental)",
+        "Provedor de email/notificações (abstração via adapter pattern)",
+        "Mecanismo de feature flags (interface estável, implementação trocável)",
+        "Estratégia de cache (Redis hoje, Memcached ou in-process amanhã)",
+        "Modelo de precificação (config por tenant, não hardcoded)",
+        "Integrações com sistemas de RH (via webhooks com contratos versionados)"
+      ],
+      "irreversiveis_last_responsible_moment": [
+        "Modelo de isolamento de dados por tenant (schema-per-tenant vs row-level security): decidir após primeiros 10 clientes enterprise para entender requisitos reais de compliance",
+        "Região de dados primária (impacto em LGPD/GDPR): decidir antes de qualquer contrato enterprise assinado",
+        "Protocolo de anonimização (k-anonymity vs differential privacy): adiar para após validar que k=5 satisfaz auditores de clientes",
+        "Estrutura de dados históricos para analytics longitudinal: definir após 6 meses de operação com dados reais"
+      ]
+    },
+    "coupling": {
+      "estrategia": "Acoplamento temporal evitado via event-driven entre coleta e processamento. Acoplamento lógico minimizado com bounded contexts explícitos.",
+      "bounded_contexts": [
+        "Identity & Tenant Management: autenticação de admins de empresa, isolamento entre tenants",
+        "Anonymous Submission: coleta de formulários, stripped de qualquer metadado identificável antes de persistir",
+        "Anonymization Engine: agrega, aplica k-anonymity, gera snapshots para dashboard",
+        "Reporting & Insights: leitura de dados já anonimizados, sem acesso ao contexto de submissão",
+        "Notification Service: alertas para RH, sem acesso a dados individuais"
+      ],
+      "anti_corruption_layer": "Integrações com sistemas externos de RH (ex: Workday, TOTVS) isoladas em adapters específicos para proteger o domínio core de mudanças externas",
+      "eventos_de_dominio": "SubmissionReceived → AnonymizationRequested → AggregateUpdated → DashboardInvalidated (fila com at-least-once delivery)"
+    },
+    "interfaces": [
+      "Employee Web App (PWA): formulário anônimo de check-in, sem login obrigatório, link com token de curta duração por campanha",
+      "Employee Mobile App (opcional fase 2): PWA wrappada em WebView para distribuição via app stores",
+      "Admin Dashboard (SPA): relatórios agregados, configuração de campanhas, gestão de usuários admin",
+      "Public REST API v1: para integrações com sistemas de RH e SSO corporativo",
+      "Webhook Outbound: eventos de relatórios prontos para sistemas downstream (SIEM, BI corporativo)",
+      "White-label Embed (fase 3): widget iframe para portais de RH existentes"
+    ],
+    "escalabilidade": {
+      "modelo": "Horizontal stateless para serviços de coleta e dashboard. Processamento de anonimização via workers escaláveis por fila.",
+      "picos": "Campanhas periódicas geram bursts (ex: pesquisa mensal para 10.000 funcionários). Auto-scaling em ASG/container baseado em profundidade de fila.",
+      "multitenancy": "Row-level security no PostgreSQL para fase inicial (até ~500 tenants). Schema-per-tenant avaliado após aprendizado com clientes enterprise.",
+      "analytics": "Read replicas dedicadas para queries de dashboard, separadas do caminho de escrita para não impactar submissões",
+      "cdn": "Assets estáticos e formulários públicos via CDN (CloudFront) para latência global e resiliência"
+    },
+    "custos": {
+      "modelo_operacional": "Custo cresce linearmente com número de funcionários ativos, não com tenants — previsível para precificação",
+      "otimizacoes": [
+        "Armazenamento em camadas: dados brutos purged após anonimização (30 dias), apenas agregados retidos long-term",
+        "Serverless para anonymization workers (AWS Lambda) em fase MVP: paga apenas durante campanhas ativas",
+        "PostgreSQL RDS com reserved instances para baseline + Aurora Serverless para spikes",
+        "Logs com retenção curta (7 dias hot, 90 dias cold no S3 Glacier) — dados de saúde não devem ficar mais que o necessário"
+      ],
+      "unit_economics": "Target: custo de infraestrutura < 15% da receita por tenant para margem SaaS saudável. Fitness function: alerta quando custo/seat supera threshold configurado."
+    },
+    "monetizacao": {
+      "modelo_primario": "Assinatura mensal por funcionário ativo (per-seat), contrato anual com desconto",
+      "tiers": {
+        "starter": "Até 100 funcionários, formulários padrão, dashboard básico — para PMEs experimentarem",
+        "professional": "Até 1.000 funcionários, formulários customizados, relatórios comparativos por departamento, integrações básicas",
+        "enterprise": "Ilimitado, SLA contratual, SSO/SAML, data residency garantida, relatórios de benchmark setorial, suporte dedicado"
+      },
+      "expansao_receita": [
+        "Add-on: Relatório de benchmark anônimo entre empresas do mesmo setor (dados cross-tenant agregados com consentimento)",
+        "Add-on: Sessões de coaching/apoio psicológico via parceiros (marketplace)",
+        "Consultoria: interpretação de dados por especialistas em saúde organizacional"
+      ],
+      "metricas_saas": "NRR (Net Revenue Retention) como norte — expansão natural quando empresas crescem em headcount"
+    },
+    "stack_sugerida": {
+      "backend": "Node.js + TypeScript com NestJS (modular, alinha com bounded contexts, fácil extração de serviços)",
+      "frontend": "Next.js (SSR para SEO do marketing site + SSG para dashboard estático) + TailwindCSS",
+      "banco_dados_primario": "PostgreSQL 16 com Row-Level Security nativo (pgRLS) para isolamento multi-tenant",
+      "fila_eventos": "Redis Streams para MVP (operacional simples) → RabbitMQ ou SQS quando throughput exigir",
+      "autenticacao": "Auth0 ou Keycloak self-hosted para enterprise (SAML/SSO) — adapter pattern para troca futura",
+      "anonimizacao_nlp": "Microsoft Presidio (open source) para detecção de PII em texto livre antes de persistir",
+      "infraestrutura": "AWS (sa-east-1 para LGPD) via Terraform — ECS Fargate para containers, RDS Multi-AZ, CloudFront CDN",
+      "observabilidade": "OpenTelemetry + Grafana Stack (Loki + Tempo + Prometheus) — self-hosted para não vazar dados operacionais para terceiros",
+      "ci_cd": "GitHub Actions com pipeline: lint → test → SAST (Semgrep) → DAST (OWASP ZAP) → fitness functions → deploy canary",
+      "decisoes_adiadas": "Kafka (só se volume de eventos justificar), microserviços separados (só quando monólito modular mostrar gargalo real), ML para insights preditivos (fase 3 com dados suficientes)"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Anonimidade (core): garantia técnica e legal de que relatórios individuais não podem ser rastreados\",\n    \"Privacidade por design: dados sensíveis de saúde nunca em plain text, LGPD/GDPR como restrição estrutural\",\n    \"Disponibilidade (99,9%): colaboradores precisam reportar a qualquer momento, inclusive em crises\",\n    \"Evolucionabilidade: produto novo em domínio sensível, hipóteses mudarão frequentemente\",\n    \"Auditabilidade: trilha de auditoria imutável para demonstrar conformidade regulatória\",\n    \"Observabilidade operacional: logs e métricas de sistema sem expor conteúdo de usuários\",\n    \"Escalabilidade elástica: base de clientes B2B cresce em picos (onboarding de empresas)\",\n    \"Segurança em profundidade: múltiplas camadas, não apenas perímetro\"\n  ],\n  \"fitness_functions\": [\n    \"k-anonimidade >= 5: relatórios de um grupo só são exibidos quando há no mínimo 5 respostas no segmento (automatizado como teste de integração)\",\n    \"Zero PII detectável em tabelas de respostas: scanner automatizado (presidio/custom NLP) roda em CI para detectar vazamento de dados identificáveis\",\n    \"Latência p95 < 400ms para submissão de formulário (monitoramento contínuo via sintético)\",\n    \"Cobertura de testes de segurança: SAST/DAST obrigatório no pipeline, bloqueante para deploy em produção\",\n    \"Data residency compliance: validação automatizada que dados de tenants BR ficam em região BR (AWS sa-east-1)\",\n    \"Tempo de retenção de dados: job diário verifica e purga dados além da política contratada por tenant\",\n    \"Availability SLA: alertas quando janela de 30 dias cai abaixo de 99,9%\",\n    \"Anonymization pipeline lag < 2s: tempo entre submissão e dado disponível no dashboard anonimizado\",\n    \"Zero cross-tenant data leakage: teste de contrato verificando isolamento por tenant em cada deploy\",\n    \"Dependency vulnerability score: nenhuma CVE crítica em dependências (Dependabot + bloqueio de pipeline)\"\n  ],\n  \"incrementa"
+}

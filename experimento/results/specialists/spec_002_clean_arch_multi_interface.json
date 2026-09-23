@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente entidades de domínio (Freelancer, Client, Project, Bid, Contract, Escrow, Review) sem qualquer menção a interfaces de usuário, canais de acesso (web, mobile, API, CLI) ou diferenciação de contextos de uso por perfil de mercado."
+}

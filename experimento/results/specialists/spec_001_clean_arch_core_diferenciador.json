@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O produto identifica rastreamento em tempo real e otimização de rotas como possíveis diferenciadores, mas a arquitetura os trata como casos de uso comuns sem isolar um núcleo proprietário — a combinação GPS+MapGateway+RouteOptimization é replicável com Google Maps SDK e qualquer backend padrão, sem evidência de algoritmo próprio, modelo preditivo ou inteligência que justifique insubstituibilidade."
+}

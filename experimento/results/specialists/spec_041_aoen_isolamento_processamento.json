@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 41,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve separação lógica via adaptadores e PatentPortfolioService centralizado, mas não menciona em nenhum momento filas, workers, processos separados ou mecanismos assíncronos — o pipeline de enriquecimento (ingestão → normalização → enriquecimento → cálculo de métricas) e as chamadas de IA/LLM, que são computacionalmente caros, parecem rodar de forma síncrona e acoplada ao mesmo processo que serve o dashboard, a API e os alertas, significando que uma análise pesada bloqueada derruba todas as interfaces simultaneamente."
+}

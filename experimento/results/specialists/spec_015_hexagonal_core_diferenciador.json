@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — motor de precificação dinâmica com elasticidade, sazonalidade e SimulationPort — está claramente identificado e isolado via arquitetura hexagonal, é extensível por design (MLModelPort, DemandForecastPort e CompetitorPricePort são agnósticos de fornecedor), e o SimulationPort representa uma proposta de valor genuinamente insubstituível; a nota não chega a 10 porque o core domain não explicita regras de negócio exclusivas do vertical de moda (ex: markdown por lifecycle de coleção, precificação por grade tamanho/cor, curva de demanda de tendência) que seriam o que realmente impede a substituição por um motor de precificação genérico."
+}

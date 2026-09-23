@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta sugere implicitamente múltiplas interfaces via IntegrationGateway (webhooks/API para CI/CD, Jira, GitHub) e NotificationHub (email, push, real-time), e distingue dois perfis de usuário com jornadas separadas (empresas via Team Campaign Experience, testers via Team Tester Journey), mas não declara explicitamente as interfaces de usuário final (web, mobile, API pública), não justifica cada canal por alcance de mercado ou contexto de uso real, e não enuncia uma estratégia de desacoplamento entre lógica de negócio e camada de apresentação — o que impede afirmar que novas interfaces poderiam ser adicionadas sem reescrita."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura demonstra consciência multi-tenant via tenantId nos ports e possui ITenantOnboardingUseCase e IAlertUseCase com threshold configurável, mas não define um mecanismo explícito de configuração por tenant que direcione comportamento — não há config store, feature flags por tenant, nem roteamento declarativo entre adaptadores alternativos (ex: SciKit vs SageMaker por tenant); onboarding de novo cliente provavelmente ainda exigiria intervenção técnica para definir qual stack de ML, quais canais de notificação e quais regras de segmentação aplicar."
+}

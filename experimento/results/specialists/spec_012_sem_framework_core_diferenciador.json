@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "Existe um diferenciador implícito e valioso — a geração automática de relatórios de conformidade nos formatos exigidos por IBAMA/CETESB — mas ele está enterrado como um item entre sete interfaces listadas, sem ser isolado como núcleo do produto nem explicado por que as alternativas existentes falham em atendê-lo; o restante da proposta descreve uma stack IoT padrão de mercado (MQTT + TimescaleDB + dashboard React) que, sozinha, não confere posição defensável."
+}

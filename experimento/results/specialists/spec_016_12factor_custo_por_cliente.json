@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona nenhum mecanismo de rastreamento de custo por tenant ou por operação — lista apenas serviços de infraestrutura agregados (ECS/Fargate, PostgreSQL, Redis, S3, SendGrid, Twilio) sem qualquer modelo de atribuição de custo por cliente, por devolução processada ou por chamada de API de carrier."
+}

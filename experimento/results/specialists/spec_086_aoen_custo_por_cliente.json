@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 86,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não menciona nenhum mecanismo de mensuração de custo por cliente ou por operação — não há rastreamento de consumo por tenant, nenhum cálculo de custo unitário por análise de risco, e nenhuma conexão entre custo variável e modelo de precificação; os custos de infraestrutura sequer são citados de forma granular."
+}

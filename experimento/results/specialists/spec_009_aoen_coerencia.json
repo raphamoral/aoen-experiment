@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "O axioma 'o certificado é o produto' atravessa todas as camadas sem contradição: justifica a CertificationService como núcleo único, explica cada interface por seu papel no ecossistema de certificação, sustenta a extensibilidade (troca de executor sem alterar o fluxo), e culmina na transferência de titularidade do certificado como ato final da transação — cada decisão reforça as demais, com desconto mínimo pela proposta truncada no Phase 3 e ausência de detalhes sobre a geração do hash do certificado digital."
+}

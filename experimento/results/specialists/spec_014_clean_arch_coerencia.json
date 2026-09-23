@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "O modelo de domínio apresenta cadeia lógica coesa (Organization → Meeting → TranslationSession → TranscriptionSegment → Translation) onde as regras de negócio se reforçam mutuamente — o threshold de confiança (0.7) protege a qualidade, a imutabilidade dos segmentos sustenta auditoria, e o preferredLanguage do Participant conecta diretamente à entrega de áudio — porém a avaliação fica limitada pela proposta incompleta (SpeakerProfile truncado) e pela ausência de decisões de infraestrutura, comunicação e tecnologia, que impediriam verificar se há contradições entre os objetivos declarados de escala em tempo real e as escolhas técnicas subjacentes."
+}

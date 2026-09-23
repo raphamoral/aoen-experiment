@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define bounded contexts separados (Analytics, Search, Pricing, Notifications) que sugerem separação lógica de responsabilidades, e delega alguns processos pesados a commodities externas (Stripe, SendGrid, Twilio), mas não menciona em nenhum ponto filas de mensagens, workers assíncronos, isolamento físico de processos ou mecanismos de fallback — workloads caros como recomendação por IA, busca geoespacial e precificação dinâmica em tempo real ficam implicitamente acoplados ao fluxo síncrono principal, sem qualquer garantia de que a falha ou degradação desses componentes não impacte o restante do sistema."
+}

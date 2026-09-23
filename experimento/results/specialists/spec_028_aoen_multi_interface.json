@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 28,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Dashboard Web, API REST, PDF, Widget embarcável e WhatsApp/chatbot), cada uma justificada por um perfil de usuário e canal de mercado específico, com lógica de negócio inteiramente encapsulada no ComplianceService — garantindo que qualquer nova interface possa ser adicionada sem tocar nas regras de conformidade."
+}

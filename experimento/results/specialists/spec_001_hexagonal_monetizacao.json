@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O projeto menciona dois modelos de receita (por transação e por volume em tiers) e cita uma camada premium com features diferenciadas, mas sem definir valores, volumes de breakeven, margens por tier, análise de LTV/CAC ou métricas de sustentabilidade — ficando no nível de esboço intencional sem viabilidade demonstrável."
+}

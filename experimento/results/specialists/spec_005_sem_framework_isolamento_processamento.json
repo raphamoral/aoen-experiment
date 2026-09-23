@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta menciona explicitamente BullMQ com Redis para geração de PDF assíncrona, o que indica consciência sobre isolamento de processamento pesado, mas não detalha workers em processos separados, não menciona fallback em caso de falha na fila, não aborda o que acontece se o Redis cair, e a integração com a API de assinatura digital (outro gargalo identificado) não tem nenhum mecanismo de isolamento ou retry descrito."
+}

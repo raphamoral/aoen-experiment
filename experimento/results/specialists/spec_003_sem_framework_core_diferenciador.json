@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O produto identifica um diferenciador real — anonimização estrutural das respostas com relatórios agregados para RH — mas não isola esse mecanismo como núcleo tecnológico distinto: a proposta trata o sistema de dissociação identidade/resposta como detalhe de banco de dados, não como componente central extensível e auditável, deixando a promessa de privacidade sem lastro técnico que a torne insubstituível frente a concorrentes como Officevibe ou Peakon."
+}

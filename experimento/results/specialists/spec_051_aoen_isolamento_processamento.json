@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 51,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve um pipeline lógico com interfaces plugáveis (Ingestion → Classification → Extraction → Risk Scoring → Report Generation) e uma DiligenceService centralizada, mas não menciona em nenhum momento filas de mensagens, workers separados, processamento assíncrono ou isolamento físico de processos — o que, em uma plataforma que processa LLMs sobre data rooms inteiros, representa risco crítico de que uma análise pesada bloqueie ou derrube toda a camada de serviço."
+}

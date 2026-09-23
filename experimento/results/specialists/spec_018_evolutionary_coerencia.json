@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: cada característica arquitetural encontra sua contrapartida operacional em fitness functions mensuráveis (confiabilidade → data freshness < 4h; evolvability → accuracy gate antes de promoção; multi-tenancy → pen test automatizado no CI/CD) e as fases incrementais constroem progressivamente sobre os aprendizados anteriores com decisões explicitamente diferidas e orientadas a evidência (streaming só ativado quando caso de uso < 1h for validado), com única lacuna perceptível sendo a ausência de uma fitness function dedicada à interoperabilidade BSS/OSS, que fica apenas como característica declarada sem medição automática correspondente."
+}

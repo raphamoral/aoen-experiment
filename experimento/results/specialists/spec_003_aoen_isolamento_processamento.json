@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta menciona 'enfileiramento assíncrono' no fluxo fixo, o que indica consciência do problema, mas não especifica isolamento físico real (worker separado, processo dedicado, container independente), não descreve fallback em caso de falha da engine de análise, e não aborda escalabilidade independente do processamento pesado — o que a mantém no nível de intenção arquitetural, não de resiliência implementada."
+}

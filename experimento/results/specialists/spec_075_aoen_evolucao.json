@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 75,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte maturidade evolutiva: o padrão Adapter desacopla backends externos do motor de correlação, a service layer com contratos Go/gRPC isola lógica de negócio de qualquer interface de transporte, e o modelo canônico interno age como anti-corruption layer — permitindo trocar banco, framework de ingestão ou orquestrador sem tocar o core; perde pontos por não explicitar estratégia de escala horizontal do grafo topológico sob alta cardinalidade de serviços, e por gRPC como contrato interno introduzir acoplamento de serialização que poderia ser abstraído por interfaces Go puras."
+}

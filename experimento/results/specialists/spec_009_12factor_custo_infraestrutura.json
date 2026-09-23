@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista os componentes de infraestrutura de forma detalhada (RDS Aurora Serverless v2, ElastiCache, S3, CloudFront, EKS, SQS, Datadog, SendGrid, Twilio, Stripe), e algumas escolhas arquiteturais têm implicação de custo positiva (Aurora Serverless v2 com scale-to-zero potencial, HPA no Kubernetes, escala de workers por profundidade de fila SQS), mas não há nenhuma estimativa concreta de custo em dólares ou reais por componente, nenhuma projeção de crescimento de custos com a base de usuários, e ausência de estratégias explícitas de otimização como instâncias Spot/Savings Plans, tiering de armazenamento S3 ou análise de custo vs. alternativas mais baratas (ex: Typesense self-hosted vs. Elasticsearch gerenciado)."
+}

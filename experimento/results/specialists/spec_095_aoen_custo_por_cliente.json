@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 95,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta não prevê nenhum mecanismo interno de mensuração de custo por tenant ou por operação — o único ponto que tangencia o conceito é o dashboard de operadoras ('custo por análise'), mas trata-se de uma visão voltada ao cliente pagador externo, não de um cálculo interno de margem por cliente; a Service Layer centralizada não descreve nenhum mecanismo de atribuição de custo por tenant, e não há referência a rastrear quanto cada cliente consome de chamadas de IA, storage ou compute individualmente."
+}

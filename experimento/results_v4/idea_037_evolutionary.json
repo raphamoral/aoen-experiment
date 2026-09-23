@@ -1,0 +1,58 @@
+{
+  "ideia_idx": 37,
+  "ideia": "Plataforma de orçamento automatizado para reformas residenciais",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (capacidade de mudar regras de orçamento, catálogos e integrações sem reescrita)",
+      "Testabilidade e precisão do domínio (cálculo de orçamento correto e auditável)",
+      "Modularidade com fronteiras claras de domínio",
+      "Observabilidade e rastreabilidade (cada valor de orçamento explica sua origem)",
+      "Desempenho percebido (geração de orçamento em segundos)",
+      "Segurança e privacidade multi-tenant (LGPD, isolamento por empresa/tenant)",
+      "Custo-eficiência (custo por orçamento gerado monitorado)",
+      "Disponibilidade adequada ao estágio (99,5% no início, evolutiva para 99,9%)"
+    ],
+    "fitness_functions": [
+      "Arquitetura: ArchUnit/dependency-cruiser no CI falha o build se um módulo acessar o interior de outro (ex.: 'pricing' importando tabelas de 'catalog') ou se surgir ciclo de dependência",
+      "Acoplamento: limite máximo de dependências aferentes/eferentes por módulo e proibição de acesso cruzado a schemas de banco, verificada em CI",
+      "Precisão: suíte de 'orçamentos dourados' (golden tests) com reformas reais; desvio > 5% em relação ao valor de referência bloqueia o deploy",
+      "Contrato: testes de contrato (Pact/OpenAPI diff) impedem breaking changes em APIs públicas e webhooks sem nova versão",
+      "Desempenho: teste de carga automatizado no pipeline; p95 da geração de orçamento < 3 s (sem IA) e < 15 s (com IA), falha se regredir > 10%",
+      "Segurança: testes automatizados de isolamento multi-tenant (tenant A nunca lê dados do tenant B), SAST/DAST e varredura de dependências a cada PR",
+      "Custo: alerta e gate quando custo de infraestrutura + IA por orçamento ultrapassar a meta (ex.: > R$ 0,50) ou variar > 20% semana a semana",
+      "Evolvabilidade: métricas DORA (lead time, frequência de deploy, MTTR, change failure rate) com limites mínimos monitorados",
+      "Qualidade da IA: avaliação offline (evals) do extrator de escopo/medidas com acurácia mínima; regressão de prompt/modelo bloqueia a troca",
+      "Dados: verificação de frescor dos preços de materiais e mão de obra (SINAPI/tabelas regionais); alerta se defasagem > 30 dias",
+      "Disponibilidade: SLOs com error budget; deploy congelado quando o budget se esgota",
+      "Portabilidade: teste periódico de restauração de backup e de troca de provedor de LLM via adaptador (deve funcionar com configuração, sem alterar o domínio)"
+    ],
+    "incremental_change": "Começar com um monólito modular (um deployable, módulos com fronteiras estritas): Identity/Tenancy, Projects (reforma, cômodos, medidas), Catalog (materiais, serviços, composições de custo), Pricing (motor de regras e cálculo), Quotes (geração, versões, PDF), Billing e Notifications. Fase 1 (MVP): formulário guiado por cômodo/tipo de serviço, catálogo com composições SINAPI, motor de regras determinístico, PDF do orçamento e um tenant piloto. Fase 2: extração assistida por IA (fotos, plantas, descrição em texto) sempre com revisão humana; preços regionais; versionamento e comparação de orçamentos. Fase 3: marketplace de fornecedores/profissionais, integração com ERPs e fornecedores de materiais, cotação em tempo real. Fase 4: extração de serviços em microsserviços apenas quando houver evidência (métrica de escala, time autônomo ou ciclo de release divergente), seguindo o padrão strangler fig. Cada mudança entra por feature flags, releases canário e deploy contínuo, sempre protegida pelas fitness functions acima. ADRs registram cada decisão relevante com contexto, alternativas e critérios de reversão.",
+    "reversibility": "Reversíveis (two-way doors, decidir cedo e barato): provedor de nuvem e de LLM (atrás de adaptadores), framework de front-end, biblioteca de PDF, provedor de e-mail/notificações, ferramenta de observabilidade, divisão interna de módulos, formato de prompts, feature flags. Parcialmente reversíveis (custo médio): modelo de dados do catálogo e das composições de custo (mitigado com migrações versionadas, expand/contract e event log), gateway de pagamento (atrás de interface própria). Difíceis de reverter (decidir no último momento responsável): estratégia de multi-tenancy (começar com schema compartilhado + tenant_id + Row-Level Security, mantendo a possibilidade de migrar tenants grandes para bancos dedicados), residência de dados/região, modelo de identidade e autorização, contratos de API públicos (mitigados com versionamento) e a decisão de ir para microsserviços ou event streaming (adiada até haver evidência). Toda decisão irreversível é adiada ao máximo e registrada em ADR com o gatilho que a dispararia.",
+    "coupling": "Acoplamento baixo entre módulos e alto dentro do módulo (alta coesão). Comunicação entre módulos apenas via interfaces públicas (fachadas/portas) e eventos de domínio internos (ex.: ProjectMeasured, QuoteApproved), sem compartilhar tabelas. Cada módulo é dono do seu schema. Arquitetura hexagonal (ports & adapters) isola integrações externas (LLM, pagamento, ERP, fornecedores) por anticorruption layers. O motor de preços é puro e sem dependências de I/O, com regras declarativas versionadas (dados, não código), o que permite alterar a lógica sem redeploy. Contratos explícitos e versionados (OpenAPI, JSON Schema, eventos com schema registry leve). Quando um módulo for extraído, o barramento em memória é substituído por um broker (outbox pattern) sem alterar os contratos. Acoplamento com terceiros medido e limitado por fitness functions.",
+    "interfaces": [
+      "API REST/JSON pública versionada (OpenAPI) para projetos, cômodos, orçamentos e catálogos",
+      "Web app SPA/SSR para o cliente final (proprietário) com fluxo guiado de criação de orçamento",
+      "Painel web para empresas/profissionais de reforma (gestão de catálogo, margens, propostas)",
+      "Webhooks de saída (orçamento criado, aprovado, expirado) com assinatura HMAC e reentrega",
+      "Porta de IA (LLM/visão): extração de escopo e medidas a partir de texto, fotos e plantas, com adaptador trocável",
+      "Porta de catálogo de preços: importação SINAPI/tabelas regionais, fornecedores e lojas de materiais",
+      "Porta de pagamentos e cobrança (Stripe/Pagar.me/Asaas) para assinaturas e taxas por uso",
+      "Porta de documentos: geração de PDF/propostas e assinatura eletrônica",
+      "Porta de notificações: e-mail, WhatsApp e push",
+      "Integrações com ERP/CRM (Omie, Conta Azul, RD Station) via conectores",
+      "Eventos de domínio internos (e futuramente broker) para desacoplar módulos",
+      "SSO/OIDC e RBAC por tenant para equipes"
+    ],
+    "escalabilidade": "Escala incremental guiada por evidência. Início: aplicação stateless em contêineres com autoscaling horizontal atrás de um load balancer, PostgreSQL gerenciado com réplica de leitura, cache (Redis) para catálogo e tabelas de preço e CDN para estáticos. Cálculo de orçamento é determinístico e barato, escalando por CPU; tarefas pesadas (IA, OCR de plantas, PDF, importação de catálogos) vão para filas e workers assíncronos com escala independente e idempotência. Multi-tenancy com RLS e possibilidade de isolar tenants grandes (bulkheads, rate limiting por tenant, cotas). Particionamento por tenant/tempo quando as tabelas crescerem. Próximos passos apenas sob demanda: extrair Pricing, IA e Catalog em serviços independentes, CQRS/read models para busca e relatórios, e event streaming. Capacity planning e testes de carga contínuos indicam quando dar cada passo, evitando complexidade prematura.",
+    "custos": "Foco em custo por orçamento gerado como métrica de primeira classe. Monólito modular reduz custo de infraestrutura e de operação (um pipeline, um deploy, poucos serviços). Maior variável é o custo de IA/visão: mitigado por processamento determinístico sempre que possível, cache de resultados, modelos menores para tarefas simples e maiores só quando necessário, limites por plano, processamento em lote e revisão humana só na exceção. Uso de serviços gerenciados no início (banco, filas, storage) para poupar tempo do time, com revisão de custo trimestral. Autoscaling com instâncias spot para workers, retenção e ciclo de vida de arquivos (fotos/plantas) no storage, FinOps com tags por tenant e módulo, orçamentos de custo e alertas. Custos de licenciamento de bases de preços e de APIs de fornecedores devem ser repassados ou incluídos em planos superiores. Conformidade LGPD (DPO, criptografia, logs de auditoria) tem custo fixo que deve entrar na precificação.",
+    "monetizacao": "Modelo SaaS B2B2C em camadas, com testes de preço incrementais. (1) Assinatura mensal/anual para empresas de reforma, arquitetos e engenheiros: planos Starter, Pro e Business por número de usuários e orçamentos/mês, com marca própria (white-label), catálogo e margens personalizados nos planos superiores. (2) Cobrança por uso (metered) para créditos de orçamentos com IA (extração de plantas/fotos) além da franquia do plano. (3) Freemium/lead-gen para proprietários: orçamento estimativo gratuito, com monetização por leads qualificados enviados a profissionais parceiros (custo por lead ou comissão). (4) Marketplace: comissão sobre contratação de profissionais e compra de materiais via fornecedores parceiros (afiliação/rebate). (5) Add-ons: integrações com ERP, assinatura eletrônica, API para grandes construtoras, lojas de materiais e bancos/financiadoras (financiamento da reforma). (6) Dados agregados e anonimizados de custos regionais como produto de inteligência de mercado (respeitando LGPD). Métricas de acompanhamento: MRR, CAC, LTV, churn, custo por orçamento e conversão de orçamento em obra contratada.",
+    "stack_sugerida": "Front-end: TypeScript com React/Next.js (SSR para SEO do funil de proprietários) e biblioteca de componentes; Back-end: monólito modular em TypeScript (NestJS) ou Kotlin/Spring Boot, com módulos e portas/adaptadores; motor de regras declarativo (JSON/DSL versionada) com testes de propriedade; Banco: PostgreSQL com Row-Level Security, migrações versionadas (Flyway/Prisma), pgvector para busca semântica de catálogo; Cache/filas: Redis + BullMQ (ou SQS) com padrão outbox; Storage: S3-compatível para fotos, plantas e PDFs; IA: adaptador para LLMs multimodais (Claude/outros) com evals e cache, OCR/visão para plantas; Autenticação: OIDC (Auth0/Cognito/Keycloak) com RBAC; Pagamentos: Stripe ou Asaas/Pagar.me atrás de interface própria; Infra: contêineres em AWS/GCP (ECS/Cloud Run), Terraform (IaC), CI/CD com GitHub Actions, feature flags (Unleash/OpenFeature), canary deploys; Observabilidade: OpenTelemetry + Grafana/Datadog, Sentry, SLOs; Qualidade/fitness functions: ArchUnit/dependency-cruiser, Pact, k6, golden tests, Semgrep/Trivy no pipeline; Documentação: ADRs versionados no repositório e C4 Model."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T02:58:45+00:00",
+    "runner": "runner.py"
+  }
+}

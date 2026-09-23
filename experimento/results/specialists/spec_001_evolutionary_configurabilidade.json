@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta menciona feature flags e tiers de monetização com limites configuráveis, o que indica consciência de multi-tenancy, mas não há design explícito de um sistema de configuração por tenant — nenhuma referência a config tables, rule engine, ou mecanismo de onboarding zero-código, sugerindo que comportamentos específicos por cliente ainda dependeriam de código ou deploy."
+}

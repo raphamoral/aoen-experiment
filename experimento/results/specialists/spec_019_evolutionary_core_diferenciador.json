@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "Há um diferenciador implícito (inteligência preditiva: sugestão de horários, predição de no-show, otimização por procedimento), mas ele está enterrado na Fase 4 do roadmap, o MVP é um CRUD genérico de agendamento, o núcleo inteligente nunca é isolado arquiteturalmente como componente central e não há argumentação de por que alternativas existentes (ex.: Doctoralia, Software de Gestão Odontológica) falham exatamente nesse ponto."
+}

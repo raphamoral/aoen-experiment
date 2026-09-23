@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta evidencia implicitamente apenas uma interface de integração (API para plataformas de e-commerce via adapter pattern e consumer-driven contracts), com indícios de painel de configuração em runtime, mas não enumera explicitamente múltiplas interfaces orientadas a perfis de usuário distintos (ex: dashboard para o merchant, API para desenvolvedores, CLI para DevOps), não apresenta justificativa de mercado para cada canal e não declara formalmente o desacoplamento entre lógica de negócio e camadas de apresentação."
+}

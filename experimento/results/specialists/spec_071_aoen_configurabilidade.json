@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 71,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra boa separação por camadas e interfaces abstratas (DataCollector, AnchorProvider, CertificateIssuer) que viabilizam extensibilidade, mas a configurabilidade descrita é de plataforma (trocar tecnologia de âncora, trocar formato de certificado) e não per-tenant — não há menção a tabela de configuração por cliente, feature flags por tenant, regras de validação configuráveis por cooperativa/certificadora, nem fluxo de onboarding por configuração; o próprio texto nomeia explicitamente um 'fluxo_fixo', indicando que novos clientes com requisitos distintos ainda exigiriam desenvolvimento."
+}

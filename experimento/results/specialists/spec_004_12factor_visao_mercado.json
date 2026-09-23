@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O documento identifica superficialmente o público (compradores corporativos de TI e fornecedores) pelo próprio nome do produto, mas não articula a dor do cliente, não apresenta tamanho de mercado (TAM/SAM/SOM), não diferencia a solução de concorrentes como SAP Ariba, Coupa ou Jaggaer, e não oferece uma proposta de valor explícita — todo o conteúdo é exclusivamente arquitetural/técnico."
+}

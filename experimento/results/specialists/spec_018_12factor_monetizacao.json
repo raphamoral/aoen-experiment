@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente a arquitetura técnica do sistema (infraestrutura, CI/CD, serviços de suporte) sem qualquer menção a modelo de receita, tiers de preço, estratégia de monetização ou métricas de negócio como MRR, LTV ou CAC."
+}

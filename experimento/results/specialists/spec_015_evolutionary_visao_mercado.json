@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O produto identifica um público-alvo específico (e-commerces de moda), o que evita nota zero, mas a proposta é inteiramente técnico-arquitetural: não articula a dor do cliente (ex: margens perdidas por precificação estática, stockouts ou sobrestoque), não apresenta tamanho de mercado, não compara com alternativas existentes (ex: Dynamic Yield, Prisync, regras manuais em planilhas) e não formula uma proposta de valor orientada ao negócio do comprador."
+}

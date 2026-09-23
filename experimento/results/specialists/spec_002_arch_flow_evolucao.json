@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra pensamento evolutivo consistente — bounded contexts bem delimitados, classificação Wardley (genesis/custom/product/commodity) que protege o núcleo de negócio de acoplamento prematuro, e camada commodity com alternativas explícitas (Auth0 OR Cognito, DocuSign OR Clicksign) sinalizando consciência de reversibilidade — mas perde pontos por não especificar mecanismos de isolamento na implementação (ports & adapters, anti-corruption layers, event-driven entre contextos) que seriam necessários para garantir que a lógica de Credential Verification e Regulatory Intelligence não vaze acoplamento de fornecedor para dentro do domínio, deixando a evolução dependente de disciplina de equipe em vez de ser estruturalmente garantida."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 58,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor paramétrico é claramente identificado como núcleo, isolado da camada de interfaces, extensível via adapter pattern agnóstico a fornecedor de dados, e resolve de forma insubstituível o principal gargalo do seguro rural tradicional (vistorias de campo), com interface contratual explícita (DataProvider → IndexSeries) — perde um ponto por não detalhar como o núcleo lida com basis risk, que é a principal crítica técnica ao modelo paramétrico."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "A escolha de serviços independentes (Clerk, Resend, R2) e a progressão planejada de curadoria manual para algoritmo são sinais de pensamento evolutivo, mas a ausência de qualquer camada de domínio/serviço separada do Next.js — com lógica de negócio vivendo diretamente em API routes acopladas ao framework — significa que trocar de framework ou isolar o motor de match para um serviço independente exigiria refatoração significativa, não apenas substituição de adaptadores."
+}

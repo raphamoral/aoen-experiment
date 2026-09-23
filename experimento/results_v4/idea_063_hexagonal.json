@@ -1,0 +1,77 @@
+{
+  "ideia_idx": 63,
+  "ideia": "App de detecção de pragas agrícolas por fotografia com IA",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Diagnóstico fitossanitário agrícola: a partir de imagens de cultivos (com contexto de cultura, estágio fenológico, localização e clima), identificar pragas e doenças, estimar severidade e confiança, recomendar ações de manejo e acompanhar a evolução de ocorrências por talhão/fazenda. O core contém entidades (Fazenda, Talhão, Cultura, Fotografia, Diagnóstico, Praga, Recomendação, Ocorrência, Assinatura/Plano), value objects (Confiança, Severidade, Geolocalização, EstágioFenológico), serviços de domínio (regras de decisão para aceitar/rejeitar diagnóstico, limiares de confiança, escalonamento para agrônomo humano, política de quotas por plano) e eventos de domínio (DiagnósticoConcluído, SurtoDetectado, ConfiançaBaixa).",
+    "primary_ports": [
+      "SubmeterFotografiaParaDiagnostico (caso de uso: enviar imagem + contexto e obter diagnóstico)",
+      "ConsultarHistoricoDeDiagnosticos",
+      "GerenciarFazendasETalhoes",
+      "ConfirmarOuCorrigirDiagnostico (feedback do agricultor/agrônomo para retreino)",
+      "SolicitarRevisaoEspecialista",
+      "ConsultarMapaDeOcorrencias (alertas e surtos regionais)",
+      "GerenciarAssinaturaEPlano",
+      "AdministrarCatalogoDePragas",
+      "ReceberEProcessarLoteDeImagens (drones/offline sync)"
+    ],
+    "secondary_ports": [
+      "ClassificadorDePragas (inferência de visão computacional)",
+      "ArmazenamentoDeImagens (repositório de objetos)",
+      "RepositorioDeDiagnosticos / RepositorioDeFazendas / RepositorioDeUsuarios",
+      "CatalogoDeProdutosEManejo (defensivos, controle biológico, bulas, registros MAPA/Agrofit)",
+      "ServicoDeClima (previsão e histórico meteorológico)",
+      "ServicoDeGeocodificacaoEMapas",
+      "PublicadorDeEventos (mensageria/fila)",
+      "NotificadorDeUsuarios (push, SMS, WhatsApp, e-mail)",
+      "GatewayDePagamento",
+      "ProvedorDeIdentidade (autenticação/autorização)",
+      "RepositorioDeDatasetsParaTreino (pipeline MLOps)",
+      "RelogioEGeradorDeIds (para testabilidade)",
+      "Auditoria/Telemetria"
+    ],
+    "primary_adapters": [
+      "App móvel (Flutter/React Native) com captura de foto e modo offline",
+      "Aplicação web (dashboard do gestor/agrônomo)",
+      "API REST/GraphQL pública (integração com ERPs e plataformas de agricultura de precisão)",
+      "Bot de WhatsApp/Telegram (envio de foto por conversa)",
+      "Webhook/consumidor de fila para lotes de drones e câmeras de campo",
+      "CLI/scripts administrativos e de migração",
+      "Test harness/adapters de teste (mocks dirigindo os mesmos casos de uso, sem UI)"
+    ],
+    "secondary_adapters": [
+      "Adapter de inferência: modelo próprio via NVIDIA Triton/TorchServe/ONNX Runtime; alternativa: API de modelo de visão de terceiros (troca sem afetar o core)",
+      "Adapter de armazenamento: S3/GCS/MinIO",
+      "Adapters de persistência: PostgreSQL + PostGIS (relacional/geoespacial); Redis (cache)",
+      "Adapter de mensageria: Kafka/RabbitMQ/SQS",
+      "Adapter de clima: INMET, OpenWeather ou Climatempo",
+      "Adapter de catálogo de defensivos: Agrofit/MAPA ou base proprietária",
+      "Adapters de notificação: FCM/APNs, Twilio/WhatsApp Business API, SES",
+      "Adapter de pagamento: Stripe/Pagar.me/Asaas (PIX, boleto, cartão)",
+      "Adapter de identidade: Keycloak/Auth0/Cognito",
+      "Adapter de mapas: Mapbox/Google Maps",
+      "Adapters em memória/fakes/stubs para todos os ports (testes e desenvolvimento local)",
+      "Adapter de observabilidade: OpenTelemetry, Prometheus, Grafana, Sentry"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não importa nenhum framework, SDK, driver ou biblioteca de I/O; depende apenas de interfaces (ports) definidas por ele mesmo. A regra de dependência aponta sempre para dentro: adapters dependem dos ports, nunca o contrário. Primary adapters traduzem protocolos externos (HTTP, WhatsApp, filas) em chamadas aos primary ports com DTOs/comandos próprios; secondary adapters implementam os secondary ports e traduzem o modelo do domínio para o formato de cada sistema externo (anti-corruption layer). A composição ocorre na borda (composition root/injeção de dependência), e a injeção seleciona adapters reais, fakes ou de teste. Todos os sistemas externos (banco, modelo de IA, clima, pagamento) são tratados simetricamente como 'coisas plugáveis'. Modelos de IA e seus formatos de tensor ficam confinados ao adapter de inferência; o core só conhece o resultado tipado (praga, confiança, severidade). Testes de arquitetura (ArchUnit/import-linter/dependency-cruiser) garantem a regra em CI, e testes de contrato validam cada adapter contra seu port.",
+    "interfaces": [
+      "App móvel (iOS/Android) com câmera guiada, modo offline e sincronização posterior",
+      "Dashboard web para gestores, agrônomos e cooperativas (mapas de calor, histórico, relatórios)",
+      "API pública REST/GraphQL com OpenAPI, autenticação por chave/OAuth2 e webhooks",
+      "Chatbot WhatsApp para produtores com baixa conectividade/letramento digital",
+      "Integração com drones/câmeras/IoT via ingestão em lote",
+      "Portal administrativo de catálogo, revisão de casos e curadoria de dataset",
+      "Interface de linha de comando e scripts para operação e testes automatizados"
+    ],
+    "escalabilidade": "Core stateless, escalado horizontalmente atrás de balanceador/API gateway. Inferência assíncrona: o upload grava a imagem no object storage e publica um evento; workers de inferência consomem a fila e escalam por profundidade da fila (KEDA/HPA), com GPUs em autoscaling e fallback para CPU/modelos quantizados. Modelo em duas etapas: modelo leve on-device/edge para triagem rápida e offline; modelo pesado no servidor para casos de baixa confiança. Cache de resultados por hash da imagem e de dados de clima. Banco com read replicas, particionamento por tenant/tempo e PostGIS para consultas geoespaciais; imagens em tiers de armazenamento com ciclo de vida (hot → cold). Multi-tenancy por organização. Como cada dependência é atrás de um port, gargalos podem ser resolvidos trocando ou extraindo adapters (ex.: separar o serviço de inferência) sem alterar o core. Tráfego sazonal (safras) absorvido por autoscaling e capacidade sob demanda/spot para GPUs. Regionalização para reduzir latência e atender exigências de dados.",
+    "custos": "Principal custo variável é a inferência em GPU: mitigar com quantização, batching, modelos leves em duas etapas, inferência on-device, cache por hash e GPUs spot/serverless com scale-to-zero fora da safra. Segundo custo é armazenamento de imagens: compressão no cliente, redimensionamento, ciclos de vida para cold storage e retenção limitada. Custos de MLOps (rotulagem por agrônomos, retreino, monitoramento de drift, dataset por cultura/região) e de revisão humana por especialistas, repassados via plano premium. Mensagens de WhatsApp/SMS têm custo por conversa/mensagem; preferir push e agrupar notificações. Dados de clima e mapas por chamadas de API (cachear). Taxas de gateway de pagamento. Suporte e conectividade no campo. Sazonalidade agrícola gera receita e uso concentrados, exigindo elasticidade para não pagar capacidade ociosa. Conformidade com LGPD e custos de segurança/observabilidade. Custo por diagnóstico deve ser monitorado como métrica-chave (unit economics) para calibrar preços e quotas por plano.",
+    "monetizacao": "Modelo SaaS freemium com assinatura por faixas: (1) Gratuito, com poucos diagnósticos/mês e catálogo básico; (2) Produtor, com assinatura mensal/anual por área (hectares) ou por número de diagnósticos, histórico, alertas e recomendações de manejo; (3) Profissional/Cooperativa/Agronegócio, com multiusuário, dashboards, mapas de surto, API, integrações e SLA. Receitas adicionais: revisão por agrônomo sob demanda (pay-per-use); marketplace/lead generation e comissão de insumos e controles biológicos recomendados (com transparência e sem viés de recomendação, mantendo separação entre recomendação e monetização); parcerias com seguradoras rurais, bancos e cooperativas (dados agregados e anonimizados de risco fitossanitário); licenciamento de API/white label para revendas e fabricantes; dados agregados de inteligência regional de pragas. Cobrança via PIX/boleto/cartão com planos sazonais alinhados ao ciclo da safra, e pilotos com cooperativas para distribuição e aquisição de clientes.",
+    "stack_sugerida": "Core: Python (FastAPI, pydantic, dataclasses) ou Kotlin/TypeScript — a escolha é livre porque o core é independente; organizar em módulos domain/application/ports, com adapters/inbound e adapters/outbound em pacotes separados. IA: PyTorch, modelos de visão (EfficientNet/ConvNeXt/ViT/YOLO para detecção de lesões) exportados para ONNX/TensorRT, servidos por Triton; TFLite/CoreML para inferência on-device; MLflow/DVC/Label Studio para MLOps e rotulagem. Dados: PostgreSQL + PostGIS, Redis, S3/MinIO. Mensageria: Kafka ou RabbitMQ/SQS; workers Celery/Arq ou consumidores dedicados. Mobile: Flutter ou React Native com armazenamento offline (SQLite/WatermelonDB). Web: React/Next.js. Infra: Docker, Kubernetes (EKS/GKE) com KEDA, Terraform, GitHub Actions, GPUs sob demanda. Observabilidade: OpenTelemetry, Prometheus/Grafana, Sentry. Segurança: Keycloak/Cognito, OAuth2/OIDC, criptografia em repouso e trânsito, conformidade LGPD. Testes: pytest com fakes em memória para todos os ports, testes de contrato para adapters, testes de arquitetura (import-linter) em CI e testes end-to-end nos primary adapters."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:49:09+00:00",
+    "runner": "runner.py"
+  }
+}

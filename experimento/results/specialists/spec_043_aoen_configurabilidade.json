@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 43,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra clara separação entre fluxo fixo (código imutável) e parâmetros configuráveis (pesos de dimensões, adapter de fonte de dados), com contrato interno que isola interfaces da lógica — padrão correto para multi-tenancy — mas não especifica o mecanismo concreto de armazenamento e carregamento de configuração por tenant (tabela de configs, schema de isolamento, como o white-label das corretoras é configurado sem deploy), deixando a promessa de 'novo cliente = zero código' como intenção arquitetural ainda não operacionalizada."
+}

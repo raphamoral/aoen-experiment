@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 85,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve abstrações de interface (RulesEnginePort, ledger port) e uma camada LoyaltyService centralizada, mas não menciona em nenhum momento filas de mensagens, workers assíncronos, processos separados para carga pesada (cálculo de campanhas em lote, reprocessamento de ledger, notificações push em massa), circuit breakers ou fallbacks — o processamento de pontuação, resgate e aplicação de campanha parece ocorrer de forma síncrona no mesmo processo, de modo que uma campanha de alto volume ou um cálculo de regras complexo pode saturar o serviço e derrubar todas as interfaces simultaneamente."
+}

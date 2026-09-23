@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 56,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O motor de matching regional em tempo real — cruzamento de demanda urgente com estoque físico confirmado e capacidade logística — é claramente identificado como core, opera sobre abstrações (não implementações concretas), é extensível por design (fornecedores e transportadoras substituíveis via adaptadores), e resolve um problema que catálogos tradicionais ou marketplaces genéricos não resolvem: a promessa de entrega dentro de uma janela de tempo com base em estoque real, onde o valor entregue é tempo de máquina recuperado, não a peça em si."
+}

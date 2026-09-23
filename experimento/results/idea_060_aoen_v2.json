@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 60,
+  "ideia": "App de inspeção predial com realidade aumentada e checklist digital",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de inspeção guiada por AR com checklist estruturado que transforma capturas de campo (fotos, vídeos, anotações AR) em laudos técnicos conformes automaticamente — sem este motor, o produto é apenas um formulário digital.",
+    "fase1_mercado": "Inspetores prediais, engenheiros de manutenção, vistoriadores de seguradoras, gestores de facilities e empresas de laudos técnicos — mercado B2B com obrigação regulatória de documentação (NBR, CREA, corpo de bombeiros, vigilância sanitária).",
+    "fase1_extensivel": "Sim. O core é abstraído em três camadas independentes: (1) engine de captura AR (substituível: ARKit → ARCore → WebXR → câmera simples sem AR); (2) engine de checklists (substituível: JSON-schema próprio → integração com normas externas); (3) gerador de laudos (substituível: template engine interno → integração com assinatura digital ICP-Brasil, PDF/A, BIM). Nenhuma camada depende da outra tecnologicamente.",
+    "fase2_interfaces": [
+      "App mobile nativo (iOS/Android) — interface principal do inspetor em campo com AR",
+      "Web dashboard (SPA) — gestores, coordenadores e clientes revisando laudos e acompanhando status",
+      "API REST/Webhook — integração com ERPs, sistemas de CAFM, plataformas de seguradoras e portais governamentais",
+      "PWA (Progressive Web App) — fallback para dispositivos sem suporte nativo, inspeções sem AR",
+      "Portal do cliente (white-label) — acesso do contratante ao histórico e laudos sem login no sistema principal"
+    ],
+    "fase2_justificativa_mercado": "Mobile nativo abre o mercado de inspetores de campo (volume alto, ticket recorrente por inspeção). Web dashboard abre o mercado de gestores de facilities e imobiliárias (decisores de compra). API abre o mercado enterprise e de seguradoras (contratos maiores, integração sistêmica). PWA garante cobertura de clientes em regiões com hardware limitado ou intranet corporativa. Portal white-label abre o mercado de revendas e consultorias que oferecem o serviço sob a própria marca.",
+    "fase2_service_layer": "Uma InspectionService layer única expõe casos de uso (iniciar inspeção, registrar item, submeter, gerar laudo) desacoplada de qualquer interface. Mobile, web e API chamam os mesmos use cases via DTOs. Nenhuma interface contém lógica de negócio — apenas apresentação e tradução de entrada/saída.",
+    "fase3_fluxo_fixo": "Fluxo imutável no código: (1) autenticar inspetor → (2) carregar template de checklist configurado para o tipo de inspeção → (3) iterar itens do checklist em sequência → (4) para cada item: capturar evidência (foto/vídeo/anotação AR) + classificar (conforme/não-conforme/N/A) + comentário opcional → (5) submeter inspeção → (6) enfileirar geração de laudo assíncrona → (7) notificar partes interessadas → (8) disponibilizar laudo assinado digitalmente.",
+    "fase3_parametros_configuraveis": [
+      "Templates de checklist (itens, categorias, normas de referência — ex: NBR 5674, AVCB, NR-12)",
+      "Tipos de inspeção (predial, elétrica, hidráulica, PPCI, acessibilidade, pós-obra)",
+      "Identidade visual e domínio do portal (white-label por cliente)",
+      "Formato e layout do laudo PDF (logo, campos obrigatórios, rodapé legal)",
+      "Regras de conformidade e criticidade por item (bloqueante, advertência, informativo)",
+      "Fluxo de aprovação (inspetor → coordenador → cliente)",
+      "Webhooks e integrações externas por cliente (ERP, Slack, e-mail, WhatsApp Business)",
+      "SLA de prazo para geração do laudo por tipo de inspeção",
+      "Papéis e permissões por organização",
+      "Configurações de armazenamento de mídia (retenção, qualidade de compressão, bucket dedicado)"
+    ],
+    "fase3_novo_cliente": "Onboarding zero-code: criar organização no painel admin → importar ou montar templates de checklist via interface drag-and-drop ou upload JSON → configurar identidade visual → definir usuários e papéis → ativar integrações via Webhooks. Novo cliente = nova linha na tabela de organizações + conjunto de configurações JSON. Nenhum deploy ou alteração de código necessária.",
+    "fase4_core_isolado": "O processo de geração de laudos (renderização de PDF com anotações AR, processamento de imagens, OCR/IA de detecção de anomalias e assinatura digital) é isolado em workers assíncronos independentes via fila de mensagens (BullMQ ou SQS). Este é o processo mais custoso e lento — isolá-lo impede que gargalos de geração bloqueiem inspeções em campo.",
+    "fase4_custo_total_cliente": "Custo por inspeção completa: (1) Core IA/processamento: R$0,10–0,40/inspeção (análise de imagem via API de visão computacional, se habilitada); (2) Geração de PDF + assinatura digital: R$0,05–0,15/laudo; (3) Armazenamento de mídia: R$0,08–0,25/GB/mês (fotos AR em alta res = ~15–50MB/inspeção); (4) Compute proporcional (workers + API): R$0,02–0,08/inspeção; (5) Banda de transferência (download laudos + sync mídia): R$0,03–0,10/inspeção. Custo total estimado: R$0,28–1,00 por inspeção completa. Ticket mínimo viável para margem positiva: R$3,00–8,00/inspeção.",
+    "fase4_continuidade": "App mobile opera em modo offline-first (SQLite local + sync queue): inspetor captura toda a inspeção sem conectividade. Geração de laudo é assíncrona — falha no worker de PDF não impede submissão da inspeção. Filas com dead-letter queue garantem reprocessamento automático. Dashboard continua exibindo inspeções submetidas mesmo com worker de geração down. Fallback: se IA de detecção falhar, inspeção segue com classificação manual sem interrupção.",
+    "fase4_manutencao": "Cada componente do core (engine AR, engine de checklist, gerador de laudos, motor de IA) implementa uma interface/contrato estável. Trocar ARKit por WebXR, ou substituir o modelo de IA, exige apenas reimplementar o adaptador sem alterar os use cases. Feature flags permitem rollout gradual de novos provedores por organização. Workers são stateless e deployáveis independentemente via containers.",
+    "monetizacao": "SaaS B2B em três camadas: (1) Pay-per-use — R$5–15/inspeção, ideal para empresas pequenas e entrada no mercado; (2) Plano mensal por inspetor ativo — R$120–350/inspetor/mês com volume incluído, recorrência previsível; (3) Enterprise/white-label — mensalidade fixa R$1.500–8.000/mês com SLA, SSO, API dedicada e bucket próprio. Receita adicional: módulo de assinatura digital ICP-Brasil (add-on), integração com seguradoras por relatório exportado, e marketplace de templates de normas técnicas (NBR, NR, AVCB).",
+    "stack_sugerida": "Mobile: React Native + Expo + ViroReact ou expo-ar (ARKit/ARCore); Backend: Node.js com NestJS (arquitetura modular multi-tenant) + PostgreSQL (dados estruturados) + S3-compatible storage (mídia); Filas: BullMQ sobre Redis para workers assíncronos de PDF e IA; Geração de laudos: Puppeteer (HTML→PDF) com templates Handlebars; IA/Visão: Google Vision API ou AWS Rekognition via adapter substituível; Frontend web: Next.js (SSR portal cliente + SPA dashboard); Auth: Clerk ou Supabase Auth com RBAC multi-tenant; Infra inicial: Railway ou Render (zero DevOps), migrar para AWS ECS/Fargate na escala; Observabilidade: Sentry (erros) + métricas por tenant via Datadog para medir custo real por cliente."
+  }
+}

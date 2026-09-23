@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "O domínio é bem modelado com entidades coesas e casos de uso isolados, indicando boa separação conceitual, mas a proposta não evidencia camadas de abstração explícitas (ports/adapters, repositórios, interfaces) que garantam substituição independente de banco, framework de IA ou mecanismo de anonimização, nem define estratégia de deployment (monolito modular vs. serviços) que sustente crescimento de 10 para 10.000 usuários sem refatoração estrutural."
+}

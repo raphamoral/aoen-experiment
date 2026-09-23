@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta esboça um sistema de regras configurável por interface (ex: 'se estoque < X, sobe Y%'), filas independentes por loja e tela de configuração de integração — indicando que o fluxo principal é genérico e novos clientes podem ser onboardados sem deploy; porém, faltam definições explícitas sobre o motor de regras (se é realmente um engine genérico orientado a dados ou lógica condicional hardcoded), os alvos de scraping de concorrentes não são descritos como configuráveis por tenant, e a adição de novas plataformas além de Shopify/VTEX/WooCommerce claramente exigiria código novo."
+}

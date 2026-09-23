@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "A proposta menciona componentes que poderiam ser diferenciadores — rastreamento em tempo real via WebSocket/Redis Pub-Sub e workers de roteirização — mas nunca os isola como núcleo proprietário nem explica por que a abordagem é insubstituível frente a concorrentes consolidados como Onfleet, Route4Me ou Bringg; a arquitetura descrita é sólida (12-factor) porém genérica, e sem um algoritmo de otimização próprio, modelo preditivo ou vantagem de dados articulada, o produto permanece um CRUD bem estruturado com features de tempo real que qualquer player do mercado já entrega."
+}

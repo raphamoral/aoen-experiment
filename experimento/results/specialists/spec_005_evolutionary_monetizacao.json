@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "evolutionary",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona um módulo de Billing como componente arquitetural, mas não define nenhum modelo de monetização concreto — não há tiers, valores, métricas de negócio (MRR, churn, LTV, CAC) nem análise de sustentabilidade receita vs. custo por cliente; o único indício financeiro é o custo de infraestrutura por contrato (≤ R$0,08), sem qualquer contrapartida de receita associada."
+}

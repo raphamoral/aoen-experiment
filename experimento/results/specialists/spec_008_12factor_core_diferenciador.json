@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador (rastreabilidade imutável via blockchain para manifesto de resíduos industriais) está identificado e isolado em um serviço dedicado (blockchain-service), e demonstra extensibilidade real ao suportar duas redes distintas (Hyperledger Fabric para consórcios privados e Polygon para auditabilidade externa), porém a proposta não articula explicitamente por que alternativas existentes (ex: sistemas tradicionais de MTR como SINIR/SINAFLOR) falham em resolver o problema — a singularidade do núcleo é implícita, não demonstrada."
+}

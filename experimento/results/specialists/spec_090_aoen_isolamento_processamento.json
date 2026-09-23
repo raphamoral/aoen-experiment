@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 90,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta não menciona nenhum mecanismo de isolamento de processamento pesado: não há filas, workers, processos separados nem padrões assíncronos — a Service Layer centralizada absorve toda a lógica inclusive operações potencialmente custosas (transcrição de voz, IA de sugestão, integração TISS, geração de relatórios), tornando-a ponto único de falha e impossibilitando escalonamento independente."
+}

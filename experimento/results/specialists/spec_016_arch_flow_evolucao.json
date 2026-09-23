@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida: os 11 bounded contexts com times stream-aligned independentes permitem evolução isolada por domínio, a classificação Wardley (genesis/custom/product/commodity) externaliza corretamente decisões reversíveis (Auth0, Stripe, S3 trocáveis), e o IntegrationHub atua como anti-corruption layer protegendo o núcleo de negócio das plataformas de e-commerce — porém perde pontos por não explicitar o mecanismo de comunicação entre contextos (síncrono vs. event-driven), ausência de estratégia de isolamento de dados por bounded context (banco compartilhado seria acoplamento fatal) e falta de menção a inversão de dependências intra-serviço (ports & adapters/hexagonal), que são os garantidores estruturais de que a lógica de negócio realmente não vaza para frameworks externos."
+}

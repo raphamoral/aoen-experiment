@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 63,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (motor de inferência de pragas por visão computacional), isolado via adapter pattern que desacopla o fluxo de análise de qualquer fornecedor específico, e extensível por design — porém perde o ponto máximo por não explicitar o que torna a taxonomia interna de pragas e o catálogo de recomendações por tenant genuinamente insubstituíveis frente a soluções concorrentes como Plantix ou CropDoctor."
+}

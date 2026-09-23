@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 30,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A arquitetura demonstra fundamentos sólidos de multi-tenancy — clientId em todos os métodos da StockService, catálogo de SKUs por cliente, estoque mínimo configurável e fluxo fixo de 7 etapas — mas não descreve um modelo de configuração explícito por tenant (nenhuma entidade TenantConfig, schema de configuração ou processo de onboarding declarado como 'nova row = novo cliente'), e a troca de VisionProvider é apresentada como decisão de deploy/código, não como parâmetro configurável por cliente em runtime, o que ainda exigiria intervenção técnica para clientes com requisitos de visão distintos."
+}

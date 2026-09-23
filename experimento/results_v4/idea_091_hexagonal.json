@@ -1,0 +1,92 @@
+{
+  "ideia_idx": 91,
+  "ideia": "Plataforma de ensino de programação para crianças com IA adaptativa",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Aprendizagem adaptativa de programação para crianças. O núcleo modela Aluno (perfil, faixa etária, nível de proficiência), Currículo (trilhas, conceitos, lições, desafios de código), Progresso e Domínio de Conceitos (modelo do aprendiz), Motor de Adaptação (política que escolhe o próximo desafio, o nível de dificuldade e o tipo de dica), Avaliação de Soluções, Gamificação (pontos, conquistas, sequências), Responsáveis e Educadores (vínculos, consentimento parental) e Assinatura/Plano (direitos de acesso). As regras de segurança infantil (COPPA, LGPD art. 14, GDPR-K), consentimento e limites de conteúdo pertencem ao domínio. O domínio não conhece LLMs, bancos de dados, HTTP nem provedores de pagamento.",
+    "primary_ports": [
+      "IniciarSessaoDeAprendizagem (driving): o aluno começa ou retoma uma lição",
+      "SolicitarProximoDesafio: o motor adaptativo devolve a próxima atividade",
+      "SubmeterSolucao: envia o código do aluno para avaliação e feedback",
+      "SolicitarDica / TutorConversar: tutoria guiada por IA, com guarda-corpos de segurança infantil",
+      "ConsultarProgresso: aluno, responsável e professor consultam o progresso",
+      "GerenciarCurriculo: autores e educadores criam ou editam trilhas e desafios",
+      "GerenciarFamiliaEConsentimento: cadastro de responsáveis, perfis de crianças e consentimento parental",
+      "GerenciarTurmas: professor e escola administram turmas e atribuem tarefas",
+      "GerenciarAssinatura: contratação, troca e cancelamento de plano",
+      "ProcessarEventoExterno: entrada por webhook ou evento, como confirmação de pagamento ou sincronização com LMS",
+      "AdministrarPlataforma / Moderacao: revisão de conteúdo sinalizado e operação interna"
+    ],
+    "secondary_ports": [
+      "RepositorioDeAlunos e RepositorioDeProgresso (persistência)",
+      "RepositorioDeCurriculo e CatalogoDeDesafios",
+      "ModeloDeIA / ProvedorDeLLM (geração de dicas e explicações, com saída estruturada)",
+      "ModeradorDeConteudo (filtro de entrada e saída para segurança infantil)",
+      "ExecutorDeCodigoSandbox (execução isolada do código da criança)",
+      "ArmazenamentoDeModeloDoAprendiz (estado do modelo de conhecimento, como BKT/IRT)",
+      "GatewayDePagamento",
+      "ProvedorDeIdentidade (autenticação de responsáveis, SSO escolar)",
+      "VerificadorDeConsentimentoParental",
+      "NotificadorDeEmail / Push / SMS",
+      "PublicadorDeEventos (barramento de domínio)",
+      "RelogioPort e GeradorDeIdPort (determinismo em testes)",
+      "ArmazenamentoDeArquivos (projetos e avatares)",
+      "ProvedorDeAnalytics e Telemetria (anonimizados)",
+      "IntegracaoLMS (Google Classroom, Canvas, Moodle)",
+      "ProvedorDeFeatureFlags"
+    ],
+    "primary_adapters": [
+      "Adaptador REST/GraphQL (BFF) para o app web",
+      "Adaptador do app mobile (iOS/Android via API)",
+      "Adaptador WebSocket/SSE para o chat do tutor e o feedback em tempo real",
+      "Adaptador do painel do responsável e do professor (web)",
+      "Adaptador do backoffice de autores e moderadores",
+      "Adaptador de webhooks (Stripe, LMS)",
+      "Adaptador CLI/scripts para migrações, importação de currículo e jobs em lote",
+      "Adaptador de testes automatizados (contrato, BDD e e2e dirigindo os mesmos primary ports)",
+      "Adaptador de consumo de eventos (fila/worker) para tarefas assíncronas",
+      "Adaptador LTI 1.3 para embutir a plataforma em LMS escolares"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios, com Row-Level Security por tenant)",
+      "Redis (cache e sessões)",
+      "Adaptador para Anthropic Claude via API (ProvedorDeLLM), com fallback para outro provedor ou modelo local",
+      "Adaptador de moderação (LLM classificador e regras determinísticas)",
+      "Sandbox de código: WebAssembly/Pyodide no navegador, ou containers efêmeros (gVisor/Firecracker)",
+      "Stripe (pagamentos e assinaturas) e adaptador de pagamentos locais (Pix, Apple/Google IAP)",
+      "Auth0, Keycloak ou Cognito (identidade), com Google/Microsoft SSO para escolas",
+      "Serviço de consentimento parental (verificação por cartão de crédito, documento ou serviço especializado)",
+      "S3 ou GCS (arquivos)",
+      "SES, SendGrid ou Firebase Cloud Messaging (notificações)",
+      "Kafka, SQS ou NATS (publicador de eventos)",
+      "PostHog ou Amplitude com pseudonimização (analytics)",
+      "OpenTelemetry com Grafana ou Datadog (observabilidade)",
+      "Adaptadores de LMS (Google Classroom API, Canvas)",
+      "Adaptadores em memória e fakes para todos os secondary ports (testes)",
+      "Adaptador de LLM simulado e determinístico para testes e CI"
+    ],
+    "isolation": "O core é um módulo sem dependências de framework, banco, rede ou SDK. Ele contém entidades, value objects, agregados, serviços de domínio e casos de uso (application services). O código do core só importa outros elementos do core e as interfaces das portas. A regra de dependência aponta sempre de fora para dentro: os adapters dependem dos ports, nunca o contrário. A composição é feita em um composition root (injeção de dependência) na borda, que liga cada port ao seu adapter por configuração. Os DTOs e formatos externos, como o JSON do LLM, o payload do Stripe e as linhas do banco, são traduzidos nas fronteiras por mappers (anti-corruption layer) e nunca vazam para o domínio. A saída do LLM é tratada como dado não confiável: o adapter valida e converte para tipos do domínio, e as políticas pedagógicas e de segurança (o que pode ser dito a uma criança) ficam no core, não no prompt. Como o Motor de Adaptação é uma política pura, ele roda igualmente com um LLM real, um fake ou regras determinísticas. A isolação é verificada por testes de arquitetura (ArchUnit, dependency-cruiser ou import-linter) no CI, por testes de contrato compartilhados por todos os adapters de um mesmo port, e pelo tratamento simétrico de todos os sistemas externos: o Stripe, o LLM e o banco são adapters equivalentes e substituíveis.",
+    "interfaces": [
+      "App web do aluno (editor de código em blocos e em texto, com tutor de IA)",
+      "App mobile do aluno (iOS/Android)",
+      "Painel do responsável (progresso, limites de tempo, consentimento, cobrança)",
+      "Painel do professor e da escola (turmas, tarefas, relatórios)",
+      "Backoffice de currículo e moderação",
+      "API pública REST/GraphQL documentada em OpenAPI (parceiros e escolas)",
+      "Integração LTI 1.3 com LMS",
+      "Webhooks de entrada e saída",
+      "CLI para operações administrativas",
+      "Interface de testes automatizados (a mesma API do core, sem UI)"
+    ],
+    "escalabilidade": "O core é stateless, então a escala é horizontal: réplicas por contêiner (Kubernetes/ECS) com autoscaling por CPU e por profundidade de fila. As cargas se separam por adapter: (1) o tráfego interativo, servido pela API e por WebSocket em pods leves; (2) as chamadas ao LLM, isoladas em workers assíncronos com filas, rate limiting, timeouts, circuit breaker, retries com backoff e fallback para dicas pré-computadas; (3) a execução de código, em pool de sandboxes efêmeras, ou no cliente via WebAssembly para reduzir custo e risco. No banco, PostgreSQL com réplicas de leitura, particionamento por aluno ou tenant e Redis para cache. O modelo do aprendiz é atualizado por eventos (event-driven/CQRS), com as leituras de progresso em views materializadas. Cache semântico de respostas do LLM para dúvidas frequentes, CDN para conteúdo estático do currículo e multi-região conforme as regras de residência de dados (LGPD/GDPR). Como cada adapter é substituível, um gargalo isolado (por exemplo trocar o provedor de LLM) não exige mudar o core. Pode começar como monólito modular e extrair serviços por port quando a carga justificar.",
+    "custos": "Os principais custos variáveis são os tokens de LLM, a execução de código em sandbox e a banda de tempo real. Mitigações: roteamento por camadas (regras e dicas pré-computadas primeiro, modelo pequeno e barato para dicas simples, modelo maior só para explicações complexas); prompt caching; cache semântico; limites de tokens e de mensagens por sessão e por plano; execução de código no cliente (Pyodide) para reduzir compute; processamento em lote de tarefas não urgentes. Custos fixos: infraestrutura gerenciada (banco, cache, filas), observabilidade, moderação humana de conteúdo sinalizado e conformidade (auditoria COPPA/LGPD, DPO, verificação de consentimento, seguros). Taxas de pagamento (~3–5% no Stripe, mais altas em IAP: 15–30%). Aquisição de escolas tem ciclo de venda longo e custo de suporte e onboarding. Medir custo de IA por aluno ativo, com meta de margem bruta acima de 70%, e usar feature flags para desligar funcionalidades caras sob pressão de custo.",
+    "monetizacao": "Modelo freemium com assinatura recorrente. (1) B2C: plano gratuito (trilha básica, poucas interações com o tutor por dia), plano Família mensal ou anual (tutor de IA ilimitado dentro de limites justos, até N crianças, relatórios para os pais), com teste gratuito. (2) B2B2C/B2B: licenças por aluno ou por turma para escolas, redes de ensino e projetos sociais, com painel do professor, integração LMS/SSO e relatórios de desempenho. (3) Parcerias e licenciamento de currículo para editoras, ONGs e governos (por exemplo, programas de letramento digital). (4) Complementos: trilhas premium (jogos, robótica, IA para crianças), mentorias e aulas ao vivo, campeonatos e certificados. (5) API/white-label para parceiros. Sem publicidade e sem venda de dados de crianças, o que também é um diferencial de confiança para pais e escolas.",
+    "stack_sugerida": "Backend: TypeScript (NestJS ou Fastify) ou Kotlin/Spring Boot, estruturado como monólito modular hexagonal (pastas domain/application/ports/adapters), com testes de arquitetura (dependency-cruiser ou ArchUnit). Frontend: React/Next.js com editor Monaco e Blockly para programação em blocos; mobile em React Native ou Flutter. Tempo real: WebSocket/SSE. Dados: PostgreSQL (com pgvector para busca semântica do currículo), Redis, S3. Mensageria: SQS/SNS ou Kafka/NATS. IA: API do Claude (modelos por camada de custo: Haiku para dicas rápidas, Sonnet/Opus para explicações complexas) atrás do port ProvedorDeLLM, com saída estruturada, prompt caching e moderação; modelo do aprendiz com BKT/IRT em Python (serviço separado, se necessário) atrás de um port. Sandbox: Pyodide/WASM no cliente e Firecracker/gVisor no servidor. Identidade: Auth0, Keycloak ou Cognito. Pagamentos: Stripe (Billing) e Pix. Infra: AWS ou GCP, Kubernetes ou ECS Fargate, Terraform, GitHub Actions. Observabilidade: OpenTelemetry, Grafana ou Datadog, Sentry. Testes: Vitest/Jest, Testcontainers, testes de contrato por port, Playwright para e2e. Segurança e conformidade: criptografia em repouso e em trânsito, minimização de dados, RLS por tenant, auditoria, retenção configurável e fluxo de exclusão de dados."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:47:29+00:00",
+    "runner": "runner.py"
+  }
+}

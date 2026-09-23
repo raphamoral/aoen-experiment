@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 74,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra princípios sólidos de Clean Architecture com ports/adapters explícitos (PatentSearchPort, AIClassifierPort) e uma camada de serviços de domínio isolada de interfaces, garantindo boa substituibilidade de fornecedores e extensibilidade de UIs; porém, perde pontos por não abordar abstração de persistência (apenas integrações externas de IA/patentes são desacopladas), ausência de estratégia de escalabilidade de 10 para 10.000 usuários, e a descrição do fluxo de ciclo de vida (fase3) foi truncada, deixando em aberto se o motor de workflow é substituível ou acoplado à implementação."
+}

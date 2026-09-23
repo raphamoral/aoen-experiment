@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado (BiomarkerAnalysis + NutritionEngine com LLM fine-tuned + faixas de referência contextualizadas) e bem isolado das commodities via Wardley-style evolution; resolve um gap real que apps de nutrição genéricos não cobrem; demonstra extensibilidade ao suportar múltiplos formatos de laudo e múltiplos LLMs de base — perde 2 pontos porque os componentes 'genesis' (predição pré-clínica, ajuste por wearables) são aspiracionais e ainda não validados como parte do núcleo entregável, o que fragiliza a narrativa de insubstituibilidade no estágio atual."
+}

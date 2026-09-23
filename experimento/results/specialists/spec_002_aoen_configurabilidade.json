@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra fundamentos sólidos de configurabilidade — motor de scoring agnóstico ao framework regulatório (nova regulação = novas tags, não novo código), adapter pattern para fornecedores de IA, portal white-label e camada de serviço desacoplada de protocolo — mas o campo crítico 'fase3_parametros_configur' está truncado, impedindo avaliar o escopo real dos parâmetros configuráveis por tenant; sem um modelo explícito de configuração por cliente (schema, feature flags, SLAs, regras de aprovação), o onboarding de novo tenant provavelmente ainda exige intervenção técnica além de uma row no banco."
+}

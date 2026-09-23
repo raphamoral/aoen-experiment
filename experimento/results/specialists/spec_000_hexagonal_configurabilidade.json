@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A arquitetura hexagonal com DI e interfaces abstratas cria a base técnica para configurabilidade, mas a proposta não descreve nenhum mecanismo explícito de configuração por tenant — ausente qualquer menção a tabela de configurações por cliente, feature flags, workflows configuráveis ou processo de onboarding sem código; a troca entre adapters (Stripe vs PagSeguro, Auth0 vs Keycloak) parece decisão de deploy global, não configuração por tenant, o que significa que adicionar um novo cliente com necessidades distintas ainda exigiria intervenção de desenvolvimento."
+}

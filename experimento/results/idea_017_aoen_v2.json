@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Emissão de certificados digitais com identidade única e verificação pública sem autenticação — o ato de provar que um certificado é legítimo a qualquer pessoa, a qualquer momento, sem depender da plataforma emissora estar no ar.",
+    "fase1_mercado": "Criadores de cursos livres (instrutores independentes, pequenas escolas, bootcamps, treinamentos corporativos internos) que precisam dar credibilidade ao seu conteúdo e aos concluintes que querem comprovar aprendizado no mercado de trabalho ou redes profissionais.",
+    "fase1_extensivel": "Sim. O mecanismo de verificação é uma abstração: pode ser implementado via hash SHA-256 armazenado em banco público, âncora em blockchain (Ethereum/Polygon), ou assinatura digital com certificado X.509. O contrato do core é 'dado um ID, retornar válido/inválido + metadados'. A tecnologia de ancoragem é plugável sem quebrar o produto.",
+    "fase2_interfaces": [
+      "Dashboard Web para criadores de curso (emissão em lote, gestão de templates, relatórios)",
+      "Portal do aluno (visualizar, baixar PDF, compartilhar link público)",
+      "Página pública de verificação (sem login — URL única por certificado)",
+      "REST API para integração com LMS externos (Moodle, Hotmart, Teachable, sistemas próprios)",
+      "Widget embeddable (iframe/JS) para exibir certificados dentro do site do criador",
+      "Integração LinkedIn (botão 'Adicionar ao perfil' com metadados Open Badges)"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de criadores avulsos e pequenas escolas que operam manualmente hoje. A REST API abre o mercado de plataformas LMS que já têm base de usuários e querem certificação como feature sem construir. O Widget embeddable abre criadores com site próprio que querem exibir credenciais sem redirecionar o aluno. A integração LinkedIn abre o mercado de bootcamps e cursos técnicos onde a prova de aprendizado no perfil profissional é o principal valor percebido. A página pública de verificação é o produto em si — sem ela nenhuma interface tem valor.",
+    "fase2_service_layer": "Uma CertificationService centraliza toda a lógica: emitir(alunoId, cursoId, metadados), verificar(certificadoId), revogar(certificadoId, motivo), listarPorCriador(criadorId). Todas as interfaces (dashboard, API, widget, portal) chamam exclusivamente essa service layer. Nenhuma interface conhece como o PDF é gerado, como o hash é calculado ou onde o certificado é armazenado. Trocar o mecanismo de geração não exige tocar nas interfaces.",
+    "fase3_fluxo_fixo": "Conclusão de curso → validar elegibilidade → gerar hash único (SHA-256 de [alunoId + cursoId + timestamp + segredo do tenant]) → renderizar PDF com template → armazenar PDF + registrar hash no banco → enviar notificação ao aluno → publicar URL de verificação. Este pipeline nunca muda — só os parâmetros de cada etapa mudam por cliente.",
+    "fase3_parametros_configuraveis": [
+      "Logo e identidade visual (cores, fonte, imagem de fundo do certificado)",
+      "Template do certificado (campos visíveis, layout, idioma)",
+      "Assinatura digital (nome, cargo, imagem da assinatura do responsável)",
+      "Validade do certificado (prazo de expiração ou indeterminado)",
+      "Critério de elegibilidade (percentual mínimo de conclusão, nota mínima, presença)",
+      "Canal de notificação (e-mail, webhook, WhatsApp via API)",
+      "Template de e-mail de entrega",
+      "Domínio customizado para URL de verificação",
+      "Idioma do certificado e da página de verificação",
+      "Âncora blockchain ativada/desativada (feature flag por plano)",
+      "Limite de emissões por mês (controle de plano)"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro de tenant com JSON de configuração (logo, cores, template, critérios, domínio). Nenhum código novo. Um script de onboarding popula a tabela 'tenants' e a tabela 'tenant_config'. O cliente acessa o dashboard e personaliza visualmente. A API já está disponível com a API key do tenant. Estimativa: < 5 minutos para onboarding completo via self-service.",
+    "fase4_core_isolado": "O processo de geração de certificado (renderização do PDF + cálculo do hash + registro imutável) roda em worker assíncrono isolado, consumindo fila (ex: BullMQ/Redis). O processo de verificação pública é um serviço read-only separado, que consulta apenas o banco de hashes — nunca o serviço de geração. São dois processos independentes com responsabilidades opostas.",
+    "fase4_custo_total_cliente": "Custo do core por certificado emitido: renderização PDF via Chromium headless (~0.002 USD por execução em Lambda) + armazenamento S3 (~0.023 USD/GB/mês, ~50KB por PDF = ~0.000001 USD/mês por certificado) + registro no banco (desprezível). Custo de verificação: read-only do banco, ~0.00001 USD por consulta via RDS Proxy. Custo de notificação: e-mail via SES (~0.0001 USD por e-mail). Custo de infra proporcional: RDS PostgreSQL multi-tenant particionado por tenant_id + S3 com prefixo por tenant. Estimativa total por certificado emitido: ~0.003 USD. Para plano de 200 certificados/mês: ~0.60 USD de custo variável. Margem viável com preço de 29 USD/mês por criador.",
+    "fase4_continuidade": "O serviço de verificação pública é completamente independente do worker de geração. Se o worker travar, certificados já emitidos continuam verificáveis. Novas emissões ficam em fila (BullMQ com persistência Redis) e são processadas quando o worker volta. O aluno pode receber um e-mail de 'certificado em processamento' em vez de erro. O produto principal (confiança na verificação) nunca fica indisponível.",
+    "fase4_manutencao": "A geração de PDF pode ser trocada (de Puppeteer para PDFKit, ou para serviço externo como DocRaptor) sem impactar verificação, notificações ou interfaces. O mecanismo de hash pode ser migrado (SHA-256 → âncora blockchain) com backfill assíncrono sem downtime. Cada componente tem contrato de interface definido: a service layer nunca conhece a implementação, só a interface.",
+    "monetizacao": "SaaS multi-tenant com planos por volume de emissões mensais: Starter (até 50 certificados/mês, 19 USD), Growth (até 500, 49 USD), Business (até 5.000, 149 USD), Enterprise (ilimitado + SLA + domínio customizado + webhook + âncora blockchain, 399 USD+). Add-ons: API access (a partir do Growth), white-label completo (Enterprise), âncora blockchain por certificado (0.50 USD unitário). Canal de aquisição principal: integração API com plataformas LMS existentes como distribuição — cada plataforma integrada traz N criadores sem CAC adicional.",
+    "stack_sugerida": "Backend: Node.js + TypeScript com Fastify (API REST) e BullMQ + Redis (fila de geração assíncrona). Geração de PDF: Puppeteer (Chromium headless) em worker Lambda/Container isolado. Banco principal: PostgreSQL (RDS) com schema multi-tenant por tenant_id. Cache e fila: Redis (ElastiCache). Armazenamento: S3 (PDFs + assets de template). Verificação pública: Next.js SSR com ISR (página de verificação indexável por SEO, relevante para credibilidade). Dashboard: Next.js + TailwindCSS. Notificações: Amazon SES + webhook genérico. Blockchain (opcional/Enterprise): Polygon (baixo gas fee) via ethers.js. Infra: AWS (Lambda para worker, ECS Fargate para API, CloudFront para CDN de PDFs e página pública). IaC: Terraform. CI/CD: GitHub Actions."
+  }
+}

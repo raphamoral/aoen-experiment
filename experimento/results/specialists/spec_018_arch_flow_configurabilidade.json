@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "O bounded context 'Tenant Management' com 'config-schema' e 'data-partition' demonstra intenção arquitetural clara de configurabilidade, mas os conectores de ingestão OSS/BSS (Amdocs, Ericsson, Huawei) e o feature engineering telecom estão explicitamente marcados como 'custom_built', sinalizando que onboarding de uma operadora com stack diferente ainda exige esforço de desenvolvimento — não é onboarding zero-code."
+}

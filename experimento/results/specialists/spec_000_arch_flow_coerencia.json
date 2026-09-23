@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "arch_flow",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões se reforçam amplamente — o processamento assíncrono via message queue justifica o SLA de 2-4h, gRPC interno é coerente com a necessidade de baixa latência na inferência IA, o feedback loop conecta Quality & Compliance à evolução dos modelos, e a topologia de times espelha os bounded contexts — porém há uma lacuna de coerência na proposta de custos: a otimização via quantização de modelos pode contradizer a equipe de 'Advanced AI Models' focada em precisão máxima, e o sharding por clínica não é reconciliado com o cache distribuído Redis descrito para metadados globais."
+}

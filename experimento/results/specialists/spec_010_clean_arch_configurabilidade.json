@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "clean_arch",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura expõe atributos configuráveis por tenant (aliquotaISS, codigoTributacaoMunicipal, atividadeEconomica, regimeTributario), o que permite onboarding de um novo MEI via dados — mas não há entidade ou camada explícita de configuração por tenant (ex.: TenantConfig), algumas regras de negócio estão hardcoded nas próprias entidades ('Limite de faturamento anual R$81.000', 'Cancelamento dentro do prazo legal'), e o JSON está truncado nos use_cases, impedindo avaliar se o fluxo de orquestração é parametrizável ou fixo no código."
+}

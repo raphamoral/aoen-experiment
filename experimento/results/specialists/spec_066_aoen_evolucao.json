@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 66,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta demonstra disciplina evolutiva sólida: a abstração TranslationEngine com adapter pattern permite trocar ou adicionar engines (humano → MT → híbrido) sem tocar o core, e o TranslationService isola regras de negócio dos canais de entrega — mas há duas lacunas que impedem nota mais alta: o TranslationService centralizado é descrito como único ponto de entrada para todo o negócio, o que representa risco de 'god service' conforme o produto escala (matching, SLA, QA, billing e faturamento num único componente podem exigir decomposição forçada em escala), e a proposta não aborda independência da camada de dados nem estratégias de escalonamento horizontal — a passagem de 10 para 10.000 usuários pode exigir mudanças arquiteturais no service layer que a proposta atual não antecipa."
+}

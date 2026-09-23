@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador (rastreabilidade imutável via cadeia de hashes + registro blockchain do MTR) está identificado e resolve um problema real de conformidade regulatória que CRUDs genéricos não resolvem, mas o design ainda acopla o núcleo à infraestrutura blockchain sem abstrair o fornecedor — a ausência de uma camada agnóstica (ex: interface de ledger intercambiável) cria dependência de fornecedor único e limita extensibilidade."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra boas bases estruturais (adapter pattern para provedores de tradução, entidade 'organizations' no PostgreSQL, isolamento de serviços) que sugerem intenção multi-tenant, mas não descreve nenhum mecanismo explícito de configuração por tenant — ausentes: tabela de settings por organização, feature flags por cliente, seleção de provedor (DeepL vs Azure) por tenant, ou fluxo de onboarding sem deploy; a 'configuração via variáveis de ambiente' descrita opera no nível de ambiente de deployment (staging/prod/region), não no nível de cliente, deixando a camada de configurabilidade por tenant sem projeto definido."
+}

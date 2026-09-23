@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 45,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 7,
+  "justificativa": "O mercado-alvo está bem segmentado em três camadas com lógica de priorização clara (3PLs → indústria → redes/labs/hospitais), a dor regulatória é articulada com precisão (conformidade ANVISA/FDA/EMA como critério de manutenção de contratos), e a proposta de valor tem âncora forte na geração automática de evidências auditáveis — porém a proposta não menciona tamanho de mercado (TAM/SAM/SOM), não nomeia nem compara concorrentes diretos (Sensitech, Emerson, Berlinger já entregam parte dessa solução), e a diferenciação é descrita em termos arquiteturais (hardware-agnóstico, multi-regulatório) sem traduzir isso em vantagem competitiva percebida pelo comprador."
+}

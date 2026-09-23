@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 49,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões se reforçam com coesão notável: o princípio de extensibilidade declarado na Fase 1 é diretamente materializado na service layer da Fase 2 (MatchingService como contrato, interfaces como clientes puros), cada segmento de mercado identificado na Fase 1 tem uma interface correspondente na Fase 2 com justificativa de abertura de canal, e a abstração central [Demanda → PerfilDeNecessidade → Score → Profissional] atravessa todas as fases sem contradição — o único ponto que impede nota máxima é a Fase 3 truncada, que não permite avaliar se o fluxo operacional mantém a mesma coerência arquitetural."
+}

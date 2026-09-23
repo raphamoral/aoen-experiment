@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta não menciona explicitamente nenhuma interface (web, mobile, API pública) nem justifica canais por perfil de usuário — fundador de startup e investidor-anjo têm contextos de uso distintos que exigiriam decisões de canal específicas; o único indício de desacoplamento de UI é o adapter pattern citado para provedores de notificação, que é infraestrutura de backend, não arquitetura de interfaces."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 9,
+  "justificativa": "O processamento pesado (matchmaking, notificações, relatórios) está fisicamente isolado em workers separados (worker-matching, worker-notifications, scheduler) consumindo filas SQS de forma assíncrona, permitindo escala independente e garantindo que falhas nos workers não afetam o api-server — perde 1 ponto pela ausência de menção explícita a circuit breakers, dead-letter queues ou fallback comportamental quando os workers estão degradados."
+}

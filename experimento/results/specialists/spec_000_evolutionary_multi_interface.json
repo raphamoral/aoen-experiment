@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta não aborda explicitamente múltiplas interfaces — menciona WebSocket/WebRTC para teleconsulta e integração DICOM como efeitos colaterais de decisões técnicas, mas não define canais (web, mobile, API pública) por perfil de usuário (veterinário, tutor, clínica parceira), não estabelece camada de apresentação desacoplada da lógica de domínio DDD, e não justifica escolhas de interface por alcance de mercado."
+}

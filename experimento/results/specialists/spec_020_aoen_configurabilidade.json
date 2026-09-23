@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "O fluxo de 7 etapas é explicitamente declarado como invariável com parâmetros configuráveis por cliente (elegibilidade, tipo de teste, critérios de recompensa), e as abstrações IValidationEngine/IRewardEngine indicam boa separação entre código e comportamento variável — mas a proposta não especifica o mecanismo pelo qual a seleção de engine (regras vs ML vs LLM, pontos vs dinheiro vs NFTs) ocorre em runtime por tenant via configuração, deixando em aberto se trocar de engine exige apenas uma row no banco ou um novo deploy."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra sólido pensamento evolutivo — bounded contexts DDD bem definidos, mapeamento Wardley explícito (genesis→commodity) sinalizando consciência de substituibilidade, equipes alinhadas a fluxos de valor e IntegrationGateway como camada anticorrupção para integrações externas; perde pontos por não descrever os padrões de comunicação entre contextos (se síncronos/REST criam acoplamento temporal que bloqueia evolução independente), ausência explícita de portas-e-adaptadores para isolar a lógica de negócio de frameworks externos, e os componentes genesis de IA (matching, deduplicação, sugestão de casos) carecem de abstração de provedor, gerando risco de lock-in no que hoje é diferencial competitivo."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 35,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo está claramente identificado (motor de scoring com payload normalizado e saída auditável {score, label, reasons[]}), bem isolado via interface abstrata e genuinamente extensível com quatro backends intercambiáveis — porém a proposta de valor insubstituível fica comprometida ao listar Sift, Sardine e Stripe Radar como backends possíveis sem explicar o que o motor proprietário faz que esses players já consolidados não fazem, deixando em aberto se o produto é um diferenciador real ou um wrapper inteligente sobre concorrentes diretos."
+}

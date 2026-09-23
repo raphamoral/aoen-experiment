@@ -1,0 +1,76 @@
+{
+  "ideia_idx": 14,
+  "ideia": "Plataforma de tradução simultânea para reuniões corporativas multilíngues",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Orquestração de sessões de tradução simultânea em tempo real: gerenciamento de reuniões multilíngues, roteamento de fluxos de áudio por idioma, controle de participantes e canais de tradução, e coordenação de tradutores humanos e/ou engines de IA",
+    "primary_ports": [
+      "IMeetingSessionPort — iniciar, pausar, encerrar e consultar estado de sessões",
+      "IParticipantManagementPort — adicionar, remover e configurar idioma de participantes",
+      "ITranslationRequestPort — submeter segmento de fala para tradução e receber resultado",
+      "IChannelSubscriptionPort — inscrever participante em canal de idioma de saída",
+      "ITranslatorAssignmentPort — atribuir tradutor humano a par de idiomas em sessão",
+      "ISessionAnalyticsPort — consultar métricas e relatórios de uso de sessão"
+    ],
+    "secondary_ports": [
+      "IAudioStreamingPort — captura e entrega de streams de áudio em tempo real",
+      "ISpeechToTextPort — transcrição de fala para texto por idioma de origem",
+      "ITranslationEnginePort — tradução de texto entre pares de idiomas",
+      "ITextToSpeechPort — síntese de voz a partir de texto traduzido",
+      "INotificationPort — envio de alertas e eventos a participantes e administradores",
+      "ISessionRepositoryPort — persistência e recuperação de sessões, participantes e histórico",
+      "IUserRepositoryPort — persistência de contas, planos e preferências de usuários",
+      "IBillingPort — registro de uso e cobrança por minuto/sessão/usuário",
+      "IAuthenticationPort — verificação de identidade e autorização de acesso",
+      "IRecordingStoragePort — armazenamento de gravações de áudio e transcrições",
+      "ITranslatorMarketplacePort — integração com pool de tradutores humanos externos",
+      "IVideoConferencingPort — integração com plataformas de videoconferência existentes"
+    ],
+    "primary_adapters": [
+      "WebSocketAdapter — conexão em tempo real de clientes web/desktop via WebSocket",
+      "RestApiAdapter — API HTTP/REST para operações de gestão de sessão e usuários",
+      "WebRTCSignalingAdapter — sinalização para conexões peer-to-peer de áudio no browser",
+      "MobileSDKAdapter — SDK nativo iOS/Android para participação em reuniões",
+      "SDKEmbeddableAdapter — widget embeddable para integração em plataformas de terceiros",
+      "CLIAdapter — interface de linha de comando para automação e testes de integração",
+      "WebhookInboundAdapter — recebimento de eventos de plataformas externas (Zoom, Teams)"
+    ],
+    "secondary_adapters": [
+      "AgoraAudioStreamingAdapter — streaming de áudio via Agora.io",
+      "LiveKitAudioStreamingAdapter — streaming de áudio via LiveKit (open-source)",
+      "GoogleSpeechToTextAdapter — transcrição via Google Cloud Speech-to-Text",
+      "AssemblyAIAdapter — transcrição via AssemblyAI com suporte a múltiplos idiomas",
+      "DeepLTranslationAdapter — tradução de alta qualidade via DeepL API",
+      "OpenAITranslationAdapter — tradução via GPT-4o com contexto de negócio",
+      "GoogleTranslateAdapter — tradução via Google Cloud Translation",
+      "GoogleTextToSpeechAdapter — síntese de voz via Google Cloud TTS",
+      "ElevenLabsTTSAdapter — síntese de voz naturalística via ElevenLabs",
+      "SendGridNotificationAdapter — notificações por e-mail via SendGrid",
+      "TwilioNotificationAdapter — notificações por SMS/WhatsApp via Twilio",
+      "PostgreSQLSessionRepositoryAdapter — persistência relacional via PostgreSQL",
+      "RedisSessionCacheAdapter — cache de estado de sessão ativa via Redis",
+      "StripeAdapter — faturamento e cobrança via Stripe",
+      "Auth0Adapter — autenticação e autorização via Auth0",
+      "S3RecordingStorageAdapter — armazenamento de gravações via AWS S3",
+      "ZoomVideoConferencingAdapter — integração com Zoom via Zoom Apps SDK",
+      "TeamsVideoConferencingAdapter — integração com Microsoft Teams via Bot Framework",
+      "ProZTranslatorMarketplaceAdapter — acesso a tradutores humanos via ProZ marketplace"
+    ],
+    "isolation": "O core domain não importa nenhuma biblioteca de infraestrutura. Toda comunicação com o mundo externo ocorre exclusivamente através de interfaces (ports) definidas no interior do hexágono. As entidades de domínio (Session, Participant, TranslationSegment, Channel) são POJOs/dataclasses puros. A injeção de dependência injeta implementações concretas de adapters em tempo de composição (composition root), nunca em tempo de compilação do core. Testes unitários do core utilizam mocks/stubs que implementam os ports sem nenhuma dependência real de infraestrutura. O core não conhece WebSocket, HTTP, AWS, Google Cloud ou qualquer framework externo.",
+    "interfaces": [
+      "Dashboard Web — gestão de reuniões, relatórios e configuração de conta",
+      "Sala de Reunião Web — interface de participante com controle de canal de idioma",
+      "App Mobile (iOS/Android) — participação em reuniões via dispositivo móvel",
+      "REST API pública — integração programática por clientes enterprise",
+      "WebSocket API — canal em tempo real para eventos de sessão e entrega de áudio",
+      "SDK Embeddable — widget para incorporar tradução em plataformas de terceiros",
+      "Portal do Tradutor — interface para tradutores humanos aceitarem e executarem sessões",
+      "Admin Console — painel de operações, monitoramento e suporte ao cliente"
+    ],
+    "escalabilidade": "Arquitetura stateless no application layer com estado de sessão ativa externalizado no Redis. Sessões de áudio distribuídas por media servers independentes (Agora/LiveKit) com balanceamento geográfico. Workers de transcrição e tradução escalam horizontalmente via filas de mensagens (Kafka/SQS) consumindo segmentos de áudio de forma assíncrona. Cada port secundário pode trocar de adapter sem reescrever o core, permitindo migrar entre provedores conforme carga e custo. Sharding de sessões por região reduz latência. Auto-scaling de pods de tradução baseado em número de sessões ativas via Kubernetes HPA.",
+    "custos": "Maiores vetores de custo: (1) APIs de Speech-to-Text cobradas por minuto de áudio — otimizar com VAD (Voice Activity Detection) para não transcrever silêncio; (2) APIs de tradução cobradas por caractere — cache de segmentos repetidos via Redis; (3) Text-to-Speech cobrado por caractere sintetizado — cache de frases frequentes; (4) Armazenamento de gravações — lifecycle policies no S3 com compressão e arquivamento em Glacier; (5) Bandwidth de áudio — CDN e codecs eficientes (Opus). Modo 'AI-only' é 70-80% mais barato que tradutores humanos. Tier gratuito limitado em minutos para aquisição de usuários.",
+    "monetizacao": "SaaS B2B por assinatura: (1) Plano Starter — até 10 participantes, 5 idiomas, 10h/mês, USD 99/mês; (2) Plano Business — até 50 participantes, 20 idiomas, 50h/mês, USD 499/mês; (3) Plano Enterprise — ilimitado, SLA, tradutores humanos, SSO, USD 2.000+/mês negociado; (4) Pay-per-use — USD 0,15/minuto por sessão para clientes eventuais; (5) Marketplace de Tradutores — comissão de 20% sobre sessões com tradutores humanos; (6) API Whitelabel — licença de uso da infraestrutura para plataformas terceiras cobrada por volume de minutos.",
+    "stack_sugerida": "Backend core: TypeScript/Node.js com NestJS (módulos isolados por hexágono) ou Python com FastAPI. Mensageria: Apache Kafka para pipeline de segmentos de áudio. Cache/estado: Redis Cluster. Banco relacional: PostgreSQL (RDS Aurora em produção). Infraestrutura de áudio: LiveKit self-hosted ou Agora.io. STT: Google Cloud Speech-to-Text + AssemblyAI como fallback. Tradução: DeepL como primário, OpenAI GPT-4o para contexto especializado. TTS: Google Cloud TTS + ElevenLabs para vozes premium. Auth: Auth0 ou Keycloak self-hosted para enterprise. Billing: Stripe. Frontend: React + TypeScript com WebRTC nativo. Mobile: React Native. Infra: Kubernetes (EKS), Terraform, Datadog para observabilidade. CI/CD: GitHub Actions."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Orquestração de sessões de tradução simultânea em tempo real: gerenciamento de reuniões multilíngues, roteamento de fluxos de áudio por idioma, controle de participantes e canais de tradução, e coordenação de tradutores humanos e/ou engines de IA\",\n\n  \"primary_ports\": [\n    \"IMeetingSessionPort — iniciar, pausar, encerrar e consultar estado de sessões\",\n    \"IParticipantManagementPort — adicionar, remover e configurar idioma de participantes\",\n    \"ITranslationRequestPort — submeter segmento de fala para tradução e receber resultado\",\n    \"IChannelSubscriptionPort — inscrever participante em canal de idioma de saída\",\n    \"ITranslatorAssignmentPort — atribuir tradutor humano a par de idiomas em sessão\",\n    \"ISessionAnalyticsPort — consultar métricas e relatórios de uso de sessão\"\n  ],\n\n  \"secondary_ports\": [\n    \"IAudioStreamingPort — captura e entrega de streams de áudio em tempo real\",\n    \"ISpeechToTextPort — transcrição de fala para texto por idioma de origem\",\n    \"ITranslationEnginePort — tradução de texto entre pares de idiomas\",\n    \"ITextToSpeechPort — síntese de voz a partir de texto traduzido\",\n    \"INotificationPort — envio de alertas e eventos a participantes e administradores\",\n    \"ISessionRepositoryPort — persistência e recuperação de sessões, participantes e histórico\",\n    \"IUserRepositoryPort — persistência de contas, planos e preferências de usuários\",\n    \"IBillingPort — registro de uso e cobrança por minuto/sessão/usuário\",\n    \"IAuthenticationPort — verificação de identidade e autorização de acesso\",\n    \"IRecordingStoragePort — armazenamento de gravações de áudio e transcrições\",\n    \"ITranslatorMarketplacePort — integração com pool de tradutores humanos externos\",\n    \"IVideoConferencingPort — integração com plataformas de videoconferência existentes\"\n  ],\n\n  \"primary_adapters\": [\n    \"WebSocketAdapter — conexão em tempo real de clientes web/desktop via WebSocket\",\n    \"RestApiAdapter — API HTTP/REST para operaçõ"
+}

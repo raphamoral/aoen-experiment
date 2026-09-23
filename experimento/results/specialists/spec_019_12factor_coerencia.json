@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso e auto-reforçante: processos stateless justificam Redis para sessões e S3 para arquivos, que por sua vez viabilizam o scaling horizontal implícito no ECS/Kubernetes; imagens Docker imutáveis tagueadas por SHA tornam o rollback trivial e dão sentido ao BUILD→RELEASE→RUN; variáveis de ambiente como único vetor de configuração é respeitado de ponta a ponta (config, secrets, backing services), eliminando a contradição clássica de projetos que pregam 12-factor mas mantêm arquivos de config versionados; migrations como processo de release separado é coerente com zero-downtime e statelessness; a única leve inconsistência é o uso de 'ou' em múltiplas escolhas tecnológicas (SQS ou RabbitMQ, Fargate ou Kubernetes, Vault ou Secrets Manager), que indica decisões arquiteturais ainda abertas — inofensivas à coesão do padrão, mas que criam uma leve ambiguidade narrativa."
+}

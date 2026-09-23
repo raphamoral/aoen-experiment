@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta define claramente perfis de usuário distintos (startup, investidor, admin) e times alinhados por experiência, mas não menciona explicitamente quais interfaces serão oferecidas (web, mobile, API pública, etc.), não há justificativa de alcance de mercado para escolha de canais, e a arquitetura não aborda desacoplamento entre lógica de negócio e camadas de interface."
+}

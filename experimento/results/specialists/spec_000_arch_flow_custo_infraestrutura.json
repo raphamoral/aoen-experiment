@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "A proposta identifica a distribuição percentual dos custos por categoria (GPU ~40-50%, storage ~25%, rede ~15%, infra ~20%) e menciona estratégias de otimização como quantização de modelos, cache agressivo e compressão de imagem, mas não apresenta estimativas concretas em valores monetários ($/R$), não há projeção de crescimento de custos por faixa de usuários, e falta consideração explícita de técnicas como spot instances, scale-to-zero ou tiers de armazenamento frio para imagens históricas."
+}

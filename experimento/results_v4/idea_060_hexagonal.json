@@ -1,0 +1,86 @@
+{
+  "ideia_idx": 60,
+  "ideia": "App de inspeção predial com realidade aumentada e checklist digital",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de inspeções prediais: o ciclo de vida de uma Inspeção (agendamento, execução, evidências, laudo) sobre um Imóvel, guiada por Checklists versionados e Itens de Verificação. Entidades e agregados principais: Inspeção, Checklist/Template, ItemDeInspeção, Achado (não conformidade com severidade), Evidência (foto, vídeo, medição, anotação AR ancorada em coordenadas espaciais), Imóvel/Ambiente, Laudo e Plano de Ação. Regras de negócio: transições de estado da inspeção (rascunho → em andamento → em revisão → concluída → assinada), cálculo de severidade e conformidade, obrigatoriedade de evidências por item, versionamento imutável de templates, multi-tenancy por organização e política de assinatura/aprovação do laudo.",
+    "primary_ports": [
+      "GerenciarInspecao (criar, agendar, iniciar, pausar, concluir, assinar inspeção)",
+      "ExecutarChecklist (responder itens, registrar conformidade, marcar não conformidade)",
+      "RegistrarEvidencia (anexar foto, vídeo, medição e anotação AR ancorada)",
+      "GerenciarTemplatesDeChecklist (criar, versionar, publicar templates)",
+      "GerarLaudo (consolidar achados, emitir e exportar laudo)",
+      "GerenciarPlanoDeAcao (atribuir, acompanhar e encerrar correções)",
+      "SincronizarOffline (receber lote de operações do dispositivo e resolver conflitos)",
+      "GerenciarOrganizacaoEUsuarios (tenants, papéis, convites)",
+      "ConsultarRelatoriosEIndicadores (dashboards, histórico por imóvel)",
+      "GerenciarAssinaturaDoPlano (consulta de plano, cotas e uso)"
+    ],
+    "secondary_ports": [
+      "RepositorioDeInspecoes / RepositorioDeChecklists / RepositorioDeImoveis (persistência)",
+      "ArmazenamentoDeMidia (upload/download de fotos, vídeos e mapas espaciais)",
+      "ProvedorDeSessaoAR (âncoras espaciais, mapeamento de ambiente, medições)",
+      "ServicoDeVisaoComputacional (detecção de patologias como fissuras e infiltrações)",
+      "GeradorDeDocumento (renderização de laudo em PDF)",
+      "ServicoDeAssinaturaDigital (ICP-Brasil, DocuSign)",
+      "ServicoDeIdentidadeEAutorizacao (autenticação, SSO, RBAC)",
+      "ServicoDeNotificacao (e-mail, push, WhatsApp)",
+      "GatewayDePagamento (cobrança recorrente e por uso)",
+      "PublicadorDeEventos (barramento de eventos de domínio)",
+      "ServicoDeGeolocalizacao (endereço, GPS, plantas)",
+      "IntegracaoComSistemasExternos (ERP, CMMS, gestão de ativos, BIM)",
+      "RelogioEGeradorDeIds (tempo e identificadores, para testabilidade)",
+      "TrilhaDeAuditoria (registro imutável de ações)",
+      "ServicoDeTelemetriaEObservabilidade (logs, métricas, traces)"
+    ],
+    "primary_adapters": [
+      "App móvel nativo iOS (ARKit) e Android (ARCore) com modo offline-first",
+      "Aplicação web SPA (backoffice, gestão de templates e revisão de laudos)",
+      "API REST/GraphQL pública para clientes e parceiros",
+      "Webhooks de entrada e conectores de integração",
+      "CLI e scripts de administração e migração",
+      "Consumidores de fila/eventos (jobs agendados, sincronização em lote)",
+      "Suíte de testes automatizados (unitários, contrato e BDD) dirigindo os mesmos casos de uso",
+      "Interface de voz/assistente para preenchimento hands-free do checklist"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (com PostGIS) via repositórios",
+      "Amazon S3 / Cloudflare R2 com URLs pré-assinadas para mídia",
+      "Adaptador ARKit/ARCore e WebXR",
+      "Modelo de visão computacional próprio ou API externa (ex.: endpoint de inferência)",
+      "Gerador de PDF (headless Chromium ou WeasyPrint)",
+      "Provedor de assinatura digital (ICP-Brasil, Clicksign, DocuSign)",
+      "Auth0 / Keycloak / Cognito (OIDC)",
+      "SendGrid/SES, Firebase Cloud Messaging/APNs, WhatsApp Business API",
+      "Stripe / Pagar.me / Asaas",
+      "Kafka / SNS+SQS / RabbitMQ / NATS",
+      "Google Maps / Mapbox / IBGE",
+      "Conectores REST/SOAP para ERP, CMMS e BIM (IFC)",
+      "Adaptadores em memória / fakes / stubs para testes",
+      "SQLite local no dispositivo (fila de operações offline)",
+      "OpenTelemetry + Grafana/Datadog/Sentry"
+    ],
+    "isolation": "O core (domínio + casos de uso/aplicação) fica em um módulo sem dependências de framework, banco, SDK de AR, cloud ou HTTP. Ele expõe apenas interfaces (ports) e depende exclusivamente de abstrações, seguindo a regra de dependência: adapters dependem do core, nunca o inverso. Os primary ports são implementados pelos casos de uso, e os secondary ports são definidos pelo core e implementados pelos adapters. A injeção de dependências ocorre em uma composition root externa ao core. DTOs e mapeadores nas fronteiras traduzem modelos externos (JSON, linhas SQL, tipos ARKit) para objetos de domínio, e nenhum tipo externo cruza a fronteira. Conceitos AR entram no domínio como value objects abstratos (PontoEspacial, Ancora, Medicao), não como tipos do SDK. Eventos de domínio permitem reação assíncrona sem acoplamento. Testes de arquitetura (ex.: ArchUnit/dependency-cruiser) garantem a regra de dependência no CI, e testes de contrato validam cada adapter contra seu port.",
+    "interfaces": [
+      "App móvel de campo (inspetor) com câmera AR, checklist guiado e modo offline",
+      "Painel web para gestores e revisores (agenda, aprovação, indicadores)",
+      "Portal do cliente/proprietário (acompanhar inspeção, baixar laudo, aprovar plano de ação)",
+      "API pública versionada (REST/OpenAPI, opcionalmente GraphQL) e webhooks",
+      "Editor de templates de checklist (no-code)",
+      "Visualizador 3D/AR de achados sobre o ambiente",
+      "Laudo em PDF e exportações (CSV, XLSX, IFC/BCF)",
+      "Notificações (push, e-mail, WhatsApp)",
+      "CLI administrativa"
+    ],
+    "escalabilidade": "Monolito modular hexagonal no início, com bounded contexts (Inspeções, Templates, Mídia, Laudos, Faturamento) que podem ser extraídos em serviços sem reescrever o core, pois as fronteiras já são ports. Aplicação stateless com escala horizontal atrás de load balancer. Upload de mídia direto do dispositivo ao object storage por URL pré-assinada, evitando trafegar binários pela API. Processamento pesado (visão computacional, geração de PDF, transcodificação) assíncrono via filas com workers autoescaláveis. Banco com read replicas, particionamento por tenant e cache (Redis) para templates e leituras frequentes. Offline-first com sincronização por operações (CRDT ou log de operações com resolução de conflitos) para reduzir a carga em tempo real. CDN para mídia e laudos. Multi-tenancy com isolamento lógico (row-level security) e opção de isolamento físico para clientes enterprise. Como os adapters são intercambiáveis, é possível trocar provedores (ex.: de broker ou storage) sem afetar o domínio.",
+    "custos": "Principais vetores de custo: armazenamento e egress de mídia (fotos/vídeos/mapas espaciais), mitigados com compressão, tiers de armazenamento frio (lifecycle policies), thumbnails e CDN; inferência de visão computacional (cobrar por uso ou limitar por plano, processar on-device quando possível); geração de PDF e assinatura digital (custo por documento); notificações WhatsApp (custo por mensagem); observabilidade (amostragem de traces). Começar com infraestrutura gerenciada e enxuta (um banco, um storage, workers sob demanda/serverless) e escalar por demanda. Custo de desenvolvimento móvel nativo AR (iOS e Android) é alto, e uma alternativa é Flutter/React Native com módulos nativos de AR. Custo de suporte e de conformidade (LGPD, retenção de dados). A arquitetura hexagonal permite trocar adapters por opções mais baratas sem mexer no core, e fakes reduzem o custo de testes e de ambientes de homologação.",
+    "monetizacao": "SaaS por assinatura recorrente em tiers (Starter, Pro, Enterprise) precificados por assento de inspetor e/ou por imóvel/inspeção realizada, com cotas de armazenamento e de análises de IA. Cobrança por uso (metered) para extras: inspeções adicionais, laudos com assinatura digital, análise de visão computacional, armazenamento excedente. Add-ons: templates premium por norma (ex.: NBR 16747, NBR 5674, NR), white-label do laudo e do portal, SSO e auditoria avançada, SLA e suporte dedicado. Enterprise: API/integrações (ERP, CMMS, BIM), implantação dedicada e contratos anuais. Marketplace de templates criados por especialistas, com revenue share. Segmentos-alvo: construtoras, administradoras de condomínio, seguradoras, facilities, engenheiros e peritos autônomos e imobiliárias.",
+    "stack_sugerida": "Core em TypeScript (Node.js) ou Kotlin/Java, com casos de uso e domínio puros e injeção de dependências manual ou leve. Backend: NestJS ou Fastify (adapter HTTP) com API REST/OpenAPI e opcional GraphQL. Mobile: Swift/ARKit e Kotlin/ARCore nativos, ou Flutter/React Native com módulos AR nativos, com SQLite/WatermelonDB para offline-first. Web: React/Next.js + TypeScript, com Three.js/WebXR para visualização 3D. Dados: PostgreSQL + PostGIS, Redis, S3/R2 para mídia. Mensageria: SQS/SNS, NATS ou Kafka, com BullMQ/Temporal para jobs e workflows. IA: PyTorch/ONNX servido em endpoint de inferência (SageMaker, Modal ou Replicate), com opção on-device (CoreML/TFLite). Identidade: Keycloak ou Auth0. PDF: Playwright/Chromium headless. Infra: Docker, Kubernetes ou ECS/Fargate (ou Cloud Run no início), Terraform, GitHub Actions. Observabilidade: OpenTelemetry, Grafana, Sentry. Pagamentos: Stripe ou Asaas/Pagar.me. Qualidade: Vitest/Jest, testes de contrato (Pact), dependency-cruiser para impor a regra de dependência."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:43:38+00:00",
+    "runner": "runner.py"
+  }
+}

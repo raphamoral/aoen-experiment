@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 34,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra intenção sólida de configurabilidade — regras fiscais como plugins por tenant carregados em runtime, adapters de dados de mercado plugáveis e SimulationEngine como interface abstrata substituível indicam separação real entre código fixo e comportamento variável; contudo, a proposta não especifica se um novo plugin de regras fiscais (ex: novo país) exige desenvolvimento ou apenas configuração declarativa, deixando em aberto se o onboarding de um tenant realmente novo (jurisdição inédita) seria zero-código ou ainda demandaria um ciclo de desenvolvimento para implementar o plugin."
+}

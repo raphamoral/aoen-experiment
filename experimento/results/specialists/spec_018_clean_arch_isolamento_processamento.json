@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta define apenas entidades de domínio e regras de negócio, sem mencionar qualquer mecanismo de isolamento: não há filas, workers separados, processos independentes, nem estratégia assíncrona para o processamento pesado de inferência ML e re-treinamento de modelos — tudo implicitamente rodaria junto, derrubando o sistema inteiro em caso de falha computacional."
+}

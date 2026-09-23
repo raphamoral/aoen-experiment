@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "A arquitetura conta uma história coesa — processamento pesado justifica o serviço Python separado, que justifica a fila assíncrona, que justifica a notificação ao usuário, que justifica o histórico no banco estruturado — mas há três pontos de atrito: SQS (AWS) coexiste com Supabase sem justificar por que não usar as filas nativas do próprio Supabase, evitando dependência cruzada de clouds; o app mobile aparece nas interfaces mas não nas tecnologias, deixando a decisão React Native vs PWA sem critério explícito vinculado aos usuários-alvo; e a análise de custos começa a conectar custo por token com modelo de precificação mas a frase foi cortada, deixando exatamente o elo mais crítico para viabilidade financeira sem fechamento."
+}

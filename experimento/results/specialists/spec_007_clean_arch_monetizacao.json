@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não contém nenhuma menção a modelo de monetização, tiers de planos com valores, estratégia de precificação ou métricas de negócio (MRR, churn, LTV, CAC) — a entidade Organization possui um atributo 'plan' e 'maxUsers', mas sem qualquer definição de o que esses planos representam comercialmente ou como geram receita."
+}

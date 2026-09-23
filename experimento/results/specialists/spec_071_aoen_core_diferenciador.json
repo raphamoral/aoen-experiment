@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 71,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está explicitamente identificado (pipeline campo→âncora criptográfica→credencial verificável), isolado em três contratos abstratos (DataCollector, AnchorProvider, CertificateIssuer) que tornam o produto independente de fornecedor, e resolve um problema real — produtores de café especial não conseguem provar proveniência de forma tamper-proof para mercados premium com documentação tradicional —, perdendo apenas um ponto porque a proposta não demonstra diferenciação explícita frente a soluções de rastreabilidade por blockchain já existentes em outras cadeias agrícolas (IBM Food Trust, Farmer Connect), o que poderia enfraquecer o argumento de insubstituibilidade em due diligence competitiva."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente custos de infraestrutura total (quais serviços usar: PostgreSQL, Redis, S3, Stripe, etc.), sem nenhuma menção a rastreamento de consumo por tenant, custo por operação/reserva, atribuição de recursos por cliente ou conexão entre custo unitário e modelo de precificação — é puro inventário de infra, não Unit Economics."
+}

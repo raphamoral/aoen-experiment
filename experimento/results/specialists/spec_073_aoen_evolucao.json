@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 73,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte maturidade evolutiva: pipeline de análise inteiramente baseada em adaptadores trocáveis (STT, feature extraction, LLM de feedback), ausência de vendor lock-in explicitamente declarada, service layer com contratos tipados que isola 100% da lógica de negócio das interfaces, e parâmetros configuráveis que permitem variação de comportamento sem alteração de código — os pontos que impedem nota máxima são a ausência de definição explícita da camada de dados (escolha de banco e sua abstração são decisões críticas de reversibilidade que não aparecem na proposta) e a falta de detalhamento da estratégia de escala horizontal além do enfileiramento, o que deixa em aberto se a passagem de 10 para 10.000 usuários exigiria ou não mudança estrutural no pipeline de processamento."
+}

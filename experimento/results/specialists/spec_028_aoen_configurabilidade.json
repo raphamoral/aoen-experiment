@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 28,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra forte intenção configurável: pipeline parametrizado por regulação, regras injetadas como configuração (não código), abstração do provedor LLM e service layer agnóstico à interface — mas não descreve explicitamente o mecanismo de isolamento por tenant (schema/row-level), o repositório de configurações por cliente, nem confirma que o onboarding de um novo cliente é operação puramente de dados sem qualquer intervenção de desenvolvimento."
+}

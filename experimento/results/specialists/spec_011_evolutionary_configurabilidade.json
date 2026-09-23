@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta menciona feature flags para algoritmos de matching e adapter pattern para provedores externos — sinais de configurabilidade parcial — mas não descreve nenhum modelo explícito de configuração por tenant (tabela de parâmetros por cliente, regras de matching customizáveis por tenant, onboarding sem código); novos critérios de matching são adicionados via extensão de código, não via configuração, e a estratégia de isolamento multi-tenant (schema, row-level security, hierarquia de configuração) está completamente ausente do design."
+}

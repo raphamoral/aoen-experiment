@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura menciona Stripe para assinaturas recorrentes e variáveis de ambiente com STRIPE_SECRET_KEY, indicando intenção de monetização por subscription, mas não há definição de tiers, valores, segmentação de clientes, análise de sustentabilidade custo-receita nem métricas de negócio (MRR, LTV, CAC, churn)."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo (MEIs) está identificado no nome do produto e refletido nas regras de negócio da arquitetura, mas a proposta não articula explicitamente a dor do cliente, não apresenta tamanho de mercado, não menciona alternativas existentes (Nibo, Conta Azul, BLING etc.) nem estabelece diferenciação ou proposta de valor convincente além do recurso de emissão automática de NF."
+}

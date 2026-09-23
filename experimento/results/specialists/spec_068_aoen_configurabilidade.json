@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 68,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta declara explicitamente o padrão correto — fluxo imutável no código com parâmetros variáveis — e o adapter pattern para provedores reforça a separação código/configuração, mas a lista de parâmetros configuráveis está truncada e a proposta não especifica o mecanismo de onboarding de tenant (ex: nova row em tabela de configuração, feature flags por tenant, processo zero-deploy), deixando a implementação real da configurabilidade multi-tenant como intenção arquitetural sem garantia de execução."
+}

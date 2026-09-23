@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 84,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural descreve segmentos de mercado (B2C, B2B, B2B2B) e canais de entrega com clareza, mas não menciona nenhum modelo de monetização — não há referência a preços, tiers de assinatura, modelo de cobrança por lead, revenue share com oficinas, ou qualquer métrica de negócio (MRR, LTV, CAC, churn), tornando inviável avaliar a sustentabilidade financeira do produto."
+}

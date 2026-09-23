@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 41,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra boas bases de desacoplamento (adaptadores intercambiáveis por fonte de patente, interface agnóstica de IA, injeção de serviços externos), o que indica que configurabilidade É viável na arquitetura — mas o documento não define explicitamente um modelo de configuração por tenant: não há menção a tabela de settings por cliente, parâmetros overridáveis (quais escritórios monitorar, thresholds de risco, regras de prazo), feature flags por plano ou fluxo de onboarding baseado em configuração, deixando ambíguo se 'novo cliente' exige apenas uma row no banco ou ainda requer ajuste de código/deploy."
+}

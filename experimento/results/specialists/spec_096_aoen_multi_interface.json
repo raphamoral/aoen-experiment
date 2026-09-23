@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 96,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Web App, portal do colaborador, API REST, bot Slack/Teams e SDK white-label), cada uma justificada por um perfil de usuário e vetor de mercado específico, com lógica de negócio centralizada na HR Orchestration Service Layer que garante desacoplamento total — adicionar ou substituir qualquer canal não exige alteração das regras de negócio."
+}

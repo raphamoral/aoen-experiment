@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "O sistema de matching por cruzamento de perfis é mencionado como diferenciador, mas a proposta reconhece que a primeira versão será curadoria humana manual — ou seja, o núcleo tecnológico ainda não existe, não está isolado como componente, e o que está descrito é essencialmente um CRUD com formulários e uma lista de sugestões, algo que plataformas como AngelList, Gust ou até uma planilha compartilhada já resolvem."
+}

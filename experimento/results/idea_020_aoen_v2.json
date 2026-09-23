@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 20,
+  "ideia": "Plataforma de crowdsourced testing de software com gamificação",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de distribuição de tarefas de teste, validação e deduplicação de resultados, e atribuição de recompensas — o ciclo completo: tarefa → execução → validação → recompensa. Sem ele, não há crowdsourcing funcional, apenas um fórum de bugs.",
+    "fase1_mercado": "Primário: equipes de produto e QA de empresas de software (startups a scale-ups) que precisam de cobertura de testes ampla sem montar time fixo de QA. Secundário: game studios e empresas de apps mobile com alta variabilidade de dispositivos. Terciário: grandes corporações com programas de bug bounty internos.",
+    "fase1_extensivel": "Sim. O motor de validação é abstraído por uma interface (IValidationEngine) — pode ser baseado em regras, ML ou LLM. O motor de recompensas é abstraído por IRewardEngine — pode pagar com pontos, créditos, dinheiro real ou NFTs. O motor de matching de testadores é independente do tipo de teste. Nenhum fornecedor específico é obrigatório no core.",
+    "fase2_interfaces": [
+      "Web App do Testador (gamificada): painel de missões, ranking, badges, histórico de recompensas",
+      "Dashboard Web do Cliente (B2B): criação de campanhas, acompanhamento de bugs, relatórios e métricas",
+      "API REST + Webhooks: integração com CI/CD pipelines para disparo automático de campanhas",
+      "App Mobile do Testador: testes em dispositivos reais, captura de screenshot/vídeo nativa",
+      "CLI para Desenvolvedores: criação e consulta de campanhas via terminal, integração com GitHub Actions"
+    ],
+    "fase2_justificativa_mercado": "Web gamificada do testador abre o mercado de comunidade (retenção e crescimento da base de testers). Dashboard B2B é a porta de entrada para receita — é onde o cliente paga. API/CI-CD abre o mercado enterprise e DevOps-driven (compra via PLG técnico, não comercial). App mobile captura o segmento de QA mobile e IoT onde o device real é insubstituível. CLI reduz fricção de adoção técnica e acelera o ciclo de avaliação por engenheiros.",
+    "fase2_service_layer": "Cada interface se comunica exclusivamente com a CampaignService, TesterService, ValidationService, RewardService e ReportService via contratos de API internos (interfaces tipadas). A lógica de negócio — quem testa o quê, como valida, quanto recebe — nunca vive no controller ou no componente de UI. A interface só recebe, exibe e dispara chamadas ao service layer.",
+    "fase3_fluxo_fixo": "1. Cliente cria campanha → 2. Sistema seleciona testadores elegíveis via matching engine → 3. Testadores recebem tarefas e submetem resultados → 4. Motor de validação/deduplicação processa submissões → 5. Bugs validados são consolidados em relatório → 6. Testadores recebem recompensas calculadas → 7. Cliente recebe relatório final e notificação. Este fluxo é invariável — o que muda são os parâmetros de cada etapa.",
+    "fase3_parametros_configuraveis": [
+      "Critérios de elegibilidade de testadores: SO, dispositivo, país, nível de experiência, histórico de qualidade",
+      "Tipos de teste habilitados: exploratório, funcional, regressão, usabilidade, segurança",
+      "Esquema de pontuação e recompensas: pontos por severidade, bônus por primeiro report, multiplicadores",
+      "Threshold de validação: quantidade mínima de confirmações para validar um bug",
+      "Budget cap da campanha: valor máximo a ser pago em recompensas",
+      "Duração da campanha e janela de submissão",
+      "Severidade e taxonomia de bugs customizadas por cliente",
+      "Formato e destino do relatório: PDF, JSON, Slack, Jira, GitHub Issues",
+      "Visibilidade do leaderboard: público, privado ou segmentado por empresa",
+      "SLA de validação: tempo máximo para confirmar um bug após submissão",
+      "Integrações de CI/CD habilitadas e webhooks de notificação"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro na tabela de tenants + upload de um arquivo de configuração JSON (tenant config) que define todos os parâmetros acima. O sistema lê a config em runtime para toda operação daquele tenant. Zero código novo, zero deploy. Onboarding via dashboard com wizard que gera o JSON automaticamente.",
+    "fase4_core_isolado": "Dois processos isolados em workers assíncronos independentes: (1) ValidationWorker — consome fila de submissões, executa deduplicação, validação cruzada entre testadores e persiste resultado; (2) RewardWorker — consome fila de bugs validados, calcula e distribui recompensas conforme config do tenant. Ambos escalam horizontalmente de forma independente do servidor web.",
+    "fase4_custo_total_cliente": "Custo do core: processamento de validação por submissão (compute + opcionalmente LLM API para triagem automática ~$0.002/submissão). Infra proporcional: armazenamento S3/R2 para screenshots e vídeos (~$0.023/GB), tráfego CDN para entrega de assets, leituras/escritas no banco por campanha. Custo operacional: processamento de pagamento/saque dos testadores (Stripe ~2.9% + $0.30), notificações (email/push). Estimativa por campanha de 50 testadores, 5 dias: $8–$25 de custo total, monetizável a $200–$500 por campanha.",
+    "fase4_continuidade": "Submissões de testadores são enfileiradas em uma fila durável (Redis Streams ou SQS) antes de qualquer processamento. Se o ValidationWorker cair, a fila retém todas as submissões sem perda. O servidor web e o app do testador continuam funcionando normalmente. Ao ValidationWorker voltar, processa o backlog. Dead Letter Queue captura falhas repetidas para análise manual.",
+    "fase4_manutencao": "ValidationWorker e RewardWorker implementam interfaces (IValidationEngine, IRewardEngine). Trocar o algoritmo de validação de rule-based para ML, ou o processador de pagamentos de Stripe para outro provider, exige apenas uma nova implementação da interface + variável de ambiente para selecionar qual implementação usar. Zero downtime, zero impacto nas interfaces de usuário.",
+    "monetizacao": "B2B SaaS subscription por tier (volume de campanhas e testadores por mês). Pay-per-bug validado como modelo alternativo (cliente paga apenas por resultado). Revenue share com testadores (plataforma retém 15–25% das recompensas pagas). Enterprise: pool privado de testadores, SLA garantido, integrações customizadas — ticket maior com contrato anual. Expansão: marketplace de testadores certificados com perfil verificado (premium listing).",
+    "stack_sugerida": "Backend: Node.js com Fastify (APIs) + Python (workers de validação com ML); Filas: BullMQ sobre Redis ou AWS SQS; Banco: PostgreSQL (campanhas, usuários, bugs) + Redis (leaderboards em tempo real, sessões, rate limiting); Frontend: Next.js 14 (dashboard cliente + app testador web); Mobile: React Native; Storage: Cloudflare R2 (screenshots, vídeos, relatórios); CDN: Cloudflare; Pagamentos: Stripe (cobrança B2B + payouts para testadores); Notificações: WebSockets para real-time + Resend para email; Infra: Railway ou Render para início, migração para AWS ECS com auto-scaling nos workers quando escalar; CI/CD: GitHub Actions; Observabilidade: OpenTelemetry + Grafana Cloud"
+  }
+}

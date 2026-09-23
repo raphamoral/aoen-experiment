@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 34,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define uma SimulationService como camada de separação lógica entre interfaces e o motor Monte Carlo, mas não menciona isolamento físico real: não há filas de mensagens, workers separados, subprocessos independentes nem padrões de resiliência (circuit breaker, fallback) — a simulação computacionalmente pesada aparenta rodar de forma síncrona no mesmo processo, o que significa que sobrecarga ou falha no motor derruba toda a aplicação."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 73,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (pipeline de análise de voz com extração de métricas objetivas de comunicação), isolado em etapas desacopladas com adaptadores trocáveis, e resolve um problema real que ferramentas genéricas de gravação ou transcrição não resolvem — perde um ponto por não evidenciar o que torna o modelo de scoring proprietário defensável frente a concorrentes que montem a mesma pipeline com os mesmos fornecedores públicos."
+}

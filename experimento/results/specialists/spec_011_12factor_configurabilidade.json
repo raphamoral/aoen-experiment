@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta demonstra boa separação de config por ambiente (env vars, feature flags, Parameter Store), mas não descreve nenhum mecanismo de configurabilidade por tenant — os feature flags estão no nível de deploy/região, não por cliente, e onboarding de novo tenant com comportamento distinto aparentemente exigiria um novo deploy parametrizado, não apenas uma nova row no banco."
+}

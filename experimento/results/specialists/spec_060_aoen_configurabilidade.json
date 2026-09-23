@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 60,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra separação explícita entre fluxo fixo (fase3_fluxo_fixo — imutável no código) e parâmetros configuráveis (fase3_parametros_configuraveis — templates, tipos de inspeção, normas de referência), o que é arquiteturalmente correto; porém, a proposta está incompleta (texto cortado em 'hidr...'), não descreve o mecanismo de onboarding de tenant como operação puramente de dados (nova row = novo cliente), não menciona isolamento de tenant explicitamente (row-level security, schema separation ou similar), e não evidencia um painel de administração de configuração que permita onboarding sem intervenção técnica — sinalizando que a intenção é boa mas a execução configurável não está totalmente especificada."
+}

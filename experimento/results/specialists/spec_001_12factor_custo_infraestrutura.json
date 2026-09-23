@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "A proposta lista componentes de custo e menciona estratégias genéricas de otimização (spot instances, Aurora Serverless, S3 lifecycle, alertas de orçamento), mas não apresenta nenhuma estimativa concreta em valores (USD/BRL) por componente nem projeção de crescimento de custos em função da base de usuários."
+}

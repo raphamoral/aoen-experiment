@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural identifica segmentos de mercado (B2C, B2B clínicas, planos de saúde) e canais de distribuição, mas não menciona nenhum modelo de receita concreto — não há tiers de preço, valores, estrutura de cobrança (assinatura, usage-based, por exame), nem métricas de sustentabilidade como MRR, LTV ou CAC."
+}

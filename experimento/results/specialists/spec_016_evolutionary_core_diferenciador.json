@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "A proposta demonstra bounded contexts bem mapeados e preocupações arquiteturais legítimas (multi-carrier, multi-tenant, auditabilidade para chargeback/LGPD), mas em nenhum momento isola explicitamente qual desses contextos é o núcleo insubstituível do produto — CarrierIntegration, ReturnRequest e LabelGeneration são tratados com o mesmo peso arquitetural, sem declarar 'sem este componente o produto perde razão de existir', e a proposta de valor diferenciada frente a concorrentes (Intelipost, Melhor Envio, soluções nativas de marketplace) não é articulada."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 73,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam um sistema altamente coeso — o pipeline de adaptadores intercambiáveis (Fase 1) justifica a estratégia multi-interface (Fase 2), que por sua vez justifica os parâmetros configuráveis (Fase 3), e cada interface foi escolhida com justificativa de mercado que retroalimenta a necessidade de extensibilidade do core — exceto por uma contradição arquitetural não resolvida: o fluxo fixo da Fase 3 é explicitamente assíncrono (upload → fila → análise → notificação), enquanto o Plugin para videoconferência (Fase 2) exige análise em tempo real com latência de streaming, um requisito fundamentalmente diferente que a service layer centralizada e o pipeline batch descritos não cobrem sem uma arquitetura paralela."
+}

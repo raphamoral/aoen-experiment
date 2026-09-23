@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 37,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte pensamento evolutivo: PricingEngine abstraída atrás de interface com caminhos de substituição explícitos, padrão adapter isolando canais da lógica de negócio, pipeline parametrizável em vez de hardcoded, e fluxo de dependências correto (canais → serviços, nunca o inverso) — porém perde pontos por não endereçar abstração da camada de persistência, ausência de estratégia de escala (cache, async, sharding) e o pipeline 'invariável' pode tornar-se ponto de acoplamento oculto se regras de negócio evoluírem para fluxos não-lineares."
+}

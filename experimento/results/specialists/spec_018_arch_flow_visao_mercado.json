@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 5,
+  "justificativa": "O público-alvo (operadoras de telecom) está identificado e a arquitetura revela domínio profundo do ecossistema (OSS/BSS, CDRs, ARPU, portabilidade), sinalizando implicitamente a dor do cliente, mas faltam TAM/SAM explícito, articulação da dor em linguagem de negócio (ex: 'churn custa X% da receita'), análise de alternativas concorrentes e proposta de valor quantificada para justificar adoção."
+}

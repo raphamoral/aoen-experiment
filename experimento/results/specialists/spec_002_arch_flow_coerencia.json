@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "arch_flow",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta conta uma história coesa e bem articulada: a cadeia de valor mapeia diretamente sobre os bounded contexts, a evolução de componentes distingue corretamente o que é diferencial competitivo (genesis/custom) do que é commodity, e escolhas como escrow liberado por aprovação regulatória e DocuSign reforçam o domínio compliance-heavy — com leve incoerência na sobreposição entre os bounded contexts 'Compliance Profiles' e 'Credential Verification', cuja fronteira não está claramente demarcada, e topologia de times incompleta impedindo validação total do alinhamento Conway."
+}

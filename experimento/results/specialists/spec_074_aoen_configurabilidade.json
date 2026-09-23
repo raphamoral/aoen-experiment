@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 74,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta demonstra boa separação de camadas (service layer, ports de abstração) e agnósticidade a fornecedores, mas não descreve nenhum mecanismo explícito de configuração por tenant: o campo 'fase3_fluxo_fixo' sinaliza fluxo hardcoded, não há menção a tabelas de configuração por cliente, regras de distribuição de royalties configuráveis (cada universidade tem política própria de partilha inventor/instituição), chains de aprovação parametrizáveis, campos customizáveis no formulário de divulgação, nem feature flags por tenant — o que significa que onboardar uma universidade com política de PI diferente da padrão ainda exigiria código ou deploy."
+}

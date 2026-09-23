@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 23,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra padrão correto: pipeline fixo no código com parâmetros configuráveis por tenant (area_direito, jurisdicao, tom_respostas, template de prompt), e o service layer aplica 'regras de contexto do cliente' — indicando comportamento diferenciado por configuração, não por fork; a penalização vem da lista de parâmetros truncada (não é possível verificar se a superfície de configuração cobre todos os casos de uso), da ausência de um modelo explícito de armazenamento e gestão de tenant config (como a config é versionada, quem pode editar, há self-service?), e de 'template do cliente' no prompt assembly que, dependendo da implementação, pode exigir intervenção técnica para cada novo cliente em vez de ser editável via interface administrativa."
+}

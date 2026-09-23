@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural lista apenas custos de infraestrutura total (servidor Hetzner/DigitalOcean, PostgreSQL, Redis, S3/R2, Polygon), sem nenhuma mensuração de custo por cliente/tenant, sem cálculo de custo por operação (ex: custo por MTR gerado, por hash gravado em blockchain, por GB de storage por empresa), e sem qualquer conexão entre consumo de recursos por tenant e o modelo de precificação."
+}

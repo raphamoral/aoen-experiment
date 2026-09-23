@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A proposta prevê cinco interfaces primárias (REST, WebSocket, Dashboard Web/Mobile, CLI e Webhook) cada uma justificada por perfis reais de usuário (gerentes, clientes, entregadores, integradores e-commerce), com lógica de negócio isolada via IoC e interfaces segregadas que permitem adicionar novos canais sem reescrever o core — perde um ponto por não detalhar explicitamente a estratégia de UX/jornada por persona em cada canal."
+}

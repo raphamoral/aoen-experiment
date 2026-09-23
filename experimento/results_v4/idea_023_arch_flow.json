@@ -1,0 +1,46 @@
+{
+  "ideia_idx": 23,
+  "ideia": "App de assistente jurídico com IA para pequenos escritórios",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Usuário final (advogado ou sócio de pequeno escritório) → precisa resolver o caso do cliente com rapidez e segurança jurídica → atividades: captação e organização de documentos e processos, pesquisa de legislação e jurisprudência, redação e revisão de peças e contratos, gestão de prazos e tarefas, comunicação e cobrança do cliente → capacidades: assistente jurídico com IA (RAG sobre base jurídica e documentos do escritório), gestão de casos, geração de documentos → componentes de infraestrutura: LLMs, busca vetorial, OCR, armazenamento seguro, identidade, pagamentos → commodities de nuvem.",
+    "bounded_contexts": [
+      "Gestão de Casos e Clientes (caso, cliente, partes, andamentos, prazos, linguagem: 'matter', 'pasta', 'andamento')",
+      "Gestão Documental (upload, OCR, versionamento, classificação, modelos de peças)",
+      "Assistente Jurídico com IA (conversas, geração e revisão de minutas, resumos, citações verificáveis, guardrails)",
+      "Pesquisa Jurídica (legislação, jurisprudência, doutrina, indexação, busca semântica)",
+      "Prazos e Agenda (cálculo de prazos processuais, alertas, integração com calendários e diários oficiais)",
+      "Conhecimento do Escritório (playbooks, cláusulas padrão, modelos e memória institucional por tenant)",
+      "Identidade, Tenancy e Acesso (organizações, papéis, permissões, sigilo profissional)",
+      "Assinatura e Billing (planos, uso de IA, cobrança, faturamento)",
+      "Conformidade e Auditoria (LGPD, trilha de auditoria, retenção, sigilo advogado-cliente)",
+      "Integrações Externas (tribunais e PJe, diários oficiais, e-mail, assinatura eletrônica) como camada anticorrupção"
+    ],
+    "component_evolution": "GENESIS: orquestração de agentes jurídicos com verificação de citações e avaliação de alucinação (evals jurídicos), que é o diferencial competitivo mais incerto. CUSTOM: fluxos de RAG sobre documentos do escritório, geração de peças por área do direito, cálculo de prazos processuais, modelos de conhecimento por tenant, UX do assistente. PRODUCT: LLMs via API, banco vetorial gerenciado, OCR, busca textual, assinatura eletrônica, observabilidade, feature flags. COMMODITY: computação em nuvem, banco relacional, armazenamento de objetos, autenticação (OIDC), e-mail transacional, pagamentos (Stripe/Pagar.me), CDN, CI/CD. Regra: construir apenas o que está em genesis/custom e é diferencial; comprar ou usar como serviço o que é product/commodity.",
+    "team_topology": "Poucos times, com carga cognitiva limitada. (1) Stream-aligned 'Fluxo do Advogado': casos, documentos, prazos e UX de ponta a ponta. (2) Stream-aligned 'IA Jurídica': assistente, RAG, pesquisa e redação de peças, com especialistas do domínio jurídico embutidos. (3) Platform team enxuto: plataforma interna de desenvolvimento, multi-tenancy, observabilidade, segurança, CI/CD e camada de acesso a LLM (gateway). (4) Enabling team (temporário): compliance/LGPD, segurança e avaliação de IA, que apoia os demais times e depois se retira. (5) Complicated-subsystem opcional: motor de cálculo de prazos e integrações com tribunais, se a complexidade justificar. Interação: colaboração entre os dois times de fluxo no início; X-as-a-Service da plataforma; facilitação do enabling team. No estágio inicial (startup), começar com 1 a 2 times e um monólito modular.",
+    "flow_optimization": "Mapear o fluxo do 'intake do caso até a peça protocolada' e atacar os gargalos: pesquisa manual, redação repetitiva e controle de prazos. Monólito modular com fronteiras alinhadas aos bounded contexts, extraindo serviços só quando houver necessidade (IA e ingestão assíncrona primeiro). Trunk-based development, feature flags, deploys contínuos e ambientes efêmeros. Métricas de fluxo (DORA, lead time, WIP) e de valor (tempo para primeira minuta, horas economizadas por advogado, taxa de aceitação das sugestões da IA). Evals automatizados de qualidade jurídica no pipeline de CI. Contratos de API entre contextos e eventos de domínio para desacoplar. Ciclos curtos de feedback com escritórios-piloto.",
+    "interfaces": [
+      "Web app (SPA) para advogados e equipe administrativa",
+      "API REST/GraphQL pública e versionada para integrações",
+      "Eventos de domínio assíncronos (ex.: DocumentoIndexado, PrazoCriado, MinutaGerada) via fila/broker",
+      "Gateway interno de LLM com roteamento de modelos, cache e controle de custo",
+      "Webhooks de saída para sistemas do escritório",
+      "Integrações com tribunais/PJe, diários oficiais e bases de jurisprudência (camada anticorrupção)",
+      "Integração com e-mail, Google/Microsoft Calendar e Drive/OneDrive",
+      "Assinatura eletrônica (ICP-Brasil, Clicksign, DocuSign)",
+      "Gateway de pagamentos e billing",
+      "Add-in para Word e extensão de navegador",
+      "Painel de administração e auditoria"
+    ],
+    "escalabilidade": "Multi-tenancy com isolamento lógico forte (row-level security, chaves de criptografia e índices vetoriais por tenant), com opção de isolamento dedicado para clientes maiores. Componentes stateless escalando horizontalmente em contêineres gerenciados. Ingestão, OCR e embeddings em filas assíncronas com autoscaling por profundidade da fila. Cache semântico e de prompts, roteamento entre modelos pequenos e grandes conforme a complexidade da tarefa. Índices de legislação e jurisprudência compartilhados e somente leitura entre tenants. Extração de serviços apenas onde houver gargalo medido (IA e ingestão). Limites de taxa e cotas por plano. Residência de dados no Brasil por conformidade com a LGPD.",
+    "custos": "O maior custo variável é o consumo de tokens dos LLMs, que exige gateway com cotas por tenant, cache, seleção do menor modelo suficiente, prompt caching e processamento em lote para tarefas não urgentes. Outros custos: OCR e embeddings na ingestão, armazenamento de documentos e vetores, licenciamento de bases de jurisprudência e diários oficiais, e conformidade e segurança (auditoria, pentest, seguro cibernético). Usar serviços gerenciados no início para reduzir custo operacional e de equipe, mantendo custos por tenant monitorados (FinOps) para preservar a margem bruta. O time enxuto é o principal custo fixo.",
+    "monetizacao": "Assinatura SaaS por assento, em camadas (Solo, Escritório, Escritório Plus) com franquia de uso de IA incluída. Cobrança adicional por consumo excedente (créditos de IA, páginas processadas via OCR). Módulos pagos por área do direito (trabalhista, cível, tributário), acesso premium a jurisprudência, integrações com tribunais e assinatura eletrônica. Trial gratuito de 14 dias e plano anual com desconto. Plano enterprise/white-label para redes de escritórios e associações de advogados (OAB) como canal de distribuição. Cobrança recorrente via Stripe, Pagar.me ou Asaas, com Pix e boleto para o mercado brasileiro.",
+    "stack_sugerida": "Frontend: TypeScript, React/Next.js. Backend: monólito modular em TypeScript (NestJS) ou Python (FastAPI) para os módulos de IA. Dados: PostgreSQL com pgvector e row-level security, Redis, armazenamento de objetos S3 com criptografia por tenant, OpenSearch para busca textual. IA: gateway de LLM com múltiplos provedores (Claude, entre outros), RAG com reranking, OCR (Textract ou Document AI), framework de evals e observabilidade de LLM (Langfuse). Mensageria: SQS/SNS ou Kafka/Redpanda, com workflows em Temporal. Infraestrutura: AWS (região São Paulo) ou GCP, contêineres em ECS/Fargate ou Kubernetes gerenciado, Terraform, GitHub Actions. Segurança e identidade: Auth0, Keycloak ou Cognito com SSO, gestão de segredos, WAF. Observabilidade: OpenTelemetry, Grafana ou Datadog, Sentry. Pagamentos: Stripe ou Pagar.me."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "dfd4115afd4e",
+    "gerado_em": "2026-09-21T02:32:16+00:00",
+    "runner": "runner.py"
+  }
+}

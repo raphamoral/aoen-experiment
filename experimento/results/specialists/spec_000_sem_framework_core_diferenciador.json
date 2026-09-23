@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador (IA para análise de imagens veterinárias) está identificado, mas é tratado como uma chamada genérica a APIs externas (OpenAI Vision, Rekognition), sem camada proprietária, dados de treino específicos do domínio ou pipeline clínico especializado — tornando o núcleo facilmente replicável e dependente de fornecedor único, sem proposta de valor insubstituível."
+}

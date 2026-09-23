@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona 'custos por entrega' no contexto de Analytics e 'faturamento por entrega/uso' no Billing, sinalizando alguma granularidade por operação, mas não há nenhum mecanismo explícito de rastreamento de consumo por tenant, nenhuma metodologia de cálculo de custo por operação (ex: GPS ping, rota calculada, notificação enviada), e nenhuma conexão entre custo real por cliente e modelo de precificação — ficando no limite entre infra genérica e unit economics real."
+}

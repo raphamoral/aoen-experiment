@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 18,
+  "ideia": "SaaS de análise preditiva de churn para operadoras de telecom",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de predição de churn que transforma sinais de comportamento do assinante (uso de rede, histórico de pagamento, interações com suporte, qualidade de sinal) em scores de propensão ao cancelamento com janela de intervenção acionável. Sem esse motor preditivo, o produto é apenas um relatório — não existe.",
+    "fase1_mercado": "Operadoras de telecom de médio e grande porte (mobile, banda larga fixa, MVNOs) com base de assinantes acima de 50 mil usuários, onde churn de 1% representa perda de receita recorrente significativa e justifica investimento em retenção ativa.",
+    "fase1_extensivel": "Sim. O core é abstraído atrás de uma interface PredictionEngine que aceita features normalizadas e retorna ChurnScore. Implementações substituíveis: modelo próprio (scikit-learn/XGBoost), provedor gerenciado (AWS SageMaker, Google Vertex AI, Azure ML) ou LLM-augmented scoring. Trocar o backend de ML não altera nenhuma outra camada do sistema.",
+    "fase2_interfaces": [
+      "Dashboard Web para gestores de retenção (visualização de coortes, segmentos de risco, campanhas)",
+      "REST API para integração com CRM e sistemas internos da operadora (Salesforce, Oracle Siebel, SAP)",
+      "Webhooks para disparo em tempo real de alertas para ferramentas de marketing automation (Braze, Salesforce Marketing Cloud)",
+      "Exportação agendada via SFTP/S3 para times de BI que consomem dados em DataWarehouse",
+      "Portal de self-service para analistas de dados configurarem modelos e segmentos sem suporte técnico"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de gestores de retenção que precisam de visibilidade sem depender de TI. A REST API abre o mercado de operadoras que já têm CRM e querem enriquecer fluxos existentes — sem a API elas não compram. Webhooks abrem o mercado de marketing automation, transformando predição passiva em ação automatizada. SFTP/S3 abre o mercado de operadoras enterprise com times de BI consolidados que jamais aceitariam um dashboard externo como sistema de registro. O portal self-service abre o mercado de times analíticos internos, reduzindo dependência do vendor.",
+    "fase2_service_layer": "Um ChurnService centraliza toda a lógica de negócio: busca features do assinante, invoca o PredictionEngine, aplica regras de segmentação, persiste scores, dispara alertas. As interfaces (Dashboard, API REST, Webhooks, SFTP) são adaptadores que chamam o ChurnService — nenhuma interface conhece o modelo de ML, a fonte de dados ou as regras de negócio diretamente. Trocar qualquer interface não afeta as demais.",
+    "fase3_fluxo_fixo": "Ingestão de dados brutos → Normalização e extração de features → Scoring pelo PredictionEngine → Classificação em segmentos de risco → Persistência dos scores → Avaliação de regras de alerta → Disparo de notificações/webhooks → Registro de auditoria. Esse pipeline é imutável no código para todos os clientes.",
+    "fase3_parametros_configuraveis": [
+      "Threshold de score para cada nível de risco (baixo/médio/alto/crítico)",
+      "Janela temporal de análise por feature (ex: últimos 30, 60 ou 90 dias)",
+      "Pesos por categoria de feature (uso de dados, voz, pagamento, suporte, qualidade de rede)",
+      "Mapeamento de campos do sistema de origem (nome das colunas do CDR, billing e CRM da operadora)",
+      "Frequência de re-scoring (batch diário, horário ou near-real-time por evento)",
+      "Regras de segmentação por plano, região geográfica, tempo de contrato",
+      "Endpoints de webhook e headers de autenticação por destino",
+      "Modelo de ML ativo (algoritmo, versão, feature set)",
+      "Retenção de dados históricos (90 dias, 1 ano, 3 anos)",
+      "Fuso horário e idioma do dashboard",
+      "Limites de quota de API por cliente"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro na tabela tenants com seu arquivo de configuração JSON. O time de onboarding preenche: credenciais de conexão com as fontes de dados (CDR, billing, CRM), mapeamento de campos, thresholds de risco, frequência de scoring e destinos de webhook. O pipeline existente lê a configuração do tenant e executa. Nenhuma linha de código nova é escrita — estimativa de onboarding: 2 a 5 dias úteis, sem engenheiro.",
+    "fase4_core_isolado": "O PredictionWorker — processo assíncrono e isolado responsável por executar o scoring de churn. Roda em containers separados (ex: Kubernetes Jobs ou AWS ECS Tasks), desacoplado da API e do Dashboard via fila de mensagens (SQS, RabbitMQ ou Kafka). Recebe jobs com batch de assinantes, executa o modelo, persiste resultados. Escala horizontalmente sem afetar as demais camadas.",
+    "fase4_custo_total_cliente": "Custo do core (IA/ML): treinamento mensal do modelo ~$15-80 (instância spot GPU), inferência batch de 1M assinantes ~$20-60/mês (instância CPU otimizada). Infra proporcional: banco de dados (RDS/Postgres por tenant schema) ~$15-40/mês, armazenamento de features e histórico (S3) ~$8-25/mês para 1M assinantes com 1 ano de histórico, cache (Redis) ~$5-15/mês. Banda e transferência: exportações SFTP/API ~$2-10/mês. Operacional: monitoramento e logs ~$5-10/mês. Total estimado por tenant com 1M assinantes: $70-240/mês de custo operacional — viabilizando MRR a partir de $800-2.000 com margem saudável.",
+    "fase4_continuidade": "Se o PredictionWorker falhar: a API e o Dashboard continuam servindo o último score persistido no banco (dados com timestamp indicando frescor). Jobs com falha retornam para a fila com backoff exponencial e DLQ para análise. Alertas de SLA disparam para o time de operações. O cliente final experimenta dados levemente desatualizados, não uma falha total. Health checks separados por componente evitam que falha no worker derrube a API.",
+    "fase4_manutencao": "O PredictionEngine é uma interface com método predict(features: FeatureVector): ChurnScore. Implementações concretas (XGBoostEngine, SageMakerEngine, VertexAIEngine) são injetadas via configuração por tenant. Para trocar: deploy da nova implementação sem remover a atual, migração gradual de tenants via feature flag no config, rollback imediato revertendo a configuração. Zero downtime, zero código alterado no pipeline.",
+    "monetizacao": "SaaS B2B com modelo híbrido: (1) Assinatura base por tenant por volume de assinantes monitorados (ex: R$2.000/mês até 500k, R$4.500/mês até 2M, enterprise acima disso), (2) Add-ons pagos para interfaces premium (portal self-service, exportação BI em tempo real, múltiplos modelos simultâneos), (3) Serviço de onboarding e integração inicial (receita única de R$5.000-20.000), (4) SLA premium com suporte dedicado (15-20% sobre o plano base). Margem bruta alvo: 70-80% após maturidade operacional.",
+    "stack_sugerida": "Backend: Python (FastAPI para API REST, Celery + Redis para workers assíncronos). ML Core: scikit-learn / XGBoost com abstração para SageMaker/Vertex. Banco: PostgreSQL com schemas por tenant (multi-tenancy lógica). Fila: SQS (AWS) ou RabbitMQ. Armazenamento de features e exports: S3. Dashboard: React + Recharts (frontend), servido por CDN (CloudFront). Infra: Docker + Kubernetes (EKS/GKE) com HPA nos workers. Observabilidade: Prometheus + Grafana + Sentry. CI/CD: GitHub Actions. IaC: Terraform."
+  }
+}

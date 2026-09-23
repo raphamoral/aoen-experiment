@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 1,
+  "justificativa": "A proposta descreve um marketplace único e fixo — papéis, fluxo de avaliação, comissões e regras de negócio estão todos hardcoded para um único tenant; não há menção a tabela de configuração por cliente, feature flags, regras de comissão variáveis por tenant ou qualquer mecanismo de onboarding sem código novo."
+}

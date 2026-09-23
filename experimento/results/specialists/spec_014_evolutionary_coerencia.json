@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: a característica primária de latência < 400ms se propaga de forma consistente pela fitness function mensurável no CI, pela estratégia incremental (Phase 4 com edge/SFU para latência intercontinental) e pela reversibilidade do provedor de STT/TTS; a preocupação com privacidade igualmente cascateia da característica arquitetural → fitness function de zero-persistência de áudio auditada automaticamente → Phase 5 on-prem para soberania de dados; a evoluibilidade do motor de tradução é sustentada simultaneamente pelo port/adapter, pelo versionamento de schema e pela progressão de fases com anti-corruption layer — cada decisão encontra suporte em pelo menos duas outras camadas da proposta; a única ressalva é que a seção 'decisoes_last_responsible_moment' foi truncada, impedindo avaliação completa desse eixo crítico de coerência."
+}

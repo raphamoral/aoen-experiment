@@ -1,0 +1,63 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gerenciamento do bem-estar psicológico organizacional: coleta anônima de sinais de saúde mental dos colaboradores, agregação estatística, detecção de padrões de risco e geração de relatórios anonimizados para gestores e RH, sem jamais expor dados individuais identificáveis.",
+    "primary_ports": [
+      "ICheckInPort — receber e registrar auto-avaliação de bem-estar do colaborador",
+      "IReportQueryPort — consultar relatórios agregados e anonimizados por empresa/departamento/período",
+      "IAlertConfigPort — configurar limiares e regras de alertas organizacionais",
+      "ICompanyManagementPort — cadastrar empresas, departamentos e configurar política de privacidade",
+      "IUserOnboardingPort — registrar e autenticar colaboradores (vinculando ao grupo sem expor identidade)",
+      "IDashboardQueryPort — obter indicadores de saúde mental agregados em tempo real"
+    ],
+    "secondary_ports": [
+      "ICheckInRepositoryPort — persistir e recuperar check-ins anonimizados",
+      "IReportRepositoryPort — persistir relatórios agregados gerados",
+      "ICompanyRepositoryPort — persistir configurações e estrutura organizacional",
+      "IAnonymizationServicePort — anonimizar dados antes de qualquer persistência",
+      "INotificationPort — enviar alertas e notificações a gestores e RH",
+      "IAnalyticsPort — emitir eventos para pipeline de análise estatística",
+      "IAuthenticationPort — validar identidade sem vincular à resposta",
+      "ICachePort — cache de relatórios agregados computados",
+      "IAuditLogPort — registrar acessos e operações sensíveis",
+      "IEncryptionPort — cifrar campos sensíveis em repouso"
+    ],
+    "primary_adapters": [
+      "REST API Controller (Express/Fastify) — endpoints HTTP para web e mobile",
+      "GraphQL Resolver — consultas flexíveis para dashboards de gestores",
+      "CLI Adapter — execução de pipelines de teste e seed de dados",
+      "WebSocket Adapter — push de alertas em tempo real para dashboards",
+      "Webhook Receiver Adapter — integração com ferramentas de RH (HRIS) via webhook",
+      "Scheduled Job Adapter — disparo periódico de relatórios e análises (cron)"
+    ],
+    "secondary_adapters": [
+      "PostgresCheckInRepository — implementa ICheckInRepositoryPort via PostgreSQL com colunas cifradas",
+      "PostgresReportRepository — implementa IReportRepositoryPort via PostgreSQL",
+      "PostgresCompanyRepository — implementa ICompanyRepositoryPort via PostgreSQL",
+      "SHA256SaltAnonymizationAdapter — implementa IAnonymizationServicePort com hash salgado por empresa",
+      "SendGridNotificationAdapter — implementa INotificationPort via SendGrid",
+      "SlackNotificationAdapter — implementa INotificationPort via Slack API",
+      "KafkaAnalyticsAdapter — implementa IAnalyticsPort publicando eventos no Kafka",
+      "Auth0AuthenticationAdapter — implementa IAuthenticationPort via Auth0/OIDC",
+      "RedisCache Adapter — implementa ICachePort via Redis",
+      "PostgresAuditLogAdapter — implementa IAuditLogPort em tabela de auditoria imutável",
+      "AES256EncryptionAdapter — implementa IEncryptionPort com chaves gerenciadas via AWS KMS"
+    ],
+    "isolation": "O core domain (domínio + casos de uso) nunca importa frameworks, ORMs, SDKs externos ou bibliotecas de infraestrutura. Todas as dependências externas são invertidas via injeção de dependência nas interfaces de porta. O core é testável com mocks/stubs puros sem banco, rede ou serviços externos. A camada de aplicação orquestra casos de uso chamando apenas interfaces de porta; nunca instancia adaptadores diretamente. Um container de DI (ex: tsyringe ou manual) realiza o wiring no bootstrap da aplicação.",
+    "interfaces": [
+      "Portal Web do Colaborador — check-in diário/semanal de humor, energia e estresse",
+      "App Mobile (PWA) — check-in rápido com notificação push",
+      "Dashboard do Gestor/RH — visualização de indicadores agregados, tendências e alertas",
+      "Painel Administrativo — configuração de empresas, departamentos e políticas",
+      "API Pública REST/GraphQL — integração com HRIS, Slack e ferramentas de terceiros",
+      "Relatórios PDF/CSV exportáveis — para apresentações executivas"
+    ],
+    "escalabilidade": "Escalonamento horizontal dos serviços de API stateless via Kubernetes. Separação de leitura e escrita (CQRS leve): queries de relatório consomem réplicas de leitura do PostgreSQL ou Elasticsearch. Pipeline analítico assíncrono via Kafka desacopla ingestão de check-ins da geração de relatórios. Cache Redis reduz computação de agregações recorrentes. Jobs de relatório agendados rodam em workers isolados. Multi-tenancy por schema PostgreSQL por empresa garante isolamento de dados sem overhead de infraestrutura por cliente.",
+    "custos": "Modelo serverless para jobs de relatório esporádicos (AWS Lambda) reduz custo em cargas baixas. PostgreSQL gerenciado (RDS/Neon) elimina overhead de DBA. Cache agressivo de relatórios agrega valor sem custo linear de computação. Kafka pode ser substituído por SQS/SNS em estágios iniciais para menor custo operacional. Arquivamento automático de check-ins históricos em S3 Glacier reduz custo de armazenamento quente. Monitoramento via OpenTelemetry com Grafana Cloud no tier gratuito até escala relevante.",
+    "monetizacao": "SaaS B2B com precificação por número de colaboradores ativos/mês (per-seat). Tiers: Starter (até 50 colaboradores, relatórios básicos), Growth (até 500, alertas e integrações), Enterprise (ilimitado, SSO, SLA, relatórios personalizados, API completa). Add-ons: módulo de suporte psicológico integrado (parceria com clínicas), relatórios executivos customizados, treinamentos para gestores via plataforma. Modelo anual com desconto incentiva retenção.",
+    "stack_sugerida": "Runtime: Node.js + TypeScript. Framework HTTP: Fastify. ORM: Prisma (PostgreSQL). Cache: Redis (Upstash). Mensageria: Kafka (Confluent Cloud) ou AWS SQS. Auth: Auth0 ou Keycloak. Frontend: Next.js + React + TailwindCSS. Mobile: PWA ou React Native. Infra: AWS (EKS + RDS + ElastiCache + KMS) ou Railway/Render em early-stage. Observabilidade: OpenTelemetry + Grafana + Sentry. CI/CD: GitHub Actions. IaC: Pulumi ou Terraform."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Gerenciamento do bem-estar psicológico organizacional: coleta anônima de sinais de saúde mental dos colaboradores, agregação estatística, detecção de padrões de risco e geração de relatórios anonimizados para gestores e RH, sem jamais expor dados individuais identificáveis.\",\n  \"primary_ports\": [\n    \"ICheckInPort — receber e registrar auto-avaliação de bem-estar do colaborador\",\n    \"IReportQueryPort — consultar relatórios agregados e anonimizados por empresa/departamento/período\",\n    \"IAlertConfigPort — configurar limiares e regras de alertas organizacionais\",\n    \"ICompanyManagementPort — cadastrar empresas, departamentos e configurar política de privacidade\",\n    \"IUserOnboardingPort — registrar e autenticar colaboradores (vinculando ao grupo sem expor identidade)\",\n    \"IDashboardQueryPort — obter indicadores de saúde mental agregados em tempo real\"\n  ],\n  \"secondary_ports\": [\n    \"ICheckInRepositoryPort — persistir e recuperar check-ins anonimizados\",\n    \"IReportRepositoryPort — persistir relatórios agregados gerados\",\n    \"ICompanyRepositoryPort — persistir configurações e estrutura organizacional\",\n    \"IAnonymizationServicePort — anonimizar dados antes de qualquer persistência\",\n    \"INotificationPort — enviar alertas e notificações a gestores e RH\",\n    \"IAnalyticsPort — emitir eventos para pipeline de análise estatística\",\n    \"IAuthenticationPort — validar identidade sem vincular à resposta\",\n    \"ICachePort — cache de relatórios agregados computados\",\n    \"IAuditLogPort — registrar acessos e operações sensíveis\",\n    \"IEncryptionPort — cifrar campos sensíveis em repouso\"\n  ],\n  \"primary_adapters\": [\n    \"REST API Controller (Express/Fastify) — endpoints HTTP para web e mobile\",\n    \"GraphQL Resolver — consultas flexíveis para dashboards de gestores\",\n    \"CLI Adapter — execução de pipelines de teste e seed de dados\",\n    \"WebSocket Adapter — push de alertas em tempo real para dashboards\",\n    \"Webhook Receiver Adapter — int"
+}

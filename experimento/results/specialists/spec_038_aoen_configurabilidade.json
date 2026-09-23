@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 38,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "O fluxo principal está explicitamente fixado em código (fase3_fluxo_fixo) e os parâmetros variáveis por tenant são declarados como configuração (concorrentes, SKUs, frequência, canais), sugerindo onboarding via dados — mas a proposta não evidencia o mecanismo de isolamento de tenant nem especifica se as regras de alerta são totalmente configuráveis por cliente ou parcialmente hardcoded, deixando uma lacuna que impede nota máxima."
+}

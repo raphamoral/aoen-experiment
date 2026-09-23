@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 29,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta apresenta coerência sistêmica muito forte: o núcleo de matching declarado em fase1_core funciona como fio condutor que justifica cada decisão subsequente — a definição dos dois lados do mercado em fase1_mercado mapeia diretamente para as interfaces de fase2 (homeowners → Web/Mobile/WhatsApp, profissionais → Dashboard, operação → Admin), a Service Layer transport-agnóstica em fase2_service_layer é a consequência arquitetural necessária para servir esses 6 canais sem reescrita, e a extensibilidade declarada em fase1_extensivel é sustentada pela parametrização do scoring e pela camada de verificação plugável — o único ponto de demérito é a descrição do service_layer truncada, que impede avaliação completa da coerência dos contratos internos."
+}

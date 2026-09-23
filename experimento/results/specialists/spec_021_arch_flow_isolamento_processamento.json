@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona processamento assíncrono via pipeline de ingestão em stream e broker MQTT gerenciado, e há separação lógica do Motor Preditivo como bounded context distinto em Kubernetes (viabilizando escala independente), mas não há definição explícita de isolamento físico via workers/filas dedicadas para a carga pesada de inferência do modelo preditivo, nem de mecanismo de fallback caso o Predictive Maintenance context fique indisponível — o restante do fluxo (geração de OS, notificações, histórico) pode ser afetado sem essa garantia explicitada."
+}

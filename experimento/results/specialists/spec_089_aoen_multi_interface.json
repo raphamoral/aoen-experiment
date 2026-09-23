@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 89,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê cinco interfaces distintas (Web, Mobile, WhatsApp/SMS, API REST e CSV/PDF), cada uma justificada por um perfil de usuário e contexto de uso real (agrônomos, produtores em campo, agricultores familiares com baixa conectividade, integrações B2B e exigências regulatórias), com lógica agronômica totalmente desacoplada em uma service layer compartilhada, permitindo adicionar ou substituir qualquer interface sem tocar nos serviços core."
+}

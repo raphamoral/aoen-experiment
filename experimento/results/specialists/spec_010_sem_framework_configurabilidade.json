@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "Há sinais embrionários de configurabilidade (tabela de configurações por município, JSONB para retornos variáveis da prefeitura, tela de configurações por CNPJ), mas o núcleo do produto é hardcoded: suporte a novas prefeituras exige desenvolvimento de nova integração, não há modelo de feature flags ou tenant-config table para variar comportamento por cliente, e o onboarding de um MEI em um município não suportado demanda deploy — o sistema ainda não separa explicitamente o que é lógica fixa do que é parâmetro configurável por tenant."
+}

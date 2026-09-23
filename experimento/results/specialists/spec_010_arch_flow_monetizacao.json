@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "O projeto menciona um bounded context de 'Subscription & Billing' e referencia 'planos SaaS, cobrança recorrente, upgrades/downgrades, trial', mas não detalha tiers específicos, faixas de preço, métricas de sustentabilidade (MRR, LTV, CAC, churn) nem a conexão explícita entre o valor entregue e o que é cobrado — é apenas uma intenção de modelo sem substância."
+}

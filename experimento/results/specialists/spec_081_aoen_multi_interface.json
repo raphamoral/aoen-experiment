@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 81,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (Web Dashboard, API REST, WhatsApp, PDF/Excel, White-Label e Marketplace), cada uma explicitamente justificada por um perfil de usuário e caso de uso de mercado real, e todas desacopladas da lógica de negócio via CarbonService layer, permitindo adicionar novas interfaces sem impacto no núcleo."
+}

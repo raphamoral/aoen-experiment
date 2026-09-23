@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 99,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador — pipeline coleta→normalização→análise de sentimento contextual (tendência, volume, urgência, origem) — está claramente identificado, isolado em três camadas desacopladas com interfaces abstratas (ISourceCollector, ISentimentEngine, armazenamento agnóstico), e é extensível por design; perde um ponto porque não articula explicitamente por que alternativas existentes (Mention, Brandwatch, Sprout Social) não resolvem o problema, ficando a proposta de valor insubstituível implícita em vez de demonstrada."
+}

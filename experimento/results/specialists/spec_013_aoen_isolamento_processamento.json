@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona 'fila de mensagens' como um dos adaptadores possíveis da Service Layer, sinalizando consciência de processamento assíncrono, mas não especifica isolamento físico de processos pesados (pagamento, geração de tokens de acesso, relatórios de faturamento) — a Service Layer centralizada sugere execução colocada, sem workers dedicados, sem menção a fallback em caso de falha de processamento e sem estratégia explícita de escalonamento independente das tarefas computacionalmente caras."
+}

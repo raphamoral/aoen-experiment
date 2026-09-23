@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "A proposta esboça um diferenciador latente — a gestão multi-normativa de limiares (CONAMA, EPA, OMS) vinculada a setores industriais específicos — mas o trata como mais uma entidade CRUD sem isolá-lo como núcleo, sem explicar por que nenhuma alternativa resolve isso da mesma forma, e sem evidenciar mecanismo extensível para novas normas regulatórias."
+}

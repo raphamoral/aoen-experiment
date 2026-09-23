@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O público-alvo (MEI) é mencionado e representa um segmento legalmente delimitado no Brasil, mas a proposta não articula explicitamente a dor do cliente, não cita tamanho de mercado, não apresenta diferenciação frente a concorrentes existentes (ContaAzul, Nibo, QuickBooks Brasil) e não formula uma proposta de valor declarada — tudo é inferido implicitamente da arquitetura técnica, não de uma visão de mercado estruturada."
+}

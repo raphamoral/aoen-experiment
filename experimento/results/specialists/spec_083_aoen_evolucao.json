@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 83,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte orientação evolutiva — o CertificationEngine como abstração com adapters intercambiáveis, a service layer com contratos independentes de interface e o isolamento da lógica de domínio da camada de apresentação são decisões sólidas e reversíveis; a nota não chega a 10 porque a proposta não endereça explicitamente mecanismos de escalabilidade horizontal (filas, cache distribuído, event-driven) que seriam necessários na transição de dezenas para milhares de usuários sem mudança arquitetural, e o fluxo fixo descrito na fase 3 sugere ao menos um caminho ainda não modelado como composição plugável."
+}

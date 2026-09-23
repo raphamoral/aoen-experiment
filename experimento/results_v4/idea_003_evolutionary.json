@@ -1,0 +1,59 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Privacidade e anonimato por design (k-anonimato, minimização de dados, separação entre identidade e resposta)",
+      "Segurança e conformidade (LGPD, GDPR, HIPAA quando aplicável, dados sensíveis de saúde)",
+      "Evolvabilidade (modularidade, baixo acoplamento, deploy independente)",
+      "Confiabilidade e disponibilidade em fluxos de crise (canal de apoio e escalonamento)",
+      "Multi-tenancy com isolamento forte entre empresas",
+      "Auditabilidade e transparência (o colaborador pode verificar o que é coletado e compartilhado)",
+      "Observabilidade sem violar a privacidade (telemetria sem PII)",
+      "Escalabilidade elástica e custo proporcional ao uso"
+    ],
+    "fitness_functions": [
+      "Anonimato: nenhum relatório é gerado para coortes com menos de k=10 respondentes. Um teste automatizado no CI e em produção falha o build ou bloqueia a query se o limite for violado.",
+      "Re-identificação: testes de propriedade e um teste de linkage semanal tentam cruzar respostas agregadas com atributos demográficos. Devem ter risco de re-identificação abaixo do limite definido, e o orçamento de privacidade (epsilon) do differential privacy é monitorado.",
+      "Separação de dados: teste de arquitetura (ArchUnit ou dependency-cruiser) garante que o módulo de identidade não importe o módulo de respostas e vice-versa. Uma verificação de schema garante que nenhuma tabela de respostas tenha FK para user_id.",
+      "Vazamento de PII: scanner de logs, traces e métricas (regex e DLP) roda no pipeline. Qualquer PII encontrada bloqueia o deploy.",
+      "Criptografia: verificação contínua de que 100% dos dados estão criptografados em repouso e em trânsito, com rotação de chaves por tenant em até 90 dias.",
+      "Isolamento multi-tenant: testes automatizados de acesso cruzado entre tenants, com 0 falhas tolerado. Row-level security é validada a cada migration.",
+      "Acoplamento: limite de dependências entre módulos, métrica de instabilidade e abstratividade por módulo, e contract tests (Pact) entre serviços.",
+      "Desempenho: p95 de submissão de check-in abaixo de 300ms e de geração de dashboard abaixo de 2s, medidos em teste de carga contínuo no CI.",
+      "Disponibilidade: SLO de 99.9% para o canal de crise e de 99.5% para o restante, com alertas de error budget.",
+      "Conformidade: checagem de política como código (OPA) para retenção e exclusão de dados. Teste de direito ao esquecimento executado mensalmente em staging.",
+      "Custo: custo por colaborador ativo por mês monitorado com alerta se ultrapassar o limite definido.",
+      "Evolvabilidade: lead time de mudança, frequência de deploy e taxa de falha de mudança (DORA) acompanhados como fitness functions de processo."
+    ],
+    "incremental_change": "Começar como monólito modular, com bounded contexts explícitos (Identidade/Tenant, Check-ins, Agregação e Relatórios, Notificações, Billing, Recursos de Apoio), e extrair serviços só quando uma fitness function ou uma necessidade concreta justificar (escala, isolamento de segurança ou autonomia de time). Fases: (1) MVP com check-in semanal anônimo, dashboard agregado e um único tenant piloto; (2) multi-tenancy, SSO e regras de k-anonimato configuráveis; (3) análise de tendências, alertas de nível organizacional e integração com Slack/Teams; (4) differential privacy, benchmarks entre empresas e ML para detecção de risco agregado; (5) marketplace de parceiros de apoio psicológico (EAP). Cada fase entra com feature flags, canary release e rollout por tenant. As fitness functions rodam no pipeline de deploy e são o critério de aceite. A extração do módulo de anonimização como serviço próprio é candidata precoce, porque é o núcleo de confiança e exige isolamento de segurança.",
+    "reversibilidade": "Reversíveis (two-way doors): provedor de cloud dentro do mesmo padrão de contêineres, framework de frontend, provedor de e-mail e notificações, ferramenta de BI embutido, estratégia de cache, provedor de observabilidade, divisão de módulos em serviços (e o inverso), e planos e preços. Semi-reversíveis: banco de dados relacional (custo de migração moderado, mitigado por abstração de repositório e migrations versionadas) e provedor de identidade (mitigado por OIDC padrão). Irreversíveis ou muito caras (one-way doors), a decidir no last responsible moment com ADRs: o modelo de anonimização (o que é coletado, granularidade e k mínimo), pois dados coletados sem garantias de anonimato não podem ser 'anonimizados depois' e a promessa feita aos colaboradores não pode ser retirada; a localização e residência dos dados (região, exigência legal); o esquema de chaves de criptografia por tenant; e os contratos públicos de API e webhooks. Decisões sobre ML e differential privacy avançado podem esperar até haver volume de dados que as justifique.",
+    "coupling": "Acoplamento baixo entre bounded contexts, com comunicação por eventos de domínio assíncronos (outbox pattern) e APIs versionadas. Regra central: o contexto de Identidade (quem é o colaborador) e o de Respostas (o que foi respondido) são deliberadamente desacoplados. A ligação é feita apenas por um token efêmero e não reversível (blind token ou pseudônimo rotativo), emitido para impedir duplicidade de resposta sem revelar identidade. O RH e o gestor nunca acessam dados individuais, só agregados. Cada módulo tem dono de dados próprio (sem banco compartilhado entre contextos). Anti-corruption layers isolam integrações externas (HRIS, SSO, Slack/Teams, pagamentos). Módulos expõem só interfaces públicas, e isso é imposto por testes de arquitetura. Coesão alta dentro de cada contexto, para permitir extração futura sem reescrita.",
+    "interfaces": [
+      "App web e mobile do colaborador (PWA/React Native): check-in anônimo, biblioteca de recursos, canal de apoio",
+      "Painel web do RH/gestão: relatórios agregados, tendências e alertas organizacionais (nunca individuais)",
+      "API REST/GraphQL pública versionada para integrações",
+      "Webhooks de eventos (relatório gerado, alerta de limiar organizacional)",
+      "Integração SSO (SAML/OIDC) e provisionamento SCIM, sem replicar dados de saúde para o provedor",
+      "Integração com HRIS (Workday, BambooHR, Gupy, etc.) só para estrutura organizacional (equipe, unidade), com atributos generalizados",
+      "Bots para Slack/Teams (lembretes de check-in, sem conteúdo sensível)",
+      "Interface de admin/backoffice para suporte e para configuração de tenants (sem acesso a respostas)",
+      "Canal de crise: encaminhamento a linhas de apoio (CVV 188, EAP contratado) com acesso opcional e voluntário",
+      "Interface interna entre Identidade e Agregação baseada em tokens cegos",
+      "Portal de transparência para o colaborador: o que é coletado, para quê e quem vê",
+      "Interface de billing (Stripe/Pagar.me) com webhooks",
+      "Exportação de relatórios (PDF/CSV) com verificação de k-anonimato aplicada"
+    ],
+    "escalabilidade": "Escala horizontal com componentes stateless em contêineres (Kubernetes ou serviço gerenciado) atrás de autoscaling. O padrão de carga é sazonal, com picos em dias e horários de check-in (por exemplo, segunda-feira de manhã). Por isso, submissões entram numa fila (SQS/Kafka) para absorver picos, com processamento assíncrono. Postgres particionado por tenant e por período (ou schema por tenant para clientes enterprise), com réplicas de leitura para dashboards. Agregações são pré-computadas (views materializadas ou data mart analítico) para que relatórios não consultem dados brutos. Cache de relatórios com invalidação por evento. Tenants muito grandes podem ser movidos para células dedicadas (cell-based architecture), o que também melhora o isolamento e a residência de dados. Módulos que se tornem gargalos são extraídos e escalam de forma independente.",
+    "custos": "Prioridade é manter o custo unitário por colaborador baixo e previsível. No início: monólito modular, banco gerenciado e um único ambiente de produção, evitando microsserviços e Kubernetes prematuros (custo de operação e de pessoas). Principais custos variáveis: computação, armazenamento e backup criptografado, notificações (e-mail/push) e, na fase de ML, inferência. Custos fixos relevantes: segurança e conformidade (pentest anual, auditoria, certificações como ISO 27001 e SOC 2, DPO/jurídico), suporte e curadoria clínica do conteúdo (psicólogos consultores). Mitigação: retenção mínima de dados brutos, com agregação e descarte após a janela definida; autoscaling com escala a zero em ambientes não produtivos; reserved instances em cargas estáveis; FinOps com tags por tenant e alerta de custo por colaborador ativo; evitar lock-in caro com padrões abertos. Parcerias de EAP/atendimento são custo de repasse, não custo fixo.",
+    "monetizacao": "SaaS B2B com assinatura por colaborador ativo por mês (PEPM), em faixas por porte da empresa. Planos: Essencial (check-ins e dashboard agregado), Profissional (tendências, integrações Slack/Teams/HRIS, k configurável, SSO) e Enterprise (células dedicadas, residência de dados, SLA, auditoria, API completa, suporte dedicado). Receita adicional: módulos de conteúdo e programas de bem-estar (trilhas, workshops), marketplace com comissão sobre sessões de terapia e EAP de parceiros, relatórios de benchmark setorial anonimizados (com opt-in dos tenants), e serviços profissionais (implantação, consultoria de cultura e conformidade com a NR-1 e riscos psicossociais). Piloto gratuito ou com desconto de 60 a 90 dias para provar engajamento. Contratos anuais com desconto. Métricas-chave: taxa de participação (adoção é o que dá valor ao produto), NRR, churn e CAC payback. Um princípio de produto a manter: nunca monetizar dados individuais, e isso deve constar nos contratos e ser verificável.",
+    "stack_sugerida": "Frontend: React com TypeScript e Next.js (painel), PWA ou React Native (colaborador). Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Spring Boot (à escolha da equipe), com módulos separados por bounded context. Dados: PostgreSQL gerenciado (RLS por tenant, particionamento), Redis para cache e rate limiting, e data mart analítico (ClickHouse ou BigQuery) para agregações quando o volume justificar. Mensageria: SQS/SNS ou Kafka (Redpanda) com padrão outbox. Identidade: Keycloak, Auth0 ou Cognito com OIDC/SAML/SCIM. Criptografia: KMS com chaves por tenant, TLS 1.3, envelope encryption. Privacidade: biblioteca de differential privacy (OpenDP ou Google DP), serviço de k-anonimato dedicado. Infra: AWS (região São Paulo para LGPD) ou GCP, com Terraform, contêineres em ECS Fargate (inicialmente) e evolução para EKS se necessário. CI/CD: GitHub Actions com fitness functions como etapa obrigatória (ArchUnit ou dependency-cruiser, Pact, OPA, k6, scanners de PII, Trivy, Semgrep). Observabilidade: OpenTelemetry com Grafana/Prometheus ou Datadog, com redação de PII. Feature flags: Unleash ou LaunchDarkly. Billing: Stripe ou Pagar.me. Governança: ADRs versionados no repositório, registro de decisões irreversíveis e RIPD/DPIA mantido como documento vivo."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T01:48:21+00:00",
+    "runner": "runner.py"
+  }
+}

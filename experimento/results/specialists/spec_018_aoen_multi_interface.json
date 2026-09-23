@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Dashboard Web, REST API, Webhooks, SFTP/S3 e Portal Self-Service), cada uma explicitamente justificada por um perfil de usuário e segmento de mercado específico, com lógica de negócio centralizada no ChurnService que atua como camada desacoplada — qualquer interface pode ser adicionada, removida ou substituída sem afetar as demais ou o core preditivo."
+}

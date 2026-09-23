@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "O projeto prevê múltiplas interfaces web com propósitos distintos (dashboard para corretores, página pública de assinatura sem login para signatários), o que demonstra consciência de perfis diferentes, mas não aborda desacoplamento explícito da lógica de negócio, ignora contextos mobile ou API para integração com sistemas de terceiros, e as interfaces listadas parecem definidas por conveniência de implementação em Next.js em vez de uma estratégia deliberada de alcance de mercado multi-canal."
+}

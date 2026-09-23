@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "A arquitetura prevê IBillingPort ('registro de uso e cobrança por minuto/sessão/usuário') e ISessionAnalyticsPort, sinalizando consciência de métricas por cliente, mas o IBillingPort descreve rastreamento de receita (cobrar o cliente), não de custo incorrido por tenant — não há cálculo explícito do tipo 'cada minuto de STT custa R$0,003 + tradução R$0,001 por participante', nem conexão entre consumo de adapters externos (Google STT, DeepL, OpenAI) e margem por sessão/cliente."
+}

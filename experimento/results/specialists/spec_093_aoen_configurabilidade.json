@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 93,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura demonstra extensibilidade via plug-ins de compliance e desacoplamento do motor de matching, mas não descreve explicitamente um mecanismo de configuração por tenant — não há menção a uma tabela de configuração por cliente, ativação seletiva de regras por tenant ou pesos de matching ajustáveis por parceiro B2B2B, o que sugere que comportamentos diferenciados por cliente ainda exigiriam intervenção em código."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista componentes de infraestrutura concretos (S3, CloudFront, AWS MediaConvert, OpenSearch, SES/SendGrid, Stripe) e demonstra consciência de otimização ao classificar serviços como commodity, mas não apresenta nenhuma estimativa de custo em valores monetários, nenhuma estratégia explícita de scale-to-zero/spot instances, e nenhuma projeção de como os custos escalam com o crescimento da base de usuários."
+}

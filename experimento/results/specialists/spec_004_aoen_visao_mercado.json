@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 7,
+  "justificativa": "O mercado-alvo é preciso (empresas 500+ funcionários, segmentado em compradores e fornecedores), as dores de ambos os lados são bem articuladas (opacidade/favorecimento vs. custo de prospecção), e a proposta de valor dual-sided é convincente — mas a nota não chega a 10 porque faltam: (1) tamanho de mercado quantificado (TAM/SAM/SOM ausentes), (2) análise competitiva explícita com posicionamento contra alternativas estabelecidas como SAP Ariba, Coupa ou Mercado Eletrônico, e (3) métricas ou benchmarks que validem a dor (ex: tempo médio de ciclo de cotação atual vs. esperado na plataforma)."
+}

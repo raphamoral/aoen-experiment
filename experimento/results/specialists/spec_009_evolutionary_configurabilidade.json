@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta menciona feature flags (Unleash/LaunchDarkly) e adapters/anti-corruption layers para provedores externos — fundações que *podem* suportar configurabilidade — mas não define nenhuma estratégia explícita de multi-tenancy: ausência de tenant configuration table, ausência de fitness function que valide comportamento por tenant, ausência de processo de onboarding sem deploy, e os feature flags são descritos para rollout regulatório gradual (não por cliente), indicando que um novo tenant ainda exigiria desenvolvimento ou configuração manual não formalizada."
+}

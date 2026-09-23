@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "O projeto menciona consciência sobre o custo por processamento (R$0,10–R$0,50 por exame via API de IA) e a necessidade de precificar levando isso em conta, mas não define nenhum modelo de monetização concreto — sem tiers, valores de assinatura, segmentação de clientes (PF vs. nutricionistas/personal trainers), nem métricas de negócio como MRR, LTV ou CAC."
+}

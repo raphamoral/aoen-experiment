@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 1,
+  "justificativa": "A proposta descreve apenas uma arquitetura em camadas (Clean Architecture) com separação lógica de responsabilidades, mas o caso de uso 'RealizarMatchmaking' — que executa um algoritmo de compatibilidade potencialmente custoso sobre todo o conjunto de startups e investidores — aparece como uma chamada síncrona comum, sem nenhuma menção a filas de mensagens, workers assíncronos, processos separados, circuit breakers ou mecanismo de fallback, o que significa que uma falha ou sobrecarga no matchmaking pode bloquear ou derrubar o restante da aplicação."
+}

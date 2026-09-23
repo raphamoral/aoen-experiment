@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "O fluxo principal é corretamente fixado em código e há sinal de configuração por categoria de equipamento no painel administrativo, mas a proposta não descreve um modelo de configuração por tenant — não há menção a config tables por cliente, feature flags, regras de checklist configuráveis por operador/parceiro, nem como um novo cliente B2B seria onboardado sem deploy; a 'configuração por categoria' parece global, não por tenant."
+}

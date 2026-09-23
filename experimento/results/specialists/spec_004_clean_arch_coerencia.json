@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "O modelo de domínio conta uma história coerente — Auction → Bid → PurchaseOrder → Contract forma uma cadeia lógica onde cada entidade justifica a seguinte — e há alinhamento consistente do campo 'category' entre Auction, Supplier e ITRequirement, com 'technicalScore' no Bid respondendo ao 'minimumScore' no ITRequirement; porém há lacunas de coerência: o mecanismo de validação do technicalScore (quem calcula e garante) não está modelado, o creditLimit do Buyer não tem entidade ou regra que o faça atuar sobre o fluxo, a Rating foi truncada impedindo verificar o fechamento do loop com reputationScore, e o processo de homologação do Supplier (status → aprovação por categoria) é declarado como regra mas sem entidade ou aggregate que o sustente."
+}

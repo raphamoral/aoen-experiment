@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona um billing-service e Stripe para assinaturas, sinalizando consciência de cobrança por cliente, mas não descreve nenhum mecanismo de rastreamento de consumo de recursos por tenant (ex: inferências de IA, minutos de vídeo, storage DICOM por animal), nem apresenta cálculo de custo por operação — a arquitetura está no nível de FinOps (lista de serviços de infra), não de Unit Economics."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (diagnóstico veterinário por imagem via IA) está claramente isolado no core domain, é extensível via interface IImageAnalyzer que permite trocar ou combinar provedores (OpenAI Vision, modelos custom, GPU on-premise), e resolve um problema real — laudos especializados acessíveis sem deslocamento — que clínicas tradicionais e teleconsultas genéricas não endereçam; perde um ponto por não detalhar o que torna o modelo de IA propriamente veterinário (dataset especializado, taxonomia de doenças animais) em vez de um wrapper sobre visão computacional genérica."
+}

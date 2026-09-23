@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 1,
+  "justificativa": "A proposta não apresenta nenhum modelo de monetização estruturado — a única menção tangível é 'billing por minuto' citada de passagem como dado de log na Service Layer, sem qualquer elaboração sobre tiers, valores, segmentação de preço por perfil de cliente, análise de custo por sessão versus receita, ou métricas de sustentabilidade como MRR, LTV ou CAC."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta obtém isolamento parcial e implícito ao delegar STT, MT e TTS a provedores externos (que são processos fisicamente separados por natureza), e menciona 'fallback' de provedor na Service Layer — mas não descreve nenhum mecanismo explícito de isolamento interno: não há filas de mensagens (Kafka, RabbitMQ), workers dedicados, bulkheads, nem separação física entre o orquestrador do pipeline e as etapas computacionalmente caras; o fluxo fixo descrito na fase3 sugere execução linear síncrona dentro de um único processo central, o que significa que sobrecarga ou falha no orquestrador afeta todas as sessões simultaneamente e o escalonamento independente das etapas pesadas não é viabilizado pela arquitetura descrita."
+}

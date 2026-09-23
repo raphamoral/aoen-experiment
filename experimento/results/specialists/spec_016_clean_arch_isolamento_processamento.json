@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta define apenas entidades de domínio com regras de negócio, sem qualquer menção a filas, workers, processos separados, processamento assíncrono ou mecanismos de isolamento físico — não há arquitetura de processamento definida, logo presume-se execução monolítica sem qualquer resiliência a falhas de processos pesados."
+}

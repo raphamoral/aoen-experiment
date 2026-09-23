@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 67,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "Arquitetura genuinamente evolutiva: AlertEngine abstraído por interface (regras → ML sem reescrita), fontes de dados via adapters desacoplados do core, e todas as interfaces (Web, Mobile, WhatsApp, FHIR) como adaptadores de entrada chamando a mesma camada de serviço — lógica de negócio isolada e portátil. A penalização vem de dois pontos: o pipeline da fase 3 declarado explicitamente como 'imutável no código' congela a sequência de processamento e pode exigir reescrita se o fluxo clínico precisar mudar (ex: inserir um passo de triagem entre normalização e análise); e as decisões de armazenamento (banco de dados, estratégia de escala horizontal) não foram abordadas, deixando em aberto se o crescimento de 10 para 10.000 usuários seria absorvido sem mudança estrutural."
+}

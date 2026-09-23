@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A arquitetura lista os componentes de infraestrutura (EKS/GKE, RDS/PostgreSQL, Kafka, Redis, S3, etc.) com escolhas tecnicamente sólidas, mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia explícita de otimização financeira (spot instances, scale-to-zero, storage tiering, reserved capacity) e nenhuma projeção de como os custos escalam com o crescimento da base de tenants ou volume de dados IoT."
+}

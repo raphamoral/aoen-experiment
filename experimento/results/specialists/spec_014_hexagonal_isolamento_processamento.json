@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A arquitetura hexagonal com múltiplos adapters por porta (ex: DeepL + OpenAI + Google Translate para ITranslationEnginePort; Google STT + AssemblyAI para ISpeechToTextPort) oferece isolamento lógico e implica capacidade de fallback entre provedores, mas a proposta não menciona nenhum mecanismo de isolamento físico real — não há filas de mensagens, workers separados, brokers assíncronos (Kafka, RabbitMQ, SQS) nem padrões explícitos de Bulkhead ou Circuit Breaker, deixando o pipeline pesado STT→Translation→TTS presumivelmente síncrono e co-localizado com o núcleo de orquestração."
+}

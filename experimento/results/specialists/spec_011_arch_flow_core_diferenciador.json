@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado no MatchingEngine (embedding semântico de perfis via NLP + score de fit cultural com feedback loop comportamental) e é extensível por design — independe de fornecedor único e evolui com dados históricos — mas perde dois pontos porque o score de fit cultural e a detecção de anomalias ainda estão no estágio 'genesis/custom' sem evidência de que o algoritmo resolve o problema melhor do que abordagens já existentes em plataformas como AngelList ou Gust, tornando a proposta de valor insubstituível ainda hipotética em vez de demonstrada."
+}

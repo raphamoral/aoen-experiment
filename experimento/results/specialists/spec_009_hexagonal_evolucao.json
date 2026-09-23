@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura hexagonal bem executada — com todas as dependências externas isoladas atrás de interfaces (IPaymentGateway, ISearchIndexService, IKYCVerificationService etc.) e múltiplos adaptadores primários independentes — garante alta capacidade evolutiva: trocar banco, gateway de pagamento ou mecanismo de busca exige apenas novo adaptador secundário sem tocar o domínio; contudo, a proposta não define explicitamente como os subdomínios (Certificação, Transação, Conformidade) se comunicam entre si, deixando aberta a possibilidade de acoplamento direto entre use cases que comprometeria a evolução independente de cada contexto delimitado."
+}

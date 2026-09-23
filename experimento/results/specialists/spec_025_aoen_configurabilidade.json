@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 25,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra intenção clara de configurabilidade — fluxo fixo de 8 etapas com 'parâmetros do cliente' na entrada, core agnóstico de solver e service layer com contrato estável — mas não formaliza um modelo de configuração por tenant: não descreve schema de configuração no banco, não menciona feature flags por cliente, não garante explicitamente que onboarding de novo cliente é zero-código/zero-deploy, e o White-Label é apresentado como interface alternativa sem esclarecer se sua ativação por tenant é configuração ou implantação separada."
+}

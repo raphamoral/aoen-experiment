@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "A proposta acerta nos fundamentos: microserviço separado para IA com isolamento físico real, processamento assíncrono via message queue (RabbitMQ/Kafka) e escalabilidade independente explicitamente declarada via Kubernetes — porém não descreve nenhuma estratégia de fallback, circuit breaker ou degradação graceful para quando o serviço de IA estiver indisponível, deixando em aberto o comportamento do sistema diante de falha no componente mais crítico e caro."
+}

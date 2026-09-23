@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 31,
+  "ideia": "Plataforma de mentoria online pareada por IA",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de pareamento inteligente que conecta mentor e mentorado com base em compatibilidade multidimensional (objetivos de carreira, estilo de aprendizado, disponibilidade, histórico profissional e sinais comportamentais coletados progressivamente), maximizando a probabilidade de relação produtiva e duradoura.",
+    "fase1_mercado": "Primário: profissionais em transição de carreira (25–45 anos) dispostos a pagar por aceleração de trajetória. Secundário: empresas (B2B) que querem programas internos de mentoria estruturada para retenção e desenvolvimento de talentos. Terciário: instituições de ensino superior que desejam conectar ex-alunos a alunos atuais.",
+    "fase1_extensivel": "Sim. O core é uma interface abstrata de 'MatchingEngine' com contrato fixo: recebe perfis estruturados e retorna ranked matches com score e justificativa. A implementação pode ser trocada — hoje OpenAI embeddings + regras heurísticas, amanhã modelo fine-tuned proprietário ou Anthropic Claude — sem alterar o restante da plataforma. Fornecedor de IA é um detalhe de implementação, não uma dependência estrutural.",
+    "fase2_interfaces": [
+      "Web App (SPA) — portal principal para mentores e mentorados",
+      "Mobile App (iOS + Android) — sessões, notificações e progresso em movimento",
+      "API REST/GraphQL pública — integração B2B com plataformas de RH (Workday, SAP, BambooHR)",
+      "Dashboard corporativo — gestão de programas de mentoria para empresas contratantes",
+      "Chatbot embarcado (Slack / Microsoft Teams) — adoção zero-fricção dentro do ambiente de trabalho corporativo",
+      "Widget embarcável — para portais de ex-alunos e plataformas de educação parceiras"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado B2C direto (maior volume, menor ticket). Mobile App aumenta retenção e frequência de uso no B2C. API REST abre o mercado enterprise sem que a empresa precise mudar seu sistema — ela consome pareamento como serviço. Dashboard corporativo viabiliza contratos anuais com RH (ticket alto, churn baixo). Chatbot Teams/Slack reduz a barreira de adoção em ambientes corporativos onde trocar de ferramenta é politicamente difícil. Widget embarcável transforma parceiros (universidades, portais) em canal de distribuição sem custo de aquisição.",
+    "fase2_service_layer": "Uma camada de serviços centralizada expõe casos de uso como métodos agnósticos de interface: MatchService.findMatches(), SessionService.schedule(), ProgressService.track(), FeedbackService.submit(). Todas as interfaces (web, mobile, API, bot) chamam esses mesmos serviços via adapters. Nenhuma interface contém lógica de negócio. Trocar ou adicionar uma interface não toca nos serviços.",
+    "fase3_fluxo_fixo": "1. Coletar perfil (mentor ou mentorado) via questionário estruturado. 2. Enriquecer perfil com embeddings semânticos via MatchingEngine. 3. Executar algoritmo de pareamento e gerar ranked list com scores. 4. Apresentar sugestões e registrar escolha. 5. Agendar sessões recorrentes. 6. Coletar feedback pós-sessão. 7. Atualizar perfil dinâmico com sinais de feedback. 8. Disparar re-matching periódico ou sob demanda. Este fluxo é invariante — o que muda são os parâmetros que o alimentam.",
+    "fase3_parametros_configuraveis": [
+      "Critérios de matching com pesos configuráveis (área, senioridade, idioma, timezone, estilo, disponibilidade)",
+      "Número máximo de sugestões exibidas por rodada",
+      "Frequência e formato das sessões (semanal, quinzenal, 30min, 1h)",
+      "Modelo de IA utilizado pelo MatchingEngine (GPT-4o, Claude, modelo local)",
+      "Domínios de mentoria habilitados (tech, gestão, empreendedorismo, etc.)",
+      "Fluxo de onboarding (perguntas, etapas, campos obrigatórios)",
+      "Idiomas suportados por tenant",
+      "Política de re-matching (automático após N sessões, por NPS abaixo de threshold)",
+      "Integrações ativas (calendário, videoconferência, SSO)",
+      "Modelo de cobrança (assinatura individual, por sessão, por assento corporativo)",
+      "Paleta visual e domínio white-label por cliente B2B"
+    ],
+    "fase3_novo_cliente": "Novo cliente (B2B ou parceiro) é criado via painel de administração: define-se o tenant com slug único, carrega-se a configuração JSON do programa (critérios, domínios, limites, integrações, branding), vinculam-se usuários via importação CSV ou SSO. Zero código novo. O sistema instancia o fluxo fixo parametrizado com a configuração daquele tenant automaticamente.",
+    "fase4_core_isolado": "O MatchingEngine roda como worker assíncrono isolado (processo separado em fila de jobs — ex: BullMQ ou Celery). A requisição de matching entra na fila, o worker consome, executa a chamada à IA, persiste o resultado e emite evento. A API principal nunca chama a IA de forma síncrona — apenas enfileira e consulta o resultado. Isso isola latência, falha e custo do fluxo principal.",
+    "fase4_custo_total_cliente": "Custo do core por cliente/mês: chamadas à API de IA para matching inicial (~0.01 USD por pareamento) + re-matchings periódicos + embeddings de atualização de perfil. Custo de infra proporcional: fração do servidor de API (compute compartilhado com billing por uso), banco de dados (linhas por tenant), armazenamento de histórico de sessões e feedbacks (~5MB/mentorado/ano), banda de CDN para assets white-label. Custos operacionais: e-mail transacional (Resend/SendGrid por evento), videoconferência se integrada (consumo de minutos), notificações push. Estimativa baseline: USD 0.80–2.50/mentorado ativo/mês dependendo de frequência de matching e uso de vídeo. Permite precificação com margem clara acima de USD 15–30/assento/mês.",
+    "fase4_continuidade": "O worker de matching pode falhar sem derrubar a plataforma. Matches já computados ficam persistidos — sessões agendadas continuam normalmente. A fila retém jobs com retry exponencial. Um circuit breaker detecta falha no provider de IA e ativa fallback (matching heurístico sem IA ou resultado em cache). O usuário vê 'sugestões em processamento' em vez de erro. SLA de matching é desacoplado do SLA de sessões.",
+    "fase4_manutencao": "O MatchingEngine é acessado exclusivamente via interface abstrata injetada por injeção de dependência. Trocar de OpenAI para Anthropic (ou modelo local via Ollama) exige implementar um novo adapter que respeita o contrato e mudar uma variável de configuração por tenant. Zero downtime: o novo adapter é deployado, testado em ambiente shadow, e ativado via feature flag por tenant gradualmente.",
+    "monetizacao": "B2C: assinatura mensal/anual do mentorado (USD 29–79/mês) com plano free limitado a 1 match e 2 sessões para aquisição. Mentor pode ser remunerado pela plataforma (marketplace com split) ou voluntário (modelo universitário/corporativo). B2B: licença por assento ativo/mês (USD 15–40/assento) com contrato anual, onboarding e SLA. Receita adicional: sessões avulsas para usuários free (USD 9–25/sessão), relatórios de progresso exportáveis para RH (add-on), e API de matching como serviço para parceiros (pricing por volume de requisições).",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com NestJS — modular, suporta injeção de dependência nativa, ideal para service layer e adapters. Fila de jobs: BullMQ + Redis para o worker de matching assíncrono. Banco: PostgreSQL com schema multi-tenant (row-level isolation) + pgvector para armazenamento de embeddings próximo dos dados. IA/Matching: Anthropic Claude (claude-sonnet-4-6) ou OpenAI via adapter intercambiável. Frontend web: Next.js (App Router) com TailwindCSS — SSR para SEO no B2C, RSC para performance. Mobile: React Native (Expo) para reuso de lógica com a web. Infraestrutura: Railway ou Render para início (custo baixo, zero ops), migração para AWS ECS/Fargate quando MRR justificar. CDN: Cloudflare. E-mail transacional: Resend. Autenticação: Clerk ou Auth.js com suporte a SSO/SAML para B2B. Observabilidade: OpenTelemetry + Grafana Cloud para métricas de custo por tenant."
+  }
+}

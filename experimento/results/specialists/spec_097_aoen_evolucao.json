@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 97,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra decisões evolutivas sólidas — adapter pattern explícito para providers de mapa, Service Layer com contratos estáveis isolando lógica de negócio das interfaces, e orquestrador de notificação agnóstico a canal — mas deixa lacunas relevantes: não há menção a abstração de banco de dados (trocar Postgres por outro storage exigiria quê?), o mecanismo interno do motor de matching não descreve como o próprio algoritmo pode ser substituído (ex: regras heurísticas → modelo ML), e a proposta é silente sobre estratégia de escala horizontal, deixando em aberto se o crescimento de 10 para 10.000 usuários exigiria refatoração na Service Layer centralizada."
+}

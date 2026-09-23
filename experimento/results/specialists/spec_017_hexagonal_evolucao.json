@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura Hexagonal (Ports & Adapters) está aplicada de forma consistente — o domínio central define contratos (ports) e toda infraestrutura implementa adaptadores substituíveis, o que permite trocar banco, notificações, PDF ou blockchain de forma independente; o uso de filas assíncronas e cache Redis endereça escalabilidade sem mudança estrutural; a nota não atinge 10 pela ausência explícita de estratégia de versionamento de API e de mecanismos de feature flags que tornariam decisões ainda mais graduais e reversíveis."
+}

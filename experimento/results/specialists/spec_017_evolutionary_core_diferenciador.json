@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador — imutabilidade auditável com verificação pública sub-300ms para certificados de cursos livres — é identificado e começa a ser isolado (módulo de Verificação extraído via Strangler Fig, fitness functions de integridade e UUID), mas a proposta não explicita o mecanismo técnico que torna os certificados genuinamente inforjáveis (assinatura criptográfica? hash ancorado? log imutável estilo certificate transparency?), deixando o núcleo como um CRUD auditado de alta disponibilidade — real e valioso, porém substituível por qualquer plataforma de certificação incumbente que adote as mesmas práticas operacionais."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta descreve funcionalidades técnicas detalhadas (gamificação, microlearning, trilhas), mas não articula mercado-alvo específico, tamanho de mercado, dor do cliente ou diferenciação frente a concorrentes como Docebo, TalentLMS ou Cornerstone."
+}

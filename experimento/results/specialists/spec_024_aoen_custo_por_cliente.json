@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 24,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente a arquitetura funcional do produto (engine de reconciliação, interfaces, service layer, conectores) sem nenhuma menção a mensuração de custo por tenant, rastreamento de consumo de recursos por cliente ou cálculo de custo por operação — o critério de unit economics está completamente ausente."
+}

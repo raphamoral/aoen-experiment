@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "O projeto prevê múltiplas interfaces bem justificadas por perfis reais (REST para web/mobile, GraphQL para dashboards, WebSocket para tempo real, CLI para operações internas, Webhook para integrações externas, Admin provavelmente para backoffice), com arquitetura hexagonal que desacopla explicitamente a lógica de negócio das interfaces via ports/adapters — permitindo adicionar novos canais sem reescrever o core; perde um ponto pela proposta do Admin adapter estar truncada, impedindo avaliação completa desse canal."
+}

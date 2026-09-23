@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 25,
+  "ideia": "SaaS de otimização de rotas para coleta de lixo reciclável",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de otimização de rotas que minimiza custo operacional de coleta (distância, tempo, combustível, capacidade veicular) considerando restrições reais: janelas de coleta, capacidade dos veículos, localização dos pontos, volume estimado e prioridade por tipo de resíduo reciclável.",
+    "fase1_mercado": "Primário: cooperativas e empresas privadas de coleta seletiva (baixo orçamento, alta sensibilidade a custo operacional). Secundário: prefeituras e concessões municipais de limpeza urbana (volume alto, contratos longos). Terciário: grandes geradores (shoppings, indústrias, condomínios) com coleta própria.",
+    "fase1_extensivel": "Sim. O core é uma interface de otimização agnóstica de algoritmo. Internamente pode usar Google OR-Tools, OSRM, OpenRouteService, Vroom ou modelo próprio de ML. A troca de engine não afeta o contrato de entrada/saída do sistema. Nenhum cliente depende de qual solver está rodando por baixo.",
+    "fase2_interfaces": [
+      "Web Dashboard (gestores e supervisores): planejamento de rotas, visualização de mapa, relatórios de eficiência e KPIs",
+      "App Mobile Android/iOS (motoristas): rota do dia, navegação passo a passo, confirmação de coleta por ponto, registro de ocorrências com foto",
+      "API REST/Webhook (integração com sistemas municipais, ERPs, plataformas de gestão de resíduos)",
+      "Painel Simplificado White-Label (cooperativas pequenas sem TI): versão reduzida do dashboard com UX mínima para usuários não técnicos",
+      "Notificações Push/SMS/WhatsApp (moradores e geradores): aviso de janela de coleta, confirmação de passagem do veículo"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre mercado de gestores em empresas médias/grandes com poder de decisão técnica. App Mobile é requisito não negociável para operação em campo — sem ele, motoristas não adotam. API abre mercado municipal (prefeituras exigem integração com sistemas legados como SIGPEC, SAP, TOTVS). White-Label abre mercado de cooperativas sem TI que precisam de solução pronta para operar. Notificações abre mercado B2C indireto — diferencial competitivo para clientes que vendem engajamento comunitário à prefeitura.",
+    "fase2_service_layer": "Uma RouteService encapsula toda lógica de negócio: otimização, agendamento, validação de restrições, cálculo de KPIs. As interfaces (Web, Mobile, API, WhatsApp) consomem apenas endpoints desta service layer via contrato estável. Nenhuma interface conhece o solver de otimização, o banco de dados de pontos ou a lógica de janelas de coleta. Mudança de interface não requer mudança de regra de negócio.",
+    "fase3_fluxo_fixo": "1. Ingestão de pontos de coleta e parâmetros do cliente → 2. Consolidação de demanda por zona geográfica → 3. Submissão ao motor de otimização → 4. Geração e validação do plano de rotas → 5. Distribuição das rotas aos veículos/motoristas → 6. Monitoramento de execução em tempo real → 7. Registro de desvios e ocorrências → 8. Apuração de KPIs e geração de relatório.",
+    "fase3_parametros_configuraveis": [
+      "Número e capacidade dos veículos da frota",
+      "Janelas de tempo permitidas por ponto ou zona (horário de início/fim da coleta)",
+      "Frequência de coleta por ponto (diária, semanal, quinzenal)",
+      "Peso de prioridade por tipo de resíduo (vidro, papel, plástico, metal)",
+      "Volume estimado por ponto de coleta",
+      "Limites geográficos da operação (bairros, setores, municípios)",
+      "Objetivo de otimização (minimizar distância, minimizar tempo, maximizar coleta por viagem)",
+      "Tempo máximo de rota por motorista (limite jornada)",
+      "Pontos fixos obrigatórios (ecopontos, galpões de triagem, aterros)",
+      "Tolerância de atraso permitida por ponto",
+      "Regras de restrição viária (veículos pesados, horários de pico)",
+      "Integração ativa com API de tráfego em tempo real (ligado/desligado por plano)"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário estruturado ou importação de CSV/shapefile com os pontos de coleta georreferenciados. O time de operações preenche os parâmetros configuráveis em um painel administrativo interno. Nenhum código é alterado — um novo registro de tenant é criado com sua configuração própria. O sistema gera automaticamente as primeiras rotas otimizadas para validação do cliente antes do go-live.",
+    "fase4_core_isolado": "O Motor de Otimização de Rotas roda como um worker assíncrono isolado (processo separado, filas de mensageria tipo Redis Queue ou BullMQ). Recebe jobs de otimização, processa e devolve o plano de rotas. É o único componente computacionalmente intenso e o único com custo variável por execução. Escala independentemente do restante da aplicação.",
+    "fase4_custo_total_cliente": "Custo do core por cliente/mês: chamadas ao solver de otimização (~R$0,10–0,80 por execução de rota dependendo do tamanho, 20–100 execuções/mês = R$2–80) + API de mapas/geocodificação (Google Maps ou HERE, ~R$15–60 dependendo do volume de pontos e recalculações). Custo de infra proporcional: parcela do servidor de aplicação (multi-tenant, ~R$8–25/cliente em escala), banco de dados relacional por storage utilizado (~R$2–10), armazenamento de fotos de ocorrências e relatórios (~R$1–5/GB), banda de dados de rastreamento GPS (~R$1–3). Custo operacional: suporte e onboarding amortizado (~R$10–20/cliente em escala). Total estimado: R$39–203/cliente/mês, permitindo precificação a partir de R$390/mês (margem mínima 2x) até R$2.000+/mês para grandes operações.",
+    "fase4_continuidade": "O worker de otimização falhar não derruba o app: motoristas continuam visualizando a última rota calculada via cache, o monitoramento GPS segue funcionando, ocorrências continuam sendo registradas. A ausência do worker apenas impede o cálculo de novas rotas — operação do dia não é interrompida. Filas com retry automático e dead-letter queue garantem que jobs pendentes sejam processados assim que o worker recover.",
+    "fase4_manutencao": "O solver é acessado através de uma interface abstrata (RouteOptimizerPort). A implementação concreta (OR-Tools, Vroom, modelo proprietário) é injetada via configuração de ambiente. Trocar o solver = implementar um novo adapter na porta existente e alternar a variável de ambiente. Zero downtime, zero impacto nos clientes, testes A/B entre solvers possíveis via feature flag por tenant.",
+    "monetizacao": "SaaS B2B com cobrança mensal por plano: Starter (até 2 veículos, 1 zona, relatórios básicos — R$390/mês para cooperativas pequenas), Professional (até 10 veículos, múltiplas zonas, API, app mobile — R$990/mês para empresas médias), Enterprise (frota ilimitada, white-label, SLA, integração customizada, suporte dedicado — R$2.500+/mês para prefeituras e concessionárias). Add-ons: módulo de notificação a moradores (+R$150/mês), integração com balanças de pesagem (+R$200/mês), relatório de carbono evitado para ESG (+R$100/mês). Receita recorrente com churn baixo por dependência operacional — rota diária do motorista é missão crítica.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com NestJS — modular, suporte nativo a injeção de dependência para isolar adapters. Banco: PostgreSQL com PostGIS para dados geoespaciais. Fila de jobs: BullMQ sobre Redis. Solver de otimização: VROOM (open-source, REST, escala bem) ou OR-Tools via Python microservice. Maps: OpenRouteService (custo zero em escala inicial) com fallback para Google Maps Platform. Frontend Web: Next.js + Mapbox GL JS ou Leaflet. App Mobile: React Native (código compartilhado iOS/Android). Infra: Railway ou Render para MVP, migração para AWS ECS/Fargate na escala (worker de otimização em container separado com auto-scaling). Observabilidade: OpenTelemetry + Grafana para medir custo por execução de otimização por cliente."
+  }
+}

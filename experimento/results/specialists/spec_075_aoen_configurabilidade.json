@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 75,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra separação clara entre fluxo fixo (código) e parâmetros configuráveis por tenant, com storage explicitamente particionado por tenant — base sólida para onboarding zero-código; porém a lista de 'fase3_parametros_configuraveis' está truncada (corta em 'Regras de alert...'), impedindo verificar se toda variação de comportamento por cliente está coberta, e os Collector Adapters parecem ser configuração de infraestrutura do sistema (nível de deploy), não configuração por tenant — o que poderia exigir operação manual para clientes com stacks heterogêneas."
+}

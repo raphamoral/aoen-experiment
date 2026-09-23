@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta esboça elementos de configurabilidade por tenant (feature flags por empresa, retenção de dados por contrato, data residency por região), mas não trata configurabilidade como preocupação arquitetural de primeira classe: o threshold de k-anonimidade está hardcoded como '>=5' na fitness function, não há menção a um schema de configuração por tenant, painel de onboarding self-service, ou separação explícita entre comportamento fixo e parâmetros variáveis — sugerindo que adicionar um cliente com necessidades ligeiramente diferentes (ex.: k=8, formulário customizado, SLA diferente) ainda exigiria intervenção no código."
+}

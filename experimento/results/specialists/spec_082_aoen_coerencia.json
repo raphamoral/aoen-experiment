@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 82,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma cadeia de reforço mútuo quase sem falhas: o mercado-alvo (PMEs com 5–100 agentes) justifica o modelo híbrido IA+humano, que justifica o dashboard de escalação; a abstração ConversationalProvider é consistente com a promessa de extensibilidade e com não criar dependência de vendor de IA; o AttendanceService agnóstico de canal é a consequência arquitetural correta de ter 8 interfaces simultâneas; e o fluxo fixo da fase 3 é literalmente a implementação sequencial do que foi descrito na fase 1 — cada etapa do pipeline mapeia diretamente para um componente já justificado (RAG ↔ base de conhecimento, confidence evaluation ↔ decisão autônoma/escalar); a única lacuna que impede nota 10 é a ausência de decisões explícitas sobre multi-tenancy e isolamento de dados entre clientes SaaS, que é uma tensão não resolvida dado o segmento declarado."
+}

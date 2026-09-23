@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 7,
+  "justificativa": "O projeto prevê múltiplas interfaces com justificativas de perfil de usuário razoáveis (dashboard para analistas, relatório para gerentes, API REST para integração com CRMs), e o uso de FastAPI como camada backend sugere desacoplamento da lógica de negócio, mas falta evidência explícita de arquitetura desacoplada formal e não há menção a interfaces mobile ou contextos offline, que são relevantes para equipes de campo em telecom."
+}

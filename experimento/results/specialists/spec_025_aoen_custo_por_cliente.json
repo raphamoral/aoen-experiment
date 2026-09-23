@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 25,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve arquitetura técnica, fluxo operacional e segmentação de mercado, mas não faz nenhuma menção a rastreamento de custo por tenant, custo por operação de otimização de rota, consumo de recursos por cliente ou conexão entre custo unitário e modelo de precificação — unit economics está completamente ausente do documento."
+}

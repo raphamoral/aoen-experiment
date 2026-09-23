@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 7,
+  "justificativa": "O projeto prevê múltiplas interfaces bem justificadas por perfis reais de usuário (painel web para gestores, app mobile para técnicos, multi-tenant para empresas terceirizadas) e há indícios de separação de responsabilidades com backend Node.js servindo diferentes clientes, mas a proposta não explicita formalmente o desacoplamento da lógica de negócio das interfaces nem menciona uma API contratual (REST/GraphQL) que garantiria a adição de novos canais sem reescrita, o que impede a nota máxima."
+}

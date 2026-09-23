@@ -1,0 +1,137 @@
+{
+  "ideia_idx": 18,
+  "ideia": "SaaS de análise preditiva de churn para operadoras de telecom",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability: modelos de ML precisam ser retreinados e substituídos continuamente sem downtime",
+      "Escalabilidade elástica: volumes de dados variam por operadora (milhões de assinantes)",
+      "Confiabilidade dos dados: predições incorretas têm custo comercial direto — SLA de dados frescos",
+      "Observabilidade: monitoramento de drift de modelo, data quality e latência de pipeline em tempo real",
+      "Interoperabilidade: integração com BSS/OSS heterogêneos de diferentes operadoras",
+      "Multi-tenancy segura: isolamento de dados entre operadoras concorrentes é requisito regulatório",
+      "Testabilidade: fitness functions automatizadas exigem arquitetura intrinsecamente testável",
+      "Portabilidade: evitar vendor lock-in para preservar opções de negociação com clouds"
+    ],
+    "fitness_functions": [
+      "Atomic — Model accuracy gate: F1-score >= 0.75 e AUC-ROC >= 0.80 em holdout set antes de qualquer promoção de modelo para produção",
+      "Atomic — Data freshness: lag entre ingestão e feature store < 4h para dados comportamentais; violação bloqueia deploy",
+      "Atomic — API contract test: 100% dos contratos OpenAPI validados via consumer-driven contract tests (Pact) em cada PR",
+      "Holistic — Churn prediction calibration: diferença entre churn rate previsto e realizado < 5pp medida mensalmente por coorte",
+      "Holistic — Pipeline idempotency: reprocessamento de qualquer janela de dados produz resultado idêntico (teste de chaos mensal)",
+      "Holistic — Tenant isolation: pen test automatizado verifica que queries cross-tenant retornam 0 registros (CI/CD + trimestral manual)",
+      "Atomic — P99 latência de scoring batch < 2h para base de 10M assinantes em cluster de referência",
+      "Atomic — Dependency vulnerability scan: 0 CVEs críticos em imagens Docker antes de merge para main",
+      "Holistic — Cost efficiency: custo de infraestrutura por assinante analisado < $0.002 — alertado se ultrapassar threshold"
+    ],
+    "incremental_change": {
+      "fase_1_walking_skeleton": {
+        "escopo": "Um único tenant (operadora piloto), batch diário, modelo baseline XGBoost com features demográficas + ARPU",
+        "entregável": "Dashboard com lista de top-500 clientes em risco, exportação CSV",
+        "aprendizado": "Validar qualidade dos dados de origem, ciclo de retreino e adoção pelo time de retenção"
+      },
+      "fase_2_multi_tenant_e_automacao": {
+        "escopo": "Multi-tenant com isolamento por schema, self-service onboarding, retreino automatizado semanal, webhook de alertas",
+        "entregável": "Portal de configuração, integração com CRM via API REST",
+        "decisao_diferida": "Streaming real-time — só ativado quando caso de uso de intervenção < 1h for validado com cliente"
+      },
+      "fase_3_mlops_e_real_time": {
+        "escopo": "Feature store compartilhada, A/B testing de modelos, scoring near-real-time (< 15min), explainability por cliente",
+        "entregável": "SDK para integração com sistemas de oferta em tempo real",
+        "gatilho": "Ativado apenas se NPS de adoção > 40 e pelo menos 3 operadoras em produção"
+      },
+      "principio_guia": "Cada fase expõe novas fitness functions; mudanças estruturais só avançam se as functions da fase anterior forem verdes"
+    },
+    "reversibility": {
+      "decisoes_reversiveis": [
+        "Escolha de ML framework (scikit-learn → LightGBM → deep learning): modelos versionados no MLflow, interface de scoring abstraída por protocolo ONNX ou endpoint REST padronizado",
+        "Banco de dados analítico (ClickHouse ↔ DuckDB ↔ BigQuery): abstração via dbt + camada de query unificada evita SQL dialeto-específico no código de aplicação",
+        "Message broker (Kafka ↔ Redpanda ↔ Kinesis): produtores e consumidores atrás de interfaces; swap é operação de infraestrutura, não de código",
+        "Frontend dashboard (React SPA ↔ embedded analytics via Metabase/Superset): BFF isola o cliente do schema analítico",
+        "Cloud provider: uso de Terraform + abstrações de storage/compute evita APIs proprietárias nas camadas de negócio"
+      ],
+      "decisoes_irreversiveis_last_responsible_moment": [
+        "Modelo de isolamento de tenant (schema-per-tenant vs database-per-tenant vs row-level security): decide na fase 2 com dados reais de volume — migração posterior é cara",
+        "Modelo de precificação por API call vs por assinante analisado: impacta arquitetura de metering e billing desde o início",
+        "Formato canônico de eventos de ativação de cliente: uma vez que integradores externos consumirem, quebrar o schema tem custo de coordenação alto"
+      ]
+    },
+    "coupling": {
+      "estrategia": "Temporal decoupling via eventos assíncronos para pipelines de dados; spatial decoupling via API gateway para clientes externos",
+      "data_mesh_por_dominio": {
+        "dominio_ingestao": "Responsável por normalizar dados brutos de BSS/OSS; expõe tópicos Kafka com schema versionado (Avro + Schema Registry)",
+        "dominio_features": "Feature store (Feast ou Hopsworks) como contrato entre engenharia de dados e ciência de dados; versão de feature set é imutável",
+        "dominio_modelos": "Model registry (MLflow) com champion/challenger; promoção via fitness function gate automatizado",
+        "dominio_serving": "Scoring service stateless consome feature store; escala independentemente do pipeline",
+        "dominio_produto": "API REST + BFF para dashboard; nunca acessa diretamente o banco analítico"
+      },
+      "anti_patterns_evitados": [
+        "Shared database entre domínios",
+        "Chamadas síncronas de pipeline de ML para sistemas externos",
+        "Modelo de dados único que serve tanto OLTP quanto OLAP"
+      ]
+    },
+    "interfaces": [
+      "REST API (OpenAPI 3.1): endpoints de scoring on-demand, gestão de modelos, configuração de alertas — versionada (v1, v2) com deprecation policy de 12 meses",
+      "Webhook API: notificações push quando cliente ultrapassa threshold de risco configurável pelo tenant",
+      "Batch import API (SFTP + S3 presigned URL): ingestão de dumps históricos de BSS no onboarding e cargas periódicas",
+      "Streaming connector (Kafka Connect): para operadoras com infraestrutura Kafka própria, ingestão contínua de eventos de uso",
+      "Embedded dashboard SDK (iframe + JS): operadoras podem embutir painéis no CRM interno sem expor credenciais",
+      "Admin API (interno): gestão de tenants, quotas, billing meters — não exposta publicamente",
+      "Model explainability endpoint: por assinante, retorna top-5 features contribuindo para o score de churn (SHAP values)"
+    ],
+    "escalabilidade": {
+      "estrategia_geral": "Scale-out horizontal com particionamento por tenant; cada operadora é uma unidade de escala independente",
+      "pipeline_de_dados": "Apache Spark em modo cluster para processamento batch; jobs particionados por tenant_id permitem escala linear; Kubernetes HPA baseado em tamanho da fila Kafka",
+      "scoring_service": "Stateless pods com feature store como única dependência externa; escala por número de requisições via KEDA + HPA; scoring batch paralelizado por partição de assinantes",
+      "feature_store": "Redis para features online (baixa latência); Parquet em S3 para features offline (retreino); leitura federada evita hot-spot",
+      "banco_analitico": "ClickHouse com sharding por tenant_id; replicação síncrona para HA; queries de dashboard limitadas por row-level tenancy policy",
+      "multi_tenant": "Noisy neighbor mitigado via quotas de recursos por tenant no Kubernetes (ResourceQuota + LimitRange) e rate limiting no API gateway",
+      "ceiling_projetado": "Arquitetura suporta até ~50 operadoras com 5M assinantes cada (250M assinantes totais) antes de exigir sharding adicional de infraestrutura"
+    },
+    "custos": {
+      "modelo_mental": "Custo como fitness function: target de < $0.002 por assinante/mês analisado vigiado em CI/CD",
+      "maiores_drivers": [
+        "Compute de Spark para processamento batch (otimizar com spot instances + right-sizing por tenant)",
+        "Feature store Redis (usar TTL agressivo; features offline em S3 são 10x mais baratas)",
+        "Armazenamento de dados históricos (lifecycle policy: hot 90 dias ClickHouse, warm 1 ano S3 Parquet, cold Glacier)"
+      ],
+      "otimizacoes_incrementais": [
+        "Fase 1: instâncias spot para batch sem SLA rígido de horário",
+        "Fase 2: cache de features compartilhado entre tenants para features de mercado (ex: índice macro econômico regional)",
+        "Fase 3: modelos comprimidos (quantização) para reduzir memória de serving em 60%"
+      ],
+      "unit_economics_alvo": "Gross margin SaaS > 70%; custo de infraestrutura < 15% da receita por tenant"
+    },
+    "monetizacao": {
+      "modelo_principal": "Subscription por camadas baseada em número de assinantes monitorados da operadora",
+      "tiers": {
+        "starter": "Até 500K assinantes — batch semanal, dashboard padrão, suporte por email",
+        "growth": "Até 5M assinantes — batch diário, alertas webhook, API REST, integração CRM",
+        "enterprise": "Acima de 5M assinantes — near-real-time, modelo customizado por tenant, SLA 99.9%, suporte dedicado"
+      },
+      "upsells": [
+        "Módulo de next-best-offer: scoring de propensão a aceitar oferta de retenção (receita adicional por predição consumida via API)",
+        "Serviço gerenciado de retreino: cientistas de dados da plataforma ajustam modelo com dados da operadora mensalmente",
+        "Exportação de insights regulatórios: relatórios formatados para ANATEL/reguladores locais"
+      ],
+      "metering": "Billing metering baseado em número de assinantes únicos processados no mês (não em usuários da plataforma); medição via contador atômico por tenant no pipeline de ingestão",
+      "lock_in_etico": "Dados e modelos treinados com dados do tenant pertencem ao tenant — exportáveis; lock-in vem do valor gerado, não de aprisionamento técnico"
+    },
+    "stack_sugerida": {
+      "principio": "Stack deliberadamente conservadora na fase 1; pontos de extensão identificados para substituição incremental validada por fitness functions",
+      "ingestao": "Apache Kafka (Confluent Cloud ou MSK) + Kafka Connect para conectores BSS/OSS padrão (JDBC, S3, Salesforce)",
+      "processamento": "Apache Spark 3.x (Databricks ou EMR Serverless) para batch; Apache Flink para near-real-time na fase 3",
+      "feature_store": "Feast (open-source, evitando lock-in) com backend Redis (online) + S3/Delta Lake (offline)",
+      "ml_training": "Python + scikit-learn/XGBoost (fase 1) → LightGBM/CatBoost (fase 2); MLflow para tracking e registry; retreino orquestrado por Apache Airflow",
+      "ml_serving": "FastAPI + ONNX Runtime para scoring stateless; containerizado em Docker; deploy via Kubernetes",
+      "banco_analitico": "ClickHouse (self-managed em K8s ou ClickHouse Cloud) para queries analíticas; dbt para transformações versionadas",
+      "api_gateway": "Kong ou AWS API Gateway com plugins de rate limiting, autenticação JWT e metering",
+      "frontend": "React + TypeScript + Recharts para dashboard; Storybook para componentes; Playwright para testes E2E",
+      "infraestrutura": "Kubernetes (EKS/GKE) + Terraform + ArgoCD (GitOps); Prometheus + Grafana + OpenTelemetry para observabilidade",
+      "seguranca": "HashiCorp Vault para secrets; Snyk no CI/CD; SOPS para secrets em GitOps; criptografia AES-256 at rest por tenant",
+      "decisoes_diferidas": "Vector database (para fase futura de similaridade de perfil de churn), LLM para narrativas automáticas de risco — avaliados quando caso de uso for validado"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Evolvability: modelos de ML precisam ser retreinados e substituídos continuamente sem downtime\",\n    \"Escalabilidade elástica: volumes de dados variam por operadora (milhões de assinantes)\",\n    \"Confiabilidade dos dados: predições incorretas têm custo comercial direto — SLA de dados frescos\",\n    \"Observabilidade: monitoramento de drift de modelo, data quality e latência de pipeline em tempo real\",\n    \"Interoperabilidade: integração com BSS/OSS heterogêneos de diferentes operadoras\",\n    \"Multi-tenancy segura: isolamento de dados entre operadoras concorrentes é requisito regulatório\",\n    \"Testabilidade: fitness functions automatizadas exigem arquitetura intrinsecamente testável\",\n    \"Portabilidade: evitar vendor lock-in para preservar opções de negociação com clouds\"\n  ],\n  \"fitness_functions\": [\n    \"Atomic — Model accuracy gate: F1-score >= 0.75 e AUC-ROC >= 0.80 em holdout set antes de qualquer promoção de modelo para produção\",\n    \"Atomic — Data freshness: lag entre ingestão e feature store < 4h para dados comportamentais; violação bloqueia deploy\",\n    \"Atomic — API contract test: 100% dos contratos OpenAPI validados via consumer-driven contract tests (Pact) em cada PR\",\n    \"Holistic — Churn prediction calibration: diferença entre churn rate previsto e realizado < 5pp medida mensalmente por coorte\",\n    \"Holistic — Pipeline idempotency: reprocessamento de qualquer janela de dados produz resultado idêntico (teste de chaos mensal)\",\n    \"Holistic — Tenant isolation: pen test automatizado verifica que queries cross-tenant retornam 0 registros (CI/CD + trimestral manual)\",\n    \"Atomic — P99 latência de scoring batch < 2h para base de 10M assinantes em cluster de referência\",\n    \"Atomic — Dependency vulnerability scan: 0 CVEs críticos em imagens Docker antes de merge para main\",\n    \"Holistic — Cost efficiency: custo de infraestrutura por assinante analisado < $0.002 — alertado se ultrapassar threshold\"\n  ],\n"
+}

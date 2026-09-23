@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 79,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 1,
+  "justificativa": "A proposta define separação lógica via Service Layer, mas não menciona nenhum mecanismo de isolamento físico de processamento: o motor de propagação DFS/BFS no grafo de lotes — operação potencialmente O(n) sobre grafos grandes — não está desacoplado em worker/processo separado, não há referência a filas de mensagens (Kafka, RabbitMQ, SQS), workers assíncronos ou qualquer fallback caso o cálculo de impacto de recall bloqueie o sistema, tornando a arquitetura vulnerável a falhas em cascata sob carga."
+}

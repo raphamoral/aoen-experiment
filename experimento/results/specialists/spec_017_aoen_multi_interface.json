@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (Dashboard Web, Portal do Aluno, Página Pública de Verificação, REST API, Widget Embeddable e integração LinkedIn), cada uma justificada por um segmento de mercado específico e perfil de usuário real, com toda a lógica de negócio centralizada em uma CertificationService que as interfaces apenas consomem, garantindo desacoplamento total e expansibilidade sem reescrita."
+}

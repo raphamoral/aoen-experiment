@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta implica uma interface web (SPA via CloudFront) e dashboards (Grafana/Superset), mas não define explicitamente múltiplas interfaces por perfil de usuário (ex: mobile para operadores de campo, API pública para órgãos reguladores, CLI para integrações DevOps), não justifica as escolhas por alcance de mercado e não articula desacoplamento intencional entre lógica de negócio e camada de apresentação — as menções a interfaces parecem consequência de escolhas técnicas de produto, não de uma estratégia multi-canal orientada ao usuário."
+}

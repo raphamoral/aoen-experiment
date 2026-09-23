@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 92,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra separação clara entre núcleo analítico e interfaces (ConnectService/ContractService como camada isolada, conectores como plugins intercambiáveis, frontend desacoplado de regras de negócio), permitindo substituição independente de fontes de dados, motor de recomendação e frontends sem reescrita — porém ausência de estratégias explícitas para crescimento de 10 a 10.000 usuários (sem menção a filas assíncronas, CQRS, cache distribuído ou abstração de banco) deixa a reversibilidade da decisão de escala em aberto, o que impede nota máxima."
+}

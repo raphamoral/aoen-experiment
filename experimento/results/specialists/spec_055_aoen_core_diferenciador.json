@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 55,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de otimização multi-variável (custo, cobertura, compliance trabalhista, competências por posto) é explicitamente isolado atrás de uma interface SchedulerEngine substituível, tornando o núcleo claro, extensível e sem dependência de fornecedor único — perde apenas um ponto por não demonstrar evidência de que a combinação PL/CP + LLM para restrições em linguagem natural já foi validada como tecnicamente superior às alternativas existentes no mercado hospitalar."
+}

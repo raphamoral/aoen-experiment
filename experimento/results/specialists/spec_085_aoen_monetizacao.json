@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 85,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 1,
+  "justificativa": "A proposta descreve com riqueza técnica e arquitetural o produto, o mercado-alvo e os canais de entrega de valor, mas não menciona em nenhum momento como o produto gera receita — não há modelo de precificação, tiers, valores, estrutura de assinatura, taxas transacionais, ou qualquer métrica de negócio (MRR, LTV, CAC, churn), tornando a monetização praticamente ausente."
+}

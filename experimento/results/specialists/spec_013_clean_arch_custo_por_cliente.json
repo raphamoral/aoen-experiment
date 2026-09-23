@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura não prevê nenhuma mensuração de custo por cliente: nenhuma entidade, atributo ou regra rastreia custo de infra por usuário/tenant, custo por operação (ex: processamento de pagamento, storage de review, consulta de disponibilidade) ou margem por cliente — o Payment rastreia apenas a receita do cliente, não o custo para servi-lo."
+}

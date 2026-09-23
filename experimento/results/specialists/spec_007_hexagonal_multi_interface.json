@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A proposta prevê múltiplas interfaces claramente justificadas por perfis reais (REST/GraphQL para web e mobile, WebSocket para tempo real, gRPC para serviços internos, CLI para administração, Webhook para integrações de RH/LMS), todas desacopladas do núcleo via ports, permitindo adição de novas interfaces sem reescrever a lógica de negócio — perde um ponto por não explicitar explicitamente a justificativa de mercado para cada canal."
+}

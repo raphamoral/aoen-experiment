@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta define apenas entidades de domínio (Freelancer, Client, Project, Bid, Contract, Escrow, Review) sem qualquer menção a filas, workers, processos separados, execução assíncrona ou mecanismos de isolamento — processos como cálculo de reputação, validação KYC, arbitragem de escrow e notificações correm implicitamente no mesmo processo, sem separação física, fallback ou capacidade de escalonamento independente."
+}

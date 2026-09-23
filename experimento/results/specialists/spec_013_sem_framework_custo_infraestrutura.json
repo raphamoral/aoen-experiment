@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 6,
+  "justificativa": "Há uma estimativa agregada concreta (< R$50/mês para os primeiros 100 espaços) e uma estratégia deliberada de otimização via free tiers (Vercel, Supabase, Resend) e modelo pay-per-use (Stripe, Twilio/Z-API), além de identificar corretamente notificações como principal driver de custo e banco de dados como primeiro gargalo de escala — mas faltam estimativas por componente (ex: custo por GB de imagens no CDN, custo por 1.000 notificações WhatsApp) e projeções de crescimento em volumes maiores (ex: a que ponto o Supabase free tier estoura e quanto custa o próximo tier)."
+}

@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 59,
+  "ideia": "SaaS de automação de onboarding de funcionários com workflows configuráveis",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de orquestração de workflows: o sistema que sequencia tarefas, resolve dependências entre etapas, dispara notificações e rastreia conclusão — sem ele não existe automação, apenas checklist manual",
+    "fase1_mercado": "Empresas de médio porte (50–5000 funcionários) com contratações recorrentes: scale-ups em expansão, empresas remotas/híbridas, setores de alta rotatividade (varejo, tecnologia, saúde). Decisores: Head de RH + CTO",
+    "fase1_extensivel": "Sim. O motor de workflows é abstraído de qualquer ferramenta: aceita integrações via adapters plugáveis (HRIS, IdP, comunicação). Trocar o Slack por Teams, o Okta pelo Azure AD ou o BambooHR pelo Workday não toca o core — apenas substitui o adapter correspondente",
+    "fase2_interfaces": [
+      "Web app para admins de RH (configuração de workflows, templates, monitoramento de onboardings em curso)",
+      "Portal web do colaborador novo (lista de tarefas, upload de documentos, assinatura digital, progresso visível)",
+      "Bot para Slack/Microsoft Teams (notificações, conclusão de tarefas diretamente no chat, lembretes automáticos)",
+      "API REST/Webhooks (integração bidirecional com ATS, HRIS e sistemas internos do cliente)",
+      "Dashboard executivo (métricas de time-to-productivity, taxa de conclusão, gargalos por etapa)"
+    ],
+    "fase2_justificativa_mercado": "Web admin abre o mercado de RH ops (quem compra); portal do colaborador é o produto percebido pelo usuário final (quem avalia a experiência e influencia renovação); bot Slack/Teams abre empresas remotas que vivem no chat e rejeitam portais externos; API abre grandes clientes com sistemas legados que precisam de integração profunda; dashboard executivo abre o C-level como sponsor da compra, transformando RH em decisão estratégica",
+    "fase2_service_layer": "Uma WorkflowService camada intermediária recebe comandos independentemente da interface de origem (HTTP, WebSocket, evento de chat, webhook). Todas as interfaces chamam a mesma Service Layer — nenhuma interface conhece regras de negócio, apenas envia intenções e recebe estado",
+    "fase3_fluxo_fixo": "O engine executa sempre a mesma sequência: (1) instanciar workflow a partir de template, (2) resolver grafo de dependências entre tarefas, (3) atribuir responsáveis, (4) disparar notificações, (5) aguardar confirmação/upload/aprovação, (6) avançar para próxima etapa, (7) registrar audit trail completo",
+    "fase3_parametros_configuraveis": [
+      "Lista de tarefas por papel/departamento (ex: Dev tem tarefas de acesso a repositório; Vendas tem tarefas de CRM)",
+      "Sequência e dependências entre tarefas (paralelas vs. sequenciais)",
+      "SLAs e prazos por etapa",
+      "Templates de notificação (e-mail, chat, SMS) com variáveis do contexto",
+      "Aprovadores por etapa e regras de escalada",
+      "Integrações ativas por cliente (quais adapters habilitar: HRIS, IdP, e-sign, chat)",
+      "Branding do portal (logo, cores, domínio customizado)",
+      "Campos de formulário customizados por empresa",
+      "Idioma e fuso horário",
+      "Política de retenção de dados e LGPD/GDPR por cliente"
+    ],
+    "fase3_novo_cliente": "Novo cliente = importar ou criar template de workflow via UI admin, configurar integrações via painel de conectores, definir parâmetros acima — zero código novo. Estimativa de setup: 1–4 horas de configuração pelo próprio cliente ou pelo CS da empresa",
+    "fase4_core_isolado": "O WorkflowExecutionWorker roda como processo assíncrono isolado (fila de mensagens): recebe eventos (tarefa concluída, aprovação recebida, prazo vencido), avança o estado da máquina de estados do workflow e despacha os próximos comandos. Completamente separado da camada HTTP/API",
+    "fase4_custo_total_cliente": "Custo core: chamadas a APIs externas (HRIS, IdP, e-sign) proporcional ao número de onboardings/mês; Custo compute: ~0.002–0.01 USD por execução de workflow no worker; Custo armazenamento: documentos e audit logs ~0.023 USD/GB/mês (S3-compatible), estimativa 500MB/cliente/ano; Custo banco de dados: instância RDS compartilhada com schema isolado por tenant, rateado por uso (~1–3 USD/cliente/mês em escala); Custo banda: negligível (<1 GB/mês por cliente ativo); Total estimado: 3–15 USD/cliente/mês dependendo do volume de contratações, permitindo margem bruta de 70–85% com pricing acima de 299 USD/mês",
+    "fase4_continuidade": "A fila de mensagens (SQS/RabbitMQ) persiste eventos não processados. Se o worker cair, a API continua respondendo, o portal continua exibindo tarefas já carregadas e nenhuma ação do usuário é perdida — os eventos ficam na fila para reprocessamento automático quando o worker se recuperar",
+    "fase4_manutencao": "O WorkflowExecutionWorker tem interface contratual definida (eventos de entrada/saída com schema versionado). Para trocar a implementação interna (ex: migrar de BullMQ para Temporal): sobe nova versão em paralelo, drena a fila antiga, redireciona novos eventos — sem downtime e sem tocar nas interfaces ou na Service Layer",
+    "monetizacao": "SaaS B2B por assinatura mensal: tier Starter (até 20 onboardings/mês, 299 USD) para scale-ups; tier Growth (até 100 onboardings/mês, 799 USD) para PMEs em expansão; tier Enterprise (volume ilimitado + SLA + SSO + integrações custom, 2.500+ USD) para grandes empresas. Monetização adicional via setup fee único (500–2.000 USD) e marketplace de templates de workflow verticalizados (varejo, saúde, tech). Métrica-chave de precificação: custo por onboarding deve ser menor que 10% do custo manual equivalente (estimado em 1.500–3.000 USD por contratação em horas de RH+TI)",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com NestJS para API + Service Layer; Fila: BullMQ sobre Redis para o WorkflowExecutionWorker (migração futura para Temporal se necessário); Banco: PostgreSQL com schema-per-tenant para isolamento de dados; Frontend admin/portal: Next.js + TailwindCSS; Bot: Bolt SDK (Slack) + Bot Framework (Teams) chamando a mesma Service Layer; Armazenamento: S3-compatible (AWS S3 ou Cloudflare R2) para documentos; Infra: Railway ou Render para início rápido, migração para ECS/Kubernetes quando necessário; Auth: Auth0 ou Clerk com suporte a SSO/SAML para tier Enterprise; Observabilidade: OpenTelemetry + Grafana para custo por cliente mensurável"
+  }
+}

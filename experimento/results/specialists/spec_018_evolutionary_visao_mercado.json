@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo (operadoras de telecom) é identificado e há nicho vertical claro, mas a proposta não articula explicitamente a dor do cliente, não dimensiona o mercado, não menciona concorrentes ou alternativas existentes (SAS, IBM, Salesforce Einstein, etc.) nem apresenta diferenciação ou proposta de valor quantificada — o documento é quase inteiramente técnico-arquitetural."
+}

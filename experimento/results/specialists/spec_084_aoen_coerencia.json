@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 84,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta forma um sistema coeso onde cada decisão justifica e habilita as seguintes: o núcleo (correlação OBD → oficina) se traduz diretamente nos contratos da Service Layer (DiagnosticService, WorkshopMatchingService), o princípio de extensibilidade declarado na fase 1 é arquiteturalmente garantido pela separação de interfaces da fase 2 (nenhum canal contém lógica de negócio), os três mercados (B2C/B2B/B2B2B) mapeiam 1:1 para os canais justificados, e o pipeline fixo da fase 3 percorre exatamente os serviços declarados na layer — a única lacuna que impede nota 10 é a ausência de um mecanismo técnico explícito (ex: adapter/strategy) para a troca de provedores prometida, deixando a extensibilidade como princípio declarado mas não arquiteturalmente fechado."
+}

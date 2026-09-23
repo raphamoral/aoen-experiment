@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal com portas e adaptadores explicitamente segregados garante altíssima capacidade evolutiva: o core domain é isolado de qualquer framework externo, múltiplas implementações coexistem para o mesmo porto (ex: SciKit-Learn e SageMaker para IMLModelPort, SendGrid e SES para INotificationPort), novos casos de uso podem ser adicionados como novos portos primários sem tocar no existente, e a escala de 10 a 10.000 usuários é endereçada pela troca transparente de adaptadores — a única lacuna que impede nota máxima é a ausência de uma estratégia explícita de versionamento de API e de migração de schema, que são os pontos onde decisões irreversíveis costumam se acumular silenciosamente."
+}

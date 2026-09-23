@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "O produto implica um diferenciador (motor de leilão reverso para TI corporativo) e a arquitetura isola `bidding-engine` e `auction-core` como pacotes distintos, sinalizando consciência sobre separação do núcleo; porém, a proposta descreve exclusivamente infraestrutura e deploy — não articula o que torna o bidding-engine único frente a soluções como Ariba ou Jaggaer, não explica por que alternativas existentes falham nesse problema específico, e não demonstra extensibilidade do núcleo de negócio (apenas dos serviços externos de terceiros), ficando abaixo do limiar da nota 5 por não ter isolado nem justificado o diferenciador de forma explícita."
+}

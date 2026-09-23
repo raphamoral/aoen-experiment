@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 31,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra princípios evolutivos sólidos — interface abstrata de MatchingEngine com contrato fixo, camada de serviços agnóstica de interface e padrão adapter para múltiplos canais — mas perde pontos por não endereçar abstração de persistência, ausência de estratégia de versionamento para a API pública e um 'fluxo fixo' na fase 3 que pode se tornar um ponto de rigidez à medida que os casos de uso de mentoria se diversificam."
+}

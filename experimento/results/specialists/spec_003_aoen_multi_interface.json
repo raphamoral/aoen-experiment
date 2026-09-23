@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define 6 interfaces distintas (Web App, Dashboard, Slack/Teams, WhatsApp Bot, Mobile App, API REST), cada uma justificada por perfil de usuário e segmento de mercado específico, com lógica de negócio completamente desacoplada via Service Layer centralizada que permite adicionar novos canais sem alterar os existentes."
+}

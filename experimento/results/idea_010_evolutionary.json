@@ -1,0 +1,94 @@
+{
+  "ideia_idx": 10,
+  "ideia": "App de gestão financeira para MEIs com emissão automática de nota fiscal",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Conformidade fiscal (LGPD, SEFAZ, prefeituras municipais) — não negociável",
+      "Disponibilidade (99.9%+) — operações financeiras não podem falhar silenciosamente",
+      "Auditabilidade — rastreabilidade completa de emissões e transações",
+      "Evoluibilidade — legislação fiscal brasileira muda com frequência",
+      "Segurança (confidencialidade de dados financeiros e certificados A1/A3)",
+      "Resiliência a falhas externas (APIs SEFAZ/prefeituras são instáveis)",
+      "Multi-tenancy — isolamento de dados entre MEIs",
+      "Observabilidade — alertas proativos de falhas em emissões"
+    ],
+    "fitness_functions": [
+      "Automatizada: p95 de resposta da API < 500ms — medida em CI/CD via k6",
+      "Automatizada: taxa de sucesso na emissão de NF > 99,2% — monitorada via Datadog/CloudWatch",
+      "Automatizada: zero divergência entre valor calculado e valor na NF emitida — teste de propriedade com fast-check",
+      "Automatizada: cobertura de testes > 80% no módulo fiscal — gate no pipeline",
+      "Automatizada: scan SAST (Semgrep/Snyk) sem findings críticos a cada merge",
+      "Manual (mensal): auditoria de isolamento de dados entre tenants",
+      "Manual (trimestral): simulação de falha da API SEFAZ — validar fallback e fila de reprocessamento",
+      "Manual (semestral): pen test focado em certificados digitais e dados financeiros",
+      "Automatizada: latência de emissão assíncrona < 2 min para 95% dos casos em carga normal"
+    ],
+    "incremental_change": "Estratégia Strangler Fig + entrega por fatias verticais. Fase 0 (MVP, ~8 semanas): cadastro de MEI, lançamento manual de receitas/despesas, relatório DAS simplificado — sem NF. Fase 1: integração NFS-e com 3 municípios de maior volume (São Paulo, Rio, Belo Horizonte) usando um adapter isolado por provedor. Fase 2: expansão gradual de municípios via configuração, não código. Fase 3: NF-e para MEIs que vendem produtos. Fase 4: automação do pagamento do DAS via open banking. Fase 5: API pública para integrações com ERPs/contadores. Cada fase entrega valor isolado e pode ser pausada sem desfazer a anterior. Decisões de infra são adiadas para o último momento responsável.",
+    "reversibility": {
+      "reversíveis": [
+        "Provedor de emissão de NF (NFe.io, Focus NFe, Plugnotas) — isolados por Anti-Corruption Layer, troca sem impacto no domínio",
+        "Cloud provider — abstraído por Terraform + interfaces de storage/queue agnósticas",
+        "Banco de dados relacional (PostgreSQL hoje, Aurora amanhã) — migrations versionadas, sem vendor lock em features proprietárias",
+        "Processador de pagamentos (Stripe, PagSeguro, Mercado Pago) — adapter pattern",
+        "Framework de frontend — API-first desacopla backend de qualquer cliente",
+        "Biblioteca de geração de PDF de NF"
+      ],
+      "difíceis_de_reverter": [
+        "Modelo de dados central do domínio fiscal — exige cuidado desde o início",
+        "Estratégia de multi-tenancy (row-level vs schema-per-tenant) — escolher antes de ter dados em produção",
+        "Formato de armazenamento de certificados digitais A1 — impacta segurança e compliance",
+        "Identificadores públicos (UUIDs vs sequenciais) — afetam integrações externas"
+      ]
+    },
+    "coupling": "Acoplamento gerenciado por módulos com fronteiras explícitas (não microsserviços prematuros). Módulos: [Identidade/Auth], [Financeiro-Core], [Fiscal/NF], [Notificações], [Billing/Assinatura]. Comunicação intra-processo via interfaces tipadas; comunicação assíncrona via fila (Redis Streams ou SQS) para emissão de NF — desacopla latência da SEFAZ do fluxo do usuário. Anti-Corruption Layer obrigatório em toda integração governamental. Regra: nenhum módulo importa diretamente a implementação de outro — apenas contratos. Evolução futura para serviços independentes é possível sem reescrita se os contratos forem respeitados.",
+    "interfaces": [
+      "REST API (JSON) — interface primária para web e mobile, versionada (/v1/)",
+      "Webhooks — notificação de status de NF emitida, pagamento DAS processado",
+      "Portal Web (SPA React/Next.js) — interface do MEI",
+      "App Mobile (React Native) — lançamento de despesas e consulta em campo",
+      "Admin Internal API — onboarding, suporte e override de emissões",
+      "Integration API (futura Fase 5) — para contadores e ERPs consumirem dados do MEI",
+      "Fila de eventos internos — comunicação assíncrona entre módulos (não exposta externamente)"
+    ],
+    "escalabilidade": "Scale-out horizontal das instâncias de API (stateless, JWT). Emissão de NF processada em workers assíncronos — escala independente do API principal via fila. Banco de dados com read replicas para relatórios e consultas pesadas. Multi-tenancy por row-level security no PostgreSQL — simples e suficiente até ~500k tenants sem re-arquitetura. CDN para assets estáticos e PDFs de NF gerados. Rate limiting por tenant para proteger cotas de APIs governamentais. Cache de configurações municipais (regras de NFS-e por município mudam raramente). Estratégia de sharding somente se fitness function de latência for violada — last responsible moment.",
+    "custos": {
+      "infra_inicial": "Baixo — monolito modular em container único (ECS Fargate ou Cloud Run), PostgreSQL gerenciado, Redis gerenciado. Estimativa: ~R$800-1.500/mês para os primeiros 1.000 tenants ativos",
+      "principais_drivers_de_custo": [
+        "Provedor de emissão de NF: cobrança por emissão (~R$0,08-0,25/NF dependendo do volume)",
+        "Certificado digital A1 por tenant (ou custódia compartilhada — avaliar compliance)",
+        "Suporte humano para problemas com prefeituras municipais — custo escondido alto",
+        "Armazenamento de XMLs de NF (obrigação legal de 5 anos)"
+      ],
+      "otimizações": "Negociar volume com provedor de NF desde cedo. Armazenar XMLs em S3/GCS Glacier. Evitar over-engineering de infra nos primeiros 12 meses — fitness functions avisam antes de saturar."
+    },
+    "monetizacao": {
+      "modelo_primário": "Assinatura mensal por MEI — alinhado com recorrência do DAS",
+      "tiers": [
+        "Gratuito: até 5 NFs/mês, relatório DAS básico — aquisição e validação de produto",
+        "Essencial (R$39/mês): até 30 NFs/mês, controle financeiro completo",
+        "Profissional (R$79/mês): NFs ilimitadas, integração contabilidade, app mobile"
+      ],
+      "expansão_de_receita": [
+        "Add-on: emissão de NF-e (produtos) — MEIs que crescem para ME",
+        "Marketplace de serviços financeiros (conta PJ, cartão, antecipação de recebíveis) — rev share",
+        "API para contadores (B2B2C) — gestão de carteira de MEI clientes"
+      ],
+      "métricas_chave": "MRR, churn < 3%/mês, NFs emitidas/tenant/mês (proxy de saúde do negócio do MEI), CAC vs LTV"
+    },
+    "stack_sugerida": {
+      "backend": "Node.js + TypeScript (NestJS) — ecosistema maduro, tipagem forte para domínio fiscal complexo",
+      "frontend_web": "Next.js (App Router) — SSR para SEO de landing pages + SPA para app",
+      "mobile": "React Native (Expo) — reuso de lógica de negócio com web",
+      "banco_de_dados": "PostgreSQL (Supabase ou RDS) — ACID, row-level security nativo para multi-tenancy",
+      "fila": "Redis com BullMQ — simples, suficiente para volume inicial; migração para SQS se necessário",
+      "infra": "AWS (ECS Fargate + RDS + S3 + SQS) ou GCP equivalente — Terraform desde o dia 1",
+      "nf_provider": "NFe.io ou Focus NFe — avaliar cobertura municipal e SLA antes de fechar; isolar via adapter",
+      "observabilidade": "Sentry (erros) + Datadog ou Grafana Cloud (métricas/traces) + alertas em emissões falhadas",
+      "auth": "Supabase Auth ou Auth0 — não construir autenticação própria",
+      "ci_cd": "GitHub Actions — pipeline com fitness functions automatizadas em cada PR",
+      "decisão_adiada": "Microsserviços — monolito modular até fitness functions de escala exigirem separação"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Conformidade fiscal (LGPD, SEFAZ, prefeituras municipais) — não negociável\",\n    \"Disponibilidade (99.9%+) — operações financeiras não podem falhar silenciosamente\",\n    \"Auditabilidade — rastreabilidade completa de emissões e transações\",\n    \"Evoluibilidade — legislação fiscal brasileira muda com frequência\",\n    \"Segurança (confidencialidade de dados financeiros e certificados A1/A3)\",\n    \"Resiliência a falhas externas (APIs SEFAZ/prefeituras são instáveis)\",\n    \"Multi-tenancy — isolamento de dados entre MEIs\",\n    \"Observabilidade — alertas proativos de falhas em emissões\"\n  ],\n  \"fitness_functions\": [\n    \"Automatizada: p95 de resposta da API < 500ms — medida em CI/CD via k6\",\n    \"Automatizada: taxa de sucesso na emissão de NF > 99,2% — monitorada via Datadog/CloudWatch\",\n    \"Automatizada: zero divergência entre valor calculado e valor na NF emitida — teste de propriedade com fast-check\",\n    \"Automatizada: cobertura de testes > 80% no módulo fiscal — gate no pipeline\",\n    \"Automatizada: scan SAST (Semgrep/Snyk) sem findings críticos a cada merge\",\n    \"Manual (mensal): auditoria de isolamento de dados entre tenants\",\n    \"Manual (trimestral): simulação de falha da API SEFAZ — validar fallback e fila de reprocessamento\",\n    \"Manual (semestral): pen test focado em certificados digitais e dados financeiros\",\n    \"Automatizada: latência de emissão assíncrona < 2 min para 95% dos casos em carga normal\"\n  ],\n  \"incremental_change\": \"Estratégia Strangler Fig + entrega por fatias verticais. Fase 0 (MVP, ~8 semanas): cadastro de MEI, lançamento manual de receitas/despesas, relatório DAS simplificado — sem NF. Fase 1: integração NFS-e com 3 municípios de maior volume (São Paulo, Rio, Belo Horizonte) usando um adapter isolado por provedor. Fase 2: expansão gradual de municípios via configuração, não código. Fase 3: NF-e para MEIs que vendem produtos. Fase 4: automação do pagamento do DAS via open banking. Fase 5: A"
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona um bounded context de 'Billing & Subscription' com referências a planos, metragem de sensores ativos, faturamento e trial, mas não detalha tiers, valores, conexão explícita entre receita e custo por cliente, nem métricas de negócio como MRR, churn, LTV ou CAC — é apenas uma indicação estrutural de que cobrança existirá, sem modelo de monetização real."
+}

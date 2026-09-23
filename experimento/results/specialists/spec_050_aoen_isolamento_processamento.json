@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 50,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta centraliza toda a lógica de negócio em uma BikeFleetService Layer única — incluindo telemetria em tempo real, detecção de anomalias e engine de redistribuição preditiva — sem mencionar filas, workers assíncronos, processos separados ou qualquer mecanismo de fallback; uma sobrecarga no motor preditivo ou no processamento de telemetria em massa derrubaria o fluxo crítico de desbloqueio e cobrança junto."
+}

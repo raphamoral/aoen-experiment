@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O documento é integralmente arquitetural/técnico: o setor-alvo (imobiliário) é inferível apenas pelo nome do produto, mas não há definição de personas, tamanho de mercado, dor do cliente articulada, análise de concorrentes nem proposta de valor explícita."
+}

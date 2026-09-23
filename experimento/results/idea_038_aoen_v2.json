@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 38,
+  "ideia": "SaaS de monitoramento de concorrentes para e-commerce",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de coleta, normalização e comparação de dados competitivos em tempo quase-real: detectar mudanças de preço, estoque, sortimento e promoções de concorrentes e transformar isso em alertas acionáveis para o lojista tomar decisões de precificação e posicionamento.",
+    "fase1_mercado": "Lojistas de e-commerce (small/mid: Shopify, VTEX, WooCommerce), sellers de marketplace (Mercado Livre, Amazon), gestores de pricing e category managers em varejistas com 50–5000 SKUs ativos que competem em preço e sortimento.",
+    "fase1_extensivel": "Sim. O core é uma pipeline de dados: [fonte] → [extrator] → [normalizador] → [comparador] → [alertador]. Cada etapa é uma interface intercambiável. Scrapers web podem ser trocados por feeds de API (Buscape, Google Shopping, feeds XML), novos provedores de dados adicionados sem alterar o pipeline central. O coração é o motor de comparação e regras de alerta, não a tecnologia de coleta.",
+    "fase2_interfaces": [
+      "Dashboard web (análise visual de histórico de preços, posicionamento, share of shelf)",
+      "REST API pública (integração com ERPs, plataformas de e-commerce, repricing engines)",
+      "Plugin Shopify / WooCommerce / VTEX (onboarding zero-friction direto no painel do lojista)",
+      "Alertas por e-mail, Slack e WhatsApp (notificação assíncrona para operadores não-técnicos)",
+      "Relatórios PDF/CSV agendados (para gerentes e C-level que não operam o sistema)"
+    ],
+    "fase2_justificativa_mercado": "Dashboard web abre o mercado de gestores de pricing que precisam de visão analítica contínua. REST API abre o mercado de times técnicos e ferramentas de repricing automático (integração B2B). Plugin de plataforma reduz o custo de aquisição para lojas Shopify/VTEX que já vivem nesses ecossistemas. Alertas por WhatsApp/Slack abrem o mercado de operadores de marketplace que trabalham no celular e não acessam dashboards. Relatórios agendados viabilizam venda para médias empresas onde o decisor é o diretor comercial, não o analista.",
+    "fase2_service_layer": "Uma CompetitorIntelligenceService centraliza toda a lógica: buscar concorrentes configurados, calcular delta de preço, avaliar regras de alerta, gerar snapshots históricos. As interfaces (dashboard, API, plugin, notificações) consomem apenas esta service layer via chamadas padronizadas — nenhuma interface contém regra de negócio. Trocar o frontend ou adicionar um novo canal de notificação não exige alterar a lógica de comparação.",
+    "fase3_fluxo_fixo": "Descoberta de URL → Agendamento de coleta → Execução do scraper → Normalização de schema (produto, preço, estoque, variações) → Persistência do snapshot → Comparação com snapshot anterior → Avaliação de regras de alerta → Disparo de notificações → Atualização do dashboard.",
+    "fase3_parametros_configuraveis": [
+      "Lista de concorrentes monitorados (URLs ou domínios)",
+      "SKUs ou categorias alvo",
+      "Frequência de coleta (15min, 1h, 6h, diária)",
+      "Canais de notificação habilitados (e-mail, Slack, WhatsApp, webhook)",
+      "Thresholds de alerta (ex: notificar se preço do concorrente cair mais de 5%)",
+      "Fuso horário e horário de operação (ex: coletar apenas em horário comercial)",
+      "Número máximo de concorrentes e SKUs (limite do plano contratado)",
+      "Moeda e região de comparação",
+      "Campos monitorados (preço, frete, estoque, avaliação, imagem)",
+      "Formato e periodicidade dos relatórios exportados"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro de tenant com seu conjunto de parâmetros (concorrentes, SKUs, regras, canais, plano). O pipeline de coleta, normalização e alerta roda o mesmo código para todos os tenants, parametrizado pelo contexto do tenant. Onboarding via wizard no dashboard ou via API de provisionamento — zero deploy, zero código novo.",
+    "fase4_core_isolado": "Workers de scraping e normalização rodam como processos isolados e assíncronos (fila de jobs: BullMQ/Redis ou RabbitMQ). Cada job contém tenant_id, url, configurações. Os workers são stateless, escaláveis horizontalmente e substituíveis sem downtime. O restante do sistema (API, dashboard, alertas) opera independentemente dos workers.",
+    "fase4_custo_total_cliente": "Custo de core: requisições de proxy residencial/datacenter (U$0,5–3,00/GB) + compute dos workers (CPU proporcional à frequência e volume de SKUs). Custo de infra proporcional: fração do servidor de API e banco de dados (PostgreSQL + TimescaleDB) por tenant ativo. Armazenamento: histórico de snapshots (~1–5KB/snapshot × frequência × SKUs × retenção — ex: 10k snapshots/mês = ~10MB/cliente/mês). Banda de saída: entrega de dashboards, exports, webhooks. Notificações: custo de SendGrid/Twilio/WhatsApp Business API por mensagem. Total estimado por cliente/mês (plano básico): U$2–8 de infra; plano avançado (alta frequência, muitos SKUs): U$15–40.",
+    "fase4_continuidade": "Workers e API são desacoplados por fila. Se os workers falharem, o dashboard continua servindo dados do último snapshot (cache Redis + banco). Alertas pendentes ficam na fila até os workers se recuperarem. Nenhum dado é perdido; apenas a frequência de atualização é impactada. Health checks monitoram os workers e alertam a equipe sem afetar a experiência do cliente.",
+    "fase4_manutencao": "Scrapers são implementados atrás de uma interface ScraperAdapter (fetch_page, parse_product). Trocar Playwright por Puppeteer, adicionar um provider de dados via API (ex: Google Shopping API) ou usar um serviço de scraping gerenciado (Zyte, BrightData) requer apenas uma nova implementação do adapter — o pipeline e a lógica de negócio não mudam. Deploy do novo adapter via feature flag por tenant, sem parada.",
+    "monetizacao": "SaaS por assinatura mensal em tiers: Starter (até 5 concorrentes, 500 SKUs, coleta diária) ~U$49/mês; Growth (até 20 concorrentes, 5k SKUs, coleta horária) ~U$149/mês; Scale (ilimitado, 15min, API, white-label) ~U$499/mês. Add-ons: integrações de plataforma (plugin Shopify/VTEX), alertas WhatsApp, retenção histórica estendida. Trial de 14 dias sem cartão. Canal de aquisição principal: marketplaces de apps (Shopify App Store, VTEX App Store) para CAC baixo.",
+    "stack_sugerida": "Backend API: Node.js (Fastify) ou Python (FastAPI). Workers de scraping: Python + Playwright + Scrapy, rodando em containers Docker com auto-scaling (AWS ECS Fargate ou Railway). Fila de jobs: BullMQ + Redis. Banco principal: PostgreSQL (dados de tenants, configurações, alertas). Série temporal de preços: TimescaleDB (extensão PostgreSQL) ou ClickHouse para volumes maiores. Cache: Redis. Frontend: Next.js + TailwindCSS. Notificações: SendGrid (e-mail), Twilio (WhatsApp/SMS), webhooks nativos. Proxies: BrightData ou Oxylabs (rotação de IP). Infra: AWS (RDS, ElastiCache, ECS) ou Railway/Render para fase inicial. Observabilidade: Grafana + Prometheus nos workers para medir custo real por tenant."
+  }
+}

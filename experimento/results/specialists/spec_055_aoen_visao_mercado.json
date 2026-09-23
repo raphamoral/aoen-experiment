@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 55,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 8,
+  "justificativa": "Mercado-alvo bem definido (hospitais 50–2000 leitos, redes e cooperativas), dor quantificada (40h/mês em escala manual, risco regulatório, insatisfação dos profissionais) e diferenciação clara (mobile para retenção, autoatendimento peer-to-peer, integração com HIS legados via API), mas falta estimativa de tamanho de mercado (TAM/SAM/SOM) e benchmarking explícito contra concorrentes diretos como Kronos ou sistemas nativos dos HIS."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "Route Planning usa workers async (Bull/Celery) e Real-time Tracking via Kafka/Redis streams, garantindo isolamento físico real com escalabilidade independente, mas a proposta não detalha fallback/degradação graceful em caso de falha dos workers nem estratégias de bulkhead entre os bounded contexts para conter falhas em cascata."
+}

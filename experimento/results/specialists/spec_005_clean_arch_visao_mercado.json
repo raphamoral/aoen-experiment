@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta é puramente arquitetural — entidades como Property, Party (locador/locatário/fiador) e Contract permitem inferir o setor imobiliário como domínio, mas não há nenhuma definição explícita de mercado-alvo, tamanho de mercado, articulação da dor do cliente, diferenciação frente a concorrentes (DocuSign, ZapSign, Contraktor) ou proposta de valor; a visão de mercado está completamente ausente como artefato."
+}

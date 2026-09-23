@@ -1,0 +1,46 @@
+{
+  "ideia_idx": 35,
+  "ideia": "SaaS de detecção de fraudes em transações de marketplace",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Cliente (marketplace) → integração e ingestão de eventos de transação → enriquecimento de dados (dispositivo, identidade, histórico do comprador/vendedor) → engenharia de features em tempo real → scoring de risco (regras + ML) → decisão (aprovar / revisar / bloquear / desafiar) → fila de revisão manual → feedback de chargebacks e labels → retreinamento e monitoramento de modelos → relatórios e alertas. A ordem vai da visibilidade ao cliente (dashboard, API de decisão) até a infraestrutura (computação, armazenamento, mensageria). O diferencial competitivo está no scoring específico para marketplace, que considera o risco dos dois lados (comprador, vendedor) e a colusão entre eles.",
+    "bounded_contexts": [
+      "Ingestão de Transações (eventos, normalização, idempotência)",
+      "Perfis e Identidade (comprador, vendedor, dispositivo, grafo de relacionamentos)",
+      "Feature Store (features em tempo real e em lote)",
+      "Scoring e Decisão de Risco (motor de regras, modelos de ML, políticas por tenant)",
+      "Investigação e Revisão Manual (casos, filas, SLA de analistas)",
+      "Feedback e Labels (chargebacks, disputas, resultados de revisão)",
+      "Ciclo de Vida de Modelos (treino, validação, deploy, drift)",
+      "Gestão de Tenants e Integrações (onboarding, chaves de API, webhooks)",
+      "Faturamento e Medição de Uso (metering, planos, invoices)",
+      "Observabilidade, Auditoria e Compliance (trilha de decisão, LGPD/GDPR, PCI)"
+    ],
+    "component_evolution": "GENESIS: detecção de colusão comprador-vendedor por grafo, features comportamentais específicas de marketplace. CUSTOM: motor de decisão e políticas por tenant, feature store de baixa latência, pipeline de feedback de labels, UI de investigação. PRODUCT: plataforma de MLOps (MLflow ou equivalente), motor de regras (open source ou licenciado), data warehouse, autenticação (Auth0/Keycloak), fornecedores de device fingerprinting e de dados de identidade. COMMODITY: computação e Kubernetes gerenciado, mensageria (Kafka gerenciado), banco relacional, object storage, observabilidade, e-mail/SMS, gateway de pagamento e cobrança (Stripe). Recomendação: investir em custom/genesis no scoring, no grafo e nas features de marketplace, que são o diferencial. Comprar ou usar produtos e commodities para todo o resto.",
+    "team_topology": "STREAM-ALIGNED: (1) Time de Detecção e Decisão, dono de ingestão, scoring e latência; (2) Time de Investigação e Experiência do Analista, dono da UI, das filas e do feedback. COMPLICATED-SUBSYSTEM: Time de Data Science e Grafos, dono dos modelos, da detecção de colusão e do ciclo de vida de modelos, com interface clara para o time de Detecção. PLATFORM: Time de Plataforma (infra, CI/CD, observabilidade, feature store, streaming), que oferece serviços self-service e reduz a carga cognitiva dos demais. ENABLING: Time de Segurança/Compliance e Enabling de MLOps, que atua temporariamente para elevar a capacidade dos outros times. Modos de interação: X-as-a-Service entre Plataforma e os demais; colaboração temporária entre Data Science e Detecção durante o lançamento de novos modelos; facilitação por Enabling. Cada time com cerca de 5 a 9 pessoas e ownership de ponta a ponta.",
+    "flow_optimization": "Mapear o fluxo de valor até a primeira decisão de risco em produção (tempo de onboarding do cliente) e o ciclo de aprendizado (do chargeback ao modelo atualizado). Reduzir o tempo de onboarding com SDKs, contratos de API padronizados e modo sombra (shadow mode), no qual o cliente vê as decisões sem aplicá-las. Fechar o ciclo de feedback com labels automatizados e retreinamento contínuo. Usar arquitetura orientada a eventos para desacoplar ingestão, scoring e investigação. Manter monólito modular no início e extrair serviços apenas onde a evolução ou a escala divergem (scoring, ingestão). Feature flags e deploy canário para modelos e regras. Métricas de fluxo (DORA, lead time de modelo, tempo de revisão) por time. Limitar o WIP e reduzir dependências entre times com contratos explícitos e ownership claro dos bounded contexts.",
+    "interfaces": [
+      "REST/gRPC API de decisão síncrona (baixa latência, p99 abaixo de 100–200 ms)",
+      "API de ingestão de eventos em lote e streaming (webhooks, SDKs em várias linguagens)",
+      "Webhooks de saída para decisões assíncronas e alertas",
+      "API de feedback de labels (chargebacks, disputas, resultado de revisão)",
+      "Dashboard web para analistas e gestores de risco",
+      "API de configuração de regras e políticas por tenant",
+      "Eventos de domínio (Kafka) entre contexts (TransactionScored, CaseOpened, LabelReceived)",
+      "Integrações com PSPs e gateways de pagamento, com provedores de identidade e device fingerprinting",
+      "API de faturamento e uso (metering)",
+      "Exportação para data warehouse e BI do cliente",
+      "API de auditoria e explicabilidade (motivos da decisão)"
+    ],
+    "escalabilidade": "Ingestão e scoring escalam horizontalmente e sem estado (stateless), com autoscaling por métrica de fila e latência. Kafka particionado por tenant/entidade para preservar a ordem e permitir paralelismo. Feature store com camada online (Redis/DynamoDB/Cassandra) para leituras de milissegundos e camada offline (lakehouse) para treino. Modelos servidos por serviços dedicados, com cache de features e degradação controlada (fallback para regras se o modelo falhar). Multi-tenancy com isolamento lógico e, para clientes grandes, células (cell-based architecture) que limitam o raio de impacto. Treino em lote em computação elástica, fora do caminho crítico. Rate limiting e cotas por tenant. Multi-região para latência e resiliência quando necessário. Testes de carga e de caos regulares, com SLOs por serviço.",
+    "custos": "Principais custos: computação de inferência em tempo real (sempre ligada), armazenamento e streaming de eventos, treino de modelos (GPU/CPU sob demanda), dados de terceiros (device fingerprinting, bureaus de identidade, cobrados por consulta), analistas de revisão manual se o serviço incluir operação, segurança e compliance (PCI, LGPD, auditorias). Mitigações: usar serviços gerenciados para commodities, spot instances para treino, políticas de retenção e tiering de dados, consultas de dados externos apenas para transações de risco médio, cache de enriquecimentos, FinOps com custo por tenant e por transação para proteger a margem. Custo de pessoas (ML, engenharia de plataforma) tende a dominar no início. Monitorar o custo unitário por transação avaliada.",
+    "monetizacao": "Modelo híbrido: assinatura mensal por faixa de volume mais preço por transação avaliada (usage-based), com preços degressivos por volume. Planos: Starter (regras básicas e ML padrão), Growth (modelos específicos por tenant, revisão manual), Enterprise (SLA, células dedicadas, modelos customizados, suporte). Complementos: módulo de detecção de colusão/grafo, serviço gerenciado de revisão, dados de rede compartilhados (consortium data, com atenção à privacidade), relatórios de compliance. Opção de cobrança atrelada a resultado (percentual das perdas evitadas) para clientes maiores, com medição transparente. Cobrança via Stripe Billing com metering de uso.",
+    "stack_sugerida": "Linguagens: Go ou Java/Kotlin para ingestão e decisão de baixa latência; Python para ciência de dados e treino; TypeScript/React para o dashboard. Mensageria e streaming: Kafka (MSK/Confluent) com Flink ou Kafka Streams para features em tempo real. Armazenamento: PostgreSQL (dados transacionais e de tenants), Redis ou DynamoDB (feature store online), lakehouse com S3 + Iceberg/Delta e ClickHouse ou BigQuery para análise, Neo4j ou TigerGraph (ou grafos em Spark GraphFrames) para relacionamentos. ML: XGBoost/LightGBM, PyTorch para modelos de grafo (GNN), MLflow, Feast ou feature store própria, serving com KServe/Triton ou serviços Go com ONNX. Motor de regras: Drools, OPA ou motor próprio. Infra: Kubernetes gerenciado (EKS/GKE), Terraform, ArgoCD/GitOps, service mesh opcional. Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki/Tempo, Sentry. Segurança: Vault/KMS, mTLS, tokenização de dados sensíveis, trilha de auditoria imutável. Identidade: Keycloak ou Auth0. Cobrança: Stripe Billing. CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "dfd4115afd4e",
+    "gerado_em": "2026-09-21T02:55:02+00:00",
+    "runner": "runner.py"
+  }
+}

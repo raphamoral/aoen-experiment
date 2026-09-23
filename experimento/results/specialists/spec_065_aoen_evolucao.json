@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 65,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "O pipeline abstrato SignalCollector→Aggregator→InsightEngine com adaptadores plugáveis, a inversão de dependências via ApplicationService+DTOs e a ausência explícita de acoplamento a fornecedores demonstram arquitetura genuinamente evolutiva — mas a avaliação perde dois pontos pela ausência de estratégia explícita de escala horizontal (10→10.000 usuários), falta de versionamento declarado para a API REST e especificação truncada da fase 3, que impede confirmar se os parâmetros configuráveis cobrem casos de extensão sem redeploy."
+}

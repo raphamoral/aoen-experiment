@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador existe implicitamente (algoritmo de matchmaking regional com busca semântica por embeddings), está parcialmente isolado como processo dedicado (worker-matching), mas a proposta não articula o que torna o algoritmo único frente a alternativas como AngelList ou LinkedIn, não descreve a lógica proprietária de scoring de compatibilidade, e trata o núcleo com o mesmo peso descritivo que decisões puramente infraestruturais — sem demonstrar por que, sem esse componente, o produto deixaria de existir."
+}

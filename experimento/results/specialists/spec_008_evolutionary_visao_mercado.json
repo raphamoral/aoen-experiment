@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O mercado é inferível pelo contexto técnico (integração com SINIR/SIGOR, IBAMA/CONAMA, ERPs industriais), mas a proposta não articula explicitamente segmento-alvo, tamanho de mercado, dor do cliente em linguagem de negócio, nem diferenciação frente a alternativas existentes — toda a visão está expressa em linguagem arquitetural, não estratégica."
+}

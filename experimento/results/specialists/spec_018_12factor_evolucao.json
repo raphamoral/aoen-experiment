@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra excelente maturidade operacional — processos stateless, releases imutáveis, feature flags e escala horizontal horizontal garantem crescimento sem reescrita — porém a ausência explícita de camadas anticorrupção (portas/adaptadores) entre a lógica de negócio e os frameworks de ML (scikit-learn, xgboost) e o feature store (Feast/Tecton) cria acoplamento estrutural que tornaria a substituição dessas tecnologias um esforço invasivo, impedindo a nota máxima."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "O projeto prevê múltiplas interfaces relevantes (dashboard web, API pública, alertas/notificações) com alguma justificativa de perfil de usuário (lojistas, agências), mas falta evidência explícita de desacoplamento da lógica de negócio das interfaces e não há consideração de contextos mobile ou CLI, além de as escolhas parecerem mais orientadas à funcionalidade do que a uma estratégia deliberada de alcance de mercado."
+}

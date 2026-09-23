@@ -1,0 +1,48 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Um monorepo Git único, com um app versionado por serviço: web-api, worker, scheduler e web-frontend. Os módulos compartilhados (domínio de anonimização, contratos de eventos) ficam em bibliotecas internas do mesmo repositório. Os deploys (dev, staging, produção e, no futuro, regiões/tenants dedicados) saem do mesmo codebase e diferem só pela config. Trunk-based development, com feature flags e revisão obrigatória em mudanças que toquem o módulo de anonimização.",
+    "dependencies": "Declaração explícita e lockfile versionado (pnpm-lock.yaml / poetry.lock). Sem dependência de ferramentas do sistema, e as imagens de container trazem tudo que é necessário. Imagens base mínimas e fixadas por digest. Dependabot/Renovate, SCA (Trivy/Snyk), geração de SBOM e política de licenças. Ambiente de dev reproduzível com Docker Compose ou devcontainer.",
+    "config": "Toda config vem de variáveis de ambiente (URLs de backing services, chaves, feature flags, limiar de k-anonimato). Nenhum segredo no repositório. Segredos ficam em um secret manager (AWS Secrets Manager, Vault ou Doppler) e são injetados em runtime. Não há arquivos de config por ambiente no código. As chaves de criptografia ficam em KMS, com rotação automática. O limiar mínimo de anonimato (ex.: k>=10 colaboradores por agrupamento) é configurável por deploy, com piso rígido no código.",
+    "backing_services": [
+      "PostgreSQL gerenciado (dados transacionais: empresas, times, questionários, agregados). Row-Level Security por tenant. As respostas ficam separadas de qualquer identidade.",
+      "Redis gerenciado (cache, rate limiting, filas leves)",
+      "Fila de mensagens (SQS/RabbitMQ/Cloud Tasks) para processamento assíncrono de respostas e relatórios",
+      "Object storage S3-compatível (relatórios PDF/CSV gerados, exports, criptografados)",
+      "Provedor de identidade (Auth0/Keycloak/Cognito) com SSO SAML/OIDC corporativo. O login serve só para autorizar o acesso ao app e não é ligado ao conteúdo das respostas.",
+      "KMS para criptografia de envelope e rotação de chaves",
+      "Serviço de e-mail transacional (SES/Postmark) e push (FCM/APNs) para lembretes de check-in, sem identificar respostas",
+      "Gateway de pagamento (Stripe Billing) para assinaturas",
+      "Observabilidade (Grafana/Loki/Prometheus ou Datadog; Sentry para erros) com scrubbing de PII",
+      "Opcional: serviço de NLP/LLM com contrato de zero retenção, para análise de sentimento em texto livre após remoção de PII"
+    ],
+    "build_release_run": "Build: o CI (GitHub Actions) roda lint, testes unitários e de integração, testes de propriedade da anonimização (nenhum agregado é liberado abaixo de k), SAST, SCA e o build da imagem Docker versionada pelo SHA do commit. Release: a imagem é combinada com a config do ambiente em uma release imutável e assinada (cosign), com número de versão e changelog, publicada em registry privado. Run: deploy via GitOps (ArgoCD/Flux) em Kubernetes ou ECS, com rolling/blue-green/canary e rollback para a release anterior em um comando. Migrações de banco compatíveis com versão anterior (expand/contract), executadas como processo admin pontual. Promoção automática dev → staging → produção, com gate de aprovação em produção.",
+    "processes": "Todos os processos são stateless e share-nothing. Tipos de processo: web (API REST/GraphQL + frontend), worker (consome filas: agregação anônima, cálculo de indicadores, geração de relatórios, notificações) e scheduler (dispara check-ins periódicos e jobs de agregação; tem uma única instância lógica com lock distribuído). O estado persistente vive só nos backing services. Sessões são tokens JWT curtos ou ficam no Redis, sem sticky sessions. Privacidade por design: a resposta é gravada com um identificador de submissão aleatório e descartável (pseudônimo rotativo), sem vínculo com user_id nem IP. Só agregados que passam pelo limiar k-anonimato (e ruído de privacidade diferencial, quando aplicável) chegam aos painéis da empresa. O RH nunca acessa respostas individuais.",
+    "concurrency": "Escala horizontal por tipo de processo: mais instâncias web atrás do load balancer e mais workers por profundidade de fila. HPA/KEDA no Kubernetes, com CPU/latência para o web e tamanho da fila para o worker. Filas separadas por prioridade (check-ins em tempo real x relatórios pesados). Jobs idempotentes, com retry e backoff exponencial e dead-letter queue. Read replicas do Postgres para dashboards e particionamento por tenant/período para as tabelas de respostas.",
+    "disposability": "Startup em segundos (imagens enxutas, sem warm-up pesado), com readiness e liveness probes. Shutdown gracioso: ao receber SIGTERM, o web para de aceitar conexões e drena as requisições em andamento, e o worker termina ou devolve à fila o job atual (visibility timeout). Jobs idempotentes toleram morte súbita do processo. Multi-AZ, PodDisruptionBudgets, health checks e circuit breakers para dependências externas. Backups automáticos com PITR do banco, RPO ≤ 5 min e RTO ≤ 1 h, testados periodicamente. Degradação elegante: se as filas ou o NLP falharem, a coleta de respostas continua e o processamento fica pendente. SLO de 99,9%.",
+    "interfaces": [
+      "App web responsivo/PWA para colaboradores (check-in anônimo de humor e questionários validados como PHQ-9, GAD-7 e WHO-5, com sinalização de que a resposta é anônima)",
+      "App mobile (React Native) com lembretes e recursos de bem-estar",
+      "Dashboard web para RH/gestores com indicadores agregados, tendências, mapas de calor por área (só acima do limiar de anonimato) e relatórios exportáveis",
+      "Console de administração do tenant (usuários, times, periodicidade, SSO/SCIM, política de retenção)",
+      "API REST/GraphQL pública, documentada em OpenAPI, para integrações (HRIS, BI)",
+      "Webhooks para eventos agregados (ex.: alerta de queda de bem-estar em um departamento)",
+      "Integrações com Slack/Microsoft Teams para check-ins",
+      "Canal de apoio: encaminhamento anônimo a EAP/psicólogos parceiros e a números de crise (ex.: CVV 188 no Brasil), acionado pelo próprio colaborador",
+      "Portal de transparência e privacidade (LGPD/GDPR) com direitos do titular e explicação da anonimização",
+      "Painel interno de backoffice/suporte, sem acesso a conteúdo de respostas"
+    ],
+    "escalabilidade": "Multi-tenant lógico com isolamento por RLS e chaves de criptografia por tenant, e opção de tenant dedicado para grandes contas. A camada web e os workers escalam horizontalmente com auto scaling. Os picos previsíveis (check-in semanal em horário comercial) são absorvidos pela fila, com pré-escala agendada. O banco escala com read replicas, particionamento de respostas por tenant/mês e agregados pré-computados (materialized views) para que o dashboard nunca leia respostas brutas em tempo de consulta. Cache no Redis e CDN para o frontend. Em crescimento maior, sharding por tenant e regiões separadas (Brasil/UE/EUA) por residência de dados.",
+    "custos": "O maior custo variável é o banco gerenciado e a computação dos workers. O custo cresce de forma aproximadamente linear com o número de colaboradores ativos. Alavancas de economia: instâncias spot para workers, scale-to-zero em dev/staging, retenção curta das respostas brutas (30–90 dias) mantendo só os agregados, e armazenamento frio para relatórios antigos. Custos fixos relevantes incluem conformidade (LGPD/GDPR, ISO 27001/SOC 2, pentests anuais, DPO), seguro cyber, suporte a casos sensíveis e, se houver, curadoria clínica dos conteúdos e questionários. Observabilidade e logs podem ficar caros, então é preciso amostragem e retenção controlada. O custo de LLM/NLP, se usado, deve ser limitado por cache e modelos menores.",
+    "monetizacao": "Assinatura B2B recorrente (SaaS) cobrada por colaborador ativo por mês (PEPM), em planos: Essencial (check-ins e dashboard agregado), Profissional (questionários clínicos validados, integrações Slack/Teams, API, benchmarks setoriais anônimos) e Enterprise (SSO/SCIM, tenant dedicado, residência de dados, SLA, relatórios de conformidade). Add-ons: rede de apoio psicológico/EAP com repasse ou comissão de parceiros, consultoria e workshops de saúde ocupacional, e relatórios de NR-1/riscos psicossociais para conformidade regulatória. Piloto gratuito de 30–60 dias, com contrato anual e desconto por volume. Cobrança via Stripe Billing, com faturas e NF para empresas.",
+    "stack_sugerida": "Frontend: React + TypeScript (Next.js) e React Native para mobile, com Tailwind e uma biblioteca de gráficos como Recharts ou ECharts. Backend: Node.js (NestJS) ou Python (FastAPI), com API REST/OpenAPI e workers em Celery ou BullMQ. Dados: PostgreSQL (RLS, particionamento), Redis, S3 e fila SQS ou RabbitMQ. Autenticação: Keycloak, Auth0 ou Cognito, com OIDC/SAML. Infra: Docker, Kubernetes (EKS/GKE) ou ECS Fargate, Terraform (IaC), ArgoCD (GitOps) e GitHub Actions (CI). Segurança e privacidade: KMS, Vault ou Secrets Manager, TLS em todo o tráfego, criptografia em repouso, k-anonimato e privacidade diferencial (ex.: OpenDP), logs sem PII e auditoria imutável. Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki e Sentry, com logs como streams de eventos em stdout coletados pela plataforma. Pagamentos: Stripe Billing."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "3cd7f8c8cda0",
+    "gerado_em": "2026-09-21T01:47:54+00:00",
+    "runner": "runner.py"
+  }
+}

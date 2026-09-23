@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra intenção de configurabilidade ao incluir 'Tenant Management' como BC explícito e nomear um 'Motor de regras de precificação configurável' no nível produto, mas não detalha o mecanismo de configuração por tenant — ausência de schema de config, modelo de dados por tenant ou descrição do fluxo de onboarding sem deploy; além disso, itens no nível 'custom' (ex: 'Regras baseadas em posicionamento de marca: premium vs fast fashion') sugerem que diferenças de comportamento entre segmentos de clientes ainda podem exigir código, não apenas configuração."
+}

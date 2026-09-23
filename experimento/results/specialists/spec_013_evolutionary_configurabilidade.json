@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta menciona feature flags (LaunchDarkly/Unleash) e adapter patterns para integrações (pagamento, notificações), o que sugere alguma configurabilidade implícita, mas não há nenhum design explícito para configuração por tenant — ausência total de modelo de configuração por cliente, tabela de settings por tenant, onboarding zero-código ou separação formal entre comportamento fixo (código) e variável (configuração), o que indica que novos clientes com requisitos distintos ainda exigiriam desenvolvimento."
+}

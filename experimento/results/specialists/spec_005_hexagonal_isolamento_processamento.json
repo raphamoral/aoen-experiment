@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A arquitetura menciona SchedulerAdapter (Celery/BullMQ) e EventBusPort que sugerem processamento assíncrono para jobs pesados como geração de PDF, envio de notificações e expiração de contratos, mas a proposta não explicita isolamento físico real (workers em processos/containers separados), não define estratégias de fallback em caso de falha dos workers, e não aborda escalonamento independente das filas — o isolamento permanece implícito e incompleto."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado — a tríade Template Engine com lógica condicional para jurisdições brasileiras (ITBI, CRECI, FGTS, Lei 14.711/2023), o Signature Orchestration com fluxos multi-parte e validação de procurações, e o motor LLM de extração de cláusulas — forma um conjunto que genéricos como DocuSign ou HelloSign não replicam sem customização custosa; os bounded contexts separam adequadamente core de commodity, e a extensibilidade de provedores de assinatura (Certisign/Soluti/D4Sign) evita lock-in; a nota não chega a 10 porque os componentes genesis (extração LLM e análise preditiva de risco) são listados como bullets sem tratamento arquitetural equivalente aos demais bounded contexts, o que fragiliza a argumentação de insubstituibilidade justamente nos elementos mais defensáveis competitivamente."
+}

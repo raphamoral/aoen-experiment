@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 69,
+  "ideia": "SaaS de automação de testes de acessibilidade web com relatórios WCAG",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de varredura WCAG automatizado: rastreia URLs, executa análise de acessibilidade contra critérios WCAG 2.x/3.0 e produz relatórios estruturados com severidade, localização no DOM e sugestões de correção. Sem isso o produto não existe.",
+    "fase1_mercado": "Primário: times de engenharia e QA em empresas sujeitas a conformidade legal (ADA nos EUA, EAA na Europa, LBI no Brasil). Secundário: agências digitais que entregam projetos para setor público ou corporativo. Terciário: plataformas no-code/CMS que precisam oferecer conformidade como feature nativa.",
+    "fase1_extensivel": "O core é abstraído atrás de uma interface AccessibilityEngine com método scan(url, config) => Report. Implementações plugáveis: axe-core, Pa11y, Playwright+axe, IBM Equal Access, ou motor proprietário com IA. Troca de engine = nova implementação da interface, zero impacto nas camadas superiores.",
+    "fase2_interfaces": [
+      "Dashboard Web (SPA) — visão de projetos, histórico de scans, tendências de conformidade, exportação de relatórios PDF/CSV",
+      "API REST + Webhooks — integração programática com qualquer sistema externo",
+      "CLI (npm package) — execução local e em pipelines CI/CD (GitHub Actions, GitLab CI, Jenkins)",
+      "Integração GitHub/GitLab — PR checks automáticos com status de acessibilidade e diff de violações",
+      "Browser Extension — scan ad-hoc da página atual para designers e devs durante desenvolvimento"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de gestores de conformidade e compliance officers que precisam de visibilidade executiva. API REST abre integrações com ferramentas de gestão de qualidade e plataformas terceiras. CLI abre o mercado de times de engenharia que exigem feedback no fluxo de desenvolvimento. GitHub/GitLab integration abre o mercado de DevOps-first teams e enterprise com pipelines maduros. Browser Extension reduz fricção de adoção individual e funciona como canal de aquisição orgânica (freemium).",
+    "fase2_service_layer": "AccessibilityService expõe métodos como scheduleScan(), runImmediateScan(), getReport(), getProjectSummary() e manageRules(). Todas as interfaces (Web, CLI, API, Extension) consomem exclusivamente esse service layer. A interface não conhece a engine; a engine não conhece a interface. Mudança de UI ou de engine não propaga para o outro lado.",
+    "fase3_fluxo_fixo": "Fixo no código: (1) receber alvo de scan (URL ou sitemap), (2) enfileirar job de varredura, (3) executar crawl + análise WCAG, (4) persistir resultados estruturados, (5) calcular score e delta em relação ao scan anterior, (6) gerar relatório no template configurado, (7) disparar notificações nos canais configurados.",
+    "fase3_parametros_configuraveis": [
+      "Nível WCAG alvo (A, AA, AAA) e versão (2.1, 2.2, 3.0)",
+      "URLs ou sitemap a varrer (whitelist/blacklist de paths)",
+      "Frequência de scan agendado (cron expression)",
+      "Engine de acessibilidade selecionada por projeto",
+      "Regras customizadas ativas/desativadas por cliente",
+      "Thresholds de score para aprovação/reprovação em CI",
+      "Formato e idioma do relatório (PT, EN, ES)",
+      "Logo e paleta de cores no relatório (white-label)",
+      "Canais de notificação (Slack webhook, email, MS Teams, webhook genérico)",
+      "Retenção de histórico de relatórios (30, 90, 365 dias)",
+      "Limites de páginas por scan e concorrência"
+    ],
+    "fase3_novo_cliente": "Onboarding via API ou UI: criar organização → definir projeto → informar URL/sitemap → selecionar preset de conformidade (WCAG AA padrão, Governo Federal BR, etc.) → ativar schedule. Novo cliente = novo registro de configuração no banco. Zero código novo deployado.",
+    "fase4_core_isolado": "O worker de varredura roda em processo separado e assíncrono (fila de jobs: BullMQ/Redis ou SQS). API e Dashboard nunca chamam a engine diretamente — publicam um job e consomem o resultado quando pronto. Workers escalam horizontalmente e independentemente do restante da aplicação.",
+    "fase4_custo_total_cliente": "Custo do core: tempo de CPU/memória do worker por página varrida (~0,01–0,05 USD/100 páginas dependendo da engine); se usar IA para sugestões semânticas, tokens de LLM adicionais (~0,002 USD/scan médio). Infra proporcional: armazenamento de relatórios em object storage (~0,023 USD/GB/mês); registros no banco (~0,005 USD/GB/mês); banda de saída de relatórios PDF/CSV (~0,09 USD/GB). Operacional: suporte, onboarding. Custo total estimado por cliente small (500 páginas/mês, 2 projetos): ~1,50–3,00 USD/mês. Margem operacional viável com plano a partir de 29 USD/mês.",
+    "fase4_continuidade": "A fila de jobs persiste (Redis AOF ou SQS com DLQ). Se um worker travar ou crashar: job é reenfileirado automaticamente após timeout. API e Dashboard continuam respondendo — exibem status 'scan em andamento' ou dados do último scan concluído. SLA de disponibilidade da UI desacoplado do SLA do processamento.",
+    "fase4_manutencao": "Trocar axe-core por nova engine = implementar AccessibilityEngine interface + deploy de nova imagem Docker do worker + feature flag por projeto. Rollout gradual: 10% dos projetos na nova engine, monitorar discrepância de resultados, promover para 100%. Zero downtime, zero reescrita de negócio.",
+    "monetizacao": "Freemium: Browser Extension gratuita (canal de aquisição) + 1 projeto, 100 páginas/mês, relatório básico. Pro: 49 USD/mês — até 10 projetos, 5.000 páginas/mês, CI integration, histórico 90 dias, white-label PDF. Business: 199 USD/mês — projetos ilimitados, 50.000 páginas/mês, API completa, SLA, SSO, histórico 365 dias. Enterprise: contrato anual com SLA dedicado, IP fixo para firewalls, on-premise worker opcional. Receita adicional: relatório de auditoria com assinatura digital para licitações públicas (produto pontual, 199 USD/relatório).",
+    "stack_sugerida": "API: Node.js + Fastify (baixa latência, ecosystem JS alinhado com axe-core). Fila de jobs: BullMQ + Redis (scheduling, retry, prioridade). Workers de varredura: Node.js + Playwright + axe-core (containerizados, Docker + Kubernetes HPA). Banco principal: PostgreSQL (relatórios estruturados, queries analíticas). Cache e sessão: Redis. Object storage: S3-compatible (Cloudflare R2 para reduzir custo de egress). Dashboard: Next.js + React. CLI: Node.js publicado no npm. CI/CD: GitHub Actions. Observabilidade: OpenTelemetry + Grafana. Infraestrutura: Railway/Render para MVP, migração para AWS ECS/Fargate na escala."
+  }
+}

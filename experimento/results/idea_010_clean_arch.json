@@ -1,0 +1,447 @@
+{
+  "ideia_idx": 10,
+  "ideia": "App de gestão financeira para MEIs com emissão automática de nota fiscal",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio com regras críticas da empresa, sem dependências externas",
+      "lista": [
+        {
+          "nome": "MEI",
+          "atributos": [
+            "cnpj",
+            "razaoSocial",
+            "nomeFantasia",
+            "atividadeEconomica",
+            "limiteAnualReceita",
+            "regimeTributario"
+          ],
+          "regras": [
+            "Limite de faturamento anual R$81.000",
+            "Validação de CNPJ",
+            "Verificação de atividade permitida para MEI"
+          ]
+        },
+        {
+          "nome": "NotaFiscal",
+          "atributos": [
+            "numero",
+            "serie",
+            "dataEmissao",
+            "prestador",
+            "tomador",
+            "servicos",
+            "valorTotal",
+            "impostos",
+            "status",
+            "xmlAssinado"
+          ],
+          "regras": [
+            "Cálculo automático de ISS/IRPJ/INSS",
+            "Validação de campos obrigatórios",
+            "Controle de numeração sequencial",
+            "Cancelamento dentro do prazo legal"
+          ]
+        },
+        {
+          "nome": "Lancamento",
+          "atributos": [
+            "id",
+            "tipo",
+            "valor",
+            "data",
+            "descricao",
+            "categoria",
+            "comprovante",
+            "notaFiscalVinculada"
+          ],
+          "regras": [
+            "Classificação entre receita/despesa",
+            "Associação com competência fiscal",
+            "Vinculação opcional com NF"
+          ]
+        },
+        {
+          "nome": "Cliente",
+          "atributos": [
+            "cpfCnpj",
+            "nome",
+            "email",
+            "telefone",
+            "endereco",
+            "tipo"
+          ],
+          "regras": [
+            "Validação de CPF/CNPJ",
+            "Unicidade por documento"
+          ]
+        },
+        {
+          "nome": "Servico",
+          "atributos": [
+            "codigo",
+            "descricao",
+            "codigoTributacaoMunicipal",
+            "aliquotaISS",
+            "unidade"
+          ],
+          "regras": [
+            "Alíquota ISS entre 2% e 5% conforme município",
+            "Código de serviço conforme LC 116/2003"
+          ]
+        },
+        {
+          "nome": "DAS",
+          "atributos": [
+            "competencia",
+            "valorDevido",
+            "valorPago",
+            "dataPagamento",
+            "codigoBarras",
+            "status"
+          ],
+          "regras": [
+            "Geração mensal obrigatória",
+            "Cálculo baseado em faturamento do período"
+          ]
+        },
+        {
+          "nome": "Competencia",
+          "atributos": [
+            "mesAno",
+            "receitaTotal",
+            "despesaTotal",
+            "impostoDevido",
+            "status"
+          ],
+          "regras": [
+            "Fechamento mensal",
+            "Cálculo de lucro líquido",
+            "Alertas de limite de faturamento"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Regras de negócio específicas da aplicação; orquestram o fluxo entre entidades",
+      "lista": [
+        {
+          "nome": "EmitirNotaFiscal",
+          "entrada": "DadosEmissaoNFDTO",
+          "saida": "NotaFiscalEmitidaDTO",
+          "passos": [
+            "Validar dados do prestador e tomador",
+            "Calcular impostos",
+            "Gerar XML conforme padrão municipal",
+            "Assinar digitalmente",
+            "Transmitir para prefeitura via webservice",
+            "Persistir NF e retornar PDF/XML"
+          ]
+        },
+        {
+          "nome": "CancelarNotaFiscal",
+          "entrada": "CancelamentoNFDTO",
+          "saida": "ConfirmacaoCancelamentoDTO",
+          "passos": [
+            "Verificar prazo de cancelamento",
+            "Comunicar prefeitura",
+            "Atualizar status da NF",
+            "Reverter lançamento financeiro vinculado"
+          ]
+        },
+        {
+          "nome": "RegistrarLancamento",
+          "entrada": "LancamentoDTO",
+          "saida": "LancamentoRegistradoDTO",
+          "passos": [
+            "Validar dados do lançamento",
+            "Classificar categoria",
+            "Verificar limite de faturamento MEI",
+            "Persistir e atualizar competência"
+          ]
+        },
+        {
+          "nome": "GerarRelatorioDRE",
+          "entrada": "PeriodoDTO",
+          "saida": "DREResponseDTO",
+          "passos": [
+            "Consolidar receitas e despesas do período",
+            "Calcular impostos incidentes",
+            "Calcular resultado líquido",
+            "Formatar relatório"
+          ]
+        },
+        {
+          "nome": "GerarGuiaDAS",
+          "entrada": "CompetenciaDTO",
+          "saida": "DASDTO",
+          "passos": [
+            "Calcular faturamento da competência",
+            "Calcular DAS conforme tabela PGMEI",
+            "Gerar boleto/código de barras via Receita Federal",
+            "Notificar usuário"
+          ]
+        },
+        {
+          "nome": "MonitorarLimiteFaturamento",
+          "entrada": "MEIId",
+          "saida": "AlertaLimiteDTO",
+          "passos": [
+            "Somar receitas do ano corrente",
+            "Calcular percentual utilizado do limite",
+            "Emitir alertas em 75%, 90% e 100%"
+          ]
+        },
+        {
+          "nome": "ImportarExtratoBancario",
+          "entrada": "ArquivoOFXDTO",
+          "saida": "LancamentosImportadosDTO",
+          "passos": [
+            "Parsear arquivo OFX/CSV",
+            "Categorizar lançamentos via regras/ML",
+            "Sugerir vinculação com NFs emitidas",
+            "Aguardar confirmação do usuário"
+          ]
+        },
+        {
+          "nome": "CadastrarCliente",
+          "entrada": "ClienteDTO",
+          "saida": "ClienteCadastradoDTO",
+          "passos": [
+            "Validar CPF/CNPJ",
+            "Verificar duplicidade",
+            "Persistir cliente"
+          ]
+        },
+        {
+          "nome": "EnviarCobranca",
+          "entrada": "CobrancaDTO",
+          "saida": "CobrancaEnviadaDTO",
+          "passos": [
+            "Gerar link de pagamento ou boleto",
+            "Enviar por e-mail/WhatsApp",
+            "Registrar cobrança pendente"
+          ]
+        },
+        {
+          "nome": "GerarDeclaracaoAnualMEI",
+          "entrada": "AnoFiscalDTO",
+          "saida": "DASNDTO",
+          "passos": [
+            "Consolidar faturamento anual",
+            "Validar dados para DASN-SIMEI",
+            "Gerar arquivo para entrega à Receita Federal"
+          ]
+        }
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Convertem dados entre o formato dos use cases/entidades e o mundo externo",
+      "controllers": [
+        "NotaFiscalController — recebe requisições HTTP e invoca use cases de NF",
+        "LancamentoController — CRUD de lançamentos financeiros",
+        "ClienteController — gerenciamento de clientes",
+        "RelatorioController — geração de relatórios e DRE",
+        "DASController — geração e consulta de guias DAS",
+        "WebhookController — recebe callbacks de prefeituras e gateways de pagamento"
+      ],
+      "presenters": [
+        "NotaFiscalPresenter — formata NF para PDF, XML, JSON",
+        "DREPresenter — formata DRE para PDF, CSV, JSON",
+        "DashboardPresenter — agrega dados para visão geral do MEI",
+        "AlertaPresenter — formata notificações de limite e vencimentos"
+      ],
+      "gateways": [
+        "NotaFiscalGateway (interface) — abstração para comunicação com prefeituras",
+        "PagamentoGateway (interface) — abstração para gateways de cobrança",
+        "EmailGateway (interface) — abstração para envio de e-mails",
+        "SMSWhatsAppGateway (interface) — abstração para notificações",
+        "BancoGateway (interface) — abstração para integração bancária Open Finance",
+        "ReceitaFederalGateway (interface) — abstração para PGMEI e DASN"
+      ],
+      "repositories": [
+        "MEIRepository (interface)",
+        "NotaFiscalRepository (interface)",
+        "LancamentoRepository (interface)",
+        "ClienteRepository (interface)",
+        "CompetenciaRepository (interface)"
+      ],
+      "mappers": [
+        "NotaFiscalMapper — entidade <-> DTO <-> ORM model",
+        "LancamentoMapper",
+        "ClienteMapper",
+        "ExtratoOFXMapper — OFX/CSV para entidade Lancamento"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa; detalhes de implementação que podem ser substituídos sem afetar regras de negócio",
+      "web_framework": "NestJS (Node.js/TypeScript) ou FastAPI (Python)",
+      "banco_de_dados": {
+        "principal": "PostgreSQL via TypeORM/Prisma",
+        "cache": "Redis para sessões e rate limiting",
+        "search": "Opcional: ElasticSearch para busca de lançamentos"
+      },
+      "autenticacao": "JWT + Refresh Token; OAuth2 para Open Finance",
+      "storage": "AWS S3 ou Cloudflare R2 para XMLs, PDFs e comprovantes",
+      "filas": "BullMQ (Redis) para emissão assíncrona de NF e envio de e-mails",
+      "nfe_services": [
+        "NFSe.io API — integração multi-prefeitura para NFS-e",
+        "Focus NFe — alternativa para municípios não cobertos",
+        "Emissão direta via ABRASF para municípios compatíveis"
+      ],
+      "pagamentos": [
+        "Stripe",
+        "Asaas",
+        "Pagar.me"
+      ],
+      "email": "SendGrid ou AWS SES",
+      "whatsapp": "Twilio WhatsApp API ou Z-API",
+      "open_finance": "Pluggy.ai ou Belvo para agregação bancária",
+      "frontend": "Next.js 14 (App Router) + TailwindCSS + shadcn/ui",
+      "mobile": "React Native (Expo) para app mobile",
+      "infra": {
+        "cloud": "AWS ou Railway.app",
+        "containers": "Docker + Docker Compose",
+        "ci_cd": "GitHub Actions",
+        "monitoring": "Sentry + Datadog ou Grafana/Prometheus",
+        "iac": "Terraform ou Pulumi"
+      }
+    },
+    "dependency_rule": {
+      "descricao": "Nenhuma camada interna conhece ou depende de camadas externas",
+      "aplicacao": {
+        "entities": "Zero dependências externas. Apenas TypeScript puro. Sem imports de frameworks, ORMs ou bibliotecas de terceiros.",
+        "use_cases": "Dependem apenas das Entities e de interfaces (ports) definidas nesta camada. Nunca importam implementações concretas de repositórios ou gateways.",
+        "interface_adapters": "Implementam as interfaces definidas nos Use Cases. Conhecem o framework web (NestJS) e o ORM (TypeORM), mas os Use Cases não sabem disso.",
+        "frameworks_drivers": "Camada de configuração e wiring. Aqui o container de injeção de dependência (IoC) conecta interfaces a implementações concretas.",
+        "inversao_dependencia": "Use Cases definem interfaces (ex: INotaFiscalRepository). A implementação concreta (TypeORMNotaFiscalRepository) fica em Interface Adapters e é injetada via DI container em Frameworks & Drivers.",
+        "exemplo_fluxo": "HTTP Request → NestJS Controller (F&D) → EmitirNotaFiscalUseCase (UC) → [INotaFiscalRepository, INotaFiscalGateway] → TypeORMRepository + NFSeGateway (IA) → PostgreSQL + API Externa (F&D)"
+      }
+    },
+    "testability": {
+      "descricao": "Cada camada pode ser testada independentemente usando mocks/stubs das dependências externas",
+      "estrategias": {
+        "entities": {
+          "tipo": "Testes unitários puros",
+          "descricao": "Sem mocks necessários. Instanciar entidades diretamente e testar regras de negócio.",
+          "exemplo": "test: 'NotaFiscal deve lançar erro se valor total for zero'"
+        },
+        "use_cases": {
+          "tipo": "Testes unitários com mocks",
+          "descricao": "Substituir repositories e gateways por implementações in-memory ou jest mocks.",
+          "exemplo": "EmitirNotaFiscalUseCase recebe InMemoryNotaFiscalRepository e MockPrefeituraGateway"
+        },
+        "interface_adapters": {
+          "tipo": "Testes de integração",
+          "descricao": "Testar controllers com supertest, repositories com banco PostgreSQL em container Docker de teste.",
+          "ferramentas": [
+            "supertest",
+            "testcontainers",
+            "jest"
+          ]
+        },
+        "e2e": {
+          "tipo": "Testes end-to-end",
+          "descricao": "Ambiente completo dockerizado com banco real e mocks de APIs externas (nock/msw)",
+          "ferramentas": [
+            "Playwright para frontend",
+            "Jest + Supertest para API"
+          ]
+        },
+        "cobertura_minima": "80% para Use Cases e Entities; 60% para Interface Adapters"
+      }
+    },
+    "interfaces": [
+      "INotaFiscalRepository: findById, save, cancel, findByPeriodo",
+      "ILancamentoRepository: save, findByCompetencia, findByCliente, sumByPeriodo",
+      "IClienteRepository: findByCpfCnpj, save, findAll",
+      "ICompetenciaRepository: findByMesAno, save, close",
+      "INotaFiscalGateway: emitir(xml): NFeResponse, cancelar(nfe): void",
+      "IPagamentoGateway: gerarCobranca(dados): LinkPagamento, consultarStatus(id): StatusPagamento",
+      "IEmailGateway: enviar(destinatario, template, dados): void",
+      "INotificacaoGateway: enviarWhatsApp(telefone, mensagem): void",
+      "IBancoGateway: buscarExtrato(contaId, periodo): Lancamento[]",
+      "IReceitaFederalGateway: gerarDAS(competencia, cnpj): DASDTO, enviarDASN(dados): ProtocoloDTO",
+      "IStorageGateway: upload(arquivo, path): URL, download(path): Buffer",
+      "IFilaGateway: publicar(topico, payload): void"
+    ],
+    "escalabilidade": {
+      "horizontal": "Stateless API permite múltiplas instâncias atrás de load balancer (AWS ALB). Sessões gerenciadas no Redis.",
+      "filas_assincrona": "Emissão de NF e envio de notificações processados em filas BullMQ/SQS, desacoplando picos de carga.",
+      "multitenancy": "Isolamento por schema PostgreSQL por tenant (MEI) ou row-level security com tenant_id.",
+      "caching": "Redis para cache de consultas frequentes (clientes, serviços cadastrados, alíquotas municipais).",
+      "cdn": "Assets estáticos e PDFs gerados servidos via CloudFront/Cloudflare.",
+      "database": "Read replicas PostgreSQL para relatórios pesados. CQRS opcional para separar leitura/escrita.",
+      "microservicos_opcional": "A Clean Architecture facilita extração futura de NF Emitter como microserviço independente sem reescrever regras de negócio."
+    },
+    "custos": {
+      "infraestrutura_inicial": "Railway.app ou Render.com: ~$25-50/mês para MVP (banco + API + worker)",
+      "escala_media": "AWS: EC2 t3.small + RDS t3.micro + ElastiCache + S3 ≈ $150-300/mês para 500 usuários ativos",
+      "nfse_api": "NFSe.io: a partir de R$0,15-0,50 por NF emitida. Focus NFe: planos por volume.",
+      "open_finance": "Pluggy.ai: ~R$2-5 por conexão bancária/mês",
+      "email_sms": "SendGrid gratuito até 100/dia; Twilio ~$0,05 por mensagem WhatsApp",
+      "pagamentos": "Asaas: 2,5% + R$0,49 por boleto; Stripe: 2,9% + $0,30 por transação",
+      "otimizacoes": "Geração de PDF server-side sob demanda (não armazenar todos); compressão de XMLs no S3; TTL agressivo no cache Redis"
+    },
+    "monetizacao": {
+      "modelo": "SaaS com assinatura mensal (freemium ou trial de 14 dias)",
+      "planos": [
+        {
+          "nome": "Básico",
+          "preco": "R$29/mês",
+          "inclui": [
+            "Controle financeiro ilimitado",
+            "5 NFs/mês",
+            "Geração de DAS",
+            "App mobile"
+          ]
+        },
+        {
+          "nome": "Profissional",
+          "preco": "R$59/mês",
+          "inclui": [
+            "NFs ilimitadas",
+            "Integração bancária Open Finance",
+            "Relatórios avançados DRE",
+            "Cobrança automática",
+            "Suporte prioritário"
+          ]
+        },
+        {
+          "nome": "Completo",
+          "preco": "R$99/mês",
+          "inclui": [
+            "Tudo do Profissional",
+            "Contador virtual (assessoria mensal)",
+            "DASN-SIMEI automática",
+            "Múltiplos usuários",
+            "API access"
+          ]
+        }
+      ],
+      "receitas_adicionais": [
+        "Pay-per-use: R$1,00 por NF excedente no plano Básico",
+        "Marketplace de contadores parceiros (comissão 15-20%)",
+        "Antecipação de recebíveis em parceria com fintechs",
+        "Seguros MEI em parceria com seguradoras (lead generation)"
+      ],
+      "tam": "~10 milhões de MEIs ativos no Brasil; ticket médio R$59/mês = TAM ~R$7 bilhões/ano"
+    },
+    "stack_sugerida": {
+      "linguagem": "TypeScript (Node.js 20 LTS) — ecossistema maduro, tipagem estática alinha com Clean Architecture",
+      "backend_framework": "NestJS — módulos, DI nativo, decorators; facilita separação de camadas",
+      "orm": "Prisma — type-safe, migrations automáticas, ótimo DX",
+      "banco": "PostgreSQL 16 — JSONB para dados variáveis de NF, full-text search nativo",
+      "cache_filas": "Redis 7 (via Upstash serverless) + BullMQ",
+      "frontend": "Next.js 14 (App Router) + TailwindCSS + shadcn/ui + React Query",
+      "mobile": "Expo (React Native) — code sharing com frontend web",
+      "auth": "NextAuth.js v5 ou Clerk — autenticação pronta com suporte a OAuth",
+      "storage": "Cloudflare R2 — S3-compatible, sem egress fees",
+      "testes": "Vitest (unitários/integração) + Playwright (E2E) + testcontainers",
+      "monorepo": "Turborepo com pnpm workspaces — compartilhar types e validators entre front/back/mobile",
+      "deploy": "Railway.app (MVP) → AWS ECS Fargate (escala) com GitHub Actions CI/CD",
+      "observabilidade": "Sentry (errors) + OpenTelemetry + Grafana Cloud (métricas/traces)"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio com regras críticas da empresa, sem dependências externas\",\n    \"lista\": [\n      {\n        \"nome\": \"MEI\",\n        \"atributos\": [\"cnpj\", \"razaoSocial\", \"nomeFantasia\", \"atividadeEconomica\", \"limiteAnualReceita\", \"regimeTributario\"],\n        \"regras\": [\"Limite de faturamento anual R$81.000\", \"Validação de CNPJ\", \"Verificação de atividade permitida para MEI\"]\n      },\n      {\n        \"nome\": \"NotaFiscal\",\n        \"atributos\": [\"numero\", \"serie\", \"dataEmissao\", \"prestador\", \"tomador\", \"servicos\", \"valorTotal\", \"impostos\", \"status\", \"xmlAssinado\"],\n        \"regras\": [\"Cálculo automático de ISS/IRPJ/INSS\", \"Validação de campos obrigatórios\", \"Controle de numeração sequencial\", \"Cancelamento dentro do prazo legal\"]\n      },\n      {\n        \"nome\": \"Lancamento\",\n        \"atributos\": [\"id\", \"tipo\", \"valor\", \"data\", \"descricao\", \"categoria\", \"comprovante\", \"notaFiscalVinculada\"],\n        \"regras\": [\"Classificação entre receita/despesa\", \"Associação com competência fiscal\", \"Vinculação opcional com NF\"]\n      },\n      {\n        \"nome\": \"Cliente\",\n        \"atributos\": [\"cpfCnpj\", \"nome\", \"email\", \"telefone\", \"endereco\", \"tipo\"],\n        \"regras\": [\"Validação de CPF/CNPJ\", \"Unicidade por documento\"]\n      },\n      {\n        \"nome\": \"Servico\",\n        \"atributos\": [\"codigo\", \"descricao\", \"codigoTributacaoMunicipal\", \"aliquotaISS\", \"unidade\"],\n        \"regras\": [\"Alíquota ISS entre 2% e 5% conforme município\", \"Código de serviço conforme LC 116/2003\"]\n      },\n      {\n        \"nome\": \"DAS\",\n        \"atributos\": [\"competencia\", \"valorDevido\", \"valorPago\", \"dataPagamento\", \"codigoBarras\", \"status\"],\n        \"regras\": [\"Geração mensal obrigatória\", \"Cálculo baseado em faturamento do período\"]\n      },\n      {\n        \"nome\": \"Competencia\",\n        \"atributos\": [\"mesAno\", \"receitaTotal\", \"despesaTotal\", \"impostoDevido\", \"status\"],\n        \"regras\": [\"Fechamento mensal\", \"Cálculo de lucro líquido\", \"Alertas de limite de fat"
+}

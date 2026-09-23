@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador é exemplarmente definido: o motor de interpretação de biomarcadores está nomeado, isolado atrás de uma interface contratual (AnalysisEngine), desacoplado do modelo de IA subjacente e da base de conhecimento clínico, e resolve um problema real que apps genéricos de dieta ignoram — a perda de 1 ponto reflete a ausência de qualquer menção a dados proprietários ou efeitos de rede que tornariam o núcleo defensável no longo prazo frente a um concorrente bem capitalizado que replique exatamente a mesma arquitetura."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta lista exclusivamente componentes de infraestrutura agregada (RDS, Redis, SQS, S3, OpenAI API, Textract etc.) sem nenhuma menção a rastreamento de consumo por tenant, custo por operação atribuível a um cliente específico ou conexão entre gastos de infra e modelo de precificação — é FinOps de custo total, não Unit Economics."
+}

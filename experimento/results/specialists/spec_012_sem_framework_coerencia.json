@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "As decisões centrais se reforçam bem — TimescaleDB para séries temporais, MQTT para ingestão IoT, WebSockets para alertas em tempo real e fila para absorver picos formam um arco arquitetural coeso — mas há lacunas que fragmentam a narrativa: o protocolo Modbus é citado como requisito real mas desaparece completamente da stack sem mencionar gateway ou adaptador; o broker MQTT (Mosquitto/HiveMQ) e a camada de fila (Redis Streams/RabbitMQ) criam sobreposição de responsabilidades não resolvida; e as 7 interfaces detalhadas (incluindo app mobile) contradizem o princípio de começar apenas com ingestão e dashboard simples declarado em 'como_comecar'."
+}

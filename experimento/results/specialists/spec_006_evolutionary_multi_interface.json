@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta menciona implicitamente uma interface mobile/web (app de nutrição) e uma API pública futura para clínicas e laboratórios na fase 3, mas não descreve múltiplas interfaces com justificativas de mercado por perfil de usuário — não há distinção entre interfaces para paciente, nutricionista e integrador técnico, e o desacoplamento de lógica de negócio das interfaces não é explicitamente endereçado como decisão arquitetural."
+}

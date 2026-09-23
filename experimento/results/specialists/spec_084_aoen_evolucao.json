@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 84,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra princípios evolutivos sólidos — Service Layer com contratos internos, provedores de DTC e matching tratados como interfaces substituíveis, e canais completamente desacoplados da lógica de negócio — mas apresenta lacunas relevantes: ausência de estratégia explícita de escalabilidade horizontal (sem menção a filas, cache ou serviços stateless para suportar crescimento de 10 para 10.000+ usuários), nenhuma política de versionamento de API para clientes B2B2B, o pipeline de diagnóstico parece síncrono e acoplado end-to-end (o que cria um ponto único de pressão sob carga), e a descrição da fase 3 está truncada — impedindo avaliar se há separação entre os estágios do pipeline."
+}

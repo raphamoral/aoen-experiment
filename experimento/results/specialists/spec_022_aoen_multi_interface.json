@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 22,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define seis interfaces distintas (PWA, Mobile, Portal do Fornecedor, API REST, WhatsApp/Bot e Dashboard Admin), cada uma justificada por um perfil de usuário e caso de uso real de mercado, com lógica de negócio completamente desacoplada em uma Service Layer central que permite adicionar ou trocar interfaces sem alterar regras de negócio."
+}

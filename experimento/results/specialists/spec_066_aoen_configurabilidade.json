@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 66,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta tem fundações corretas para multi-tenancy (TranslationService centralizado, adapter pattern para engines), e menciona 'glossários por conta' como único elemento explicitamente por-tenant — mas não descreve nenhum esquema de configuração por cliente: ausência total de tenant config schema, feature flags por tenant, regras de SLA configuráveis, perfis regulatórios por cliente (FDA vs ANVISA vs CE), ou descrição de como um novo cliente é onboardado (nova row no banco vs. novo deploy), o que mantém a proposta no território de 'fundação promissora, configurabilidade não projetada'."
+}

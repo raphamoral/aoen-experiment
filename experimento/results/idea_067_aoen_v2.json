@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 67,
+  "ideia": "App de gestão de pacientes crônicos com alertas proativos",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de alertas proativos baseado em análise de séries temporais de sinais clínicos — detecta padrões de deterioração antes que se tornem emergências. Sem isso, é apenas um prontuário eletrônico glorificado.",
+    "fase1_mercado": "Clínicas de atenção primária e especialidades (cardiologia, endocrinologia, nefrologia), operadoras de planos de saúde com programas de gestão de crônicos, hospitais com pós-alta supervisionada, e home care. Mercado secundário: pacientes com doenças como diabetes, hipertensão, ICC, DPOC.",
+    "fase1_extensivel": "Sim. O motor de alertas é abstraído atrás de uma interface AlertEngine. A implementação inicial pode ser baseada em regras configuráveis (thresholds + lógica condicional). Pode ser substituída ou complementada por um modelo de ML sem alterar o restante do sistema. Fontes de dados (wearables, entrada manual, integração HL7/FHIR com EHR) são conectadas via adapters, não acopladas ao core.",
+    "fase2_interfaces": [
+      "Dashboard Web (profissional de saúde / coordenador de caso)",
+      "App Mobile para paciente (iOS/Android — entrada de dados, histórico, alertas recebidos)",
+      "App Mobile para cuidador (acompanhamento passivo, notificações de desvio)",
+      "API REST/FHIR para integração com EHRs e HIS hospitalares",
+      "Canal conversacional via WhatsApp/SMS (para pacientes de baixo letramento digital ou regiões com conectividade limitada)",
+      "Painel administrativo Web (gestão de configurações por tenant/cliente)"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de clínicas e equipes multiprofissionais que precisam de visibilidade centralizada. App mobile de paciente abre o segmento de programas de automonitoramento e home care. App de cuidador abre o mercado familiar e de cuidadores pagos. A API FHIR abre hospitais e operadoras que já têm sistemas legados e precisam de integração, não de substituição. O canal WhatsApp/SMS elimina a barreira de adoção para populações vulneráveis — diferencial crítico em mercados emergentes.",
+    "fase2_service_layer": "Todas as interfaces chamam exclusivamente a camada PatientService, AlertService e MonitoringService — nunca acessam banco de dados ou motor de alertas diretamente. Cada interface é um adaptador de entrada que traduz contexto (HTTP request, webhook WhatsApp, evento de wearable) para chamadas de serviço idênticas. A lógica de negócio existe uma única vez.",
+    "fase3_fluxo_fixo": "Coleta de dado clínico → normalização → análise pelo AlertEngine → avaliação de threshold → geração de evento de alerta se necessário → roteamento por canal configurado → escalonamento se não houver acknowledgement dentro do tempo configurado → registro de audit trail. Este pipeline é imutável no código.",
+    "fase3_parametros_configuraveis": [
+      "Tipo de doença monitorada (diabetes, hipertensão, ICC, DPOC, etc.)",
+      "Parâmetros clínicos monitorados por perfil de paciente (glicemia, PA, SpO2, peso, FC)",
+      "Thresholds de alerta por parâmetro (nível amarelo, laranja, vermelho)",
+      "Frequência de coleta esperada por parâmetro (ex: glicemia 3x/dia)",
+      "Janela de tolerância para dados ausentes antes de gerar alerta de não-coleta",
+      "Cadeia de escalonamento (paciente → cuidador → enfermeiro → médico)",
+      "Canais de notificação por papel (push, WhatsApp, SMS, email, in-app)",
+      "SLA de resposta por nível de severidade do alerta",
+      "Idioma e terminologia (customizável por especialidade ou região)",
+      "Integrações habilitadas por tenant (EHR, wearable, laboratório)"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo tenant com arquivo de configuração JSON/YAML contendo: perfis de paciente, parâmetros monitorados, thresholds, cadeia de escalonamento e canais. Nenhum deploy de código. O onboarding é feito via painel administrativo ou import de configuração. O sistema provisiona o tenant, aplica as configs e o cliente está operacional.",
+    "fase4_core_isolado": "O AlertEngine roda como worker assíncrono isolado (processo separado / container independente). Consome uma fila de eventos (ex: RabbitMQ ou SQS) publicada pelos serviços de coleta. Processa análise, gera alertas e publica resultado de volta na fila de notificações. Escala horizontalmente de forma independente do restante da aplicação.",
+    "fase4_custo_total_cliente": "Custo core: processamento do AlertEngine por evento clínico (se ML: custo de inferência por chamada de modelo, ~$0.0001–0.001/evento; se regras: custo de CPU marginal). Infra proporcional: ~$0.50–2.00/paciente/mês em banco de dados (séries temporais + prontuário), armazenamento de histórico clínico (~50KB/paciente/mês). Notificações: WhatsApp Business API ($0.05–0.08/mensagem conversacional), SMS ($0.01–0.05/SMS), push (gratuito). Banda: negligível (payload JSON pequeno). Estimativa total: $1.50–5.00/paciente ativo/mês — permite precificação B2B de $15–50/paciente/mês com margem viável.",
+    "fase4_continuidade": "O AlertEngine opera em modo degradado: se o worker cair, eventos de dados clínicos continuam sendo enfileirados e não são perdidos. A coleta de dados e o acesso ao histórico permanecem funcionais. Ao restabelecer o worker, a fila é processada em ordem. Alertas críticos pendentes são emitidos com timestamp original. O paciente e o clínico não percebem interrupção em dados — apenas pode haver atraso em alertas, que é aceitável conforme SLA configurado.",
+    "fase4_manutencao": "O AlertEngine é acessado exclusivamente via interface IAlertEngine { analyze(signal: ClinicalSignal): AlertEvent[] }. Trocar de regras para ML = nova implementação da interface, deploy do novo worker, swap via feature flag por tenant. Zero downtime. Rollback imediato se métricas de falso-positivo/negativo degradarem.",
+    "monetizacao": "B2B SaaS com precificação por paciente ativo monitorado/mês. Tier Starter (até 100 pacientes, canais básicos): R$1.500/mês. Tier Clínica (até 500 pacientes, integrações): R$5.000/mês. Tier Enterprise (ilimitado, SLA garantido, FHIR, white-label): contrato anual. Receita adicional: setup de integração com EHR legado (serviço profissional one-time). Operadoras de saúde podem pagar por vidas gerenciadas em programa de crônicos — ticket médio maior e ciclo de venda mais longo.",
+    "stack_sugerida": "Backend: Node.js (NestJS) ou Python (FastAPI) para API principal. Worker AlertEngine: Python (numpy/pandas para séries temporais; scikit-learn ou regras YAML para análise). Fila: RabbitMQ (self-hosted) ou AWS SQS. Banco de dados: PostgreSQL (prontuário + configurações) + TimescaleDB (séries temporais de sinais clínicos). Cache: Redis (sessões, thresholds em memória). Frontend Web: React + TypeScript. Mobile: React Native (iOS/Android, codebase única). Notificações: Twilio (WhatsApp + SMS) + Firebase (push). Infra: Docker + Kubernetes (EKS/GKE) para escala independente por serviço. Observabilidade: OpenTelemetry + Grafana. LGPD/HIPAA: criptografia em repouso (AES-256) e em trânsito (TLS 1.3), audit log imutável."
+  }
+}

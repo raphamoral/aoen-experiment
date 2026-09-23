@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 49,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta demonstra separação clara entre núcleo de negócio e interfaces, contrato de matching trocável (regras → ML → embeddings) e gateway de pagamento abstraído — boas práticas evolutivas — mas não endereça independência de infraestrutura (banco de dados, filas, cache), não menciona estratégia de escala operacional (10 → 10.000 usuários) e carece de padrão explícito (hexagonal/ports-and-adapters) que garanta que dependências externas nunca vazem para o domínio."
+}

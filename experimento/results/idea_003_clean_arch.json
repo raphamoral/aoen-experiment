@@ -1,0 +1,349 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "Employee": {
+        "description": "Funcionário anônimo da empresa",
+        "attributes": [
+          "anonymousId",
+          "companyId",
+          "department",
+          "createdAt"
+        ],
+        "rules": [
+          "Identidade nunca exposta externamente",
+          "anonymousId gerado com hash unidirecional"
+        ]
+      },
+      "MentalHealthReport": {
+        "description": "Relatório de saúde mental submetido anonimamente",
+        "attributes": [
+          "reportId",
+          "anonymousEmployeeId",
+          "moodScore",
+          "stressLevel",
+          "burnoutRisk",
+          "categories",
+          "submittedAt"
+        ],
+        "rules": [
+          "moodScore entre 1-10",
+          "Não contém PII (Personally Identifiable Information)",
+          "Imutável após criação"
+        ]
+      },
+      "Company": {
+        "description": "Empresa cliente do SaaS",
+        "attributes": [
+          "companyId",
+          "name",
+          "plan",
+          "employeeCount",
+          "createdAt"
+        ],
+        "rules": [
+          "Acesso apenas aos próprios dados agregados"
+        ]
+      },
+      "AggregatedInsight": {
+        "description": "Análise agregada e anonimizada por período/departamento",
+        "attributes": [
+          "insightId",
+          "companyId",
+          "department",
+          "period",
+          "averageMood",
+          "burnoutRiskPercentage",
+          "trendData"
+        ],
+        "rules": [
+          "Nunca gerado com menos de 5 respostas (proteção de anonimato)",
+          "Calculado a partir de Reports"
+        ]
+      },
+      "Alert": {
+        "description": "Alerta de risco detectado automaticamente",
+        "attributes": [
+          "alertId",
+          "companyId",
+          "severity",
+          "alertType",
+          "triggeredAt",
+          "resolved"
+        ],
+        "rules": [
+          "Não identifica indivíduos",
+          "Baseado em limiares definidos pela política da empresa"
+        ]
+      },
+      "SurveyTemplate": {
+        "description": "Modelo de questionário configurável",
+        "attributes": [
+          "templateId",
+          "companyId",
+          "questions",
+          "frequency",
+          "isActive"
+        ],
+        "rules": [
+          "Perguntas validadas por especialistas em saúde mental"
+        ]
+      }
+    },
+    "use_cases": {
+      "employee_facing": [
+        {
+          "name": "SubmitAnonymousReport",
+          "description": "Funcionário submete avaliação de saúde mental",
+          "input": "RespostasDoQuestionario + tokenTemporario",
+          "output": "confirmacaoDeEnvio",
+          "rule": "Desvincula token do relatório antes de persistir"
+        },
+        {
+          "name": "GetPersonalTrend",
+          "description": "Funcionário vê sua própria evolução histórica",
+          "input": "anonymousId",
+          "output": "historicoAnonimizado",
+          "rule": "Dados visíveis apenas ao próprio funcionário via seu token"
+        },
+        {
+          "name": "RequestSupport",
+          "description": "Funcionário solicita apoio voluntário e confidencial",
+          "input": "anonymousId + tipoDeSuporteDesejado",
+          "output": "canalDeSuporteConfidencial",
+          "rule": "Empresa nunca tem acesso a quem solicitou"
+        }
+      ],
+      "company_facing": [
+        {
+          "name": "GenerateCompanyReport",
+          "description": "Gera relatório agregado para RH/gestão",
+          "input": "companyId + periodo + departamento",
+          "output": "AggregatedInsight",
+          "rule": "Bloqueia se amostra menor que threshold mínimo"
+        },
+        {
+          "name": "ConfigureSurveyTemplate",
+          "description": "RH configura frequência e perguntas do questionário",
+          "input": "companyId + templateData",
+          "output": "SurveyTemplate",
+          "rule": "Perguntas não podem coletar PII"
+        },
+        {
+          "name": "ManageAlertThresholds",
+          "description": "Define gatilhos para alertas de risco coletivo",
+          "input": "companyId + thresholdConfig",
+          "output": "confirmacao",
+          "rule": "Alertas sempre sobre grupos, nunca indivíduos"
+        },
+        {
+          "name": "ExportComplianceReport",
+          "description": "Exporta relatório para conformidade regulatória (LGPD/GDPR)",
+          "input": "companyId + periodo",
+          "output": "relatorioConformidade",
+          "rule": "Auditável e sem dados individuais identificáveis"
+        }
+      ],
+      "system": [
+        {
+          "name": "ComputeAggregatedInsights",
+          "description": "Job periódico que agrega relatórios em insights",
+          "trigger": "Agendado ou evento de novo relatório",
+          "rule": "Respeita threshold mínimo de anonimato"
+        },
+        {
+          "name": "DetectBurnoutRisk",
+          "description": "Detecta padrões de risco e dispara alertas",
+          "trigger": "Após cada agregação",
+          "rule": "Modelo baseado em regras ou ML, sem identificação individual"
+        },
+        {
+          "name": "SendSurveyReminder",
+          "description": "Envia lembretes de preenchimento respeitando frequência",
+          "trigger": "Agendador baseado em SurveyTemplate",
+          "rule": "Sem rastreamento de quem respondeu ou não"
+        }
+      ]
+    },
+    "interface_adapters": {
+      "controllers": [
+        "ReportController — recebe HTTP POST e traduz para SubmitAnonymousReportUseCase",
+        "InsightController — recebe HTTP GET com filtros e chama GenerateCompanyReportUseCase",
+        "AuthController — gerencia autenticação de empresa e emissão de tokens anônimos para funcionários",
+        "AlertController — expõe endpoints de configuração e consulta de alertas",
+        "WebhookController — recebe eventos externos (ex: HR systems) e adapta para use cases internos"
+      ],
+      "presenters": [
+        "InsightPresenter — formata AggregatedInsight em JSON de resposta da API ou PDF",
+        "ReportPresenter — formata confirmação de envio sem retornar dados sensíveis",
+        "AlertPresenter — serializa alertas sem dados individuais",
+        "TrendPresenter — serializa histórico pessoal anonimizado"
+      ],
+      "gateways": [
+        "ReportRepositoryGateway — interface para persistência de MentalHealthReport",
+        "InsightRepositoryGateway — interface para persistência e consulta de AggregatedInsight",
+        "CompanyRepositoryGateway — interface para dados de Company",
+        "NotificationGateway — interface para envio de e-mails/push",
+        "AnonymizationGateway — interface para geração e validação de tokens anônimos",
+        "MLModelGateway — interface para chamada ao modelo de detecção de risco"
+      ]
+    },
+    "frameworks_drivers": {
+      "web_framework": {
+        "backend": "FastAPI (Python) ou NestJS (TypeScript) — ambos suportam injeção de dependência facilitando Clean Architecture",
+        "justification": "Ficam na camada mais externa; Use Cases não importam nada deles"
+      },
+      "databases": {
+        "primary": "PostgreSQL — dados transacionais de empresas, templates e alertas",
+        "reports_store": "TimescaleDB (extensão PostgreSQL) — série temporal para relatórios e tendências",
+        "cache": "Redis — cache de insights agregados e rate limiting"
+      },
+      "authentication": {
+        "company_auth": "JWT + OAuth2 (Auth0 ou Keycloak)",
+        "employee_anonymous_token": "Token de uso único gerado server-side, desvinculado de identidade após uso"
+      },
+      "messaging": "RabbitMQ ou AWS SQS — desacoplamento entre submissão de relatório e processamento de agregação",
+      "ml_service": "Python microservice com scikit-learn ou modelo LLM para análise de risco",
+      "infrastructure": {
+        "container": "Docker + Kubernetes",
+        "cloud": "AWS ou GCP",
+        "ci_cd": "GitHub Actions",
+        "observability": "OpenTelemetry + Grafana + Prometheus"
+      },
+      "frontend": {
+        "employee_app": "React ou Next.js (PWA) — leve, sem cookies rastreáveis",
+        "company_dashboard": "Next.js com gráficos via Recharts ou D3.js"
+      }
+    },
+    "dependency_rule": {
+      "principle": "Nenhuma camada interna conhece a existência de camadas externas",
+      "application": {
+        "entities": "Puro Python/TypeScript. Zero imports externos. Contém apenas regras de negócio e validações.",
+        "use_cases": "Importam apenas Entities e interfaces (Gateways) definidas internamente. Nunca importam FastAPI, SQLAlchemy, Redis etc.",
+        "interface_adapters": "Implementam as interfaces de Gateway e Controller. Importam Use Cases e frameworks ORM/HTTP. Traduzem formatos externos para internos.",
+        "frameworks_drivers": "Camada mais externa. Configura injeção de dependência, wiring de rotas, configurações de banco. Importa tudo, mas nada importa de volta dela."
+      },
+      "inversion_of_control": "Use Cases definem interfaces (ex: IReportRepository). Interface Adapters implementam essas interfaces. Frameworks injetam as implementações concretas via DI container.",
+      "example_flow": "HTTP Request → Controller (Adapter) → SubmitAnonymousReportUseCase (Use Case) → IReportRepository.save() → PostgresReportRepository (Adapter) → SQLAlchemy (Framework)"
+    },
+    "testability": {
+      "entities": {
+        "strategy": "Testes unitários puros sem nenhuma dependência",
+        "example": "Testar regra de anonimato: assert MentalHealthReport não contém campos de PII"
+      },
+      "use_cases": {
+        "strategy": "Testes unitários com mocks/stubs das interfaces de Gateway",
+        "example": "Mockar IReportRepository para testar que SubmitAnonymousReport desvincula token antes de persistir",
+        "tools": "pytest + unittest.mock (Python) ou Jest + ts-mockito (TypeScript)"
+      },
+      "interface_adapters": {
+        "strategy": "Testes de integração com banco de dados in-memory ou container Docker",
+        "example": "Testar PostgresReportRepository contra PostgreSQL real em container",
+        "tools": "testcontainers-python ou testcontainers-node"
+      },
+      "e2e": {
+        "strategy": "Testes end-to-end via API HTTP com ambiente isolado",
+        "tools": "Playwright ou Supertest",
+        "scope": "Fluxos críticos: submissão anônima, geração de relatório, disparo de alerta"
+      },
+      "privacy_tests": {
+        "strategy": "Testes específicos para garantir anonimato",
+        "example": "Verificar que nenhum endpoint retorna dados que permitam identificar indivíduo"
+      }
+    },
+    "interfaces": [
+      "IReportRepository: save(report: MentalHealthReport): Promise<void>; findByCompany(companyId, period): Promise<Report[]>",
+      "IInsightRepository: save(insight: AggregatedInsight): Promise<void>; findLatest(companyId, dept): Promise<AggregatedInsight>",
+      "ICompanyRepository: findById(id): Promise<Company>; save(company: Company): Promise<void>",
+      "INotificationGateway: sendSurveyReminder(target: AnonymousChannel): Promise<void>; sendAlert(companyId, alert: Alert): Promise<void>",
+      "IAnonymizationService: generateAnonymousId(input: string): string; issueOneTimeToken(): Token; validateAndRevoke(token: Token): boolean",
+      "IRiskDetectionModel: analyze(reports: Report[]): RiskAssessment",
+      "ISurveyRepository: findActiveByCompany(companyId): Promise<SurveyTemplate>; save(template): Promise<void>",
+      "IAlertRepository: save(alert: Alert): Promise<void>; findUnresolved(companyId): Promise<Alert[]>",
+      "IEventBus: publish(event: DomainEvent): Promise<void>; subscribe(eventType, handler): void"
+    ],
+    "escalabilidade": {
+      "horizontal_scaling": "Use Cases são stateless — múltiplas instâncias sem coordenação. Kubernetes HPA baseado em CPU/memória.",
+      "async_processing": "Submissão de relatório publica evento no message broker. Workers independentes processam agregação sem bloquear resposta ao usuário.",
+      "read_write_separation": "CQRS aplicado na camada de Use Cases: comandos (submissão) e queries (insights) em fluxos separados. Read replicas para dashboards.",
+      "caching": "AggregatedInsights cacheados no Redis com TTL. Invalidação por evento ao chegar novos relatórios suficientes.",
+      "data_partitioning": "Dados particionados por companyId no PostgreSQL. TimescaleDB com chunks por tempo para relatórios.",
+      "multi_tenancy": "Isolamento de dados por companyId em todas as queries. Row-level security no PostgreSQL como segunda linha de defesa.",
+      "ml_scaling": "Serviço de ML independente escalável horizontalmente. Resultados cacheados. Modelo retreinado em pipeline separado sem afetar API principal."
+    },
+    "custos": {
+      "compute": "Instâncias EC2/GKE médias para API (2-4 vCPU). Workers de agregação podem usar Spot/Preemptible para reduzir custo em 60-70%.",
+      "storage": "TimescaleDB com compressão nativa reduz armazenamento de séries temporais em até 90%. S3 para relatórios exportados em PDF.",
+      "database": "RDS PostgreSQL com read replica. TimescaleDB como extensão evita banco separado. Redis ElastiCache para cache.",
+      "ml": "Modelos leves (scikit-learn) rodam em instâncias pequenas. Evitar LLMs para análise de risco rotineira — usar apenas para insights textuais premium.",
+      "observability": "OpenTelemetry com sampling seletivo. Logs centralizados apenas para erros e eventos críticos em produção.",
+      "estimativa_inicial": "Stack completo operacional por USD 300-800/mês para até 50 empresas clientes médias. Escala linearmente com uso.",
+      "otimizacoes": "Aggregation jobs em horários de baixa demanda. Relatórios PDF gerados sob demanda e cacheados. Emails em lote via SES."
+    },
+    "monetizacao": {
+      "modelo": "SaaS B2B com cobrança por empresa (não por usuário final — protege anonimato e simplifica billing)",
+      "planos": {
+        "starter": {
+          "preco": "USD 199/mês",
+          "limite": "Até 100 funcionários",
+          "features": [
+            "Surveys mensais",
+            "Dashboard básico",
+            "Alertas automáticos"
+          ]
+        },
+        "growth": {
+          "preco": "USD 599/mês",
+          "limite": "Até 500 funcionários",
+          "features": [
+            "Surveys customizáveis",
+            "Relatórios por departamento",
+            "API de integração com HRIS",
+            "Exportação LGPD/GDPR"
+          ]
+        },
+        "enterprise": {
+          "preco": "USD 1.499+/mês ou contrato anual",
+          "limite": "Ilimitado",
+          "features": [
+            "SSO/SAML",
+            "On-premise option",
+            "SLA 99.9%",
+            "Suporte dedicado",
+            "Treinamentos",
+            "White-label"
+          ]
+        }
+      },
+      "adicionals": [
+        "Módulo de telemedicina integrado (parceria com clínicas)",
+        "Consultoria de dados para grandes empresas",
+        "API pública para integrações HR (per-call pricing)"
+      ],
+      "unit_economics": {
+        "cac_target": "USD 1.500-3.000 via vendas B2B diretas e parcerias com consultorias de RH",
+        "ltv_target": "USD 15.000-30.000 (2-3 anos de retenção média)",
+        "ltv_cac_ratio": "10:1 target no steady state"
+      }
+    },
+    "stack_sugerida": {
+      "linguagem_backend": "TypeScript (NestJS) — tipagem forte ajuda a expressar as interfaces da Clean Architecture; ecossistema maduro para DI",
+      "linguagem_ml": "Python (FastAPI microservice) — ecossistema científico superior para análise de dados",
+      "banco_principal": "PostgreSQL 16 com extensão TimescaleDB",
+      "cache": "Redis 7",
+      "message_broker": "AWS SQS ou RabbitMQ",
+      "autenticacao": "Auth0 para empresa; tokens JWT one-time para funcionários anônimos",
+      "frontend_dashboard": "Next.js 14 + Tailwind CSS + Recharts",
+      "frontend_employee": "React PWA — sem cookies, sem fingerprinting",
+      "infraestrutura": "AWS (EKS + RDS + ElastiCache + SQS + S3 + SES)",
+      "iac": "Terraform",
+      "ci_cd": "GitHub Actions",
+      "monitoramento": "OpenTelemetry + Grafana Cloud + PagerDuty",
+      "testes": "Jest + Supertest + testcontainers-node + Playwright",
+      "seguranca": "OWASP dependency check, Snyk, secrets via AWS Secrets Manager, criptografia em repouso (AES-256) e em trânsito (TLS 1.3)"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"Employee\": {\n      \"description\": \"Funcionário anônimo da empresa\",\n      \"attributes\": [\"anonymousId\", \"companyId\", \"department\", \"createdAt\"],\n      \"rules\": [\"Identidade nunca exposta externamente\", \"anonymousId gerado com hash unidirecional\"]\n    },\n    \"MentalHealthReport\": {\n      \"description\": \"Relatório de saúde mental submetido anonimamente\",\n      \"attributes\": [\"reportId\", \"anonymousEmployeeId\", \"moodScore\", \"stressLevel\", \"burnoutRisk\", \"categories\", \"submittedAt\"],\n      \"rules\": [\"moodScore entre 1-10\", \"Não contém PII (Personally Identifiable Information)\", \"Imutável após criação\"]\n    },\n    \"Company\": {\n      \"description\": \"Empresa cliente do SaaS\",\n      \"attributes\": [\"companyId\", \"name\", \"plan\", \"employeeCount\", \"createdAt\"],\n      \"rules\": [\"Acesso apenas aos próprios dados agregados\"]\n    },\n    \"AggregatedInsight\": {\n      \"description\": \"Análise agregada e anonimizada por período/departamento\",\n      \"attributes\": [\"insightId\", \"companyId\", \"department\", \"period\", \"averageMood\", \"burnoutRiskPercentage\", \"trendData\"],\n      \"rules\": [\"Nunca gerado com menos de 5 respostas (proteção de anonimato)\", \"Calculado a partir de Reports\"]\n    },\n    \"Alert\": {\n      \"description\": \"Alerta de risco detectado automaticamente\",\n      \"attributes\": [\"alertId\", \"companyId\", \"severity\", \"alertType\", \"triggeredAt\", \"resolved\"],\n      \"rules\": [\"Não identifica indivíduos\", \"Baseado em limiares definidos pela política da empresa\"]\n    },\n    \"SurveyTemplate\": {\n      \"description\": \"Modelo de questionário configurável\",\n      \"attributes\": [\"templateId\", \"companyId\", \"questions\", \"frequency\", \"isActive\"],\n      \"rules\": [\"Perguntas validadas por especialistas em saúde mental\"]\n    }\n  },\n  \"use_cases\": {\n    \"employee_facing\": [\n      {\n        \"name\": \"SubmitAnonymousReport\",\n        \"description\": \"Funcionário submete avaliação de saúde mental\",\n        \"input\": \"RespostasDoQuestionario + tokenTemporario\",\n        \"output\": \"c"
+}

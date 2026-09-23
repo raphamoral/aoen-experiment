@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — verificação pública sem autenticação, independente da disponibilidade da plataforma emissora — está claramente nomeado, isolado em uma service layer coesa e projetado como abstração plugável (SHA-256, blockchain, X.509), resolvendo um problema real do segmento de criadores independentes que alternativas enterprise (Credly, Badgr) não atendem; a nota não chega a 10 porque o mecanismo técnico subjacente (hash + URL pública) não é inovação tecnológica inédita, e a insubstituibilidade depende mais de execução e efeito de rede do que do core em si."
+}

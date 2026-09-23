@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta segue Clean Architecture com camadas bem definidas (entities → use cases → interface adapters → frameworks), inversão de dependência via Gateways e Repositories, e escolhas explicitamente reversíveis ('ou' entre tecnologias), mas perde pontos por acoplar rastreamento em tempo real ao Socket.io/Node.js sem abstração dedicada, ausência de CQRS/Event Sourcing para dados de localização de alta frequência (LocationRepository em PostgreSQL será gargalo a escala), e analytics coexistindo no mesmo bounded context que operações — o que dificultará extração independente conforme o produto crescer."
+}

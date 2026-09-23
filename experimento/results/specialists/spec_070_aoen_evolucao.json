@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 70,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A proposta demonstra clareza evolutiva sólida — interfaces abstratas de serviço, isolamento da lógica de negócio dos controllers/UI e substituição explícita de provedores (Twilio→Z-API, OpenAI→Gemini) são sinais maduros de arquitetura hexagonal; perde pontos porque a promessa de trocar PostgreSQL por MongoDB é arquiteturalmente ingênua (modelos relacionais e documentais exigem reestruturação profunda de queries e agregados, não apenas swap de driver), não há estratégia declarada de escala horizontal (filas, cache, sharding) para a transição 10→10.000 usuários, e os mecanismos concretos de reversibilidade (injeção de dependência, ports/adapters explícitos, versionamento de API) são mencionados como intenção mas não especificados arquiteturalmente."
+}

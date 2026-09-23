@@ -1,0 +1,523 @@
+{
+  "ideia_idx": 4,
+  "ideia": "Plataforma de leilão reverso para compras corporativas de TI",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio com regras críticas, sem dependências externas",
+      "lista": [
+        {
+          "nome": "Auction",
+          "atributos": [
+            "id",
+            "title",
+            "description",
+            "status",
+            "startAt",
+            "endAt",
+            "minBidDecrement",
+            "buyerId",
+            "category"
+          ],
+          "regras": [
+            "Leilão só pode receber lances se status=OPEN",
+            "endAt deve ser posterior a startAt",
+            "decremento mínimo deve ser positivo"
+          ]
+        },
+        {
+          "nome": "Bid",
+          "atributos": [
+            "id",
+            "auctionId",
+            "supplierId",
+            "amount",
+            "technicalScore",
+            "deliveryDays",
+            "warranty",
+            "submittedAt"
+          ],
+          "regras": [
+            "Lance deve ser menor que o lance atual mais baixo menos o decremento mínimo",
+            "Fornecedor não pode dar dois lances consecutivos"
+          ]
+        },
+        {
+          "nome": "Buyer",
+          "atributos": [
+            "id",
+            "organizationId",
+            "name",
+            "email",
+            "cnpj",
+            "creditLimit",
+            "approvalTier"
+          ],
+          "regras": [
+            "CNPJ deve ser válido",
+            "Comprador não pode participar como fornecedor no mesmo leilão"
+          ]
+        },
+        {
+          "nome": "Supplier",
+          "atributos": [
+            "id",
+            "organizationId",
+            "name",
+            "cnpj",
+            "categories",
+            "reputationScore",
+            "certifications",
+            "status"
+          ],
+          "regras": [
+            "Fornecedor deve ser homologado para cada categoria",
+            "Score de reputação afeta visibilidade"
+          ]
+        },
+        {
+          "nome": "PurchaseOrder",
+          "atributos": [
+            "id",
+            "auctionId",
+            "winnerId",
+            "buyerId",
+            "amount",
+            "items",
+            "status",
+            "generatedAt"
+          ],
+          "regras": [
+            "Ordem só é gerada após vencedor confirmado",
+            "Valor não pode divergir do lance vencedor"
+          ]
+        },
+        {
+          "nome": "ITRequirement",
+          "atributos": [
+            "id",
+            "auctionId",
+            "category",
+            "specifications",
+            "quantity",
+            "minimumScore",
+            "deliveryDeadline"
+          ],
+          "regras": [
+            "Especificações técnicas mínimas obrigatórias por categoria"
+          ]
+        },
+        {
+          "nome": "Contract",
+          "atributos": [
+            "id",
+            "purchaseOrderId",
+            "terms",
+            "signedAt",
+            "expiresAt",
+            "slaTerms"
+          ],
+          "regras": [
+            "Contrato vincula PurchaseOrder aprovada",
+            "SLA obrigatório para serviços gerenciados"
+          ]
+        },
+        {
+          "nome": "Rating",
+          "atributos": [
+            "id",
+            "supplierId",
+            "buyerId",
+            "contractId",
+            "technicalScore",
+            "deliveryScore",
+            "supportScore",
+            "comment"
+          ],
+          "regras": [
+            "Avaliação só pode ser feita após entrega confirmada",
+            "Score final é média ponderada"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Orquestram o fluxo de negócio. Dependem apenas de Entities e interfaces abstratas de repositórios/serviços",
+      "lista": [
+        {
+          "nome": "CreateAuction",
+          "ator": "Buyer",
+          "descricao": "Buyer cria leilão com requisitos técnicos de TI",
+          "input": "CreateAuctionDTO",
+          "output": "AuctionCreatedDTO",
+          "regras": [
+            "Valida crédito do comprador",
+            "Classifica por categoria para notificar fornecedores elegíveis"
+          ]
+        },
+        {
+          "nome": "PublishAuction",
+          "ator": "Buyer/Admin",
+          "descricao": "Publica leilão após revisão interna, notificando fornecedores homologados",
+          "regras": [
+            "Requer pelo menos 3 fornecedores elegíveis na categoria",
+            "Audit log obrigatório"
+          ]
+        },
+        {
+          "nome": "SubmitBid",
+          "ator": "Supplier",
+          "descricao": "Fornecedor submete proposta competitiva com preço e score técnico",
+          "input": "SubmitBidDTO",
+          "output": "BidAcceptedDTO",
+          "regras": [
+            "Valida decremento mínimo",
+            "Verifica homologação do fornecedor",
+            "Emite evento BidSubmitted"
+          ]
+        },
+        {
+          "nome": "EvaluateBids",
+          "ator": "System/Buyer",
+          "descricao": "Calcula score composto (preço + técnico) e ordena propostas",
+          "regras": [
+            "Algoritmo de scoring configurável por leilão",
+            "Empate desempata por menor prazo de entrega"
+          ]
+        },
+        {
+          "nome": "CloseAuction",
+          "ator": "System (scheduled)",
+          "descricao": "Fecha leilão no prazo, seleciona vencedor automaticamente",
+          "regras": [
+            "Seleciona melhor score composto",
+            "Notifica todos os participantes",
+            "Gera PurchaseOrder"
+          ]
+        },
+        {
+          "nome": "ApprovePurchaseOrder",
+          "ator": "Buyer",
+          "descricao": "Comprador aprova a ordem de compra gerada",
+          "regras": [
+            "Workflow de aprovação por alçada (tier)",
+            "Integra com ERP do comprador"
+          ]
+        },
+        {
+          "nome": "GenerateContract",
+          "ator": "System",
+          "descricao": "Gera minuta de contrato baseada em template e termos do leilão",
+          "regras": [
+            "Preenche SLA obrigatório",
+            "Versionamento de contrato"
+          ]
+        },
+        {
+          "nome": "HomologateSupplier",
+          "ator": "Admin",
+          "descricao": "Valida documentação e homologa fornecedor por categoria de TI",
+          "regras": [
+            "Checklist de documentos por categoria",
+            "Validade de 12 meses com renovação"
+          ]
+        },
+        {
+          "nome": "RateSupplier",
+          "ator": "Buyer",
+          "descricao": "Comprador avalia fornecedor após conclusão do contrato",
+          "regras": [
+            "Disponível apenas após confirmação de entrega",
+            "Afeta reputationScore da entidade Supplier"
+          ]
+        },
+        {
+          "nome": "CancelAuction",
+          "ator": "Buyer/Admin",
+          "descricao": "Cancela leilão com justificativa obrigatória",
+          "regras": [
+            "Notifica fornecedores que submeteram propostas",
+            "Audit trail"
+          ]
+        },
+        {
+          "nome": "ExtendAuction",
+          "ator": "Buyer",
+          "descricao": "Estende prazo do leilão se não houver propostas suficientes",
+          "regras": [
+            "Máximo 2 extensões por leilão",
+            "Notifica fornecedores elegíveis"
+          ]
+        },
+        {
+          "nome": "SearchAuctions",
+          "ator": "Supplier",
+          "descricao": "Fornecedor busca leilões abertos por categoria/filtros",
+          "output": "PaginatedAuctionListDTO"
+        },
+        {
+          "nome": "GenerateSpendReport",
+          "ator": "Buyer/Admin",
+          "descricao": "Relatório de economias obtidas via leilão reverso vs. preço de mercado",
+          "regras": [
+            "Cálculo de saving obrigatório",
+            "Exportação CSV/PDF"
+          ]
+        }
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Traduzem dados entre Use Cases e mundo externo. Não contêm regras de negócio",
+      "controllers": [
+        "AuctionController — REST endpoints para CRUD de leilões",
+        "BidController — submissão e consulta de lances",
+        "SupplierController — cadastro, homologação e perfil",
+        "BuyerController — cadastro, crédito e gestão de leilões",
+        "PurchaseOrderController — aprovação e rastreio de ordens",
+        "ContractController — geração e assinatura de contratos",
+        "ReportController — endpoints para relatórios analíticos",
+        "AuthController — login, refresh token, OAuth"
+      ],
+      "presenters": [
+        "AuctionPresenter — formata resposta de leilão com campos computados (tempo restante, melhor lance)",
+        "BidRankingPresenter — formata ranking de propostas com scores compostos",
+        "SupplierProfilePresenter — formata perfil público do fornecedor com reputação",
+        "SpendReportPresenter — formata dados de saving para dashboard"
+      ],
+      "gateways": [
+        "AuctionRepositoryGateway — implementa IAuctionRepository com ORM",
+        "BidRepositoryGateway — implementa IBidRepository",
+        "SupplierRepositoryGateway — implementa ISupplierRepository",
+        "NotificationGateway — implementa INotificationService via email/push/webhook",
+        "PaymentGateway — implementa IPaymentService via Stripe/PagSeguro",
+        "ERPGateway — implementa IERPIntegration via SAP/TOTVS connectors",
+        "DocumentStorageGateway — implementa IDocumentStorage via S3/GCS",
+        "SearchGateway — implementa ISearchService via Elasticsearch",
+        "EventBusGateway — implementa IEventBus via RabbitMQ/Kafka"
+      ],
+      "view_models": [
+        "AuctionViewModel",
+        "BidViewModel",
+        "PurchaseOrderViewModel",
+        "ContractViewModel",
+        "SupplierReputationViewModel"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa. Detalhes de implementação substituíveis sem afetar negócio",
+      "web": [
+        "NestJS (Node.js) ou Spring Boot (Java) para API REST/GraphQL"
+      ],
+      "banco_de_dados": [
+        "PostgreSQL — dados transacionais (leilões, lances, contratos)",
+        "Redis — cache de sessão, ranking em tempo real, pub/sub",
+        "Elasticsearch — busca full-text de leilões e fornecedores"
+      ],
+      "mensageria": [
+        "RabbitMQ ou Apache Kafka — eventos de domínio (BidSubmitted, AuctionClosed, OrderApproved)"
+      ],
+      "autenticacao": [
+        "Keycloak ou Auth0 — SSO, SAML/OIDC para integração corporativa",
+        "JWT com refresh token rotation"
+      ],
+      "armazenamento": [
+        "AWS S3 ou GCS — documentos de homologação, contratos, NFs"
+      ],
+      "email_notificacoes": [
+        "SendGrid ou AWS SES — notificações transacionais",
+        "Firebase Cloud Messaging — push mobile"
+      ],
+      "pagamentos": [
+        "Stripe ou PagSeguro — processamento de assinatura e tarifas de transação"
+      ],
+      "infra": [
+        "Docker + Kubernetes (EKS/GKE) — orquestração de containers",
+        "Terraform — IaC",
+        "GitHub Actions ou GitLab CI — CI/CD"
+      ],
+      "monitoramento": [
+        "Datadog ou Grafana+Prometheus — métricas e alertas",
+        "Sentry — rastreamento de erros",
+        "OpenTelemetry — distributed tracing"
+      ],
+      "frontend": [
+        "React + TypeScript — SPA para compradores e fornecedores",
+        "TailwindCSS + shadcn/ui — design system",
+        "Socket.io — atualizações em tempo real do ranking de lances"
+      ],
+      "testes": [
+        "Jest (unit/integration) ou JUnit",
+        "Testcontainers — testes de integração com banco real",
+        "Playwright — E2E"
+      ]
+    },
+    "dependency_rule": {
+      "descricao": "Todas as dependências de código-fonte apontam exclusivamente para dentro (camadas mais internas)",
+      "regras": [
+        "Entities não importam nada de outras camadas — são POJOs/data classes puros",
+        "Use Cases importam apenas Entities e interfaces abstratas (IRepository, IService) que eles mesmos definem",
+        "Interface Adapters implementam as interfaces definidas nos Use Cases (inversão de dependência)",
+        "Frameworks & Drivers implementam os Gateways e Controllers, injetando implementações concretas via DI container",
+        "Jamais uma Entity ou Use Case importa uma classe de banco de dados, framework HTTP ou biblioteca externa",
+        "Eventos de domínio (DomainEvent) são emitidos pelos Use Cases via interface IEventBus — a implementação (Kafka, RabbitMQ) fica em Frameworks & Drivers",
+        "DTOs de entrada/saída pertencem à camada de Interface Adapters e são convertidos para/de Entities pelos Use Cases"
+      ],
+      "exemplo": "SubmitBidUseCase depende de IBidRepository (interface em Use Cases) → BidRepositoryGateway (em Interface Adapters) implementa IBidRepository → BidRepositoryPostgres (em Frameworks) é a implementação real injetada"
+    },
+    "testability": {
+      "descricao": "Arquitetura garante testabilidade total sem dependências externas reais",
+      "unit_tests": {
+        "escopo": "Entities e Use Cases",
+        "estrategia": "Use Cases testados com mocks/stubs das interfaces de repositório e serviço. Entities testadas diretamente como POJOs",
+        "cobertura_alvo": "100% de Use Cases com testes unitários puros",
+        "exemplo": "SubmitBidUseCase testado com InMemoryBidRepository e InMemoryAuctionRepository"
+      },
+      "integration_tests": {
+        "escopo": "Gateways e Controllers",
+        "estrategia": "Testcontainers para PostgreSQL real, Redis real. Testa mapeamento ORM e queries sem mocks de banco",
+        "exemplo": "BidRepositoryGateway testado contra PostgreSQL real via Testcontainers"
+      },
+      "e2e_tests": {
+        "escopo": "Fluxos críticos de ponta a ponta",
+        "estrategia": "Playwright com ambiente de staging isolado. Fluxo: criar leilão → submeter lance → fechar leilão → gerar PO",
+        "dado_de_teste": "Fixtures de seeds para buyers, suppliers e leilões em estado conhecido"
+      },
+      "contract_tests": {
+        "escopo": "Integrações externas (ERP, pagamentos)",
+        "estrategia": "Pact.io para contract testing — garante que Gateways honram contratos de API sem serviço real"
+      },
+      "inversao_de_dependencia": "Toda implementação externa injetada via interface — basta trocar por InMemory* nos testes"
+    },
+    "interfaces": [
+      "IAuctionRepository — CRUD + queries de leilões por status/categoria/comprador",
+      "IBidRepository — CRUD + ranking por leilão + melhor lance atual",
+      "ISupplierRepository — CRUD + busca por categoria + homologados",
+      "IBuyerRepository — CRUD + crédito disponível",
+      "IPurchaseOrderRepository — CRUD + por leilão + por comprador",
+      "IContractRepository — CRUD + por ordem de compra",
+      "IRatingRepository — CRUD + score agregado por fornecedor",
+      "INotificationService — sendEmail(to, template, data), sendPush(userId, payload), sendWebhook(url, event)",
+      "IEventBus — publish(event: DomainEvent), subscribe(eventType, handler)",
+      "IDocumentStorage — upload(file): URL, download(key): Stream, delete(key)",
+      "ISearchService — indexAuction(auction), searchAuctions(filters): AuctionResult[]",
+      "IERPIntegration — syncPurchaseOrder(order): ERPOrderId, getApprovalStatus(erpId): ApprovalStatus",
+      "IPaymentService — createSubscription(plan, buyer): SubscriptionId, chargeTransactionFee(orderId, amount)",
+      "IAuthService — validateToken(jwt): UserId, getUserPermissions(userId): Permission[]",
+      "IScoringEngine — calculateBidScore(bid, requirements): CompositeScore",
+      "IScheduler — scheduleAuctionClose(auctionId, at: Date), cancelSchedule(jobId)"
+    ],
+    "escalabilidade": {
+      "horizontal": "Stateless API pods — escala horizontal via Kubernetes HPA baseado em CPU/RPS. Redis centraliza estado compartilhado (sessões, rankings)",
+      "eventos": "Kafka com particionamento por auctionId garante ordenação de lances por leilão com throughput linear",
+      "banco_de_dados": "PostgreSQL com read replicas para queries de busca. Sharding por organizationId em estágio avançado. Elasticsearch absorve carga de busca full-text",
+      "cache": "Redis para ranking de lances em tempo real (sorted sets) e cache de leilões ativos. TTL curto para dados voláteis",
+      "websocket": "Socket.io com sticky sessions no load balancer ou Redis Adapter para broadcasting entre pods",
+      "multi_tenancy": "Isolamento por organizationId em schema único (row-level security no PostgreSQL). Schema separado por tenant em tier enterprise",
+      "cdc": "Debezium para Change Data Capture do PostgreSQL — alimenta Elasticsearch e analytics sem acoplamento síncrono",
+      "async_processing": "Workers assíncronos para: geração de PDF de contrato, envio de e-mails em lote, recálculo de reputação, sincronização ERP"
+    },
+    "custos": {
+      "infra_basica": "Início em ~$800-1500/mês: 3 pods NestJS (t3.medium), RDS PostgreSQL (db.t3.medium Multi-AZ), ElastiCache Redis, S3, SES",
+      "escala_media": "~$3000-6000/mês com 10k leilões/mês: RDS r6g.large, Redis cluster, MSK Kafka managed, EKS node group com 6-10 nós",
+      "otimizacao": [
+        "Reserved Instances para DB e cache (até 40% de economia)",
+        "Spot Instances para workers assíncronos (70% de economia)",
+        "S3 Intelligent Tiering para documentos históricos",
+        "CDN (CloudFront) para assets estáticos e cache de API pública"
+      ],
+      "maiores_custos": "Banco de dados gerenciado (~35%), compute (~30%), transferência de dados e CDN (~15%), Elasticsearch (~10%), mensageria (~10%)"
+    },
+    "monetizacao": {
+      "modelos": [
+        {
+          "tipo": "SaaS por Assinatura (principal)",
+          "tiers": [
+            {
+              "nome": "Starter",
+              "preco": "R$ 1.500/mês",
+              "limite": "Até 20 leilões/mês, 50 fornecedores"
+            },
+            {
+              "nome": "Business",
+              "preco": "R$ 4.500/mês",
+              "limite": "Até 100 leilões/mês, 200 fornecedores, API ERP"
+            },
+            {
+              "nome": "Enterprise",
+              "preco": "R$ 12.000+/mês",
+              "limite": "Ilimitado, SLA 99.9%, SSO, white-label, suporte dedicado"
+            }
+          ]
+        },
+        {
+          "tipo": "Taxa de Transação",
+          "descricao": "0.3% a 0.8% sobre o valor de cada PurchaseOrder gerada",
+          "justificativa": "Alinha incentivos — plataforma ganha mais quando comprador economiza mais e fecha mais negócios"
+        },
+        {
+          "tipo": "Homologação de Fornecedores",
+          "descricao": "R$ 300-800 por homologação de fornecedor por categoria, renovação anual",
+          "justificativa": "Cobre custo de due diligence e gera receita recorrente"
+        },
+        {
+          "tipo": "Marketplace de Integração",
+          "descricao": "Conectores certificados para SAP, TOTVS, Oracle — cobrados por conector ativo",
+          "preco": "R$ 800-2.000/mês por conector"
+        },
+        {
+          "tipo": "Analytics Premium",
+          "descricao": "Dashboard de market intelligence com benchmark de preços de TI por categoria/região",
+          "preco": "Add-on R$ 1.500/mês"
+        }
+      ],
+      "unit_economics_alvo": "CAC < 3 meses de MRR, LTV > 36 meses, churn < 5% a.a. em Enterprise"
+    },
+    "stack_sugerida": {
+      "backend": {
+        "linguagem": "TypeScript (Node.js) com NestJS — DI nativo facilita Clean Architecture, excelente suporte a decorators para camadas",
+        "alternativa_enterprise": "Java 21 com Spring Boot 3 — melhor para equipes com experiência Java, performance superior em cargas CPU-intensivas"
+      },
+      "frontend": {
+        "framework": "React 18 + TypeScript",
+        "state_management": "TanStack Query para server state + Zustand para client state",
+        "realtime": "Socket.io client para ranking de lances ao vivo",
+        "ui": "shadcn/ui + TailwindCSS",
+        "forms": "React Hook Form + Zod para validação"
+      },
+      "banco_de_dados": {
+        "principal": "PostgreSQL 16 com pgvector para busca semântica futura",
+        "cache_realtime": "Redis 7 (Sorted Sets para ranking, Pub/Sub para eventos)",
+        "busca": "Elasticsearch 8 para busca full-text de leilões e fornecedores",
+        "orm": "Prisma (TypeScript) ou TypeORM com migrations versionadas"
+      },
+      "mensageria": "Apache Kafka (AWS MSK managed) — particionamento por auctionId para ordenação garantida de lances",
+      "infra": {
+        "cloud": "AWS (mercado corporativo BR prefere AWS)",
+        "containers": "EKS (Kubernetes) com Helm charts",
+        "iac": "Terraform com módulos reutilizáveis",
+        "cicd": "GitHub Actions com ambientes de preview por PR",
+        "secrets": "AWS Secrets Manager integrado via External Secrets Operator"
+      },
+      "observabilidade": {
+        "metricas": "Prometheus + Grafana (ou Datadog para SaaS gerenciado)",
+        "tracing": "OpenTelemetry + Jaeger",
+        "logs": "Winston estruturado → CloudWatch Logs → Athena para queries",
+        "alertas": "PagerDuty para on-call"
+      },
+      "seguranca": {
+        "autenticacao": "Auth0 ou Keycloak — SSO/SAML obrigatório para enterprise",
+        "autorizacao": "RBAC + ABAC via Casbin — permissões granulares por organização e tier",
+        "criptografia": "TLS 1.3 em trânsito, AES-256 em repouso para documentos sensíveis",
+        "compliance": "SOC 2 Type II, LGPD — pseudonimização de PII, audit logs imutáveis"
+      },
+      "testes": {
+        "unit": "Jest + ts-jest com 80%+ de cobertura em Use Cases",
+        "integration": "Testcontainers + Supertest",
+        "e2e": "Playwright",
+        "contract": "Pact.io para integrações externas",
+        "carga": "k6 para testes de carga — simular pico de lances no fechamento de leilão"
+      }
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio com regras críticas, sem dependências externas\",\n    \"lista\": [\n      {\n        \"nome\": \"Auction\",\n        \"atributos\": [\"id\", \"title\", \"description\", \"status\", \"startAt\", \"endAt\", \"minBidDecrement\", \"buyerId\", \"category\"],\n        \"regras\": [\"Leilão só pode receber lances se status=OPEN\", \"endAt deve ser posterior a startAt\", \"decremento mínimo deve ser positivo\"]\n      },\n      {\n        \"nome\": \"Bid\",\n        \"atributos\": [\"id\", \"auctionId\", \"supplierId\", \"amount\", \"technicalScore\", \"deliveryDays\", \"warranty\", \"submittedAt\"],\n        \"regras\": [\"Lance deve ser menor que o lance atual mais baixo menos o decremento mínimo\", \"Fornecedor não pode dar dois lances consecutivos\"]\n      },\n      {\n        \"nome\": \"Buyer\",\n        \"atributos\": [\"id\", \"organizationId\", \"name\", \"email\", \"cnpj\", \"creditLimit\", \"approvalTier\"],\n        \"regras\": [\"CNPJ deve ser válido\", \"Comprador não pode participar como fornecedor no mesmo leilão\"]\n      },\n      {\n        \"nome\": \"Supplier\",\n        \"atributos\": [\"id\", \"organizationId\", \"name\", \"cnpj\", \"categories\", \"reputationScore\", \"certifications\", \"status\"],\n        \"regras\": [\"Fornecedor deve ser homologado para cada categoria\", \"Score de reputação afeta visibilidade\"]\n      },\n      {\n        \"nome\": \"PurchaseOrder\",\n        \"atributos\": [\"id\", \"auctionId\", \"winnerId\", \"buyerId\", \"amount\", \"items\", \"status\", \"generatedAt\"],\n        \"regras\": [\"Ordem só é gerada após vencedor confirmado\", \"Valor não pode divergir do lance vencedor\"]\n      },\n      {\n        \"nome\": \"ITRequirement\",\n        \"atributos\": [\"id\", \"auctionId\", \"category\", \"specifications\", \"quantity\", \"minimumScore\", \"deliveryDeadline\"],\n        \"regras\": [\"Especificações técnicas mínimas obrigatórias por categoria\"]\n      },\n      {\n        \"nome\": \"Contract\",\n        \"atributos\": [\"id\", \"purchaseOrderId\", \"terms\", \"signedAt\", \"expiresAt\", \"slaTerms\"],\n        \"regras\": [\"Contrato vincula PurchaseOrder aprova"
+}

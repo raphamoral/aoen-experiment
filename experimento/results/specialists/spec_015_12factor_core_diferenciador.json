@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O pricing-engine é identificável como núcleo e há indícios de diferenciação (PRICING_ALGORITHM_VERSION, modelos ML em S3, repricer-worker consumindo eventos de mercado em tempo real), mas a proposta descreve excelente infraestrutura sem articular por que o algoritmo de precificação é insubstituível especificamente para moda — não há explicação do que o torna superior a soluções genéricas de dynamic pricing já existentes no mercado."
+}

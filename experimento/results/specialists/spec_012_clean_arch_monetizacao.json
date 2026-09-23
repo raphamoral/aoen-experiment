@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona o atributo 'plan: SubscriptionPlan' na entidade Industry, indicando consciência de que haverá planos de assinatura, mas não detalha tiers, valores, lógica de cobrança (ex: por sensor, por leitura, por usuário), nem aborda sustentabilidade, métricas de negócio (MRR, churn, LTV, CAC) ou conexão entre o valor entregue e o que é cobrado."
+}

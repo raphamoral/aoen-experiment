@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "hexagonal",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista componentes de infraestrutura concretos (PostgreSQL, Hyperledger Fabric, Ethereum, AWS S3 com lifecycle policies, multi-tenant via RLS) e menciona implicitamente estratégias de organização por tenant, mas não apresenta nenhuma estimativa de custo em dólares/reais por componente, nenhuma estratégia explícita de otimização (scale-to-zero, spot instances, tiering de armazenamento) e nenhuma projeção de como os custos evoluem com o crescimento da base de clientes."
+}

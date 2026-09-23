@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 45,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra arquitetura orientada a configuração em pontos críticos — engine de conformidade parametrizada por ruleset regulatório (ANVISA/FDA/EMA) sem reescrita de código, adaptadores plugáveis de hardware agnósticos ao sensor, e Service Layer centralizando toda lógica de negócio fora das interfaces — mas não evidencia explicitamente que thresholds por tenant, regras de alerta, destinatários de notificação e integrações ERP sejam configuráveis por linha de banco sem deploy, deixando incerto se o onboarding de um novo cliente é de fato zero-código ou ainda exige intervenção técnica para parametrizar cada tenant individualmente."
+}

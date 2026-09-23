@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura segue os princípios 12-factor com processos stateless, backing services intercambiáveis via variáveis de ambiente e pipeline imutável de build/release/run, permitindo substituição independente de componentes (ex: trocar Redis por Memcached, Stripe por outro gateway, Auth0 por Cognito) sem reescrita; a escala horizontal está bem endereçada, porém a proposta não evidencia isolamento explícito da lógica de negócio de frameworks externos (ports & adapters / hexagonal) nem estratégia clara de versionamento de API ou migrações de schema evolutivas, o que pode criar acoplamento encoberto à medida que o produto cresce."
+}

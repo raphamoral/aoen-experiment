@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta menciona emissão assíncrona e fila de reprocessamento nas fitness functions (latência < 2 min, fallback + fila ao simular falha do SEFAZ), sinalizando consciência do problema, mas não descreve isolamento físico real — não há menção a workers separados, processos independentes, bulkhead de recursos ou capacidade de escalar o processamento de NF de forma desacoplada da API principal."
+}

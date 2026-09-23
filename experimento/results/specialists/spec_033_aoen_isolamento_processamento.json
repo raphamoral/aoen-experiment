@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 33,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define interfaces abstratas (IVotingEngine, IFinancialLedger) que permitem trocar implementações, mas isso é apenas extensibilidade — não isolamento de processamento; não há menção a filas, workers, processos separados, processamento assíncrono ou mecanismos de fallback, e a CondominioService centralizada sugere que tudo roda no mesmo processo, onde uma operação pesada (contagem de votos com verificação de quorum, geração de ata assinada, fechamento de balanço) pode bloquear ou derrubar os demais fluxos."
+}

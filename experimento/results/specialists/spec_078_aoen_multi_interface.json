@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 78,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Web App, Mobile iOS/Android, WhatsApp Bot, Dashboard Investidor e API B2B), cada uma justificada por um perfil de usuário e contexto de mercado específico — incluindo populações desbancarizadas via WhatsApp e distribuição indireta via B2B — com lógica de negócio completamente desacoplada das interfaces por meio de um Service Layer baseado em DTOs, garantindo expansão para novos canais sem refatoração."
+}

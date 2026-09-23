@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 76,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A proposta descreve segmentos de mercado (B2C, B2B, enterprise) e canais de aquisição com clareza, mas não especifica nenhum modelo de monetização concreto — ausência total de tiers, preços, estrutura de comissões do marketplace, lógica de revenue share entre plataforma e especialistas, ou métricas de sustentabilidade como LTV/CAC/churn."
+}

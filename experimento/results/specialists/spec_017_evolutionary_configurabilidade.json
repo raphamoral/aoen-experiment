@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "A proposta reconhece multi-tenancy apenas no nível de isolamento de dados (módulo 'Gestão de Tenants' + fitness function de isolamento), mas não descreve nenhum mecanismo de configuração por tenant — ausentes: tabela de configurações, feature flags por tenant, parâmetros de comportamento variável ou processo de onboarding sem deploy, sugerindo que novo cliente ainda exigiria intervenção além de uma simples row no banco."
+}

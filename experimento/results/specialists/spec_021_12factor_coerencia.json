@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural altamente coesa: dispositivos IoT → MQTT → Kafka (desacoplamento de ingestão) → TimescaleDB/PostgreSQL (armazenamento adequado por tipo de dado) → Redis (cache/filas) → notificações multicanal (FCM para técnicos em campo, SendGrid/Twilio para alertas críticos), tudo sustentado por processos stateless no Kubernetes com config via Vault/env vars — cada decisão justifica e reforça as adjacentes; a única tensão menor é o uso de 'ou' em escolhas-chave (TimescaleDB vs InfluxDB, Vault vs Parameter Store), que sugere indecisão residual em vez de flexibilidade deliberada, e o texto truncado impede avaliação completa da seção de processos."
+}

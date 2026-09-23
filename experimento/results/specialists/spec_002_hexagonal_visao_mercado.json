@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo é identificável (clientes corporativos + freelancers de compliance) e há especificidade nos domínios regulatórios (LGPD, GDPR, SOX, BACEN, etc.), mas a proposta é quase inteiramente arquitetural: não articula a dor do cliente (ex: custo de consultoria tradicional, escassez de especialistas, risco regulatório não mitigado), não estima tamanho de mercado e não apresenta diferenciação frente a alternativas como consultorias, staffing agencies ou plataformas generalistas (Upwork, 99Freelas)."
+}

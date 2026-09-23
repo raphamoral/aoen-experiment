@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A arquitetura lista componentes de infraestrutura relevantes (EKS, RDS/PostgreSQL, Redis, Kafka, Elasticsearch, S3, ECR) e menciona práticas que impactam custo (HPA, stateless scaling, rolling updates), mas não apresenta nenhuma estimativa concreta de custo em dólares/reais por componente, nenhuma estratégia explícita de otimização financeira (spot instances, reserved instances, scale-to-zero, storage tiering, multi-AZ seletivo) e nenhuma projeção de como os custos evoluem com o crescimento da base de tenants."
+}

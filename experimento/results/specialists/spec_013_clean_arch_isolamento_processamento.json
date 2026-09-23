@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta descreve apenas entidades de domínio puras sem qualquer menção a isolamento de processamento: não há filas, workers, processos separados, execução assíncrona ou mecanismos de fallback — processos como cálculo de disponibilidade, pagamento e cobrança de créditos rodariam acoplados na mesma aplicação, tornando uma falha em qualquer processamento pesado potencialmente fatal para todo o sistema."
+}

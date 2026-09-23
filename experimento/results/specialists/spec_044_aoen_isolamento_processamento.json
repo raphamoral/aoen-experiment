@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 44,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta acerta nos fundamentos: há processamento assíncrono explícito via fila ('sistema enfileira para avaliação') e isolamento físico real via sandbox e executores containerizados (Judge0, Piston, containers próprios), o que separa o processo pesado da aplicação principal — mas não há menção a mecanismos de resiliência a falhas do worker (fallback, dead-letter queue, circuit breaker no executor), nem estratégia explícita de escalonamento independente dos workers de avaliação."
+}

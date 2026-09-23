@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define 7 interfaces distintas, cada uma justificada por perfil de usuário e caso de uso real (comprador, fornecedor, admin, sistemas ERP, integrações custom, usuários de baixa maturidade digital e gestores mobile), com lógica de negócio explicitamente desacoplada via adaptadores e portas de saída substituíveis, evidenciando escolhas orientadas por alcance de mercado — incluindo o requisito crítico da API REST para contratos enterprise acima de R$1M/ano."
+}

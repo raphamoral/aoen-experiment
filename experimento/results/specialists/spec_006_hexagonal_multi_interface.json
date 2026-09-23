@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "O projeto prevê múltiplas interfaces bem justificadas por contextos reais — REST API e GraphQL para web/mobile, WebSocket para feedback em tempo real durante análise, CLI para operações internas/testes, Webhook para integração com laboratórios parceiros e gRPC para comunicação entre microserviços — todas desacopladas do core via portas primárias (Hexagonal Architecture), permitindo adição de novos canais sem reescrever a lógica de negócio; perde um ponto por não evidenciar explicitamente a justificativa de mercado/perfil de usuário para cada interface além da motivação técnica."
+}

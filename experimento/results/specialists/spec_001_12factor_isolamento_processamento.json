@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "O isolamento físico real existe: workers de roteirização rodam em processos/containers separados, comunicação via filas (RabbitMQ/SQS) garante desacoplamento assíncrono e os workers escalam independentemente pelo tamanho da fila — porém a proposta não descreve comportamento de fallback explícito caso todos os workers estejam indisponíveis (ex.: circuit breaker, modo degradado na API, DLQ com alertas), o que impede nota máxima."
+}

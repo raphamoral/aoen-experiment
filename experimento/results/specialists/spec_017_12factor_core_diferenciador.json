@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador existe e está parcialmente isolado — a ancoragem blockchain (BLOCKCHAIN_RPC_URL configurável, múltiplas chains suportadas) combinada com o verification-service dedicado aponta para um núcleo de verificação pública imutável que resolve o problema real de falsificação de certificados de cursos livres; porém, o documento trata blockchain como apenas mais um backing service em vez de declarar explicitamente por que esse componente é insubstituível, e não endereça extensibilidade além da própria tecnologia blockchain (sem protocolo de verificação agnóstico de cadeia ou fallback caso o custo/latência on-chain se torne inviável), deixando o núcleo identificado mas não plenamente articulado nem blindado de fornecedor único."
+}

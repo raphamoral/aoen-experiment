@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta tem boa separação código/config via env vars e armazena tenants/planos no PostgreSQL, mas a presença de TENANT_ID, SENSOR_API_KEY e ALERT_WEBHOOK_URL como variáveis de ambiente de deploy — em vez de registros por tenant no banco — indica que onboarding de novo cliente provavelmente exige um novo conjunto de configurações de infraestrutura (Helm values, Vault secrets), não apenas uma nova row; falta evidência de tabelas de configuração por tenant (thresholds de alerta, integrações, feature flags) que tornariam o comportamento 100% dirigido por dados."
+}

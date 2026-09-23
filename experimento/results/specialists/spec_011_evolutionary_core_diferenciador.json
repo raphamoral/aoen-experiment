@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O Matching Engine é identificado como núcleo e recebe tratamento arquitetural privilegiado (extração via Strangler Fig, evolução por feature flags, fitness functions dedicadas como Match Quality Rate e Time to First Match), mas a proposta não articula o que torna o algoritmo de matching insubstituível frente a alternativas como AngelList ou Gust — a diferenciação 'regional' aparece apenas como métrica de monitoramento (Regional Concentration Index), sem explicar por que nenhum concorrente resolve esse gap da mesma forma."
+}

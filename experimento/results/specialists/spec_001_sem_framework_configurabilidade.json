@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta pressupõe multi-tenancy pelo modelo de negócio (cobrança por veículo/plano), tem uma interface admin para 'configurar a empresa' e define tiers de plano, mas não descreve nenhuma camada de configuração real — sem tabela de tenant_settings, feature flags, regras de negócio parametrizáveis ou separação explícita entre código fixo e configuração variável; os planos (básico/premium/ultra) provavelmente seriam implementados com ifs hardcoded no código, e qualquer cliente com necessidade fora do padrão (ex: fluxo de confirmação customizado, integração específica) exigiria desenvolvimento, não configuração."
+}

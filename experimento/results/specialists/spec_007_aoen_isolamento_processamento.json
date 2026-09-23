@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta estabelece separação lógica via ContentProcessor e LearningService, mas não menciona filas assíncronas, workers em processos separados, circuit breakers nem fallback para falhas do processamento pesado de IA (ingestão de PDFs/vídeos, chunking, geração de quizzes), o que significa que uma falha ou sobrecarga no motor de IA pode bloquear ou derrubar toda a aplicação."
+}

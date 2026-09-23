@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal com separação explícita entre portas primárias/secundárias e adaptadores garante que o núcleo de domínio nunca dependa de tecnologia externa — cada adaptador (PostgreSQL, Kafka, Stripe, Auth0) pode ser substituído de forma independente implementando a porta correspondente, novas funcionalidades se encaixam via novos use cases sem tocar no existente, e o Test Driver Adapter evidencia que testabilidade foi tratada como cidadã de primeira classe; a nota não chega a 10 por ausência de estratégia explícita de versionamento de portas e de decomposição em bounded contexts para suportar eventual extração de serviços autônomos em escala elevada."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado no Pricing Engine combinado com Demand Sensing (elasticidade-preço específica para moda, trend decay de coleções, sazonalidade de microtemporadas), isolado em bounded contexts próprios com time dedicado, e extensível por não depender de fornecedor único — mas perde pontos por não explicitar por que alternativas genéricas de dynamic pricing (Prisync, Wiser, Omnia) não resolvem o mesmo problema com equal effectiveness para o segmento fashion."
+}

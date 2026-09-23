@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "A separação em entidades distintas (Enrollment, Progress, Achievement) indica alguma modularidade, mas a gamificação está estruturalmente acoplada à entidade User (xpTotal, level, streakDays, badges como atributos diretos) e a regra de Achievement.condition ser 'avaliada na entidade User' cria dependência bidirecional entre domínios — evoluir o motor de gamificação ou substituir regras de progressão exigiria modificar o núcleo de identidade do usuário; além disso, a ausência de limites explícitos de bounded contexts, eventos de domínio, ou indicação de inversão de dependências (ports/adapters) sugere que escalar de 10 para 10.000 usuários ou trocar infraestrutura exigiria mudanças transversais no modelo de domínio."
+}

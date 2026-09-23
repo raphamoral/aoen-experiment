@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 54,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra intenção evolutiva sólida — LLMAdapter, VectorStoreAdapter e o padrão de channel-adapters sobre uma ChatbotService centralizada protegem o núcleo de negócio de mudanças externas e permitem substituição independente de fornecedores e canais — mas perde pontos por não endereçar escalabilidade (sem menção a filas, processamento assíncrono de ingestão ou estratégia de sharding), por ter o pipeline RAG como acoplamento estrutural implícito (mudança no contrato de indexação pode propagar para todos os adaptadores), e pela proposta estar incompleta, deixando incerto como a ChatbotService lida com isolamento de tenants em escala."
+}

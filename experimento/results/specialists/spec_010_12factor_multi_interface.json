@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta implica duas camadas (frontend TypeScript + api-server REST/GraphQL), e o design stateless do api-server tecnicamente permitiria servir outros clientes, mas não há nenhuma menção explícita a interfaces adicionais (mobile, CLI, integração contábil, WhatsApp) nem justificativa de mercado ou perfil de usuário para as escolhas feitas — o que é crítico para um produto MEI, cujo público acessa predominantemente via smartphone e frequentemente delega tarefas a contadores."
+}

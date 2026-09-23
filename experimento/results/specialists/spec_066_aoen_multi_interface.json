@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 66,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Portal Web Enterprise, API REST, Portal do Tradutor, Widget embarcado, CLI/SDK), cada uma justificada por um perfil de usuário e segmento de mercado específico, com toda a lógica de negócio centralizada em uma camada TranslationService que funciona como contrato único — qualquer nova interface é apenas um adapter, sem tocar em regras de matching, precificação ou QA."
+}

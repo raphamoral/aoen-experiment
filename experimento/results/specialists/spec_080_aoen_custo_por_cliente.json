@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 80,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente arquitetura funcional — camadas de reconhecimento, renderização e orquestração de sessões — sem qualquer mensuração de custo por tenant: não há cálculo de custo por chamada de visão computacional (Azure Custom Vision, AWS Rekognition), não há rastreamento de consumo por cliente, não há conexão entre uso de recursos e modelo de precificação; o TrainingOrchestrationService registra eventos de progresso de treinamento, não de consumo faturável por tenant."
+}

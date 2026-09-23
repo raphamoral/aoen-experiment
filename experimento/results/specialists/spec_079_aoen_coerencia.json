@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 79,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "O grafo de propagação de lotes (core) é o fio condutor que amarra todas as decisões: ele justifica a extensibilidade por adaptadores, os fornecedores são literalmente nós upstream do grafo tornando o Portal do Fornecedor um vetor de crescimento viral tecnicamente fundamentado, a Service Layer estabiliza os contratos exatamente porque o core é agnóstico à interface, e a escolha de mercados regulados fecha o ciclo ao transformar obrigação legal em gatilho de compra para cada uma das 7 interfaces — o único ruído é a tensão não resolvida entre 'médias empresas' como ponto de entrada e a presença de integrações SAP/Oracle/TOTVS que são tipicamente enterprise, além do truncamento da fase3 que impede avaliar se o fluxo técnico final sustenta as promessas de latência ('instantaneamente')."
+}

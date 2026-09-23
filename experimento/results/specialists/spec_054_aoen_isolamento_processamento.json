@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 54,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve um pipeline RAG+LLM síncrono centralizado na ChatbotService sem nenhuma menção a filas, workers separados, processamento assíncrono ou mecanismos de fallback — a ingestão de documentos, indexação vetorial e chamadas ao LLM (todos computacionalmente caros) aparentemente rodam no mesmo processo da aplicação, o que significa que uma falha ou sobrecarga nesse pipeline afeta todos os canais simultaneamente; a abstração via LLMAdapter e VectorStoreAdapter demonstra pensamento arquitetural, mas representa isolamento lógico de fornecedor, não isolamento físico de processamento pesado."
+}

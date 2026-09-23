@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta não apresenta nenhum modelo de monetização — não há menção a tiers de preço, modelo de receita (assinatura, usage-based, por sessão), valores, segmentação de clientes por willingness-to-pay, nem métricas de negócio como MRR, churn ou LTV; a única referência tangencial a negócio é 'modelo de precificação configurável por tenant', que descreve flexibilidade técnica de billing, não uma estratégia de monetização."
+}

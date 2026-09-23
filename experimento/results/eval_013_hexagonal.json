@@ -1,0 +1,15 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "hexagonal",
+  "scores": {
+    "core_diferenciador": 7,
+    "visao_mercado": 5,
+    "multi_interface": 9,
+    "configurabilidade": 6,
+    "isolamento_processamento": 7,
+    "consideracao_custo": 4,
+    "monetizacao": 5,
+    "evolucao": 8,
+    "coerencia": 8
+  }
+}

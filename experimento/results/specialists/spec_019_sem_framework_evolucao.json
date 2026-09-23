@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "A proposta demonstra bom pensamento evolutivo incremental (começar simples, separar worker de notificações no futuro, regras antes de ML), mas carece de camadas de abstração explícitas que garantiriam substituição independente de componentes — não há menção de padrão repositório sobre o PostgreSQL, interface sobre os provedores WhatsApp/SMS (trocar Twilio por outro exigiria alterações espalhadas), e o acoplamento direto ao BullMQ/Redis sem uma abstração de fila significa que trocar o mecanismo de jobs tocaria lógica de negócio; a arquitetura resultante é um monolito bem pensado operacionalmente, mas sem as fronteiras formais (hexagonal, ports-and-adapters ou similar) que permitiriam evoluir cada componente verdadeiramente de forma independente."
+}

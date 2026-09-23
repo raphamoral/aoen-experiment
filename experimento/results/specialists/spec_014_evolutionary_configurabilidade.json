@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra configurabilidade real em pontos críticos — feature flags por tenant, modelo de precificação configurável sem código e abstração de provedores via TranslationPort — mas não especifica o escopo completo do que é configurável por tenant (pares de idioma, thresholds de qualidade, integrações de videoconferência ativas, limites de sessão), nem descreve explicitamente que o onboarding de um novo cliente ocorre apenas via configuração, sem deploy ou desenvolvimento adicional."
+}

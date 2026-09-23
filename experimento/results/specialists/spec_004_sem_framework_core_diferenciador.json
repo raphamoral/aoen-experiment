@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador (leilão reverso em tempo real com WebSocket + fila ordenada de lances via BullMQ para evitar race conditions no fechamento) está identificado e tecnicamente justificado, mas não é isolado como componente independente nem explicado por que alternativas como Mercado Eletrônico ou ComprasNet não resolvem o mesmo problema — falta posicionamento competitivo explícito que torne o núcleo insubstituível."
+}

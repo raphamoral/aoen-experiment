@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva excepcional: port/adapter explícito para todos os provedores externos (tradução, STT/TTS, videoconferência), anti-corruption layer no componente de áudio, roadmap faseado com cada fase deployável independentemente via feature flags por tenant, fitness functions automatizadas para impedir drift arquitetural (ArchUnit/Deptrac no CI), e categorização honesta de reversibilidade em três níveis — penalizada apenas pelo lock-in de cloud provider com custo de migração reconhecidamente alto e pela seção de decisões last-responsible-moment truncada, que não permite avaliar se escolhas críticas de infra foram deliberadamente adiadas."
+}

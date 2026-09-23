@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A proposta prevê cinco interfaces primárias com contextos distintos e reais — SPA web para uso em desktop, app React Native para mobilidade do MEI, REST API para integrações de terceiros, WebhookInboundAdapter para callbacks assíncronos de gateways e prefeituras, e SchedulerAdapter para automações fiscais recorrentes —, todas desacopladas da lógica de negócio por ports explícitos (arquitetura hexagonal pura), o que permite adicionar novos canais sem tocar no domínio; perde apenas um ponto porque o CliAdapter é declaradamente para testes e seeds — conveniência técnica, não alcance de mercado — e as justificativas de perfil de usuário por canal estão implícitas na arquitetura, não documentadas explicitamente como decisão de produto."
+}

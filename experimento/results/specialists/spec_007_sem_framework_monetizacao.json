@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 7,
+  "justificativa": "O modelo prevê assinatura por empresa com três tiers segmentados por número de colaboradores ativos e incentivo de retenção via desconto anual, conectando o preço ao crescimento do cliente, mas faltam valores concretos por plano, estimativas de CAC/LTV, análise de churn esperado e clareza sobre o critério de 'usuário ativo' que define a cobrança."
+}

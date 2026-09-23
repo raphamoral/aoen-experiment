@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 89,
+  "ideia": "SaaS de planejamento de safra com dados climáticos e satelitais",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de recomendação agronômica que fusiona dados satelitais (NDVI, umidade do solo, cobertura vegetal) com dados climáticos históricos e preditivos para gerar planos de safra otimizados por talhão — incluindo janelas ideais de plantio, irrigação, aplicação de insumos e colheita.",
+    "fase1_mercado": "Primário: agrônomos e técnicos agrícolas responsáveis por múltiplas propriedades (alta alavancagem por usuário). Secundário: médios e grandes produtores rurais que gerenciam propriedades próprias. Terciário: cooperativas e revendas de insumos que prestam serviços técnicos a produtores associados.",
+    "fase1_extensivel": "Sim. O core é agnóstico a fornecedor de dados. Provedores satelitais (Sentinel-2, Landsat, Planet, Maxar) e climáticos (INMET, Open-Meteo, Tomorrow.io, IBM Weather) são acessados via adaptadores intercambiáveis. O modelo agronômico também é substituível: começa com regras determinísticas por cultura, evolui para ML sem alterar contratos internos. Nenhuma lógica de negócio vaza para as camadas de dados.",
+    "fase2_interfaces": [
+      "Dashboard Web — visualização de mapas, histórico de talhões, planos de safra e relatórios",
+      "App Mobile (iOS/Android) — uso em campo, modo offline-first com sincronização posterior",
+      "Bot WhatsApp/SMS — alertas e consultas simplificadas para produtores com baixa conectividade",
+      "API REST/Webhook — integração com ERPs rurais (Agrofy, Aegro, Siagri) e plataformas ag-tech",
+      "Exportação CSV/PDF/Excel — relatórios para cooperativas, bancos e órgãos de financiamento rural"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de agrônomos e consultorias (ticket médio alto, múltiplas propriedades gerenciadas). App Mobile abre produtores que operam em campo e regiões remotas (volume). Bot WhatsApp/SMS abre pequenos produtores do agro familiar brasileiro sem smartphone ou dados móveis (escala social e parcerias governamentais). API abre canais B2B com ERPs e fintechs rurais (receita recorrente empresarial). CSV/PDF desbloqueiam cooperativas e o mercado de crédito rural (PRONAF, CPR), onde relatórios técnicos são exigência regulatória.",
+    "fase2_service_layer": "Todas as interfaces consomem exclusivamente a PlanningService (geração de planos), InsightService (alertas e anomalias), ReportService (compilação de dados) e NotificationService (despacho multicanal). Nenhuma interface contém lógica agronômica. O estado do plano vive no banco; a interface é apenas renderização. Trocar ou adicionar uma interface não toca nos serviços.",
+    "fase3_fluxo_fixo": "1. Receber geometria do talhão (polígono GPS). 2. Buscar séries históricas de NDVI e clima para a região. 3. Identificar cultura plantada ou configurada. 4. Executar modelo agronômico com parâmetros do cliente. 5. Gerar plano estruturado (atividades, datas, insumos, alertas). 6. Persistir plano versionado. 7. Disparar notificações via canais configurados.",
+    "fase3_parametros_configuraveis": [
+      "Cultura(s) monitoradas e variedades",
+      "Área e geometria dos talhões (GeoJSON)",
+      "Solo: tipo, capacidade de campo, déficit hídrico tolerado",
+      "Calendário agrícola local (datas de referência regionais)",
+      "Limiares de alerta (temperatura, precipitação, NDVI mínimo)",
+      "Canais de notificação preferidos (email, WhatsApp, push, webhook)",
+      "Frequência de reprocessamento (diária, semanal, sob demanda)",
+      "Provedor de dados satelitais e climáticos preferido",
+      "Idioma e unidades de medida (métrico/imperial)",
+      "Relatórios: template, logotipo, destinatários automáticos",
+      "Integrações ativas (ERP endpoint, webhook URL)"
+    ],
+    "fase3_novo_cliente": "Onboarding é exclusivamente criação de registro no banco: tenant_id + plano contratado + talhões (GeoJSON upload) + culturas + parâmetros agronômicos + canais de notificação. O pipeline já existente processa os novos talhões na próxima janela de execução. Zero código, zero deploy. Um técnico de onboarding sem perfil técnico consegue configurar um novo cliente em menos de 30 minutos via painel administrativo.",
+    "fase4_core_isolado": "Worker assíncrono isolado: 'CropAnalysisWorker' — responsável por buscar imagens satelitais, processar bandas espectrais (NDVI, EVI, NDWI), cruzar com séries climáticas e executar o modelo agronômico. Roda em fila de mensagens (jobs), escalável horizontalmente de forma independente do restante da aplicação. Falhas neste worker não afetam a API, o dashboard nem as notificações — que continuam servindo o último plano calculado com cache.",
+    "fase4_custo_total_cliente": "Custo core (variável por talhão/mês): API satelital ~R$0,10–0,50/talhão/análise (Sentinel gratuito, Planet ~USD 0,50/km²); API climática ~R$0,05–0,20/talhão/mês; compute do worker (CPU/GPU) ~R$0,10/análise. Custo infra proporcional: banco de dados ~R$0,50/GB/mês (séries históricas por talhão); armazenamento de imagens S3 ~R$0,08/GB/mês; CDN/tiles de mapa ~R$0,02/1000 requisições; banda ~R$0,10/GB. Custo operacional por cliente: suporte ~R$5–15/cliente/mês amortizado. Estimativa total: R$8–25/talhão/mês dependendo da resolução satelital e frequência. Benchmark de precificação: cobrar R$40–80/talhão/mês gera margem de 60–70%.",
+    "fase4_continuidade": "O CropAnalysisWorker opera sobre fila persistente (Redis Streams ou SQS). Em caso de falha: jobs são reenfileirados com backoff exponencial; a API serve o último plano calculado com flag 'dados de X dias atrás'; alertas críticos (geada, seca severa) têm canal de fallback via SMS direto. O dashboard permanece 100% funcional com dados em cache. SLA do worker é medido separadamente do SLA da plataforma.",
+    "fase4_manutencao": "O modelo agronômico e os adaptadores de dados são acessados via interfaces internas (ports). Trocar o provedor satelital = implementar novo adaptador sem tocar no worker. Trocar o modelo agronômico (de regras para ML) = substituir a implementação da interface ModelProvider sem alterar o pipeline. Feature flags controlam qual implementação está ativa por tenant, permitindo migração gradual com A/B testing sem downtime.",
+    "monetizacao": "1. SaaS por talhão/mês: plano Starter (até 10 talhões, R$29/talhão), Profissional (até 50 talhões, R$22/talhão), Enterprise (ilimitado, contrato anual). 2. Plano Agrônomo: cobrado por profissional com acesso multi-propriedade (R$299/mês até 200 talhões gerenciados). 3. White-label para cooperativas: taxa de setup + mensalidade por produtor ativo na base da cooperativa (R$8–15/produtor/mês). 4. Add-ons: resolução satelital premium (Planet vs Sentinel), relatórios para crédito rural (CPR, PRONAF), integração com ERP (taxa de ativação). 5. Revenue share com revendas de insumos que usam dados de demanda agregada para otimizar estoque.",
+    "stack_sugerida": "Backend: Python (FastAPI) — ecossistema rico em geoespacial e ML; Worker: Python + Celery ou ARQ sobre Redis; Geoprocessamento: GDAL, Rasterio, Shapely, GeoPandas; ML/Modelos: scikit-learn para início, PyTorch para evolução; Banco relacional: PostgreSQL + PostGIS (geometrias e séries temporais geoespaciais); Cache/Filas: Redis; Armazenamento de rasters: S3-compatible (MinIO on-prem ou AWS S3); Frontend Web: React + Mapbox GL JS ou Leaflet; Mobile: React Native (compartilha lógica com web); Infraestrutura: Docker + Kubernetes (workers escalam independente); Observabilidade: OpenTelemetry + Grafana (custo por worker job mensurável); CI/CD: GitHub Actions; Provedores de dados: Sentinel-2 via Copernicus/STAC (gratuito), Open-Meteo (gratuito até volume), Tomorrow.io (pago para alertas em tempo real)"
+  }
+}

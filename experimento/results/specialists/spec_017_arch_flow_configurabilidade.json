@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra consciência multi-tenant em pontos concretos — templates PDF/SVG por instituição, chave privada por emissor, planos de billing por tenant e um bounded context dedicado ao onboarding de instituições — mas não formaliza um modelo de configuração explícito (schema de configuração por tenant, feature flags, rule engine), deixando em aberto se componentes como ancoragem blockchain, trilhas de aprendizado e integrações LTI são ativáveis por configuração ou exigem código novo para cada variação de comportamento."
+}

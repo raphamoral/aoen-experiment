@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 52,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta demonstra pensamento evolutivo genuíno — pipeline de eventos extensível, service layer como núcleo isolado e interfaces como adaptadores são decisões sólidas que permitem trocar frontends e adicionar canais sem tocar na lógica de APPCC — mas faltam garantias explícitas de inversão de dependência na camada de persistência (não há menção a repositórios abstratos ou como trocar o banco sem afetar o domínio), ausência de estratégia de scaling horizontal documentada (crescer de 10 para 10.000 usuários exige decisões sobre estado, cache e filas que ainda não aparecem), e o interior da service layer não está modularizado em bounded contexts, criando risco de acoplamento interno conforme o produto crescer."
+}

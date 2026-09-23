@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "Apresenta dois valores concretos (R$200/mês de servidor e R$800/mês em mensagens), identifica corretamente o principal driver de custo operacional (WhatsApp API) e menciona monitoramento de custo por clínica — mas falta estimativa detalhada por componente de infra (PostgreSQL, Redis, banda, armazenamento de logs), não há estratégia de otimização de custo (scale-to-zero, instâncias reservadas, tiers de armazenamento) e a projeção de crescimento se limita a 'separo o worker quando crescer', sem modelar como o custo total evolui com o aumento de clínicas ou volume de agendamentos."
+}

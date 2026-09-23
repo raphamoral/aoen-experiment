@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 16,
+  "ideia": "App de logística reversa para devoluções de e-commerce",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de orquestração de devoluções: recebe uma solicitação de retorno e determina automaticamente o melhor fluxo (rota de coleta, transportadora, tipo de resolução: reembolso, troca, crédito ou descarte) com base nas regras do lojista, custo logístico e histórico do produto — sem intervenção manual.",
+    "fase1_mercado": "Lojistas de e-commerce (pequeno, médio e enterprise) que vendem via loja própria ou marketplaces e sofrem com devolução manual, custo logístico opaco e experiência ruim do consumidor final. Verticais prioritárias: moda, eletrônicos e marketplace multi-seller.",
+    "fase1_extensivel": "Sim. O core é uma abstração de 'decisor de fluxo logístico reverso'. As transportadoras são adapters intercambiáveis (Correios, Jadlog, Loggi, 3PL própria). O ERP/WMS do lojista é uma integração plugável. O canal de comunicação com o consumidor (e-mail, SMS, WhatsApp) é configurável. Nenhuma transportadora específica é hard-coded.",
+    "fase2_interfaces": [
+      "Portal web do lojista (gestão de devoluções, regras, relatórios)",
+      "Widget embarcável de autoatendimento (embed no site do lojista para o consumidor abrir devolução)",
+      "REST API pública (integração com ERPs, plataformas como VTEX, Shopify, Nuvemshop)",
+      "App mobile para operadores de CD/galpão (inspeção, foto de item devolvido, confirmação de recebimento)",
+      "Chatbot/WhatsApp para consumidor final (abertura e rastreamento de devolução via mensagem)"
+    ],
+    "fase2_justificativa_mercado": "Portal web: abre o mercado de lojistas mid-market e enterprise que precisam de visibilidade centralizada. Widget embarcável: abre o mercado de lojistas que querem experiência self-service sem desenvolver nada. REST API: abre enterprise e agências/integradores (canal de revenda). App mobile: abre operações logísticas com CD próprio, aumentando ARPU por cliente. Chatbot/WhatsApp: abre o mercado de lojistas com consumidor final de baixa digitalização (moda, atacado).",
+    "fase2_service_layer": "Uma camada de serviços (ReturnService, CarrierService, ResolutionService, NotificationService) expõe contratos internos independentes de protocolo. O portal web, a API pública, o widget e o chatbot são clientes dessa camada — nenhum contém lógica de negócio. Trocar a interface não toca nas regras de devolução.",
+    "fase3_fluxo_fixo": "O fluxo é invariável: (1) Recebimento da solicitação → (2) Validação de elegibilidade (prazo, política, SKU) → (3) Seleção de transportadora e geração de etiqueta → (4) Notificação ao consumidor → (5) Rastreamento de coleta → (6) Recebimento e inspeção no CD → (7) Resolução (reembolso/troca/crédito/descarte) → (8) Atualização do pedido original no ERP/plataforma.",
+    "fase3_parametros_configuraveis": [
+      "Prazo máximo de devolução (dias após entrega)",
+      "Motivos aceitos para devolução por categoria de produto",
+      "Transportadoras habilitadas e regras de seleção (custo, SLA, região)",
+      "Política de resolução por motivo (reembolso automático vs. análise manual vs. troca direta)",
+      "Template de notificações (e-mail, SMS, WhatsApp) com variáveis do lojista",
+      "Regras de inspeção por categoria (checklist customizável)",
+      "Limites de reembolso automático (valor máximo sem aprovação humana)",
+      "Integração com plataforma de e-commerce (VTEX, Shopify, WooCommerce)",
+      "Webhook de destino para eventos do fluxo",
+      "Idioma e moeda"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro no banco de configurações com suas políticas, transportadoras habilitadas, credenciais de plataforma e templates. Zero linha de código. O onboarding é um formulário guiado no portal do lojista que popula esse registro. Em menos de 30 minutos o lojista está operacional.",
+    "fase4_core_isolado": "O Motor de Decisão de Fluxo (fluxo de orquestração + seleção de transportadora + geração de etiqueta via API externa) roda como um worker assíncrono isolado, consumindo filas (ex: RabbitMQ ou SQS). É o único processo que faz chamadas externas caras (APIs de transportadoras, APIs de pagamento para reembolso). Fica separado da API web principal.",
+    "fase4_custo_total_cliente": "Custo core: chamadas às APIs de transportadoras (~R$0,05–0,20/etiqueta gerada) + API de pagamento para reembolso (0,5–1% do valor) + armazenamento de fotos de inspeção (~R$0,02/foto no S3/GCS). Custo infra proporcional: fração do worker assíncrono por volume de devoluções/mês + banco de dados (proporcional a registros) + CDN para o widget embarcável. Custo operacional: notificações (e-mail ~R$0,001/msg, SMS ~R$0,08/msg, WhatsApp ~R$0,05/msg). Custo total estimado por devolução processada: R$0,30–R$1,50 dependendo do canal de notificação e se há reembolso via API. Permite precificação por devolução processada + mensalidade base.",
+    "fase4_continuidade": "A API web (portal, widget, consultas de status) é stateless e não depende do worker. Se o worker cair, devoluções ficam em fila — o consumidor vê status 'em processamento', o lojista vê alertas no painel. O worker reinicia sem perda de estado (idempotência por ID de solicitação). Dead-letter queue captura falhas para reprocessamento ou alerta manual.",
+    "fase4_manutencao": "Cada transportadora é um adapter com contrato fixo (gerarEtiqueta, rastrear, cancelar). Trocar ou adicionar uma transportadora = novo adapter, zero impacto no fluxo. O motor de decisão é testável com mocks dos adapters. Deploy do novo adapter sem parar o sistema via feature flag por cliente.",
+    "monetizacao": "Modelo híbrido: (1) Mensalidade SaaS por faixa de devoluções/mês (ex: até 100, 500, 2000, ilimitado) — receita previsível. (2) Taxa por devolução processada acima do plano — captura o crescimento do cliente. (3) Add-ons: módulo de inspeção com app mobile, relatórios avançados de análise de causa-raiz, integração WhatsApp Business. (4) Receita de repasse logístico: negociar tarifas com transportadoras em volume e repassar com margem, tornando a logística em si um centro de receita.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com NestJS para API + workers assíncronos. Fila: BullMQ sobre Redis (simples para começar) ou migrar para SQS/RabbitMQ em escala. Banco principal: PostgreSQL (dados relacionais de pedido/configuração) + Redis (cache de status e sessões). Armazenamento de fotos: S3-compatible (AWS S3 ou Cloudflare R2 para custo). Frontend portal: Next.js (SSR para SEO + performance). Widget embarcável: Web Component vanilla (sem dependência de framework no lojista). Mobile CD: React Native (compartilha lógica com frontend). Notificações: Resend (e-mail), Twilio (SMS/WhatsApp). Deploy: Railway ou Render para MVP, migrar para AWS ECS Fargate em escala com infra por Terraform."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A camada de entidades demonstra forte alinhamento com Clean Architecture — regras de negócio explicitamente desacopladas de frameworks e a separação LaudoIA/ImagemDiagnostica viabiliza troca do modelo de IA sem impacto no domínio — porém a proposta expõe apenas a camada de domínio, sem evidenciar como portas/adaptadores, repositórios e infraestrutura são abstraídos, deixando a reversibilidade de decisões tecnológicas (banco, framework de IA, provider de vídeo) como intenção declarada mas não demonstrada arquiteturalmente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 73,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Web SPA, Mobile, API REST, Plugin de videoconferência e Chatbot), cada uma justificada por um perfil de usuário e estratégia de mercado específicos (PLG, hábito diário, B2B enterprise, coaches e mercados emergentes), com lógica de negócio totalmente desacoplada via CommunicationCoachingService — o que permite adicionar ou substituir qualquer interface sem impacto nas regras de análise."
+}

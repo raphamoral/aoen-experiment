@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta identifica o custo da API de IA com um valor concreto por transação (R$0,10–R$0,50 por exame), o que é positivo, mas ignora completamente os custos dos demais componentes de infraestrutura — S3, workers de processamento (EC2/ECS/Lambda), Supabase, SQS e banda —, não apresenta projeção de custo total por faixa de usuários (ex: 100, 1.000, 10.000 usuários/mês) e não demonstra nenhuma estratégia de otimização de infra além do processamento assíncrono (sem menção a spot instances, scale-to-zero, camadas de armazenamento S3, planos Supabase ou reservas de capacidade)."
+}

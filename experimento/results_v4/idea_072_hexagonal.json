@@ -1,0 +1,90 @@
+{
+  "ideia_idx": 72,
+  "ideia": "SaaS de previsão de falhas em máquinas industriais com machine learning",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Manutenção Preditiva de Ativos Industriais: modelagem de Máquinas/Ativos, Sensores, Leituras de Telemetria (séries temporais), Janelas de Features, Modelos Preditivos, Previsões de Falha (probabilidade e RUL – Remaining Useful Life), Alertas, Ordens de Manutenção e Políticas de Limiar por Tenant. O core contém apenas regras de negócio puras: validação de leituras, cálculo de saúde do ativo, política de disparo de alertas, ciclo de vida de modelos (treino, validação, promoção, rollback) e regras de tenancy e planos. Não conhece frameworks, protocolos, bancos nem bibliotecas de ML.",
+    "primary_ports": [
+      "IngestTelemetryUseCase: receber lotes ou streams de leituras de sensores",
+      "RegisterAssetUseCase: cadastrar e configurar máquinas, sensores e tenants",
+      "RequestFailurePredictionUseCase: solicitar previsão de falha e RUL sob demanda",
+      "GetAssetHealthQuery: consultar saúde, histórico e explicação (explainability) das previsões",
+      "ConfigureAlertPolicyUseCase: definir limiares, janelas e canais de notificação",
+      "TrainModelUseCase: disparar treino e retreino de modelos",
+      "PromoteModelUseCase: validar, promover ou reverter versões de modelo",
+      "AcknowledgeAlertUseCase: reconhecer alerta e registrar feedback (falha real ou falso positivo)",
+      "ManageSubscriptionUseCase: gerenciar plano, quotas e uso"
+    ],
+    "secondary_ports": [
+      "TelemetryStorePort: persistir e consultar séries temporais",
+      "AssetRepositoryPort: persistir ativos, sensores, tenants e políticas",
+      "PredictionRepositoryPort: persistir previsões, alertas e feedback",
+      "FeatureStorePort: gravar e ler features calculadas (online e offline)",
+      "ModelInferencePort: executar inferência em um modelo versionado",
+      "ModelTrainingPort: orquestrar treino de modelos em infraestrutura externa",
+      "ModelRegistryPort: versionar, armazenar e recuperar artefatos e métricas de modelos",
+      "NotificationPort: enviar alertas (e-mail, SMS, chat, webhook)",
+      "MaintenanceSystemPort: criar ordens de serviço em CMMS/ERP externos",
+      "EventBusPort: publicar e consumir eventos de domínio",
+      "BillingPort: cobrança, medição de uso e faturamento",
+      "IdentityPort: autenticação, autorização e resolução de tenant",
+      "ClockPort: tempo (determinismo em testes)",
+      "ObjectStoragePort: armazenar datasets, relatórios e artefatos brutos",
+      "AuditLogPort: trilha de auditoria",
+      "ObservabilityPort: métricas, logs e traces"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON, OpenAPI)",
+      "GraphQL API para o dashboard",
+      "Gateway MQTT (consumo de telemetria de dispositivos)",
+      "Gateway OPC UA / Modbus via edge agent (conversão de protocolos industriais)",
+      "Consumer Kafka de telemetria (streaming)",
+      "Webhook de entrada (integração de terceiros)",
+      "Web App (SPA de dashboard)",
+      "CLI administrativa",
+      "Scheduler/Cron (retreino e varreduras periódicas)",
+      "Test Driver (testes automatizados e simulador de sensores)",
+      "Scripts de batch e backfill",
+      "Adapter de webhook do provedor de billing (eventos de pagamento)"
+    ],
+    "secondary_adapters": [
+      "TimescaleDB / InfluxDB (TelemetryStorePort)",
+      "PostgreSQL (AssetRepositoryPort, PredictionRepositoryPort)",
+      "Feast + Redis (FeatureStorePort online) e Parquet/S3 (offline)",
+      "Servidor de inferência ONNX Runtime / BentoML / KServe (ModelInferencePort)",
+      "Pipeline de treino em Python (scikit-learn, XGBoost, PyTorch) em Kubernetes jobs ou SageMaker (ModelTrainingPort)",
+      "MLflow (ModelRegistryPort)",
+      "SendGrid/SES, Twilio, Slack/Teams e webhook HTTP (NotificationPort)",
+      "Conectores SAP PM, IBM Maximo, TOTVS e Fiix (MaintenanceSystemPort)",
+      "Kafka ou NATS (EventBusPort)",
+      "Stripe Billing (BillingPort)",
+      "Keycloak / Auth0 / OIDC (IdentityPort)",
+      "S3 / MinIO (ObjectStoragePort)",
+      "Adapter de relógio do sistema e relógio fake (ClockPort)",
+      "Adapters in-memory e fakes para todas as portas (testes)",
+      "OpenTelemetry + Prometheus + Grafana (ObservabilityPort)",
+      "Tabela append-only ou OpenSearch (AuditLogPort)"
+    ],
+    "isolation": "O core (domínio + casos de uso) fica em um módulo sem dependências de frameworks, drivers, SDKs de ML ou protocolos; ele só depende de interfaces (ports) que ele mesmo define. A regra de dependência aponta sempre para dentro: adapters importam o core, nunca o contrário. Toda entrada é traduzida por um primary adapter em comandos/consultas do core (DTOs próprios), e toda saída passa por um secondary port implementado por um adapter, com anti-corruption layer para mapear modelos externos (SAP, MQTT, MLflow) para a linguagem do domínio. A injeção de dependências é feita apenas na composition root. O modelo de ML é tratado como sistema externo simétrico aos demais: o core conhece apenas ModelInferencePort (features → probabilidade/RUL + explicação). Isso permite trocar o algoritmo, o servidor ou o provedor sem alterar regras de negócio. Testes do core usam adapters in-memory e um ClockPort fake; testes de contrato garantem que cada adapter real respeita o comportamento da porta. Fitness functions de arquitetura (ex.: ArchUnit/import-linter) bloqueiam no CI qualquer import de infraestrutura no core.",
+    "interfaces": [
+      "Dashboard web multi-tenant (visão de frota, saúde por ativo, timeline de previsões, explicabilidade com SHAP)",
+      "API REST pública e SDKs (Python, JS) para integração",
+      "Aplicativo mobile/PWA para técnicos de campo com alertas push",
+      "Edge agent instalável no chão de fábrica (buffer offline, conversão OPC UA/Modbus para MQTT)",
+      "Webhooks de saída para alertas e ordens de serviço",
+      "Portal de administração e billing (planos, quotas, uso)",
+      "CLI para operações e backfill",
+      "Relatórios exportáveis (PDF/CSV) de confiabilidade e MTBF"
+    ],
+    "escalabilidade": "Escala horizontal por responsabilidade, aproveitando o desacoplamento das portas: (1) ingestão stateless atrás de load balancer e broker (Kafka/MQTT) particionado por tenant/asset_id, com backpressure; (2) processamento de features e inferência em workers independentes com autoscaling por lag de fila (KEDA); (3) treino em jobs efêmeros em GPU/CPU spot, separado do caminho de inferência; (4) armazenamento de séries temporais com particionamento por tempo e tenant, compressão e políticas de retenção/downsampling (dados quentes, mornos e frios em S3/Parquet); (5) inferência em lote para frotas grandes e em tempo real apenas para ativos críticos; (6) edge inference opcional para reduzir latência e tráfego; (7) isolamento multi-tenant lógico (row-level security) com opção de células/silos dedicados para clientes enterprise. Como o core é stateless, pode-se evoluir de monólito modular para serviços separados (ingestão, predição, alertas) sem reescrever regras de negócio, apenas trocando adapters (ex.: chamada in-process por evento no EventBus).",
+    "custos": "Principais vetores: armazenamento e ingestão de telemetria (maior custo recorrente), computação de treino (mitigada com spot instances, retreino orientado a drift e não periódico cego) e inferência (mitigada com ONNX, batch e quantização). Estratégias: downsampling e retenção por camada, compressão colunar, cálculo de features em janelas incrementais, cache de previsões, modelos por classe de máquina (transfer learning) em vez de um por ativo, autoscaling a zero para cargas não críticas, edge para pré-agregação, FinOps com custo por tenant (tagging e medição de uso via BillingPort), e comprar em vez de construir componentes commodity (auth, billing). Custos fixos adicionais: suporte de integração industrial, onboarding de sensores, segurança/compliance (ISO 27001, IEC 62443) e monitoramento de qualidade de modelo (MLOps). Fase inicial: monólito modular em poucas instâncias gerenciadas, mantendo custo baixo até validar o produto.",
+    "monetizacao": "Assinatura SaaS recorrente em camadas: (1) Starter — por número de ativos monitorados, dashboard e alertas básicos; (2) Professional — previsão de RUL, explicabilidade, integração com CMMS e API; (3) Enterprise — silo dedicado, modelos customizados, SLA, SSO, edge on-prem e suporte dedicado. Componentes de preço: por ativo/mês + excedente por volume de telemetria/inferências (usage-based via BillingPort). Receitas adicionais: onboarding e integração (serviços profissionais), modelos customizados por tipo de equipamento, pacotes de sensores/edge gateway parceiros, relatórios de confiabilidade e marketplace de modelos pré-treinados por tipo de máquina. Modelo alternativo de outcome-based pricing (parcela do downtime evitado) para clientes maduros. Trial gratuito com dados históricos do cliente para provar ROI (redução de paradas não planejadas).",
+    "stack_sugerida": "Core: Python 3.12 (Pydantic para value objects, typing.Protocol para ports) ou Kotlin/Java com estrutura de módulos estrita; monólito modular hexagonal inicialmente. Primary adapters: FastAPI (REST), Strawberry (GraphQL), Eclipse Mosquitto/EMQX (MQTT), Kafka consumers, React + TypeScript (dashboard), PWA, Typer (CLI), Celery/Temporal ou Argo Workflows (agendamento e orquestração). Edge: agente em Go/Rust com OPC UA/Modbus e buffer local (SQLite). Dados: PostgreSQL + TimescaleDB, Redis, S3/MinIO com Parquet, Kafka (Redpanda) ou NATS. ML/MLOps: scikit-learn, XGBoost/LightGBM, PyTorch (LSTM/Transformers para séries), tsfresh, SHAP, Feast, MLflow, ONNX Runtime/BentoML/KServe, Evidently para drift. Infra: Kubernetes (EKS/GKE) com KEDA, Terraform, ArgoCD, GitHub Actions. Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki, Sentry. Segurança: Keycloak/Auth0, Vault, mTLS entre edge e cloud, RLS multi-tenant. Billing: Stripe Billing. Qualidade: pytest com fakes in-memory, testes de contrato por porta, import-linter para impor a regra de dependência."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T04:07:03+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta acerta na separação conceitual (fluxo de estados imutável no código + parâmetros variáveis por etapa) e as três interfaces abstraídas (LocationProvider, RoutingEngine, NotificationBus) são o caminho certo, mas 'trocar o adaptador' ainda soa como ação de desenvolvedor, não de configuração — a proposta não explicita um config-store por tenant, não descreve como um novo cliente seleciona seu RoutingEngine ou NotificationBus via banco de dados sem deploy, e a seção crítica 'fase3_parametros_configuráveis' está truncada, deixando o critério mais importante sem evidência concreta de implementação."
+}

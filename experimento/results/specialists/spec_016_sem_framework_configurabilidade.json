@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta define isolamento de dados por tenant (tabela de lojistas) e suporta onboarding básico sem deploy, mas não menciona nenhuma camada de configuração por cliente: não há tabela de settings, sem fluxos de aprovação configuráveis, sem regras de negócio parametrizáveis, sem transportadoras ou motivos de devolução configuráveis por lojista — qualquer comportamento diferente entre clientes exigiria alteração de código."
+}

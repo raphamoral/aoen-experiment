@@ -1,0 +1,71 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Matchmaking entre startups e investidores-anjo regionais: orquestração de compatibilidade baseada em critérios de negócio (setor, estágio, ticket, região, tese de investimento), gestão do ciclo de vida de conexões (interesse mútuo, introdução, due diligence, deal fechado) e reputação dos atores (score de confiança, histórico de interações).",
+    "primary_ports": [
+      "IStartupProfileUseCase — cadastro, atualização e publicação de perfil de startup",
+      "IInvestorProfileUseCase — cadastro, definição de tese e preferências regionais do anjo",
+      "IMatchDiscoveryUseCase — busca e listagem de matches compatíveis com filtros e ranking",
+      "IConnectionRequestUseCase — envio, aceitação ou recusa de pedido de introdução",
+      "IDealPipelineUseCase — progressão de etapas: interesse → reunião → due diligence → deal",
+      "IReputationUseCase — avaliação pós-interação e consulta de score de confiança",
+      "INotificationPreferenceUseCase — configuração de canais e frequência de alertas pelo usuário",
+      "ISubscriptionUseCase — contratação, upgrade e cancelamento de planos"
+    ],
+    "secondary_ports": [
+      "IStartupRepository — persistência e consulta de perfis de startups",
+      "IInvestorRepository — persistência e consulta de perfis de investidores",
+      "IMatchRepository — armazenamento de matches calculados e histórico de scores",
+      "IConnectionRepository — persistência de pedidos e estados de conexão",
+      "IDealRepository — registro das etapas do pipeline de negociação",
+      "IReputationRepository — persistência de avaliações e scores acumulados",
+      "INotificationPort — envio de notificações (e-mail, push, in-app, SMS)",
+      "IPaymentGatewayPort — cobrança de assinaturas e processamento de pagamentos",
+      "IDocumentStoragePort — upload e acesso seguro a pitchdecks, documentos de due diligence",
+      "ISearchIndexPort — indexação e busca full-text/semântica de perfis",
+      "IEventBusPort — publicação de eventos de domínio para integrações assíncronas",
+      "IExternalEnrichmentPort — enriquecimento de dados via APIs externas (Crunchbase, LinkedIn)",
+      "IAnalyticsPort — envio de métricas e eventos de uso para plataforma de BI",
+      "IAuthProviderPort — autenticação/autorização via provedor de identidade externo"
+    ],
+    "primary_adapters": [
+      "REST API Controller (FastAPI/NestJS) — expõe endpoints HTTP para web e mobile",
+      "GraphQL Resolver — consultas flexíveis para dashboards e listagens complexas",
+      "WebSocket Handler — notificações em tempo real de novos matches e mensagens",
+      "CLI Admin Script — operações internas de moderação, seed e manutenção",
+      "Test Harness (pytest/Jest) — acionamento direto dos use cases em testes de integração",
+      "Webhook Receiver — recebe callbacks de pagamento, e-mail bounce e eventos externos"
+    ],
+    "secondary_adapters": [
+      "PostgreSQLStartupRepository — implementação com SQLAlchemy/Prisma sobre PostgreSQL",
+      "PostgreSQLInvestorRepository — implementação relacional com suporte a queries geoespaciais (PostGIS)",
+      "ElasticsearchSearchAdapter — indexação e busca semântica de perfis com scoring customizado",
+      "RedisMatchCacheAdapter — cache de matches calculados e sessões de usuário",
+      "SendGridNotificationAdapter — envio de e-mails transacionais e campanhas",
+      "FirebaseNotificationAdapter — push notifications para apps mobile",
+      "StripePaymentAdapter — gestão de assinaturas recorrentes e checkout",
+      "AWSS3DocumentStorageAdapter — armazenamento de pitchdecks com presigned URLs",
+      "RabbitMQEventBusAdapter — publicação e consumo de eventos de domínio assíncronos",
+      "CrunchbaseEnrichmentAdapter — enriquecimento de dados de startups via API externa",
+      "Auth0AuthProviderAdapter — SSO, JWT e controle de papéis (startup, investor, admin)",
+      "MixpanelAnalyticsAdapter — rastreamento de funil e engajamento de usuários",
+      "PostgreSQLDealRepository — persistência de pipeline com audit trail completo"
+    ],
+    "isolation": "O core (domain entities + use cases) não importa nenhuma dependência de infraestrutura. Todas as dependências são injetadas via interfaces (ports) no momento de composição do sistema (Composition Root). O domínio conhece apenas abstrações puras — nunca ORMs, SDKs de terceiros ou frameworks HTTP. Inversão de dependência garante que os adaptadores dependem do core, nunca o contrário. Testes unitários do core rodam sem banco de dados, rede ou serviços externos, usando stubs das interfaces.",
+    "interfaces": [
+      "Web App SPA (React/Next.js) — interface principal para startups e investidores",
+      "Mobile App (React Native) — acesso mobile com notificações push",
+      "Admin Dashboard (React + role admin) — moderação de perfis, gestão de planos e relatórios",
+      "API Pública REST — integração com aceleradoras, hubs e parceiros regionais",
+      "Webhooks de saída — notificação de eventos para sistemas parceiros (CRMs, plataformas de aceleração)",
+      "Email Digest — newsletter semanal com novos matches e oportunidades relevantes"
+    ],
+    "escalabilidade": "Arquitetura stateless nos serviços de aplicação permite escalonamento horizontal via container orchestration (Kubernetes). Matches complexos são computados assincronamente via workers acionados por eventos no bus (RabbitMQ/SQS), desacoplando o cálculo de compatibilidade da requisição HTTP. ElasticSearch escala independentemente para carga de busca. Read replicas do PostgreSQL absorvem consultas pesadas de listagem. Cache Redis reduz latência em matches frequentes. Sharding por região geográfica isola dados e reduz latência para clusters locais. CDN distribui assets estáticos e documentos públicos.",
+    "custos": "Custo principal concentrado em compute (ECS/GKE para API e workers), armazenamento de documentos (S3 com lifecycle policies para tiering automático) e banco de dados gerenciado (RDS PostgreSQL com read replicas sob demanda). ElasticSearch representa custo variável relevante — avaliar OpenSearch Serverless para early stage. Notificações via SendGrid têm custo por volume, mitigável com batching de digests. Estratégia de cost control: separar workloads de matching assíncrono em spot/preemptible instances; usar cache agressivo para reduzir queries; monitorar e limitar chamadas a APIs de enriquecimento externo por cota.",
+    "monetizacao": "B2B2C com modelo freemium + assinaturas: (1) Startups — plano gratuito com perfil básico e matches limitados; planos pagos desbloqueiam visibilidade ampliada, acesso a investidores premium e analytics de interesse; (2) Investidores-anjo — assinatura mensal/anual com acesso a deal flow filtrado, alertas de novas startups por tese e relatórios de mercado regional; (3) Planos institucionais para aceleradoras, family offices e hubs de inovação com white-label e API access; (4) Receita variável por deal fechado (success fee opcional, opt-in); (5) Relatórios e inteligência de mercado regional como produto de dados B2B.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Node.js (NestJS) com arquitetura modular por bounded contexts. ORM: SQLAlchemy (Python) ou Prisma (Node). Banco principal: PostgreSQL com PostGIS para geolocalização. Cache: Redis. Busca: Elasticsearch ou OpenSearch. Mensageria: RabbitMQ (self-hosted) ou AWS SQS/SNS (managed). Autenticação: Auth0 ou Keycloak. Pagamentos: Stripe. Storage: AWS S3. Notificações: SendGrid + Firebase Cloud Messaging. Frontend: Next.js (TypeScript) com TailwindCSS. Mobile: React Native (Expo). Infra: Docker + Kubernetes (EKS/GKE) com Terraform para IaC. Observabilidade: OpenTelemetry + Grafana Stack (Loki, Tempo, Prometheus). CI/CD: GitHub Actions."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Matchmaking entre startups e investidores-anjo regionais: orquestração de compatibilidade baseada em critérios de negócio (setor, estágio, ticket, região, tese de investimento), gestão do ciclo de vida de conexões (interesse mútuo, introdução, due diligence, deal fechado) e reputação dos atores (score de confiança, histórico de interações).\",\n\n  \"primary_ports\": [\n    \"IStartupProfileUseCase — cadastro, atualização e publicação de perfil de startup\",\n    \"IInvestorProfileUseCase — cadastro, definição de tese e preferências regionais do anjo\",\n    \"IMatchDiscoveryUseCase — busca e listagem de matches compatíveis com filtros e ranking\",\n    \"IConnectionRequestUseCase — envio, aceitação ou recusa de pedido de introdução\",\n    \"IDealPipelineUseCase — progressão de etapas: interesse → reunião → due diligence → deal\",\n    \"IReputationUseCase — avaliação pós-interação e consulta de score de confiança\",\n    \"INotificationPreferenceUseCase — configuração de canais e frequência de alertas pelo usuário\",\n    \"ISubscriptionUseCase — contratação, upgrade e cancelamento de planos\"\n  ],\n\n  \"secondary_ports\": [\n    \"IStartupRepository — persistência e consulta de perfis de startups\",\n    \"IInvestorRepository — persistência e consulta de perfis de investidores\",\n    \"IMatchRepository — armazenamento de matches calculados e histórico de scores\",\n    \"IConnectionRepository — persistência de pedidos e estados de conexão\",\n    \"IDealRepository — registro das etapas do pipeline de negociação\",\n    \"IReputationRepository — persistência de avaliações e scores acumulados\",\n    \"INotificationPort — envio de notificações (e-mail, push, in-app, SMS)\",\n    \"IPaymentGatewayPort — cobrança de assinaturas e processamento de pagamentos\",\n    \"IDocumentStoragePort — upload e acesso seguro a pitchdecks, documentos de due diligence\",\n    \"ISearchIndexPort — indexação e busca full-text/semântica de perfis\",\n    \"IEventBusPort — publicação de eventos de domínio para integraçõ"
+}

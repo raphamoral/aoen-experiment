@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta descreve configuração por ambiente de infraestrutura (development/staging/production via Doppler/Secrets Manager), não por tenant — regras de gamificação (XP, badges), fluxos de teste e comportamentos de notificação aparecem fixos no código, sem menção a tabela de configuração por cliente, feature flags por tenant ou mecanismo de onboarding zero-código para novos clientes."
+}

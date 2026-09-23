@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura define entidades como Industry com SubscriptionPlan e Sensor com localização, o que cria a base estrutural para rastreamento por tenant, mas não há nenhuma modelagem explícita de custo por operação, consumo de recursos por cliente ou conexão entre uso e margem — apenas estrutura de dados de negócio sem instrumentação de unit economics."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões se reforçam com coerência notável: o motor de scoring abstraído via MatchEnginePort justifica a evolução rule-based→ML, a service layer centralizada sustenta os múltiplos canais de interface sem duplicar lógica, e cada interface abre exatamente o segmento de mercado declarado — a única lacuna é o truncamento da descrição da service layer, que impede confirmar se o contrato de DTOs padronizados está completo."
+}

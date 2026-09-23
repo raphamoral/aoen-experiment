@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 68,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta sustenta uma narrativa arquitetural coesa — o escrow por marcos justifica cada interface (portal cidadão rastreia marcos, dashboard envia evidências, admin valida, widget embute transparência), a camada de serviços de domínio puro implementa literalmente a promessa de extensibilidade, a escolha PWA-first é consistente com o público periférico e baixa bancarização, e o widget de transparência fecha um loop de aquisição orgânica coerente com o mercado B2G — com deduções por duas lacunas: a arquitetura não especifica como a camada de serviços suporta multitenancy para o modelo white-label B2B (bancos regionais), e o mecanismo de 'retorno financeiro' para investidores PF/PJ não está refletido em nenhuma decisão arquitetural, criando um risco de incoerência regulatória e de domínio não endereçado."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta sugere separação lógica via ports/adapters (BlockchainLedgerPort, ReportRenderingPort, IoTTelemetryPort) e presença de SchedulerAdapter para cron jobs, mas não menciona explicitamente filas de mensagens (Kafka, SQS, RabbitMQ), workers em processos separados, nem estratégia de fallback para quando operações pesadas como gravação em blockchain ou geração de PDF/XLSX falham — o isolamento é inferível pela arquitetura hexagonal, mas não declarado como físico, assíncrono ou resiliente."
+}

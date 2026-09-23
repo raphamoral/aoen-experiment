@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "arch_flow",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista componentes de infraestrutura (AWS S3, Datadog, etc.) mas não apresenta nenhuma estimativa concreta de custo em valores monetários, nenhuma estratégia de otimização (scale-to-zero, spot instances, storage tiering) e nenhuma projeção de crescimento de custos com a base de usuários."
+}

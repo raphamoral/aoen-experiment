@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 21,
+  "ideia": "SaaS de gestão de manutenção predial preventiva com IoT",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de predição de falhas prediais: recebe dados de sensores IoT, detecta anomalias e padrões de degradação, e gera ordens de serviço preventivas antes que o equipamento falhe. Sem isso, o produto é só um CMMS comum.",
+    "fase1_mercado": "Gestores de facilities e síndicos de edifícios corporativos, shoppings, hospitais, aeroportos e condomínios de alto padrão — qualquer operação onde tempo de parada de equipamento gera perda financeira mensurável ou risco de vida.",
+    "fase1_extensivel": "Sim. O core é desacoplado do protocolo de sensor via camada de abstração (Device Adapter Layer): suporta MQTT, AMQP, HTTP webhooks e arquivos CSV. O modelo preditivo é intercambiável — começa com regras determinísticas (threshold-based), evolui para ML (scikit-learn, Prophet, ou LLM-based anomaly detection) sem alterar contratos de interface. Cada tipo de equipamento (HVAC, elevador, gerador, bomba) é um plugin registrado no core.",
+    "fase2_interfaces": [
+      "Web Dashboard SPA — gestores e engenheiros de manutenção",
+      "Mobile PWA (field app) — técnicos em campo recebendo e executando ordens de serviço",
+      "API REST/GraphQL — integração com ERPs (SAP, TOTVS), CMMS legados e sistemas de BMS",
+      "Gateway IoT MQTT/HTTP — ponto de entrada dos dispositivos físicos e hubs de sensores",
+      "Canal de alertas (WhatsApp Business API, e-mail, SMS) — notificações urgentes para responsáveis sem acesso ao sistema",
+      "Portal white-label para revendedores — empresas de facilities que revendem o produto como próprio"
+    ],
+    "fase2_justificativa_mercado": "Web Dashboard abre o mercado de gestores que tomam decisões e precisam de relatórios; Mobile abre o mercado de operações com equipes de campo (onde o ROI é imediato — técnico não precisa voltar ao escritório); API abre o mercado enterprise que já tem ERP e exige integração, não substituição; Gateway IoT é a porta de entrada para fabricantes de equipamentos que querem oferecer serviço gerenciado; Canal de alertas retém clientes menores que não abrem painel todo dia; Portal white-label abre canal indireto B2B2B sem custo de aquisição direto.",
+    "fase2_service_layer": "Uma Service Layer centraliza toda lógica de negócio: AssetService, MaintenanceOrderService, AlertRuleService, SensorIngestionService, ReportService. Cada interface (web, mobile, API externa, IoT gateway) consome apenas essa camada via interfaces bem definidas. Nenhuma interface conhece regras de negócio — só chama serviços. Trocar React por Vue, ou REST por gRPC, não toca um linha de lógica.",
+    "fase3_fluxo_fixo": "1. Sensor envia leitura → 2. Gateway normaliza para schema canônico → 3. Motor de regras avalia leitura contra thresholds e padrões históricos → 4. Se anomalia detectada, gera Alerta → 5. Alerta dispara criação de Ordem de Serviço com prioridade calculada → 6. OS é atribuída ao técnico disponível segundo agenda → 7. Notificações enviadas → 8. Técnico executa e registra conclusão → 9. Dados alimentam histórico para refinar predição. Esse ciclo é fixo. Os parâmetros de cada etapa são configuráveis.",
+    "fase3_parametros_configuraveis": [
+      "Tipos e modelos de equipamentos monitorados por cliente",
+      "Thresholds de alerta por equipamento (temperatura, vibração, corrente, pressão)",
+      "Janelas de tempo para cálculo de tendência (7, 30, 90 dias)",
+      "Regras de priorização de OS (criticidade do ativo, impacto operacional, SLA contratual)",
+      "Calendário de manutenção preventiva por equipamento (horas de uso ou data fixa)",
+      "Canais de notificação e escalação (quem avisa, quando, em que ordem)",
+      "Política de SLA por tipo de ativo (tempo máximo para atendimento)",
+      "Relatórios e KPIs exibidos no dashboard por perfil de usuário",
+      "Número máximo de sensores e ativos por plano",
+      "Idioma, fuso horário e moeda por cliente",
+      "Integrações ativas (ERP, BMS, CMMS externo)",
+      "Modelo preditivo ativo por tipo de equipamento (regras determinísticas vs ML)"
+    ],
+    "fase3_novo_cliente": "Onboarding via wizard no portal: cliente define nome do condomínio/edifício, importa planta de ativos via CSV ou cadastro manual, seleciona plano (define limites de sensores e ativos), configura thresholds via templates pré-definidos por setor (hospital, shopping, corporativo), define usuários e papéis. Nenhum código é escrito. Um registro de tenant é criado no banco, parâmetros são persistidos em tabela de configuração, gateway IoT gera token de autenticação para os sensores. Tempo de onboarding: menos de 1 hora.",
+    "fase4_core_isolado": "O Worker de Processamento IoT é isolado como microserviço assíncrono independente: consome fila de mensagens (sensor readings), executa normalização, aplica motor de regras e modelos preditivos, persiste resultados e publica eventos de alerta. Escala horizontalmente por número de mensagens na fila. Falha total desse worker não impede acesso ao dashboard, consulta de OSs abertas, registro manual de manutenções ou relatórios históricos — o sistema continua operacional para 80% das funções.",
+    "fase4_custo_total_cliente": "Custo estimado por cliente/mês (plano médio: 50 sensores, 1 edifício): Core IA/processamento (inferência de modelo leve, worker compute): ~$8-15; Banco de dados (séries temporais + relacional proporcional): ~$5-10; Armazenamento de histórico de leituras (50 sensores × 1 leitura/min × 30 dias ≈ 2.16M leituras, ~500MB): ~$1-2; Fila de mensagens (IoT gateway): ~$1-3; Notificações (WhatsApp + e-mail): ~$2-5; CDN e banda (dashboard + exports): ~$1-2; Parcela de infra compartilhada (load balancer, DNS, monitoramento): ~$3-5. Total estimado: $21-42/cliente/mês. Markup saudável exige ticket mínimo de $150-400/mês por cliente para margem operacional viável.",
+    "fase4_continuidade": "O worker IoT consome fila persistente (mensagens não são perdidas se o worker cai — ficam enfileiradas e são processadas quando volta). Circuit breaker impede que falha no modelo ML bloqueie o pipeline — fallback automático para regras determinísticas simples. Alertas críticos têm path de notificação independente do worker (sensor envia heartbeat direto via webhook para canal de alertas). O banco de séries temporais é separado do banco relacional transacional — falha de um não afeta o outro.",
+    "fase4_manutencao": "O modelo preditivo é encapsulado atrás de interface ModelAdapter com método predict(readings) → anomaly_score. Trocar scikit-learn por Prophet, ou Prophet por um LLM-based detector, exige apenas nova implementação do adapter — sem parar o sistema, usando feature flag para rollout gradual por tenant. Deploy via blue-green no worker: versão nova sobe em paralelo, tráfego é migrado gradualmente, rollback instantâneo se métricas de qualidade caírem.",
+    "monetizacao": "SaaS com planos por número de sensores e ativos monitorados: Starter ($149/mês — até 20 sensores, 1 edifício), Professional ($399/mês — até 100 sensores, 3 edifícios, API access), Enterprise (custom — sensores ilimitados, white-label, SLA garantido, suporte dedicado). Receita adicional: setup fee de onboarding ($500-2.000 por implantação), marketplace de integrações (plugins pagos para ERPs específicos), relatórios de auditoria sob demanda, e modelo de revenue share com revendedores de facilities (30% de comissão). Meta: ticket médio de $350/mês, CAC recuperado em 4 meses com churn < 5% (equipamento monitorado cria lock-in operacional).",
+    "stack_sugerida": "IoT Gateway: EMQX (broker MQTT enterprise, open-source) + Node.js para HTTP webhooks. Fila de mensagens: Redis Streams (volume médio) ou Kafka (enterprise/alto volume). Worker de processamento: Python (pandas + scikit-learn/Prophet para ML, Pydantic para validação de schema). Banco de séries temporais: TimescaleDB (PostgreSQL extension — simplifica stack). Banco relacional: PostgreSQL (tenants, ativos, ordens de serviço, usuários). Backend API: FastAPI (Python) ou NestJS (TypeScript). Web Dashboard: React + Recharts/Tremor para visualizações. Mobile PWA: React + Capacitor (um codebase, iOS e Android). Notificações: Twilio (SMS/WhatsApp) + SendGrid (e-mail). Infra: Railway ou Render (início, low-ops), migração para AWS ECS/Fargate ao escalar. Observabilidade: OpenTelemetry + Grafana Cloud. Auth: Auth0 ou Clerk (multi-tenant nativo)."
+  }
+}

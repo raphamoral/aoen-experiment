@@ -1,0 +1,59 @@
+{
+  "ideia_idx": 53,
+  "ideia": "App de rastreamento de hábitos sustentáveis com gamificação corporativa",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (mudança incremental segura, baixo custo de alteração)",
+      "Modularidade (bounded contexts: hábitos, pontuação/gamificação, organizações/tenants, relatórios)",
+      "Multi-tenancy com isolamento de dados por empresa",
+      "Escalabilidade elástica (picos em lançamentos de desafios, fim de campanhas e rankings)",
+      "Testabilidade e deployability (CI/CD com deploy contínuo e rollback rápido)",
+      "Segurança e privacidade (LGPD/GDPR, SSO corporativo, dados pessoais de comportamento)",
+      "Observabilidade",
+      "Integridade e auditabilidade dos pontos e da premiação (anti-fraude)",
+      "Custo-eficiência (FinOps) no início, com opção de escalar depois"
+    ],
+    "fitness_functions": [
+      "Arquitetura: ArchUnit/dependency-cruiser no CI falha o build se um módulo importar o interior de outro (só via API pública) ou se surgir dependência cíclica entre módulos",
+      "Isolamento de tenant: teste automatizado que tenta ler dados do tenant B com credenciais do tenant A e deve sempre falhar; row-level security verificada no CI",
+      "Desempenho: teste de carga contínuo com p95 < 300 ms para registro de hábito e p95 < 1 s para leitura de ranking com 10k usuários simultâneos por tenant",
+      "Escalabilidade: teste de carga semanal com 10x o tráfego atual, sem degradação acima de 20% na latência",
+      "Deployability: DORA monitorado (frequência de deploy diária, lead time < 1 dia, MTTR < 1 h, taxa de falha de mudança < 15%)",
+      "Contratos: contract tests (Pact/OpenAPI diff) bloqueiam breaking changes em APIs públicas e eventos",
+      "Consistência da pontuação: job de reconciliação diário confirma que a soma dos eventos de pontos bate com os saldos materializados (divergência = 0)",
+      "Segurança: SAST/DAST, varredura de dependências e de segredos no pipeline; nenhum PII em logs (verificado por teste)",
+      "LGPD: teste de ponta a ponta de exportação e exclusão de dados do usuário concluído em menos de 24 h",
+      "Custo: alerta de FinOps se o custo por usuário ativo mensal ultrapassar o teto definido (ex.: US$ 0,15)",
+      "Confiabilidade: SLO de 99,9% de disponibilidade com error budget monitorado; releases congeladas quando o budget se esgota",
+      "Complexidade: limite de complexidade ciclomática e de tamanho de módulo, com alerta quando um módulo se torna candidato a extração"
+    ],
+    "incremental_change": "Começar como monólito modular, com módulos de fronteira clara (Identidade/Tenancy, Hábitos, Gamificação, Desafios, Relatórios, Notificações), um único deploy e um único banco com schemas separados por módulo. Fase 0 (walking skeleton): SSO, cadastro de hábitos e registro manual com pontuação simples, com pipeline CI/CD e fitness functions desde o primeiro dia. Fase 1 (MVP): desafios por equipe, ranking e dashboard para o RH. Fase 2: badges, recompensas, integrações (Slack/Teams, wearables, calendário). Fase 3: extrair para serviços separados só os módulos que as fitness functions provarem gargalo (por exemplo, Ranking/Leaderboard e Notificações). Usar feature flags, canary releases e o padrão strangler fig para migrações. Aplicar o padrão parallel change (expand/contract) em mudanças de schema e de contrato. Cada decisão irreversível é adiada até o último momento responsável, com um spike ou ADR registrado.",
+    "reversibility": "Reversíveis (baratas de mudar): framework de frontend, provedor de cloud dentro de uma abstração de infraestrutura (IaC), monólito vs. microsserviços (fronteiras de módulo permitem a extração), cache, fila de mensagens (atrás de uma porta/adaptador), provedor de e-mail/push, provedor de analytics, feature flags e regras de gamificação (configuráveis por dados). Parcialmente reversíveis (custo moderado): banco relacional principal (PostgreSQL, mitigado por ORM/repositórios e migrações versionadas), provedor de autenticação (atrás de OIDC/SAML padrão), gateway de pagamento (atrás de uma interface própria). Difíceis de reverter (decidir no último momento responsável, com ADR): modelo de tenancy (schema compartilhado com RLS vs. schema/banco por tenant, a decidir quando surgirem clientes enterprise com exigências de isolamento), modelo de eventos de pontuação (event log imutável como fonte da verdade), residência de dados por região e a licença/modelo de dados de gamificação exposto publicamente por API. Todas as decisões ficam registradas em ADRs, com gatilhos explícitos de revisão.",
+    "coupling": "Baixo acoplamento entre módulos: comunicação por APIs públicas e por eventos de domínio (ex.: HabitLogged, ChallengeCompleted, PointsAwarded), sem acesso direto às tabelas de outros módulos. O módulo de Gamificação consome eventos de Hábitos e não o inverso, o que permite adicionar novas regras sem alterar o núcleo. Uso de arquitetura hexagonal (portas e adaptadores) para isolar integrações externas (SSO, wearables, Slack/Teams, pagamentos) com anti-corruption layers. Contratos de eventos versionados (schema registry / JSON Schema) com compatibilidade retroativa. Outbox pattern para publicar eventos de forma confiável. Acoplamento síncrono só onde há necessidade de consistência imediata; o restante é assíncrono e eventualmente consistente. Regras de gamificação orientadas a dados (configuração/DSL) em vez de código, para reduzir a necessidade de deploy.",
+    "interfaces": [
+      "REST/JSON API pública versionada (OpenAPI) para o app web e mobile",
+      "GraphQL/BFF opcional para os clientes web e mobile, reduzindo o número de chamadas",
+      "Eventos de domínio assíncronos (HabitLogged, PointsAwarded, ChallengeStarted/Completed, BadgeEarned) com schemas versionados",
+      "Webhooks de saída para clientes corporativos (integração com sistemas de RH e ESG)",
+      "SSO via SAML 2.0 / OIDC e provisionamento SCIM para empresas",
+      "Integrações com Slack e Microsoft Teams (bots e notificações)",
+      "Integrações com wearables e saúde/mobilidade (Apple Health, Google Fit, Strava) e importação de dados de transporte",
+      "API de relatórios/exportação ESG (CSV, PDF, BI via API ou conector para Power BI/Looker)",
+      "Admin API / console para gestores de RH (criação de desafios, gestão de usuários, recompensas)",
+      "Interface de pagamentos/assinaturas (adaptador para Stripe ou similar) e webhooks de billing",
+      "Interface de notificações (e-mail, push, in-app) com adaptadores intercambiáveis",
+      "Endpoints de LGPD (exportação e exclusão de dados do titular)"
+    ],
+    "escalabilidade": "Início: monólito modular stateless em contêineres com autoscaling horizontal atrás de um load balancer, PostgreSQL gerenciado com réplicas de leitura e Redis para cache e rankings (sorted sets). Escrita de hábitos e cálculo de pontos são assíncronos via fila/stream, o que absorve picos e desacopla a UI. Rankings e dashboards usam leituras materializadas/pré-agregadas e cache com invalidação por evento. Crescimento: particionar tabelas de eventos por tenant e tempo; extrair Ranking e Notificações como serviços independentes quando as fitness functions de carga indicarem necessidade; considerar sharding por tenant ou banco dedicado para grandes clientes enterprise (a decisão de tenancy é revisada nesse gatilho). Dados analíticos são replicados para um data warehouse (CDC), separando OLTP de OLAP. CDN para assets do frontend. Multi-região só se houver exigência de residência de dados ou latência, e não antes.",
+    "custos": "Foco em custo variável proporcional ao uso: serviços gerenciados (banco, fila, cache) para reduzir a carga operacional de uma equipe pequena; monólito modular evita o custo de orquestração e de observabilidade de dezenas de serviços logo no início. Instâncias com autoscaling e reserva/savings plans só quando a carga base se estabilizar. Principais direcionadores de custo: banco de dados, armazenamento de eventos, notificações push/e-mail, integrações de terceiros (wearables) e observabilidade (controlar cardinalidade de métricas e retenção de logs). Política de retenção e arquivamento (dados frios em object storage). Custo por tenant e por usuário ativo monitorado como fitness function, com tags de FinOps na infraestrutura. Ambientes efêmeros de preview que desligam automaticamente. Estimativa inicial: baixa (centenas de dólares/mês) para o MVP, crescendo de forma sublinear com o número de usuários. Custos de conformidade (auditoria, pentest, certificações como SOC 2/ISO 27001) devem ser planejados quando o segmento enterprise entrar.",
+    "monetizacao": "SaaS B2B por assinatura, cobrado por usuário ativo por mês (PUPM) ou por faixa de colaboradores, com planos: Starter (funcionalidades básicas, desafios limitados), Business (SSO, relatórios de impacto, integrações Slack/Teams, personalização de marca) e Enterprise (SCIM, SLA, isolamento de dados dedicado, API/webhooks, relatórios ESG auditáveis, suporte dedicado). Receitas adicionais: marketplace de recompensas e parceiros sustentáveis (comissão ou afiliação), pacotes de campanhas temáticas (Dia da Terra, semana sem carro) e serviços profissionais (onboarding, consultoria de engajamento). Trial gratuito de 30 dias e modelo piloto por departamento para expandir dentro da empresa (land and expand). Métricas de negócio como fitness functions: MRR, churn, engajamento semanal (WAU/MAU), custo de aquisição e margem bruta por tenant. O valor vendido é o relatório de impacto ESG (CO2 evitado, adesão), que apoia as metas de sustentabilidade da empresa.",
+    "stack_sugerida": "Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Spring Boot (à escolha da equipe), com arquitetura hexagonal. Banco: PostgreSQL gerenciado (com row-level security para multi-tenancy) e Redis (cache e leaderboards). Mensageria: começar com uma fila gerenciada (SQS/SNS ou Cloud Pub/Sub) e o outbox pattern; migrar para Kafka/Kinesis só se o volume justificar. Frontend: React/Next.js (web) e React Native ou Flutter (mobile), consumindo a API via BFF. Autenticação: OIDC/SAML por meio de um provedor (Auth0, Keycloak ou Cognito) atrás de uma abstração. Infra: contêineres (ECS Fargate ou Cloud Run, com Kubernetes só quando necessário), IaC com Terraform, CDN. CI/CD: GitHub Actions com feature flags (Unleash/LaunchDarkly), canary/blue-green e ambientes de preview. Qualidade e fitness functions: ArchUnit/dependency-cruiser, Pact, k6 para carga, Trivy/Snyk/Semgrep para segurança. Observabilidade: OpenTelemetry com Grafana/Prometheus ou Datadog e Sentry. Analytics: CDC para um data warehouse (BigQuery/Snowflake ou ClickHouse) e BI (Metabase/Looker). Pagamentos: Stripe Billing atrás de um adaptador próprio. Notificações: provedor de e-mail e push (SES, FCM/APNs) intercambiável."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T03:30:28+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "A proposta identifica implicitamente dois públicos (empresas que precisam de QA e testers da comunidade) através da value chain, mas não articula a dor do cliente com profundidade, não apresenta tamanho de mercado (TAM/SAM/SOM), não posiciona o produto frente a concorrentes diretos como uTest, Testlio ou Applause, e a proposta de valor se limita a descrever o fluxo operacional sem justificar por que um cliente escolheria essa solução sobre as alternativas existentes."
+}

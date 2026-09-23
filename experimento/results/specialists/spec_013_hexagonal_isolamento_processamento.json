@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona IFilaEventos (publicação/consumo assíncrono de eventos) e AgendadorTarefas (disparo por cronograma, inclusive para relatórios e expiração de reservas), sinalizando consciência de processamento assíncrono; porém, não há descrição de isolamento físico real (processos/workers separados), nenhum mecanismo de fallback explícito caso a fila ou o worker falhe, e nenhuma estratégia de escalonamento independente para cargas pesadas como IGerarRelatorioOcupacao — o isolamento é inferível pela porta IFilaEventos, mas permanece apenas lógico na arquitetura descrita."
+}

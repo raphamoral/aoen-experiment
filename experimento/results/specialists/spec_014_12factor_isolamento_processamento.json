@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "O isolamento físico é sólido — audio-service e translation-service são processos separados em containers Kubernetes com processamento assíncrono via filas Redis e escalabilidade independente garantida pela ausência de afinidade de instância — mas a proposta não descreve mecanismos explícitos de fallback quando o pipeline pesado falha (circuit breaker, dead-letter queue, modo degradado para o usuário), e o adapter pattern entre provedores (DeepL/Whisper/Azure) endereça substituição de fornecedor, não resiliência operacional do caminho de processamento em si."
+}

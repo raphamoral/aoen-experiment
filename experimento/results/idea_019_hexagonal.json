@@ -1,0 +1,60 @@
+{
+  "ideia_idx": 19,
+  "ideia": "App de agendamento inteligente para clínicas odontológicas",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de agendamentos odontológicos: regras de negócio para criação, confirmação, cancelamento e reagendamento de consultas, controle de agenda de dentistas, gestão de disponibilidade de salas/equipamentos, notificações de lembrete e políticas de fila de espera",
+    "primary_ports": [
+      "IAgendamentoService: criar, cancelar, reagendar consulta",
+      "IConsultaQueryService: buscar disponibilidade, listar consultas por paciente/dentista/data",
+      "IPacienteService: cadastrar, atualizar, buscar paciente",
+      "IDentistaService: cadastrar dentista, gerenciar agenda e especialidades",
+      "IClinicaService: configurar clínica, horários de funcionamento, feriados",
+      "IFilaEsperaService: entrar na fila, sair da fila, notificar vaga",
+      "IRelatorioService: gerar relatórios de ocupação, receita e cancelamentos"
+    ],
+    "secondary_ports": [
+      "INotificacaoPort: enviar SMS, e-mail ou push notification",
+      "IPagamentoPort: processar pagamento de consulta ou sinal",
+      "ICalendarioExternoPort: sincronizar com Google Calendar / Outlook",
+      "IProntuarioPort: integrar com sistema de prontuário eletrônico (PEP)",
+      "IAutenticacaoPort: verificar identidade de usuários",
+      "IArmazenamentoPort: persistir e recuperar entidades do domínio",
+      "IEventoPort: publicar eventos de domínio (consulta criada, cancelada, etc.)",
+      "IAuditoriPort: registrar log de ações críticas para compliance"
+    ],
+    "primary_adapters": [
+      "REST API Controller (paciente agenda via app mobile ou web)",
+      "GraphQL Resolver (painel administrativo da clínica)",
+      "CLI Adapter (scripts de manutenção, seed de dados, migrações)",
+      "Webhook Receiver (confirmação de pagamento, callback de calendário externo)",
+      "Test Driver Adapter (testes de unidade e integração dirigem o core diretamente via ports)"
+    ],
+    "secondary_adapters": [
+      "TwilioSMSAdapter: implementa INotificacaoPort via Twilio SMS",
+      "SendGridEmailAdapter: implementa INotificacaoPort via SendGrid",
+      "FirebasePushAdapter: implementa INotificacaoPort via Firebase Cloud Messaging",
+      "StripeAdapter: implementa IPagamentoPort via Stripe",
+      "GoogleCalendarAdapter: implementa ICalendarioExternoPort via Google Calendar API",
+      "PostgresAgendamentoRepository: implementa IArmazenamentoPort via PostgreSQL",
+      "RedisFilaEsperaAdapter: implementa IFilaEsperaPort via Redis pub/sub",
+      "RabbitMQEventAdapter: implementa IEventoPort via RabbitMQ",
+      "Auth0Adapter: implementa IAutenticacaoPort via Auth0 / JWT",
+      "ProntuarioFichaClinicaAdapter: implementa IProntuarioPort via integração HL7/FHIR"
+    ],
+    "isolation": "O core domain não importa nenhuma biblioteca de infraestrutura. Todas as dependências externas (banco, e-mail, pagamento) são invertidas via interfaces (ports). O core depende apenas de abstrações — nunca de implementações concretas. A injeção de dependência (DI container) conecta adapters aos ports em runtime, sem que o core saiba qual adapter está ativo. Isso permite trocar Stripe por PagSeguro, ou PostgreSQL por MongoDB, alterando apenas o adapter registrado.",
+    "interfaces": [
+      "App mobile (iOS/Android) para pacientes: agendamento, histórico, confirmação",
+      "Web app para clínica: painel de agenda, cadastro de dentistas, relatórios",
+      "Portal do dentista: visualização de agenda pessoal, bloqueio de horários",
+      "API pública REST/GraphQL para integrações de terceiros (sistemas de PEP, ERPs)",
+      "Dashboard administrativo SaaS: gestão de múltiplas clínicas (multi-tenant)",
+      "Interface de voz / chatbot (WhatsApp Business API) para agendamento conversacional"
+    ],
+    "escalabilidade": "Arquitetura stateless permite escalar horizontalmente os adapters primários (API servers) atrás de load balancer. O core domain é puro e paralelizável. Filas de eventos (RabbitMQ/SQS) desacoplam notificações e sincronizações externas do fluxo crítico de agendamento. Multi-tenancy implementado no adapter de persistência (schema por clínica ou row-level security no PostgreSQL). Cache de disponibilidade de agenda no Redis reduz carga no banco. CQRS opcional: leituras de disponibilidade escaladas separadamente das escritas de agendamento.",
+    "custos": "Custos variáveis dominantes: SMS/push por notificação (Twilio ~$0.0075/SMS), processamento de pagamentos (Stripe 2.9% + $0.30), infraestrutura cloud (ECS/GKE com auto-scaling). Custos fixos: banco gerenciado (RDS PostgreSQL ~$50-200/mês), Redis gerenciado (~$30/mês), CI/CD e monitoramento. Otimizações: batching de notificações, cache agressivo de leituras, uso de e-mail em vez de SMS para lembretes de baixa urgência, tier gratuito do Firebase para push.",
+    "monetizacao": "SaaS B2B com cobrança mensal por clínica: Plano Básico ($49/mês, 1 dentista, até 200 agendamentos/mês), Plano Profissional ($129/mês, até 5 dentistas, agendamentos ilimitados, relatórios avançados), Plano Clínica ($299/mês, dentistas ilimitados, multi-unidade, API pública, suporte prioritário). Add-ons: integração com PEP ($30/mês), confirmação via WhatsApp ($20/mês), cobrança antecipada de sinal via Stripe (+0.5% por transação). Receita recorrente previsível com baixo churn esperado por ser sistema operacional crítico da clínica.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com NestJS — módulos mapeiam diretamente para ports/adapters, DI nativo facilita inversão de dependência. Banco: PostgreSQL (dados transacionais) + Redis (cache e filas de espera). Mensageria: RabbitMQ ou AWS SQS para eventos de domínio assíncronos. Frontend web: Next.js (React) com TypeScript. Mobile: React Native (código compartilhado iOS/Android). Auth: Auth0 ou Supabase Auth com JWT. Infraestrutura: AWS ECS (containers) ou Railway para MVP, com migração para EKS em escala. IaC: Terraform. Observabilidade: OpenTelemetry + Datadog ou Grafana Stack. Testes: Jest para unit/integration no core domain, Supertest para adapters HTTP."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Gestão de agendamentos odontológicos: regras de negócio para criação, confirmação, cancelamento e reagendamento de consultas, controle de agenda de dentistas, gestão de disponibilidade de salas/equipamentos, notificações de lembrete e políticas de fila de espera\",\n\n  \"primary_ports\": [\n    \"IAgendamentoService: criar, cancelar, reagendar consulta\",\n    \"IConsultaQueryService: buscar disponibilidade, listar consultas por paciente/dentista/data\",\n    \"IPacienteService: cadastrar, atualizar, buscar paciente\",\n    \"IDentistaService: cadastrar dentista, gerenciar agenda e especialidades\",\n    \"IClinicaService: configurar clínica, horários de funcionamento, feriados\",\n    \"IFilaEsperaService: entrar na fila, sair da fila, notificar vaga\",\n    \"IRelatorioService: gerar relatórios de ocupação, receita e cancelamentos\"\n  ],\n\n  \"secondary_ports\": [\n    \"INotificacaoPort: enviar SMS, e-mail ou push notification\",\n    \"IPagamentoPort: processar pagamento de consulta ou sinal\",\n    \"ICalendarioExternoPort: sincronizar com Google Calendar / Outlook\",\n    \"IProntuarioPort: integrar com sistema de prontuário eletrônico (PEP)\",\n    \"IAutenticacaoPort: verificar identidade de usuários\",\n    \"IArmazenamentoPort: persistir e recuperar entidades do domínio\",\n    \"IEventoPort: publicar eventos de domínio (consulta criada, cancelada, etc.)\",\n    \"IAuditoriPort: registrar log de ações críticas para compliance\"\n  ],\n\n  \"primary_adapters\": [\n    \"REST API Controller (paciente agenda via app mobile ou web)\",\n    \"GraphQL Resolver (painel administrativo da clínica)\",\n    \"CLI Adapter (scripts de manutenção, seed de dados, migrações)\",\n    \"Webhook Receiver (confirmação de pagamento, callback de calendário externo)\",\n    \"Test Driver Adapter (testes de unidade e integração dirigem o core diretamente via ports)\"\n  ],\n\n  \"secondary_adapters\": [\n    \"TwilioSMSAdapter: implementa INotificacaoPort via Twilio SMS\",\n    \"SendGridEmailAdapter: implementa INotificacaoPort via"
+}

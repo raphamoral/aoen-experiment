@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 31,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (MatchingEngine de compatibilidade multidimensional) está claramente identificado, isolado atrás de uma interface abstrata com contrato fixo, é independente de fornecedor de IA, e resolve um problema real — a baixa taxa de sucesso em mentorias por pareamento inadequado — que plataformas genéricas de agendamento ou diretórios de mentores não resolvem; perde um ponto por não detalhar como os 'sinais comportamentais coletados progressivamente' criam uma barreira de dados proprietária que reforce o diferencial ao longo do tempo."
+}

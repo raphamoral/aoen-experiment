@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona custos totais de infraestrutura ($100–200/mês de servidor, workers spot) mas não prevê nenhum mecanismo de rastreamento de consumo por tenant nem cálculo de custo por operação/análise — é FinOps agregado, não Unit Economics por cliente."
+}

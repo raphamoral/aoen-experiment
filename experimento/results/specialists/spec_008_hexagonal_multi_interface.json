@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "O projeto prevê múltiplas interfaces claramente justificadas por perfis reais (REST para ERPs, GraphQL para dashboards, Mobile offline para motoristas, CLI para DevOps/batch, Webhook para IoT), com lógica de negócio desacoplada via arquitetura hexagonal (ports & adapters) que permite adicionar novos canais sem reescrever o core — perde um ponto por não explicitar estratégia de consistência de UX entre canais nem priorização de mercado formal."
+}

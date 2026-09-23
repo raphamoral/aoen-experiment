@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente entidades de domínio e regras de negócio, sem qualquer menção a filas, workers, processos separados ou mecanismos assíncronos — processos como certificação de equipamentos, análise de fotos e cálculo de taxas presumivelmente rodariam no mesmo processo monolítico, sem nenhum isolamento físico ou lógico."
+}

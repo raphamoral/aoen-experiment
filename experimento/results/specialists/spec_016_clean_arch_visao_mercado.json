@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta descreve entidades técnicas de um sistema de logística reversa, mas não articula mercado-alvo, tamanho de mercado, dor do cliente, diferenciação competitiva ou proposta de valor — é uma arquitetura de software, não uma estratégia de mercado."
+}

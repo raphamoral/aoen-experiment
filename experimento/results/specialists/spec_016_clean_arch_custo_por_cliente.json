@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma entidade, atributo ou mecanismo voltado a mensuração de custo por tenant — todas as entidades (ReturnRequest, Shipment, Refund, Merchant etc.) são puramente operacionais, sem qualquer rastreamento de consumo de recursos por cliente, custo por operação ou conexão com modelo de precificação."
+}

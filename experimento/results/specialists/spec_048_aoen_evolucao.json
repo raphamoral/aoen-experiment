@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 48,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte capacidade evolutiva — a interface ModelProvider abstrai o motor de previsão, a service layer desacopla lógica de negócio das interfaces de entrega, e parâmetros configuráveis evitam hard-coding de regras de negócio — perdendo pontos por não evidenciar inversão de dependência explícita em relação a infraestrutura (banco de dados, message broker) nem estratégia de escalonamento para 10.000 usuários (ex: separação de workloads de treinamento vs. inferência, multi-tenancy)."
+}

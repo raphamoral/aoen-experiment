@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 59,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve apenas isolamento lógico via WorkflowService layer, mas não menciona filas de mensagens, workers separados, processamento assíncrono, circuit breakers nem qualquer mecanismo de fallback — o engine de orquestração (resolução de grafos de dependência, disparo de notificações, audit trail) roda acoplado à mesma aplicação, o que significa que uma sobrecarga ou falha no processamento de workflows pode degradar ou derrubar as interfaces e a service layer inteiras."
+}

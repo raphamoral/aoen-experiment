@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 5,
+  "justificativa": "O público-alvo (operadoras de telecom, modelo B2B SaaS multi-tenant) está mencionado e o problema técnico (churn) é implicitamente reconhecido pela arquitetura, mas a proposta não articula a dor do cliente em termos de negócio (impacto financeiro do churn, custo de aquisição vs. retenção), não apresenta estimativa de tamanho de mercado (TAM/SAM/SOM), não diferencia o produto de soluções concorrentes existentes (ex: plataformas de customer analytics como Salesforce, SAS, ou soluções internas das operadoras), e não formula uma proposta de valor explícita e convincente além da funcionalidade técnica descrita."
+}

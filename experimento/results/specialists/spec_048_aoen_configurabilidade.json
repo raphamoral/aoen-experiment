@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 48,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "O pipeline é explicitamente fixo no código e a lista de parâmetros configuráveis por tenant é abrangente (horizonte, categorias, calendário, lead time, integrações, formato de entrega), indicando onboarding por configuração — mas falta explicitar o mecanismo de armazenamento e gestão dessas configs por tenant (tabela de configurações? feature flags? schema por tenant?), e a lista de parâmetros está truncada, deixando incerta a cobertura de edge cases que ainda possam exigir código."
+}

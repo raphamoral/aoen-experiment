@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 86,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A abstração de pipeline com provedores plugáveis em cada etapa e a Service Layer que isola toda lógica de negócio das interfaces demonstram design evolutivo sólido — novos nichos, modelos de scoring e fontes de dados entram sem reescrita — mas a proposta não endereça explicitamente estratégias de escalabilidade horizontal (filas, cache, sharding) para a transição de dezenas para milhares de usuários, e a descrição da Service Layer foi truncada antes de detalhar como as dependências externas são invertidas no nível do código."
+}

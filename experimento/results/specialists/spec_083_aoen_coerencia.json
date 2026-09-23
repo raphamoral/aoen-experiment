@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 83,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "O motor de certificação declarado como diferenciador central na fase 1 atravessa e justifica cada decisão subsequente de forma consistente: os segmentos de mercado mapeiam diretamente para as interfaces da fase 2 (construtoras → Web/API/ERP, campo → Mobile/QR, certificadoras → Portal próprio, compliance → Dashboard ESG), a service layer garante que a lógica de certificação não seja duplicada por interface, e o fluxo da fase 3 implementa operacionalmente exatamente o contrato definido na abstração CertificationEngine — o sistema conta uma história única e coesa do problema à solução, com a única ressalva de que a intercambialidade entre validação por LLM, manual e API de certificadoras é afirmada como premissa de design sem que haja evidência de como o sistema resolve conflitos de score entre normas concorrentes (ex: LEED vs AQUA-HQE para o mesmo material)."
+}

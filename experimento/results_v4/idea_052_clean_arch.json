@@ -1,0 +1,172 @@
+{
+  "ideia_idx": 52,
+  "ideia": "SaaS de gestão de qualidade para indústria alimentícia com APPCC",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Regras de negócio puras e independentes de framework, banco de dados ou UI. Aplicam os 7 princípios do APPCC (Codex Alimentarius) e as regras da RDC 275/2002 e da ISO 22000.",
+      "agregados": [
+        "Organizacao (tenant) e Estabelecimento/Planta",
+        "Usuario, Papel e Permissao (Gestor da Qualidade, Operador, Auditor, Equipe APPCC)",
+        "Produto e Ingrediente (com alergênicos e vida útil)",
+        "Processo e EtapaDoFluxograma",
+        "Perigo (biológico, químico, físico, alergênico) com Severidade, Probabilidade e Risco",
+        "MedidaDeControle",
+        "PCC (Ponto Crítico de Controle) e PPHO/PPR (BPF, POPs)",
+        "LimiteCritico e LimiteOperacional (VO: valor mínimo, máximo, unidade)",
+        "PlanoAPPCC (versionado e aprovado)",
+        "Monitoramento e RegistroDeMedicao (imutável, com timestamp e responsável)",
+        "Desvio/NaoConformidade e AcaoCorretiva (CAPA)",
+        "Verificacao e Validacao (auditorias internas, calibração de instrumentos)",
+        "Equipamento e Calibracao",
+        "Fornecedor e Qualificacao de Fornecedor",
+        "Lote e Rastreabilidade (origem, destino, recall)",
+        "DocumentoControlado (POP, instrução de trabalho, revisão)",
+        "Treinamento e Competencia",
+        "Auditoria e Checklist"
+      ],
+      "regras_de_negocio": [
+        "Todo PCC exige limite crítico, método de monitoramento, frequência, responsável e ação corretiva definidos.",
+        "Uma medição fora do limite crítico gera um Desvio automaticamente e bloqueia a liberação do lote.",
+        "Um plano APPCC só é ativado após aprovação da equipe e cria uma nova versão, sem editar a anterior.",
+        "Registros são imutáveis e só podem ser corrigidos por retificação auditável.",
+        "Toda AcaoCorretiva exige análise de causa raiz e verificação de eficácia antes do fechamento."
+      ]
+    },
+    "use_cases": {
+      "descricao": "Regras específicas da aplicação. Orquestram as entidades por meio de Input/Output Ports, sem conhecer HTTP, SQL ou provedores de nuvem.",
+      "principais": [
+        "CriarPlanoAPPCC / RevisarPlanoAPPCC / AprovarPlanoAPPCC",
+        "ModelarFluxogramaDeProcesso",
+        "RealizarAnaliseDePerigos (classificação de risco e determinação de PCC pela árvore decisória)",
+        "DefinirLimitesCriticosEMonitoramento",
+        "RegistrarMonitoramentoDePCC (manual, por checklist, ou automático via IoT)",
+        "DetectarDesvioEAbrirNaoConformidade",
+        "BloquearLoteEmDesvio / LiberarLote",
+        "ExecutarAcaoCorretiva e VerificarEficacia",
+        "AgendarERegistrarVerificacao / CalibracaoDeEquipamentos",
+        "ExecutarAuditoriaInterna (checklists de BPF/PPR)",
+        "GerenciarFornecedores (qualificação, avaliação, certificados)",
+        "RastrearLote (rastreabilidade para frente e para trás)",
+        "IniciarRecall e GerarRelatorioDeRecall",
+        "GerenciarDocumentosControlados (versionamento, aprovação, distribuição)",
+        "GerenciarTreinamentos e Competencias",
+        "GerarRelatoriosERegistrosParaAuditoria (ANVISA, MAPA, SIF, BRC, FSSC 22000)",
+        "GerarDashboardDeIndicadores (desvios, MTTR de CAPA, conformidade por PCC)",
+        "GerenciarAssinaturaEPermissoes (tenant, planos, usuários)",
+        "NotificarResponsaveis (alertas de desvio, vencimentos, prazos)"
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Convertem dados entre o formato dos casos de uso/entidades e o formato dos agentes externos.",
+      "controllers": "Controllers REST/GraphQL e handlers de eventos MQTT/webhook que traduzem requisições em Input DTOs dos casos de uso.",
+      "presenters": "Presenters/ViewModels que formatam os Output DTOs para JSON, tabelas do dashboard, PDF e CSV, incluindo i18n e fusos horários.",
+      "gateways_e_repositories": [
+        "Implementações de repositório (PlanoRepository, RegistroRepository, LoteRepository etc.) que mapeiam entidades para o modelo relacional",
+        "Gateway de notificação (e-mail, SMS, WhatsApp, push)",
+        "Gateway de armazenamento de arquivos (evidências, fotos, certificados)",
+        "Gateway de geração de documentos (PDF/Excel) com assinatura eletrônica",
+        "Gateway de IoT/sensores (termômetros, data loggers, balanças, CLPs)",
+        "Gateway de pagamentos (cobrança recorrente)",
+        "Gateway de identidade (SSO, OIDC, SAML)",
+        "Adapters de integração com ERP/MES/WMS (SAP, TOTVS) e com legislação e órgãos oficiais",
+        "Adapter de relógio (Clock) e gerador de IDs (UUID/ULID) para manter as entidades determinísticas"
+      ],
+      "mapeadores": "Mappers Entity ↔ DTO ↔ Persistence Model, para que o ORM e o schema nunca vazem para dentro das camadas internas."
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa: detalhes substituíveis, ligados por composição na raiz (Composition Root / DI).",
+      "web_api": "Node.js + NestJS ou Fastify (apenas como camada de entrega; os módulos de domínio não importam decorators do framework)",
+      "frontend": "React/Next.js (web responsivo/PWA para operação de chão de fábrica) e React Native/Flutter para registro offline em tablet ou celular",
+      "banco_de_dados": "PostgreSQL (com Row-Level Security para multi-tenant) e Redis para cache e filas",
+      "orm": "Prisma, Drizzle ou TypeORM, restrito à camada de repositórios",
+      "mensageria": "RabbitMQ, SQS ou Kafka para eventos de domínio (DesvioDetectado, LoteBloqueado)",
+      "iot": "Broker MQTT (EMQX ou AWS IoT Core)",
+      "armazenamento": "S3 ou compatível (MinIO, R2)",
+      "autenticacao": "Keycloak, Auth0 ou Cognito",
+      "pagamentos": "Stripe ou Pagar.me/Asaas (cobrança recorrente no Brasil, com Pix e boleto)",
+      "observabilidade": "OpenTelemetry, Grafana/Prometheus, Sentry",
+      "infra": "Docker, Kubernetes ou ECS, Terraform, CI/CD com GitHub Actions"
+    },
+    "dependency_rule": "As dependências de código-fonte apontam sempre para dentro: Frameworks & Drivers → Interface Adapters → Use Cases → Entities. Entities não importam nada externo. Use Cases definem interfaces (ports), como PlanoRepository, NotificadorGateway e SensorGateway, e os adaptadores das camadas externas as implementam (Dependency Inversion). Os dados que cruzam as fronteiras são DTOs simples, nunca linhas do ORM nem objetos do framework. As instâncias concretas são montadas apenas na Composition Root (injeção de dependência). A regra é imposta automaticamente por ferramentas como dependency-cruiser, ArchUnit ou eslint-plugin-boundaries no CI, e a estrutura em módulos/pacotes (domain, application, adapters, infra) reforça os limites.",
+    "testability": {
+      "entities": "Testes unitários puros e rápidos, sem mocks, cobrindo regras como cálculo de risco, violação de limite crítico e versionamento de plano.",
+      "use_cases": "Testes unitários com fakes/in-memory dos ports (repositórios, relógio, notificador), sem banco, rede ou framework. Executam em milissegundos.",
+      "adapters": "Testes de contrato para cada implementação de port, garantindo que o adapter real e o fake se comportem da mesma forma.",
+      "integracao": "Testcontainers (PostgreSQL, Redis, MQTT) para repositórios e mensageria.",
+      "e2e": "Poucos testes ponta a ponta (Playwright/Cypress) cobrindo fluxos críticos como monitorar PCC, abrir desvio e bloquear lote.",
+      "pratica": "Testes de propriedade e de regressão para regras regulatórias, dados de exemplo (seeds) por tipo de indústria, e ambiente de simulação de sensores para testar alertas sem hardware real."
+    },
+    "interfaces": [
+      "Web App para o gestor da qualidade (planos APPCC, dashboards, auditorias, documentos)",
+      "App móvel/PWA offline-first para operadores registrarem monitoramento de PCC e checklists com foto e assinatura",
+      "API REST pública (OpenAPI) e webhooks para integrações com ERP/MES/WMS",
+      "Ingestão de sensores IoT via MQTT/HTTP (data loggers, termômetros, CLPs)",
+      "Painel de auditoria somente leitura para auditores externos e órgãos fiscalizadores",
+      "Portal de fornecedores (envio de certificados e questionários)",
+      "Notificações por e-mail, WhatsApp/SMS e push",
+      "Exportação de relatórios (PDF, Excel, CSV) e trilha de auditoria",
+      "Console administrativo do SaaS (tenants, planos, faturamento, suporte)",
+      "SSO (SAML/OIDC) para clientes enterprise"
+    ],
+    "escalabilidade": {
+      "arquitetura": "Monólito modular inicial, com módulos alinhados aos bounded contexts (Plano APPCC, Monitoramento, Não Conformidades, Rastreabilidade, Documentos, Faturamento). Extração para microsserviços só quando necessário, facilitada pelos limites da Clean Architecture.",
+      "multi_tenant": "Isolamento lógico por tenant_id com Row-Level Security no PostgreSQL. Grandes clientes podem ter schema ou banco dedicado.",
+      "escala_horizontal": "API stateless com autoscaling. Workers assíncronos para relatórios, notificações e processamento de telemetria.",
+      "alto_volume": "Telemetria de sensores em tabelas particionadas por tempo ou TimescaleDB, com agregação e retenção em camadas (quente, morno e frio no S3).",
+      "resiliencia": "Fila e Outbox Pattern para garantir a entrega de alertas críticos, registro offline com sincronização, backups e replicação multi-AZ.",
+      "leitura": "Read replicas e CQRS para dashboards e relatórios pesados.",
+      "conformidade": "Retenção configurável dos registros (normalmente 2 anos ou mais) e trilha de auditoria imutável."
+    },
+    "custos": {
+      "infraestrutura": "Começar com nuvem gerenciada e pouca operação (containers serverless ou PaaS, PostgreSQL gerenciado, S3). Custo inicial estimado entre US$ 300 e US$ 1.500 por mês, crescendo com tenants e volume de telemetria.",
+      "principais_direcionadores": [
+        "Armazenamento e ingestão de telemetria IoT (o maior fator variável)",
+        "Armazenamento de evidências (fotos, PDFs) e retenção regulatória",
+        "Envio de notificações (WhatsApp/SMS têm custo por mensagem, então repassar em planos)",
+        "Observabilidade e logs",
+        "Suporte e onboarding (implantação consultiva de APPCC)"
+      ],
+      "otimizacoes": [
+        "Ciclo de vida do S3 e compressão de séries temporais",
+        "Reserved instances/Savings Plans após o produto estabilizar",
+        "Agregar telemetria na borda (edge) antes de enviar à nuvem",
+        "Custo por tenant monitorado com tags para calcular a margem por plano"
+      ],
+      "custos_nao_tecnicos": "Consultoria regulatória e validação por especialistas em segurança de alimentos, LGPD, seguro cibernético e eventual certificação (ISO 27001) para clientes enterprise."
+    },
+    "monetizacao": {
+      "modelo_principal": "Assinatura SaaS recorrente (mensal/anual com desconto) por planta/estabelecimento, escalonada por planos.",
+      "planos_exemplo": [
+        "Essencial: 1 planta, poucos usuários, plano APPCC, registros, checklists e relatórios básicos",
+        "Profissional: várias plantas, rastreabilidade e recall, gestão de fornecedores, documentos e CAPA, integrações via API",
+        "Enterprise: SSO, IoT ilimitado, ambiente dedicado, SLA, integração com ERP, suporte prioritário e personalização"
+      ],
+      "receitas_adicionais": [
+        "Pacote de sensores/IoT (hardware, comodato ou revenda) mais taxa de conectividade",
+        "Serviço de implantação e consultoria de APPCC (setup pago)",
+        "Treinamentos e certificações de equipe (EAD)",
+        "Módulos add-on (auditoria de fornecedores, ISO 22000/FSSC/BRCGS, gestão de alergênicos, laudos)",
+        "Excedente de uso (notificações, armazenamento, usuários extras)",
+        "Marketplace de modelos de planos APPCC e checklists por segmento (laticínios, carnes, panificação, bebidas)"
+      ],
+      "go_to_market": "Foco inicial em pequenas e médias indústrias que precisam se adequar à ANVISA e ao MAPA/SIF, com trial gratuito e vendas por parceria com consultorias e associações setoriais. Depois, expansão para redes e exportadoras exigidas por certificações internacionais."
+    },
+    "stack_sugerida": {
+      "backend": "TypeScript, Node.js, NestJS ou Fastify (Clean Architecture com módulos domain/application/adapters/infra)",
+      "frontend": "React + Next.js, TypeScript, TanStack Query, Tailwind/shadcn-ui; PWA offline-first (IndexedDB + Service Workers) ou React Native para mobile",
+      "dados": "PostgreSQL (RLS) + TimescaleDB para séries temporais, Redis, S3/MinIO",
+      "mensageria_iot": "RabbitMQ ou SQS/SNS, MQTT (EMQX/AWS IoT Core)",
+      "autenticacao_e_pagamentos": "Keycloak/Auth0/Cognito; Stripe ou Asaas/Pagar.me",
+      "infra_e_devops": "AWS ou GCP, Docker, ECS/Kubernetes, Terraform, GitHub Actions, OpenTelemetry + Grafana + Sentry",
+      "qualidade": "Jest/Vitest, Testcontainers, Playwright, dependency-cruiser para impor a regra de dependência, OpenAPI para contratos",
+      "seguranca_e_conformidade": "LGPD, criptografia em trânsito e em repouso, trilha de auditoria imutável, assinatura eletrônica (ICP-Brasil, quando exigida), backups e retenção regulatória"
+    }
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "99d475cb3837",
+    "gerado_em": "2026-09-21T03:27:53+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "A arquitetura tem boas decisões pontuais de isolamento (fila BullMQ para PDF, S3 para arquivos, tabela de auditoria separada), mas não menciona nenhuma camada de abstração sobre os serviços externos críticos — DocuSign/D4Sign, SendGrid e Puppeteer são citados como integrações diretas, o que significa que trocar qualquer um deles exige varrer e alterar código de negócio; sem ports/adapters ou interfaces que isolem o domínio da infraestrutura, o sistema crescerá acoplado às tecnologias escolhidas hoje."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 82,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador é claramente identificado (pipeline autônomo de resolução com classificação, RAG, decisão e escalonamento), está isolado via interface `ConversationalProvider`, é extensível por design (múltiplos providers plugáveis sem impacto sistêmico) e resolve o problema real de escala de atendimento sem crescimento linear de equipe — falta apenas evidência de que a lógica de decisão autônoma (confiança + escalonamento) é proprietária o suficiente para ser inimitável a curto prazo."
+}

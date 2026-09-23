@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A camada de domínio é sólida — entidades puras sem dependências externas e regras de negócio encapsuladas indicam inversão de dependências correta (Clean/Hexagonal), permitindo trocar banco ou framework sem tocar o núcleo; porém a proposta expõe apenas as entidades, sem evidenciar as camadas de portas/adaptadores, estratégia de eventos para desacoplamento assíncrono ou como a característica 'descentralizada' dos espaços é tratada arquiteturalmente, deixando em aberto a reversibilidade das decisões de infraestrutura e a escalabilidade horizontal de 10 para 10.000 usuários."
+}

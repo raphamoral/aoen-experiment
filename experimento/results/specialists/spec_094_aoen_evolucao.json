@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 94,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra princípios sólidos de evolução — contrato abstrato no core (Evento → Transformação → Projeção), Service Layer como único portador do domínio, repositórios agnósticos de banco e motor de projeção substituível sem quebra de interface — mas não endereça explicitamente a estratégia de escala de 10 para 10.000 usuários (ausência de menção a particionamento, caching ou modelo de concorrência para o motor de sincronização bidirecional sob carga), o que impede a nota máxima."
+}

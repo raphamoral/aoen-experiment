@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta prevê múltiplas interfaces claramente justificadas por perfis distintos (REST para buyers/suppliers via browser, GraphQL para dashboards analíticos, WebSocket para tempo real de lances, Webhook para integração ERP, CLI para operações administrativas e Test Driver para testes de aceitação), todas desacopladas do core domain por meio de ports hexagonais, permitindo adicionar ou substituir qualquer interface sem reescrever a lógica de negócio."
+}

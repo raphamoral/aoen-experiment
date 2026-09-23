@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva clara: o mecanismo de verificação é explicitamente plugável (SHA-256/blockchain/X.509), a CertificationService isola o domínio de todas as interfaces impedindo acoplamento acidental, e o pipeline fixo com parâmetros configuráveis permite onboarding de novos tenants sem tocar no core — contudo, a proposta não endereça estratégias de escalabilidade horizontal (filas, cache, sharding) nem abstração explícita da camada de dados, deixando em aberto se a troca de banco de dados seria cirúrgica ou cirúrgica-com-dor, o que impede a nota máxima."
+}

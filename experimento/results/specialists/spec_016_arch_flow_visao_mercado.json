@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O público-alvo (lojistas de e-commerce) é inferível apenas pelas integrações citadas (Shopify, VTEX etc.) e pelo MerchantPortal, mas não há definição explícita de segmento, tamanho de mercado, dor do cliente articulada, diferenciação frente a concorrentes como Loop Returns ou Returnly, nem proposta de valor declarada — a proposta é inteiramente arquitetural/técnica, sem camada estratégica de mercado."
+}

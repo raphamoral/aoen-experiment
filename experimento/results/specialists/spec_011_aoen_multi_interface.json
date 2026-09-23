@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Web App para investidores, Web App para startups, API REST/GraphQL, White-label e notificações assíncronas), cada uma justificada por um perfil de usuário e segmento de mercado específico, com a lógica de negócio centralizada na MatchmakingService e desacoplada via DTOs padronizados, permitindo adição de novos canais sem reescrita do core."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta conta uma história arquitetural coesa — o fluxo IoT (MQTT → ITelemetryIngestor → TimescaleDB → IMLAnomalyDetector → IAlertEvaluator → IWorkOrderCommander) é end-to-end consistente, as escolhas tecnológicas reforçam o domínio (TimescaleDB para séries temporais, Redis para telemetria quente e regras de alerta, IDeviceCommandGateway fechando o ciclo bidirecional IoT), e as preocupações SaaS multi-tenant são endereçadas de forma transversal (IBillingGateway + ITenantAdministrator + IIdentityProvider) — porém duas tensões reduzem a nota: a coexistência de REST + GraphQL sem critério de separação explícito sugere sobreposição de responsabilidade entre IWorkOrderCommander/IMaintenanceScheduler e IReportingQueryHandler, e a presença de gRPC para 'microserviços internos' implica uma fronteira de decomposição distribuída que o core_domain não delimita, criando uma incoerência latente entre o que o domínio descreve como unitário e o que a camada de adaptadores pressupõe como fragmentado."
+}

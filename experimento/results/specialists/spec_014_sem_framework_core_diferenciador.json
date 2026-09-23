@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador (pipeline de transcrição + tradução em tempo real com latência < 2 s em contexto corporativo multilíngue) é identificável e demonstra extensibilidade real ao prever troca de fornecedores (Whisper vs Google STT, DeepL vs GPT-4), mas não está formalmente isolado como componente arquitetural próprio — está disperso entre seções de tecnologia e escalabilidade — e a proposta não articula explicitamente por que soluções já existentes (Teams Live Captions, Google Meet Translation, KUDO) falham nesse problema, deixando a insubstituibilidade implícita em vez de demonstrada."
+}

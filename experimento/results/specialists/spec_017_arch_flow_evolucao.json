@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte maturidade evolutiva: os 8 bounded contexts bem delimitados permitem evolução independente por domínio; o mapeamento Wardley explicita componentes substituíveis (Auth0/Keycloak, Moodle/Canvas LTI, Stripe como núcleo — não como acoplamento); os padrões abertos (W3C Verifiable Credentials, DID, Open Badges, Ed25519) reduzem lock-in tecnológico; a ancoragem blockchain é corretamente tratada como 'opcional', isolando a experimentação do núcleo; e o team topology stream-aligned reduz pressão de acoplamento entre domínios — a nota não chega a 10 porque a proposta não explicita mecanismos de comunicação entre contextos (event bus, anti-corruption layers), não endereça explicitamente portas e adaptadores no nível de componente, e a co-propriedade de Learning & Assessment e Certification Issuance pelo mesmo time cria risco latente de acoplamento gradual."
+}

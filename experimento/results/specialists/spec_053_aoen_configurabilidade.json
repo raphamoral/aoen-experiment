@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 53,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra intenção arquitetural sólida — pipeline fixo no código com parâmetros variáveis por tenant, ImpactCalculator e GamificationEngine abstraídos e configuráveis, validação de elegibilidade já escoped por tenant — mas não evidencia o modelo de dados de configuração: não há descrição de como regras de pontos, catálogo de hábitos e modelos de impacto são armazenados e versionados por tenant, o que impede confirmar que novo cliente = nova row no banco com zero código ou deploy."
+}

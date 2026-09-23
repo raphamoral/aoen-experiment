@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta descreve exclusivamente a arquitetura técnica do produto sem qualquer menção ao mercado-alvo, tamanho de mercado, dor do cliente ou diferenciação competitiva — há apenas uma inferência implícita do setor (coworking) pelo nome do produto."
+}

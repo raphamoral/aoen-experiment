@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra disciplina sólida de inversão de dependências: BlockchainAdapter isola a chain da lógica de negócio, CustodyService centraliza as regras de domínio e as interfaces são clientes sem regra alguma — o que permite substituir tecnologias de ponta a ponta sem reescrever o core; a nota fica abaixo de 10 porque a proposta não menciona abstração equivalente para a camada de dados (o banco está exposto diretamente?), não endereça mecanismos de escala horizontal do CustodyService (stateless? filas para IoT em volume?), e a ingestão IoT/RFID acoplada diretamente ao serviço central pode se tornar um gargalo de evolução quando o volume crescer."
+}

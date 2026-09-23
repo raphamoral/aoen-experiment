@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta demonstra coerência sistêmica excepcional: os princípios 12-factor permeiam todas as camadas de forma mutuamente reforçante — processos stateless exigem estado em backing services, que exige config externalizada, que exige build/release/run separados, que exige artefatos imutáveis, que viabiliza rollback trivial e deploys regionais parametrizados — formando uma cadeia lógica sem contradições; a única frição é o uso recorrente de 'ou' nas escolhas de backing services (SQS vs RabbitMQ, Elasticsearch vs pgvector, Datadog vs Grafana), que revela decisões ainda abertas e impede que o todo seja completamente coeso."
+}

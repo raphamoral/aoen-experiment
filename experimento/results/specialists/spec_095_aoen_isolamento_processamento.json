@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 95,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta apresenta separação lógica via Service Layer (ImageAnalysisService) e abstração do provedor de análise (Google, AWS, Azure, open-source), o que é positivo, mas não especifica isolamento físico real: não há menção a filas de mensagens (Kafka, SQS, RabbitMQ), workers dedicados, subprocessos separados, circuit breakers, fallback em caso de falha do provider de IA, nem estratégia de escalonamento independente do pipeline de análise — a interface store-and-forward sugere intenção assíncrona no produto, mas a arquitetura de infraestrutura que sustentaria esse isolamento está ausente da proposta."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 31,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (Web App, Mobile, API REST/GraphQL, Dashboard corporativo, Chatbot Teams/Slack e Widget embarcável), cada uma justificada por um segmento de mercado ou perfil de usuário concreto, com lógica de negócio totalmente desacoplada em uma camada de serviços centralizada que permite adicionar ou substituir qualquer interface sem alterar regras de negócio."
+}

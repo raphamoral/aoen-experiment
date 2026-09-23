@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não menciona nenhuma separação de processos computacionalmente pesados (como processamento de vídeos, cálculo de XP em lote, geração de relatórios ou avaliação de achievements), ausência total de filas, workers ou subprocessos isolados, sem qualquer mecanismo de resiliência a falhas ou escalabilidade independente."
+}

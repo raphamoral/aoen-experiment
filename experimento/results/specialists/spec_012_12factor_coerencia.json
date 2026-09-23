@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta forma um sistema altamente coeso onde cada decisão sustenta as demais: processos stateless viabilizam o escalonamento horizontal, que por sua vez é calibrado pelas próprias ferramentas de infraestrutura escolhidas (KEDA via lag do Kafka, HPA via CPU, Celery via fila Redis); a config 100% por variáveis de ambiente é o que torna as imagens Docker imutáveis viáveis em múltiplos ambientes; TimescaleDB + Kafka refletem diretamente a natureza de séries temporais do domínio IoT; e o modelo multi-tenant aparece de forma consistente desde as variáveis de ambiente até os backing services — a única tensão menor é a sobreposição entre InfluxDB e Prometheus/Grafana para métricas, que sugere responsabilidades levemente duplicadas sem justificativa explícita de separação."
+}

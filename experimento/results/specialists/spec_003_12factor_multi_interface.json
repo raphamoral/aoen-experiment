@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A arquitetura implica duas interfaces (api/ e dashboard/) com separação estrutural mínima, mas não articula perfis de usuário distintos (funcionário, gestor de RH, admin), não justifica as escolhas de canal por alcance de mercado, e não menciona interfaces mobile, CLI ou embeds — omissões críticas para um produto B2B de saúde mental onde o contexto de uso (mobile discreto vs. dashboard analítico do RH) é determinante para adoção."
+}

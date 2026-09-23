@@ -1,0 +1,56 @@
+{
+  "ideia_idx": 2,
+  "ideia": "Marketplace de freelancers especializados em compliance regulatório",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo gerenciado com Turborepo contendo pacotes separados por domínio (api-gateway, auth-service, marketplace-service, compliance-engine, notification-service, web-app, admin-panel). Um único repositório Git com múltiplos deploys via variáveis de ambiente: staging, production, sandbox. Cada serviço tem seu próprio Dockerfile e pipeline CI/CD independente dentro do monorepo.",
+    "dependencies": "Cada serviço declara dependências explícitas via package.json (Node.js/TypeScript) ou pyproject.toml (Python). Uso de lockfiles (package-lock.json, poetry.lock) versionados no repositório. Dependências de sistema isoladas em containers Docker com imagens base fixas e pinadas por digest SHA256. Nenhuma dependência implícita no sistema operacional do host. Registro privado de pacotes internos via GitHub Packages ou Verdaccio.",
+    "config": "Toda configuração sensível e variável por ambiente (DATABASE_URL, STRIPE_SECRET_KEY, JWT_SECRET, AWS_ACCESS_KEY_ID, SMTP_HOST, FEATURE_FLAGS) armazenada exclusivamente em variáveis de ambiente. Gerenciamento centralizado via AWS Parameter Store ou HashiCorp Vault. Arquivos .env bloqueados no .gitignore. Validação de variáveis obrigatórias no startup usando Zod ou Joi, falhando fast se ausentes. Zero configuração hardcoded no código.",
+    "backing_services": {
+      "banco_de_dados_principal": "PostgreSQL (Amazon RDS Multi-AZ) — perfis, contratos, pagamentos",
+      "cache_e_sessoes": "Redis (Amazon ElastiCache) — sessões, rate limiting, filas",
+      "busca_e_matching": "Elasticsearch (Amazon OpenSearch) — busca de freelancers por especialidade regulatória",
+      "armazenamento_de_arquivos": "Amazon S3 — portfólios, certificações, documentos de compliance",
+      "fila_de_mensagens": "Amazon SQS + SNS — notificações assíncronas, onboarding, alertas",
+      "email_transacional": "Amazon SES ou SendGrid",
+      "pagamentos": "Stripe Connect (split payments entre plataforma e freelancer)",
+      "monitoramento": "Datadog ou AWS CloudWatch",
+      "identidade": "Auth0 ou AWS Cognito"
+    },
+    "build_release_run": "Pipeline GitHub Actions com três estágios rigorosamente separados. BUILD: compilação TypeScript, testes unitários, análise estática (ESLint, SonarQube), build da imagem Docker imutável tagueada com SHA do commit — sem acesso a secrets de produção. RELEASE: imagem Docker combinada com config do ambiente via AWS Parameter Store, gerando artefato imutável versionado semanticamente. RUN: ECS Fargate ou Kubernetes (EKS) executando o artefato sem modificações. Rollback instantâneo apontando para release anterior. Nenhuma alteração em runtime.",
+    "processes": "Todos os processos são stateless e share-nothing. Estado persistido exclusivamente nos backing services (PostgreSQL, Redis, S3). Processos web (API Gateway, BFF) respondem requisições HTTP. Processos worker consomem filas SQS para tarefas assíncronas (matching de freelancers, geração de contratos, notificações, cálculo de comissões). Nenhuma sessão em memória local — sessões no Redis. Upload de arquivos direto para S3 via presigned URLs, nunca passando pelo processo web.",
+    "concurrency": "Escalonamento horizontal via múltiplas instâncias de processos especializados por tipo de carga. Web workers (API) escalados por requisições por segundo via Auto Scaling Groups. Background workers (filas) escalados por profundidade de fila SQS. Processos de matching e compliance engine escalados independentemente conforme demanda. Kubernetes HPA (Horizontal Pod Autoscaler) com métricas customizadas. KEDA para escalonamento baseado em eventos SQS. Cada tipo de processo escala sem afetar os demais.",
+    "disposability": "Startup em menos de 5 segundos via containers Docker pré-aquecidos. Shutdown gracioso capturando SIGTERM: drenagem de conexões HTTP em andamento (grace period de 30s), commit de mensagens SQS processadas, fechamento limpo de conexões de banco. Health checks ativos (/health/live e /health/ready) no Kubernetes/ECS. Pods descartáveis — falhas são recuperadas automaticamente por restart policy. Circuit breakers (Hystrix/Resilience4j) em chamadas entre serviços. Dead Letter Queue para mensagens falhas.",
+    "interfaces": [
+      "REST API (JSON) — operações CRUD de marketplace, perfis, projetos",
+      "GraphQL — queries complexas de busca e matching de freelancers com filtros regulatórios",
+      "WebSockets — chat em tempo real entre cliente e freelancer, status de contrato",
+      "Webhooks — eventos Stripe (pagamento confirmado, disputa), integrações externas",
+      "Portal Web (Next.js SSR) — interface para clientes buscando especialistas",
+      "Dashboard Freelancer (React SPA) — gestão de perfil, projetos, ganhos",
+      "Admin Panel (React SPA) — moderação, compliance, financeiro, suporte",
+      "API Pública REST — integrações com sistemas corporativos de procurement"
+    ],
+    "escalabilidade": "Arquitetura de microserviços independentemente escaláveis no Kubernetes (EKS). Cada domínio (auth, marketplace, compliance, payments, notifications) escala horizontalmente sem acoplamento. CDN (CloudFront) para assets estáticos e respostas cacheáveis. Read replicas do PostgreSQL para consultas pesadas de busca. Elasticsearch para full-text search de perfis sem sobrecarregar o banco principal. Cache Redis em múltiplas camadas (sessões, resultados de matching, dados de perfil). Rate limiting por API Key no gateway. Multi-region ativo-passivo para disaster recovery.",
+    "custos": "Modelo pay-as-you-scale com Fargate/EKS Spot Instances para workers assíncronos (economia de até 70%). RDS Multi-AZ reservado por 1-3 anos para instâncias previsíveis. S3 com lifecycle policies (Intelligent-Tiering para documentos antigos). CloudFront reduz custos de transferência de dados. Alertas de billing no AWS Budgets. Rightsizing automático via AWS Compute Optimizer. Estimativa inicial: USD 800-2.000/mês para MVP (100-500 usuários ativos). Escala proporcional ao GMV da plataforma.",
+    "monetizacao": "Comissão sobre transações (take rate de 15-20% sobre contratos fechados via Stripe Connect). Assinatura premium para freelancers (USD 49/mês) com destaque no ranking e acesso a projetos exclusivos. Assinatura enterprise para empresas (USD 299/mês) com SLA garantido, contratos customizados e relatórios de compliance. Serviços de verificação e certificação de especialistas (USD 99 por verificação). Publicidade premium de posicionamento no marketplace. Relatórios e analytics de mercado regulatório para grandes consultorias.",
+    "stack_sugerida": {
+      "linguagem_principal": "TypeScript (Node.js 22 LTS) para API e BFF",
+      "framework_api": "Fastify com plugins para autenticação, validação e rate limiting",
+      "frontend_web": "Next.js 14 (App Router, SSR) + TailwindCSS + shadcn/ui",
+      "banco_de_dados": "PostgreSQL 16 com Prisma ORM",
+      "cache": "Redis 7 (ioredis)",
+      "busca": "Elasticsearch 8 com cliente oficial TypeScript",
+      "filas": "Amazon SQS com BullMQ como abstração local para dev",
+      "armazenamento": "Amazon S3 com AWS SDK v3",
+      "pagamentos": "Stripe SDK (Connect + Billing)",
+      "autenticacao": "Auth0 + JWT RS256",
+      "infra_como_codigo": "Terraform + Terragrunt",
+      "orquestracao": "Kubernetes (EKS) com Helm charts",
+      "ci_cd": "GitHub Actions + ArgoCD (GitOps)",
+      "observabilidade": "OpenTelemetry + Datadog (APM, logs, traces)",
+      "testes": "Vitest (unit), Playwright (E2E), k6 (load testing)"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo gerenciado com Turborepo contendo pacotes separados por domínio (api-gateway, auth-service, marketplace-service, compliance-engine, notification-service, web-app, admin-panel). Um único repositório Git com múltiplos deploys via variáveis de ambiente: staging, production, sandbox. Cada serviço tem seu próprio Dockerfile e pipeline CI/CD independente dentro do monorepo.\",\n\n  \"dependencies\": \"Cada serviço declara dependências explícitas via package.json (Node.js/TypeScript) ou pyproject.toml (Python). Uso de lockfiles (package-lock.json, poetry.lock) versionados no repositório. Dependências de sistema isoladas em containers Docker com imagens base fixas e pinadas por digest SHA256. Nenhuma dependência implícita no sistema operacional do host. Registro privado de pacotes internos via GitHub Packages ou Verdaccio.\",\n\n  \"config\": \"Toda configuração sensível e variável por ambiente (DATABASE_URL, STRIPE_SECRET_KEY, JWT_SECRET, AWS_ACCESS_KEY_ID, SMTP_HOST, FEATURE_FLAGS) armazenada exclusivamente em variáveis de ambiente. Gerenciamento centralizado via AWS Parameter Store ou HashiCorp Vault. Arquivos .env bloqueados no .gitignore. Validação de variáveis obrigatórias no startup usando Zod ou Joi, falhando fast se ausentes. Zero configuração hardcoded no código.\",\n\n  \"backing_services\": {\n    \"banco_de_dados_principal\": \"PostgreSQL (Amazon RDS Multi-AZ) — perfis, contratos, pagamentos\",\n    \"cache_e_sessoes\": \"Redis (Amazon ElastiCache) — sessões, rate limiting, filas\",\n    \"busca_e_matching\": \"Elasticsearch (Amazon OpenSearch) — busca de freelancers por especialidade regulatória\",\n    \"armazenamento_de_arquivos\": \"Amazon S3 — portfólios, certificações, documentos de compliance\",\n    \"fila_de_mensagens\": \"Amazon SQS + SNS — notificações assíncronas, onboarding, alertas\",\n    \"email_transacional\": \"Amazon SES ou SendGrid\",\n    \"pagamentos\": \"Stripe Connect (split payments entre plataforma e freelancer)\",\n    \"monitoramento\": \"Datadog ou AWS C"
+}

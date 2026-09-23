@@ -1,0 +1,86 @@
+{
+  "ideia_idx": 84,
+  "ideia": "App de diagnóstico automotivo por OBD com recomendação de oficinas",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Diagnóstico automotivo e recomendação de manutenção. O núcleo contém as entidades Veículo, SessãoDeDiagnóstico, CódigoDeFalha (DTC), LeituraDeSensor, Diagnóstico, Severidade, Oficina, Orçamento e Recomendação, além das regras de negócio. Essas regras são: interpretar DTCs e telemetria, classificar a severidade e o risco, estimar o custo do reparo, ranquear oficinas por proximidade, especialidade, reputação e preço, e aplicar as regras de plano e cota do assinante.",
+    "primary_ports": [
+      "IniciarSessaoDiagnostico (recebe leituras OBD e DTCs)",
+      "ConsultarDiagnostico (interpretação, severidade e causas prováveis)",
+      "GerenciarVeiculos (cadastro, VIN, histórico)",
+      "RecomendarOficinas (busca e ranking)",
+      "SolicitarOrcamento / AgendarServico",
+      "AvaliarOficina",
+      "GerenciarAssinatura",
+      "AdministrarOficinaParceira (perfil, serviços, preços, leads)",
+      "AdministrarCatalogoDTC (base de conhecimento)"
+    ],
+    "secondary_ports": [
+      "LeitorOBDPort (transporte de dados do veículo: ELM327/BLE/Wi-Fi)",
+      "RepositorioVeiculosPort",
+      "RepositorioDiagnosticosPort",
+      "RepositorioOficinasPort",
+      "BaseConhecimentoDTCPort (catálogo de códigos e boletins técnicos)",
+      "DecodificadorVINPort",
+      "GeolocalizacaoPort (geocodificação e busca por raio)",
+      "MotorIAPort (explicação em linguagem natural e triagem)",
+      "ConsultaPrecosPecasPort",
+      "PagamentoPort (cobrança e assinatura)",
+      "NotificacaoPort (push, e-mail, WhatsApp)",
+      "AutenticacaoPort",
+      "ArmazenamentoTelemetriaPort (séries temporais)",
+      "AgendamentoExternoPort (agenda das oficinas)",
+      "RelogioPort e EventBusPort (publicação de eventos de domínio)",
+      "AuditoriaLGPDPort (consentimento e trilha de auditoria)"
+    ],
+    "primary_adapters": [
+      "App mobile (iOS/Android) via BLE com o dongle OBD-II",
+      "API REST/GraphQL para o web app",
+      "Painel web da oficina parceira",
+      "Painel administrativo (backoffice)",
+      "Webhooks de entrada (pagamento, agenda de oficinas)",
+      "CLI e scripts de simulação/batch",
+      "Suíte de testes automatizados (adapter de teste que dirige o core sem UI)",
+      "Bot de WhatsApp/chat",
+      "Consumidores de fila/eventos"
+    ],
+    "secondary_adapters": [
+      "Adapter ELM327 (Bluetooth LE/Wi-Fi) e adapter de simulador OBD para testes",
+      "PostgreSQL + PostGIS (veículos, oficinas, diagnósticos)",
+      "TimescaleDB ou S3 + Parquet (telemetria)",
+      "Redis (cache)",
+      "Adapter de VIN (NHTSA vPIC ou provedor comercial)",
+      "Google Maps / Mapbox / OpenStreetMap (geolocalização)",
+      "Adapter de LLM (Claude API) com fallback para regras determinísticas",
+      "Stripe / Mercado Pago / Pix (pagamento)",
+      "Firebase Cloud Messaging / APNs / SES / Twilio (notificação)",
+      "Auth0 / Cognito / Keycloak (autenticação)",
+      "Adapters de scraping ou API de preços de peças",
+      "Kafka / SQS / SNS (eventos)",
+      "Adapters in-memory e fakes para todos os ports (testes)"
+    ],
+    "isolation": "O core não importa nenhum framework, SDK ou driver. Ele só conhece interfaces (ports) definidas por ele mesmo, na sua linguagem de domínio. Os adapters ficam fora e dependem do core (inversão de dependência), nunca o contrário. A injeção de dependência ocorre na composition root, na borda da aplicação. Os DTOs e formatos externos (frames OBD, JSON de APIs, linhas de banco) são convertidos por anti-corruption layers dentro dos adapters. O core não conhece HTTP, SQL, Bluetooth nem o provedor de IA. A IA é tratada como um driven adapter qualquer, com fallback determinístico. Fitness functions de arquitetura (ArchUnit, dependency-cruiser ou import-linter) no CI proíbem imports do core para a infraestrutura. Como todos os ports têm um adapter in-memory, os casos de uso rodam nos testes sem infraestrutura, e a mesma lógica é acionada de forma simétrica por app, API, script ou teste.",
+    "interfaces": [
+      "App mobile com pareamento do dongle OBD e leitura em tempo real",
+      "Tela de resultado do diagnóstico (semáforo de severidade, causas prováveis, custo estimado)",
+      "Mapa e lista de oficinas recomendadas, com orçamento e agendamento",
+      "Histórico e saúde do veículo",
+      "Painel web da oficina (leads, orçamentos, agenda, avaliações)",
+      "Backoffice administrativo",
+      "API pública REST/GraphQL documentada com OpenAPI",
+      "Webhooks (pagamento, agendamento)",
+      "Notificações push, e-mail e WhatsApp",
+      "CLI e simulador de sessões OBD para testes"
+    ],
+    "escalabilidade": "O core é stateless, então escala horizontalmente atrás de um load balancer. O sistema começa como monólito modular hexagonal, com bounded contexts separados (Diagnóstico, Veículos, Oficinas/Recomendação, Billing). Os módulos podem ser extraídos em serviços conforme a carga, porque os ports já definem os contratos. A ingestão de telemetria é assíncrona, via fila/stream com workers autoescaláveis. A interpretação é feita no dispositivo ou no app, para reduzir a carga no servidor. Read replicas e cache (Redis) atendem a busca de oficinas, e o PostGIS com índices geoespaciais sustenta o ranking. O catálogo de DTCs e as respostas de IA para códigos recorrentes ficam em cache, o que reduz chamadas ao LLM. O particionamento de telemetria por veículo e tempo e a política de retenção (dados quentes e frios) controlam o crescimento. Como as adapters são trocáveis, é possível migrar de provedor ou de região sem alterar o domínio.",
+    "custos": "Os principais custos são: (1) inferência de IA, que pode ser controlada com cache por DTC, modelos menores para triagem, limites por plano e regras determinísticas para os casos comuns; (2) APIs de mapas e geocodificação, que podem ser reduzidas com cache e alternativas como OpenStreetMap; (3) armazenamento de telemetria, mitigado com amostragem, compressão e retenção em camadas; (4) hardware, se houver dongles próprios (margem baixa, ou revenda de dongles homologados); (5) taxas de pagamento; (6) notificações (WhatsApp é cobrado por conversa); (7) curadoria de dados e da base de DTCs; (8) conformidade com a LGPD (dados de localização e do veículo) e segurança; (9) aquisição de oficinas parceiras (equipe comercial). A infraestrutura inicial é enxuta, com um monólito em containers gerenciados, e o custo sobe de forma quase proporcional ao uso. Vale monitorar o custo por diagnóstico como métrica principal.",
+    "monetizacao": "Modelo híbrido: (1) Freemium para o motorista, com leitura básica de DTCs grátis e plano premium (R$ 15–30/mês) com diagnóstico detalhado por IA, histórico, monitoramento contínuo e alertas preditivos; (2) comissão ou taxa por lead qualificado ou por serviço agendado e concluído nas oficinas; (3) assinatura das oficinas (planos com destaque no ranking, painel de leads e agenda), mantendo transparência para não comprometer a imparcialidade da recomendação; (4) venda ou revenda de dongle OBD; (5) planos B2B para frotas, seguradoras e locadoras (telemetria, manutenção preditiva, API); (6) parcerias com marketplaces de peças, seguros e assistência 24h; (7) dados agregados e anonimizados, com consentimento e conformidade com a LGPD.",
+    "stack_sugerida": "Backend: Kotlin (Spring Boot) ou TypeScript (NestJS) organizado em módulos hexagonais (domain / application / adapters), com fitness functions de arquitetura. Mobile: Flutter ou React Native com BLE (flutter_reactive_ble ou react-native-ble-plx), com o protocolo ELM327 isolado em um adapter. Web: Next.js. Dados: PostgreSQL + PostGIS, TimescaleDB para telemetria, Redis para cache, S3 para arquivos. Mensageria: SQS/SNS ou Kafka. IA: Claude API atrás de um MotorIAPort, com regras determinísticas de fallback. Auth: Keycloak ou Auth0. Pagamentos: Stripe ou Mercado Pago/Pix. Infra: Docker, Kubernetes ou ECS/Fargate, Terraform, GitHub Actions. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Testes: unitários com adapters in-memory, contract tests por port, testes de integração com Testcontainers e simulador OBD."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:35:08+00:00",
+    "runner": "runner.py"
+  }
+}

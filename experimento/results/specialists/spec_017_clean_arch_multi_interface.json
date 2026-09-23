@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A arquitetura demonstra desacoplamento técnico sólido (entidades e use cases independentes de frameworks), o que estruturalmente permite adicionar interfaces sem reescrever lógica de negócio, mas o documento não menciona explicitamente nenhuma interface concreta (web, mobile, API pública, CLI), não justifica canais por perfil de usuário (Issuer, Student, verificador anônimo) e não apresenta qualquer raciocínio de alcance de mercado — o desacoplamento parece motivado por boas práticas técnicas, não por uma estratégia deliberada de multi-canal."
+}

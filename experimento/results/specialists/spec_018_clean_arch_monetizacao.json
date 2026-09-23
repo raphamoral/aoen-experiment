@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural menciona implicitamente elementos de monetização (atributo 'plan' no Tenant e 'apiQuotaMonthly' sugerindo limites por plano), mas não define tiers explícitos, valores, modelo de receita, nem métricas de sustentabilidade como MRR, LTV ou CAC."
+}

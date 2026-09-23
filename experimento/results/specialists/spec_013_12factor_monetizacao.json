@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não contém nenhuma menção a modelo de monetização, tiers de preço, fontes de receita, split de pagamentos para parceiros (além de citar Stripe como ferramenta técnica), nem métricas de negócio como MRR, churn, LTV ou CAC."
+}

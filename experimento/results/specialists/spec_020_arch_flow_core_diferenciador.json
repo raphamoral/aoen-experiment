@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O produto identifica claramente seu núcleo diferenciador em três componentes de genesis — matching semântico tester-campanha, deduplicação de bugs via embeddings e sugestão de casos de teste por IA — que juntos formam um motor cognitivo impossível de replicar com ferramentas genéricas; porém, a separação arquitetural entre esse núcleo e os contextos de suporte (GamificationEngine, RewardsPayout) ainda não está explicitamente modelada como um bounded context isolado e soberano, o que enfraquece levemente a clareza de que esses três componentes são o coração insubstituível do negócio."
+}

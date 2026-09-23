@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "O projeto lista apenas percentuais de custo total de infraestrutura (40% compute, 20% real-time, etc.) — isso é FinOps agregado, não Unit Economics por cliente; o único dado próximo de custo variável é o add-on de $0,15 por rastreamento, que é uma decisão de receita, não um cálculo derivado do custo real por operação; não há menção a rastreamento de consumo por tenant, custo por entrega processada, nem conexão entre margem por tier e custo de servi-lo."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 7,
+  "justificativa": "O projeto prevê múltiplas interfaces bem diversificadas (REST, WebSocket, gRPC, Webhook, Mobile SDK) com justificativas técnicas razoáveis por contexto de uso, e a separação em bounded contexts sugere desacoplamento da lógica de negócio, mas falta evidência explícita de justificativa orientada a perfis de usuário/mercado (ex: por que Mobile SDK vs. web para proprietários) e não há menção a canais como portal web, painel administrativo ou integração com sistemas veterinários legados que ampliariam o alcance real de mercado."
+}

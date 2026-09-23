@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O mercado-alvo é identificável pelo nome do produto ('clínicas odontológicas'), mas a proposta arquitetural é inteiramente técnica — não há articulação da dor do cliente, dados de tamanho de mercado, diferenciação frente a soluções concorrentes (ex: Doctoralia, iClinic) nem proposta de valor explícita que justifique adoção."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 49,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta define uma MatchingService como camada lógica centralizada, o que representa separação de responsabilidades no código, mas não há nenhuma menção a isolamento físico (workers separados, filas de mensagens, subprocessos), processamento assíncrono para o matching semântico/ML — que é computacionalmente caro — nem a mecanismos de fallback caso o matching falhe, o que significa que uma sobrecarga ou crash no core de scoring pode derrubar as interfaces junto."
+}

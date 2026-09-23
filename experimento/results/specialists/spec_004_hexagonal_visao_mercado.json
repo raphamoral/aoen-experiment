@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "A proposta identifica implicitamente um público (compradores e fornecedores corporativos de TI) e um mecanismo (leilão reverso), mas não articula a dor do cliente, não dimensiona o mercado, não apresenta diferenciação frente a concorrentes como SAP Ariba, Coupa ou Jaggaer, e não explicita proposta de valor além da descrição funcional/técnica."
+}

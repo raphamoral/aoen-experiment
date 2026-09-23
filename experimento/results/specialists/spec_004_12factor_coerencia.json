@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma cadeia lógica inquebrável — monorepo → pacotes internos → registry privado → imagens imutáveis com hash → Helm chart versiona imagem+config → ArgoCD entrega no Kubernetes — sem nenhuma contradição; os backing services são escolhidos cirurgicamente para o domínio (Redis com distributed locks para lances simultâneos, Kafka para auditoria imutável exigida em compras corporativas, SAML 2.0 para SSO corporativo, PostgreSQL com ACID para integridade dos lances), e a estratégia de config via Vault+K8s Secrets+validação no startup reforça o princípio de falha rápida que protege o ambiente produtivo — o único demérito é a proposta estar truncada na seção 'run', impedindo avaliar se a estratégia de escalonamento horizontal dos workers do bidding-engine fecha o ciclo com a escolha de locks distribuídos no Redis."
+}

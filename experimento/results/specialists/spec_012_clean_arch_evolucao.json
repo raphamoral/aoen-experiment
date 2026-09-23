@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 6,
+  "justificativa": "A camada de entidades demonstra princípios sólidos de Clean Architecture — regras de negócio encapsuladas, sem dependências externas declaradas e tipos de domínio ricos (SensorStatus, AlertSeverity, SubscriptionPlan) que isolam a lógica do núcleo; porém a proposta apresenta apenas essa camada, omitindo interfaces de repositório, casos de uso, adaptadores e decisões de infraestrutura, o que impede confirmar se o isolamento se sustenta nas camadas superiores e se há suporte a substituição independente de tecnologias (banco, broker, framework de IA) ou a escala horizontal sem mudança arquitetural fundamental."
+}

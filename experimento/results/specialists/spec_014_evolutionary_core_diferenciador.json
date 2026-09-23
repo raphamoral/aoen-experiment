@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador — pipeline de tradução simultânea com latência <400ms em contexto corporativo — está claramente identificado como fitness function primária, isolado atrás de TranslationPort/anti-corruption layer, extensível a múltiplos provedores e modelos, e endereça um gap real que ferramentas genéricas de tradução assíncrona não resolvem; perde um ponto porque o MVP (Fase 1) começa como agregador de provedores externos, o que temporariamente dilui a insubstituibilidade até as Fases 3–5 materializarem o moat competitivo real (fine-tuning corporativo + edge processing + soberania de dados)."
+}

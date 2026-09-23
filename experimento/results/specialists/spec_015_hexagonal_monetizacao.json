@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não contém nenhuma menção a modelo de monetização, tiers de preço, planos de assinatura, métricas de negócio (MRR, LTV, CAC, churn) ou qualquer mecanismo de geração de receita para o SaaS em si."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta inicia como monólito modular sem qualquer menção explícita a filas de mensagens, workers separados ou mecanismos de isolamento físico para processos pesados (ex: geração de relatórios, processamento de pagamentos em lote, sincronização IoT); o único sinal indireto de processamento assíncrono é a menção de que 'Notifications com volume alto' pode justificar extração futura, mas sem especificar infraestrutura de fila, padrão Bulkhead ou fallback — ou seja, atualmente um processo caro pode bloquear ou derrubar o todo, e a escalabilidade independente de workloads pesados não está endereçada no design inicial."
+}

@@ -1,0 +1,71 @@
+{
+  "ideia_idx": 7,
+  "ideia": "Plataforma de microlearning gamificado para treinamento corporativo",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Aprendizado corporativo gamificado: gestão de trilhas de conhecimento, sessões de microlearning, avaliações adaptativas, engine de gamificação (pontos, badges, níveis, rankings) e progressão de competências. O núcleo não conhece frameworks, bancos de dados, HTTP nem qualquer infraestrutura.",
+    "primary_ports": [
+      "ILearningSessionUseCase — iniciar, pausar, retomar e concluir sessões de aprendizado",
+      "IProgressTrackingUseCase — registrar e consultar progresso individual por trilha/módulo",
+      "IGamificationUseCase — aplicar regras de pontuação, desbloquear badges e atualizar rankings",
+      "IContentManagementUseCase — criar, versionar e publicar unidades de microconteúdo",
+      "IAssessmentUseCase — gerar, responder e avaliar quizzes e desafios",
+      "IUserOnboardingUseCase — cadastrar usuários, vincular a empresas e atribuir trilhas",
+      "IReportingUseCase — gerar relatórios de engajamento, desempenho e ROI de treinamento",
+      "INotificationUseCase — disparar alertas de progresso, lembretes e conquistas"
+    ],
+    "secondary_ports": [
+      "IUserRepository — persistir e recuperar usuários e perfis",
+      "ILearningContentRepository — armazenar trilhas, módulos e unidades de conteúdo",
+      "IProgressRepository — registrar histórico de progresso e pontuações",
+      "IGamificationRepository — persistir regras, badges, rankings e carteiras de pontos",
+      "IEventPublisher — publicar eventos de domínio (LessonCompleted, BadgeEarned, etc.)",
+      "INotificationGateway — enviar e-mails, push notifications e mensagens in-app",
+      "IMediaStorage — armazenar e recuperar vídeos, imagens e áudios",
+      "IAnalyticsGateway — enviar métricas de comportamento para plataforma analítica",
+      "IPaymentGateway — processar assinaturas, upgrades de plano e cobranças",
+      "ICachePort — armazenar em cache rankings, sessões ativas e conteúdo frequente",
+      "ISearchGateway — indexar e buscar conteúdos e usuários",
+      "IAIContentPort — integrar geração assistida de conteúdo e feedback personalizado"
+    ],
+    "primary_adapters": [
+      "REST API Adapter (Express/Fastify) — interface principal para web e mobile",
+      "GraphQL Adapter (Apollo) — consultas flexíveis para dashboards e relatórios",
+      "WebSocket Adapter (Socket.io) — atualizações em tempo real de rankings e sessões",
+      "gRPC Adapter — comunicação interna entre microsserviços",
+      "CLI Adapter — scripts de seed, migração de conteúdo e administração",
+      "Test Adapter — entradas diretas nos use cases para testes unitários e de integração",
+      "Webhook Adapter — receber eventos externos de LMS, SSO e plataformas de RH"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter (via Prisma/TypeORM) — implementa IUserRepository, IProgressRepository, IGamificationRepository",
+      "Redis Adapter — implementa ICachePort e gerencia sessões e filas de eventos",
+      "AWS S3 / Cloudflare R2 Adapter — implementa IMediaStorage",
+      "SendGrid Adapter — implementa INotificationGateway para e-mails transacionais",
+      "Firebase FCM Adapter — implementa INotificationGateway para push mobile",
+      "Apache Kafka / AWS SQS Adapter — implementa IEventPublisher para eventos assíncronos",
+      "Stripe Adapter — implementa IPaymentGateway",
+      "Elasticsearch / Typesense Adapter — implementa ISearchGateway",
+      "Amplitude / Mixpanel Adapter — implementa IAnalyticsGateway",
+      "OpenAI / Anthropic Adapter — implementa IAIContentPort",
+      "Okta / Azure AD Adapter — SSO corporativo via SAML/OIDC",
+      "Datadog / OpenTelemetry Adapter — observabilidade e tracing distribuído"
+    ],
+    "isolation": "O core domain é uma biblioteca pura sem dependências externas: define apenas entidades (User, LearningPath, Module, Badge, Score), value objects (CompletionRate, XPPoints, Streak), domain events e interfaces de porta. Todos os adaptadores dependem do core, nunca o contrário (Dependency Inversion). A composition root (bootstrap) é o único local que instancia adaptadores e os injeta nos use cases via IoC container. Testes de domínio rodam com adaptadores in-memory sem banco ou HTTP.",
+    "interfaces": [
+      "Web App (React/Next.js) — learner dashboard, trilhas, quiz e leaderboard",
+      "Mobile App (React Native / Flutter) — aprendizado offline-first com sync",
+      "Admin Portal (React) — gestão de conteúdo, empresas, usuários e analytics",
+      "Manager Dashboard — acompanhamento de equipe, relatórios e certificados",
+      "API Pública REST/GraphQL — integrações com LMS, HRIS (Workday, SAP) e ferramentas de RH",
+      "Webhooks Outbound — notificar sistemas externos sobre eventos de conclusão",
+      "Chrome Extension — microlearning contextual no fluxo de trabalho",
+      "CLI de Importação — bulk import de conteúdo via CSV/SCORM/xAPI"
+    ],
+    "escalabilidade": "Arquitetura de microsserviços com bounded contexts alinhados aos ports: Learning Service, Gamification Service, Content Service, Analytics Service e Notification Service. Cada serviço escala horizontalmente de forma independente. Rankings e sessões ativas no Redis com sharding. Conteúdo servido via CDN. Event-driven via Kafka para desacoplar processamento de progressão, notificações e analytics. CQRS para separar modelos de leitura (dashboards) e escrita (domínio). Kubernetes para orquestração com HPA baseado em uso de CPU/memória.",
+    "custos": "Principais drivers: armazenamento de mídia (S3/R2), processamento de vídeo (FFmpeg/Mux), banco de dados (RDS multi-AZ), cache (ElastiCache Redis) e CDN (CloudFront/Cloudflare). Otimizações: armazenar vídeos no R2 (sem egress fee), usar Cloudflare Workers para edge logic, manter banco read replicas para relatórios, comprimir e lazy-load conteúdo, tier gratuito de notificações push. Custo estimado por tenant ativo: $0.05–$0.20/mês em infra para uso moderado.",
+    "monetizacao": "B2B SaaS com pricing por seat (usuário ativo/mês): Starter ($4/seat), Growth ($8/seat), Enterprise (custom). Add-ons: geração de conteúdo com IA (+$2/seat), certificações customizadas, white-label, integração SSO, SLA premium e suporte dedicado. Revenue drivers secundários: marketplace de conteúdo de terceiros (comissão 30%), consultoria de implantação e migração de LMS legado.",
+    "stack_sugerida": "Backend: Node.js + TypeScript com Fastify (performance) ou NestJS (estrutura modular alinhada a hexagonal). ORM: Prisma. Banco: PostgreSQL (dados relacionais) + Redis (cache/sessões) + S3/R2 (mídia). Mensageria: Kafka ou AWS SQS/SNS. Frontend: Next.js 14 (App Router, RSC) + TailwindCSS + shadcn/ui. Mobile: React Native (Expo) com WatermelonDB para offline-first. Infra: AWS ou GCP, Kubernetes (EKS/GKE), Terraform, GitHub Actions CI/CD. Observabilidade: OpenTelemetry + Datadog. AI: Anthropic Claude API para geração e avaliação de conteúdo."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Aprendizado corporativo gamificado: gestão de trilhas de conhecimento, sessões de microlearning, avaliações adaptativas, engine de gamificação (pontos, badges, níveis, rankings) e progressão de competências. O núcleo não conhece frameworks, bancos de dados, HTTP nem qualquer infraestrutura.\",\n  \"primary_ports\": [\n    \"ILearningSessionUseCase — iniciar, pausar, retomar e concluir sessões de aprendizado\",\n    \"IProgressTrackingUseCase — registrar e consultar progresso individual por trilha/módulo\",\n    \"IGamificationUseCase — aplicar regras de pontuação, desbloquear badges e atualizar rankings\",\n    \"IContentManagementUseCase — criar, versionar e publicar unidades de microconteúdo\",\n    \"IAssessmentUseCase — gerar, responder e avaliar quizzes e desafios\",\n    \"IUserOnboardingUseCase — cadastrar usuários, vincular a empresas e atribuir trilhas\",\n    \"IReportingUseCase — gerar relatórios de engajamento, desempenho e ROI de treinamento\",\n    \"INotificationUseCase — disparar alertas de progresso, lembretes e conquistas\"\n  ],\n  \"secondary_ports\": [\n    \"IUserRepository — persistir e recuperar usuários e perfis\",\n    \"ILearningContentRepository — armazenar trilhas, módulos e unidades de conteúdo\",\n    \"IProgressRepository — registrar histórico de progresso e pontuações\",\n    \"IGamificationRepository — persistir regras, badges, rankings e carteiras de pontos\",\n    \"IEventPublisher — publicar eventos de domínio (LessonCompleted, BadgeEarned, etc.)\",\n    \"INotificationGateway — enviar e-mails, push notifications e mensagens in-app\",\n    \"IMediaStorage — armazenar e recuperar vídeos, imagens e áudios\",\n    \"IAnalyticsGateway — enviar métricas de comportamento para plataforma analítica\",\n    \"IPaymentGateway — processar assinaturas, upgrades de plano e cobranças\",\n    \"ICachePort — armazenar em cache rankings, sessões ativas e conteúdo frequente\",\n    \"ISearchGateway — indexar e buscar conteúdos e usuários\",\n    \"IAIContentPort — integrar geração assi"
+}

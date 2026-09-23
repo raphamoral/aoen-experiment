@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta menciona isolamento da geração de PDF em lote via fila com BullMQ, o que é assíncrono e conceitualmente separado, mas não especifica workers em processos físicos distintos, não descreve fallback em caso de falha do worker nem estratégia de resiliência caso a fila ou o processador de PDF falhe."
+}

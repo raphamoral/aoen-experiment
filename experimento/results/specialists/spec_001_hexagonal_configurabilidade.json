@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta tem boas fundações técnicas (IoC, interfaces segregadas, adapters intercambiáveis) que tornam configurabilidade *possível*, mas nenhum componente arquitetural endereça configurabilidade multi-tenant de forma explícita — não há modelo de configuração por tenant, serviço de onboarding, feature flags por cliente, regras de negócio configuráveis (janelas de entrega, SLAs, limites de rota) nem estratégia de isolamento de dados (shared schema vs. schema-per-tenant), o que na prática ainda exigiria desenvolvimento para cada novo cliente."
+}

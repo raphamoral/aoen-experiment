@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta distingue ao menos duas interfaces orientadas a perfis reais — app mobile/web para o colaborador (CheckIn) e dashboard de analytics para RH/Gestão (Reporting) —, e os bounded contexts sugerem separação estrutural que facilita adicionar novos canais; porém faltam canais de alto alcance para o contexto B2B empresarial (bot para Slack/Teams, check-in via e-mail, API de integração com HRIS como Workday/SAP), não há declaração explícita de estratégia API-first que garanta desacoplamento real das interfaces, e a escolha dos canais não é justificada por dados de mercado ou análise de onde os colaboradores realmente estariam dispostos a responder check-ins."
+}

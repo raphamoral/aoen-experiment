@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta diferencia perfis de usuário (comprador vs. fornecedor) por equipes distintas e menciona integrações com ERPs via adapters, sugerindo implicitamente alguma camada de API, mas não declara nenhuma estratégia de interfaces (web, mobile, API pública, CLI), não evidencia desacoplamento entre lógica de negócio e camadas de apresentação, e não justifica escolhas de canal por alcance de mercado — a dimensão multi-interface simplesmente não foi endereçada na arquitetura."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural define entidades como bountyPool e Reward com status de pagamento (PENDING → APPROVED → PAID), indicando consciência de fluxo financeiro, mas não há nenhum modelo de monetização explícito — sem tiers de planos, sem definição de quem paga o quê, sem pricing, sem métricas de negócio (MRR, LTV, CAC, churn) ou análise de sustentabilidade."
+}

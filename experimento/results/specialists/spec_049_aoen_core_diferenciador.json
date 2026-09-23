@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 49,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (grafo de confiança + matching semântico por especialidade de acessibilidade), isolado na MatchingService com contrato de interface estável, extensível por design (score substituível por regras, ML ou embeddings), e resolve um problema real que plataformas genéricas de freelancer não resolvem — a escassez e dispersão de profissionais verificados em um domínio regulatório altamente específico; perde um ponto por não detalhar como o 'score de especialidade por tipo de demanda' é construído e validado inicialmente, o que é o coração da proposta de valor."
+}

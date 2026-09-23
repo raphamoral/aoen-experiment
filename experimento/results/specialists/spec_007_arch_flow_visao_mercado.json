@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "A proposta identifica implicitamente o mercado corporativo e lista resultados de negócio na value chain (turnover, produtividade, compliance), mas não articula explicitamente a dor do cliente, não apresenta sizing de mercado (TAM/SAM/SOM), não segmenta o público-alvo (PME vs. enterprise, setores, porte) e não oferece nenhuma análise competitiva ou diferenciação frente a players como 360Learning, Docebo ou TalentLMS — o documento é essencialmente arquitetural, não estratégico."
+}

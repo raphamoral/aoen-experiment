@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 96,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não contém nenhuma menção a modelo de monetização, pricing, tiers, valores, métricas de receita (MRR, LTV, CAC) ou estratégia de captura de valor — foca exclusivamente em arquitetura técnica e segmentação de mercado."
+}

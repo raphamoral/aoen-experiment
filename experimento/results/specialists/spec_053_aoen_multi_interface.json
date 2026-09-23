@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 53,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define seis interfaces (Web, Mobile, Bot, API, TV/Totem, Relatórios), cada uma justificada por um segmento de mercado ou perfil de usuário distinto, com lógica de negócio explicitamente centralizada na HabitService Layer — garantindo desacoplamento total e expansibilidade sem reescrita de regras."
+}

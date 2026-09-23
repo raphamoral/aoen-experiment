@@ -1,0 +1,94 @@
+{
+  "ideia_idx": 5,
+  "ideia": "SaaS de automação de contratos imobiliários com assinatura digital",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Segurança (autenticidade e integridade de assinaturas digitais, ICP-Brasil/ITI)",
+      "Auditabilidade (rastro imutável de todas as ações sobre contratos)",
+      "Conformidade legal (LGPD, MP 2.200-2/2001, Lei 14.063/2020)",
+      "Disponibilidade (SLA ≥ 99,9% — contratos têm prazos críticos)",
+      "Rastreabilidade (cadeia de custódia documental verificável)",
+      "Escalabilidade elástica (picos em fechamentos de mês/trimestre)",
+      "Interoperabilidade (integração com cartórios, CRIs, APIs de validação CPF/CNPJ)",
+      "Observabilidade (métricas, logs estruturados, tracing distribuído)",
+      "Testabilidade (suporte a fitness functions automatizadas)",
+      "Resiliência (falhas em provedores de assinatura não bloqueiam fluxo)"
+    ],
+    "fitness_functions": [
+      "Latência P99 da geração de documento < 3s (CI/CD gate)",
+      "Cobertura de testes de integração ≥ 80% nos módulos de assinatura e contrato",
+      "Zero vulnerabilidades OWASP Top-10 no pipeline de SAST/DAST",
+      "Tempo de expiração de token JWT ≤ 15 min e refresh ≤ 7 dias (auditoria automática)",
+      "Toda mutação em contrato produz evento auditável no event log (teste de mutation coverage)",
+      "Nenhum PII armazenado fora de regiões conformes à LGPD (policy-as-code via OPA)",
+      "Tempo de onboarding de novo provedor de assinatura < 2 dias (medido por feature flag rollout)",
+      "Taxa de falha de webhook de retorno de assinatura < 0,1% (alerta automático)",
+      "Uptime mensal ≥ 99,9% verificado por synthetic monitoring externo",
+      "Custo de infraestrutura por contrato processado ≤ R$0,08 (alerta de regressão de custo)"
+    ],
+    "incremental_change": "Iniciar como Modular Monolith (módulos: Contratos, Assinaturas, Partes, Notificações, Billing, Auditoria) com fronteiras de domínio bem definidas via interfaces internas. Cada módulo tem seu próprio schema de banco isolado (schema-per-module no mesmo PostgreSQL). Extrair para serviços independentes apenas módulos que apresentem pressão real de escalabilidade ou velocidade de deploy independente diferenciada — usando o padrão Strangler Fig. Releases via trunk-based development com feature flags (Unleash/LaunchDarkly) para separar deploy de release. Versionamento de API com URI versioning (/v1, /v2) para garantir contratos estáveis durante migrações.",
+    "reversibility": {
+      "reversíveis": [
+        "Troca de provedor de assinatura digital (abstraído por interface SignatureProvider)",
+        "Troca de provedor de armazenamento de documentos (abstraído por interface DocumentStorage)",
+        "Migração entre regiões de cloud (dados não têm lock-in por uso de S3-compatible API)",
+        "Troca de provedor de e-mail/notificação (abstraído por interface NotificationGateway)",
+        "Feature flags para ativar/desativar funcionalidades sem novo deploy",
+        "Estratégia de cache (Redis substituível sem impacto em lógica de negócio)",
+        "Migração de Modular Monolith para microserviços por módulo (fronteiras já definidas)"
+      ],
+      "irreversíveis_ou_de_alto_custo": [
+        "Escolha do formato canônico de armazenamento de contratos (definir no último momento responsável)",
+        "Estratégia de assinatura criptográfica dos documentos arquivados (define validade legal futura)",
+        "Modelo de identificação de partes (CPF/CNPJ como chave natural — difícil migrar)",
+        "Escolha do banco de dados para o event log de auditoria (imutabilidade exige append-only store)"
+      ]
+    },
+    "coupling": "Acoplamento aferente/eferente controlado por ArchUnit ou Dependency-Cruiser no CI. Módulos se comunicam via interfaces explícitas (ports & adapters / hexagonal). Comunicação assíncrona entre módulos de baixo acoplamento temporal via eventos de domínio (event bus interno no monolito, Kafka/SQS ao extrair serviços). Contratos de API versionados com consumer-driven contract tests (Pact) para integração com parceiros externos. Banco de dados compartilhado apenas dentro do mesmo módulo; sem joins cross-module no ORM.",
+    "interfaces": [
+      "REST API v1 — CRUD de contratos, partes e templates (consumida pelo frontend e parceiros)",
+      "Webhook API — notificações de eventos de assinatura para sistemas externos (CRMs, ERPs imobiliários)",
+      "SignatureProvider interface — abstrai DocuSign, D4Sign, ClickSign, ICP-Brasil PKI",
+      "DocumentStorage interface — abstrai S3, Azure Blob, GCS para armazenamento de PDFs e XMLs",
+      "NotificationGateway interface — abstrai SendGrid, SES, SNS para e-mail/SMS/WhatsApp",
+      "AuditLog interface — abstrai gravação imutável de eventos (EventStore, PostgreSQL append-only, WORM S3)",
+      "IdentityProvider interface — abstrai autenticação via OIDC (Auth0, Keycloak, AWS Cognito)",
+      "BillingGateway interface — abstrai Stripe, Pagar.me, Asaas para cobrança recorrente",
+      "TemplateEngine interface — abstrai geração de PDF (Puppeteer, WeasyPrint, iText)",
+      "PublicPortal API — interface pública para signatários externos assinarem sem conta (link autenticado por JWT de uso único)"
+    ],
+    "escalabilidade": "Escala horizontal stateless no layer de aplicação (containers em ECS Fargate ou Kubernetes HPA). Geração de PDFs em workers assíncronos (fila SQS/RabbitMQ) — desacopla picos de carga do request-response. Read replicas no PostgreSQL para queries de relatórios e listagens. CDN (CloudFront) para servir documentos assinados em PDF com URLs pré-assinadas de curta duração. Rate limiting por tenant no API Gateway para garantir isolamento de recursos (noisy neighbor protection). Partition key por tenant_id nas tabelas de maior volume para sharding futuro. Cache de templates de contrato no Redis (TTL curto — templates mudam raramente).",
+    "custos": "Modelo pay-per-use na infraestrutura: Fargate escala a zero fora do horário comercial para ambientes de homologação. Armazenamento em S3 com lifecycle policies (Standard → IA após 90 dias → Glacier após 2 anos). Monitoramento de custo por contrato processado como fitness function de regressão. Evitar lock-in de serviços gerenciados caros nos primeiros 18 meses — preferir PostgreSQL gerenciado (RDS/Aurora Serverless v2) a DynamoDB para flexibilidade de migração. Uso de spot instances para workers de geração de PDF (job tolerante a interrupção). Budget alerts no cloud provider com threshold em 80% e 100% do budget mensal.",
+    "monetizacao": {
+      "modelo_principal": "SaaS por assinatura mensal/anual com planos por volume de contratos e usuários (Freemium → Starter → Professional → Enterprise)",
+      "planos": {
+        "freemium": "Até 5 contratos/mês, 1 usuário, templates básicos — aquisição e validação de ICP",
+        "starter": "Até 50 contratos/mês, 3 usuários, assinatura eletrônica simples",
+        "professional": "Contratos ilimitados, 10 usuários, assinatura digital ICP-Brasil, API access, integrações",
+        "enterprise": "Multi-tenant white-label, SLA contratual, SSO, suporte dedicado, custom compliance"
+      },
+      "receitas_adicionais": [
+        "Pay-per-use para assinaturas ICP-Brasil avançadas (custo repassado com margem)",
+        "Marketplace de templates premium por segmento (residencial, comercial, rural)",
+        "API para imobiliárias e construtoras (por chamada + plano base)",
+        "Certificado de autenticidade com carimbo de tempo (TSA) como add-on"
+      ]
+    },
+    "stack_sugerida": {
+      "frontend": "Next.js 14 (App Router) + TypeScript + Tailwind CSS + Shadcn/UI — SSR para SEO do portal público, SPA para o app interno",
+      "backend": "NestJS (Node.js) + TypeScript — modular monolith com módulos alinhados ao domínio; TypeORM com migrations versionadas",
+      "banco_de_dados": "PostgreSQL 16 (RDS Aurora Serverless v2) — schema-per-module, UUID v7 como PK, pgcrypto para dados sensíveis",
+      "assinatura_digital": "D4Sign ou ClickSign (mercado BR) via adapter; suporte a ICP-Brasil via ITI/Certisign para contratos que exigem validade jurídica avançada",
+      "armazenamento": "Amazon S3 com SSE-KMS + presigned URLs de curta duração; AWS Macie para detecção de PII",
+      "fila": "Amazon SQS (standard + FIFO para ordem garantida em eventos críticos) — migração para Kafka se volume justificar",
+      "cache": "Redis (ElastiCache) — sessions, rate limiting, cache de templates",
+      "identidade": "Auth0 ou Keycloak — OIDC/OAuth2, MFA obrigatório, suporte a SSO enterprise (SAML)",
+      "observabilidade": "OpenTelemetry → Grafana Stack (Loki + Tempo + Prometheus) ou Datadog; Sentry para erros de frontend/backend",
+      "ci_cd": "GitHub Actions — lint, testes, SAST (Semgrep), DAST (OWASP ZAP), fitness functions automatizadas, deploy via Terraform + ECS",
+      "infra": "AWS (região sa-east-1 São Paulo — LGPD) + Terraform; multi-AZ por padrão para módulos críticos",
+      "billing": "Stripe ou Pagar.me (planos recorrentes) com Lago ou Metronome para metering de uso por contrato"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Segurança (autenticidade e integridade de assinaturas digitais, ICP-Brasil/ITI)\",\n    \"Auditabilidade (rastro imutável de todas as ações sobre contratos)\",\n    \"Conformidade legal (LGPD, MP 2.200-2/2001, Lei 14.063/2020)\",\n    \"Disponibilidade (SLA ≥ 99,9% — contratos têm prazos críticos)\",\n    \"Rastreabilidade (cadeia de custódia documental verificável)\",\n    \"Escalabilidade elástica (picos em fechamentos de mês/trimestre)\",\n    \"Interoperabilidade (integração com cartórios, CRIs, APIs de validação CPF/CNPJ)\",\n    \"Observabilidade (métricas, logs estruturados, tracing distribuído)\",\n    \"Testabilidade (suporte a fitness functions automatizadas)\",\n    \"Resiliência (falhas em provedores de assinatura não bloqueiam fluxo)\"\n  ],\n  \"fitness_functions\": [\n    \"Latência P99 da geração de documento < 3s (CI/CD gate)\",\n    \"Cobertura de testes de integração ≥ 80% nos módulos de assinatura e contrato\",\n    \"Zero vulnerabilidades OWASP Top-10 no pipeline de SAST/DAST\",\n    \"Tempo de expiração de token JWT ≤ 15 min e refresh ≤ 7 dias (auditoria automática)\",\n    \"Toda mutação em contrato produz evento auditável no event log (teste de mutation coverage)\",\n    \"Nenhum PII armazenado fora de regiões conformes à LGPD (policy-as-code via OPA)\",\n    \"Tempo de onboarding de novo provedor de assinatura < 2 dias (medido por feature flag rollout)\",\n    \"Taxa de falha de webhook de retorno de assinatura < 0,1% (alerta automático)\",\n    \"Uptime mensal ≥ 99,9% verificado por synthetic monitoring externo\",\n    \"Custo de infraestrutura por contrato processado ≤ R$0,08 (alerta de regressão de custo)\"\n  ],\n  \"incremental_change\": \"Iniciar como Modular Monolith (módulos: Contratos, Assinaturas, Partes, Notificações, Billing, Auditoria) com fronteiras de domínio bem definidas via interfaces internas. Cada módulo tem seu próprio schema de banco isolado (schema-per-module no mesmo PostgreSQL). Extrair para serviços independentes apenas módulos que"
+}

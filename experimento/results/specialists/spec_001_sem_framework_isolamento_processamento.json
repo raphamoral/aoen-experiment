@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta menciona filas (RabbitMQ) como passo futuro condicional ao crescimento, mas no estado atual tudo roda junto no mesmo processo Node.js — localização em tempo real, APIs, otimização de rotas — sem isolamento físico, sem workers dedicados, sem fallback definido para falhas em processos pesados."
+}

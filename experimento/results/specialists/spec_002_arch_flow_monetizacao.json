@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta detalha bem a cadeia de valor e arquitetura técnica, mas não menciona nenhum modelo de monetização — não há referência a tiers, taxas de marketplace, assinaturas, take rate, preços, MRR, LTV, CAC ou qualquer mecanismo de geração de receita."
+}

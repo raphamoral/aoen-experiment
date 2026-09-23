@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 8,
+  "justificativa": "A proposta define processos distintos por responsabilidade (api-server separado de scheduler-worker), filas assíncronas via SQS/RabbitMQ e workers isolados fisicamente em containers separados no ECS/Kubernetes — permitindo escalonamento independente —, porém não detalha circuit breakers, fallback explícito em caso de falha do worker nem políticas de dead-letter queue, deixando lacunas de resiliência que impedem a nota máxima."
+}

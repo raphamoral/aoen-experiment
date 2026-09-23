@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta é um exemplo quase perfeito de coerência sistêmica: stateless processes justificam o Redis para sessões, que justifica o autoscaling horizontal, que justifica o graceful shutdown com drain, que justifica a idempotência nos workers, que justifica as dead-letter queues — cada decisão carrega o peso das anteriores e prepara o terreno para as seguintes; a única tensão menor é a inconsistência de gestão de dependências entre serviços (pyproject.toml+pip-compile na API versus requirements.txt fixos nos workers) e a ambiguidade 'ECS/Fargate ou Kubernetes', que sinaliza uma escolha ainda não resolvida onde a escolha de orquestrador impacta diretamente as estratégias de autoscaling por métrica descritas."
+}

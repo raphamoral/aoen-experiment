@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O produto identifica corretamente o Real-time Tracking Engine e o Algoritmo de Rota Last-Mile como componentes genesis (diferenciadores), isolando-os nos bounded contexts adequados e desacoplando-os via Kafka — mas não articula por que esses componentes são insubstituíveis frente a concorrentes como Onfleet ou Circuit, nem demonstra extensibilidade do núcleo além da troca de provider de mapas."
+}

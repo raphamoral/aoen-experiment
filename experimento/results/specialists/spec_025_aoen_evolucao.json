@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 25,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida: o solver de otimização é explicitamente abstraído por contrato estável (trocar OR-Tools por VROOM ou ML próprio sem impacto externo), a RouteService isola regras de negócio de todas as interfaces (nenhuma interface conhece o banco, o solver ou a lógica de janelas), e o modelo de interfaces múltiplas sobre camada única facilita adição de novos canais sem toque no core — padrões que indicam dependências apontando para dentro e decisões reversíveis; a nota fica em 8 e não em 9-10 porque a proposta não endereça independência da camada de persistência (banco de dados pode estar acoplado à RouteService), não explicita mecanismos de escalabilidade horizontal (o que pode exigir mudança arquitetural ao passar de centenas para dezenas de milhares de usuários), e a consolidação geográfica do passo 2 do fluxo sugere um acoplamento potencial entre pipeline operacional e modelo de dados que pode resistir à evolução do domínio."
+}

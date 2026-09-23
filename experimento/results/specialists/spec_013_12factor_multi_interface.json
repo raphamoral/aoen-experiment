@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A proposta indica indiretamente múltiplos canais via backing services (FCM para push mobile, Twilio para SMS, API HTTP para web), e a arquitetura stateless/API-first viabiliza tecnicamente múltiplas interfaces, mas o documento não define explicitamente perfis de usuário distintos (coworker, parceiro/operador, admin), não justifica cada interface por alcance de mercado, e não articula uma estratégia deliberada de desacoplamento UI-lógica de negócio — o que existe é uma consequência arquitetural favorável, não um design intencional orientado a múltiplas interfaces."
+}

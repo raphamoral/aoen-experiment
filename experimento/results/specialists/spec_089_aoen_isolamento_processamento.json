@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 89,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define fronteiras lógicas via service layer (PlanningService, InsightService), mas não menciona em nenhum momento filas de mensagens, workers separados, processamento assíncrono ou isolamento físico do motor agronômico — o fluxo da fase3_fluxo_fixo é inteiramente síncrono e sequencial, o que significa que uma falha ou sobrecarga no processamento de NDVI/clima/modelo derruba toda a requisição e potencialmente toda a aplicação."
+}

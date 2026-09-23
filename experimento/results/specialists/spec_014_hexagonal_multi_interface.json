@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A proposta prevê múltiplas interfaces bem distintas (WebSocket, REST, WebRTC, Mobile SDK, Widget embeddável, CLI e Webhook) cada uma justificada por perfis reais de uso — usuários web em tempo real, gestores via API, desenvolvedores integradores, usuários mobile, parceiros que embarcam o produto e automação/testes — e a arquitetura hexagonal com ports/adapters garante desacoplamento da lógica de negócio, permitindo adicionar novas interfaces sem reescrita do core; perde um ponto por não explicitar explicitamente a justificativa de mercado para cada canal (ex: por que CLI e não apenas REST para automação)."
+}

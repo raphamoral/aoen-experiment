@@ -1,0 +1,46 @@
+{
+  "ideia_idx": 88,
+  "ideia": "Plataforma de supply chain finance para pequenos fornecedores",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de antecipação de recebíveis baseado no risco do comprador (âncora), não do fornecedor — permite que pequenos fornecedores acessem capital de giro usando a solidez do seu cliente pagador como garantia implícita, sem depender de rating próprio.",
+    "fase1_mercado": "Pequenos fornecedores (PMEs) com prazo de pagamento de 30–120 dias junto a grandes compradores corporativos (âncoras). Secundariamente: fintechs e fundos de recebíveis que querem originar ativos via plataforma.",
+    "fase1_extensivel": "Sim. O motor de scoring pode consumir múltiplas fontes (SERASA, Receita Federal, NF-e, ERP do âncora, histórico transacional). A liquidez pode vir de múltiplos provedores (bancos, FIDCs, investidores). Novos provedores de risco ou de funding entram como adaptadores sem reescrever o core.",
+    "fase2_interfaces": [
+      "Portal Web do Fornecedor — solicitar antecipação, enviar notas fiscais, acompanhar status e histórico",
+      "Portal Web do Âncora/Comprador — confirmar faturas, gerenciar base de fornecedores aprovados, ver painel de payables",
+      "Dashboard da Instituição Financeira/FIDC — gerenciar portfólio de recebíveis, aprovar limites, acompanhar inadimplência",
+      "API REST — integração com ERPs (SAP, TOTVS, Bling) para envio automático de NF-e e gatilhos de antecipação",
+      "Interface WhatsApp/Chatbot — fornecedores com baixa maturidade digital solicitam antecipação via mensagem",
+      "App Mobile PWA — acesso em campo para fornecedores que operam fora de escritório"
+    ],
+    "fase2_justificativa_mercado": "Portal do Fornecedor abre o mercado principal (PMEs com necessidade de liquidez). Portal do Âncora ativa o canal de distribuição B2B2B — grandes compradores trazem carteiras inteiras de fornecedores. Dashboard financeiro atrai o capital institucional que financia as operações. API/ERP abre segmento de fornecedores médios com operação estruturada. WhatsApp alcança o segmento de menor digitalização (feirantes, prestadores de serviço, micro-fornecedores) que representa volume massivo mas não usa portal.",
+    "fase2_service_layer": "Uma SupplyChainFinanceService expõe contratos de domínio independentes de interface: submitInvoice(), requestAnticipation(), getOffer(), acceptOffer(), getPortfolio(). Cada interface consome esta camada via seu próprio adapter (HTTP controller, webhook handler, chatbot intent handler). Nenhuma regra de negócio — prazo, taxa, elegibilidade — vive na camada de interface.",
+    "fase3_fluxo_fixo": "1. Ingestão da NF-e/fatura → 2. Validação fiscal e de elegibilidade → 3. Scoring do âncora + cálculo da taxa → 4. Geração da oferta de antecipação → 5. Aceite pelo fornecedor → 6. Aprovação/desembolso pela instituição financeira → 7. Registro do recebível → 8. Monitoramento do vencimento e liquidação → 9. Repasse ao financiador. Este fluxo é imutável no código.",
+    "fase3_parametros_configuraveis": [
+      "taxa_desconto_base_percentual",
+      "prazo_minimo_antecipacao_dias",
+      "prazo_maximo_antecipacao_dias",
+      "percentual_maximo_adiantamento",
+      "limite_por_fornecedor",
+      "limite_por_ancora",
+      "tipos_nota_fiscal_elegiveis",
+      "integracao_erp_fonte",
+      "provedores_score_risco_ativos",
+      "provedor_liquidez_padrao",
+      "moeda_operacao",
+      "workflow_aprovacao_manual_acima_de_valor",
+      "template_contrato_cessao",
+      "regras_compliance_por_jurisdicao",
+      "formato_relatorio_financiador",
+      "sla_resposta_oferta_horas"
+    ],
+    "fase3_novo_cliente": "Novo âncora ou financiador = novo registro de configuração (JSON/YAML) com seus parâmetros de risco, limites, integração e branding. O operador preenche um formulário de onboarding que gera esse registro. Zero código novo. Fornecedores associados ao âncora herdam automaticamente as regras do âncora-pai.",
+    "fase4_core_isolado": "O motor de scoring e precificação roda como microserviço assíncrono isolado (scoring-worker). Recebe eventos de fila (nova NF-e submetida), processa scoring via APIs externas e banco de dados analítico, e publica o resultado (oferta) de volta na fila. Completamente separado da API transacional principal.",
+    "fase4_custo_total_cliente": "Custo core por operação: consulta SERASA/Quod (~R$0,80–2,00), consulta Receita Federal NF-e (~R$0,10), processamento scoring-worker (0,005 vCPU·h ~R$0,003). Custo infra proporcional: banco de dados por operação (~R$0,02), storage de documentos (~R$0,001/NF-e), banda de API (~R$0,001). Custo operacional: suporte pro-rata, compliance, custo de capital da operação. Custo total estimado por operação antecipada: R$1,50–4,00 variável + ~R$80–200/mês de infra fixa por âncora ativo. Permite precificar a taxa de plataforma (0,1%–0,5% do valor antecipado) com margem positiva a partir de ~R$5.000 por operação.",
+    "fase4_continuidade": "A API transacional (portal, aceites, consultas de status) opera independente do scoring-worker. Se o scoring-worker cair, novas solicitações entram em fila com status 'aguardando análise' — o sistema não derruba o portal nem bloqueia operações já aprovadas. Circuit breaker com fallback para última oferta cacheada em casos de re-tentativa dentro de janela de 15 minutos.",
+    "fase4_manutencao": "O scoring-worker comunica-se exclusivamente por contrato de mensagem (evento de entrada + evento de saída). Trocar o provedor de score (de SERASA para modelo próprio de ML, por exemplo) significa trocar a implementação interna do worker sem alterar nenhum outro serviço. Feature flags por âncora permitem migração gradual: 10% do tráfego no novo provider, rollback instantâneo se divergência acima de threshold.",
+    "monetizacao": "1. Taxa de plataforma por operação (0,2%–0,8% do valor antecipado) cobrada do fornecedor ou financiador. 2. SaaS mensal por âncora (R$500–5.000/mês) pelo acesso ao portal e integrações ERP. 3. Revenue share com financiadores (% do spread da operação). 4. White-label para bancos e fintechs que querem oferecer SCF com a plataforma como engine (contrato enterprise). Monetização começa no primeiro desembolso — sem depender de volume para viabilizar o unit economics.",
+    "stack_sugerida": "Backend: Node.js (NestJS) para API transacional + Python (FastAPI) para scoring-worker analítico. Fila de mensagens: RabbitMQ ou AWS SQS. Banco transacional: PostgreSQL (RDS). Banco analítico/scoring: TimescaleDB ou Redshift. Storage de documentos (NF-e, contratos): S3 + integração SEFAZ. Cache: Redis (ofertas, sessions). Frontend: Next.js (portais web) + React Native Web (PWA mobile). Chatbot: integração Twilio/WhatsApp Business API + Dialogflow ou LLM próprio. Infra: AWS ECS Fargate (containers sem gerenciar servidor) + Terraform. Observabilidade: Datadog ou Grafana + Loki. Auth: Auth0 ou Keycloak com perfis por role (fornecedor, âncora, financiador, admin)."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador ('sugestão de horários baseada em histórico de duração por procedimento + evitar conflitos de sala/equipamento') está identificado e é genuinamente mais útil que um calendário comum, mas permanece subdesenvolvido na proposta: não foi isolado como módulo central, depende de 'regras simples por enquanto', e não explica por que alternativas como Doctoralia ou Clinicorp não resolveriam o mesmo problema — enfraquecendo o argumento de insubstituibilidade."
+}

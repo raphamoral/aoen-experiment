@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 32,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (análise semântica por categoria operacional hoteleira), isolado atrás de interface SentimentAnalyzer, extensível para múltiplos provedores de LLM, e resolve um problema real que ferramentas genéricas de sentimento não resolvem — a granularidade por dimensão operacional (limpeza, atendimento, custo-benefício) que transforma review em ação gerencial; perde um ponto por não evidenciar o que impede replicação trivial por um concorrente com acesso aos mesmos LLMs."
+}

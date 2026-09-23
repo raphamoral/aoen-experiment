@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta define um api-gateway e canais de notificação multi-canal (e-mail via SendGrid, SMS/WhatsApp via Twilio), sinalizando consciência de contextos distintos, mas não especifica interfaces concretas por perfil de usuário (ex: portal web para gestores, app mobile para operadores de campo, CLI para integrações B2B), não apresenta justificativa de alcance de mercado para as escolhas e não declara explicitamente o desacoplamento da lógica de negócio das camadas de apresentação."
+}

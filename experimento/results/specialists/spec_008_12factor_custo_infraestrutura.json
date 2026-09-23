@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista os componentes de infraestrutura (PostgreSQL, MongoDB, Redis, Kafka/RabbitMQ, S3/MinIO, Hyperledger/Polygon, SendGrid, Twilio, Prometheus/Grafana, Keycloak/Auth0) e menciona práticas arquiteturais sólidas como imagens slim/distroless e pipeline CI/CD, mas não apresenta nenhuma estimativa concreta de custo em dólares ou reais, nenhuma estratégia explícita de otimização financeira (scale-to-zero, instâncias spot, reserved instances, storage tiering) e nenhuma projeção de crescimento de custo por usuário ou volume de transações blockchain."
+}

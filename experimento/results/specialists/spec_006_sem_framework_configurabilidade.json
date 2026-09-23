@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 1,
+  "justificativa": "A proposta descreve um app B2C com fluxo completamente hardcoded — sem tabela de configuração por tenant, sem separação código/config, sem suporte a white-label ou personalização de comportamento; onboarding de um novo cliente corporativo (ex: clínica ou nutricionista) exigiria desenvolvimento, não apenas uma nova row no banco."
+}

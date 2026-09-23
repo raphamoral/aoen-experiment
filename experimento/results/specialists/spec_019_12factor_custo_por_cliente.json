@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura descreve infraestrutura total (ECS, Redis, S3, PostgreSQL) como recursos compartilhados entre tenants, sem nenhuma menção a rastreamento de consumo por cliente, cálculo de custo por operação/transação ou mecanismo de atribuição de recursos por tenant — o que caracteriza FinOps de infra total, não Unit Economics por cliente."
+}

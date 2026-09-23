@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta demonstra fundamentos sólidos de multi-tenancy via RLS no PostgreSQL, controle de acesso por papel e UserOnboardingPort, mas não evidencia um sistema de configuração por tenant: a escolha entre HyperledgerFabricAdapter e EthereumAdapter parece exigir decisão em código (não há ConfigurationPort ou TenantSettingsPort), regras regulatórias estaduais (CONAMA/IBAMA) não têm mecanismo de parametrização explícito, e não há camada de feature flags ou workflow engine que permita onboarding de um novo cliente com comportamento distinto apenas inserindo registros no banco — indicando que clientes com requisitos diferentes ainda demandariam intervenção de desenvolvimento."
+}

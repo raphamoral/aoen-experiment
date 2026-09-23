@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 67,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural menciona multi-tenancy e parametrização por tenant, mas não há nenhum mecanismo descrito para rastrear consumo de recursos por cliente, calcular custo por operação (ex: custo de cada execução do AlertEngine, custo de armazenamento por paciente monitorado) ou conectar o custo unitário ao modelo de precificação — o projeto ainda trata infraestrutura como custo total, sem unit economics por tenant."
+}

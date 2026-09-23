@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "Há separação em camadas (frontend/backend/mobile) e boas decisões de infraestrutura (filas assíncronas, containers, CDN), mas a proposta acopla diretamente a lógica de negócio a vendors específicos (OpenAI, Twilio, Auth0, AWS S3) sem mencionar camadas de abstração, padrões como ports-and-adapters ou repositórios, tornando a substituição de qualquer serviço externo um esforço de refatoração amplo."
+}

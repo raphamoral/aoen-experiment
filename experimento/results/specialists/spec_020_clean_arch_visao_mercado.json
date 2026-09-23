@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta é puramente arquitetural e não articula mercado-alvo, dor do cliente, tamanho de mercado nem diferenciação frente a alternativas consolidadas como Bugcrowd ou HackerOne — o conceito de 'crowdsourced testing com gamificação' apenas sugere implicitamente dois públicos (empresas e testers), sem nenhuma análise de mercado deliberada."
+}

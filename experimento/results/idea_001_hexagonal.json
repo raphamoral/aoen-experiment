@@ -1,0 +1,54 @@
+{
+  "ideia_idx": 1,
+  "ideia": "SaaS de gestão de frotas para entregas last-mile com rastreamento em tempo real",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Orquestração de entregas last-mile: alocação de pedidos a entregadores, otimização de rotas em tempo real, rastreamento de localização e gestão de status de entregas",
+    "primary_ports": [
+      "API REST (gerentes de operações, clientes)",
+      "WebSocket (rastreamento em tempo real)",
+      "Dashboard Web/Mobile",
+      "CLI (operações administrativas)",
+      "Webhook (integrações com e-commerce)"
+    ],
+    "secondary_ports": [
+      "DeliveryRepository (persistência de entregas)",
+      "LocationService (geolocalização)",
+      "NotificationPort (alertas/sms/email)",
+      "RouteOptimizationPort (cálculo de rotas)",
+      "AuthenticationPort (autenticação de usuários)",
+      "EventBusPort (publicação de eventos)"
+    ],
+    "primary_adapters": [
+      "Express.js/FastAPI REST Controller",
+      "Socket.io/WebSocket Server",
+      "React/Vue SPA Dashboard",
+      "CLI via Commander.js/Click",
+      "Webhook HTTP Receiver"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL com PostGIS (geolocalização)",
+      "Redis (cache de rotas, sessões)",
+      "Google Maps API / OSRM (roteamento)",
+      "Twilio/SendGrid (notificações)",
+      "RabbitMQ/Kafka (event streaming)",
+      "Auth0/JWT (autenticação)",
+      "S3/Blob Storage (documentos de entrega)"
+    ],
+    "isolation": "Dependency Injection via container IoC; interfaces segregadas por responsabilidade; use cases isolados de adapters; domain entities sem dependências externas; testes unitários do core sem mocks de IO",
+    "interfaces": [
+      "IDeliveryService",
+      "ILocationTracker",
+      "IRouteOptimizer",
+      "INotificationAdapter",
+      "IDeliveryRepository",
+      "IAuthService",
+      "IEventPublisher"
+    ],
+    "escalabilidade": "Separação em microsserviços por bounded context (Delivery Service, Location Service, Route Service); horizontal scaling de API stateless; cache distribuído (Redis Cluster); event-driven architecture para desacoplamento; queue de jobs para processamento assíncrono (cálculo de rotas, notificações)",
+    "custos": "API de mapas (major cost driver); infraestrutura de banco de dados escalável; message broker; storage de histórico; monitoramento e observabilidade; deploy em Kubernetes reduz overhead de infraestrutura",
+    "monetizacao": "SaaS por transação (R$ por entrega processada); tier based em volume mensal; premium: API customizada, webhooks ilimitados, suporte dedicado; marketplace de integradores",
+    "stack_sugerida": "Backend: Node.js + TypeScript / Python + FastAPI; Frontend: React + Mapbox GL; Database: PostgreSQL + PostGIS; Cache: Redis; Message Queue: RabbitMQ ou Kafka; Container: Docker + Kubernetes; Observability: Prometheus + Grafana + ELK; Testing: Jest/Pytest + Testcontainers"
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Orquestração de entregas last-mile: alocação de pedidos a entregadores, otimização de rotas em tempo real, rastreamento de localização e gestão de status de entregas\",\n  \"primary_ports\": [\n    \"API REST (gerentes de operações, clientes)\",\n    \"WebSocket (rastreamento em tempo real)\",\n    \"Dashboard Web/Mobile\",\n    \"CLI (operações administrativas)\",\n    \"Webhook (integrações com e-commerce)\"\n  ],\n  \"secondary_ports\": [\n    \"DeliveryRepository (persistência de entregas)\",\n    \"LocationService (geolocalização)\",\n    \"NotificationPort (alertas/sms/email)\",\n    \"RouteOptimizationPort (cálculo de rotas)\",\n    \"AuthenticationPort (autenticação de usuários)\",\n    \"EventBusPort (publicação de eventos)\"\n  ],\n  \"primary_adapters\": [\n    \"Express.js/FastAPI REST Controller\",\n    \"Socket.io/WebSocket Server\",\n    \"React/Vue SPA Dashboard\",\n    \"CLI via Commander.js/Click\",\n    \"Webhook HTTP Receiver\"\n  ],\n  \"secondary_adapters\": [\n    \"PostgreSQL com PostGIS (geolocalização)\",\n    \"Redis (cache de rotas, sessões)\",\n    \"Google Maps API / OSRM (roteamento)\",\n    \"Twilio/SendGrid (notificações)\",\n    \"RabbitMQ/Kafka (event streaming)\",\n    \"Auth0/JWT (autenticação)\",\n    \"S3/Blob Storage (documentos de entrega)\"\n  ],\n  \"isolation\": \"Dependency Injection via container IoC; interfaces segregadas por responsabilidade; use cases isolados de adapters; domain entities sem dependências externas; testes unitários do core sem mocks de IO\",\n  \"interfaces\": [\n    \"IDeliveryService\",\n    \"ILocationTracker\",\n    \"IRouteOptimizer\",\n    \"INotificationAdapter\",\n    \"IDeliveryRepository\",\n    \"IAuthService\",\n    \"IEventPublisher\"\n  ],\n  \"escalabilidade\": \"Separação em microsserviços por bounded context (Delivery Service, Location Service, Route Service); horizontal scaling de API stateless; cache distribuído (Redis Cluster); event-driven architecture para desacoplamento; queue de jobs para processamento assíncrono (cálculo de rotas, notificações)\",\n  \"custos\": \"API de "
+}

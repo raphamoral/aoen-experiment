@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A arquitetura lista ferramentas de monitoramento de infraestrutura (Datadog/Grafana) e um contexto de Analytics voltado a métricas de marketplace e precificação assistida, mas em nenhum momento descreve rastreamento de custo por tenant, custo por operação (ex: quanto custa cada laudo de certificação por cliente, cada chamada de IA de avaliação, cada transação de escrow) nem conecta consumo de recursos ao modelo de precificação por cliente — caracterizando FinOps agregado, não Unit Economics por cliente."
+}

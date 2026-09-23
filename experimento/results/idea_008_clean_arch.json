@@ -1,0 +1,532 @@
+{
+  "ideia_idx": 8,
+  "ideia": "SaaS de gestão de resíduos industriais com rastreabilidade blockchain",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "Residuo": {
+        "descricao": "Entidade central representando um resíduo industrial",
+        "atributos": [
+          "id",
+          "tipo",
+          "classificacao_ibama",
+          "peso_kg",
+          "volume_litros",
+          "estado_fisico",
+          "periculosidade",
+          "data_geracao",
+          "composicao_quimica"
+        ],
+        "regras_negocio": [
+          "Classificação obrigatória conforme ABNT NBR 10004",
+          "Periculosidade determina fluxo de descarte",
+          "Rastreabilidade imutável após geração"
+        ]
+      },
+      "ManifestoTransporte": {
+        "descricao": "Documento legal de movimentação de resíduos (MTR)",
+        "atributos": [
+          "id",
+          "numero_mtr",
+          "residuos",
+          "gerador",
+          "transportador",
+          "destinatario",
+          "data_emissao",
+          "hash_blockchain"
+        ],
+        "regras_negocio": [
+          "MTR obrigatório por legislação ambiental",
+          "Hash gerado no momento da emissão",
+          "Imutabilidade garantida por registro on-chain"
+        ]
+      },
+      "Empresa": {
+        "descricao": "Gerador, transportador ou destinatário de resíduos",
+        "atributos": [
+          "id",
+          "cnpj",
+          "razao_social",
+          "tipo_licenca_ambiental",
+          "licencas",
+          "status_regularidade"
+        ],
+        "regras_negocio": [
+          "Licença ambiental válida obrigatória",
+          "CNPJ único por tenant",
+          "Inativação não apaga histórico"
+        ]
+      },
+      "Licenca": {
+        "descricao": "Licença ambiental vinculada a uma empresa",
+        "atributos": [
+          "id",
+          "numero",
+          "tipo",
+          "orgao_emissor",
+          "data_validade",
+          "escopos_permitidos"
+        ],
+        "regras_negocio": [
+          "Validade verificada a cada operação",
+          "Alerta automático 90 dias antes do vencimento"
+        ]
+      },
+      "EventoRastreabilidade": {
+        "descricao": "Registro imutável de cada etapa do ciclo de vida do resíduo",
+        "atributos": [
+          "id",
+          "residuo_id",
+          "tipo_evento",
+          "responsavel",
+          "localizacao_gps",
+          "timestamp",
+          "hash_anterior",
+          "hash_atual"
+        ],
+        "regras_negocio": [
+          "Cadeia de hashes garante integridade",
+          "Nenhum evento pode ser deletado ou alterado"
+        ]
+      },
+      "Destinacao": {
+        "descricao": "Forma final de tratamento ou descarte do resíduo",
+        "atributos": [
+          "id",
+          "tipo",
+          "instalacao",
+          "certificado_destruicao",
+          "data_conclusao",
+          "evidencias"
+        ],
+        "regras_negocio": [
+          "Certificado obrigatório para resíduos Classe I",
+          "Destinação deve ser compatível com a classificação do resíduo"
+        ]
+      },
+      "Tenant": {
+        "descricao": "Organização cliente no modelo multi-tenant",
+        "atributos": [
+          "id",
+          "plano_assinatura",
+          "limites_uso",
+          "configuracoes",
+          "data_criacao"
+        ],
+        "regras_negocio": [
+          "Isolamento total de dados entre tenants",
+          "Limites de uso definem capacidades do plano"
+        ]
+      }
+    },
+    "use_cases": {
+      "gestao_residuos": [
+        {
+          "nome": "RegistrarResiduoGerado",
+          "descricao": "Cadastra novo resíduo com classificação automática por IA",
+          "input": "DadosResiduoDTO",
+          "output": "ResiduoRegistradoDTO",
+          "regras": [
+            "Valida classificação IBAMA",
+            "Gera ID único",
+            "Dispara evento de rastreabilidade inicial"
+          ]
+        },
+        {
+          "nome": "EmitirManifestoTransporte",
+          "descricao": "Gera MTR digital com registro blockchain",
+          "input": "SolicitacaoMTRDTO",
+          "output": "ManifestoEmitidoDTO",
+          "regras": [
+            "Valida licenças de todas as partes",
+            "Registra hash na blockchain",
+            "Notifica transportador"
+          ]
+        },
+        {
+          "nome": "RegistrarDestinacoFinal",
+          "descricao": "Encerra o ciclo de vida do resíduo com evidências",
+          "input": "DestinaacaoDTO",
+          "output": "CertificadoDestinaacaoDTO",
+          "regras": [
+            "Valida compatibilidade de destinação",
+            "Gera certificado digital",
+            "Fecha cadeia de rastreabilidade"
+          ]
+        },
+        {
+          "nome": "TransferirCustodiaResiduos",
+          "descricao": "Registra mudança de responsabilidade na cadeia",
+          "input": "TransferenciaCustodiaDTO",
+          "output": "EventoRastreabilidadeDTO",
+          "regras": [
+            "Exige assinatura digital das partes",
+            "Registra geolocalização",
+            "Atualiza cadeia blockchain"
+          ]
+        }
+      ],
+      "rastreabilidade": [
+        {
+          "nome": "ConsultarHistoricoResiduos",
+          "descricao": "Retorna cadeia completa de eventos de um resíduo",
+          "input": "ResiduoIdDTO",
+          "output": "CadeiaRastreabilidadeDTO"
+        },
+        {
+          "nome": "ValidarIntegridadeCadeia",
+          "descricao": "Verifica consistência dos hashes na blockchain",
+          "input": "ManifestoIdDTO",
+          "output": "ResultadoValidacaoDTO"
+        },
+        {
+          "nome": "GerarRelatorioAuditoria",
+          "descricao": "Produz relatório auditável para órgão ambiental",
+          "input": "FiltroRelatorioDTO",
+          "output": "RelatorioAuditoriaDTO"
+        }
+      ],
+      "compliance": [
+        {
+          "nome": "VerificarConformidadeLegal",
+          "descricao": "Checa se operação está em conformidade com PNRS e IBAMA",
+          "input": "OperacaoDTO",
+          "output": "ResultadoConformidadeDTO"
+        },
+        {
+          "nome": "AlertarVencimentoLicenca",
+          "descricao": "Notifica empresas com licenças próximas do vencimento",
+          "input": "void",
+          "output": "ListaAlertasDTO"
+        },
+        {
+          "nome": "IntegrarSINIR",
+          "descricao": "Envia dados ao Sistema Nacional de Informações sobre Resíduos Sólidos",
+          "input": "PeriodoDTO",
+          "output": "StatusEnvioSINIRDTO"
+        }
+      ],
+      "analytics": [
+        {
+          "nome": "CalcularInventarioResiduos",
+          "descricao": "Apura volume e tipo de resíduos gerados por período",
+          "input": "FiltroInventarioDTO",
+          "output": "InventarioDTO"
+        },
+        {
+          "nome": "ProjetarCustosDescarte",
+          "descricao": "Estima custos futuros com base em tendências históricas",
+          "input": "ProjecaoDTO",
+          "output": "CustoProjetadoDTO"
+        }
+      ]
+    },
+    "interface_adapters": {
+      "controllers": {
+        "descricao": "Traduzem requisições HTTP/gRPC em chamadas de Use Case",
+        "exemplos": [
+          "ResiduoController — CRUD e ações de resíduos",
+          "ManifestoController — emissão e consulta de MTRs",
+          "RelatorioController — geração de relatórios",
+          "WebhookBlockchainController — recebe confirmações on-chain",
+          "AuthController — autenticação e autorização"
+        ]
+      },
+      "presenters": {
+        "descricao": "Formatam saídas dos Use Cases para o formato esperado pelo cliente",
+        "exemplos": [
+          "ResiduoPresenter — serializa entidade para JSON/PDF",
+          "ManifestoPresenter — formata MTR conforme layout legal",
+          "RelatorioPresenter — gera PDF/CSV de relatórios",
+          "DashboardPresenter — agrega dados para visualização"
+        ]
+      },
+      "gateways": {
+        "descricao": "Interfaces que abstraem dependências externas (implementadas na camada externa)",
+        "exemplos": [
+          "ResiduoRepositoryGateway — abstração do banco de dados",
+          "BlockchainGateway — abstração do serviço blockchain",
+          "NotificacaoGateway — abstração de e-mail/SMS/push",
+          "SINIRGateway — abstração da API governamental",
+          "StorageGateway — abstração de armazenamento de arquivos",
+          "ClassificacaoIAGateway — abstração do modelo de IA"
+        ]
+      },
+      "dto": {
+        "descricao": "Objetos de transferência de dados entre camadas",
+        "exemplos": [
+          "ResiduoDTO, ManifestoDTO, EmpresaDTO",
+          "FiltroRelatorioDTO, PaginacaoDTO",
+          "EventoRastreabilidadeDTO, CadeiaRastreabilidadeDTO"
+        ]
+      },
+      "mappers": {
+        "descricao": "Convertem entre entidades de domínio e modelos de persistência",
+        "exemplos": [
+          "ResiduoMapper — Entity <-> ORM Model",
+          "ManifestoMapper — Entity <-> ORM Model",
+          "EventoRastreabilidadeMapper"
+        ]
+      }
+    },
+    "frameworks_drivers": {
+      "api": {
+        "framework": "NestJS (Node.js) ou FastAPI (Python)",
+        "justificativa": "NestJS oferece arquitetura modular alinhada a Clean Architecture; FastAPI para alta performance em serviços de IA/ML",
+        "protocolo": "REST + gRPC para comunicação entre microsserviços"
+      },
+      "banco_dados_principal": {
+        "tecnologia": "PostgreSQL com extensão pg_partman",
+        "justificativa": "ACID, particionamento por tenant, suporte a JSONB para atributos variáveis",
+        "orm": "Prisma ou TypeORM (NestJS) / SQLAlchemy (FastAPI)"
+      },
+      "banco_dados_time_series": {
+        "tecnologia": "TimescaleDB",
+        "justificativa": "Otimizado para séries temporais de eventos de rastreabilidade e métricas"
+      },
+      "cache": {
+        "tecnologia": "Redis",
+        "uso": "Cache de sessão, rate limiting, filas de jobs, pub/sub entre serviços"
+      },
+      "blockchain": {
+        "rede": "Hyperledger Fabric (privada) ou Polygon (pública/L2)",
+        "justificativa": "Hyperledger para ambientes corporativos com controle total; Polygon para interoperabilidade e custo reduzido",
+        "smart_contracts": "Solidity (Polygon) ou Chaincode Go (Hyperledger)",
+        "indexador": "The Graph Protocol para consultas eficientes on-chain"
+      },
+      "mensageria": {
+        "tecnologia": "Apache Kafka",
+        "uso": "Eventos de domínio assíncronos, integração entre microsserviços, auditoria"
+      },
+      "storage": {
+        "tecnologia": "AWS S3 ou MinIO (self-hosted)",
+        "uso": "Certificados, evidências fotográficas, documentos legais, relatórios"
+      },
+      "autenticacao": {
+        "tecnologia": "Keycloak + JWT",
+        "features": "SSO, MFA, RBAC por tenant, OAuth2/OIDC"
+      },
+      "ia_classificacao": {
+        "tecnologia": "Python + scikit-learn / OpenAI API",
+        "uso": "Classificação automática de resíduos com base em descrição e composição"
+      },
+      "infraestrutura": {
+        "container": "Docker + Kubernetes (EKS/GKE)",
+        "ci_cd": "GitHub Actions + ArgoCD",
+        "iac": "Terraform",
+        "service_mesh": "Istio para observabilidade e segurança entre serviços",
+        "observabilidade": "Prometheus + Grafana + OpenTelemetry + Jaeger"
+      },
+      "frontend": {
+        "framework": "Next.js (React)",
+        "ui": "Tailwind CSS + Shadcn/UI",
+        "mobile": "React Native para app de coleta de dados em campo",
+        "mapas": "Mapbox GL para rastreamento geoespacial"
+      }
+    },
+    "dependency_rule": {
+      "descricao": "A Regra de Dependência é aplicada rigorosamente: nenhuma camada interna conhece nada sobre camadas externas",
+      "camadas": {
+        "entities": {
+          "depende_de": "Nada — zero dependências externas",
+          "conhecida_por": "Use Cases",
+          "implementacao": "Classes puras TypeScript/Python sem imports de frameworks"
+        },
+        "use_cases": {
+          "depende_de": "Apenas Entities e interfaces (ports) definidas na própria camada",
+          "conhecida_por": "Interface Adapters",
+          "implementacao": "Injeção de dependência via interfaces — nunca implementações concretas"
+        },
+        "interface_adapters": {
+          "depende_de": "Use Cases (chama) e Entities (lê DTOs)",
+          "conhecida_por": "Frameworks & Drivers",
+          "implementacao": "Controllers chamam Use Cases; Gateways implementam interfaces dos Use Cases"
+        },
+        "frameworks_drivers": {
+          "depende_de": "Interface Adapters (implementa contratos)",
+          "conhecida_por": "Ninguém — camada mais externa",
+          "implementacao": "Implementações concretas de repositórios, clientes HTTP, SDKs de blockchain"
+        }
+      },
+      "inversao_dependencia": "Use Cases definem interfaces (ex: ResiduoRepository); a camada de Frameworks implementa (ex: PostgresResiduoRepository). O módulo de DI (ex: NestJS IoC container) injeta a implementação correta em runtime.",
+      "exemplo_concreto": "BlockchainGateway é uma interface definida em Use Cases. HyperledgerBlockchainAdapter implementa essa interface na camada de Frameworks. Se trocarmos Hyperledger por Polygon, apenas o Adapter muda — nenhum Use Case ou Entity é tocado."
+    },
+    "testability": {
+      "entities": {
+        "estrategia": "Testes unitários puros sem nenhum mock",
+        "ferramenta": "Jest (TS) ou Pytest (Python)",
+        "cobertura_alvo": "100% — lógica crítica de negócio",
+        "exemplo": "Testar regra de classificação de periculosidade de Residuo sem banco ou rede"
+      },
+      "use_cases": {
+        "estrategia": "Testes unitários com mocks das interfaces de gateway",
+        "ferramenta": "Jest com jest-mock-extended ou unittest.mock",
+        "cobertura_alvo": "90%+",
+        "exemplo": "EmitirManifestoTransporte com BlockchainGateway mockado retornando hash fake"
+      },
+      "interface_adapters": {
+        "estrategia": "Testes de integração com banco em memória (SQLite) ou TestContainers",
+        "ferramenta": "TestContainers para PostgreSQL real em CI",
+        "cobertura_alvo": "80%+",
+        "exemplo": "PostgresResiduoRepository testado contra container PostgreSQL efêmero"
+      },
+      "frameworks_drivers": {
+        "estrategia": "Testes E2E com ambiente completo (staging)",
+        "ferramenta": "Supertest para API HTTP; Playwright para fluxos de UI",
+        "cobertura_alvo": "Fluxos críticos de negócio",
+        "exemplo": "Fluxo completo: Gerar Resíduo → Emitir MTR → Validar hash on-chain"
+      },
+      "blockchain": {
+        "estrategia": "Rede blockchain local para testes (Hardhat para Solidity; Fabric test network para Hyperledger)",
+        "beneficio": "Testes on-chain sem custo de gas real"
+      },
+      "beneficio_clean_architecture": "Como Use Cases não dependem de frameworks, 80% dos testes rodam em milissegundos sem I/O, tornando o CI/CD extremamente rápido"
+    },
+    "interfaces": [
+      "IResiduoRepository — CRUD e consultas de resíduos",
+      "IManifestoRepository — persistência de MTRs",
+      "IBlockchainGateway — registrar e consultar hashes on-chain",
+      "INotificacaoGateway — enviar alertas por e-mail, SMS, push",
+      "ISINIRGateway — integração com API do SINIR/IBAMA",
+      "IStorageGateway — upload e download de arquivos",
+      "IClassificacaoIAGateway — classificar resíduos por IA",
+      "IEventoRastreabilidadeRepository — persistência da cadeia de eventos",
+      "ILicencaRepository — gestão de licenças ambientais",
+      "IEmpresaRepository — gestão de empresas e tenants",
+      "IEmailProvider — abstração de provedores SMTP/SES",
+      "IGeolocalizacaoGateway — validação e enriquecimento de coordenadas GPS",
+      "IRelatorioGenerator — geração de PDFs e planilhas",
+      "IAuthProvider — validação de tokens e permissões"
+    ],
+    "escalabilidade": {
+      "arquitetura": "Microsserviços com decomposição por subdomínio (DDD Bounded Contexts)",
+      "servicos": [
+        "residuos-service — gestão central de resíduos",
+        "rastreabilidade-service — cadeia de eventos e blockchain",
+        "compliance-service — verificação legal e SINIR",
+        "notificacao-service — alertas e comunicações",
+        "relatorio-service — geração assíncrona de relatórios",
+        "ia-service — classificação automática de resíduos",
+        "auth-service — autenticação e autorização multi-tenant"
+      ],
+      "multi_tenancy": "Isolamento por schema PostgreSQL por tenant (schema-per-tenant) para dados sensíveis; particionamento por tenant_id para dados de alto volume",
+      "horizontal_scaling": "Kubernetes HPA escala pods baseado em CPU/memória; Kafka permite processamento paralelo de eventos",
+      "cqrs_event_sourcing": "CQRS para separar leituras (otimizadas para relatórios) de escritas (otimizadas para consistência); Event Sourcing na cadeia de rastreabilidade garante auditabilidade nativa",
+      "cdn_e_cache": "CloudFront/Cloudflare para assets estáticos; Redis para cache de relatórios frequentes e inventários",
+      "async_processing": "Geração de relatórios e integração SINIR via filas Kafka — nunca bloqueiam a API principal",
+      "limite_teorico": "Arquitetura suporta 10.000+ empresas ativas com escalonamento horizontal; sharding de banco para >100M de eventos de rastreabilidade"
+    },
+    "custos": {
+      "infraestrutura_inicial": {
+        "estimativa_mensal": "USD 800–2.000 (startup phase, AWS/GCP)",
+        "componentes_principais": [
+          "EKS cluster (3 nodes t3.medium): ~USD 300/mês",
+          "RDS PostgreSQL Multi-AZ: ~USD 200/mês",
+          "MSK (Kafka gerenciado): ~USD 250/mês",
+          "ElastiCache Redis: ~USD 100/mês",
+          "S3 + CloudFront: ~USD 50/mês"
+        ]
+      },
+      "blockchain": {
+        "hyperledger_fabric": "Custo de infraestrutura própria (~USD 400/mês para nodes) — sem gas fees, ideal para B2B enterprise",
+        "polygon": "Gas fees variáveis (~USD 0.001–0.01 por transação) — escalável mas imprevisível em volume alto"
+      },
+      "escala_media": {
+        "estimativa_mensal": "USD 5.000–15.000 (100–500 empresas ativas)",
+        "otimizacoes": [
+          "Reserved instances para reduzir 30–40%",
+          "Spot instances para workloads de batch",
+          "Compressão de dados históricos no S3 Glacier"
+        ]
+      },
+      "custos_variaveis": [
+        "Blockchain: proporcional ao volume de MTRs emitidos",
+        "Storage: cresce com volume de evidências e documentos",
+        "IA: proporcional ao volume de classificações automáticas",
+        "Suporte SINIR: sem custo direto (API governamental gratuita)"
+      ],
+      "otimizacoes_clean_arch": "Independência de framework facilita migração entre provedores cloud para redução de custos sem refatoração de negócio"
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS B2B com planos por volume de resíduos gerenciados",
+      "planos": {
+        "starter": {
+          "preco": "R$ 890/mês",
+          "limite": "Até 50 MTRs/mês, 1 empresa, relatórios básicos",
+          "target": "Pequenas indústrias e geradoras iniciantes"
+        },
+        "professional": {
+          "preco": "R$ 2.490/mês",
+          "limite": "Até 500 MTRs/mês, 5 empresas, compliance automático, API access",
+          "target": "Médias indústrias, transportadoras ambientais"
+        },
+        "enterprise": {
+          "preco": "R$ 8.900/mês (negociável)",
+          "limite": "MTRs ilimitados, multi-empresa, SLA 99.9%, suporte dedicado, blockchain privado",
+          "target": "Grandes indústrias, grupos empresariais, operadoras de resíduos"
+        }
+      },
+      "receitas_adicionais": [
+        "Add-on Blockchain Premium: R$ 590/mês — registro em rede pública com token NFT de certificado",
+        "Add-on IA Classification: R$ 390/mês — classificação automática ilimitada por IA",
+        "Consultoria de Compliance: R$ 250/hora — revisão de fluxos e adequação legal",
+        "Marketplace de Destinadores: comissão de 2–5% sobre contratos fechados pela plataforma",
+        "API para ERPs (SAP, TOTVS): R$ 1.200/mês por integração",
+        "White-label para consultorias ambientais: revenue share 30%"
+      ],
+      "unit_economics": {
+        "cac_estimado": "R$ 3.000–8.000 por cliente (inside sales + marketing digital)",
+        "ltv_estimado": "R$ 35.000–120.000 (churn anual estimado 8–15%)",
+        "ltv_cac_ratio": "5:1 a 15:1 (saudável para SaaS B2B)",
+        "payback_period": "4–8 meses"
+      },
+      "mercado": "Mercado de gestão de resíduos no Brasil: R$ 22 bilhões/ano; PNRS (Política Nacional de Resíduos Sólidos) como vetor regulatório compulsório"
+    },
+    "stack_sugerida": {
+      "backend_principal": {
+        "linguagem": "TypeScript",
+        "framework": "NestJS",
+        "justificativa": "Módulos bem definidos alinham-se naturalmente com Clean Architecture; DI nativo; ecossistema maduro"
+      },
+      "servico_ia": {
+        "linguagem": "Python 3.11",
+        "framework": "FastAPI",
+        "libs": "scikit-learn, pandas, anthropic SDK para classificação via Claude"
+      },
+      "frontend_web": {
+        "framework": "Next.js 14 (App Router)",
+        "ui": "Tailwind CSS + Shadcn/UI + Recharts (dashboards)",
+        "state": "Zustand + React Query (TanStack)"
+      },
+      "mobile_campo": {
+        "framework": "React Native + Expo",
+        "features": "Câmera para evidências, GPS offline-first, sync quando conectado"
+      },
+      "banco_dados": {
+        "principal": "PostgreSQL 16 (RDS Multi-AZ)",
+        "time_series": "TimescaleDB (extensão PostgreSQL)",
+        "cache": "Redis 7 (ElastiCache)"
+      },
+      "blockchain": {
+        "recomendado": "Polygon zkEVM (L2 Ethereum)",
+        "alternativa_enterprise": "Hyperledger Fabric 2.5",
+        "indexacao": "The Graph Protocol"
+      },
+      "mensageria": "Apache Kafka (Amazon MSK gerenciado)",
+      "autenticacao": "Keycloak 23 + JWT RS256",
+      "storage": "AWS S3 + CloudFront",
+      "ci_cd": "GitHub Actions + ArgoCD + Helm Charts",
+      "iac": "Terraform + Terragrunt",
+      "observabilidade": "Prometheus + Grafana + Loki + Jaeger (OpenTelemetry)",
+      "testes": {
+        "unitarios": "Jest (TS) + Pytest (Python)",
+        "integracao": "TestContainers",
+        "e2e": "Playwright + Supertest",
+        "blockchain": "Hardhat (Polygon) + Fabric Test Network"
+      },
+      "qualidade_codigo": "ESLint + Prettier + SonarQube + Husky pre-commit hooks",
+      "documentacao_api": "OpenAPI 3.1 (Swagger) auto-gerado via decorators NestJS"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"Residuo\": {\n      \"descricao\": \"Entidade central representando um resíduo industrial\",\n      \"atributos\": [\"id\", \"tipo\", \"classificacao_ibama\", \"peso_kg\", \"volume_litros\", \"estado_fisico\", \"periculosidade\", \"data_geracao\", \"composicao_quimica\"],\n      \"regras_negocio\": [\"Classificação obrigatória conforme ABNT NBR 10004\", \"Periculosidade determina fluxo de descarte\", \"Rastreabilidade imutável após geração\"]\n    },\n    \"ManifestoTransporte\": {\n      \"descricao\": \"Documento legal de movimentação de resíduos (MTR)\",\n      \"atributos\": [\"id\", \"numero_mtr\", \"residuos\", \"gerador\", \"transportador\", \"destinatario\", \"data_emissao\", \"hash_blockchain\"],\n      \"regras_negocio\": [\"MTR obrigatório por legislação ambiental\", \"Hash gerado no momento da emissão\", \"Imutabilidade garantida por registro on-chain\"]\n    },\n    \"Empresa\": {\n      \"descricao\": \"Gerador, transportador ou destinatário de resíduos\",\n      \"atributos\": [\"id\", \"cnpj\", \"razao_social\", \"tipo_licenca_ambiental\", \"licencas\", \"status_regularidade\"],\n      \"regras_negocio\": [\"Licença ambiental válida obrigatória\", \"CNPJ único por tenant\", \"Inativação não apaga histórico\"]\n    },\n    \"Licenca\": {\n      \"descricao\": \"Licença ambiental vinculada a uma empresa\",\n      \"atributos\": [\"id\", \"numero\", \"tipo\", \"orgao_emissor\", \"data_validade\", \"escopos_permitidos\"],\n      \"regras_negocio\": [\"Validade verificada a cada operação\", \"Alerta automático 90 dias antes do vencimento\"]\n    },\n    \"EventoRastreabilidade\": {\n      \"descricao\": \"Registro imutável de cada etapa do ciclo de vida do resíduo\",\n      \"atributos\": [\"id\", \"residuo_id\", \"tipo_evento\", \"responsavel\", \"localizacao_gps\", \"timestamp\", \"hash_anterior\", \"hash_atual\"],\n      \"regras_negocio\": [\"Cadeia de hashes garante integridade\", \"Nenhum evento pode ser deletado ou alterado\"]\n    },\n    \"Destinacao\": {\n      \"descricao\": \"Forma final de tratamento ou descarte do resíduo\",\n      \"atributos\": [\"id\", \"tipo\", \"instalacao\", \"certificado_des"
+}

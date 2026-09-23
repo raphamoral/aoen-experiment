@@ -1,0 +1,63 @@
+{
+  "ideia_idx": 78,
+  "ideia": "Plataforma de empréstimo entre pessoas com scoring alternativo por IA",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability: mudança incremental em regras de scoring, produtos de crédito e provedores sem reescrever o sistema",
+      "Segurança e privacidade (LGPD, sigilo bancário): dados financeiros e pessoais são o principal risco",
+      "Auditabilidade e explicabilidade: toda decisão de crédito precisa ser rastreável e justificável (Resolução BCB, LGPD art. 20)",
+      "Consistência e integridade financeira: ledger imutável, idempotência e conciliação",
+      "Confiabilidade e disponibilidade dos fluxos de pagamento e desembolso",
+      "Testabilidade e observabilidade dos modelos de IA: drift, viés e desempenho monitorados continuamente",
+      "Conformidade regulatória: SCD/SEP, KYC/AML, Open Finance",
+      "Escalabilidade elástica: picos em origem de empréstimos e cobrança"
+    ],
+    "fitness_functions": [
+      "Arquitetura: ArchUnit/dependency-cruiser no CI falha o build se um módulo acessar o banco ou os internals de outro (apenas contratos públicos)",
+      "Contratos: testes de contrato (Pact) entre módulos e provedores, com falha do pipeline em breaking change de schema",
+      "Scoring: monitoramento de drift (PSI/KS) com alerta se PSI > 0,25; retreino ou rollback automático do modelo",
+      "Justiça: teste automatizado de disparate impact (razão ≥ 0,8) por grupo protegido antes de promover qualquer modelo",
+      "Explicabilidade: 100% das decisões com reason codes (SHAP) persistidos, verificados por teste sintético no CI",
+      "Ledger: job de conciliação diário exige soma dos débitos igual à soma dos créditos, com tolerância zero",
+      "Idempotência: teste de caos que reenvia o mesmo webhook ou pagamento N vezes e confirma um único efeito",
+      "Desempenho: p95 da decisão de scoring < 800 ms e p99 da API < 500 ms, com teste de carga (k6) a cada release",
+      "Segurança: SAST, DAST e scan de dependências e segredos bloqueiam o merge; teste que confirma PII criptografada em repouso e mascarada em logs",
+      "Privacidade: teste automatizado de retenção e exclusão (direito ao esquecimento) e verificação do registro de consentimento por fonte de dados alternativa",
+      "Resiliência: chaos engineering mensal (queda de provedor de bureau ou PSP) com fallback funcionando e SLO mantido",
+      "Custo: alerta de FinOps se o custo por empréstimo originado ou por scoring ultrapassar o orçamento em 15%",
+      "Deploy: DORA metrics como fitness function (frequência de deploy, lead time < 1 dia, change failure rate < 15%)"
+    ],
+    "incremental_change": "Começar com um monólito modular (modular monolith) organizado por bounded contexts: Identidade/KYC, Scoring, Originação/Marketplace, Ledger, Pagamentos/Cobrança e Compliance. Cada módulo tem contrato público explícito e banco de schema próprio. Fase 1 (MVP): scoring baseado em regras e bureaus tradicionais, empréstimos pequenos e um único PSP, com a IA rodando em shadow mode. Fase 2: modelo de scoring alternativo em modo champion/challenger, com 5% do tráfego via feature flags e canary release. Fase 3: extrair para serviços apenas os módulos que precisam de escala ou ciclo de deploy independentes (Scoring/ML e Cobrança), usando o strangler fig pattern e eventos de domínio já emitidos pelo monólito. Fase 4: novos produtos (antecipação, crédito em grupo, secundário de recebíveis) como novos módulos ou serviços. Toda mudança passa por pipeline com fitness functions, deploy contínuo e evolução de schema em expand/contract (sem downtime).",
+    "reversibility": "Reversíveis (two-way doors), com decisão rápida: modelo de scoring (versionado, com rollback via registry), features e fontes de dados alternativas (feature flags), provedor de KYC, bureau, PSP e notificações (atrás de adapters/anti-corruption layer), framework de frontend, formato de pricing e taxas, e a divisão monólito versus serviços (a fronteira modular é preservada). Semi-reversíveis: escolha do cloud (mitigada por containers e IaC) e broker de mensageria (mitigado por abstração de eventos). Irreversíveis, para decidir no último momento responsável: modelo jurídico e regulatório (SCD, SEP ou parceria com IP/banco BaaS, decidido só depois de validar a demanda com um parceiro), modelo do ledger (event-sourced e imutável, projetado com cuidado desde o início porque é caro de migrar), e a política de consentimento e uso de dados alternativos (uma vez coletados sem base legal, não se desfaz). Essas decisões são registradas em ADRs, com gatilhos explícitos para revisão.",
+    "coupling": "Baixo acoplamento entre bounded contexts, com comunicação assíncrona por eventos de domínio (LoanRequested, ScoreComputed, LoanFunded, InstallmentPaid, DefaultDetected) e chamadas síncronas apenas por interfaces públicas versionadas. Cada contexto é dono dos seus dados, sem banco compartilhado e sem joins entre módulos. Integrações externas (bureaus, Open Finance, PSP, KYC, provedores de dados alternativos) ficam atrás de portas e adaptadores (hexagonal), com anti-corruption layer, de modo que trocar um fornecedor afete um único adapter. O scoring de IA expõe uma interface estável (entrada: features canônicas; saída: score, faixa de risco e reason codes), independente do modelo interno. Acoplamento intencional e aceito: o Ledger é a fonte da verdade financeira, e todos os contextos dependem dele por contrato estável. Consumer-driven contracts e schema registry governam a evolução.",
+    "interfaces": [
+      "API pública REST/JSON versionada (OpenAPI) para o app web/mobile de tomadores e investidores",
+      "API de Scoring: POST /v1/score, com features canônicas como entrada e score, PD, reason codes e model_version na resposta",
+      "Feature Store interface: leitura online e offline de features com linhagem e consentimento",
+      "Model Registry / Serving interface: promoção, canary e rollback de modelos",
+      "Eventos de domínio (CloudEvents/Avro) num barramento com schema registry",
+      "Adapter de KYC/AML e antifraude (verificação de identidade, biometria, sanções/PEP)",
+      "Adapter de Bureaus de crédito (Serasa, Boa Vista, SCR do Bacen)",
+      "Adapter de Open Finance (consentimento e dados de conta e transações)",
+      "Adapter de dados alternativos (telecom, e-commerce, dados comportamentais) com controle de consentimento",
+      "Adapter de Pagamentos (Pix, boleto, TED, split de pagamentos) e webhooks idempotentes",
+      "Ledger API: lançamentos de dupla entrada imutáveis, com consulta de saldo e extratos",
+      "Marketplace/Matching API: oferta de crédito, alocação de investidores e precificação",
+      "API de Cobrança e Renegociação",
+      "Portal e API de Compliance: trilha de auditoria, relatórios regulatórios, exportação de dados do titular (LGPD)",
+      "Backoffice/Admin API e consoles de operação (revisão manual de crédito)",
+      "Webhooks e API para parceiros (B2B2C, embedded lending)"
+    ],
+    "escalabilidade": "Escala horizontal por contexto, começando simples. O monólito modular roda stateless em containers atrás de um load balancer, com autoscaling por CPU e latência. O banco relacional (PostgreSQL) usa réplicas de leitura, particionamento por tempo/tenant nas tabelas de ledger e de eventos, e CQRS com read models para dashboards e extratos. Cargas assíncronas (KYC, coleta de dados alternativos, cobrança, notificações) passam por filas com workers autoscaled e retry com backoff e dead-letter. O scoring separa treino (batch offline, GPUs sob demanda ou spot) de inferência (serving online com cache de features, modelos leves como gradient boosting para baixa latência, autoscaling pelo número de requisições). Quando a carga justificar, extrair Scoring e Cobrança como serviços independentes, e particionar por região ou tenant se houver expansão. Cache (Redis) para features quentes e taxas. Tudo sob observabilidade (OpenTelemetry) e SLOs, com testes de carga contínuos como fitness function. Não antecipar escala: escalar quando as métricas indicarem.",
+    "custos": "Principais componentes: (1) Dados: consultas a bureaus, Open Finance e dados alternativos costumam ser o maior custo variável por decisão; mitigar com cache, consulta em cascata (barata primeiro, cara só se necessária) e negociação por volume. (2) KYC/antifraude por verificação. (3) Taxas de PSP (Pix é barato; boleto e cartão são mais caros). (4) Infraestrutura: começar com monólito modular e poucos serviços gerenciados reduz custo e carga operacional; usar spot instances para treino e serverless para cargas esporádicas. (5) ML: custo de retreino, armazenamento de features e serving; modelos leves primeiro. (6) Compliance e jurídico: estrutura regulatória (SCD/parceiro BaaS), auditorias, DPO e seguros, com custo fixo relevante. (7) Inadimplência e fraude, que são o maior risco econômico; provisionamento e limites de exposição por fase. (8) Suporte e cobrança. FinOps com tags por contexto, unit economics (custo por empréstimo originado, por score, por KYC) e alertas de orçamento como fitness function. Priorizar custo variável (pay-as-you-go) no início e comprometer capacidade reservada só quando a demanda estiver previsível.",
+    "monetizacao": "Modelo de marketplace com múltiplas fontes de receita: (1) Taxa de originação cobrada do tomador (0,5% a 5% do valor, conforme risco). (2) Taxa de serviço ou spread cobrada dos investidores sobre os retornos (por exemplo, 1% a 2% ao ano sobre o saldo ou sobre os juros recebidos). (3) Taxas de cobrança e renegociação (multas e recuperação, respeitando os limites regulatórios). (4) Scoring como serviço (API B2B), vendendo o score alternativo a fintechs, varejistas e cooperativas, por consulta ou assinatura. (5) Embedded lending / white-label para parceiros, com revenue share. (6) Planos premium para investidores (carteiras automatizadas, análises, diversificação) e para tomadores (monitoramento de score e educação financeira). (7) Interchange e receita de float, quando aplicável e permitido. (8) Venda de recebíveis e securitização (FIDC) em fase posterior. Métricas-chave: take rate, CAC, LTV, taxa de inadimplência (NPL), perda esperada versus realizada e custo por decisão. A unit economics deve ser validada em cada fase antes de escalar.",
+    "stack_sugerida": "Backend: Kotlin/Java (Spring Boot) ou Go para o core financeiro, organizado como monólito modular (Spring Modulith ou equivalente), e Python (FastAPI) para serviços de ML. Dados: PostgreSQL (transacional, ledger com dupla entrada), Redis (cache), Kafka ou Redpanda (eventos; SQS/SNS ou RabbitMQ como opção mais simples no MVP) e Debezium/Outbox para publicação confiável. Data e ML: data lake (S3) com Parquet/Iceberg, dbt, Airflow ou Dagster, feature store (Feast), MLflow para registry e experimentos, XGBoost/LightGBM para scoring, SHAP para explicabilidade, Evidently ou WhyLabs para drift, e BentoML ou KServe para serving. Frontend: React/Next.js (web) e React Native ou Flutter (mobile), com um BFF. Infra: cloud (AWS ou GCP) com Kubernetes gerenciado (ou ECS/Cloud Run no início), Terraform (IaC), GitHub Actions/ArgoCD (CI/CD e GitOps), feature flags (Unleash ou LaunchDarkly). Segurança: KMS/Vault, criptografia de campos sensíveis, OAuth2/OIDC (Keycloak ou Auth0), WAF e mTLS entre serviços. Observabilidade: OpenTelemetry, Prometheus/Grafana, Loki e Sentry. Qualidade e fitness functions: ArchUnit, Pact, k6, Trivy/Snyk, Great Expectations e testes de fairness (Fairlearn/AIF360). Integrações: PSP/BaaS brasileiro (Pix, boleto), provedor de KYC (Unico, idwall ou similar), bureaus e Open Finance por agregador."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T04:20:10+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 62,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra princípios sólidos de evolução: o padrão adapter nas bordas (ingestão/saída) isola o motor de mudanças externas, a RoyaltyService centralizada com DTOs mantém dependências apontando para dentro, e o fluxo fixo com parâmetros configuráveis permite onboarding de novos clientes sem alterar código — os pontos que impedem nota máxima são a ausência explícita de abstração de persistência (repositórios), ausência de estratégia de escala horizontal documentada e falta de menção a versionamento de contratos/eventos para garantir retrocompatibilidade ao evoluir regras de negócio."
+}

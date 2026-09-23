@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador (orquestração de compatibilidade regional + score de reputação + ciclo de vida do deal) está identificado no core_domain e isolado via portas dedicadas (IMatchDiscoveryUseCase, IReputationUseCase), com extensibilidade garantida pela abstração de ISearchIndexPort e IExternalEnrichmentPort — mas a proposta não explica *por que* o algoritmo de matching é insubstituível frente a alternativas como AngelList ou até uma busca no LinkedIn, deixando o diferencial técnico real (lógica de compatibilidade semântica, modelagem do score de confiança) apenas implícito em nomes de portas, sem evidenciar a vantagem que nenhum concorrente replica."
+}

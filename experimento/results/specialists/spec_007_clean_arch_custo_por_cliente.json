@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura não prevê nenhuma mensuração de custo por cliente/tenant — não há atributos de consumo de recursos, rastreamento de operações por organização, nem conexão entre o modelo de dados e unit economics; os custos de infra, IA ou storage são totalmente ignorados na modelagem."
+}

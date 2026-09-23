@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 24,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta apresenta separação lógica via Service Layer (LicenseService, ComplianceService, etc.) e esboça um pipeline de processamento (Ingestão → Normalização → Enriquecimento), o que indica alguma consciência arquitetural, mas não há menção a isolamento físico real — nenhuma referência a filas de mensagens (Kafka, RabbitMQ, SQS), workers separados, subprocessos independentes, circuit breakers ou estratégias de fallback caso o motor de reconciliação falhe; o risco concreto é que uma reconciliação pesada bloquear ou travar a Service Layer derrubaria também o Dashboard, a API pública e os alertas, pois tudo coexiste no mesmo processo lógico sem barreira de contenção."
+}

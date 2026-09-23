@@ -1,0 +1,161 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Disponibilidade (availability 99.9%) — certificados devem ser verificáveis 24/7",
+      "Integridade de dados (data integrity) — certificados imutáveis e auditáveis",
+      "Segurança (security) — prevenção de falsificação e acesso indevido",
+      "Escalabilidade elástica (elasticity) — picos de emissão em datas de conclusão",
+      "Interoperabilidade (interoperability) — integração com plataformas LMS e LinkedIn",
+      "Desempenho de leitura (read performance) — verificação pública < 300ms",
+      "Observabilidade (observability) — rastreabilidade de emissões e verificações",
+      "Testabilidade (testability) — pipeline de entrega contínua desde o primeiro commit"
+    ],
+    "fitness_functions": [
+      "Latência de verificação pública < 300ms (p99) medida via testes sintéticos a cada 5 min",
+      "Disponibilidade do endpoint de verificação >= 99.9% no rolling de 30 dias (Uptime Robot / CloudWatch)",
+      "Zero colisões de UUID de certificado detectadas por mutation testing no serviço de emissão",
+      "Cobertura de testes de contrato (Pact) >= 100% entre emissor e verificador a cada PR",
+      "Nenhum certificado emitido sem evento publicado no log de auditoria (assertion em teste de integração)",
+      "Tempo de emissão assíncrona de certificado < 10s (P95) monitorado via trace distribuído",
+      "Scan de dependências (OWASP Dependency-Check) sem CVE crítico antes de cada deploy",
+      "Throughput de emissão >= 1.000 certificados/min sem degradação de latência de verificação (load test em staging)",
+      "Cyclomatic complexity média dos módulos core <= 10 (SonarQube gate no CI)",
+      "Multi-tenant isolation: teste automatizado garante que tenant A nunca acessa dados do tenant B"
+    ],
+    "incremental_change": {
+      "fase_1_walking_skeleton": {
+        "descricao": "Monólito modular com três módulos internos isolados: Emissão, Verificação Pública, Gestão de Tenants",
+        "deliverable": "MVP em 6-8 semanas — emitir, armazenar e verificar um certificado via URL pública",
+        "decisao_adiada": "Não separar serviços ainda; módulos se comunicam por interfaces internas bem definidas",
+        "fitness_gate": "Todos os fitness functions de latência e integridade passando antes de avançar"
+      },
+      "fase_2_extrair_verificacao": {
+        "descricao": "Extrair módulo de Verificação Pública para serviço independente read-only quando tráfego de verificação superar 10x o tráfego de emissão",
+        "trigger": "Métrica observada no APM por 2 semanas consecutivas",
+        "pattern": "Strangler Fig — novo serviço assume o path /verify/* via feature flag de roteamento no gateway"
+      },
+      "fase_3_eventos_e_integrações": {
+        "descricao": "Introduzir event bus (domínio CertificateIssued) para desacoplar notificações, webhooks e integrações LMS",
+        "trigger": "Segundo integrador externo contratado ou integrações internas ultrapassando 3 consumidores diretos",
+        "pattern": "Event-driven com schema registry para evolução de contratos sem breaking changes"
+      },
+      "fase_4_imutabilidade_criptografica": {
+        "descricao": "Adicionar assinatura criptográfica (Ed25519) nos certificados e verificação on-chain opcional (âncora em blockchain pública)",
+        "trigger": "Demanda de clientes enterprise por prova criptográfica independente da plataforma",
+        "decisao": "Last Responsible Moment — avaliar custo/benefício apenas quando essa feature for bloqueadora de vendas"
+      }
+    },
+    "reversibility": {
+      "altamente_reversiveis": [
+        "Escolha do provedor de e-mail transacional (abstração via adapter pattern desde o início)",
+        "Template engine de certificados PDF (interface CertificateRenderer com implementações swappable)",
+        "Provedor de object storage (S3-compatible interface)",
+        "Feature flags — qualquer feature pode ser desligada sem deploy",
+        "Separação monólito → microserviço (módulos internos com boundaries claros permitem extração incremental)"
+      ],
+      "parcialmente_reversiveis": [
+        "Schema do banco de dados (migrações incrementais com expand/contract pattern; reversível com custo crescente)",
+        "Estratégia de IDs de certificados (UUID v4 → UUID v7 ou hash público; migração possível mas trabalhosa)",
+        "Event schema contracts (versionamento semântico adia o lock-in)"
+      ],
+      "decisoes_de_alto_custo_de_reversao": [
+        "Âncora em blockchain específica (lock-in tecnológico e custo de migração de provas históricas)",
+        "Modelo de dados multi-tenant (shared schema vs schema-per-tenant — decisão na Fase 1 com impacto em compliance e isolamento)",
+        "Identificador público do certificado (URLs publicadas em currículos; mudança quebra links externos)"
+      ]
+    },
+    "coupling": {
+      "principio": "Acoplamento aferente/eferente equilibrado por módulo; zero coupling temporal entre emissão e verificação",
+      "padroes": {
+        "between_modules": "Interfaces explícitas (portas e adaptadores) — módulos dependem de abstrações, não de implementações",
+        "async_communication": "Eventos de domínio para side-effects (notificações, webhooks, analytics); nunca chamadas síncronas para flows não críticos",
+        "sync_communication": "REST/gRPC apenas para queries em tempo real (verificação pública) ou writes transacionais (emissão)",
+        "database": "Database-per-module desde a Fase 1 mesmo dentro do monólito (schemas separados no mesmo PostgreSQL); facilita extração futura",
+        "third_party": "Anti-corruption layer para toda integração externa (LMS, LinkedIn, provedores de assinatura digital)"
+      },
+      "metricas_de_acoplamento": [
+        "Instability ratio por módulo medido no CI (fan-out / fan-out + fan-in)",
+        "Nenhuma dependência cíclica entre módulos (ArchUnit ou equivalente no pipeline)"
+      ]
+    },
+    "interfaces": [
+      "POST /api/v1/certificates — emissão de certificado (autenticado, tenant-scoped)",
+      "GET /verify/{certificate-id} — verificação pública sem autenticação (HTML + JSON-LD Schema.org/Credential)",
+      "GET /api/v1/certificates/{id}/badge — Open Badge 3.0 JSON para integração com LinkedIn e Credly",
+      "POST /api/v1/webhooks — registro de endpoint para eventos CertificateIssued por tenant",
+      "GET /api/v1/certificates — listagem paginada de certificados do tenant (admin dashboard)",
+      "POST /api/v1/bulk-issue — emissão em lote assíncrona com job ID para polling",
+      "GET /api/v1/bulk-issue/{job-id}/status — acompanhamento de progresso de emissão em lote",
+      "SCIM 2.0 /scim/v2/ — provisionamento de usuários para clientes enterprise com SSO",
+      "LTI 1.3 /lti/ — integração nativa com LMS (Moodle, Canvas, Google Classroom)",
+      "Webhook inbound /integrations/lms/{provider} — receber eventos de conclusão de curso de plataformas parceiras"
+    ],
+    "escalabilidade": {
+      "leitura_publica": "Serviço de verificação stateless atrás de CDN (CloudFront/Cloudflare); certificados imutáveis têm cache TTL longo; escala horizontal sem estado",
+      "emissao_assincrona": "Filas (SQS/RabbitMQ) absorvem picos de emissão em lote; workers auto-scaling por profundidade de fila",
+      "banco_de_dados": "PostgreSQL com read replicas para queries de verificação; connection pooling via PgBouncer; particionamento por tenant_id quando volume justificar",
+      "storage": "Object storage (S3/GCS) para arquivos PDF/PNG dos certificados; custo O(1) por certificado adicional",
+      "tenant_isolation": "Shared schema com row-level security (RLS) no PostgreSQL para tenants small/medium; schema dedicado para tenants enterprise com SLA premium",
+      "caching": "Redis para rate limiting, sessões e cache de metadados de certificados frequentemente verificados",
+      "observability": "OpenTelemetry distribuído desde o início — traces, metrics, logs centralizados (Grafana stack ou Datadog)"
+    },
+    "custos": {
+      "modelo_custo": "Dominado por storage e compute; verificações são baratas (CDN + cache); emissão é o operação custosa",
+      "otimizacoes": [
+        "Geração de PDF lazy — gerar sob demanda no primeiro acesso e cachear, não em todas as emissões",
+        "Workers de emissão em lote em spot/preemptible instances (carga previsível e tolerante a interrupção)",
+        "Tiered storage — certificados > 2 anos em S3 Glacier / nearline para reduzir custo de storage",
+        "Verificações públicas via CDN eliminam custo de compute para 90%+ das requisições"
+      ],
+      "estimativa_inicial": "Infraestrutura mínima viável < USD 200/mês para até 50k certificados/mês em cloud managed services",
+      "scaling_cost": "Custo marginal por certificado adicional dominado por storage (~USD 0.001/certificado) após break-even de infraestrutura base"
+    },
+    "monetizacao": {
+      "modelo_primario": {
+        "nome": "SaaS por Tenant (instituições e plataformas de cursos)",
+        "planos": [
+          "Starter: até 500 certificados/mês — preço fixo (~USD 49/mês)",
+          "Growth: até 5.000 certificados/mês — preço fixo (~USD 149/mês)",
+          "Scale: até 50.000 certificados/mês — preço fixo (~USD 499/mês)",
+          "Enterprise: volume customizado + SLA + SSO + schema dedicado — contrato anual"
+        ]
+      },
+      "modelos_secundarios": [
+        "Pay-per-certificate para tenants com volume irregular (USD 0.10–0.30/certificado acima da cota)",
+        "White-label — remove branding da plataforma e permite domínio customizado (add-on USD 99/mês)",
+        "API access para integrações LMS nativas (add-on ou incluído nos planos Growth+)",
+        "Verificação premium — certificados com assinatura criptográfica verificável offline (add-on enterprise)",
+        "Marketplace de templates de certificado — curadoria e venda de designs por designers parceiros"
+      ],
+      "metricas_saas": "NRR (Net Revenue Retention) como fitness function de negócio — alvo > 110%; cohort analysis de emissões para prever churn"
+    },
+    "stack_sugerida": {
+      "principio": "Stack com alta oferta de desenvolvedores, managed services para reduzir ops overhead, reversível em partes críticas",
+      "backend": {
+        "runtime": "Node.js 22 (TypeScript) ou Go 1.23 — TypeScript reduz ramp-up; Go para workers de alta throughput se necessário",
+        "framework": "Fastify (Node) ou Chi (Go) — minimalistas, sem magic, testáveis",
+        "arquitetura_interna": "Ports & Adapters (Hexagonal) por módulo desde o início"
+      },
+      "banco_de_dados": {
+        "primario": "PostgreSQL 16 (gerenciado — RDS / Cloud SQL / Neon) com Row-Level Security para multi-tenancy",
+        "cache": "Redis 7 (ElastiCache / Upstash) — sessões, rate limiting, cache de verificações",
+        "search": "PostgreSQL full-text search inicialmente; migrar para Typesense/OpenSearch apenas se necessário"
+      },
+      "storage": "AWS S3 ou GCS para PDFs/PNGs; CloudFront ou Cloudflare CDN na frente",
+      "queue": "Amazon SQS (serverless, zero ops) ou RabbitMQ se precisar de roteamento mais rico",
+      "frontend": "Next.js 15 (App Router) — SSR para página de verificação pública (SEO crítico para Google indexar certificados), SPA para dashboard",
+      "infra": {
+        "iaas": "AWS (primeira escolha por maturidade de managed services) ou GCP",
+        "containers": "Docker + ECS Fargate (sem gerenciar Kubernetes na Fase 1)",
+        "iac": "Terraform com módulos versionados; estado remoto no S3 + DynamoDB lock",
+        "ci_cd": "GitHub Actions — pipeline com fitness functions automatizadas (testes, security scan, load test em staging)"
+      },
+      "certificados_digitais": "PDF gerado com Puppeteer (HTML→PDF) ou PDFKit; assinatura Ed25519 via node:crypto (built-in, sem dependência de CA externa na Fase 1)",
+      "observabilidade": "OpenTelemetry SDK + Grafana Cloud (traces: Tempo, metrics: Prometheus, logs: Loki) — stack open, sem vendor lock-in"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Disponibilidade (availability 99.9%) — certificados devem ser verificáveis 24/7\",\n    \"Integridade de dados (data integrity) — certificados imutáveis e auditáveis\",\n    \"Segurança (security) — prevenção de falsificação e acesso indevido\",\n    \"Escalabilidade elástica (elasticity) — picos de emissão em datas de conclusão\",\n    \"Interoperabilidade (interoperability) — integração com plataformas LMS e LinkedIn\",\n    \"Desempenho de leitura (read performance) — verificação pública < 300ms\",\n    \"Observabilidade (observability) — rastreabilidade de emissões e verificações\",\n    \"Testabilidade (testability) — pipeline de entrega contínua desde o primeiro commit\"\n  ],\n  \"fitness_functions\": [\n    \"Latência de verificação pública < 300ms (p99) medida via testes sintéticos a cada 5 min\",\n    \"Disponibilidade do endpoint de verificação >= 99.9% no rolling de 30 dias (Uptime Robot / CloudWatch)\",\n    \"Zero colisões de UUID de certificado detectadas por mutation testing no serviço de emissão\",\n    \"Cobertura de testes de contrato (Pact) >= 100% entre emissor e verificador a cada PR\",\n    \"Nenhum certificado emitido sem evento publicado no log de auditoria (assertion em teste de integração)\",\n    \"Tempo de emissão assíncrona de certificado < 10s (P95) monitorado via trace distribuído\",\n    \"Scan de dependências (OWASP Dependency-Check) sem CVE crítico antes de cada deploy\",\n    \"Throughput de emissão >= 1.000 certificados/min sem degradação de latência de verificação (load test em staging)\",\n    \"Cyclomatic complexity média dos módulos core <= 10 (SonarQube gate no CI)\",\n    \"Multi-tenant isolation: teste automatizado garante que tenant A nunca acessa dados do tenant B\"\n  ],\n  \"incremental_change\": {\n    \"fase_1_walking_skeleton\": {\n      \"descricao\": \"Monólito modular com três módulos internos isolados: Emissão, Verificação Pública, Gestão de Tenants\",\n      \"deliverable\": \"MVP em 6-8 semanas — emitir, armazenar e verificar um c"
+}

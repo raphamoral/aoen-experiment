@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 96,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O motor de conformidade jurisdicional contínua é explicitamente identificado como núcleo insubstituível, está arquiteturalmente isolado via rulesets versionados e interface abstraída de IA, é extensível por design (trocar fornecedor de IA ou adicionar país sem alterar lógica de negócio), e resolve um problema real que alternativas genéricas não resolvem — elimina a dependência de advogados locais por país sem abrir mão de conformidade legal."
+}

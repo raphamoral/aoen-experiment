@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "O projeto menciona custo total de infra ($50-150/mês) e cita e-mail como custo variável por volume, mas não há nenhum cálculo de custo por cliente/tenant — sem decomposição por operação, sem rastreamento de consumo por empresa, e sem conexão entre custo unitário e o preço cobrado por funcionário ativo."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "As entidades de domínio são explicitamente independentes de frameworks e infraestrutura, o atributo 'provider' em Translation permite trocar fornecedores de IA sem reescrever regras de negócio, e a separação entre TranscriptionSegment e Translation habilita evolução independente de cada etapa do pipeline — porém a proposta expõe apenas a camada de entidades, sem evidenciar como use cases, adaptadores e infraestrutura se organizam, deixando incerto se as dependências apontam consistentemente para dentro em todas as camadas e se o crescimento de escala está arquiteturalmente sustentado."
+}

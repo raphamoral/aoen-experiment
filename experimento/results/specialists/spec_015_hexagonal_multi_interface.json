@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "O projeto prevê múltiplas interfaces claramente justificadas por perfis reais (REST/GraphQL para o painel SaaS e integrações, CLI para operações batch, Webhook para plataformas de e-commerce, Scheduler para automação, gRPC para microserviços internos), com a lógica de negócio isolada no core domain via ports, permitindo adicionar novas interfaces sem reescrever regras de precificação; perde um ponto por não explicitar explicitamente a justificativa de mercado/persona para cada adapter, o que seria necessário para nota máxima."
+}

@@ -1,0 +1,136 @@
+{
+  "ideia_idx": 21,
+  "ideia": "SaaS de gestão de manutenção predial preventiva com IoT",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Sensor IoT coleta dados → Gateway normaliza → Ingestão processa telemetria → Motor preditivo detecta anomalias → Ordem de serviço gerada → Técnico executa manutenção → Histórico alimenta modelo → Relatório entrega valor ao gestor predial",
+    "bounded_contexts": [
+      "Device Management: ciclo de vida dos dispositivos IoT, firmware, provisionamento e saúde do gateway",
+      "Telemetry Ingestion: recepção, normalização e persistência de dados brutos de sensores em alta frequência",
+      "Asset Registry: modelo do ativo predial — edifícios, sistemas (HVAC, elétrico, hidráulico), equipamentos e localização física",
+      "Predictive Maintenance: detecção de anomalias, scoring de risco, recomendação de intervenção e feedback de resultados",
+      "Work Order Management: criação, atribuição, execução, SLA e encerramento de ordens de serviço",
+      "Notification & Alerting: regras de disparo, canais (push, email, SMS, WhatsApp), escalada e supressão de ruído",
+      "Reporting & Analytics: dashboards operacionais, MTBF, custo evitado, conformidade e exportação de relatórios",
+      "Tenant & IAM: multi-tenancy, controle de acesso por papel, SSO e auditoria por contexto organizacional",
+      "Billing & Subscription: planos, metragem de sensores ativos, faturamento e gestão de trial"
+    ],
+    "component_evolution": {
+      "genesis": [
+        "Modelos de predição de falha específicos por tipo de equipamento predial (ex: predição de falha de compressor HVAC)",
+        "Digital twin simplificado do ativo para simulação de degradação"
+      ],
+      "custom": [
+        "Motor de regras configurável para limiares de alerta por tipo de sensor e contexto predial",
+        "Workflow de ordem de serviço adaptado ao processo de cada tenant (aprovações, subcontratação, peças)",
+        "Conector de integração com ERPs verticais (Totvs, SAP PM, Archibus)"
+      ],
+      "product": [
+        "Plataforma de gestão de dispositivos IoT (device registry, OTA, heartbeat monitoring)",
+        "Pipeline de ingestão de telemetria com processamento em stream",
+        "Módulo de reporting e KPIs de manutenção"
+      ],
+      "commodity": [
+        "Broker MQTT gerenciado (AWS IoT Core / HiveMQ Cloud)",
+        "Armazenamento time-series (InfluxDB Cloud / TimescaleDB)",
+        "Autenticação/autorização (Auth0 / Keycloak)",
+        "Infraestrutura cloud (Kubernetes, object storage, CDN)",
+        "Observabilidade (OpenTelemetry, Grafana Cloud)"
+      ]
+    },
+    "team_topology": {
+      "stream_aligned_teams": [
+        "Team: Field Operations — dono dos bounded contexts Work Order Management e Notification; entrega fluxo do técnico ao encerramento da OS",
+        "Team: Asset Intelligence — dono de Asset Registry e Predictive Maintenance; entrega valor preditivo ao gestor",
+        "Team: Customer Experience — dono de Reporting & Analytics e Tenant & IAM; entrega visibilidade e onboarding"
+      ],
+      "platform_team": [
+        "IoT Platform Team — abstrai Device Management, Telemetry Ingestion e o broker MQTT; expõe APIs internas estáveis para os stream-aligned teams via Internal Developer Platform"
+      ],
+      "enabling_teams": [
+        "ML Enablement — apoia Asset Intelligence na experimentação, treinamento e deploy de modelos preditivos; reduz carga cognitiva com MLOps tooling"
+      ],
+      "complicated_subsystem_teams": [
+        "Ingestion Engine — responsável pelo pipeline Kafka + processamento em stream de alta volumetria; isolado pois requer expertise em sistemas distribuídos"
+      ],
+      "interaction_modes": {
+        "x_as_a_service": "IoT Platform expõe SDK e APIs REST/gRPC para os times stream-aligned",
+        "facilitating": "ML Enablement facilita Asset Intelligence até equipe ter autonomia",
+        "collaboration": "Field Operations e Asset Intelligence colaboram no modelo de gatilho de OS a partir de predição"
+      }
+    },
+    "flow_optimization": {
+      "event_driven_backbone": "Kafka como bus central; cada bounded context publica domain events (SensorReadingReceived, AnomalyDetected, WorkOrderCreated) sem acoplamento direto",
+      "async_telemetry": "Ingestão é totalmente assíncrona; sensores publicam via MQTT → Kafka → consumidores independentes (persistência, detecção, alertas)",
+      "cqrs": "Telemetry Ingestion usa CQRS: writes em time-series DB de alta performance; reads em projeções materializadas para dashboards",
+      "cognitive_load_reduction": "Platform team abstrai complexidade de IoT; stream-aligned teams consomem eventos já normalizados sem conhecer protocolos de sensor",
+      "fast_feedback_loops": "Alerts disparados em menos de 30s após anomalia detectada; OS criada automaticamente sem intervenção manual quando risco crítico",
+      "api_gateway_per_context": "Cada bounded context expõe contrato versionado; mudanças internas não quebram outros times"
+    },
+    "interfaces": [
+      "MQTT/TLS: comunicação bidirecional sensor→gateway→broker IoT (protocolo padrão dispositivos embarcados)",
+      "REST API (OpenAPI 3.1): CRUD de ativos, ordens de serviço, configuração de alertas e gestão de tenants",
+      "WebSocket: canal de tempo real para dashboards e notificações push ao operador",
+      "gRPC interno: comunicação entre Ingestion Engine e Predictive Maintenance para baixa latência",
+      "GraphQL: API de reporting para consultas flexíveis de KPIs e histórico por filtros compostos",
+      "Webhooks: integração outbound com ERPs e sistemas de CAFM dos clientes",
+      "Mobile SDK (React Native): app do técnico para receber OS, registrar execução e capturar fotos com geolocalização"
+    ],
+    "escalabilidade": {
+      "ingestao": "Kafka com particionamento por tenant_id + asset_id; consumidores horizontalmente escaláveis por consumer group; suporta milhões de mensagens/dia por tenant",
+      "banco_timeseries": "TimescaleDB com chunks automáticos por tempo e compressão nativa; sharding por tenant se necessário; políticas de retenção configuráveis por plano",
+      "multitenancy": "Isolamento por schema (PostgreSQL) nos contextos transacionais; isolamento por tag em time-series; resource quotas por tenant no Kubernetes",
+      "predicao": "Modelos ML servidos como microserviços stateless escaláveis horizontalmente; inferência assíncrona via Kafka para evitar blocking na ingestão",
+      "regional": "Deploy multi-region para latência de ingestão próxima ao local do ativo; dados de telemetria replicados; controle de residência de dados por regulação local",
+      "auto_scaling": "HPA no Kubernetes baseado em lag do consumer Kafka e CPU dos serviços de processamento"
+    },
+    "custos": {
+      "dominantes": [
+        "Broker IoT gerenciado (cobrança por mensagem/conexão — cresce linearmente com sensores ativos)",
+        "Armazenamento time-series (crescimento previsível; mitigar com compressão e políticas de downsampling)",
+        "Inferência ML em tempo real se modelo for complexo (considerar edge inference no gateway para reduzir cloud calls)"
+      ],
+      "otimizacoes": [
+        "Processar dados brutos no edge (gateway) e enviar apenas agregados ou eventos quando há desvio — reduz custo de ingestão em até 80%",
+        "Downsampling automático: dados de 1min → 15min → 1h conforme envelhecem",
+        "Spot instances para workloads de treinamento ML e jobs de batch analytics",
+        "Reserved instances para componentes de baseline estável (broker, banco relacional)"
+      ],
+      "modelo_unitario": "Custo variável dominado por sensor-hora ativo; meta de manter custo de infraestrutura < 25% da receita de cada tenant"
+    },
+    "monetizacao": {
+      "modelo_principal": "Subscription SaaS por camadas baseadas em número de sensores ativos por mês",
+      "tiers": {
+        "starter": "Até 50 sensores, 1 site, alertas básicos, retenção 6 meses — foco em PMEs",
+        "professional": "Até 500 sensores, múltiplos sites, predição de falhas, integrações REST, retenção 2 anos",
+        "enterprise": "Sensores ilimitados, multi-tenant white-label, SLA 99.9%, suporte dedicado, on-premise option, compliance reports"
+      },
+      "expansion_revenue": [
+        "Cobrança por sensor adicional acima do tier (usage-based expansion)",
+        "Add-on: módulo de compliance regulatório (laudos automáticos AVCB, SPDA)",
+        "Add-on: integração premium com ERPs (conector certificado Totvs/SAP)",
+        "Marketplace de modelos preditivos especializados por vertical (hospitais, shoppings, data centers)"
+      ],
+      "servicos": "Professional services para onboarding enterprise e instalação de gateway — one-time revenue que reduz churn",
+      "metricas_chave": "NRR (Net Revenue Retention) via expansion de sensores; CAC payback < 12 meses; churn contido por switching cost alto (dados históricos do ativo)"
+    },
+    "stack_sugerida": {
+      "frontend": "Next.js 14 (App Router) + TypeScript + TailwindCSS + Recharts para dashboards operacionais; React Native para app mobile do técnico",
+      "backend_services": "NestJS (TypeScript) para serviços de domínio REST/GraphQL; Go para Ingestion Engine e componentes de alta throughput",
+      "iot_layer": "AWS IoT Core ou HiveMQ Cloud como broker MQTT gerenciado; AWS IoT Greengrass ou balenaOS no gateway edge para pré-processamento",
+      "mensageria": "Apache Kafka (Confluent Cloud) como event bus central; Schema Registry para contratos de eventos versionados",
+      "persistencia": [
+        "TimescaleDB (PostgreSQL extension) para séries temporais de telemetria",
+        "PostgreSQL para dados transacionais (OS, ativos, tenants, billing)",
+        "Redis para cache de sessão, rate limiting e estado de alertas ativos",
+        "S3-compatible (MinIO ou AWS S3) para fotos de OS e arquivos de laudo"
+      ],
+      "ml": "Python + FastAPI para serving de modelos; scikit-learn / LightGBM para anomaly detection inicial; MLflow para tracking de experimentos; migração para modelos neurais conforme maturidade",
+      "infraestrutura": "Kubernetes (EKS/GKE) + Helm + ArgoCD (GitOps); Terraform para IaC; Istio service mesh para observabilidade de tráfego interno",
+      "observabilidade": "OpenTelemetry para instrumentação padronizada; Grafana + Prometheus + Loki + Tempo (stack LGTM) para métricas, logs e traces",
+      "auth": "Keycloak para IAM self-hosted ou Auth0 para managed; JWT + RBAC por tenant; suporte a SAML/OIDC para SSO enterprise",
+      "ci_cd": "GitHub Actions + Nx monorepo; testes de contrato com Pact para interfaces entre bounded contexts; deploy progressivo com feature flags (Unleash)"
+    }
+  },
+  "raw": "```json\n{\n  \"value_chain\": \"Sensor IoT coleta dados → Gateway normaliza → Ingestão processa telemetria → Motor preditivo detecta anomalias → Ordem de serviço gerada → Técnico executa manutenção → Histórico alimenta modelo → Relatório entrega valor ao gestor predial\",\n\n  \"bounded_contexts\": [\n    \"Device Management: ciclo de vida dos dispositivos IoT, firmware, provisionamento e saúde do gateway\",\n    \"Telemetry Ingestion: recepção, normalização e persistência de dados brutos de sensores em alta frequência\",\n    \"Asset Registry: modelo do ativo predial — edifícios, sistemas (HVAC, elétrico, hidráulico), equipamentos e localização física\",\n    \"Predictive Maintenance: detecção de anomalias, scoring de risco, recomendação de intervenção e feedback de resultados\",\n    \"Work Order Management: criação, atribuição, execução, SLA e encerramento de ordens de serviço\",\n    \"Notification & Alerting: regras de disparo, canais (push, email, SMS, WhatsApp), escalada e supressão de ruído\",\n    \"Reporting & Analytics: dashboards operacionais, MTBF, custo evitado, conformidade e exportação de relatórios\",\n    \"Tenant & IAM: multi-tenancy, controle de acesso por papel, SSO e auditoria por contexto organizacional\",\n    \"Billing & Subscription: planos, metragem de sensores ativos, faturamento e gestão de trial\"\n  ],\n\n  \"component_evolution\": {\n    \"genesis\": [\n      \"Modelos de predição de falha específicos por tipo de equipamento predial (ex: predição de falha de compressor HVAC)\",\n      \"Digital twin simplificado do ativo para simulação de degradação\"\n    ],\n    \"custom\": [\n      \"Motor de regras configurável para limiares de alerta por tipo de sensor e contexto predial\",\n      \"Workflow de ordem de serviço adaptado ao processo de cada tenant (aprovações, subcontratação, peças)\",\n      \"Conector de integração com ERPs verticais (Totvs, SAP PM, Archibus)\"\n    ],\n    \"product\": [\n      \"Plataforma de gestão de dispositivos IoT (device registry, OTA, heartbeat monitoring)\",\n      \"Pipel"
+}

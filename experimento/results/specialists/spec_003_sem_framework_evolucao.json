@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "A arquitetura demonstra consciência evolutiva pontual (worker separado, relatórios pré-calculados, plano de escala horizontal), mas o 'tudo num lugar só' do Next.js mistura camadas de apresentação e lógica de negócio sem abstrações explícitas (sem ports/adapters, sem domain layer isolado), o que significa que trocar o banco, o framework de e-mail ou extrair microsserviços exigirá refatoração significativa em vez de simples substituição de componente."
+}

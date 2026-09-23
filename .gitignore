@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.idea/
+.vscode/
+.venv/
+venv/
+
+# sentinela de parada do runner
+STOP
+
+# logs de console (a trilha de auditoria fica em results_*/_attempts.jsonl)
+*.log

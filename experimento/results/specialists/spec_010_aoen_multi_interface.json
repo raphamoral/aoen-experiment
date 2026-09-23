@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define cinco interfaces distintas (Web, Mobile, WhatsApp, API REST e Plugin), cada uma justificada por um perfil de usuário e contexto de uso concreto (gestão em escritório, trabalho em campo, baixa alfabetização digital, contadores B2B e plataformas de freelance), com lógica de negócio inteiramente centralizada na camada de serviços — nenhuma interface carrega regra de negócio, e adicionar um novo canal exige apenas um novo adaptador de entrada que converge para o mesmo payload e as mesmas validações."
+}

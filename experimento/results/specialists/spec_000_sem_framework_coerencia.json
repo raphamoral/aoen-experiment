@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "As decisões se reforçam em grande parte — PostgreSQL+Redis+S3 cobrem os três padrões de dado (relacional, efêmero, binário), o job queue assíncrono justifica o Redis que já estava no stack, o CDN complementa o S3, e os tipos de usuário mapeiam diretamente para as interfaces definidas — mas há lacunas que quebram a coesão: tecnologias-chave seguem indecisas (React vs Vue, Node vs Python) impedindo que as escolhas se reforcem de fato; 'autenticação JWT' é listada separadamente de 'Auth0/Firebase Auth' como se fossem alternativas do mesmo nível quando são camadas distintas; e o plano freemium que oferece 2 consultas grátis ao dono de pet entra em tensão com o custo declarado de $2–8 por consulta em serviços externos, sem um mecanismo explícito de absorção desse custo — o que sinaliza que o modelo de negócio e o modelo de custo ainda não foram reconciliados."
+}

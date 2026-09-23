@@ -1,0 +1,86 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Matchmaking de capital de risco em estágio inicial: o core (inside) modela Startup, Investidor-Anjo, Tese de Investimento, Região, Rodada, Pitch, Score de Compatibilidade, Match, Introdução e Due Diligence leve. As regras centrais são: elegibilidade regional, alinhamento entre tese e estágio/setor/ticket, algoritmo de ranqueamento, ciclo de vida do match (sugerido → interesse mútuo → introdução → conversa → aporte/arquivado), consentimento e privacidade dos dados, verificação de investidor credenciado/qualificado e limites de exposição de informações sensíveis.",
+    "primary_ports": [
+      "CadastrarStartupPort (registrar e atualizar perfil, pitch e métricas)",
+      "CadastrarInvestidorPort (registrar perfil e tese de investimento)",
+      "GerarMatchesPort (calcular e listar matches recomendados)",
+      "ManifestarInteressePort (aceitar, recusar ou salvar match)",
+      "SolicitarIntroducaoPort (introdução mediada entre as partes)",
+      "GerenciarRodadaPort (abrir, encerrar e atualizar rodadas)",
+      "VerificarInvestidorPort (fluxo de credenciamento/KYC)",
+      "ConsultarPipelinePort (acompanhar status das conversas)",
+      "AdministrarPlataformaPort (moderação, curadoria e gestão de planos)",
+      "GerenciarAssinaturaPort (contratar, alterar e cancelar plano)"
+    ],
+    "secondary_ports": [
+      "StartupRepositoryPort",
+      "InvestidorRepositoryPort",
+      "MatchRepositoryPort",
+      "RodadaRepositoryPort",
+      "NotificacaoPort (e-mail, push, WhatsApp)",
+      "MensageriaInternaPort (chat mediado)",
+      "PagamentoPort (cobrança e assinatura)",
+      "KycVerificacaoPort (identidade e credenciamento)",
+      "EnriquecimentoDadosPort (CNPJ, dados de mercado, redes profissionais)",
+      "ArmazenamentoDocumentosPort (pitch decks, data room)",
+      "MotorRecomendacaoPort (scoring: regras, ML ou embeddings)",
+      "BuscaPort (busca e filtros)",
+      "IdentidadePort (autenticação e autorização)",
+      "EventPublisherPort (eventos de domínio)",
+      "RelogioPort e GeradorIdPort (determinismo em testes)",
+      "AuditoriaLgpdPort (consentimento, trilha de auditoria, exclusão de dados)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API HTTP",
+      "Web app (SPA/SSR) para startups e investidores",
+      "Painel administrativo backoffice",
+      "App mobile (opcional, via mesma API)",
+      "Webhooks de entrada (pagamento, KYC)",
+      "CLI e scripts de operação (importação em lote, recálculo de matches)",
+      "Jobs agendados (cron) para recomendações periódicas",
+      "Consumidores de fila/eventos",
+      "Bot de WhatsApp ou Telegram",
+      "Suíte de testes automatizados (contract, integração e aceitação), que aciona as mesmas portas primárias"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (com PostGIS para região) via adapters de repositório",
+      "In-memory repositories (testes e desenvolvimento)",
+      "Redis (cache e rate limiting)",
+      "Elasticsearch/OpenSearch ou pgvector (busca e similaridade)",
+      "Amazon S3/Cloudflare R2 (documentos)",
+      "Stripe/Pagar.me/Asaas (pagamentos, com Pix e boleto)",
+      "Idwall/Unico/Serpro (KYC)",
+      "SendGrid/SES (e-mail), Twilio/Z-API (WhatsApp) e Firebase (push)",
+      "Auth0/Keycloak/Cognito (identidade)",
+      "APIs de CNPJ/Receita, LinkedIn e Crunchbase (enriquecimento)",
+      "Kafka/RabbitMQ/SQS (mensageria e eventos)",
+      "Adapter de scoring por regras determinísticas, com adapter de ML/LLM (embeddings) substituível",
+      "Fake/Stub adapters para todos os sistemas externos (testes)"
+    ],
+    "isolation": "O core não depende de nenhum framework, banco de dados, SDK ou protocolo. A dependência aponta sempre para dentro: adapters dependem das portas, nunca o contrário. Os casos de uso (application services) implementam as portas primárias e consomem apenas as portas secundárias, que são interfaces definidas na linguagem do domínio. A montagem (composition root) injeta os adapters concretos na inicialização. Adapters traduzem DTOs externos em objetos de domínio, de modo que nenhum tipo externo vaze para dentro. Testes de arquitetura (ArchUnit, dependency-cruiser, import-linter) verificam essas regras no CI. Todos os sistemas externos, sejam bancos, gateways ou UIs, são tratados de forma simétrica, cada um atrás de sua porta. Isso permite trocar Stripe por Pagar.me ou Postgres por outro banco sem alterar o core, e permite rodar toda a aplicação com fakes.",
+    "interfaces": [
+      "Portal da startup (perfil, pitch, rodada, matches, pipeline)",
+      "Portal do investidor-anjo (tese, feed de deals, agenda de introduções)",
+      "Backoffice de curadoria e moderação",
+      "API pública/parceiros (aceleradoras, associações de anjos, hubs regionais)",
+      "Notificações por e-mail, WhatsApp e push",
+      "Webhooks para CRMs (HubSpot, Pipedrive) e ferramentas de terceiros",
+      "Dashboards de métricas (matches, conversão, aportes)",
+      "Painel de consentimento e privacidade (LGPD)"
+    ],
+    "escalabilidade": "O core é stateless e escala horizontalmente atrás de um load balancer. O gargalo previsível é o cálculo de matches, que é assíncrono e processado por workers via fila (recálculo incremental ao mudar perfil ou tese, e não em toda requisição). A leitura escala com réplicas, cache em Redis e projeções de leitura (CQRS leve) para o feed. O volume esperado é moderado (milhares de startups e centenas a milhares de anjos por região), então um monólito modular hexagonal atende bem no início. Se necessário, os bounded contexts (Perfis, Matching, Introdução, Cobrança) podem virar serviços separados, pois as portas já definem as fronteiras. A expansão regional é feita por particionamento por região (multi-tenant lógico), sem mudanças no core. O motor de scoring pode ser trocado por ML/embeddings sem alterar o domínio.",
+    "custos": "Os custos iniciais são baixos: monólito modular em PaaS/contêineres gerenciados (Fly.io, Render, Cloud Run), Postgres gerenciado e storage de objetos barato. Custos variáveis relevantes: KYC por verificação (cobrado por consulta; verificar só investidores e sob demanda), mensagens de WhatsApp (cobradas por conversa), inferência de LLM/embeddings (usar cache e recálculo incremental) e taxas de gateway de pagamento. Custos não técnicos: curadoria humana, conformidade (LGPD, regulação da CVM sobre investimento coletivo, se aplicável) e aquisição de investidores (lado mais escasso da oferta). Como o custo é desacoplado por adapters, dá para começar com fakes e adapters baratos e trocar por provedores mais robustos quando o volume justificar.",
+    "monetizacao": "1) Assinatura de investidores (freemium, com plano Pro para deal flow qualificado, filtros avançados e analytics). 2) Assinatura ou taxa de listagem para startups (perfil destacado, boost de visibilidade, rodada em destaque). 3) Success fee opcional sobre aportes fechados pela plataforma (sujeito a análise regulatória). 4) Planos B2B white-label para aceleradoras, redes de anjos e agências de fomento regionais. 5) Serviços de valor agregado: due diligence assistida, modelos de documentos, eventos e pitch days regionais. 6) Relatórios e dados agregados do ecossistema regional (anonimizados, em conformidade com a LGPD).",
+    "stack_sugerida": "Backend: TypeScript (NestJS ou Fastify, com módulos organizados em domain/application/adapters) ou Kotlin/Java (Spring Boot com ArchUnit); alternativa em Python com FastAPI. Banco: PostgreSQL + PostGIS + pgvector. Cache e filas: Redis + BullMQ (ou SQS/RabbitMQ). Busca: pgvector no início e OpenSearch se necessário. Frontend: Next.js/React com TypeScript e Tailwind. Mobile: React Native, se necessário. Autenticação: Keycloak ou Auth0. Armazenamento: S3 ou Cloudflare R2. Pagamentos: Stripe ou Asaas/Pagar.me. Observabilidade: OpenTelemetry, Grafana/Prometheus e Sentry. Infra: Docker, Terraform e GitHub Actions, com deploy em Cloud Run, ECS ou Fly.io. Testes: Vitest/Jest ou JUnit, contract tests por porta e fakes in-memory dos adapters."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:03:25+00:00",
+    "runner": "runner.py"
+  }
+}

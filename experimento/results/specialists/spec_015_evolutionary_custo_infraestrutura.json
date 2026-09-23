@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona custo apenas como fitness function de monitoramento operacional ('alerta se custo computacional médio exceder threshold') e tangencialmente via evitar vendor lock-in, mas não apresenta nenhuma estimativa concreta em dólares/reais por componente, nenhuma estratégia explícita de otimização (scale-to-zero, spot instances, storage tiering) e nenhuma projeção de crescimento de custo por tenant ou volume de decisões."
+}

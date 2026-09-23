@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 28,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra princípios evolutivos sólidos — inversão de dependência real (LLM abstraído por interface, regulações como configuração injetável, lógica de negócio isolada no service layer sem vazamento para adaptadores), padrão de adaptadores canônicos que permite adicionar interfaces sem tocar o core, e extensibilidade regulatória sem reescrita — mas perde pontos por ausência de estratégia explícita de abstração de persistência (banco de dados parece implícito, não abstraído), falta de menção a padrões de escala (filas, cache, processamento assíncrono para crescimento 10→10.000 usuários), ausência de versionamento de API como decisão reversível, e o pipeline da fase 3 está truncado, impedindo avaliar se os passos do fluxo são extensíveis individualmente ou acoplados em sequência fixa."
+}

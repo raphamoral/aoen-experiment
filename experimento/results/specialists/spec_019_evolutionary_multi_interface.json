@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta menciona múltiplos canais (WhatsApp, e-mail/SMS, Google Calendar, API pública, chatbot) e há indício de abstração para notificações, mas as interfaces não são justificadas explicitamente por perfil de usuário (recepcionista, paciente, desenvolvedor), o desacoplamento da lógica de negócio das interfaces não é descrito como decisão arquitetural central, e a escolha dos canais parece orientada por conveniência de integração mais do que por análise de alcance de mercado documentada."
+}

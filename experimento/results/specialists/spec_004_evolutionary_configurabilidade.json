@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta demonstra consciência de multi-tenancy sob a ótica de isolamento de dados (segurança) e menciona feature flags (Unleash/LaunchDarkly) que podem ser escopados por tenant, mas não apresenta nenhuma camada de configuração explícita orientada a negócio: não há modelo de 'tenant config', não há menção a regras de leilão parametrizáveis por cliente, e nenhuma fitness function mede tempo ou custo de onboarding sem código — indicando que novos clientes com requisitos distintos ainda exigiriam desenvolvimento."
+}

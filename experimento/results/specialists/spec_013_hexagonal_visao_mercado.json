@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta identifica implicitamente dois atores (usuário final e operador/proprietário de espaço) pelo nome dos use cases, mas não articula quem são esses usuários com precisão, não menciona tamanho de mercado, não descreve nenhuma dor do cliente, não aponta diferenciação frente a concorrentes (Regus, WeWork, Coworker.com etc.) e não formula qualquer proposta de valor — o documento é inteiramente arquitetural e técnico, sem nenhuma camada de visão de mercado."
+}

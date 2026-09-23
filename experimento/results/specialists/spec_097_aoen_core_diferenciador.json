@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 97,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de matchmaking com roteirização multi-variável é claramente identificado como núcleo diferenciador, isolado em interface genérica com adapters intercambiáveis de providers de mapas, e resolve um problema que agendas compartilhadas e apps de carona genéricos não resolvem — otimização simultânea de desvio de rota e taxa de aproveitamento de vagas em contexto corporativo com restrições de turno; perde um ponto por não detalhar o algoritmo de otimização em si (ex: se é NP-hard e qual heurística adotada), o que deixa margem de dúvida sobre a real insubstituibilidade técnica versus uma implementação competidora."
+}

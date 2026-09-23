@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta prevê configuração real por cliente — perguntas personalizadas, frequência dos check-ins e painel de administração por empresa — indicando um modelo genuinamente multi-tenant; porém não detalha isolamento de tenant no banco, feature flags por plano, branding/white-label nem um contrato explícito entre 'o que é código fixo' e 'o que é configuração variável', deixando lacunas que provavelmente exigirão código adicional para atender clientes com necessidades além do padrão."
+}

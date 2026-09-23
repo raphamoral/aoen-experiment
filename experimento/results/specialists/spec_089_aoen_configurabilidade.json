@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 89,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "O fluxo principal é explicitamente fixo em 7 etapas com parâmetros configuráveis declarados, os adaptadores de provedores são intercambiáveis por configuração, e os canais de notificação são por definição 'canais configurados' — mas a proposta não descreve o mecanismo de armazenamento de configuração por tenant (schema de config table, config store, feature flags) nem o processo de onboarding (como exatamente novo cliente vira uma row no banco), deixando a configurabilidade bem intencionada mas arquiteturalmente incompleta."
+}

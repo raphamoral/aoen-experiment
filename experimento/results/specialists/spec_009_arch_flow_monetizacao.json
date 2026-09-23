@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural detalha extensamente os bounded contexts e componentes técnicos, mas não menciona qualquer modelo de monetização — não há referência a comissões por transação, planos de assinatura para vendedores, taxas de certificação, tiers de acesso ou métricas de sustentabilidade como MRR, LTV ou CAC."
+}

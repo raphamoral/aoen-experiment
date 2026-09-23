@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 93,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê seis interfaces distintas (Portal PME, Portal Fornecedor, Dashboard Admin, API REST, Relatório PDF e Notificações), cada uma explicitamente justificada por perfil de usuário ou caso de uso de mercado real, com lógica de negócio completamente desacoplada via Service Layer centralizada — o que permite adicionar novos canais (ex: WhatsApp) sem alterar regras de matching ou precificação."
+}

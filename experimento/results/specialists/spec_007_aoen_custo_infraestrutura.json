@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "aoen",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — nenhum componente cloud é nomeado (sem AWS, GCP ou Azure), não há estimativas de custo por serviço, nenhuma estratégia de otimização (scale-to-zero, spot instances, storage tiers) e nenhuma projeção de como os custos escalam com o crescimento da base de usuários."
+}

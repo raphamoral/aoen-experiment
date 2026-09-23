@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 6,
+  "justificativa": "O modelo apresenta uma estrutura de tiers (básico/premium/ultra) com duas dimensões de cobrança (por entregador/mês + taxa por entrega), o que demonstra raciocínio sobre captura de valor em diferentes camadas, mas faltam valores concretos, estimativas de CAC/LTV/churn, análise de unit economics para validar sustentabilidade, e nenhuma métrica de negócio (MRR projetado, breakeven por cliente) é mencionada."
+}

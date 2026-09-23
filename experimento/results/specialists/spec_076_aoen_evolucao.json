@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 76,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva consistente: motor de matching abstraído como interface com três gerações de implementação previstas, teleconsulta via adapter pattern, Service Layer isolando lógica de negócio de todos os canais, e schema canônico com caminho explícito para FHIR — o principal gap é a ausência de estratégia declarada para escala horizontal (10→10.000 usuários) e o pipeline da Fase 3 descrito como 'imutável no código' introduce rigidez que pode exigir refatoração se o fluxo clínico precisar de bifurcações ou variantes de protocolo no futuro."
+}

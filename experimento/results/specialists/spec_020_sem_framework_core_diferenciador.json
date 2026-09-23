@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador existe — o loop de validação peer-to-peer que cria um sistema auto-regulado de qualidade de bugs é genuinamente interessante e está no coração do produto, mas a proposta o menciona de passagem sem isolá-lo como ativo estratégico, sem explicar por que ele é superior às plataformas já estabelecidas no mercado (uTest, Testbirds, Rainforest QA) e sem demonstrar que a combinação gamificação + validação coletiva gera um efeito de rede defensável — sem esse raciocínio, o produto parece uma re-implementação bem estruturada de algo que já existe, não uma proposta insubstituível."
+}

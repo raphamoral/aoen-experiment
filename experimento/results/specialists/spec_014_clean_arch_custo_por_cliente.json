@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura rastreia consumo por tenant via Subscription.usedMinutes e permite traçar a cadeia Organization → Meeting → TranslationSession → TranscriptionSegment → Translation por organizationId, mas não há campos de custo em nenhuma entidade — Translation.provider sugere consciência de custo variável por provedor de IA, porém sem cálculo de valor monetário por segmento/operação nem conexão entre minutos consumidos e margem real por cliente."
+}

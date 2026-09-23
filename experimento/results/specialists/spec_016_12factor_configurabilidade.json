@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta descreve configuração de infraestrutura via env vars (DATABASE_URL, CARRIER_API_KEYS etc.), mas não menciona nenhum modelo de configuração por tenant — sem tabelas de regras por cliente, feature flags, políticas de devolução parametrizáveis ou fluxos dirigidos por dados; onboarding de novo lojista quase certamente exigiria código ou deploy customizado."
+}

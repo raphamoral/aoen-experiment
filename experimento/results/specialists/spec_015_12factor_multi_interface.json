@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 6,
+  "justificativa": "O projeto prevê três interfaces distintas (dashboard-frontend para gestores, admin-cli para operadores técnicos, ingestion-api para integrações programáticas) e a arquitetura stateless com serviços desacoplados viabiliza a adição de novas interfaces sem reescrita da lógica de negócio, mas nenhuma interface é explicitamente justificada por perfil de usuário, persona ou estratégia de alcance de mercado — a escolha parece guiada por conveniência técnica do monorepo, não por uma análise deliberada de contextos de uso."
+}

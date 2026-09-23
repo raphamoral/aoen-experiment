@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "A arquitetura menciona custo de inferência por exame (≤ R$ 0,80) como fitness function com alerta via FinOps dashboard — o que indica consciência de custo por operação — mas não há rastreamento explícito por tenant, nenhuma conexão com modelo de precificação, e o enquadramento é de controle de infra (FinOps) e não de unit economics por cliente (CAC, LTV, margem por tenant)."
+}

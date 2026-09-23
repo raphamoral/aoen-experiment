@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "O plano demonstra boa evolução no nível de produto (incrementar features, adiar IA, separar serviço de sensores no futuro), mas a proposta não descreve nenhuma camada de abstração que isole a lógica de negócio das tecnologias concretas — Socket.io, cliente MQTT, Twilio/Z-API e TimescaleDB aparecem como dependências diretas sem interfaces intermediárias, tornando a substituição de qualquer uma delas uma cirurgia no código, não uma troca de adaptador."
+}

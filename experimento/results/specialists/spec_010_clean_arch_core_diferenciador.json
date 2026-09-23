@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "O produto identifica emissão automática de NF e cálculo tributário como diferenciais, mas a arquitetura os trata como use cases comuns sem isolar um núcleo tecnológico proprietário — não há motor de tributação municipal agnóstico de prefeitura, abstração de integrações com múltiplos provedores de NFS-e, nem mecanismo que torne o produto insubstituível frente a concorrentes como Nibo, Conta Azul ou o próprio portal MEI do gov.br."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 46,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Mobile, Web, API REST, Tablet/Kiosk, Wearables), cada uma justificada por segmento de mercado e perfil de usuário específico, com lógica de negócio explicitamente centralizada em uma camada de serviço desacoplada — novos canais consomem contratos bem definidos sem reescrever o core."
+}

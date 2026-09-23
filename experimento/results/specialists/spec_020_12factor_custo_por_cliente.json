@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta lista custos de infraestrutura (RDS, Redis, S3, SQS, Kubernetes, etc.) como componentes arquiteturais, mas não há nenhuma menção a rastreamento de consumo por tenant, custo por operação/transação, alocação de custos por cliente ou conexão entre custo unitário e modelo de precificação — a observabilidade descrita (Datadog/Grafana+Prometheus+Loki) é monitoramento de saúde de sistema, não unit economics por cliente."
+}

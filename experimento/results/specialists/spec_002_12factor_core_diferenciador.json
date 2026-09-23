@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "O 'compliance-engine' existe como pacote isolado no monorepo — o que demonstra intenção arquitetural correta —, mas a proposta não revela o que ele faz de forma proprietária: não há descrição de lógica de matching regulatório, grafo de conhecimento normativo, validação de certificações ou trilha de auditoria; sem esse conteúdo, o diferenciador se resume a um nome de pasta, e o produto como um todo é indistinguível de qualquer marketplace vertical com um filtro de categoria chamado 'compliance'."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A arquitetura demonstra consciência de multi-tenancy (TENANT_ID via env var, Kubernetes Jobs isolados por tenant para treinamento), o que cria a fundação técnica para rastreamento de custo por cliente — mas em nenhum momento o projeto menciona mensuração de custo por operação, tagging de recursos por tenant para alocação de custos, métricas de consumo por cliente, nem qualquer conexão entre custo unitário e modelo de precificação; o documento descreve exclusivamente infraestrutura total (FinOps), não unit economics."
+}

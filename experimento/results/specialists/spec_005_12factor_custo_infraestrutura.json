@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "A proposta lista os componentes de infraestrutura e demonstra alguma consciência de custo implícita nas escolhas tecnológicas (Aurora Serverless com scale-to-zero, ECS Fargate pay-per-task, auto-scaling baseado em métricas de fila), mas não apresenta nenhuma estimativa concreta em dólares ou reais por componente, nenhuma estratégia explícita de FinOps (spot instances, savings plans, storage tiering no S3, comparação de custo entre as alternativas citadas como SQS vs RabbitMQ ou Datadog vs New Relic), e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

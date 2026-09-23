@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 0,
+  "ideia": "Plataforma de telemedicina veterinária com IA para diagnóstico por imagem",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de análise de imagens médico-veterinárias por IA: recebe imagens diagnósticas (radiografias, ultrassons, tomografias), executa inferência sobre patologias, e retorna laudos estruturados com grau de confiança — substituindo ou acelerando o trabalho de especialistas em diagnóstico por imagem veterinário.",
+    "fase1_mercado": "Primário: clínicas veterinárias de pequeno e médio porte sem radiologista veterinário próprio (>80% do mercado brasileiro). Secundário: hospitais veterinários que querem segunda opinião automatizada e redução de tempo de laudo. Terciário: seguradoras pet que precisam validar sinistros com laudo técnico rastreável.",
+    "fase1_extensivel": "Sim. O core é uma abstração sobre provedores de inferência — a interface interna define: receber_imagem(bytes) → retornar_laudo(estruturado). Implementações concretas podem ser trocadas: modelo próprio fine-tuned (PyTorch/ONNX), API externa (Google Health AI, Azure Medical Imaging), ou modelo open-source self-hosted (BioViL, RadDINO adaptado). Novo provedor = nova implementação da interface, sem alterar o restante do sistema.",
+    "fase2_interfaces": [
+      "Web App (SPA) — portal de upload e visualização de laudos para clínicas",
+      "API REST/webhook — integração com softwares de gestão veterinária (PetBest, VetSmart, Vetwork)",
+      "Mobile App (PWA) — veterinários de campo e clínicas de menor estrutura",
+      "Portal de Telemedicina — videoconsulta com especialista humano enriquecida pelo laudo da IA como pré-análise",
+      "Dashboard Administrativo — gestão de clientes, uso, SLA e faturamento (uso interno)"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado de clínicas estruturadas que já têm computador e fluxo digital. API REST abre o mercado de integradores e clínicas que já usam PMS — sem fricção de adoção, entra no fluxo existente. Mobile/PWA abre clínicas menores e atendimento domiciliar onde não há desktop. Portal de Telemedicina abre o mercado de especialistas veterinários autônomos que querem oferecer segunda opinião remota como serviço. Cada interface é um canal de aquisição para um segmento com disposição de pagamento diferente.",
+    "fase2_service_layer": "Uma ClinicalService centraliza toda a lógica: receber_exame(), acionar_analise_ia(), gerar_laudo(), notificar_clinica(). As interfaces (Web, API, Mobile) chamam apenas a ClinicalService — nunca acessam diretamente o motor de IA, o banco ou o storage. Isso permite que uma clínica via API e outra via Web recebam exatamente o mesmo laudo, com o mesmo custo mensurável, sem lógica duplicada.",
+    "fase3_fluxo_fixo": "Upload de imagem → validação de formato/qualidade → fila de processamento → inferência IA → geração de laudo estruturado (JSON + PDF) → armazenamento → notificação → entrega ao solicitante. Este pipeline é invariante — todo cliente passa pelo mesmo fluxo.",
+    "fase3_parametros_configuraveis": [
+      "especies_suportadas: ['canino', 'felino', 'equino', 'exóticos']",
+      "modalidades_imagem: ['raio-x', 'ultrassom', 'tomografia', 'ressonancia']",
+      "template_laudo: estrutura e branding do PDF de saída",
+      "sla_entrega_minutos: tempo máximo de resposta garantido por plano",
+      "integracao_webhook_url: endpoint do PMS do cliente",
+      "idioma_laudo: pt-BR, es, en",
+      "segunda_opiniao_humana: true/false (aciona especialista pós-IA)",
+      "limiar_confianca_alerta: % abaixo do qual o laudo é sinalizado para revisão",
+      "volume_mensal_incluido: cota de exames do plano contratado",
+      "retencao_imagens_dias: política de armazenamento por cliente"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro na tabela tenant com seus parâmetros de configuração + geração de API key + definição do plano. Zero código novo. O pipeline lê a configuração do tenant no início de cada exame e adapta comportamento (template, SLA, espécies, webhook). Onboarding pode ser self-service via formulário de cadastro.",
+    "fase4_core_isolado": "O worker de inferência IA roda como processo assíncrono isolado (container dedicado com GPU ou chamada a API externa), desacoplado via fila de mensagens (SQS/RabbitMQ). O restante do sistema (upload, autenticação, entrega de laudos já processados) opera independentemente — se o worker de IA travar, clínicas ainda acessam laudos anteriores, uploads são enfileirados e processados quando o worker voltar.",
+    "fase4_custo_total_cliente": "Custo por exame analisado: (1) Core IA: $0.08–$0.40/exame via API (ex: Google Vision AI/Azure) ou ~$0.02/exame com GPU própria amortizada; (2) Storage: ~$0.003/imagem DICOM (~10MB média, S3 $0.023/GB); (3) Banda de saída: ~$0.001/laudo PDF entregue; (4) Infra proporcional: $0.005/exame (CPU do worker, DB writes, fila); (5) Custo operacional fixo diluído por volume. Total estimado: $0.10–$0.50/exame dependendo do modelo de inferência. Clínica média com 100 exames/mês = $10–$50 de custo → margem viável com plano a R$299–599/mês.",
+    "fase4_continuidade": "Fila de mensagens como buffer: uploads chegam e são persistidos imediatamente (status: pendente). O worker consome da fila de forma assíncrona. Se o worker cair, a fila retém os jobs — nenhum exame é perdido. Circuit breaker monitora o worker: se indisponível, clínica recebe notificação de atraso com ETA. Laudos já gerados ficam no storage e são sempre acessíveis independentemente do worker.",
+    "fase4_manutencao": "O motor de IA é acessado apenas via interface interna (AIProvider). Trocar de modelo ou provedor = implementar novo AIProvider e atualizar variável de ambiente. Blue-green deployment no worker: nova versão sobe em paralelo, fila drena no worker antigo, tráfego migra sem downtime. Rollback = reverter a variável de apontamento do provider.",
+    "monetizacao": "Modelo híbrido: (1) Assinatura mensal por clínica com cota de exames incluídos (Básico R$299/50 exames, Pro R$599/150 exames, Clínica R$999/400 exames + API); (2) Excedente por exame (R$8–15/exame além da cota); (3) Add-on segunda opinião humana (R$45–90/exame com especialista); (4) Plano Seguradora: pricing por volume com contrato anual (B2B enterprise). Receita previsível via assinatura + upside por volume + margem premium no serviço humano.",
+    "stack_sugerida": "Backend: Python (FastAPI) — ecossistema nativo de ML/visão computacional. Fila: AWS SQS ou RabbitMQ. Worker IA: container Python com GPU (AWS ECS/EC2 p3) ou integração com Azure AI Health / Google Cloud Healthcare API. Storage DICOM: AWS S3 + Orthanc (PACS open-source para DICOM). Banco: PostgreSQL (dados clínicos + multi-tenant config). Auth: Auth0 ou Supabase Auth. Frontend Web: Next.js. Mobile: React Native PWA. Observabilidade: Datadog ou Grafana + métricas de custo por tenant. IaC: Terraform. CDN laudos PDF: CloudFront."
+  }
+}

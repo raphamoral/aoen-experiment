@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal com ports/adapters bem definidos garante que o núcleo de domínio seja independente de frameworks e infraestrutura, permitindo substituição individual de qualquer adaptador (banco, AI, pagamento, notificação) sem tocar na lógica de negócio, com escala horizontal viabilizada por Redis e separação de responsabilidades; perde um ponto pela ausência explícita de estratégias de versionamento de API e de mecanismos de feature flags para rollout gradual."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador (IA para diagnóstico por imagem veterinária) está claramente identificado e arquiteturalmente isolado no 'ai-imaging-service', com extensibilidade real demonstrada pela intercambialidade entre Triton e SageMaker e versionamento de modelos via MLflow/DVC — porém a proposta não articula o que torna os modelos de visão computacional insubstituíveis (ausência de dados sobre datasets proprietários, acurácia comparativa, espécies/patologias cobertas ou vantagem de domínio sobre alternativas genéricas como Google Health ou AWS Rekognition adaptados ao uso veterinário)."
+}

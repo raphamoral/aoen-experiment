@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 59,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (web admin, portal do colaborador, bot Slack/Teams, API REST/Webhooks e dashboard executivo), cada uma justificada por um perfil real de usuário e vetor de mercado específico, com lógica de negócio inteiramente encapsulada na WorkflowService — permitindo adicionar ou substituir qualquer interface sem tocar nas regras de negócio."
+}

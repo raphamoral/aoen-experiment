@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "clean_arch",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "O modelo de domínio demonstra boa separação conceitual (entidades coesas, multi-tenancy explícito, versionamento de PredictionModel), mas a proposta não evidencia isolamento arquitetural entre camadas (ports/adapters, anti-corruption layers), não define como o pipeline de ML se desacopla do core de negócio, e a seção de use_cases está incompleta — impedindo avaliar se a lógica de negócio depende de frameworks externos ou se substituições como trocar banco/modelo de IA são estruturalmente viáveis sem impacto no domínio."
+}

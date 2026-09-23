@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A arquitetura conta uma história coesa e bem estruturada: o padrão hexagonal é aplicado de forma consistente do core até os adapters, as entidades do domínio (ReturnRequest, Shipment, Refund) refletem diretamente os use cases dos primary ports, os secondary ports cobrem exatamente as dependências externas que o fluxo de devolução exige (transportadora, pagamento, estoque, fraude, documentos), e escolhas sofisticadas como o Test Driver Adapter e IEventBusPort com domain events nomeados (ReturnApproved, RefundIssued) reforçam os objetivos de testabilidade e desacoplamento — a coerência perde dois pontos por duas tensões não resolvidas: o stack dual Python/TypeScript (FastAPI+SQLAlchemy vs NestJS+Prisma) sem justificativa de fronteira cria ambiguidade sobre qual linguagem governa o core, e classificar IWebhookIngestionUseCase como primary port (driving) é discutível, pois webhooks são eventos de sistemas externos que deveriam entrar via secondary adapters e ser traduzidos para comandos internos."
+}

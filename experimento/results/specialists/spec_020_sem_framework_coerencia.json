@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "As decisões se reforçam bem no núcleo — WebSockets sustentam a gamificação em tempo real, Redis suporta o leaderboard, filas protegem a API nos picos de campanha, e o stack JS unificado justifica-se pelo time pequeno — mas há lacunas que quebram a coesão: a seção de escalabilidade está literalmente incompleta (frase cortada), o mecanismo de pagamento não tem tecnologia definida apesar de ser crítico para o modelo de negócio, e o sistema de validação peer-to-peer cria um vetor de fraude por conluio que o painel admin menciona mas não endereça arquiteturalmente."
+}

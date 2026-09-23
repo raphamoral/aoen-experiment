@@ -1,0 +1,63 @@
+{
+  "ideia_idx": 4,
+  "ideia": "Plataforma de leilão reverso para compras corporativas de TI",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único no Git (ex: GitHub/GitLab) com múltiplos serviços sob packages/ — auction-core, bidding-engine, notification-service, admin-api, buyer-portal, supplier-portal. Um único repositório rastreado por CI/CD; deploys distintos por ambiente (staging, production) via branches protegidas e tags semânticas (v1.2.3). Nunca compartilhar código entre apps via cópia — usar pacotes internos publicados no registry privado.",
+    "dependencies": "Cada serviço declara dependências explicitamente e isoladas: Node.js usa package.json + package-lock.json com workspaces (pnpm); Python usa pyproject.toml + poetry.lock; Go usa go.mod + go.sum. Nenhuma dependência implícita do sistema operacional. Imagens Docker com base mínima (distroless ou alpine) garantem isolamento total. Dependências de sistema (librdkafka, libpq) declaradas no Dockerfile. Registry privado (GitHub Packages ou Artifactory) para libs internas.",
+    "config": "Toda configuração que varia entre deploys (dev, staging, prod) armazenada em variáveis de ambiente — nunca hardcoded ou em arquivos commitados. Segredos gerenciados via HashiCorp Vault ou AWS Secrets Manager, injetados como env vars no runtime pelo orquestrador (Kubernetes Secrets + External Secrets Operator). Arquivos .env apenas para desenvolvimento local, listados no .gitignore. Configuração validada no startup com schema (ex: Zod, pydantic) — falha rápida se env var obrigatória estiver ausente.",
+    "backing_services": {
+      "banco_de_dados_principal": "PostgreSQL (Amazon RDS ou CloudSQL) — leilões, fornecedores, compradores, lances",
+      "cache_e_sessao": "Redis (ElastiCache) — sessões, rate limiting, locks distribuídos para leilões ativos",
+      "fila_de_mensagens": "Apache Kafka (MSK) — eventos de lances, notificações, auditoria imutável",
+      "busca": "Elasticsearch (OpenSearch) — busca de fornecedores, histórico de leilões, relatórios",
+      "armazenamento_de_arquivos": "Amazon S3 — propostas, contratos, documentos de habilitação",
+      "email_e_notificacoes": "SendGrid (transacional) + Firebase FCM (push) consumidos como serviços externos via URL/credencial",
+      "observabilidade": "Datadog ou Grafana Cloud — métricas, logs, traces",
+      "autenticacao": "Auth0 ou Keycloak — SSO corporativo, SAML 2.0, OAuth 2.0",
+      "nota": "Todos tratados como recursos anexados — substituíveis via mudança de URL/credencial sem alteração de código"
+    },
+    "build_release_run": {
+      "build": "CI (GitHub Actions) compila código, executa testes unitários/integração, constrói imagem Docker imutável com hash do commit como tag — ex: auction-core:sha-a1b2c3d",
+      "release": "Imagem do build combinada com configuração do ambiente (variáveis injetadas pelo Vault/K8s Secrets) gera um release imutável versionado. Helm chart versiona a combinação imagem+config. Releases são auditáveis e nunca modificados após criação",
+      "run": "Kubernetes executa os processos do release. Rollback instantâneo para release anterior. Argocd ou Flux para GitOps — estado desejado declarado em repositório de infra separado. Nenhum humano acessa produção diretamente para deploy"
+    },
+    "processes": "Todos os processos são stateless e share-nothing. Estado de leilões ativos e sessões de usuários residem exclusivamente no Redis. Lances em andamento persistidos no PostgreSQL via transações ACID com locks otimistas. Workers de processamento de lances consomem Kafka de forma idempotente (chave de deduplicação por lance-id). Uploads de documentos vão direto ao S3 via presigned URLs — sem estado local. Qualquer instância pode ser terminada e substituída sem perda de dados.",
+    "concurrency": "Escala horizontal via tipos de processo distintos no Kubernetes: web (API Gateway + BFF, HPA por CPU/RPS), bidding-workers (consumidores Kafka, HPA por lag de fila), notification-workers (envio assíncrono, escala por volume de eventos), scheduler (instância única com leader election para encerramento de leilões). KEDA para autoscaling baseado em métricas do Kafka. Leilões de alto volume escalam bidding-workers independentemente sem afetar a API web.",
+    "disposability": "Startup em menos de 5 segundos — health checks /readiness e /liveness separados. Shutdown gracioso: worker para de consumir Kafka, finaliza processamento em curso (máx 30s), responde SIGTERM com drenagem de conexões. Lances recebidos durante deploy ficam no Kafka — zero perda. Pod Disruption Budgets garantem disponibilidade mínima durante rolling updates. Leilões críticos têm circuit breaker (Resilience4j/Polly) nos serviços de pagamento e notificação externos.",
+    "interfaces": [
+      "Portal Web do Comprador (Next.js SPA) — criação de requisições de compra, acompanhamento de leilões em tempo real via WebSocket",
+      "Portal Web do Fornecedor (Next.js SPA) — submissão de propostas, histórico de participações, dashboard de performance",
+      "API REST v1 (OpenAPI 3.0) — integração com ERPs corporativos (SAP, TOTVS) via webhooks e polling",
+      "Admin Dashboard (Next.js) — gestão de categorias, fornecedores homologados, relatórios regulatórios",
+      "WebSocket Gateway — streaming de lances em tempo real durante pregões eletrônicos ativos",
+      "Mobile App (React Native) — notificações push, acompanhamento de leilões para compradores aprovadores"
+    ],
+    "escalabilidade": "Escala horizontal stateless em todas as camadas: API pods replicados atrás de Load Balancer (ALB/nginx), bidding-workers escalam com lag do Kafka via KEDA, PostgreSQL com read replicas para queries de relatório e escrita na primary. Redis Cluster para sharding de sessões por volume. Multi-AZ para alta disponibilidade. Em picos (ex: grandes pregões governamentais), bidding-workers escalam de 3 para 50+ pods em 2 minutos automaticamente. Estratégia multi-tenant: isolamento por schema PostgreSQL por cliente enterprise, instância compartilhada para SMB.",
+    "custos": "Modelo pay-as-you-scale no Kubernetes (spot instances para workers não-críticos — até 70% de economia). RDS com instâncias reservadas para workload base + auto-scaling storage. S3 com lifecycle policies (Glacier após 90 dias para documentos históricos). Kafka MSK com retenção configurada por tópico (lances: 7 dias; auditoria: 1 ano em S3 via Kafka Connect). Estimativa baseline: $800-2.000/mês para até 500 leilões/mês; escala linearmente. Maior custo: RDS Multi-AZ (~40%) e Kafka MSK (~25%).",
+    "monetizacao": {
+      "modelo_principal": "SaaS B2B com planos por volume de leilões/mês — Starter (até 20 leilões): R$1.500/mês; Business (até 200): R$6.000/mês; Enterprise (ilimitado + SLA 99.9%): contrato anual a partir de R$30.000/mês",
+      "success_fee": "Comissão sobre economia gerada nos leilões (0,5% a 2% do valor negociado) — modelo performance-based para clientes enterprise",
+      "marketplace_fornecedores": "Fornecedores pagam taxa de homologação (R$500/ano) e destaque no marketplace (freemium com upgrade)",
+      "integracao_erp": "Conector SAP/TOTVS como add-on pago (R$2.000/mês)",
+      "dados_e_benchmarks": "Relatórios de inteligência de mercado — benchmarks de preços por categoria para compradores (R$500/relatório ou bundle no Enterprise)"
+    },
+    "stack_sugerida": {
+      "backend_api": "Node.js 22 + Fastify (alta performance, schema-first com JSON Schema) para API Gateway e BFF",
+      "bidding_engine": "Go 1.23 — processamento de lances com baixa latência e alta concorrência via goroutines",
+      "workers_assincronos": "Node.js com kafkajs para consumers de notificação; Go para workers de leilão críticos",
+      "frontend": "Next.js 15 (App Router) + TypeScript + TailwindCSS + shadcn/ui; React Native para mobile",
+      "banco_de_dados": "PostgreSQL 16 (Amazon RDS Multi-AZ)",
+      "cache": "Redis 7 (ElastiCache Cluster Mode)",
+      "mensageria": "Apache Kafka (Amazon MSK)",
+      "busca": "Amazon OpenSearch Service",
+      "storage": "Amazon S3 + CloudFront CDN",
+      "autenticacao": "Keycloak (self-hosted) ou Auth0 para SSO SAML corporativo",
+      "infra": "AWS EKS (Kubernetes 1.31) + Terraform + ArgoCD (GitOps)",
+      "observabilidade": "OpenTelemetry SDK → Grafana Cloud (Loki + Tempo + Mimir)",
+      "ci_cd": "GitHub Actions → Docker Build → ECR → ArgoCD",
+      "segredos": "HashiCorp Vault com AWS IAM auth"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único no Git (ex: GitHub/GitLab) com múltiplos serviços sob packages/ — auction-core, bidding-engine, notification-service, admin-api, buyer-portal, supplier-portal. Um único repositório rastreado por CI/CD; deploys distintos por ambiente (staging, production) via branches protegidas e tags semânticas (v1.2.3). Nunca compartilhar código entre apps via cópia — usar pacotes internos publicados no registry privado.\",\n\n  \"dependencies\": \"Cada serviço declara dependências explicitamente e isoladas: Node.js usa package.json + package-lock.json com workspaces (pnpm); Python usa pyproject.toml + poetry.lock; Go usa go.mod + go.sum. Nenhuma dependência implícita do sistema operacional. Imagens Docker com base mínima (distroless ou alpine) garantem isolamento total. Dependências de sistema (librdkafka, libpq) declaradas no Dockerfile. Registry privado (GitHub Packages ou Artifactory) para libs internas.\",\n\n  \"config\": \"Toda configuração que varia entre deploys (dev, staging, prod) armazenada em variáveis de ambiente — nunca hardcoded ou em arquivos commitados. Segredos gerenciados via HashiCorp Vault ou AWS Secrets Manager, injetados como env vars no runtime pelo orquestrador (Kubernetes Secrets + External Secrets Operator). Arquivos .env apenas para desenvolvimento local, listados no .gitignore. Configuração validada no startup com schema (ex: Zod, pydantic) — falha rápida se env var obrigatória estiver ausente.\",\n\n  \"backing_services\": {\n    \"banco_de_dados_principal\": \"PostgreSQL (Amazon RDS ou CloudSQL) — leilões, fornecedores, compradores, lances\",\n    \"cache_e_sessao\": \"Redis (ElastiCache) — sessões, rate limiting, locks distribuídos para leilões ativos\",\n    \"fila_de_mensagens\": \"Apache Kafka (MSK) — eventos de lances, notificações, auditoria imutável\",\n    \"busca\": \"Elasticsearch (OpenSearch) — busca de fornecedores, histórico de leilões, relatórios\",\n    \"armazenamento_de_arquivos\": \"Amazon S3 — propostas, contratos, documentos de ha"
+}

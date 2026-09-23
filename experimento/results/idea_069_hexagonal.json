@@ -1,0 +1,9 @@
+{
+  "ideia_idx": 69,
+  "ideia": "SaaS de automação de testes de acessibilidade web com relatórios WCAG",
+  "abordagem": "hexagonal",
+  "response": {
+    "raw_response": "ERROR: "
+  },
+  "raw": "ERROR: "
+}

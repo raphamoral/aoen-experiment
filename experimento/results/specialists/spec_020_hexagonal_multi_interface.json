@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define múltiplas interfaces primárias explicitamente justificadas por perfis distintos — REST/GraphQL para clientes web e mobile, WebSocket para tempo real, CLI para operações administrativas, SDK npm/pip para engenheiros de CI, Webhook para integrações com GitHub/GitLab e gRPC para microsserviços — com a lógica de negócio completamente isolada nos ports (ICampaignManagementUseCase, IBugSubmissionUseCase, etc.), garantindo que qualquer nova interface pode ser adicionada sem reescrever o domínio."
+}

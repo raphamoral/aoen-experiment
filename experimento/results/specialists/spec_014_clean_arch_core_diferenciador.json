@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador (pipeline de transcrição em tempo real + tradução multiprovedora por falante) é identificável nas entidades TranscriptionSegment, TranslationSession e Translation, e há sinais de extensibilidade via campo 'provider' e SpeakerProfile, mas o core não está arquiteturalmente isolado como bounded context próprio — está diluído entre entidades operacionais (Subscription, Organization) sem uma fronteira explícita que o torne insubstituível e independente de infraestrutura."
+}

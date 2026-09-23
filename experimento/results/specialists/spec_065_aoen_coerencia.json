@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 65,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta conta uma história arquitetural altamente coesa: a premissa de privacidade no núcleo (PII filtrado em memória, jamais persistido individualmente) é a mesma que justifica o mercado-alvo (CTOs que rejeitam monitoramento invasivo), que por sua vez valida as cinco interfaces (cada uma mapeada a uma persona do segmento), todas unificadas pelo ApplicationService que impede vazamento de lógica de negócio — e o pipeline fixo da Fase 3 fecha o ciclo ao tornar a garantia de privacidade arquiteturalmente inviolável, não apenas declarada; a única ressalva é o corte abrupto nos parâmetros configuráveis da Fase 3, que impede avaliar se a extensibilidade declarada na Fase 1 é completamente sustentada até a camada de configuração por cliente."
+}

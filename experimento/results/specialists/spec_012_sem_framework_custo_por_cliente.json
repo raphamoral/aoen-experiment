@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona escalabilidade e particionamento de dados por cliente, mas não há nenhum cálculo ou mecanismo explícito de custo por tenant — o projeto trata infraestrutura como custo total (servidor, banco, filas), sem rastrear consumo por cliente nem conectar isso ao modelo de precificação ou margem por cliente."
+}

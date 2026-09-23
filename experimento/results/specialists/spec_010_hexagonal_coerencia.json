@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta demonstra coerência sistêmica notável: a escolha da arquitetura hexagonal sustenta diretamente a premissa do domínio isolado, cada use case primário encontra seus ports secundários correspondentes (IssueInvoiceUseCase ↔ InvoiceGatewayPort + CertificateVaultPort + DocumentStoragePort), a triplicidade de adaptadores para NF-e/NFS-e (SEFAZ direto, APIs municipais, SaaS) é uma resposta coerente à fragmentação fiscal brasileira, o SchedulerAdapter fecha o ciclo com CalculateTaxLiabilityUseCase, e o compartilhamento de use cases entre Web e Mobile via REST é consistente com o princípio de independência de entrega — a única tensão menor é o BankingPort sem um use case de reconciliação bancária explicitamente declarado nos ports primários, sugerindo uma lacuna de cobertura no núcleo, mas insuficiente para comprometer a coesão geral do sistema."
+}

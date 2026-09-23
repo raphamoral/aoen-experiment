@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 97,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (mobile, portal web, bot WhatsApp/Telegram, API REST e painel de parceiros), cada uma justificada por um perfil de usuário e segmento de mercado específico, com lógica de negócio inteiramente centralizada em uma Service Layer desacoplada que permite adicionar novos canais sem reescrever regras de negócio."
+}

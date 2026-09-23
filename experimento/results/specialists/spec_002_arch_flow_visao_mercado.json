@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo está implicitamente presente (empresas com necessidade regulatória e freelancers especializados em áreas como LGPD, GDPR, SOX, BACEN, ANS, ANVISA), mas a proposta não articula explicitamente a dor do cliente, não menciona tamanho de mercado, não apresenta diferenciação frente a plataformas generalistas (ex: Upwork, 99Freelas) e carece de uma proposta de valor declarada — todo o conteúdo é arquitetural e técnico, sem framing de mercado."
+}

@@ -1,0 +1,65 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Emissão, gestão e verificação de certificados digitais de cursos livres. O domínio central orquestra as regras de negócio: critérios de conclusão, geração de credenciais únicas, ciclo de vida do certificado (emissão, revogação, expiração) e auditoria de verificações públicas. Entidades principais: Aluno, Curso, CriteriosConclusao, Certificado, Credencial, RegistroVerificacao.",
+    "primary_ports": [
+      "EmitirCertificadoUseCase: recebe dados de conclusão e orquestra a emissão",
+      "VerificarCertificadoUseCase: valida autenticidade por hash/QR público",
+      "RevogarCertificadoUseCase: invalida certificado com motivo auditável",
+      "ConsultarCertificadosAlunoUseCase: lista certificados de um aluno",
+      "RegistrarCursoUseCase: cadastra curso com critérios de conclusão",
+      "GerarRelatorioInstituicaoUseCase: métricas de emissão por instituição"
+    ],
+    "secondary_ports": [
+      "CertificadoRepository: persistência e consulta de certificados",
+      "CursoRepository: persistência e consulta de cursos",
+      "AlunoRepository: persistência e consulta de alunos",
+      "CredencialRepository: armazenamento de credenciais únicas e hashes",
+      "NotificacaoPort: disparo de notificações ao aluno",
+      "AssinaturaDigitalPort: geração de assinatura criptográfica do certificado",
+      "GeracaoPDFPort: renderização do documento PDF do certificado",
+      "ArmazenamentoArquivosPort: persistência de PDFs e assets",
+      "RegistroBlockchainPort: ancoragem opcional do hash em blockchain pública",
+      "EventosDominioPort: publicação de eventos para integrações externas",
+      "LogAuditoriaPort: registro imutável de operações sensíveis"
+    ],
+    "primary_adapters": [
+      "REST API Controller (HTTP/HTTPS): interface para LMS parceiros e front-end web",
+      "GraphQL Gateway: consultas flexíveis para dashboards de instituições",
+      "Webhook Receiver: recebe eventos de conclusão de plataformas externas (Moodle, Canvas, Hotmart)",
+      "CLI Adapter: scripts de emissão em lote e manutenção administrativa",
+      "Test Driver Adapter: permite que testes de integração dirijam o core sem infraestrutura real",
+      "Worker/Queue Consumer: processa filas assíncronas de emissão em massa"
+    ],
+    "secondary_adapters": [
+      "PostgreSQLCertificadoAdapter: implementa CertificadoRepository com PostgreSQL",
+      "PostgreSQLAlunoAdapter: implementa AlunoRepository com PostgreSQL",
+      "RedisCredencialCacheAdapter: cache de verificações públicas frequentes",
+      "SendGridNotificacaoAdapter: implementa NotificacaoPort via e-mail transacional",
+      "WhatsAppNotificacaoAdapter: implementa NotificacaoPort via API do WhatsApp Business",
+      "RSAAssinaturaDigitalAdapter: implementa AssinaturaDigitalPort com criptografia RSA/ECDSA",
+      "PuppeteerPDFAdapter: implementa GeracaoPDFPort com renderização headless",
+      "S3ArmazenamentoAdapter: implementa ArmazenamentoArquivosPort com AWS S3 ou compatível",
+      "EthereumBlockchainAdapter: implementa RegistroBlockchainPort na rede Polygon/Ethereum",
+      "RabbitMQEventosAdapter: implementa EventosDominioPort com mensageria",
+      "ElasticsearchAuditoriaAdapter: implementa LogAuditoriaPort com busca e retenção"
+    ],
+    "isolation": "O core domain não importa nenhuma biblioteca de infraestrutura. Todas as dependências externas são invertidas via interfaces (ports) definidas no interior do hexágono. O core depende apenas de abstrações — nunca de implementações concretas. Injeção de dependência (DI container) conecta adapters aos ports em tempo de composição (Composition Root), fora do core. O core é testável de forma isolada substituindo qualquer adapter por um stub/fake sem alterar uma linha de lógica de negócio.",
+    "interfaces": [
+      "Portal Web do Aluno: visualização, download e compartilhamento de certificados",
+      "Portal da Instituição: gestão de cursos, emissão e relatórios",
+      "Página Pública de Verificação: URL/QR sem autenticação para validar autenticidade",
+      "API REST para integração com LMS externos",
+      "Webhook API para notificação push de eventos de certificação",
+      "Dashboard Analytics: métricas por instituição, curso e período",
+      "Admin Panel: gestão de contas, revogações e auditoria"
+    ],
+    "escalabilidade": "O core stateless permite escalonamento horizontal dos serviços de aplicação. Emissão em massa é desacoplada via filas (RabbitMQ/SQS), processadas por workers independentes. Verificações públicas — operação de altíssima leitura — são servidas por cache Redis com TTL longo, reduzindo carga no banco. PDFs são gerados assincronamente e armazenados em object storage (S3), evitando re-geração. Particionamento do banco por instituição permite sharding futuro. CDN distribui PDFs e assets estáticos globalmente. Cada port pode ter seu adapter substituído por uma solução mais escalável sem tocar o core.",
+    "custos": "Custos variáveis dominantes: geração de PDF (CPU-intensiva, usar workers spot/preemptíveis), armazenamento S3 (crescimento linear com volume de certificados), envio de e-mail (SendGrid por volume). Verificação pública tem custo marginal próximo de zero com cache. Ancoragem blockchain é opcional e paga por transação (usar Polygon para taxas baixas). Estratégia de controle: emissão assíncrona em lote reduz picos de CPU; PDFs gerados sob demanda somente na primeira solicitação (lazy generation); tier gratuito com limite de emissões mensais protege margem em contas pequenas.",
+    "monetizacao": "SaaS B2B com cobrança por instituição: planos por volume de certificados emitidos/mês (tiers: até 100, 500, 2000, ilimitado). Add-ons pagos: ancoragem blockchain (+autenticidade avançada), domínio personalizado nos certificados, white-label do portal de verificação, API de integração com LMS proprietários, relatórios avançados e exportação de dados. Revenue streams secundários: certificação avulsa B2C para criadores independentes de cursos, e comissão por integração com marketplaces de cursos parceiros.",
+    "stack_sugerida": "Backend: Node.js com TypeScript (core domain puro em classes/interfaces sem frameworks), NestJS como framework de composição e DI. Banco de dados: PostgreSQL (dados relacionais de certificados e alunos), Redis (cache de verificações). Mensageria: RabbitMQ ou AWS SQS para filas de emissão assíncrona. Geração de PDF: Puppeteer em workers isolados. Armazenamento: AWS S3 ou Cloudflare R2. Assinatura digital: biblioteca Node.js crypto nativa com ECDSA. Frontend: Next.js (portal web + página pública de verificação com SSR para SEO). Infraestrutura: Docker + Kubernetes (EKS/GKE) para escalonamento horizontal. Observabilidade: OpenTelemetry + Grafana + Loki. CI/CD: GitHub Actions. Testes: Vitest para unit/integration do core (sem dependências de infra)."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Emissão, gestão e verificação de certificados digitais de cursos livres. O domínio central orquestra as regras de negócio: critérios de conclusão, geração de credenciais únicas, ciclo de vida do certificado (emissão, revogação, expiração) e auditoria de verificações públicas. Entidades principais: Aluno, Curso, CriteriosConclusao, Certificado, Credencial, RegistroVerificacao.\",\n  \"primary_ports\": [\n    \"EmitirCertificadoUseCase: recebe dados de conclusão e orquestra a emissão\",\n    \"VerificarCertificadoUseCase: valida autenticidade por hash/QR público\",\n    \"RevogarCertificadoUseCase: invalida certificado com motivo auditável\",\n    \"ConsultarCertificadosAlunoUseCase: lista certificados de um aluno\",\n    \"RegistrarCursoUseCase: cadastra curso com critérios de conclusão\",\n    \"GerarRelatorioInstituicaoUseCase: métricas de emissão por instituição\"\n  ],\n  \"secondary_ports\": [\n    \"CertificadoRepository: persistência e consulta de certificados\",\n    \"CursoRepository: persistência e consulta de cursos\",\n    \"AlunoRepository: persistência e consulta de alunos\",\n    \"CredencialRepository: armazenamento de credenciais únicas e hashes\",\n    \"NotificacaoPort: disparo de notificações ao aluno\",\n    \"AssinaturaDigitalPort: geração de assinatura criptográfica do certificado\",\n    \"GeracaoPDFPort: renderização do documento PDF do certificado\",\n    \"ArmazenamentoArquivosPort: persistência de PDFs e assets\",\n    \"RegistroBlockchainPort: ancoragem opcional do hash em blockchain pública\",\n    \"EventosDominioPort: publicação de eventos para integrações externas\",\n    \"LogAuditoriaPort: registro imutável de operações sensíveis\"\n  ],\n  \"primary_adapters\": [\n    \"REST API Controller (HTTP/HTTPS): interface para LMS parceiros e front-end web\",\n    \"GraphQL Gateway: consultas flexíveis para dashboards de instituições\",\n    \"Webhook Receiver: recebe eventos de conclusão de plataformas externas (Moodle, Canvas, Hotmart)\",\n    \"CLI Adapter: scripts de emissão em lot"
+}

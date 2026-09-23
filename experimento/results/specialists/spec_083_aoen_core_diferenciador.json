@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 83,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O CertificationEngine é identificado explicitamente como núcleo diferenciador, isolado como abstração com interface contratual genérica, extensível via padrão adapter para qualquer norma ou certificadora, e resolve um problema real — a confiança verificável em materiais sustentáveis — que marketplaces genéricos não endereçam."
+}

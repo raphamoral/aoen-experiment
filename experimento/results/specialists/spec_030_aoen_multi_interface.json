@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 30,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Mobile, Web, API REST, WhatsApp Bot e Câmera IP), cada uma com justificativa explícita de perfil de usuário e segmento de mercado, e toda a lógica de negócio está centralizada na StockService — completamente desacoplada das interfaces — permitindo adicionar novos canais sem reescrever processamento ou regras de domínio."
+}

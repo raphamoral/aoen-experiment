@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura menciona 'custo por devolução' no contexto de Analytics como métrica orientada ao lojista, o que indica alguma consciência de custo por operação, mas não há nenhum mecanismo descrito para rastrear consumo de recursos por tenant, atribuir custos de infraestrutura (EKS, S3, IA do DispositionDecision) a clientes individuais, nem conexão entre esse custo e o modelo de precificação — o projeto toca no conceito de custo variável sem estruturar um framework real de unit economics por cliente."
+}

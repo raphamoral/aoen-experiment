@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "arch_flow",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A cadeia de valor mapeia diretamente para os bounded contexts, que por sua vez determinam coerentemente os times e suas métricas — a estratégia build/buy/commodity reforça esse alinhamento ao posicionar diferenciadores reais (motor de leilão, ML de preço justo) em Genesis enquanto delega infraestrutura a commodity; a única tensão detectável é estrutural: Negotiation e Bidding envolvem ambos os lados da plataforma mas foram fragmentados entre Buyer Experience e Supplier Experience, criando acoplamento implícito que a topologia de times não endereça explicitamente."
+}

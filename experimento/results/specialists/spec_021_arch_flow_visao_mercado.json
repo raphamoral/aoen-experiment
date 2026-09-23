@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O documento identifica superficialmente dois perfis de usuário (gestor predial e técnico) e sinaliza valor via 'custo evitado' e MTBF, mas é essencialmente um artefato arquitetural: não há tamanho de mercado, a dor do cliente não está articulada explicitamente, não existe benchmarking competitivo e a proposta de valor não é posicionada como argumento de adoção — apenas como saída técnica do sistema."
+}

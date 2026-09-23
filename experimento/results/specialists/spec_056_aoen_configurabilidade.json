@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 56,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra intenção sólida: o fluxo principal é explicitamente declarado como imutável no código com parâmetros variáveis por cliente (raio de cobertura, SLA, categorias habilitadas), e o padrão de adaptadores desacopla fornecedores e transportadoras — mas faltam especificações sobre o mecanismo de armazenamento e gestão dessas configurações por tenant (schema de tabela de configuração, processo de onboarding zero-código, isolamento de dados multi-tenant), impedindo afirmar que novo cliente = nova row no banco sem qualquer deploy."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 72,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta forma uma cadeia causal fechada e sem contradições: o mercado-alvo (indústrias com alto custo de parada) justifica o core preditivo, o core abstrato via ModelProvider viabiliza a flexibilidade exigida pelo mercado enterprise, a service layer unificada garante que todas as interfaces (cada uma justificada por um segmento de mercado distinto identificado na fase1) consumam contratos estáveis sem duplicar lógica — cada decisão arquitetural tem sua razão de existir ancorada em outra decisão anterior, com a única ressalva sendo o fluxo da fase3 truncado, que impede avaliar se a pipeline de ingestão mantém a mesma coerência."
+}

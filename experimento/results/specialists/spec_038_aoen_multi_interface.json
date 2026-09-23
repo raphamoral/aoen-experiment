@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 38,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (dashboard web, REST API, plugins de plataforma, alertas assíncronos e relatórios agendados), cada uma justificada por um perfil de usuário real e segmento de mercado específico, com lógica de negócio totalmente desacoplada em uma CompetitorIntelligenceService centralizada que permite adicionar novos canais sem alterar regras de comparação ou alerta."
+}

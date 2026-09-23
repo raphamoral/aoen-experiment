@@ -1,0 +1,64 @@
+{
+  "ideia_idx": 1,
+  "ideia": "SaaS de gestão de frotas para entregas last-mile com rastreamento em tempo real",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Real-time Performance",
+      "Scalabilidade Horizontal",
+      "Observabilidade",
+      "Resiliência",
+      "Modularidade",
+      "Testabilidade",
+      "Segurança de Dados",
+      "Baixa Latência em Rastreamento"
+    ],
+    "fitness_functions": [
+      "P99 latência < 500ms para atualizações de localização",
+      "Taxa de precisão do rastreamento > 99.5%",
+      "Uptime > 99.95%",
+      "Tempo de deploy < 15 minutos",
+      "Cobertura de testes > 80%",
+      "TTFB < 200ms para dashboard",
+      "Sucesso de eventos em tempo real > 99.9%",
+      "RTO < 5 minutos",
+      "Escalabilidade: 10x crescimento sem redesign"
+    ],
+    "incremental_change": "Arquitetura orientada a eventos com 3 domínios iniciais (Tracking, Delivery, Admin) evoluindo independentemente. Strangler pattern para migração de funcionalidades. Feature flags para rollout gradual. API versioning para evolução sem breaking changes. CQRS para separar leitura/escrita.",
+    "reversibility": {
+      "reversíveis": [
+        "Provedor cloud (AWS/GCP/Azure)",
+        "Banco de dados (CQRS abstrai storage)",
+        "Message broker (Kafka/RabbitMQ/AWS SQS)",
+        "UI framework do dashboard",
+        "Linguagens em serviços específicos"
+      ],
+      "irreversíveis": [
+        "Decisão event-driven (contrato entre serviços)",
+        "Modelo inicial de schemas de localização",
+        "Padrão de segurança e autenticação",
+        "Estrutura de domínios de negócio"
+      ]
+    },
+    "coupling": "Acoplamento baixo via event-driven com Event Bus assíncrono. Cada domínio possui banco próprio. APIs versionadas com GraphQL gateway para orquestração. gRPC para comunicação inter-serviços crítica. Contratos explícitos em eventos schema registry.",
+    "interfaces": [
+      "REST/GraphQL API para aplicações externas",
+      "WebSocket para push real-time (driver + cliente)",
+      "Mobile API (iOS/Android para drivers)",
+      "Admin Dashboard HTTP",
+      "Webhooks para notificações de clientes",
+      "gRPC interno para serviços core",
+      "Integração ERP via Webhooks/APIs"
+    ],
+    "escalabilidade": "Sharding geográfico de dados. Auto-scaling horizontal em Kubernetes com HPA. Cache distribuído Redis para hotspots. CDN para assets estáticos. Message queue com consumer groups. Read replicas para analytics. Compressão de dados telemétricos. Retenção variável (30 dias alta resolução, depois agregado).",
+    "custos": "40% infraestrutura cloud (compute/storage), 20% real-time services, 15% observabilidade, 15% APIs externas (maps/geocoding), 10% operações. Otimizar: spot instances, serverless para picos, compressão de telemetria.",
+    "monetizacao": "Freemium: até 50 entregas/dia grátis. Starter $299/mês (50-500 entregas). Professional $999/mês (500-5000 entregas). Enterprise custom. Taxa add-on $0.15 por rastreamento real-time acima do limite. Marketplace de integrações como receita secundária.",
+    "stack_sugerida": {
+      "backend": "Go (Echo/Gin) ou Python (FastAPI) para serviços. PostgreSQL + TimescaleDB para localização. Redis para cache. Kafka/RabbitMQ para eventos. gRPC + Protobuf interno.",
+      "frontend": "React + TypeScript + Mapbox GL (dashboard). React Native (mobile drivers). WebSocket + Socket.io para real-time.",
+      "infrastructure": "Docker + Kubernetes (EKS/GKE). GitHub Actions + ArgoCD. Prometheus + Grafana + Loki + Jaeger.",
+      "external": "Mapbox/Google Maps. Nominatim/Google Geocoding. Twilio/AWS SNS para notificações."
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Real-time Performance\",\n    \"Scalabilidade Horizontal\",\n    \"Observabilidade\",\n    \"Resiliência\",\n    \"Modularidade\",\n    \"Testabilidade\",\n    \"Segurança de Dados\",\n    \"Baixa Latência em Rastreamento\"\n  ],\n  \"fitness_functions\": [\n    \"P99 latência < 500ms para atualizações de localização\",\n    \"Taxa de precisão do rastreamento > 99.5%\",\n    \"Uptime > 99.95%\",\n    \"Tempo de deploy < 15 minutos\",\n    \"Cobertura de testes > 80%\",\n    \"TTFB < 200ms para dashboard\",\n    \"Sucesso de eventos em tempo real > 99.9%\",\n    \"RTO < 5 minutos\",\n    \"Escalabilidade: 10x crescimento sem redesign\"\n  ],\n  \"incremental_change\": \"Arquitetura orientada a eventos com 3 domínios iniciais (Tracking, Delivery, Admin) evoluindo independentemente. Strangler pattern para migração de funcionalidades. Feature flags para rollout gradual. API versioning para evolução sem breaking changes. CQRS para separar leitura/escrita.\",\n  \"reversibility\": {\n    \"reversíveis\": [\n      \"Provedor cloud (AWS/GCP/Azure)\",\n      \"Banco de dados (CQRS abstrai storage)\",\n      \"Message broker (Kafka/RabbitMQ/AWS SQS)\",\n      \"UI framework do dashboard\",\n      \"Linguagens em serviços específicos\"\n    ],\n    \"irreversíveis\": [\n      \"Decisão event-driven (contrato entre serviços)\",\n      \"Modelo inicial de schemas de localização\",\n      \"Padrão de segurança e autenticação\",\n      \"Estrutura de domínios de negócio\"\n    ]\n  },\n  \"coupling\": \"Acoplamento baixo via event-driven com Event Bus assíncrono. Cada domínio possui banco próprio. APIs versionadas com GraphQL gateway para orquestração. gRPC para comunicação inter-serviços crítica. Contratos explícitos em eventos schema registry.\",\n  \"interfaces\": [\n    \"REST/GraphQL API para aplicações externas\",\n    \"WebSocket para push real-time (driver + cliente)\",\n    \"Mobile API (iOS/Android para drivers)\",\n    \"Admin Dashboard HTTP\",\n    \"Webhooks para notificações de clientes\",\n    \"gRPC interno para serviços core\",\n    \"In"
+}

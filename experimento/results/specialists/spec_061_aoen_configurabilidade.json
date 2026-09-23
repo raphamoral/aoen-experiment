@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 61,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra compreensão correta do princípio (fluxo fixo imutável no código + parâmetros variáveis por cliente, padrão Strategy para troca de algoritmo sem reescrita), mas a lista de parâmetros configuráveis está truncada ('Taxo...'), não há descrição de mecanismo de armazenamento de configuração por tenant (tabela de config, feature flags, schema de onboarding), e o critério de 'novo cliente = nova row, zero deploy' não é declarado explicitamente — fica implícito na intenção arquitetural, não comprovado no design."
+}

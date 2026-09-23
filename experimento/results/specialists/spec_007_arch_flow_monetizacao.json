@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O projeto menciona um contexto de 'Billing & Subscriptions' com planos, cobrança recorrente, trials, upgrades e gestão de licenças por assento, indicando consciência de um modelo de assinatura, mas não detalha tiers específicos, faixas de preço, métricas de sustentabilidade (LTV, CAC, churn) nem a conexão explícita entre o valor entregue e o que é cobrado."
+}

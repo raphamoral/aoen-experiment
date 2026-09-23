@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema coeso e auto-reforçante: a filosofia de MVP com curadoria manual justifica a stack simples (Next.js + Postgres com tabelas diretas), que justifica o custo baixo (<$50/mês), que justifica não se preocupar com escala agora, que justifica o modelo freemium (investidores grátis para atrair o lado difícil enquanto startups pagam pelo acesso qualificado) — cada camada sustenta a seguinte sem contradições; o único ponto de leve indecisão (chat interno vs. redirecionamento para WhatsApp/email) é explicitamente reconhecido como uma escolha a validar, não ignorado, o que é coerente com a mentalidade de 'validar antes de construir' que permeia toda a proposta."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O Motor de Diagnóstico IA está claramente isolado como bounded context próprio com equipe dedicada (complicated subsystem team) e interface gRPC de baixa latência, com feedback loop de retraining que cria fosso competitivo crescente — perde apenas 2 pontos por não detalhar qual diferencial específico os modelos veterinários têm frente a soluções genéricas de visão computacional adaptadas, nem como a extensibilidade é garantida caso o stack de GPU/modelo seja substituído."
+}

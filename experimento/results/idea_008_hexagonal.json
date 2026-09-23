@@ -1,0 +1,66 @@
+{
+  "ideia_idx": 8,
+  "ideia": "SaaS de gestão de resíduos industriais com rastreabilidade blockchain",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão do ciclo de vida de resíduos industriais: geração, classificação, transporte, tratamento e disposição final, com rastreabilidade imutável via blockchain e conformidade regulatória (CONAMA, IBAMA, MTR)",
+    "primary_ports": [
+      "WasteRegistrationPort: registrar evento de geração de resíduo com classificação NBR 10.004",
+      "WasteTransferPort: iniciar e confirmar transferência de custódia entre geradores/transportadores/receptores",
+      "ManifestIssuancePort: emitir e assinar manifesto de transporte de resíduos (MTR)",
+      "ComplianceReportingPort: solicitar relatórios de conformidade ambiental por período/unidade",
+      "AuditTrailQueryPort: consultar histórico completo e verificado de um resíduo por hash/lote",
+      "AlertManagementPort: configurar e consultar alertas de vencimento de licenças e irregularidades",
+      "UserOnboardingPort: cadastrar empresas geradoras, transportadoras e receptoras",
+      "DashboardQueryPort: obter métricas consolidadas de volume, conformidade e rastreabilidade"
+    ],
+    "secondary_ports": [
+      "WastePersistencePort: persistir e recuperar entidades de resíduo, manifesto e custódia",
+      "BlockchainLedgerPort: gravar e verificar registros imutáveis de eventos de custódia",
+      "DocumentStoragePort: armazenar e recuperar documentos regulatórios e certificados",
+      "NotificationDispatchPort: enviar notificações multicanal a partes envolvidas",
+      "GeolocationPort: validar coordenadas e calcular rotas de transporte",
+      "IdentityProviderPort: autenticar usuários e validar permissões por papel (gerador/transportador/receptor/fiscal)",
+      "RegulatoryGatewayPort: sincronizar MTRs com sistemas do IBAMA/SINIR e órgãos estaduais",
+      "IoTTelemetryPort: receber leituras de sensores de peso, temperatura e localização GPS",
+      "ReportRenderingPort: transformar dados de conformidade em PDF/XLSX para auditoria",
+      "BillingPort: registrar eventos de uso para cobrança metered por manifesto ou volume"
+    ],
+    "primary_adapters": [
+      "RestApiAdapter: HTTP/JSON RESTful para sistemas ERP e portais web (Express/FastAPI)",
+      "GraphQLAdapter: queries flexíveis para dashboards e clientes mobile",
+      "WebhookReceiverAdapter: receber eventos de IoT gateways e sistemas de terceiros",
+      "MobileAppAdapter: React Native app para motoristas e operadores de pátio com suporte offline",
+      "CliAdapter: ferramenta de linha de comando para operações batch e integração CI/CD",
+      "SchedulerAdapter: cron jobs para geração automática de relatórios periódicos e alertas de vencimento"
+    ],
+    "secondary_adapters": [
+      "PostgreSQLAdapter: implementa WastePersistencePort com schema multi-tenant via RLS",
+      "HyperledgerFabricAdapter: implementa BlockchainLedgerPort com chaincode de custódia permissionado",
+      "EthereumAdapter: implementa BlockchainLedgerPort alternativo para clientes que requerem blockchain público",
+      "AWSS3Adapter: implementa DocumentStoragePort com bucket por tenant e lifecycle policies",
+      "SendGridAdapter: implementa NotificationDispatchPort para e-mail transacional",
+      "TwilioAdapter: implementa NotificationDispatchPort para SMS e WhatsApp de alertas críticos",
+      "GoogleMapsAdapter: implementa GeolocationPort para validação e visualização de rotas",
+      "Auth0Adapter: implementa IdentityProviderPort com RBAC e SSO corporativo",
+      "SINIRGatewayAdapter: implementa RegulatoryGatewayPort para integração com portal IBAMA/SINIR",
+      "MQTTBrokerAdapter: implementa IoTTelemetryPort via MQTT para sensores de balança e rastreadores GPS",
+      "PuppeteerPDFAdapter: implementa ReportRenderingPort para geração de manifestos e relatórios",
+      "StripeAdapter: implementa BillingPort com metered billing por manifesto emitido"
+    ],
+    "isolation": "O core domain não importa nenhum framework, ORM, biblioteca de blockchain ou SDK de nuvem. Todas as dependências apontam para dentro: os ports são interfaces puras definidas no domínio, e os adapters (camada externa) implementam essas interfaces. A inversão de dependência (DIP) é aplicada via injeção de dependência no bootstrap. O core é testável com mocks simples dos ports, sem necessidade de banco, rede ou blockchain real. Qualquer adapter pode ser substituído sem alterar uma linha da lógica de negócio.",
+    "interfaces": [
+      "Web Dashboard: portal React para gestores ambientais com mapa de rotas e timeline de custódia",
+      "Mobile App (iOS/Android): app para motoristas assinarem transferências e coletarem evidências fotográficas",
+      "API REST/GraphQL: integração com ERPs (SAP, TOTVS) e sistemas de QHSE corporativos",
+      "Portal do Regulador: acesso somente-leitura com verificação blockchain para fiscais do IBAMA",
+      "IoT Integration: endpoints MQTT/HTTPS para balanças, GPS trackers e sensores de temperatura",
+      "Webhook Outbound: notificações de eventos para sistemas clientes em tempo real"
+    ],
+    "escalabilidade": "Arquitetura stateless horizontalmente escalável via containers (Kubernetes). Multi-tenancy no banco com PostgreSQL RLS por schema. Eventos de custódia publicados em Kafka para processamento assíncrono dos adapters de blockchain e notificação, desacoplando latência de gravação blockchain da experiência do usuário. Leitura e escrita separadas (CQRS opcional): writes no PostgreSQL + blockchain, reads em replica ou cache Redis. Auto-scaling de workers de blockchain baseado em profundidade de fila. CDN para assets do dashboard e documentos S3.",
+    "custos": "Maiores vetores de custo: (1) nós de blockchain — Hyperledger Fabric reduz custo vs Ethereum público ao eliminar gas fees; (2) armazenamento S3 de documentos regulatórios com retenção legal de 5 anos — lifecycle para Glacier reduz 70% após 90 dias; (3) compute Kubernetes — spot instances para workers assíncronos; (4) egress de dados para integrações regulatórias. Custo marginal por tenant é baixo após infraestrutura base compartilhada. Estimativa: $800-2.500/mês para 50 tenants ativos em AWS.",
+    "monetizacao": "SaaS B2B com três vetores: (1) Assinatura por tier — Starter (até 100 MTRs/mês), Professional (500 MTRs + IoT + API), Enterprise (ilimitado + portal regulador + SLA); (2) Metered overage — cobrança por MTR além do plano base via Stripe metered billing; (3) Marketplace de transportadoras e receptoras homologadas — comissão de conexão ou listing fee; (4) Add-on de acesso para auditores e órgãos reguladores — licença por assento somente-leitura. Ticket médio estimado: R$ 2.000-15.000/mês por empresa geradora de médio porte.",
+    "stack_sugerida": "Core/Domain: TypeScript (Node.js) ou Python 3.12 — sem dependências externas no módulo de domínio. Adapters/Infrastructure: PostgreSQL 16 (RLS multi-tenant), Redis 7 (cache + rate limiting), Apache Kafka (event bus assíncrono), Hyperledger Fabric 2.5 (blockchain permissionado). Primary Adapters: Fastify (REST), Apollo Server (GraphQL), React 19 + Tailwind (dashboard), React Native (mobile). Orquestração: Kubernetes (EKS/GKE) + Helm, Docker. CI/CD: GitHub Actions + ArgoCD. Observabilidade: OpenTelemetry + Grafana + Loki. IaC: Terraform."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Gestão do ciclo de vida de resíduos industriais: geração, classificação, transporte, tratamento e disposição final, com rastreabilidade imutável via blockchain e conformidade regulatória (CONAMA, IBAMA, MTR)\",\n\n  \"primary_ports\": [\n    \"WasteRegistrationPort: registrar evento de geração de resíduo com classificação NBR 10.004\",\n    \"WasteTransferPort: iniciar e confirmar transferência de custódia entre geradores/transportadores/receptores\",\n    \"ManifestIssuancePort: emitir e assinar manifesto de transporte de resíduos (MTR)\",\n    \"ComplianceReportingPort: solicitar relatórios de conformidade ambiental por período/unidade\",\n    \"AuditTrailQueryPort: consultar histórico completo e verificado de um resíduo por hash/lote\",\n    \"AlertManagementPort: configurar e consultar alertas de vencimento de licenças e irregularidades\",\n    \"UserOnboardingPort: cadastrar empresas geradoras, transportadoras e receptoras\",\n    \"DashboardQueryPort: obter métricas consolidadas de volume, conformidade e rastreabilidade\"\n  ],\n\n  \"secondary_ports\": [\n    \"WastePersistencePort: persistir e recuperar entidades de resíduo, manifesto e custódia\",\n    \"BlockchainLedgerPort: gravar e verificar registros imutáveis de eventos de custódia\",\n    \"DocumentStoragePort: armazenar e recuperar documentos regulatórios e certificados\",\n    \"NotificationDispatchPort: enviar notificações multicanal a partes envolvidas\",\n    \"GeolocationPort: validar coordenadas e calcular rotas de transporte\",\n    \"IdentityProviderPort: autenticar usuários e validar permissões por papel (gerador/transportador/receptor/fiscal)\",\n    \"RegulatoryGatewayPort: sincronizar MTRs com sistemas do IBAMA/SINIR e órgãos estaduais\",\n    \"IoTTelemetryPort: receber leituras de sensores de peso, temperatura e localização GPS\",\n    \"ReportRenderingPort: transformar dados de conformidade em PDF/XLSX para auditoria\",\n    \"BillingPort: registrar eventos de uso para cobrança metered por manifesto ou volume\"\n  ],\n\n  \""
+}

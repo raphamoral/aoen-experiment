@@ -1,0 +1,498 @@
+{
+  "ideia_idx": 18,
+  "ideia": "SaaS de análise preditiva de churn para operadoras de telecom",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "Customer": {
+        "description": "Cliente da operadora (pessoa física ou jurídica)",
+        "attributes": [
+          "customerId",
+          "segment",
+          "tenure",
+          "contractType",
+          "monthlyCharge",
+          "totalCharges",
+          "serviceUsageProfile"
+        ],
+        "business_rules": [
+          "Clientes com tenure < 12 meses são considerados novos",
+          "Segmentação por ARPU: low/mid/high value"
+        ]
+      },
+      "ChurnPrediction": {
+        "description": "Resultado da análise preditiva de churn para um cliente",
+        "attributes": [
+          "predictionId",
+          "customerId",
+          "churnProbability",
+          "churnRiskLevel",
+          "predictedChurnDate",
+          "confidenceScore",
+          "generatedAt"
+        ],
+        "business_rules": [
+          "RiskLevel: LOW(<30%), MEDIUM(30-70%), HIGH(>70%)",
+          "Predição expira após 30 dias"
+        ]
+      },
+      "ChurnDriver": {
+        "description": "Fator causal que contribui para o risco de churn",
+        "attributes": [
+          "driverId",
+          "category",
+          "weight",
+          "description"
+        ],
+        "business_rules": [
+          "Drivers: billing_issues, service_quality, competitor_offer, support_failures, usage_decline"
+        ]
+      },
+      "RetentionAction": {
+        "description": "Ação de retenção recomendada para mitigar risco de churn",
+        "attributes": [
+          "actionId",
+          "type",
+          "priority",
+          "estimatedImpact",
+          "cost",
+          "expiresAt"
+        ],
+        "business_rules": [
+          "Ações ordenadas por ROI esperado",
+          "Máximo 3 ações simultâneas por cliente"
+        ]
+      },
+      "UsageMetric": {
+        "description": "Métricas de uso dos serviços pelo cliente",
+        "attributes": [
+          "metricId",
+          "customerId",
+          "period",
+          "callMinutes",
+          "dataConsumption",
+          "smsCount",
+          "roamingUsage",
+          "supportCallCount"
+        ],
+        "business_rules": [
+          "Métricas agregadas mensalmente",
+          "Histórico mínimo de 6 meses para predição confiável"
+        ]
+      },
+      "Tenant": {
+        "description": "Operadora de telecom cliente do SaaS (multi-tenancy)",
+        "attributes": [
+          "tenantId",
+          "name",
+          "plan",
+          "dataRetentionDays",
+          "apiQuotaMonthly",
+          "customModelEnabled"
+        ],
+        "business_rules": [
+          "Isolamento total de dados entre tenants",
+          "Quotas de API por plano contratado"
+        ]
+      },
+      "PredictionModel": {
+        "description": "Modelo de ML treinado para predição de churn",
+        "attributes": [
+          "modelId",
+          "tenantId",
+          "version",
+          "algorithm",
+          "accuracy",
+          "precision",
+          "recall",
+          "trainedAt",
+          "isActive"
+        ],
+        "business_rules": [
+          "Apenas um modelo ativo por tenant por vez",
+          "Re-treinamento automático quando accuracy < 0.75"
+        ]
+      }
+    },
+    "use_cases": {
+      "PredictCustomerChurn": {
+        "description": "Calcula probabilidade de churn para um cliente específico",
+        "input": "CustomerId, forceRefresh flag",
+        "output": "ChurnPrediction com drivers e ações recomendadas",
+        "dependencies": [
+          "CustomerRepository",
+          "UsageMetricRepository",
+          "PredictionModelRepository",
+          "ChurnPredictionRepository",
+          "MLModelGateway"
+        ]
+      },
+      "BatchPredictChurn": {
+        "description": "Executa predição em lote para todos os clientes do tenant",
+        "input": "TenantId, segment filter, date range",
+        "output": "Lista de ChurnPredictions persistidas",
+        "dependencies": [
+          "CustomerRepository",
+          "ChurnPredictionRepository",
+          "MLModelGateway",
+          "JobQueueGateway"
+        ]
+      },
+      "GenerateRetentionActions": {
+        "description": "Gera recomendações de ações de retenção baseadas nos drivers de churn",
+        "input": "ChurnPrediction, budget constraint",
+        "output": "Lista priorizada de RetentionActions",
+        "dependencies": [
+          "ChurnPredictionRepository",
+          "RetentionActionRepository",
+          "RetentionRuleEngine"
+        ]
+      },
+      "IngestCustomerData": {
+        "description": "Importa e normaliza dados de clientes e uso da operadora",
+        "input": "Raw customer data (CSV/API), TenantId",
+        "output": "Customers e UsageMetrics persistidos e validados",
+        "dependencies": [
+          "CustomerRepository",
+          "UsageMetricRepository",
+          "DataValidationService",
+          "DataTransformationService"
+        ]
+      },
+      "TrainChurnModel": {
+        "description": "Treina ou re-treina modelo preditivo com dados históricos do tenant",
+        "input": "TenantId, training config, historical data range",
+        "output": "PredictionModel treinado e avaliado",
+        "dependencies": [
+          "UsageMetricRepository",
+          "ChurnPredictionRepository",
+          "MLTrainingGateway",
+          "PredictionModelRepository"
+        ]
+      },
+      "GetChurnDashboard": {
+        "description": "Agrega métricas de churn para visualização gerencial",
+        "input": "TenantId, date range, segment filter",
+        "output": "Dashboard DTO com KPIs, trends, segmentação de risco",
+        "dependencies": [
+          "ChurnPredictionRepository",
+          "CustomerRepository",
+          "MetricsAggregationService"
+        ]
+      },
+      "ExportChurnReport": {
+        "description": "Gera relatório exportável de análise de churn",
+        "input": "TenantId, report config, format (PDF/CSV/XLSX)",
+        "output": "Report file URL",
+        "dependencies": [
+          "ChurnPredictionRepository",
+          "ReportGeneratorGateway"
+        ]
+      },
+      "ConfigureAlertRules": {
+        "description": "Define regras de alerta para clientes com risco elevado",
+        "input": "TenantId, alert thresholds, notification channels",
+        "output": "AlertRule persistida",
+        "dependencies": [
+          "AlertRuleRepository",
+          "NotificationGateway"
+        ]
+      },
+      "ManageTenant": {
+        "description": "CRUD de tenant, planos, usuários e configurações",
+        "input": "Tenant data, billing info",
+        "output": "Tenant atualizado",
+        "dependencies": [
+          "TenantRepository",
+          "BillingGateway",
+          "IdentityGateway"
+        ]
+      }
+    },
+    "interface_adapters": {
+      "controllers": {
+        "RestApiController": "Recebe requisições HTTP, valida input, chama Use Cases, retorna DTOs serializados",
+        "GraphQLResolver": "Resolvers para queries/mutations do painel interativo",
+        "WebhookController": "Recebe eventos externos de sistemas da operadora (CDR, billing events)",
+        "GrpcController": "Interface de alta performance para integração batch com sistemas legados telecom"
+      },
+      "presenters": {
+        "ChurnPredictionPresenter": "Converte ChurnPrediction entity para ChurnPredictionResponseDTO",
+        "DashboardPresenter": "Agrega e formata dados para visualização no frontend",
+        "RetentionActionPresenter": "Formata ações de retenção com scoring visual",
+        "ReportPresenter": "Serializa dados para formatos de exportação"
+      },
+      "gateways": {
+        "MLModelGateway": "Interface para execução de inferência no modelo de ML",
+        "MLTrainingGateway": "Interface para orquestração de treinamento de modelos",
+        "NotificationGateway": "Interface para envio de alertas (email, Slack, webhook)",
+        "BillingGateway": "Interface para cobrança e gestão de assinaturas",
+        "IdentityGateway": "Interface para autenticação e autorização (SSO, RBAC)",
+        "ReportGeneratorGateway": "Interface para geração de PDFs e planilhas",
+        "JobQueueGateway": "Interface para enfileiramento de jobs assíncronos"
+      },
+      "repositories_interfaces": {
+        "CustomerRepository": "CRUD + queries de segmentação e filtros avançados",
+        "ChurnPredictionRepository": "Persistência de predições com suporte a time-series queries",
+        "UsageMetricRepository": "Armazenamento e consulta de séries temporais de uso",
+        "PredictionModelRepository": "Versionamento e ativação de modelos por tenant",
+        "RetentionActionRepository": "Histórico de ações e tracking de efetividade",
+        "TenantRepository": "Gestão de tenants com isolamento de dados",
+        "AlertRuleRepository": "Configurações de alertas por tenant"
+      },
+      "dto_mappers": {
+        "CustomerDataMapper": "Transforma dados brutos de CSV/API para entidade Customer",
+        "UsageMetricMapper": "Normaliza formatos heterogêneos de dados de uso (CDR, xDR)",
+        "PredictionResultMapper": "Mapeia output do modelo ML para ChurnPrediction entity"
+      }
+    },
+    "frameworks_drivers": {
+      "api_framework": {
+        "primary": "FastAPI (Python) — alta performance, OpenAPI nativo, async support",
+        "graphql": "Strawberry GraphQL para painel interativo",
+        "grpc": "gRPC + Protocol Buffers para integração batch telecom"
+      },
+      "ml_infrastructure": {
+        "training": "MLflow para tracking de experimentos e versionamento de modelos",
+        "serving": "BentoML ou MLflow Serving para inferência em produção",
+        "algorithms": "XGBoost / LightGBM (baseline) + Scikit-learn pipelines",
+        "feature_store": "Feast para armazenamento e serving de features",
+        "orchestration": "Apache Airflow para pipelines de re-treinamento automatizado"
+      },
+      "databases": {
+        "operational": "PostgreSQL com Row-Level Security para multi-tenancy",
+        "timeseries": "TimescaleDB (extensão PostgreSQL) para métricas de uso",
+        "cache": "Redis para cache de predições e sessões",
+        "data_warehouse": "ClickHouse para analytics e agregações históricas de grande volume"
+      },
+      "messaging": {
+        "queue": "Apache Kafka para ingestão de dados em tempo real (CDR streams)",
+        "jobs": "Celery + Redis para processamento assíncrono de batch predictions"
+      },
+      "infrastructure": {
+        "containers": "Docker + Kubernetes (EKS/GKE)",
+        "service_mesh": "Istio para controle de tráfego e observabilidade entre microserviços",
+        "api_gateway": "Kong ou AWS API Gateway para rate limiting e auth",
+        "cdn": "CloudFront para assets do frontend"
+      },
+      "frontend": {
+        "framework": "Next.js (React) + TypeScript",
+        "charts": "Recharts ou Tremor para dashboards analíticos",
+        "state": "Zustand + React Query (TanStack Query)"
+      },
+      "observability": {
+        "metrics": "Prometheus + Grafana",
+        "tracing": "OpenTelemetry + Jaeger",
+        "logging": "ELK Stack (Elasticsearch, Logstash, Kibana)",
+        "alerting": "PagerDuty + Grafana Alertmanager"
+      },
+      "auth": {
+        "identity": "Keycloak para SSO e RBAC multi-tenant",
+        "tokens": "JWT com refresh rotation",
+        "mfa": "TOTP via Keycloak"
+      },
+      "cloud": {
+        "primary": "AWS (EKS, RDS, ElastiCache, MSK, S3)",
+        "alternative": "GCP (GKE, Cloud SQL, Memorystore, Pub/Sub, GCS)",
+        "iac": "Terraform + Terragrunt"
+      }
+    },
+    "dependency_rule": {
+      "principle": "Todas as dependências de código-fonte apontam exclusivamente para dentro das camadas concêntricas. Camadas externas conhecem camadas internas; nunca o inverso.",
+      "layer_isolation": {
+        "entities": "Zero dependências externas. Sem imports de frameworks, ORMs, ou bibliotecas de terceiros. Apenas tipos primitivos e lógica de negócio pura em Python.",
+        "use_cases": "Dependem apenas de Entities e de interfaces abstratas (portas). Nunca importam SQLAlchemy, FastAPI, Redis, ou qualquer implementação concreta.",
+        "interface_adapters": "Implementam as interfaces definidas pelos Use Cases. Conhecem frameworks (FastAPI, SQLAlchemy) mas só expõem DTOs para as camadas externas.",
+        "frameworks_drivers": "Camada mais externa. Instancia implementações concretas e injeta via Dependency Injection (DI Container). Wiring ocorre aqui."
+      },
+      "inversion_of_control": {
+        "pattern": "Dependency Injection via containers (Python: dependency-injector library)",
+        "example": "MLModelGateway é uma interface abstrata no Use Case. A implementação concreta BentoMLModelGateway vive em Frameworks & Drivers e é injetada no runtime.",
+        "repositories": "CustomerRepository é uma ABC (Abstract Base Class) no Use Case. PostgresCustomerRepository implementa essa ABC em Interface Adapters."
+      },
+      "plugin_architecture": "Bancos de dados, modelos ML, e serviços de notificação são 'plugins' substituíveis. Trocar PostgreSQL por MongoDB requer apenas nova implementação de Repository sem alterar Use Cases.",
+      "anti_corruption_layer": "DataMapper objects em Interface Adapters protegem o domínio de vazamentos de schema de banco ou contratos de API externos."
+    },
+    "testability": {
+      "entities": {
+        "strategy": "Unit tests puros sem qualquer mock ou fixture de infraestrutura",
+        "example": "ChurnPrediction.isHighRisk() testado apenas com objetos Python nativos",
+        "coverage_target": "100% das regras de negócio"
+      },
+      "use_cases": {
+        "strategy": "Unit tests com mocks/stubs das interfaces de repositório e gateway",
+        "tools": "pytest + unittest.mock ou pytest-mock",
+        "example": "PredictCustomerChurnUseCase testado com InMemoryCustomerRepository e MockMLModelGateway",
+        "coverage_target": "95%+ dos fluxos principais e edge cases"
+      },
+      "interface_adapters": {
+        "strategy": "Integration tests com banco de dados real em container Docker",
+        "tools": "pytest + testcontainers-python para PostgreSQL/Redis efêmeros",
+        "example": "PostgresCustomerRepository testado contra PostgreSQL real em container",
+        "coverage_target": "80%+ dos adapters críticos"
+      },
+      "api_layer": {
+        "strategy": "Contract tests + E2E tests em ambiente de staging",
+        "tools": "pytest + httpx (async HTTP client) para FastAPI TestClient, Pact para contract testing",
+        "example": "ChurnPredictionController testado com Use Case real e banco em memória"
+      },
+      "ml_models": {
+        "strategy": "Model validation tests com datasets de referência versionados",
+        "tools": "pytest + Great Expectations para validação de qualidade de dados",
+        "metrics_gates": "Accuracy >= 0.80, AUC-ROC >= 0.85 como gates de CI/CD"
+      },
+      "test_isolation": {
+        "multi_tenancy": "Cada test suite cria tenant isolado com dados faker (Faker library)",
+        "data_factory": "Factory Boy para geração de Entities consistentes em testes",
+        "determinism": "Seeds fixos para reprodutibilidade de testes com ML"
+      },
+      "ci_pipeline": "GitHub Actions: unit → integration → contract → model validation → staging E2E"
+    },
+    "interfaces": [
+      "ICustomerRepository — CRUD e queries de clientes por tenant",
+      "IChurnPredictionRepository — persistência e consulta de predições",
+      "IUsageMetricRepository — séries temporais de métricas de uso",
+      "IPredictionModelRepository — versionamento de modelos ML por tenant",
+      "IRetentionActionRepository — histórico de ações de retenção",
+      "IAlertRuleRepository — configurações de alertas por tenant",
+      "ITenantRepository — gestão de tenants e configurações",
+      "IMLModelGateway — execução de inferência (predict)",
+      "IMLTrainingGateway — orquestração de treinamento e avaliação",
+      "INotificationGateway — envio de alertas multi-canal",
+      "IBillingGateway — integração com sistema de cobrança e assinaturas",
+      "IIdentityGateway — autenticação, autorização e SSO",
+      "IReportGeneratorGateway — geração de relatórios em múltiplos formatos",
+      "IJobQueueGateway — enfileiramento e monitoramento de jobs assíncronos",
+      "IFeatureStoreGateway — leitura e escrita de features para ML",
+      "IDataValidationService — validação e qualidade de dados importados",
+      "IRetentionRuleEngine — motor de regras para geração de ações de retenção",
+      "IMetricsAggregationService — agregação de KPIs para dashboard",
+      "IDataTransformationService — normalização de formatos heterogêneos de dados telecom",
+      "IEventPublisher — publicação de eventos de domínio (churn detectado, alerta disparado)"
+    ],
+    "escalabilidade": {
+      "horizontal_scaling": {
+        "api_layer": "Kubernetes HPA (Horizontal Pod Autoscaler) baseado em CPU/RPS para pods da API FastAPI",
+        "ml_inference": "Scaling independente do serviço de inferência ML com GPU nodes dedicados no K8s",
+        "batch_processing": "Celery workers escalados automaticamente via KEDA (Kubernetes Event-Driven Autoscaling) baseado em tamanho da fila Kafka"
+      },
+      "data_scaling": {
+        "timeseries": "TimescaleDB com particionamento automático por tenant e período — queries O(1) independente do volume",
+        "analytics": "ClickHouse com sharding por tenant para agregações históricas de bilhões de registros",
+        "caching": "Redis Cluster com cache de predições por 24h, reduzindo carga ML em 70-80% para queries repetidas"
+      },
+      "multi_tenancy_isolation": {
+        "database": "Row-Level Security (RLS) no PostgreSQL — queries filtradas automaticamente por tenant_id",
+        "compute": "Namespace Kubernetes isolado por tier de plano (shared/dedicated compute)",
+        "rate_limiting": "Kong API Gateway com quotas por tenant configuradas via TenantRepository"
+      },
+      "ml_pipeline_scaling": {
+        "feature_computation": "Apache Spark via EMR/Dataproc para feature engineering em datasets > 10M clientes",
+        "training": "Distributed training com Ray ou Dask para modelos customizados por tenant",
+        "serving": "Model caching no Feature Store, batch predictions pré-computadas para clientes de alto risco"
+      },
+      "event_driven": {
+        "pattern": "CQRS + Event Sourcing para domínio de predições — commands (predizer) separados de queries (ler dashboard)",
+        "streaming": "Kafka para ingestão de CDR (Call Detail Records) em tempo real sem impacto na API transacional"
+      },
+      "global": "Multi-region deployment com Route 53 (geolocation routing) para compliance de dados por país (LGPD, GDPR)"
+    },
+    "custos": {
+      "compute": {
+        "api_pods": "~$200-400/mês por tenant médio (500K clientes) em EKS t3.medium",
+        "ml_inference": "GPU instances (g4dn.xlarge ~$0.526/h) compartilhadas entre tenants — maior custo variável",
+        "ml_training": "Spot instances para treinamento — redução de 70% vs on-demand"
+      },
+      "storage": {
+        "postgresql": "RDS PostgreSQL Multi-AZ — ~$150-300/mês por tenant médio",
+        "timescaledb": "Compressão nativa reduz storage 90% vs PostgreSQL puro para séries temporais",
+        "s3": "Modelos ML e relatórios no S3 — custo marginal (~$0.023/GB)"
+      },
+      "otimizacoes": {
+        "cache_hit_rate": "Redis cache com TTL 24h para predições — meta 75% cache hit reduz custos ML em ~60%",
+        "batch_vs_realtime": "Predições batch noturnas para base completa; realtime apenas para triggers de alto valor",
+        "spot_instances": "Celery workers em Spot Instances (economia 70%) para batch processing não-crítico",
+        "reserved_instances": "RDS e EKS nodes base em Reserved Instances 1-ano (economia 40%)"
+      },
+      "unit_economics": {
+        "cogs_estimado": "15-25% da receita em infraestrutura para margens SaaS saudáveis",
+        "break_even": "Viável a partir de 3-5 tenants Enterprise pagantes (~$5K-15K MRR cada)"
+      }
+    },
+    "monetizacao": {
+      "model": "SaaS B2B com planos por volume de clientes analisados (assinatura mensal/anual)",
+      "tiers": {
+        "starter": {
+          "preco": "$999/mês",
+          "limite": "Até 100K clientes, modelo compartilhado, API REST, suporte via ticket",
+          "target": "MVNOs e operadoras regionais pequenas"
+        },
+        "growth": {
+          "preco": "$3.999/mês",
+          "limite": "Até 1M clientes, fine-tuning do modelo, API + Webhooks, integrações CRM",
+          "target": "Operadoras médias com equipe de CRM ativa"
+        },
+        "enterprise": {
+          "preco": "$12.000+/mês (custom)",
+          "limite": "Clientes ilimitados, modelo dedicado treinado nos dados do tenant, SLA 99.9%, suporte dedicado, on-premise opcional",
+          "target": "Grandes operadoras nacionais/regionais"
+        }
+      },
+      "usage_based_addon": "Overage: $0.002 por predição acima do limite do plano",
+      "professional_services": "Implementação e integração: $15K-50K one-time para Enterprise (alta margem, acelera time-to-value)",
+      "expansion_revenue": {
+        "upsell": "Módulo de Lifetime Value prediction, Next Best Offer, e Network Quality Correlation",
+        "data_enrichment": "Add-on de enriquecimento com dados de mercado (portabilidade numérica, dados regulatórios ANATEL/ANCOM)"
+      },
+      "go_to_market": {
+        "channel": "Direto via equipe comercial enterprise + parcerias com integradores de BSS/OSS (Amdocs, Ericsson, Huawei)",
+        "roi_story": "Redução de 1% no churn em base de 5M clientes @ $30 ARPU = $1.8M/ano em receita preservada → ROI claro para justificar $144K/ano no plano Enterprise"
+      }
+    },
+    "stack_sugerida": {
+      "linguagens": {
+        "backend_api": "Python 3.12+ (FastAPI) — ecossistema ML superior, async nativo, tipagem com Pydantic",
+        "ml_pipelines": "Python (Scikit-learn, XGBoost, LightGBM, PyTorch para modelos avançados)",
+        "frontend": "TypeScript + Next.js 14 (App Router) + Tailwind CSS + Tremor (componentes analíticos)",
+        "infrastructure": "HCL (Terraform) + YAML (Kubernetes manifests + Helm charts)"
+      },
+      "backend_core": {
+        "api": "FastAPI 0.110+ com async/await nativo",
+        "orm": "SQLAlchemy 2.0 (async) + Alembic para migrations",
+        "validation": "Pydantic v2 para DTOs e validação de input",
+        "di_container": "dependency-injector para wiring de Use Cases e Gateways",
+        "auth": "python-jose (JWT) + Keycloak OIDC"
+      },
+      "ml_stack": {
+        "experimentation": "MLflow 2.x para tracking, model registry e serving",
+        "features": "Feast 0.35+ como Feature Store",
+        "models": "XGBoost/LightGBM + SHAP para explicabilidade dos drivers de churn",
+        "orchestration": "Apache Airflow 2.x para DAGs de re-treinamento",
+        "data_quality": "Great Expectations para validação de datasets"
+      },
+      "data": {
+        "primary_db": "PostgreSQL 16 + TimescaleDB 2.x (via extensão)",
+        "analytics": "ClickHouse 24.x para queries analíticas OLAP",
+        "cache": "Redis 7.x (Cluster mode para produção)",
+        "streaming": "Apache Kafka 3.x (MSK no AWS)",
+        "object_storage": "AWS S3 para modelos, relatórios e dados brutos"
+      },
+      "devops": {
+        "containers": "Docker 25+ + Kubernetes 1.29+ (EKS)",
+        "ci_cd": "GitHub Actions + ArgoCD (GitOps)",
+        "iac": "Terraform 1.7+ + Terragrunt",
+        "monitoring": "Prometheus + Grafana + Loki (stack PLG)",
+        "tracing": "OpenTelemetry SDK + Jaeger",
+        "secrets": "AWS Secrets Manager + External Secrets Operator"
+      },
+      "testing": {
+        "unit": "pytest 8.x + pytest-asyncio + pytest-mock",
+        "integration": "testcontainers-python para dependências efêmeras",
+        "load": "Locust para load testing da API de predições",
+        "contract": "Pact Python para contract testing entre frontend e API"
+      },
+      "justificativa_python": "Python é a escolha dominante no ecossistema ML/AI com bibliotecas maduras (Scikit-learn, XGBoost, SHAP). FastAPI entrega performance comparável a Node.js com tipagem estática via Pydantic, facilitando a implementação limpa das camadas da Clean Architecture sem sacrificar produtividade."
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"Customer\": {\n      \"description\": \"Cliente da operadora (pessoa física ou jurídica)\",\n      \"attributes\": [\"customerId\", \"segment\", \"tenure\", \"contractType\", \"monthlyCharge\", \"totalCharges\", \"serviceUsageProfile\"],\n      \"business_rules\": [\"Clientes com tenure < 12 meses são considerados novos\", \"Segmentação por ARPU: low/mid/high value\"]\n    },\n    \"ChurnPrediction\": {\n      \"description\": \"Resultado da análise preditiva de churn para um cliente\",\n      \"attributes\": [\"predictionId\", \"customerId\", \"churnProbability\", \"churnRiskLevel\", \"predictedChurnDate\", \"confidenceScore\", \"generatedAt\"],\n      \"business_rules\": [\"RiskLevel: LOW(<30%), MEDIUM(30-70%), HIGH(>70%)\", \"Predição expira após 30 dias\"]\n    },\n    \"ChurnDriver\": {\n      \"description\": \"Fator causal que contribui para o risco de churn\",\n      \"attributes\": [\"driverId\", \"category\", \"weight\", \"description\"],\n      \"business_rules\": [\"Drivers: billing_issues, service_quality, competitor_offer, support_failures, usage_decline\"]\n    },\n    \"RetentionAction\": {\n      \"description\": \"Ação de retenção recomendada para mitigar risco de churn\",\n      \"attributes\": [\"actionId\", \"type\", \"priority\", \"estimatedImpact\", \"cost\", \"expiresAt\"],\n      \"business_rules\": [\"Ações ordenadas por ROI esperado\", \"Máximo 3 ações simultâneas por cliente\"]\n    },\n    \"UsageMetric\": {\n      \"description\": \"Métricas de uso dos serviços pelo cliente\",\n      \"attributes\": [\"metricId\", \"customerId\", \"period\", \"callMinutes\", \"dataConsumption\", \"smsCount\", \"roamingUsage\", \"supportCallCount\"],\n      \"business_rules\": [\"Métricas agregadas mensalmente\", \"Histórico mínimo de 6 meses para predição confiável\"]\n    },\n    \"Tenant\": {\n      \"description\": \"Operadora de telecom cliente do SaaS (multi-tenancy)\",\n      \"attributes\": [\"tenantId\", \"name\", \"plan\", \"dataRetentionDays\", \"apiQuotaMonthly\", \"customModelEnabled\"],\n      \"business_rules\": [\"Isolamento total de dados entre tenants\", \"Quotas de API por plano contra"
+}

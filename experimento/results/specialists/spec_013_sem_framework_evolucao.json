@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "A proposta demonstra bom instinto evolutivo na estratégia de crescimento (começar simples, escalar o que travar), mas carece de mecanismos estruturais que viabilizem substituição independente de componentes: a lógica de negócio acopla-se diretamente às APIs do Supabase (auth, realtime) e do Stripe sem camadas de abstração ou portas/adaptadores, criando lock-in tecnológico que tornaria a troca desses serviços uma reescrita parcial significativa, não uma substituição pontual."
+}

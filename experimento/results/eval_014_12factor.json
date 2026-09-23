@@ -1,0 +1,15 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "scores": {
+    "core_diferenciador": 4,
+    "visao_mercado": 2,
+    "multi_interface": 3,
+    "configurabilidade": 5,
+    "isolamento_processamento": 7,
+    "consideracao_custo": 4,
+    "monetizacao": 3,
+    "evolucao": 8,
+    "coerencia": 8
+  }
+}

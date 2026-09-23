@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta demonstra consciência de isolamento ao extrair o módulo Gamification via Strangler Fig na Fase 2 (maior throughput de eventos), e o chaos engineering mensal testa resiliência a falhas de serviço, mas não há menção explícita de isolamento físico de processos computacionalmente pesados (ex: geração de relatórios, batch de Analytics, processamento de mídia) via filas assíncronas, workers dedicados ou mecanismos de fallback específicos para sobrecarga computacional — na Fase 1 (MVP monolítico), qualquer processo pesado derruba o runtime inteiro."
+}

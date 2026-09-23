@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 51,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta apresenta coerência sistêmica forte: o pipeline abstrato (Ingestion→Classification→Extraction→Risk Scoring→Report Generation) reflete diretamente o fluxo real de due diligence; cada interface de Fase 2 mapeia com precisão um segmento de mercado declarado na Fase 1 (Web App→PE/VC mid-market, API→enterprise, White-Label→boutiques, e-mail/link→empresa-alvo, CLI→fundos tech); e a DiligenceService como ponto único de lógica de negócio é consistente com a promessa de múltiplas interfaces plugáveis sem duplicação — o todo conta uma história coesa do problema à solução. A nota não atinge 9-10 por dois motivos: (1) a proposta está truncada no ponto crítico da descrição da service layer, impedindo avaliação completa da coerência arquitetural; e (2) um gap estrutural visível — para um produto que processa documentos extremamente sensíveis de M&A (financeiros, jurídicos, estratégicos), a ausência de qualquer menção à arquitetura de segurança, isolamento multi-tenant e compliance (SOC 2, GDPR, confidencialidade) cria uma contradição implícita: o modelo de White-Label e a API enterprise exigem garantias de isolamento de dados que não aparecem nas decisões arquiteturais apresentadas."
+}

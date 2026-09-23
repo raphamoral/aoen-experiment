@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 36,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte orientação evolutiva: a interface PrescriptionAnalyzer isola o motor de interações de qualquer provedor concreto, a PrescriptionService centraliza toda lógica de aplicação tornando as interfaces de entrega puramente adaptadoras, e os parâmetros configuráveis permitem variar comportamento sem alterar código — padrão que se aproxima de portas e adaptadores; perde pontos porque o fluxo de fase 3 é declarado 'fixo em código para todos os clientes', criando um ponto de rigidez que pode exigir ramificações condicionais crescentes à medida que segmentos distintos (clínica vs. hospital vs. farmácia) demandem variações de orquestração, e porque a estratégia de escala de 10 para 10.000 usuários não é explicitada — ausência de decisões sobre cache, filas assíncronas ou particionamento de dados deixa uma lacuna relevante para avaliar reversibilidade das escolhas de infraestrutura."
+}

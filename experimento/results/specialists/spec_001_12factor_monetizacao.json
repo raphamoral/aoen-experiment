@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "O campo 'monetizacao' foi iniciado com 'SaaS B2B2C: assinatura' mas está incompleto/truncado, sem detalhes de tiers, valores, métricas (MRR, LTV, CAC) ou conexão explícita entre custo operacional e receita por cliente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 29,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra intenção evolutiva clara — camada de verificação plugável, scoring parametrizável e Service Layer com contratos agnósticos de transporte são decisões reversíveis e extensíveis — mas a proposta não evidencia inversão explícita de dependências no nível técnico (sem menção a portas/adaptadores, abstrações de persistência ou estratégias de escala horizontal), e o texto truncado da Service Layer impede avaliar se a lógica de negócio está de fato isolada de frameworks externos."
+}

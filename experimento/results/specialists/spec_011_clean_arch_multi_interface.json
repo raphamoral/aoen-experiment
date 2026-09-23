@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A arquitetura desacoplada (entidades e casos de uso independentes de frameworks) viabiliza tecnicamente múltiplas interfaces, mas a proposta não define nem justifica nenhuma interface concreta — não há menção a web, mobile ou API, nem segmentação por perfil de usuário (startup vs. investidor têm contextos de uso distintos) ou critério de alcance de mercado."
+}

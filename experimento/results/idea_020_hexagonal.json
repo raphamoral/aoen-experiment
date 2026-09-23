@@ -1,0 +1,69 @@
+{
+  "ideia_idx": 20,
+  "ideia": "Plataforma de crowdsourced testing de software com gamificação",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Orquestração de campanhas de teste colaborativo com sistema de reputação, validação de defeitos, distribuição de recompensas e pontuação gamificada — completamente agnóstico a interface, infraestrutura e meios de pagamento",
+    "primary_ports": [
+      "ICampaignManagementUseCase — criar, publicar, pausar e encerrar campanhas de teste",
+      "IBugSubmissionUseCase — submeter, deduplicar e priorizar relatórios de defeito",
+      "IBugValidationUseCase — revisar, aceitar ou rejeitar defeitos submetidos",
+      "ITesterProfileUseCase — registrar testador, atualizar reputação e exibir histórico",
+      "IGamificationUseCase — calcular pontos, conceder badges, atualizar rankings",
+      "IRewardDistributionUseCase — calcular e liberar pagamentos por defeitos aceitos",
+      "ITestExecutionUseCase — registrar sessões de teste, evidências e cobertura"
+    ],
+    "secondary_ports": [
+      "ICampaignRepository — persistência e consulta de campanhas",
+      "IBugReportRepository — persistência de defeitos com histórico de estados",
+      "ITesterRepository — persistência de perfis, scores e credenciais",
+      "IRewardRepository — registro de transações e saldos de recompensa",
+      "INotificationGateway — envio de alertas e comunicações assíncronas",
+      "IPaymentGateway — processamento de pagamentos e saques",
+      "IFileStorageGateway — armazenamento de evidências (screenshots, logs, vídeos)",
+      "IAuthProvider — autenticação e autorização de identidades",
+      "IEventPublisher — publicação de eventos de domínio para consumidores externos",
+      "IAnalyticsGateway — envio de métricas e eventos comportamentais",
+      "IBugTrackerIntegration — sincronização bidirecional com trackers externos",
+      "ICIGateway — integração com pipelines de CI/CD dos clientes"
+    ],
+    "primary_adapters": [
+      "REST API Controller (FastAPI/NestJS) — interface HTTP para clientes web e mobile",
+      "GraphQL Resolver — consultas ricas para dashboards e relatórios",
+      "WebSocket Handler — atualizações em tempo real (leaderboard, notificações live)",
+      "CLI Adapter — automação e gestão operacional via terminal",
+      "Test Runner SDK (npm/pip package) — integração direta em pipelines CI dos clientes",
+      "Webhook Receiver — recebimento de eventos de sistemas externos (GitHub, GitLab)",
+      "gRPC Adapter — comunicação inter-serviços em ambientes de microsserviços"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter (via SQLAlchemy/Prisma) — implementa todos os *Repository ports",
+      "Redis Adapter — cache de rankings, sessões e rate-limiting",
+      "AWS S3 / Cloudflare R2 Adapter — implementa IFileStorageGateway",
+      "Stripe Adapter — implementa IPaymentGateway para pagamentos e saques",
+      "SendGrid / AWS SES Adapter — implementa INotificationGateway para email",
+      "Firebase FCM Adapter — implementa INotificationGateway para push mobile",
+      "Auth0 / Cognito Adapter — implementa IAuthProvider",
+      "Kafka / SQS Adapter — implementa IEventPublisher para eventos assíncronos",
+      "Mixpanel / Segment Adapter — implementa IAnalyticsGateway",
+      "JIRA / Linear Adapter — implementa IBugTrackerIntegration",
+      "GitHub Actions / Jenkins Adapter — implementa ICIGateway",
+      "Prometheus + OpenTelemetry Adapter — observabilidade de métricas e traces"
+    ],
+    "isolation": "O core domain não importa nenhuma biblioteca de infraestrutura. Todos os ports são interfaces puras (ABCs em Python / interfaces TypeScript). O core só conhece entidades de domínio (Campaign, BugReport, Tester, Reward, Badge) e casos de uso. A inversão de dependência é imposta por injeção de dependência no bootstrap da aplicação (Composition Root). Testes de unidade executam o core inteiro com adapters in-memory sem nenhum I/O real. A Hexagonal boundary é validada estaticamente por regras de lint (dependency-cruiser / importlinter) que proíbem imports de 'infrastructure' dentro de 'domain' ou 'application'.",
+    "interfaces": [
+      "Web App (React/Next.js) — painel de clientes (criação de campanhas, relatórios)",
+      "Tester Portal (React/PWA) — interface do testador (missões, bugs, ranking, saldo)",
+      "Mobile App (React Native) — experiência mobile-first para testadores",
+      "Admin Dashboard (Next.js) — gestão operacional interna",
+      "CLI / SDK — integração programática para DevOps e pipelines CI",
+      "REST + GraphQL API pública — para integrações de terceiros e parceiros",
+      "Webhook API — notificações push para sistemas dos clientes"
+    ],
+    "escalabilidade": "Decomposição por bounded contexts (Testing, Gamification, Payments, Notifications) deployados como microsserviços independentes ou módulos de monólito modular. Cada contexto expõe seus ports e se comunica via IEventPublisher (Kafka/SQS) para desacoplamento temporal. Ranking e leaderboard em Redis com atualização eventual. File storage desacoplado em object storage com CDN. Horizontal scaling stateless nas camadas de aplicação. Read models separados (CQRS opcional) para queries analíticas pesadas sem afetar o write model transacional.",
+    "custos": "Tier gratuito de Redis e S3-compatible (Cloudflare R2 sem egress) minimiza custos iniciais. Kafka substituível por SQS/SNS no early stage com troca apenas no adapter. Database connection pooling via PgBouncer reduz custo de instâncias RDS. File storage com lifecycle policies para arquivar evidências antigas. Serverless para workers de baixa frequência (processamento de recompensas, relatórios). Separação de adapters permite migração gradual de provedores por custo sem tocar no core.",
+    "monetizacao": "B2B SaaS por assinatura: planos por volume de campanhas ativas, testadores alocados e defeitos processados por mês. Marketplace: comissão sobre recompensas pagas aos testadores (10-20%). Add-ons: integração com trackers premium (JIRA, Linear), relatórios avançados, SLA de resposta, tester pools especializados (mobile, acessibilidade, segurança). Enterprise: deploy dedicado, SSO, compliance reports, SLA contratual. Créditos pré-pagos para clientes menores sem compromisso de assinatura.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Node.js (NestJS) com DDD/Clean Architecture no core. ORM: SQLAlchemy (Python) ou Prisma (Node). DB: PostgreSQL (relacional) + Redis (cache/rankings). Mensageria: Kafka (produção) / SQS (bootstrap). Storage: Cloudflare R2 ou AWS S3. Auth: Auth0 ou Supabase Auth. Payments: Stripe Connect (marketplace). Frontend: Next.js 14 + TailwindCSS + React Query. Mobile: React Native (Expo). Infra: Docker + Kubernetes (EKS/GKE) ou Railway/Render no early stage. CI/CD: GitHub Actions. Observabilidade: OpenTelemetry + Grafana + Loki."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Orquestração de campanhas de teste colaborativo com sistema de reputação, validação de defeitos, distribuição de recompensas e pontuação gamificada — completamente agnóstico a interface, infraestrutura e meios de pagamento\",\n\n  \"primary_ports\": [\n    \"ICampaignManagementUseCase — criar, publicar, pausar e encerrar campanhas de teste\",\n    \"IBugSubmissionUseCase — submeter, deduplicar e priorizar relatórios de defeito\",\n    \"IBugValidationUseCase — revisar, aceitar ou rejeitar defeitos submetidos\",\n    \"ITesterProfileUseCase — registrar testador, atualizar reputação e exibir histórico\",\n    \"IGamificationUseCase — calcular pontos, conceder badges, atualizar rankings\",\n    \"IRewardDistributionUseCase — calcular e liberar pagamentos por defeitos aceitos\",\n    \"ITestExecutionUseCase — registrar sessões de teste, evidências e cobertura\"\n  ],\n\n  \"secondary_ports\": [\n    \"ICampaignRepository — persistência e consulta de campanhas\",\n    \"IBugReportRepository — persistência de defeitos com histórico de estados\",\n    \"ITesterRepository — persistência de perfis, scores e credenciais\",\n    \"IRewardRepository — registro de transações e saldos de recompensa\",\n    \"INotificationGateway — envio de alertas e comunicações assíncronas\",\n    \"IPaymentGateway — processamento de pagamentos e saques\",\n    \"IFileStorageGateway — armazenamento de evidências (screenshots, logs, vídeos)\",\n    \"IAuthProvider — autenticação e autorização de identidades\",\n    \"IEventPublisher — publicação de eventos de domínio para consumidores externos\",\n    \"IAnalyticsGateway — envio de métricas e eventos comportamentais\",\n    \"IBugTrackerIntegration — sincronização bidirecional com trackers externos\",\n    \"ICIGateway — integração com pipelines de CI/CD dos clientes\"\n  ],\n\n  \"primary_adapters\": [\n    \"REST API Controller (FastAPI/NestJS) — interface HTTP para clientes web e mobile\",\n    \"GraphQL Resolver — consultas ricas para dashboards e relatórios\",\n    \"WebSocket Handler — atual"
+}

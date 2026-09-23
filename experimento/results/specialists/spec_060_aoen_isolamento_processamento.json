@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 60,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona explicitamente 'enfileirar geração de laudo assíncrona' (etapa 6 do fluxo fixo), indicando consciência de que o processo mais pesado deve ser desacoplado via fila — porém não há nenhuma especificação de isolamento físico (worker/processo separado vs. thread na mesma aplicação), ausência total de estratégia de fallback caso o worker falhe, sem menção a dead-letter queue, retry policy, circuit breaker ou degradação graciosa, e nenhuma indicação de que o processamento pesado pode escalar independentemente do restante da aplicação."
+}

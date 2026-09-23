@@ -1,0 +1,86 @@
+{
+  "ideia_idx": 25,
+  "ideia": "SaaS de otimização de rotas para coleta de lixo reciclável",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Planejamento e otimização de rotas de coleta de resíduos recicláveis (Vehicle Routing Problem com janelas de tempo, capacidade de veículos e tipos de material). Entidades centrais: PontoDeColeta (PEV, condomínio, comércio, cooperativa), Veículo, Motorista, Material (papel, plástico, vidro, metal), Rota, Parada, Janela de Coleta, Restrição, Tenant (organização/prefeitura/cooperativa) e Plano de Coleta. Regras de negócio: agrupamento de paradas, balanceamento de carga, respeito a capacidade e compatibilidade de materiais, minimização de distância/tempo/emissões, replanejamento dinâmico e cálculo de indicadores (kg coletados, km rodados, CO₂ evitado).",
+    "primary_ports": [
+      "PlanejarRotasPort (gera plano de rotas a partir de pontos, frota e restrições)",
+      "ReotimizarRotaPort (replanejamento em tempo real diante de imprevistos)",
+      "GerenciarPontosDeColetaPort (CRUD, importação em lote e priorização de pontos)",
+      "GerenciarFrotaPort (veículos, motoristas, capacidades e disponibilidade)",
+      "RegistrarExecucaoDeColetaPort (check-in de parada, peso coletado, ocorrências)",
+      "ConsultarRelatoriosPort (KPIs, custos, emissões e conformidade)",
+      "GerenciarTenantEAssinaturaPort (organizações, usuários, planos e limites de uso)",
+      "SolicitarColetaPort (pedidos sob demanda de geradores de resíduo)"
+    ],
+    "secondary_ports": [
+      "RepositorioDeRotasPort / RepositorioDePontosPort / RepositorioDeFrotaPort (persistência)",
+      "MatrizDeDistanciasPort (distâncias e tempos entre pontos considerando o trânsito)",
+      "GeocodificacaoPort (endereço → coordenadas)",
+      "SolverDeOtimizacaoPort (abstrai o motor de VRP)",
+      "TelemetriaVeicularPort (posição GPS em tempo real)",
+      "PrevisaoDeTransitoEClimaPort",
+      "NotificacaoPort (push, SMS, e-mail, WhatsApp)",
+      "FilaDeEventosPort / PublicadorDeEventosDeDominioPort",
+      "CobrancaPort (assinaturas, faturas, uso medido)",
+      "AutenticacaoAutorizacaoPort (identidade, papéis, multi-tenancy)",
+      "ArmazenamentoDeArquivosPort (relatórios, planilhas, comprovantes)",
+      "RelogioPort e GeradorDeIdPort (tempo e identificadores determinísticos em testes)",
+      "IntegracaoERPMunicipalPort (sistemas de prefeituras e cooperativas)",
+      "ObservabilidadePort (logs, métricas, traces)"
+    ],
+    "primary_adapters": [
+      "REST API HTTP (OpenAPI) para o front-end e integradores",
+      "GraphQL para dashboards analíticos",
+      "Web App SPA para gestores e planejadores",
+      "App móvel do motorista (offline-first) via API",
+      "Portal/app do gerador de resíduo (solicitação de coleta)",
+      "Webhooks de entrada (ERPs, IoT de contêineres inteligentes)",
+      "Consumidor de eventos/mensagens (Kafka/SQS) para comandos assíncronos",
+      "CLI e scripts de importação em lote e de operação",
+      "Agendador (cron/scheduler) que dispara o planejamento noturno",
+      "Suíte de testes automatizados (unitários, contrato e aceitação) que aciona as mesmas portas primárias",
+      "Adaptador MCP/chatbot para consultas em linguagem natural"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL + PostGIS (adaptador de repositórios)",
+      "Adaptadores em memória / fakes (testes e desenvolvimento local)",
+      "OSRM / Valhalla / Google Distance Matrix / Mapbox Matrix (matriz de distâncias)",
+      "Nominatim / Google Geocoding / Mapbox Geocoding",
+      "Google OR-Tools / VROOM / jsprit / OptaPlanner (solvers de VRP)",
+      "Adaptador de telemetria GPS (Traccar, MQTT de rastreadores, API de telemática)",
+      "Provedor de trânsito e clima (HERE, TomTom, OpenWeather)",
+      "Twilio / Firebase Cloud Messaging / SendGrid / WhatsApp Business API",
+      "Kafka / RabbitMQ / AWS SQS+SNS (mensageria)",
+      "Stripe / Asaas / Pagar.me (cobrança e assinaturas)",
+      "Keycloak / Auth0 / Cognito (identidade)",
+      "S3 / MinIO / GCS (arquivos)",
+      "Adaptadores de ERP/SIG municipal (SOAP/REST/CSV via SFTP)",
+      "OpenTelemetry + Prometheus + Grafana + Loki",
+      "Redis (cache de matrizes de distância e locks)",
+      "Relógio do sistema e gerador UUID/ULID"
+    ],
+    "isolation": "O core (domínio + casos de uso/aplicação) não possui dependências de frameworks, bancos, HTTP ou SDKs de terceiros. Ele expõe apenas portas primárias (interfaces de entrada) e declara portas secundárias (interfaces de saída) na linguagem do domínio, sem vazar tipos externos (nada de tipos de ORM, DTOs HTTP ou modelos de fornecedores). Dependências apontam sempre para dentro (Dependency Inversion): adapters conhecem as portas, nunca o contrário. A injeção de dependências ocorre em um composition root fora do core. Cada adapter traduz de/para o modelo do domínio (anti-corruption layer). Regras de arquitetura são verificadas automaticamente (ArchUnit/dependency-cruiser/import-linter) no CI. Como todos os sistemas externos são tratados de forma simétrica, trocar solver, mapa, banco ou provedor de cobrança exige apenas um novo adapter. Testes do core rodam com fakes em memória, sem infraestrutura.",
+    "interfaces": [
+      "Dashboard web do planejador (mapa, rotas, KPIs, simulação de cenários what-if)",
+      "App móvel do motorista (rota do dia, navegação, check-in, comprovante e ocorrências, modo offline)",
+      "Portal do gerador/cliente (agendamento, histórico, certificado de destinação)",
+      "API pública REST versionada com OpenAPI, chaves de API e webhooks de saída",
+      "Painel de administração multi-tenant e de cobrança",
+      "Relatórios exportáveis (PDF/CSV/XLSX) e conectores de BI",
+      "CLI para importação e operação",
+      "Interface conversacional/MCP opcional"
+    ],
+    "escalabilidade": "Monólito modular hexagonal no início (um bounded context por módulo: Planejamento, Frota, Execução, Faturamento), com extração posterior de serviços pelos próprios limites das portas. Serviço de otimização é stateless e roda como workers assíncronos: os pedidos entram em fila e são processados em paralelo com autoscaling horizontal (Kubernetes/KEDA baseado em tamanho da fila). Problemas grandes são particionados por região/cluster geográfico (decomposição do VRP) e resolvidos em paralelo, com limite de tempo do solver e solução anytime. Cache de matrizes de distância e de geocodificação (Redis). Multi-tenancy com isolamento por tenant_id (schema ou row-level security), com possibilidade de sharding por tenant/região. Leitura e escrita separadas (CQRS) para dashboards, com réplicas de leitura. Telemetria via streaming particionado por veículo. Idempotência e outbox pattern para consistência de eventos. Otimização noturna em lote e reotimização incremental em tempo real com prioridade de fila.",
+    "custos": "Principais custos: (1) APIs de mapas/matriz/trânsito, que são o maior custo variável. Mitigação: OSRM/Valhalla auto-hospedados sobre OpenStreetMap, cache agressivo e cobrança por uso acima da franquia. (2) Computação do solver, que é intensiva em CPU e pode usar instâncias spot com workers efêmeros e escalonamento a zero fora do horário de pico. (3) Ingestão de telemetria (mensagens/s), controlada por amostragem adaptativa. (4) Notificações SMS/WhatsApp, repassadas por tier. (5) Armazenamento e retenção de dados de trajetos, com tiering para armazenamento frio. (6) Observabilidade, com amostragem de traces. (7) Suporte e onboarding de prefeituras/cooperativas, que têm ciclo longo de venda. Começar com um monólito em uma região, Postgres gerenciado e solvers open source mantém o custo fixo baixo. Desenhar cobrança por uso para preservar a margem bruta e cobrar por rota otimizada/paradas/veículos.",
+    "monetizacao": "Assinatura SaaS por tiers, com metrificação por número de veículos ativos e paradas otimizadas por mês: Starter (cooperativas pequenas), Pro (empresas de coleta e logística reversa) e Enterprise (prefeituras/concessionárias, com SLA, SSO e integrações ERP). Componentes adicionais: excedente de uso (paradas, chamadas de API, SMS), módulo de rastreamento em tempo real, módulo do portal do gerador com certificados de destinação (ESG/logística reversa/PNRS), relatórios de créditos de carbono e emissões evitadas, marketplace de conexão entre geradores e coletores (take rate) e serviços de implantação/integração. Contratos anuais com prefeituras via licitação/ata de registro de preços, e plano gratuito limitado para geração de leads.",
+    "stack_sugerida": "Backend: Kotlin/Java (Spring Boot, com o core em módulo Gradle puro, sem dependência do Spring) ou TypeScript/NestJS, ou Python/FastAPI se o time priorizar o ecossistema de otimização. Solver: Google OR-Tools ou VROOM como worker separado. Dados: PostgreSQL + PostGIS, Redis, S3/MinIO, ClickHouse ou TimescaleDB para telemetria. Mensageria: Kafka (ou SQS/SNS para começar mais simples). Roteamento: OSRM/Valhalla com dados OpenStreetMap. Front-end: React + TypeScript com MapLibre GL e deck.gl. Mobile: React Native ou Flutter com armazenamento offline (SQLite). Identidade: Keycloak/Auth0. Infra: Docker, Kubernetes (EKS/GKE) com KEDA, Terraform, GitHub Actions. Observabilidade: OpenTelemetry, Prometheus, Grafana, Loki. Cobrança: Stripe ou Asaas (Brasil). Qualidade: testes de arquitetura (ArchUnit), testes de contrato (Pact) e testes de propriedade para o solver."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:35:07+00:00",
+    "runner": "runner.py"
+  }
+}

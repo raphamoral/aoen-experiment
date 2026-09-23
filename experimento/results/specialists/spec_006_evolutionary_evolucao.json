@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A estratégia de Modular Monolith com Strangler Fig e gatilhos explícitos de extração garante crescimento sem big-bang, mas a ausência de um modelo explícito de portas e adaptadores (hexagonal/clean architecture) deixa aberta a questão de quanto a lógica de negócio está protegida de dependências externas como SDKs de IA e ORMs, e o banco único no MVP cria acoplamento implícito no dado que pode onerar futuras extrações."
+}

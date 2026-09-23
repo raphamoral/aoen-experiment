@@ -1,0 +1,111 @@
+{
+  "ideia_idx": 7,
+  "ideia": "Plataforma de microlearning gamificado para treinamento corporativo",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability — capacidade de mudar módulos de gamificação e conteúdo independentemente, sem quebrar contratos",
+      "Elasticidade — suportar picos de uso em campanhas de treinamento corporativo (onboarding em massa, compliance anual)",
+      "Disponibilidade — SLA 99,9% para clientes corporativos com penalidades contratuais",
+      "Desempenho — entrega de conteúdo < 200ms P95, atualizações de leaderboard < 1s",
+      "Segurança e Conformidade — LGPD, ISO 27001, SSO corporativo, isolamento de dados por tenant",
+      "Testabilidade — suporte a fitness functions automatizadas em CI/CD",
+      "Deployabilidade — deploy independente por domínio sem downtime",
+      "Multi-tenancy — isolamento lógico ou físico conforme tier do cliente"
+    ],
+    "fitness_functions": [
+      "Automatizada contínua: latência P95 de entrega de conteúdo < 200ms medida por smoke test pós-deploy em staging",
+      "Automatizada contínua: cobertura de testes > 80% por bounded context; pipeline bloqueia merge abaixo disso",
+      "Automatizada contínua: análise de acoplamento ArchUnit/Dependency-Cruiser — nenhum módulo core depende de módulo de infraestrutura diretamente",
+      "Automatizada contínua: scan SAST (Semgrep/Snyk) sem vulnerabilidades críticas antes do merge",
+      "Automatizada periódica: teste de carga semanal simulando 10x usuários simultâneos do tenant maior — sistema deve escalar automaticamente sem degradação > 15%",
+      "Automatizada periódica: chaos engineering (Chaos Monkey) mensal — falha de um serviço não derruba a jornada de aprendizado do usuário",
+      "Negócio contínua: taxa de conclusão de módulos > 65% como proxy de engajamento (medida no domínio Analytics)",
+      "Negócio periódica: NPS coletado in-app a cada sprint — queda de 10 pontos dispara revisão de UX no próximo ciclo",
+      "Operacional contínua: custo por usuário ativo mensal monitorado via AWS Cost Explorer — desvio > 20% dispara alerta arquitetural",
+      "Conformidade contínua: auditoria automatizada de acesso a dados PII — qualquer serviço que leia tabela de usuários sem passar pela camada de políticas falha o pipeline"
+    ],
+    "incremental_change": {
+      "fase_1_mvp": "Monólito modular (Modular Monolith) com bounded contexts bem definidos: Identity, Content, Gamification, Analytics, Billing. Deploy único, mas módulos internamente desacoplados via interfaces. Permite velocidade de entrega sem overhead operacional de microserviços.",
+      "fase_2_escala_seletiva": "Extrair primeiro o módulo Gamification como serviço separado, pois é o de maior throughput de eventos e menor acoplamento de dados. Usar Strangler Fig Pattern — o monólito roteia chamadas para o novo serviço enquanto migração é validada por fitness functions.",
+      "fase_3_microservicos_por_evidencia": "Extrair módulos adicionais somente quando fitness functions indicarem necessidade real: latência degradando, conflitos de deploy frequentes, ou times independentes. Evitar extrações prematuras.",
+      "estrategia_geral": "Feature flags via LaunchDarkly ou Unleash para rollout gradual de mecânicas de gamificação. Blue-green deployment para zero downtime. Database migrations versionadas (Flyway/Liquibase) com compatibilidade backward por pelo menos 2 versões."
+    },
+    "reversibility": {
+      "reversiveis": [
+        "Escolha de banco de dados no MVP — abstrair acesso via Repository Pattern permite trocar PostgreSQL por Aurora sem impacto no domínio",
+        "Framework de frontend — componentização via Design System próprio desacopla da lib específica (React hoje, outro amanhã)",
+        "Engine de gamificação — regras de pontos, badges e leaderboards modeladas como configuração em banco, não código — alteráveis sem deploy",
+        "Provedor de CDN para conteúdo — abstração via URL assinada permite trocar CloudFront por Cloudflare",
+        "Modelo de notificações — eventos publicados no broker permitem trocar o canal (email → push → SMS) sem alterar domínio emissor",
+        "Mecânicas de gamificação por tenant — configuráveis por tenant sem código novo"
+      ],
+      "irreversiveis_last_responsible_moment": [
+        "Modelo de multi-tenancy (schema-per-tenant vs. row-level-security vs. instância isolada) — decisão de impacto em segurança, custo e compliance; adiar até ter 3+ clientes enterprise com requisitos claros",
+        "Contrato de API pública (SCORM/xAPI) — uma vez publicado, breaking changes têm custo alto de compatibilidade",
+        "Modelo de dados de progresso do usuário — estrutura central do produto; migração posterior é custosa",
+        "Modelo de precificação e estrutura de planos — afeta código de billing, onboarding e analytics de churn"
+      ]
+    },
+    "coupling": {
+      "estrategia": "Acoplamento temporal evitado via mensageria assíncrona (eventos de domínio) para fluxos não críticos como concessão de badges, atualização de leaderboard e notificações. Acoplamento síncrono (REST/gRPC) apenas para consultas de leitura em tempo real exigidas pela UX.",
+      "bounded_contexts": [
+        "Identity & Access (auth, SSO, RBAC)",
+        "Content Catalog (criação, versionamento, SCORM wrapper)",
+        "Learning Journey (trilhas, progresso, conclusões)",
+        "Gamification Engine (pontos, badges, leaderboards, desafios)",
+        "Analytics & Reporting (dashboards corporativos, exportação)",
+        "Billing & Tenancy (planos, cobrança, provisionamento de tenant)",
+        "Notification Hub (email, push, in-app)"
+      ],
+      "anti_corruption_layers": "Adaptadores explícitos para integrações externas: HCM/RH (Workday, SAP), LMS legados, IdP corporativos (Okta, Azure AD). Nenhum modelo de domínio interno vaza para fora desses adaptadores.",
+      "shared_kernel": "Apenas tipos primitivos de domínio compartilhados (TenantId, UserId, ModuleId) como biblioteca versionada — sem lógica de negócio compartilhada entre contextos."
+    },
+    "interfaces": [
+      "REST API v1 — operações CRUD de conteúdo, usuários e progresso; contrato OpenAPI 3.x publicado e versionado",
+      "WebSocket — canal de tempo real para atualizações de leaderboard e notificações in-app de conquistas",
+      "Webhook API — notificações de eventos para integrações corporativas (conclusão de trilha, conquista de badge, exportação de relatório)",
+      "SCORM 1.2 / xAPI (Tin Can) — compatibilidade com LMS legados para importação/exportação de conteúdo",
+      "SAML 2.0 / OIDC — SSO corporativo para clientes enterprise",
+      "GraphQL (fase 2) — exposto apenas para o frontend próprio; permite que cliente mobile e web busquem exatamente os dados necessários",
+      "Admin API — provisionamento de tenants, configuração de planos, gerenciamento de features flags por tenant",
+      "SDK Mobile (React Native wrapper) — acesso offline a módulos de conteúdo com sincronização de progresso"
+    ],
+    "escalabilidade": {
+      "modelo": "Scale-out horizontal de serviços stateless via Kubernetes (HPA baseado em CPU e custom metrics de fila). Estado externalizado: sessões no Redis, progresso no PostgreSQL, assets no S3.",
+      "conteudo": "CDN global (CloudFront/Cloudflare) para assets de vídeo e SCORM — offload de 90%+ do tráfego de conteúdo do servidor de aplicação.",
+      "gamificacao": "Leaderboards com CQRS — escritas via eventos Kafka, leituras de caches Redis com TTL curto. Evita hot-spot em banco relacional para rankings globais.",
+      "multitenancy": "Tenants pequenos/médios em infraestrutura compartilhada (pool). Tenants enterprise com opção de namespace Kubernetes dedicado ou instância isolada (compliance LGPD, dados sensíveis).",
+      "database": "PostgreSQL com read replicas para Analytics. Particionamento por tenant_id para tabelas de progresso e eventos. Consideração futura de TimescaleDB se volume de séries temporais de engajamento crescer.",
+      "async_processing": "Workers assíncronos para geração de relatórios, envio de notificações em batch e cálculo de rankings — desacoplados do caminho crítico da experiência de aprendizado."
+    },
+    "custos": {
+      "modelo_cloud": "Cloud-native AWS/GCP com auto-scaling — custo proporcional ao uso real. EKS/GKE com Spot Instances para workers assíncronos (60-70% de economia em workloads tolerantes a interrupção).",
+      "storage": "S3 Standard para conteúdo ativo, S3 Intelligent-Tiering para arquivos de cursos legados. CloudFront elimina egress repetido.",
+      "observabilidade": "OpenTelemetry + Grafana Stack (Loki, Tempo, Prometheus) self-hosted em vez de SaaS de observabilidade — redução de 40-60% de custo com logs em escala.",
+      "fitness_function_custo": "Custo por usuário ativo mensal monitorado como fitness function operacional — meta de < R$2,50/UAM em tenants shared para manter margem bruta > 70%.",
+      "reducao_progressiva": "Cache agressivo de conteúdo processado, lazy loading de módulos não iniciados e compressão de vídeo adaptativa reduzem bandwidth à medida que base cresce.",
+      "rightsizing": "Review trimestral de instâncias com AWS Compute Optimizer ou GCP Recommender como parte do ciclo de arquitetura."
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS B2B por assento (seat-based): planos tiered — Starter (até 50 usuários), Growth (até 500), Enterprise (ilimitado + SLA + SSO + tenant isolado).",
+      "expansao_receita": "Land & Expand: cliente entra com um departamento, expande para a empresa. Métrica: Net Revenue Retention > 120% como fitness function de negócio.",
+      "marketplace": "Marketplace de conteúdo curado (fase 2): creators externos publicam cursos, plataforma retém 30% da receita — modelo App Store. Aumenta valor percebido sem custo de produção própria.",
+      "consumo": "Add-on de IA generativa (geração de quizzes, personalização de trilha): cobrança por uso (créditos de IA) separada do plano base — protege margem e monetiza feature premium.",
+      "enterprise": "Customizações (white-label, SCORM export, integração HCM dedicada) como projetos de implantação cobrados à parte ou incluídos no tier Enterprise Anual.",
+      "freemium": "Plano gratuito para até 10 usuários (sem gamificação avançada) como PLG motion — reduz CAC via self-serve e gera pipeline enterprise."
+    },
+    "stack_sugerida": {
+      "backend": "Node.js (TypeScript) com NestJS para serviços de domínio — ecossistema maduro, ótimo para APIs REST/GraphQL/WebSocket no mesmo runtime. Go para serviços de alta throughput (Gamification Engine, Notification Hub) quando fitness functions indicarem necessidade.",
+      "frontend": "Next.js (React) — SSR para SEO de páginas públicas, CSR para a aplicação. Tailwind CSS + Radix UI para Design System.",
+      "mobile": "React Native com Expo — reuso de lógica de negócio com web, suporte a offline-first via MMKV + WatermelonDB.",
+      "mensageria": "Apache Kafka para eventos de domínio de alto volume (progresso, gamificação). Redis Streams como alternativa mais simples no MVP, migração para Kafka via Strangler Fig quando volume justificar.",
+      "banco_de_dados": "PostgreSQL (dados relacionais: usuários, trilhas, progresso). Redis (cache, sessões, leaderboards temporários). S3-compatible (assets de conteúdo).",
+      "infraestrutura": "Kubernetes (EKS ou GKE), Terraform para IaC, Helm charts por serviço. GitHub Actions para CI/CD com gates de fitness functions automatizadas.",
+      "observabilidade": "OpenTelemetry SDK em todos os serviços. Grafana (dashboards), Loki (logs), Tempo (traces), Prometheus (métricas). Alertas baseados em SLOs, não em métricas brutas.",
+      "seguranca": "Keycloak ou Auth0 para Identity (reversível via OIDC abstraction). Vault para secrets. OPA (Open Policy Agent) para RBAC centralizado e fitness function de conformidade de acesso.",
+      "decisao_arquitetural_atual": "Monólito modular em NestJS com módulos fortemente encapsulados por bounded context. Kafka desde o início para eventos — custo marginal baixo e evita refatoração dolorosa de acoplamento síncrono posterior."
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Evolvability — capacidade de mudar módulos de gamificação e conteúdo independentemente, sem quebrar contratos\",\n    \"Elasticidade — suportar picos de uso em campanhas de treinamento corporativo (onboarding em massa, compliance anual)\",\n    \"Disponibilidade — SLA 99,9% para clientes corporativos com penalidades contratuais\",\n    \"Desempenho — entrega de conteúdo < 200ms P95, atualizações de leaderboard < 1s\",\n    \"Segurança e Conformidade — LGPD, ISO 27001, SSO corporativo, isolamento de dados por tenant\",\n    \"Testabilidade — suporte a fitness functions automatizadas em CI/CD\",\n    \"Deployabilidade — deploy independente por domínio sem downtime\",\n    \"Multi-tenancy — isolamento lógico ou físico conforme tier do cliente\"\n  ],\n  \"fitness_functions\": [\n    \"Automatizada contínua: latência P95 de entrega de conteúdo < 200ms medida por smoke test pós-deploy em staging\",\n    \"Automatizada contínua: cobertura de testes > 80% por bounded context; pipeline bloqueia merge abaixo disso\",\n    \"Automatizada contínua: análise de acoplamento ArchUnit/Dependency-Cruiser — nenhum módulo core depende de módulo de infraestrutura diretamente\",\n    \"Automatizada contínua: scan SAST (Semgrep/Snyk) sem vulnerabilidades críticas antes do merge\",\n    \"Automatizada periódica: teste de carga semanal simulando 10x usuários simultâneos do tenant maior — sistema deve escalar automaticamente sem degradação > 15%\",\n    \"Automatizada periódica: chaos engineering (Chaos Monkey) mensal — falha de um serviço não derruba a jornada de aprendizado do usuário\",\n    \"Negócio contínua: taxa de conclusão de módulos > 65% como proxy de engajamento (medida no domínio Analytics)\",\n    \"Negócio periódica: NPS coletado in-app a cada sprint — queda de 10 pontos dispara revisão de UX no próximo ciclo\",\n    \"Operacional contínua: custo por usuário ativo mensal monitorado via AWS Cost Explorer — desvio > 20% dispara alerta arquitetural\",\n    \"Conformidade contínua: a"
+}

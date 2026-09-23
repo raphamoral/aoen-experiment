@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 44,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida: a interface abstrata IEvaluationEngine com implementações plugáveis, a service layer como única detentora de regras de negócio e o fluxo assíncrono por fila garantem substituição independente de fornecedores e adição de interfaces sem tocar no core — perde dois pontos por não explicitar abstração de persistência (repository pattern), estratégia de versionamento da API interna e isolamento da biblioteca de desafios como bounded context próprio, lacunas que podem forçar acoplamento acidental conforme o sistema cresce."
+}

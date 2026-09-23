@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 54,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta apresenta seis interfaces distintas (Web Builder, Widget JS, WhatsApp, Instagram DM, API REST e Dashboard), cada uma justificada por perfil de usuário e alcance de mercado específicos, com lógica de negócio centralizada na ChatbotService e isolada dos adapters de canal — permitindo adicionar ou trocar interfaces sem impacto no core."
+}

@@ -1,0 +1,60 @@
+{
+  "ideia_idx": 21,
+  "ideia": "SaaS de gestão de manutenção predial preventiva com IoT",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único no Git (ex: GitHub/GitLab) com múltiplos serviços organizados em diretórios (api-gateway, iot-ingestion, maintenance-engine, notification-service, dashboard-frontend). Um único repositório rastreado, deployado em múltiplos ambientes (dev, staging, prod) via branches/tags. Cada serviço é um processo independente, mas versionado conjuntamente para facilitar rastreabilidade de contratos entre serviços.",
+    "dependencies": "Cada serviço declara dependências explicitamente e de forma isolada: backend Python usa pyproject.toml + pip-compile ou Poetry com lockfile; serviços Node.js usam package.json + package-lock.json; containers Docker garantem isolamento total. Nenhuma dependência implícita no sistema operacional. Imagens base fixadas por digest (ex: python:3.12.3-slim@sha256:...). Dependências de sistema (librdkafka, drivers MQTT) declaradas no Dockerfile.",
+    "config": "Toda configuração que varia entre ambientes (credenciais de banco, endpoints IoT, API keys, feature flags) é injetada via variáveis de ambiente. Nunca comitada no repositório. Em produção, gerenciada via HashiCorp Vault + Kubernetes Secrets ou AWS Parameter Store/Secrets Manager. Localmente via arquivo .env (listado no .gitignore). Configuração validada no startup do processo com falha explícita se variável obrigatória ausente.",
+    "backing_services": {
+      "banco_de_dados_relacional": "PostgreSQL — dados de tenants, ativos prediais, ordens de manutenção, usuários",
+      "banco_time_series": "TimescaleDB ou InfluxDB — telemetria dos sensores IoT (temperatura, vibração, consumo)",
+      "message_broker": "Apache Kafka — ingestão de eventos IoT em alta vazão, desacoplamento entre serviços",
+      "cache": "Redis — sessões, rate limiting, cache de dashboards e filas de jobs",
+      "object_storage": "S3-compatible (AWS S3 ou MinIO) — fotos de equipamentos, relatórios PDF, firmware de dispositivos",
+      "email_sms": "SendGrid / Twilio — notificações de alertas e ordens de serviço",
+      "push_notifications": "Firebase FCM — alertas mobile para técnicos em campo",
+      "iot_broker": "MQTT Broker (EMQX ou AWS IoT Core) — comunicação bidirecional com dispositivos de borda",
+      "search": "Elasticsearch — busca em histórico de manutenções e logs de equipamentos",
+      "apm_observability": "OpenTelemetry + Grafana Stack (Loki, Tempo, Prometheus) — métricas, logs e traces"
+    },
+    "build_release_run": "Pipeline CI/CD em três estágios estritos e imutáveis: BUILD — GitHub Actions compila código, executa testes unitários/integração, constrói imagem Docker tagueada com SHA do commit; RELEASE — imagem imutável combinada com configuração do ambiente (via Helm values ou env vars do Vault), gerando um artefato de release versionado e auditável; RUN — Kubernetes (EKS/GKE) executa os processos do release. Rollback é redeployar release anterior, nunca modificar em produção.",
+    "processes": "Todos os processos são stateless e share-nothing. Estado persistido exclusivamente nos backing services. Sessões de usuário armazenadas no Redis, não em memória do processo. Uploads enviados diretamente ao S3. Workers de processamento IoT consomem do Kafka sem estado local. Múltiplas instâncias do mesmo processo podem rodar simultaneamente sem conflito. Processos administrativos (migrations, seed de dados, relatórios batch) executados como Jobs Kubernetes pontuais, não embutidos na aplicação principal.",
+    "concurrency": "Escala horizontal por tipo de carga via workload specialization: Web/API workers (Gunicorn + Uvicorn) escalados por CPU/requisições; IoT Ingestion workers escalados por lag no Kafka (KEDA — Kubernetes Event-Driven Autoscaling); Notification workers escalados por tamanho da fila Redis; Maintenance Engine (regras de alerta e agendamento preventivo) escalado por volume de ativos monitorados. HPA (Horizontal Pod Autoscaler) no Kubernetes para escala automática. Processos de análise intensiva em CPU isolados em pools de workers dedicados.",
+    "disposability": "Startup rápido: processos iniciam em menos de 5 segundos (health checks /readiness e /liveness no Kubernetes). Shutdown gracioso: ao receber SIGTERM, processos param de aceitar novas requisições, finalizam jobs em andamento (timeout de 30s) e confirmam offsets Kafka antes de encerrar. Consumers Kafka usam processamento idempotente para tolerar reprocessamento. Dispositivos IoT com reconexão automática via MQTT QoS 1/2. Circuit breakers (via Resilience4j ou tenacity) em todas as chamadas a backing services externos.",
+    "interfaces": [
+      "REST API (FastAPI/Python) — CRUD de ativos, ordens de manutenção, usuários e relatórios",
+      "WebSocket API — dashboard em tempo real com telemetria dos sensores",
+      "MQTT over TLS — protocolo de comunicação com dispositivos IoT de borda",
+      "gRPC — comunicação interna de alta performance entre microserviços (ex: ingestion → maintenance-engine)",
+      "Web Dashboard (React/Next.js) — interface principal para gestores prediais",
+      "Mobile App (React Native) — app para técnicos em campo com checklist e ordens de serviço",
+      "Webhook API — integração com sistemas externos (ERP, CMMS legados)",
+      "GraphQL — API flexível para integrações de parceiros e relatórios customizados",
+      "Admin CLI — ferramenta de linha de comando para operações administrativas e diagnóstico"
+    ],
+    "escalabilidade": "Arquitetura multi-tenant com isolamento por schema PostgreSQL por tenant enterprise ou banco compartilhado com row-level security para tenants menores. Kafka particiona tópicos por tenant_id garantindo isolamento de throughput. CDN (CloudFront) para assets estáticos e dashboards. Read replicas PostgreSQL para queries analíticas pesadas. TimescaleDB com particionamento automático por tempo e políticas de retenção configuráveis por plano. Cache em múltiplas camadas (Redis L1, CDN L2) para dashboards de alto acesso. Eventual consistência aceitável para métricas IoT; consistência forte para dados transacionais de manutenção.",
+    "custos": "Modelo cloud-native com otimização por workload: spot/preemptible instances para workers Kafka e batch jobs (economia de 60-70%); reserved instances para banco de dados e API crítica; auto-scaling agressivo para zerar custos em períodos de baixa carga. Retenção de dados IoT por camadas: hot (30 dias TimescaleDB), warm (1 ano S3 Parquet + Athena), cold (arquivamento Glacier). Maior custo operacional: transferência de dados IoT e storage de séries temporais — dimensionar planos de preço considerando volume de sensores por cliente. Estimativa inicial: $0.15-0.40/sensor/mês em infraestrutura.",
+    "monetizacao": "SaaS B2B com modelo de assinatura recorrente mensal/anual em três camadas: STARTER ($299/mês) — até 50 ativos, 100 sensores, 5 usuários, alertas básicos; PROFESSIONAL ($899/mês) — até 500 ativos, 1.000 sensores, 25 usuários, IA preditiva, relatórios avançados, API access; ENTERPRISE (preço customizado) — ativos/sensores ilimitados, SLA garantido, white-label, integração ERP/CMMS, suporte dedicado. Add-ons: conectividade de hardware IoT proprietário, módulo de compliance regulatório, análise preditiva avançada com ML. Marketplace de integrações com revenue share de parceiros. Cobrança adicional por volume de sensores além da cota do plano ($0.50/sensor extra/mês).",
+    "stack_sugerida": {
+      "linguagens": "Python 3.12 (backend/workers), TypeScript (frontend/BFF)",
+      "api_framework": "FastAPI (REST + WebSocket)",
+      "frontend": "Next.js 14 + React + TailwindCSS + Recharts/Grafana Embedded",
+      "mobile": "React Native + Expo",
+      "iot_protocol": "MQTT via EMQX (self-hosted) ou AWS IoT Core",
+      "message_broker": "Apache Kafka (Confluent Cloud ou MSK)",
+      "banco_principal": "PostgreSQL 16 (RDS ou CloudSQL)",
+      "banco_timeseries": "TimescaleDB (Timescale Cloud)",
+      "cache_filas": "Redis 7 (ElastiCache ou Upstash)",
+      "object_storage": "AWS S3",
+      "container_orquestração": "Kubernetes (EKS) + Helm + ArgoCD (GitOps)",
+      "service_mesh": "Istio ou Linkerd para mTLS e observabilidade interna",
+      "ci_cd": "GitHub Actions + Docker + Trivy (scan de vulnerabilidades)",
+      "observabilidade": "OpenTelemetry + Grafana Cloud (Loki + Tempo + Prometheus)",
+      "secrets": "HashiCorp Vault ou AWS Secrets Manager",
+      "ml_preditivo": "Python + scikit-learn/Prophet para manutenção preditiva, MLflow para versionamento de modelos",
+      "infra_as_code": "Terraform + Terragrunt"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único no Git (ex: GitHub/GitLab) com múltiplos serviços organizados em diretórios (api-gateway, iot-ingestion, maintenance-engine, notification-service, dashboard-frontend). Um único repositório rastreado, deployado em múltiplos ambientes (dev, staging, prod) via branches/tags. Cada serviço é um processo independente, mas versionado conjuntamente para facilitar rastreabilidade de contratos entre serviços.\",\n\n  \"dependencies\": \"Cada serviço declara dependências explicitamente e de forma isolada: backend Python usa pyproject.toml + pip-compile ou Poetry com lockfile; serviços Node.js usam package.json + package-lock.json; containers Docker garantem isolamento total. Nenhuma dependência implícita no sistema operacional. Imagens base fixadas por digest (ex: python:3.12.3-slim@sha256:...). Dependências de sistema (librdkafka, drivers MQTT) declaradas no Dockerfile.\",\n\n  \"config\": \"Toda configuração que varia entre ambientes (credenciais de banco, endpoints IoT, API keys, feature flags) é injetada via variáveis de ambiente. Nunca comitada no repositório. Em produção, gerenciada via HashiCorp Vault + Kubernetes Secrets ou AWS Parameter Store/Secrets Manager. Localmente via arquivo .env (listado no .gitignore). Configuração validada no startup do processo com falha explícita se variável obrigatória ausente.\",\n\n  \"backing_services\": {\n    \"banco_de_dados_relacional\": \"PostgreSQL — dados de tenants, ativos prediais, ordens de manutenção, usuários\",\n    \"banco_time_series\": \"TimescaleDB ou InfluxDB — telemetria dos sensores IoT (temperatura, vibração, consumo)\",\n    \"message_broker\": \"Apache Kafka — ingestão de eventos IoT em alta vazão, desacoplamento entre serviços\",\n    \"cache\": \"Redis — sessões, rate limiting, cache de dashboards e filas de jobs\",\n    \"object_storage\": \"S3-compatible (AWS S3 ou MinIO) — fotos de equipamentos, relatórios PDF, firmware de dispositivos\",\n    \"email_sms\": \"SendGrid / Twilio — notificações de alertas e ordens d"
+}

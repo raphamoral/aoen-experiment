@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "A proposta demonstra separação sensata de responsabilidades (dois bancos distintos, fila de ingestão, camadas frontend/backend) e mostra consciência evolutiva ao planejar escala incremental, mas não menciona camadas de abstração (ports & adapters, repositórios, domínio isolado de frameworks) que garantiriam a substituição independente de componentes — SendGrid, Twilio, TimescaleDB e MQTT estão acoplados diretamente à lógica, sem adaptadores, tornando qualquer troca custosa mas não impossível."
+}

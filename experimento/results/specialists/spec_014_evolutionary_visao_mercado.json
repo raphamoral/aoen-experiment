@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O documento identifica um público genérico (empresas com reuniões multilíngues e clientes enterprise com soberania de dados), mas é inteiramente arquitetural — não articula a dor do cliente, não apresenta tamanho de mercado, não diferencia o produto de soluções existentes (ex: Kudo, KUDO, Interprefy, recursos nativos do Teams/Zoom) e não formula uma proposta de valor do ponto de vista do comprador."
+}

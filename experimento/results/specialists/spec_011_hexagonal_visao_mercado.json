@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo está implícito na nomenclatura (startups e investidores-anjo regionais), mas o documento é puramente arquitetural — não articula a dor do cliente, não quantifica o mercado, não menciona alternativas existentes (AngelList, Gust, LinkedIn) nem explica por que a abordagem regional representa diferenciação real frente a plataformas já estabelecidas."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 84,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta sinaliza intenção de configurabilidade (portal de administração com 'configuração de parâmetros', providers de DTC e matching como interfaces intercambiáveis), mas não descreve um modelo de configuração por tenant — não há menção a tabela de configuração por cliente, feature flags por tenant, isolamento de comportamento entre B2C/B2B/B2B2B via config, nem garantia explícita de que novo cliente enterprise com regras distintas (ex: seguradora com SLA próprio, frota com thresholds de severidade customizados) seria onboardado sem código; o que existe é separação de camadas (boa fundação), não configurabilidade multi-tenant declarada."
+}

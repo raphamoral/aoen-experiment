@@ -1,0 +1,75 @@
+{
+  "ideia_idx": 2,
+  "ideia": "Marketplace de freelancers especializados em compliance regulatório",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Marketplace de matching entre clientes corporativos e freelancers especializados em compliance regulatório (LGPD, GDPR, SOX, ISO 27001, BACEN, CVM, ANVISA, etc.), gerenciando o ciclo completo: descoberta, contratação, execução de projetos, entrega de artefatos e pagamento seguro com retenção de garantia (escrow).",
+    "primary_ports": [
+      "IFreelancerOnboardingUseCase — registrar, qualificar e certificar freelancers com especialidades regulatórias",
+      "IClientProjectUseCase — publicar, editar e encerrar demandas de compliance",
+      "IMatchingUseCase — buscar e recomendar freelancers por especialidade, disponibilidade e reputação",
+      "IProposalUseCase — submeter, negociar e aceitar propostas de engajamento",
+      "IContractUseCase — formalizar contratos, SLAs e termos de confidencialidade (NDA)",
+      "IProjectExecutionUseCase — gerenciar milestones, entregas e aprovações de artefatos",
+      "IReviewAndRatingUseCase — avaliar freelancers e clientes após encerramento",
+      "IDisputeResolutionUseCase — abrir, mediar e resolver disputas entre partes",
+      "IPaymentReleaseUseCase — liberar ou bloquear pagamentos via escrow",
+      "IAuthenticationUseCase — autenticar usuários, gerenciar sessões e permissões (RBAC)"
+    ],
+    "secondary_ports": [
+      "IUserRepository — persistir e recuperar dados de usuários (freelancers e clientes)",
+      "IProjectRepository — persistir demandas, propostas, contratos e milestones",
+      "IArtefactRepository — armazenar documentos regulatórios e entregas de projetos",
+      "IPaymentGateway — processar pagamentos, escrow, splits e reembolsos",
+      "INotificationService — enviar alertas e comunicações assíncronas",
+      "IEmailService — enviar e-mails transacionais e newsletters",
+      "IIdentityVerificationService — validar documentos de identidade (KYC)",
+      "IBackgroundCheckService — verificar histórico profissional e antecedentes",
+      "IComplianceCertificationService — validar certificações regulatórias (ex: CIPP, CFE)",
+      "ISearchIndexService — indexar e consultar freelancers e projetos com full-text search",
+      "IContractSignatureService — assinar contratos digitalmente com validade jurídica",
+      "IAuditLogRepository — registrar todas as ações críticas para auditoria e rastreabilidade",
+      "IAnalyticsService — emitir eventos de negócio para análise e BI",
+      "IVideoConferenceService — integrar chamadas de discovery entre cliente e freelancer"
+    ],
+    "primary_adapters": [
+      "REST API Adapter (HTTP/JSON) — interface principal para clientes web e mobile",
+      "GraphQL Adapter — consultas flexíveis para dashboards e relatórios",
+      "WebSocket Adapter — notificações em tempo real e atualizações de status de projeto",
+      "CLI Adapter — scripts de seed, migração de dados e automações internas",
+      "Test Driver Adapter — testes de aceitação e integração que dirigem o core sem infraestrutura",
+      "Webhook Receiver Adapter — receber callbacks de gateways de pagamento e serviços externos",
+      "Admin Panel Adapter — interface backoffice para moderação, KYC e resolução de disputas"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter — implementa IUserRepository, IProjectRepository, IAuditLogRepository via ORM (Prisma/TypeORM)",
+      "AWS S3 Adapter — implementa IArtefactRepository para documentos regulatórios e entregas",
+      "Stripe Connect Adapter — implementa IPaymentGateway com suporte a marketplace payments e escrow",
+      "AWS SES / SendGrid Adapter — implementa IEmailService para comunicações transacionais",
+      "Firebase FCM / OneSignal Adapter — implementa INotificationService para push notifications",
+      "Twilio Adapter — implementa INotificationService para SMS e WhatsApp",
+      "Stripe Identity / Jumio Adapter — implementa IIdentityVerificationService (KYC)",
+      "Certn / Checkr Adapter — implementa IBackgroundCheckService",
+      "Elasticsearch / OpenSearch Adapter — implementa ISearchIndexService com boosting por reputação",
+      "DocuSign / D4Sign Adapter — implementa IContractSignatureService com validade jurídica brasileira",
+      "Segment / Amplitude Adapter — implementa IAnalyticsService para eventos de produto",
+      "Google Meet / Zoom Adapter — implementa IVideoConferenceService",
+      "In-Memory Adapter — implementação fake de todos os ports secundários para testes unitários"
+    ],
+    "isolation": "O core (domain + use cases) não importa nenhum framework, driver de banco, SDK externo ou protocolo HTTP. Todas as dependências externas são invertidas via interfaces (ports). O Dependency Injection Container (na camada de composição/bootstrap) conecta adapters concretos às interfaces esperadas pelo core em runtime. Testes unitários substituem todos os adapters por fakes in-memory, permitindo validar 100% das regras de negócio sem infraestrutura. O core nunca conhece Stripe, AWS, PostgreSQL ou qualquer tecnologia específica.",
+    "interfaces": [
+      "Web App (Next.js) — marketplace público com perfis, busca e gestão de projetos",
+      "Mobile App (React Native) — acesso a projetos, mensagens e notificações",
+      "Admin Dashboard (React + backoffice) — moderação, KYC, disputas e métricas",
+      "API Pública (REST/GraphQL) — para integrações enterprise e parceiros",
+      "Webhooks Outbound — notificar sistemas externos sobre eventos críticos (pagamento liberado, contrato assinado)",
+      "Portal do Freelancer — onboarding, gestão de disponibilidade e portfólio de certificações",
+      "Portal do Cliente Corporativo — publicação de demandas, aprovação de entregas e relatórios de compliance"
+    ],
+    "escalabilidade": "O core é stateless e pode ser escalado horizontalmente sem estado compartilhado. Adapters de leitura intensiva (search, analytics) são desacoplados e escalam independentemente. Filas de mensagens (SQS/RabbitMQ) desacoplam operações assíncronas (envio de e-mail, background check, indexação). CQRS opcional separa modelos de leitura (read models otimizados para queries de busca) dos modelos de escrita (agregados de domínio). CDN para assets estáticos. Banco com read replicas para dashboards. Event-driven entre bounded contexts (matching, contratos, pagamentos) garante baixo acoplamento entre módulos ao crescer.",
+    "custos": "Infraestrutura cloud pay-as-you-go (AWS/GCP) com auto-scaling. Serviços terceiros com custo variável (Stripe 2.9%+0.30/transação, DocuSign por envelope, KYC por verificação). Background check e KYC são ativados only-on-demand para controlar custo. Elasticsearch gerenciado (AWS OpenSearch) é o principal custo fixo relevante. Cache Redis reduz carga no banco. Funções serverless (Lambda) para workers assíncronos reduzem custo em baixa carga. Estimativa inicial: USD 300-800/mês em infraestrutura para primeiros 1.000 usuários ativos.",
+    "monetizacao": "1) Taxa de sucesso sobre projetos concluídos: 15-20% sobre o valor pago ao freelancer (modelo Upwork/Fiverr). 2) Plano de assinatura para clientes corporativos: acesso a pool premium de freelancers certificados, SLA de matching <24h e relatórios de auditoria. 3) Plano de destaque para freelancers: perfil promovido nos resultados de busca. 4) Verificação acelerada de certificações: fee único por certificação validada. 5) Módulo SaaS B2B white-label: empresas contratam a plataforma como solução interna de gestão de consultores de compliance. 6) Dados e benchmarks de mercado: relatórios agregados anonimizados sobre tarifas e tendências regulatórias.",
+    "stack_sugerida": "Backend: Node.js + TypeScript com NestJS (modular, DI nativo, ideal para Hexagonal). Banco relacional: PostgreSQL (projetos, usuários, contratos). Cache: Redis (sessões, rate limiting, filas). Search: Elasticsearch/OpenSearch. Fila: BullMQ (Redis) ou AWS SQS para workers assíncronos. Frontend: Next.js 14 (App Router) + Tailwind CSS. Mobile: React Native + Expo. Pagamentos: Stripe Connect. Assinatura digital: D4Sign (Brasil) ou DocuSign. KYC: Stripe Identity ou Jumio. Contratos inteligentes/audit: imutabilidade via hash SHA-256 em IAuditLogRepository. Infra: AWS (ECS Fargate, RDS, S3, SES, CloudFront). IaC: Terraform. CI/CD: GitHub Actions. Observabilidade: OpenTelemetry + Datadog/Grafana."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Marketplace de matching entre clientes corporativos e freelancers especializados em compliance regulatório (LGPD, GDPR, SOX, ISO 27001, BACEN, CVM, ANVISA, etc.), gerenciando o ciclo completo: descoberta, contratação, execução de projetos, entrega de artefatos e pagamento seguro com retenção de garantia (escrow).\",\n\n  \"primary_ports\": [\n    \"IFreelancerOnboardingUseCase — registrar, qualificar e certificar freelancers com especialidades regulatórias\",\n    \"IClientProjectUseCase — publicar, editar e encerrar demandas de compliance\",\n    \"IMatchingUseCase — buscar e recomendar freelancers por especialidade, disponibilidade e reputação\",\n    \"IProposalUseCase — submeter, negociar e aceitar propostas de engajamento\",\n    \"IContractUseCase — formalizar contratos, SLAs e termos de confidencialidade (NDA)\",\n    \"IProjectExecutionUseCase — gerenciar milestones, entregas e aprovações de artefatos\",\n    \"IReviewAndRatingUseCase — avaliar freelancers e clientes após encerramento\",\n    \"IDisputeResolutionUseCase — abrir, mediar e resolver disputas entre partes\",\n    \"IPaymentReleaseUseCase — liberar ou bloquear pagamentos via escrow\",\n    \"IAuthenticationUseCase — autenticar usuários, gerenciar sessões e permissões (RBAC)\"\n  ],\n\n  \"secondary_ports\": [\n    \"IUserRepository — persistir e recuperar dados de usuários (freelancers e clientes)\",\n    \"IProjectRepository — persistir demandas, propostas, contratos e milestones\",\n    \"IArtefactRepository — armazenar documentos regulatórios e entregas de projetos\",\n    \"IPaymentGateway — processar pagamentos, escrow, splits e reembolsos\",\n    \"INotificationService — enviar alertas e comunicações assíncronas\",\n    \"IEmailService — enviar e-mails transacionais e newsletters\",\n    \"IIdentityVerificationService — validar documentos de identidade (KYC)\",\n    \"IBackgroundCheckService — verificar histórico profissional e antecedentes\",\n    \"IComplianceCertificationService — validar certificações regulatórias (ex: CIPP"
+}

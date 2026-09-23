@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura prevê isolamento multi-tenant (Identity & Tenant Management) e lista serviços de custo variável (MediaConvert, S3, LLM, OpenSearch), criando a estrutura técnica para rastreamento por tenant, mas em nenhum momento o projeto menciona explicitamente mensuração de custo por cliente, custo por operação, margem por tenant ou qualquer framework de unit economics — os custos são tratados como lista de infraestrutura (FinOps), não como grandeza calculada por aprendiz ou organização."
+}

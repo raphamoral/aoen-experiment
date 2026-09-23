@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "A proposta identifica rastreamento em tempo real (WebSockets + Redis) como elemento técnico central, mas nunca o isola explicitamente como núcleo diferenciador, não explica por que soluções como Onfleet, Tookan ou Bringg não resolvem o mesmo problema, e a dependência direta do Google Maps cria fragilidade de fornecedor — o resultado é uma implementação tecnicamente competente de uma categoria de produto já comoditizada, sem proposta de valor insubstituível articulada."
+}

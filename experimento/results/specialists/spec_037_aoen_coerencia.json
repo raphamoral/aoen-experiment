@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 37,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "O projeto apresenta coerência arquitetural muito alta: a abstração PricingEngine (fase 1) é o eixo que viabiliza toda a estratégia multi-canal (fase 2), e o princípio 'interfaces são apenas adaptadores' (fase 2) é diretamente sustentado pelo pipeline fixo de 7 etapas na camada de serviço (fase 3); a segmentação de mercado mapeia 1:1 para as interfaces escolhidas, os parâmetros configuráveis da fase 3 são exatamente o que torna o motor regional e por padrão de acabamento (prometido na fase 1), e a promessa de extensibilidade tem respaldo arquitetural concreto — a única lacuna menor é que o bot WhatsApp menciona 'receber fotos' sem que o pipeline de normalização de escopo cubra explicitamente processamento de imagem como caminho de entrada."
+}

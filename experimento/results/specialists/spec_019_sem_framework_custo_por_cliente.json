@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "O projeto identifica o principal custo variável (WhatsApp por agendamento) e faz uma estimativa agregada razoável (R$800/mês para 100 clínicas), além de mencionar monitorar custo por clínica ativamente — o que demonstra consciência de unit economics — mas não chega a calcular custo por operação/tenant (ex: 'cada agendamento custa R$X de mensagem + R$Y de infra'), nem conecta esse custo à margem real por plano contratado."
+}

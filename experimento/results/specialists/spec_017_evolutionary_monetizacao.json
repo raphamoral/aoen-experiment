@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "evolutionary",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a modelo de receita, pricing, tiers, métricas de negócio (MRR, LTV, CAC, churn) ou qualquer estratégia de monetização — o documento é integralmente técnico/arquitetural."
+}

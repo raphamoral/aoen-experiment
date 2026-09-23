@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura lista exclusivamente entidades de domínio de negócio (Freelancer, Client, Project, Bid, Contract, Escrow, Review) sem nenhum atributo, regra ou mecanismo voltado à mensuração de custo por cliente, rastreamento de consumo por tenant ou cálculo de custo por operação — custos sequer são mencionados."
+}

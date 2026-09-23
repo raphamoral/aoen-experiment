@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "A proposta não aborda multi-tenancy em nenhuma fase: não há modelo de tenant_id, tabela de configuração por cliente, feature flags por tenant ou separação código/config — schemas separados são por módulo técnico, não por cliente, e a menção a clínicas/laboratórios na Fase 3 é integração via API, não onboarding por configuração."
+}

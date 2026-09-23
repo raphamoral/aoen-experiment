@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura não prevê nenhum mecanismo de rastreamento de custo por tenant — não há porta de metering de consumo, nenhum agregador de uso por cliente, e a única referência financeira (IPaymentGateway) trata de cobrança ao cliente (receita), não de apuração de custo operacional por cliente; custos de infra, IA (IAIContentPort) e storage (IMediaStorage) são completamente opacos no nível de tenant."
+}

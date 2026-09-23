@@ -1,0 +1,43 @@
+{
+  "ideia_idx": 27,
+  "ideia": "Plataforma de gestão de eventos corporativos híbridos",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de orquestração híbrida: sincronização em tempo real entre participantes físicos e virtuais num único fluxo de evento coerente — agendas unificadas, engajamento bidirecional (perguntas, votações, networking) e dados consolidados de presença. Sem isso, é apenas uma ferramenta de videoconferência com calendário.",
+    "fase1_mercado": "Empresas de médio e grande porte (200-5000 funcionários) com equipes distribuídas; agências especializadas em eventos corporativos; RH e Marketing que organizam convenções, town halls, treinamentos e lançamentos de produto com audiência mista presencial/remota.",
+    "fase1_extensivel": "Sim. O core é abstraído em três portas substituíveis: (1) Provedor de streaming — Zoom SDK, Teams Live Events, Agora, RTMP próprio; (2) Provedor de notificações — SendGrid, AWS SES, WhatsApp Business API; (3) Provedor de pagamentos — Stripe, PagSeguro, cobrança interna via fatura. Trocar um fornecedor não altera a lógica de orquestração.",
+    "fase2_interfaces": [
+      "Web Dashboard (organizador) — gestão completa do evento, configuração, relatórios",
+      "Web App Progressivo / PWA (participante) — check-in, agenda personalizada, networking, Q&A ao vivo",
+      "Mobile nativo iOS/Android (participante presencial e remoto) — notificações push, QR code de acesso, streaming embarcado",
+      "API REST + Webhooks (integrações enterprise) — HRIS, CRM, SSO/SAML, sistemas de RH legados",
+      "Widget embarcável (intranet corporativa) — iframe com registro e live stream para portais internos",
+      "Interface de totem/kiosk (venue físico) — check-in presencial, sinalização digital, agenda em display"
+    ],
+    "fase2_justificativa_mercado": "Dashboard web abre o mercado de organizadores e agências (poder de compra, decisão de contrato). PWA/mobile abre o mercado de participantes globais sem atrito de instalação. API enterprise abre grandes contas que exigem integração com stack corporativo existente (SSO, Workday, SAP). Widget de intranet vende para RH de grandes corporações com portais legados. Kiosk vende diferencial presencial para venues e hotéis de eventos que buscam solução white-label.",
+    "fase2_service_layer": "Uma EventService Layer centraliza toda a lógica de negócio (criação de evento, validação de capacidade, controle de acesso, disparo de notificações, consolidação de métricas). Cada interface consome essa camada via contratos bem definidos (DTOs). Nenhuma interface contém regras de negócio — apenas apresentação e input. Trocar ou adicionar uma interface não requer alterar a lógica central.",
+    "fase3_fluxo_fixo": "Ciclo de vida do evento é imutável no código: Criação → Configuração → Publicação → Período de Registro → Pré-evento (comunicações automáticas) → Execução ao vivo (streaming + engajamento + check-in) → Encerramento → Pós-evento (gravação, relatório, follow-up). Esse pipeline sempre ocorre nessa ordem para qualquer cliente.",
+    "fase3_parametros_configuraveis": [
+      "Identidade visual (logo, paleta de cores, domínio customizado)",
+      "Tipos e limites de ingressos (presencial, virtual, VIP, gratuito, pago)",
+      "Capacidade máxima por modalidade",
+      "Provedor de streaming ativo (Zoom / Teams / Agora / RTMP)",
+      "Templates de e-mail e SMS por etapa do ciclo",
+      "Campos customizados do formulário de registro",
+      "Estrutura de agenda (trilhas, salas simultâneas, intervalos)",
+      "Regras de networking (opt-in, match por perfil, agenda 1:1)",
+      "Integrações habilitadas (SSO provider, CRM endpoint, webhook URL)",
+      "Idioma e fuso horário padrão do evento",
+      "Política de cancelamento e reembolso",
+      "Questionários e formulários de feedback pós-evento",
+      "Gatilhos de notificação (D-7, D-1, H-1, pós-evento)"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel de configuração sem código: criar workspace → definir plano → preencher configurações (identidade, integrações, templates) → publicar primeiro evento. Um arquivo de configuração JSON por tenant é versionado e aplicado automaticamente. Novo cliente = novo tenant com novo conjunto de parâmetros. Nenhum deploy de código é necessário.",
+    "fase4_core_isolado": "Serviço de Orquestração ao Vivo (Live Event Engine): processo isolado responsável por gerenciar sessões de streaming em tempo real, processar eventos de engajamento (Q&A, polls, reações), consolidar presença e distribuir estado para todos os participantes via WebSocket. Roda em contêiner separado com autoscaling independente, ativado apenas durante a janela do evento.",
+    "fase4_custo_total_cliente": "Custo fixo mensal (infra idle): ~$15-40 (banco de dados compartilhado por tenant, armazenamento de configurações, scheduler de notificações). Custo variável por evento: streaming $0.002-0.008/participante/minuto (Agora/Twilio) + processamento de vídeo $0.015/min gravação + armazenamento $0.023/GB gravação + banda CDN $0.01/GB + notificações $0.001/e-mail. Exemplo: evento de 500 participantes por 4h = ~$180-320 de custo variável. Custo total mensurável por cliente = fixo + soma dos eventos do mês.",
+    "fase4_continuidade": "O Live Event Engine usa circuit breaker: se cair, os participantes recebem fallback para link direto do provedor de streaming (Zoom/Teams). A plataforma continua operando para check-in, agenda e chat assíncrono. Gravações são enfileiradas em fila persistente (SQS/RabbitMQ) e processadas quando o serviço se recupera. Health checks com readiness probe garantem que o load balancer não roteia para instâncias degradadas.",
+    "fase4_manutencao": "O Live Event Engine é acessado exclusivamente via interface abstrata (StreamingProvider interface). Trocar de Agora para Twilio, por exemplo, significa implementar um novo adapter e alterar o parâmetro de configuração do tenant — sem downtime, sem alteração no restante do sistema. Deploys com blue-green garantem zero downtime. Eventos em andamento nunca são migrados mid-session.",
+    "monetizacao": "SaaS por assinatura em 3 tiers: Starter ($299/mês — até 3 eventos/mês, 200 participantes cada), Business ($799/mês — eventos ilimitados, 1.000 participantes, analytics avançado, SSO), Enterprise (contrato anual negociado — participantes ilimitados, SLA 99.9%, white-label, suporte dedicado). Adicional de consumo: cobrança por participante acima do limite do plano ($1.50/participante extra). Receita previsível via assinatura + upside via grandes eventos. CAC recuperado em ~3 meses no tier Business.",
+    "stack_sugerida": "Backend: Node.js (NestJS) ou Go para alta concorrência no Live Engine; PostgreSQL com schema por tenant (Row-Level Security); Redis para estado de sessão ao vivo e pub/sub. Frontend: Next.js (dashboard + PWA participante) com Tailwind. Mobile: React Native (código compartilhado iOS/Android). Streaming: Agora.io SDK (fallback RTMP) ou abstração sobre Zoom SDK. Filas: AWS SQS ou RabbitMQ. Infra: AWS ECS Fargate (autoscaling por evento) + CloudFront CDN + S3 para gravações. Observabilidade: OpenTelemetry + Datadog. Auth: Auth0 ou Keycloak (suporte a SSO/SAML enterprise)."
+  }
+}

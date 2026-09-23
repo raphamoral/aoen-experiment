@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 68,
+  "ideia": "Plataforma de financiamento coletivo para projetos de infraestrutura local",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de confiança e conformidade financeira: orquestração de campanhas de captação com liberação de fundos por marcos verificáveis (escrow milestone-based). Sem isso — sem garantia de que o dinheiro vai para a obra — o produto não existe.",
+    "fase1_mercado": "Primário: prefeituras e autarquias municipais que precisam complementar orçamento público. Secundário: associações comunitárias e OSCs que executam infraestrutura local (saneamento, pavimentação, iluminação, parques). Terciário: investidores pessoa física e jurídica interessados em impacto local com retorno reputacional ou financeiro.",
+    "fase1_extensivel": "Sim. O core é a lógica de escrow + validação de marcos, não um provedor específico. Provedores de pagamento (Stripe, Pagar.me, Zoop), de KYC (Serpro, Unico, Jumio) e de assinatura eletrônica (Clicksign, DocuSign) são adaptadores trocáveis via interface. A lógica de liberação por marco é agnóstica ao meio de pagamento.",
+    "fase2_interfaces": [
+      "Portal web público do cidadão: navegação de projetos, doação/investimento, acompanhamento de progresso",
+      "Dashboard do criador de projeto: prefeituras, OSCs e gestores de obra publicam projetos, enviam evidências de marcos, recebem fundos liberados",
+      "Painel administrativo da plataforma: compliance, curadoria de projetos, gestão de disputas",
+      "App mobile (PWA-first): notificações de progresso, micro-doações, engajamento comunitário offline-tolerante",
+      "API pública + webhooks: integração com portais de transparência governamental, fintechs e bancos parceiros",
+      "Página de transparência pública embeddable: widget incorporável em sites de prefeituras e câmaras"
+    ],
+    "fase2_justificativa_mercado": "Portal web público abre o mercado de cidadãos e pequenos doadores (volume). Dashboard do criador abre o mercado B2G (prefeituras pagam SaaS). App mobile abre comunidades periféricas com baixa bancarização via PIX. API abre o mercado de bancos regionais e cooperativas de crédito que querem oferecer o produto como serviço próprio (white-label B2B). Widget de transparência abre o mercado de compliance político — prefeituras usam para prestação de contas, gerando aquisição orgânica.",
+    "fase2_service_layer": "Uma CampaignService, FundReleaseService e MilestoneVerificationService expõem contratos de domínio puros (sem HTTP, sem UI). Cada interface chama esses serviços via use-cases. Adicionar um novo canal (ex: chatbot WhatsApp) não exige tocar em regra de negócio — apenas um novo adapter que fala com os mesmos serviços.",
+    "fase3_fluxo_fixo": "Submissão de projeto → curadoria/aprovação → publicação da campanha → período de captação → verificação de marco (evidência + validador) → liberação parcial de fundos → relatório público → encerramento ou próximo marco. Este pipeline é imutável no código; o que varia são seus parâmetros.",
+    "fase3_parametros_configuraveis": [
+      "Valor mínimo e máximo de captação por campanha",
+      "Duração da campanha (dias)",
+      "Número e definição de marcos de liberação",
+      "Percentual de taxa da plataforma por transação",
+      "Nível de KYC exigido (básico CPF, intermediário biometria, avançado documentação jurídica)",
+      "Métodos de pagamento habilitados (PIX, cartão, boleto, TED)",
+      "Moeda e jurisdição fiscal",
+      "Requisito de validador de marco (auto-declarado, terceiro certificado, vistoria técnica)",
+      "Templates de comunicação e branding (logo, cores, domínio customizado)",
+      "Regras de reembolso em caso de meta não atingida",
+      "Limites de concentração por doador (compliance anti-lavagem)",
+      "Integração com sistema de transparência externo (endpoint webhook)"
+    ],
+    "fase3_novo_cliente": "Novo cliente (prefeitura ou OSC) é um registro no tenant_config com seus parâmetros acima preenchidos via formulário de onboarding. Um script de seed cria o workspace, aplica o config, provisiona subdomínio e habilita métodos de pagamento. Zero linha de código nova — o fluxo já existe, só recebe novos parâmetros.",
+    "fase4_core_isolado": "O FundReleaseWorker: processo assíncrono isolado responsável por (1) validar evidências de marco, (2) acionar o provedor de pagamento para transferência do escrow, (3) registrar o evento auditável. Roda em fila dedicada (ex: Redis + BullMQ ou AWS SQS) separada do servidor web. Se cair, nenhuma transação financeira ocorre — mas todo o resto da plataforma (navegação, captação, dashboard) permanece operacional.",
+    "fase4_custo_total_cliente": "Core: taxa do gateway de pagamento (1,5–3% por transação) + custo de KYC por verificação (R$0,50–R$2,00/usuario) + custo de assinatura eletrônica por contrato (R$1–R$3). Infra proporcional: servidor/container (R$0,10–R$0,50/cliente/mês para workloads leves, escala com volume). Banco de dados: R$0,02–R$0,10/GB. Armazenamento de evidências de marco (imagens, vídeos, laudos): R$0,025/GB/mês (S3-compatible). Banda de saída: R$0,09/GB. Estimativa para cliente pequeno (1 campanha, 500 doadores): R$80–R$150/mês total. Margem viável com plano de R$499/mês + 1,5% sobre captações.",
+    "fase4_continuidade": "O FundReleaseWorker usa dead-letter queue: falhas são reprocessadas com backoff exponencial sem perda de mensagem. O restante da plataforma (leitura, captação) usa réplica de banco read-only e CDN para páginas públicas — sem dependência do worker. Monitoramento com alertas independentes: queda do worker não dispara alertas de indisponibilidade do site.",
+    "fase4_manutencao": "O provedor de pagamento é encapsulado em uma interface PaymentGatewayPort. Trocar de Pagar.me para Stripe é implementar um novo adapter sem tocar no FundReleaseWorker ou nos serviços de domínio. Feature flag por tenant permite migração gradual: 10% dos clientes no novo gateway antes do rollout completo.",
+    "monetizacao": "Receita primária: assinatura mensal por tenant (planos Starter R$299/mês até Enterprise R$2.999/mês com SLA e white-label) + taxa de sucesso sobre captações realizadas (1,5% sobre valor captado, cobrado no momento da liberação de marcos). Receita secundária: setup fee para onboarding enterprise (R$3.000–R$10.000) + módulo de relatório de impacto certificado (R$199/relatório para prestação de contas a órgãos públicos). Modelo sustentável desde o zero: plano Starter cobre CAC em 2 meses; taxa de sucesso escala com o volume sem custo incremental de engenharia.",
+    "stack_sugerida": "Backend: Node.js (NestJS) com TypeScript — monolito modular preparado para extração de serviços. Banco: PostgreSQL (multi-tenant com schema-per-tenant para isolamento de dados). Filas: BullMQ + Redis para o FundReleaseWorker. Storage: MinIO self-hosted ou S3 para evidências de marco. Frontend: Next.js (App Router) com SSR para SEO das páginas públicas de campanha. Mobile: PWA com Workbox (offline-tolerant). Infra: Railway ou Render para início (zero DevOps), migração para AWS ECS Fargate com RDS Aurora quando MRR > R$30k. Pagamentos: Pagar.me (PIX nativo no Brasil) com adapter para Stripe em expansão internacional. KYC: Unico Check via adapter. Observabilidade: OpenTelemetry + Grafana Cloud."
+  }
+}

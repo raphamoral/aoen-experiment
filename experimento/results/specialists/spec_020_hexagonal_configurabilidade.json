@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A arquitetura hexagonal cria uma boa base de separação de preocupações, mas a proposta não define nenhum mecanismo explícito de configuração por tenant — ausência de ITenantConfigRepository nos secondary ports, sem modelo de regras de negócio configuráveis por cliente (fórmulas de pontuação, critérios de severidade, estruturas de recompensa), sem tenant onboarding flow descrito; um novo cliente provavelmente exigiria mapeamento manual de adapters e ajustes no domínio, não apenas uma nova row no banco."
+}

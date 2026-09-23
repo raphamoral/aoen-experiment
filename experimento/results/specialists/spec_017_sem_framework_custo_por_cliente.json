@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "O projeto lista custos totais de infraestrutura (servidor $20-50/mês, banco $20/mês, S3, email) sem nenhum cálculo de custo por cliente/tenant, sem rastreamento de consumo individual, e sem conexão entre custo unitário e modelo de precificação."
+}

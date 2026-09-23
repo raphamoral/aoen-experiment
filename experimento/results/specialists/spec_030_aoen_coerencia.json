@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 30,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta forma um sistema altamente coeso: a abstração VisionProvider viabiliza exatamente a diversidade de fontes (mobile, câmera IP, provedores cloud) declarada nas fases seguintes; a StockService centralizada elimina duplicação de lógica e é a consequência natural de múltiplas interfaces servindo um único core; cada interface possui justificativa de mercado que mapeia diretamente ao segmento-alvo declarado na fase1; o fluxo de processamento (fase3) é a materialização sequencial e sem saltos do valor prometido no core (imagem → dado estruturado → alerta); a única tensão menor — mercado declarado como 'sem equipe de TI' coexistindo com integrações ERP enterprise — é explicitamente resolvida ao posicionar a API REST como vetor de expansão de mercado, não como contradição, o que demonstra consciência arquitetural deliberada em vez de inconsistência."
+}

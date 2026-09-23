@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta apresenta apenas uma métrica concreta de custo — a fitness function 'custo de infraestrutura por contrato processado ≤ R$0,08' com alerta de regressão —, o que demonstra consciência financeira pontual, mas não há estimativas por componente (compute, RDS, S3, CDN, banda), nenhuma estratégia explícita de otimização (spot/preemptible, reserved instances, scale-to-zero, storage tiering) e nenhuma projeção de como os custos evoluem com o crescimento da base de contratos."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "A proposta sugere diferenciadores reais (gestão de espaços descentralizados via IoT, consistência forte em booking, integração multi-provider), mas nenhum bounded context é explicitamente declarado como núcleo insubstituível — o sistema é descrito como uma plataforma técnica sólida, não como um produto com identidade diferenciadora isolada e inextricável."
+}

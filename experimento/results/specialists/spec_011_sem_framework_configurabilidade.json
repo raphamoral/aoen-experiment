@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "A proposta não contempla nenhuma camada de tenant — o produto é uma plataforma única com comportamento fixo no código; os únicos parâmetros variáveis são dados de perfil de usuário final (setor, região, ticket), não configurações por cliente operador, então qualquer variação de comportamento para um novo contratante (ex: uma aceleradora regional querendo rodar sua própria rede de matchmaking com regras, setores ou branding próprios) exigiria fork do código ou desenvolvimento novo."
+}

@@ -1,0 +1,72 @@
+{
+  "ideia_idx": 21,
+  "ideia": "SaaS de gestão de manutenção predial preventiva com IoT",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão de manutenção predial preventiva: agendamento e execução de ordens de serviço, análise de telemetria de equipamentos, ciclos de vida de ativos, regras de manutenção preventiva baseadas em uso/tempo/anomalias, e orquestração de equipes técnicas.",
+    "primary_ports": [
+      "IMaintenanceScheduler — agendar, reagendar e cancelar ordens de serviço",
+      "IAssetLifecycleManager — registrar, atualizar e descomissionar ativos prediais",
+      "ITelemetryIngestor — receber e validar leituras de sensores IoT",
+      "IAlertEvaluator — avaliar regras de alerta sobre telemetria recebida",
+      "IWorkOrderCommander — criar, atribuir, iniciar e fechar ordens de serviço",
+      "IReportingQueryHandler — consultar KPIs, histórico e previsões de manutenção",
+      "ITenantAdministrator — gerenciar configurações de tenant, usuários e permissões"
+    ],
+    "secondary_ports": [
+      "IAssetRepository — persistência e consulta de ativos e seus metadados",
+      "IWorkOrderRepository — persistência de ordens de serviço e histórico",
+      "ITelemetryRepository — armazenamento de séries temporais de sensores",
+      "IMaintenancePlanRepository — planos preventivos, checklists e frequências",
+      "INotificationGateway — envio de alertas e notificações aos stakeholders",
+      "IDeviceCommandGateway — envio de comandos remotos a dispositivos IoT",
+      "IFileStorageGateway — armazenamento de fotos de inspeção e laudos técnicos",
+      "ICalendarIntegrationGateway — sincronização com calendários externos de equipes",
+      "IBillingGateway — controle de assinaturas, cobrança e limites de uso por tenant",
+      "IAnalyticsExportGateway — exportação de dados para plataformas de BI externas",
+      "IIdentityProvider — autenticação e autorização de usuários e dispositivos",
+      "IMLAnomalyDetector — inferência de modelos de detecção de anomalias em telemetria"
+    ],
+    "primary_adapters": [
+      "REST API Controller (HTTP/HTTPS) — interface para dashboards web e aplicativos móveis",
+      "GraphQL Resolver — consultas flexíveis para relatórios e visões personalizadas",
+      "MQTT Broker Listener — recepção de mensagens de sensores IoT via protocolo MQTT",
+      "WebSocket Handler — streaming de telemetria em tempo real para dashboards",
+      "Webhook Receiver — integração com sistemas externos que empurram eventos",
+      "CLI Admin Interface — operações administrativas e scripts de manutenção do sistema",
+      "gRPC Service — integração de alta performance com microserviços internos",
+      "Test Driver (in-process) — permite acionar o core diretamente em testes de unidade e integração"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Asset/WorkOrder Adapter — persistência relacional de domínio transacional",
+      "TimescaleDB Telemetry Adapter — série temporal de leituras IoT com compressão automática",
+      "Redis Cache Adapter — cache de regras de alerta, sessões e dados quentes de telemetria",
+      "AWS S3 / Azure Blob File Storage Adapter — laudos, fotos e documentos técnicos",
+      "Firebase FCM / APNs Notification Adapter — notificações push para técnicos em campo",
+      "SendGrid Email Adapter — alertas e relatórios periódicos por email",
+      "Twilio SMS Adapter — alertas críticos por SMS para responsáveis de plantão",
+      "AWS IoT Core / Azure IoT Hub Device Command Adapter — envio de comandos a dispositivos",
+      "Stripe Billing Adapter — gestão de planos SaaS, cobranças e limites de tenant",
+      "Google Calendar / Outlook Calendar Adapter — sincronização de agenda de manutenções",
+      "Auth0 / Keycloak Identity Adapter — autenticação OAuth2/OIDC multi-tenant",
+      "SageMaker / Azure ML Anomaly Adapter — chamadas a endpoints de ML para detecção de falhas",
+      "Kafka / RabbitMQ Event Bus Adapter — publicação de domínio events para integrações assíncronas",
+      "Metabase / Power BI Analytics Export Adapter — exportação de dados para BI"
+    ],
+    "isolation": "O core domain não importa nenhuma biblioteca de infraestrutura. Todas as dependências externas são invertidas via interfaces (ports) definidas no core. O mecanismo de injeção de dependência (DI container ou wiring manual) resolve as implementações concretas (adapters) em tempo de inicialização. O core conhece apenas suas próprias entidades, value objects, aggregates e interfaces — nunca frameworks, drivers de banco, SDKs de nuvem ou protocolos de rede. Testes de domínio usam adapters in-memory ou doubles sem nenhuma infraestrutura real.",
+    "interfaces": [
+      "Dashboard Web (SPA React/Vue) — visão gerencial com KPIs, mapa de ativos e agenda",
+      "Aplicativo Mobile (React Native / Flutter) — técnicos em campo: ordens, checklists, fotos",
+      "Portal do Tenant Admin — configuração de ativos, planos, usuários e integrações",
+      "API Pública REST/GraphQL — integração com ERPs, sistemas de facilities e terceiros",
+      "Interface de Configuração de Dispositivos IoT — provisionamento e gestão de sensores",
+      "Painel de Alertas em Tempo Real — monitoramento live de telemetria e anomalias",
+      "Relatórios e Exportações — PDF, Excel, integração com BI"
+    ],
+    "escalabilidade": "O design hexagonal desacopla naturalmente os pontos de escala. A ingestão de telemetria IoT escala horizontalmente via particionamento de tópicos Kafka por tenant/dispositivo. O core de domínio é stateless e pode rodar em múltiplas instâncias atrás de um load balancer. TimescaleDB escala verticalmente com retenção automática e compressão; leituras analíticas são descarregadas para réplicas de leitura. O modelo multi-tenant com schema-per-tenant no PostgreSQL permite isolamento e escala independente por cliente. Processamento de ML é assíncrono via filas, não bloqueando o fluxo principal. Adapters de notificação e billing são chamados de forma assíncrona via event bus para não impactar a latência do core.",
+    "custos": "Infraestrutura variável dominada por: (1) ingestão e armazenamento de telemetria IoT — usar compressão e políticas de retenção no TimescaleDB para controlar crescimento; (2) chamadas a endpoints de ML — cachear resultados de inferência para leituras similares; (3) notificações de alto volume — agrupar alertas não-críticos para reduzir chamadas a gateways pagos; (4) armazenamento de arquivos — lifecycle policies para mover laudos antigos para cold storage (S3 Glacier). Modelo multi-tenant compartilhado reduz custo de infraestrutura base. Custos fixos relevantes: managed PostgreSQL + TimescaleDB, Kafka gerenciado (MSK/Confluent), Auth0/Keycloak.",
+    "monetizacao": "SaaS B2B multi-tenant com planos por faixas: (1) Starter — até N ativos e M sensores, funcionalidades base; (2) Professional — alertas avançados, ML, integrações de calendário e ERP; (3) Enterprise — white-label, SLA garantido, suporte dedicado, on-premise adapter. Cobrança adicional por: volume de telemetria acima do plano, usuários extras, relatórios avançados de BI, e módulo de ML preditivo. Upsell natural via expansão do número de ativos monitorados. Potencial de marketplace de integrações com ERPs e sistemas de facilities de terceiros.",
+    "stack_sugerida": "Core Domain: TypeScript (Node.js) ou Kotlin (JVM) — ambos com excelente suporte a DI e tipagem forte. Ingestão IoT: MQTT via HiveMQ ou AWS IoT Core + Kafka (MSK) para stream processing. Persistência transacional: PostgreSQL (Supabase ou RDS) com schema-per-tenant. Série temporal: TimescaleDB. Cache: Redis (ElastiCache). API: Fastify (Node) ou Ktor (Kotlin) com OpenAPI. Frontend: React + TypeScript + TanStack Query. Mobile: React Native ou Flutter. ML: Python (FastAPI) com modelos scikit-learn/Prophet para anomalia e previsão de falhas, servidos via SageMaker ou endpoint dedicado. Auth: Auth0 (SaaS) ou Keycloak (self-hosted). Billing: Stripe. Observabilidade: OpenTelemetry + Grafana + Loki + Tempo. IaC: Terraform. Orquestração: Kubernetes (EKS/AKS) com HPA para workers de ingestão."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Gestão de manutenção predial preventiva: agendamento e execução de ordens de serviço, análise de telemetria de equipamentos, ciclos de vida de ativos, regras de manutenção preventiva baseadas em uso/tempo/anomalias, e orquestração de equipes técnicas.\",\n  \"primary_ports\": [\n    \"IMaintenanceScheduler — agendar, reagendar e cancelar ordens de serviço\",\n    \"IAssetLifecycleManager — registrar, atualizar e descomissionar ativos prediais\",\n    \"ITelemetryIngestor — receber e validar leituras de sensores IoT\",\n    \"IAlertEvaluator — avaliar regras de alerta sobre telemetria recebida\",\n    \"IWorkOrderCommander — criar, atribuir, iniciar e fechar ordens de serviço\",\n    \"IReportingQueryHandler — consultar KPIs, histórico e previsões de manutenção\",\n    \"ITenantAdministrator — gerenciar configurações de tenant, usuários e permissões\"\n  ],\n  \"secondary_ports\": [\n    \"IAssetRepository — persistência e consulta de ativos e seus metadados\",\n    \"IWorkOrderRepository — persistência de ordens de serviço e histórico\",\n    \"ITelemetryRepository — armazenamento de séries temporais de sensores\",\n    \"IMaintenancePlanRepository — planos preventivos, checklists e frequências\",\n    \"INotificationGateway — envio de alertas e notificações aos stakeholders\",\n    \"IDeviceCommandGateway — envio de comandos remotos a dispositivos IoT\",\n    \"IFileStorageGateway — armazenamento de fotos de inspeção e laudos técnicos\",\n    \"ICalendarIntegrationGateway — sincronização com calendários externos de equipes\",\n    \"IBillingGateway — controle de assinaturas, cobrança e limites de uso por tenant\",\n    \"IAnalyticsExportGateway — exportação de dados para plataformas de BI externas\",\n    \"IIdentityProvider — autenticação e autorização de usuários e dispositivos\",\n    \"IMLAnomalyDetector — inferência de modelos de detecção de anomalias em telemetria\"\n  ],\n  \"primary_adapters\": [\n    \"REST API Controller (HTTP/HTTPS) — interface para dashboards web e aplicativos móveis\",\n    \"Grap"
+}

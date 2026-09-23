@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta tem isolamento por tenant via clínica_id e links por clínica, mas não descreve nenhuma camada de configuração explícita — não há menção a tabela de settings por tenant, horários de funcionamento configuráveis, templates de notificação editáveis, tipos de procedimento customizáveis por clínica, ou painel de onboarding; novo cliente provavelmente exigiria intervenção manual ou pequenos ajustes de código para comportamentos específicos."
+}

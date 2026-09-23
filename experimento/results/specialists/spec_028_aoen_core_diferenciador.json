@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 28,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador é claramente identificado (motor de conformidade parametrizado por regulação), isolado em um service layer sem lógica nas interfaces, extensível por design (troca de regulação via configuração, troca de LLM via abstração de interface), e resolve um problema real que planilhas, advogados avulsos ou ferramentas genéricas de GRC não resolvem para PMEs sem DPO — perde um ponto por não detalhar o mecanismo de varredura automática de dados pessoais em sistemas heterogêneos, que é onde a execução técnica pode falhar e onde concorrentes atacariam."
+}

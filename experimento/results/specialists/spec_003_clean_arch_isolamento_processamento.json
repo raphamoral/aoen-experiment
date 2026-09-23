@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 1,
+  "justificativa": "A proposta define apenas entidades de domínio e casos de uso sem qualquer menção a filas, workers, processos separados ou processamento assíncrono — cálculos pesados como geração de AggregatedInsight e disparo de Alerts parecem ocorrer de forma síncrona e acoplada, sem isolamento físico nem mecanismo de fallback."
+}

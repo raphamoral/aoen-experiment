@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 37,
+  "ideia": "Plataforma de orçamento automatizado para reformas residenciais",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de geração automática de orçamentos para reformas: recebe escopo (cômodos, acabamentos, metragem, tipo de obra) e produz orçamento itemizado com materiais, mão de obra e prazo estimado — calibrado por região e padrão de acabamento. Sem esse motor, o produto é apenas um formulário.",
+    "fase1_mercado": "Primário: proprietários de imóveis (alta frequência de dúvida sobre custo antes de contratar). Secundário: construtoras e reformadoras pequenas (precisam orçar rápido para fechar clientes). Terciário: imobiliárias e investidores (due diligence de imóveis para reforma).",
+    "fase1_extensivel": "Sim. O motor é abstraído atrás de uma interface PricingEngine. Inicialmente pode usar LLM (GPT/Claude) + tabela de preços regional (SINAPI/CUB). No futuro pode ser substituído por modelo proprietário fine-tuned, integração com fornecedores reais ou engine de cotação em tempo real — sem alterar o restante do sistema.",
+    "fase2_interfaces": [
+      "Web App (SPA) — interface guiada por wizard para proprietários",
+      "Dashboard profissional web — para reformadoras/construtoras gerenciarem múltiplos orçamentos",
+      "API REST — para imobiliárias e ERPs de construção integrarem nativamente",
+      "Widget embeddável — para lojas de materiais e portais imobiliários oferecerem orçamento no próprio site",
+      "Bot WhatsApp/Telegram — para usuários de baixa fricção enviarem fotos e receberem estimativa rápida"
+    ],
+    "fase2_justificativa_mercado": "Web App abre o mercado B2C de proprietários (maior volume, menor ticket). Dashboard profissional abre B2B de reformadoras (menor volume, maior LTV, efeito rede por indicação). API abre canais de distribuição via parceiros (imobiliárias, marketplaces) sem custo de aquisição direta. Widget embeddável transforma lojas de materiais em distribuidores — gera orçamento e já sugere produto do parceiro. Bot WhatsApp captura o segmento popular que não usa app mas usa WhatsApp diariamente.",
+    "fase2_service_layer": "Todas as interfaces chamam a mesma QuoteService (cria orçamento), ScopeService (interpreta escopo bruto) e PricingEngine (calcula preços). Nenhuma interface contém lógica de negócio. O wizard web, o bot e a API são apenas adaptadores de entrada — traduzem input do canal para o contrato interno do serviço e devolvem o output formatado para aquele canal.",
+    "fase3_fluxo_fixo": "1. Coleta de escopo (cômodos, tipo de obra, padrão de acabamento, localização). 2. Normalização do escopo para estrutura interna canônica. 3. Lookup de preços unitários por região e padrão. 4. Cálculo de materiais (quantidade × preço). 5. Cálculo de mão de obra (horas estimadas × custo regional). 6. Aplicação de impostos, BDI e margem. 7. Geração do documento de saída (PDF/JSON). Esse pipeline é invariável — muda apenas o que alimenta cada etapa.",
+    "fase3_parametros_configuraveis": [
+      "Tabela de preços por região (UF/município)",
+      "Padrão de acabamento (econômico, médio, alto, luxo)",
+      "Margem/BDI do contratante (%)",
+      "Markup de materiais por fornecedor parceiro",
+      "Moeda e alíquotas fiscais por estado",
+      "Branding do cliente (logo, cores, cabeçalho do PDF)",
+      "Idioma do documento de saída",
+      "Itens incluídos/excluídos do escopo por vertical (reforma × construção × retrofit)",
+      "Integrações ativas (webhook de CRM, ERP, WhatsApp)",
+      "Limites de uso por plano (orçamentos/mês, usuários, projetos simultâneos)"
+    ],
+    "fase3_novo_cliente": "Novo cliente B2B = novo registro na tabela tenants com: região, padrão padrão de acabamento, BDI, markup, branding e plano de uso. Nenhuma linha de código é alterada. Clientes com necessidades específicas (tabela de preços própria, itens customizados) carregam seus dados via CSV/API de configuração. O sistema usa os parâmetros do tenant em cada chamada ao PricingEngine.",
+    "fase4_core_isolado": "O worker de geração de orçamento (QuoteWorker) roda em processo separado, consumindo fila assíncrona (ex: BullMQ/Redis ou SQS). Recebe job com escopo normalizado, executa chamada ao LLM + cálculo de preços, persiste resultado e notifica via webhook/SSE. Isolado do servidor HTTP principal — pode ser escalado, reiniciado ou substituído sem afetar a API ou o front-end.",
+    "fase4_custo_total_cliente": "Core: ~$0,02–0,10 por orçamento gerado (tokens LLM, ex: Claude Haiku ou GPT-4o-mini para escopo simples). Infra proporcional: ~$0,001 por orçamento em compute do worker (Lambda/container). Armazenamento: ~$0,0005/orçamento (PDF ~200KB no S3/R2). Banco: ~$0,0001/orçamento (registro + itens). Banda: ~$0,001 (download do PDF). Total estimado: $0,03–0,12 por orçamento gerado. Break-even com plano de $29/mês: ~250–960 orçamentos cobertos antes do custo variável superar a receita fixa.",
+    "fase4_continuidade": "A API HTTP responde imediatamente com status 202 (accepted) e ID do job. O QuoteWorker processa de forma assíncrona. Se o worker falhar, os jobs ficam na fila (com retry + dead-letter). O front-end faz polling ou recebe SSE com o resultado quando pronto. O usuário nunca recebe erro 500 — recebe 'em processamento'. Falha do worker não derruba a API, dashboard ou autenticação.",
+    "fase4_manutencao": "O PricingEngine é uma interface com implementações plugáveis (LLMPricingEngine, SINAPIPricingEngine, HybridPricingEngine). Trocar o modelo de IA = trocar a implementação injetada, sem alterar QuoteWorker nem a API. Feature flags controlam qual engine está ativa por tenant, permitindo migração gradual com rollback instantâneo.",
+    "monetizacao": "B2C: freemium com 3 orçamentos/mês grátis → planos $19/mês (20 orçamentos) e $49/mês (ilimitado). B2B reformadoras: $99–299/mês por time, com branding próprio e multi-usuário. B2B2C via widget: revenue share de 5–10% do ticket do orçamento quando fecha negócio pelo parceiro (afiliação). API: $0,10 por orçamento gerado via integração (modelo pay-per-use). Marketplace de materiais: comissão de fornecedores que aparecem nos orçamentos como sugestão patrocinada.",
+    "stack_sugerida": "Backend: Node.js (Fastify) + TypeScript. Fila assíncrona: BullMQ + Redis. LLM: Claude claude-haiku-4-5-20251001 (custo baixo para escopo simples) com fallback para claude-sonnet-4-6 em escopo complexo. Banco: PostgreSQL (dados estruturados de orçamento) + Redis (cache de tabelas de preço por região). Storage: Cloudflare R2 (PDFs). Front-end: Next.js (App Router) + Tailwind. Bot: Baileys (WhatsApp unofficial) ou Twilio (oficial). Infra: Railway ou Render para início; migração para ECS Fargate ao escalar. Multi-tenancy: row-level security no Postgres por tenant_id."
+  }
+}

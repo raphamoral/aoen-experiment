@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte capacidade evolutiva: os 9 bounded contexts com times stream-aligned permitem crescimento isolado por domínio, o modelo genesis→commodity (inspirado em Wardley) torna explícita a maturidade de cada componente e sua substituibilidade, e a camada commodity lista alternativas reais (InfluxDB/TimescaleDB, Auth0/Keycloak, AWS IoT Core/HiveMQ) sinalizando decisões reversíveis — porém a proposta não especifica os padrões de integração entre contextos (eventos assíncronos vs. chamadas síncronas, anti-corruption layers, versionamento de contratos), o que é o principal vetor de acoplamento oculto que poderia exigir reescritas futuras."
+}

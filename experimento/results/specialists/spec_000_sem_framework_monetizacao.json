@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 7,
+  "justificativa": "O modelo apresenta tiers com valores definidos ($29/$79/mês), freemium estruturado, taxa de transação e analytics premium, conectando receita ao uso real (consultas e análise de IA), mas falta análise explícita de LTV, CAC, churn esperado e validação de sustentabilidade frente ao custo por consulta estimado de $2-8."
+}

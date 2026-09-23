@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta demonstra consciência multi-tenant via Keycloak/Auth0 e armazenamento de dados por empresa no PostgreSQL, mas não descreve nenhuma camada de configurabilidade de comportamento por tenant — ausência total de feature flags, rule engines, tabelas de configuração por cliente, ou mecanismo de onboarding zero-código; novos clientes com regras de negócio distintas (ex: tipos de resíduo, fluxos de aprovação, integrações blockchain diferentes) quase certamente exigiriam desenvolvimento."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona um worker em background para processamento assíncrono de agregações — o que é correto — e cita a intenção futura de separar esse processamento em serviço independente à medida que escala, mas o ponto de partida é um único servidor onde tudo coexiste, o isolamento é lógico e não físico, não há menção a filas explícitas (Redis é citado apenas para sessões e cache, não como broker de jobs), e não existe qualquer estratégia de fallback descrita para o caso de o worker falhar — o que significa que dashboards simplesmente deixariam de atualizar sem degradação controlada."
+}

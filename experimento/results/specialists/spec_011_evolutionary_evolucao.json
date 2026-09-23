@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A proposta é exemplar em evolução: o Modular Monolith com fronteiras explícitas, a progressão via Strangler Fig orientada por fitness functions objetivas, o uso de feature flags para experimentação algorítmica sem redeploy, o adapter pattern para provedores externos e o Data Model Coupling Score como guardião automatizado de acoplamento compõem uma estratégia coesa e reversível — a única lacuna é a ausência de menção explícita ao isolamento do domínio de negócio em relação a frameworks de infraestrutura (ORM, web framework), o que deixaria a arquitetura hexagonal/ports-and-adapters formalmente completa."
+}

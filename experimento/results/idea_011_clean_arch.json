@@ -1,0 +1,479 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio puros, sem dependências externas",
+      "lista": [
+        {
+          "nome": "Startup",
+          "atributos": [
+            "id",
+            "nome",
+            "setor",
+            "estagio",
+            "localizacao",
+            "pitchDeck",
+            "necessidadeCapital",
+            "valuacao",
+            "fundadores"
+          ],
+          "regras_negocio": [
+            "Valida estágio de maturidade",
+            "Calcula score de completude do perfil",
+            "Verifica elegibilidade para matchmaking"
+          ]
+        },
+        {
+          "nome": "Investidor",
+          "atributos": [
+            "id",
+            "nome",
+            "regiao",
+            "tesesDeInvestimento",
+            "ticketMinimo",
+            "ticketMaximo",
+            "portfólio",
+            "preferenciasSetor"
+          ],
+          "regras_negocio": [
+            "Valida tese de investimento",
+            "Verifica disponibilidade de capital",
+            "Calcula fit regional"
+          ]
+        },
+        {
+          "nome": "Match",
+          "atributos": [
+            "id",
+            "startupId",
+            "investidorId",
+            "scoreCompatibilidade",
+            "status",
+            "dataCriacao",
+            "historico"
+          ],
+          "regras_negocio": [
+            "Calcula score de compatibilidade",
+            "Gerencia estados do match (pendente, aceito, recusado, em_negociacao, concluido)",
+            "Impede matches duplicados"
+          ]
+        },
+        {
+          "nome": "Proposta",
+          "atributos": [
+            "id",
+            "matchId",
+            "valorOferecido",
+            "percentualEquidade",
+            "condicoes",
+            "prazoVencimento",
+            "status"
+          ],
+          "regras_negocio": [
+            "Valida termos da proposta",
+            "Controla prazo de validade",
+            "Gerencia contra-propostas"
+          ]
+        },
+        {
+          "nome": "Perfil",
+          "atributos": [
+            "id",
+            "usuarioId",
+            "tipo",
+            "documentos",
+            "verificado",
+            "reputacao"
+          ],
+          "regras_negocio": [
+            "Calcula score de reputação",
+            "Valida documentos obrigatórios",
+            "Controla nível de visibilidade"
+          ]
+        },
+        {
+          "nome": "Reuniao",
+          "atributos": [
+            "id",
+            "matchId",
+            "dataHora",
+            "formato",
+            "agenda",
+            "notas",
+            "resultado"
+          ],
+          "regras_negocio": [
+            "Valida disponibilidade de ambas as partes",
+            "Registra outcomes"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Orquestração das regras de negócio, independentes de frameworks",
+      "lista": [
+        {
+          "nome": "RealizarMatchmaking",
+          "descricao": "Executa algoritmo de compatibilidade entre startups e investidores",
+          "input": "StartupId, critérios de busca",
+          "output": "Lista ordenada de matches com score",
+          "dependencias": [
+            "StartupRepository",
+            "InvestidorRepository",
+            "MatchScoringService",
+            "MatchRepository"
+          ]
+        },
+        {
+          "nome": "CadastrarStartup",
+          "descricao": "Registra nova startup na plataforma com validação completa",
+          "input": "DadosStartupDTO",
+          "output": "StartupId, status de completude",
+          "dependencias": [
+            "StartupRepository",
+            "NotificacaoService",
+            "DocumentoService"
+          ]
+        },
+        {
+          "nome": "CadastrarInvestidor",
+          "descricao": "Registra investidor com verificação de credenciais",
+          "input": "DadosInvestidorDTO",
+          "output": "InvestidorId, status de verificação",
+          "dependencias": [
+            "InvestidorRepository",
+            "VerificacaoIdentidadeService"
+          ]
+        },
+        {
+          "nome": "AceitarMatch",
+          "descricao": "Investidor ou startup aceita ou recusa um match sugerido",
+          "input": "MatchId, usuarioId, decisao",
+          "output": "MatchAtualizado, notificações disparadas",
+          "dependencias": [
+            "MatchRepository",
+            "NotificacaoService"
+          ]
+        },
+        {
+          "nome": "EnviarProposta",
+          "descricao": "Investidor envia proposta formal de investimento",
+          "input": "MatchId, termosProposta",
+          "output": "PropostaId, confirmação",
+          "dependencias": [
+            "PropostaRepository",
+            "MatchRepository",
+            "NotificacaoService"
+          ]
+        },
+        {
+          "nome": "AgendarReuniao",
+          "descricao": "Agenda encontro entre startup e investidor após match mútuo",
+          "input": "MatchId, preferenciasHorario",
+          "output": "ReuniaoId, confirmações",
+          "dependencias": [
+            "ReuniaoRepository",
+            "CalendarioService",
+            "NotificacaoService"
+          ]
+        },
+        {
+          "nome": "BuscarInvestidoresPorRegiao",
+          "descricao": "Filtra investidores por critérios geográficos e setoriais",
+          "input": "Regiao, Setor, FaixaTicket",
+          "output": "Lista de investidores compatíveis",
+          "dependencias": [
+            "InvestidorRepository",
+            "GeolocalizacaoService"
+          ]
+        },
+        {
+          "nome": "AvaliarMatch",
+          "descricao": "Registra feedback após conclusão de processo de investimento",
+          "input": "MatchId, avaliacao, comentarios",
+          "output": "ReputacaoAtualizada",
+          "dependencias": [
+            "MatchRepository",
+            "PerfilRepository",
+            "ReputacaoService"
+          ]
+        },
+        {
+          "nome": "GerarRelatorioMatchmaking",
+          "descricao": "Produz analytics sobre eficiência dos matches para admins",
+          "input": "Periodo, filtros",
+          "output": "RelatorioDTO com métricas",
+          "dependencias": [
+            "MatchRepository",
+            "StartupRepository",
+            "InvestidorRepository"
+          ]
+        },
+        {
+          "nome": "VerificarElegibilidade",
+          "descricao": "Valida se startup/investidor atende critérios mínimos para participar",
+          "input": "PerfilId, tipo",
+          "output": "StatusElegibilidade, pendencias",
+          "dependencias": [
+            "PerfilRepository",
+            "DocumentoService"
+          ]
+        }
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Converte dados entre camadas externas e internas, sem lógica de negócio",
+      "controllers": [
+        {
+          "nome": "StartupController",
+          "responsabilidade": "Recebe requisições HTTP, delega ao use case, retorna respostas formatadas",
+          "rotas": [
+            "POST /startups",
+            "GET /startups/:id",
+            "PUT /startups/:id",
+            "GET /startups/:id/matches"
+          ]
+        },
+        {
+          "nome": "InvestidorController",
+          "responsabilidade": "Gerencia endpoints do investidor",
+          "rotas": [
+            "POST /investidores",
+            "GET /investidores/:id",
+            "GET /investidores/regiao/:regiao"
+          ]
+        },
+        {
+          "nome": "MatchController",
+          "responsabilidade": "Orquestra operações de match",
+          "rotas": [
+            "GET /matches",
+            "POST /matches/:id/aceitar",
+            "POST /matches/:id/recusar"
+          ]
+        },
+        {
+          "nome": "PropostaController",
+          "responsabilidade": "Gerencia propostas de investimento",
+          "rotas": [
+            "POST /propostas",
+            "GET /propostas/:id",
+            "POST /propostas/:id/contra-proposta"
+          ]
+        },
+        {
+          "nome": "WebhookController",
+          "responsabilidade": "Recebe eventos de serviços externos (pagamento, calendário, KYC)"
+        }
+      ],
+      "presenters": [
+        "MatchPresenter - formata score e dados para exibição",
+        "StartupPresenter - adapta entidade para resposta API",
+        "InvestidorPresenter - filtra dados sensíveis por nível de acesso",
+        "RelatorioPresenter - formata dados para dashboards"
+      ],
+      "gateways": [
+        "StartupRepositoryGateway - interface para persistência de startups",
+        "InvestidorRepositoryGateway - interface para persistência de investidores",
+        "MatchRepositoryGateway - interface para persistência de matches",
+        "NotificacaoGateway - interface para envio de notificações",
+        "CalendarioGateway - interface para integração com agenda",
+        "VerificacaoIdentidadeGateway - interface para KYC/KYB",
+        "PagamentoGateway - interface para processamento de assinaturas"
+      ],
+      "dto": [
+        "StartupDTO, InvestidorDTO, MatchDTO, PropostaDTO, ReuniaoDTO",
+        "Isolam as entidades de negócio da representação externa"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa, substituível sem impactar regras de negócio",
+      "web_framework": {
+        "opcao_principal": "NestJS (Node.js/TypeScript)",
+        "justificativa": "Modularidade nativa, suporte a DI, decorators para adapters",
+        "alternativa": "FastAPI (Python) se ML for intensivo no matchmaking"
+      },
+      "banco_de_dados": {
+        "principal": "PostgreSQL via TypeORM",
+        "cache": "Redis para sessions e resultados de matchmaking",
+        "busca": "Elasticsearch para busca avançada por setor/região",
+        "justificativa": "Repositórios concretos implementam interfaces definidas nos use cases"
+      },
+      "autenticacao": "Auth0 ou Keycloak — adaptado via AuthGateway",
+      "notificacoes": "SendGrid (email), Twilio (SMS), Firebase (push) — via NotificacaoGateway",
+      "calendario": "Google Calendar API via CalendarioGateway",
+      "kyc_kyb": "Jumio ou Serpro (Brasil) via VerificacaoIdentidadeGateway",
+      "pagamento": "Stripe via PagamentoGateway",
+      "storage": "AWS S3 para pitch decks e documentos",
+      "filas": "BullMQ (Redis) para processar matchmaking assíncrono",
+      "observabilidade": "Datadog ou New Relic para APM, logs estruturados com Winston",
+      "infra": "Docker + Kubernetes no AWS EKS ou GCP GKE",
+      "ci_cd": "GitHub Actions + ArgoCD"
+    },
+    "dependency_rule": {
+      "principio": "Todo código-fonte aponta exclusivamente para dentro. Entities não conhecem Use Cases, Use Cases não conhecem Controllers, Controllers não conhecem o banco de dados.",
+      "implementacao": {
+        "entities": "Zero dependências externas. Apenas TypeScript/linguagem pura.",
+        "use_cases": "Dependem apenas de interfaces (ports) definidas na própria camada. Nunca importam TypeORM, Express, ou qualquer framework.",
+        "interface_adapters": "Implementam as interfaces definidas pelos use cases. Conhecem a estrutura interna mas traduzem para/de formatos externos.",
+        "frameworks_drivers": "Implementações concretas dos gateways. É a única camada que importa pg, typeorm, stripe, etc."
+      },
+      "inversao_dependencia": {
+        "exemplo": "Use case RealizarMatchmaking depende de IMatchRepository (interface). PostgresMatchRepository implementa IMatchRepository. A injeção é feita pelo container de DI na camada de frameworks.",
+        "container_di": "NestJS IoC Container registra as implementações concretas sem que as camadas internas saibam disso."
+      },
+      "cruzamento_fronteiras": "Dados cruzam fronteiras apenas via DTOs simples ou primitivos, nunca via objetos de entidade diretamente expostos ou objetos de ORM."
+    },
+    "testability": {
+      "entities": {
+        "estrategia": "Testes unitários puros com Jest/Vitest, sem qualquer mock",
+        "cobertura": "100% das regras de negócio testáveis com dados em memória",
+        "exemplo": "match.calcularScore() testado com objetos construídos diretamente, sem banco"
+      },
+      "use_cases": {
+        "estrategia": "Testes unitários com repositórios e serviços mockados via interfaces",
+        "mocks": "InMemoryStartupRepository, InMemoryMatchRepository implementam as mesmas interfaces dos repositórios reais",
+        "beneficio": "Testa orquestração de negócio a milissegundos sem I/O"
+      },
+      "interface_adapters": {
+        "estrategia": "Testes de integração com banco de dados real em container Docker",
+        "ferramentas": "Testcontainers para PostgreSQL e Redis em testes de repositório",
+        "cobertura": "Controllers testados com supertest sem subir servidor real"
+      },
+      "e2e": {
+        "estrategia": "Testes end-to-end com ambiente completo em Docker Compose",
+        "escopo": "Fluxos críticos: cadastro → matchmaking → proposta → reunião",
+        "frequencia": "Executados em pipeline CI, não localmente"
+      },
+      "piramide": "70% unitários (entities + use cases) / 20% integração (adapters) / 10% e2e"
+    },
+    "interfaces": [
+      "IStartupRepository: find(id), save(startup), findByRegiao(regiao), findElegiveis()",
+      "IInvestidorRepository: find(id), save(investidor), findByTese(criterios), findByRegiao(regiao)",
+      "IMatchRepository: find(id), save(match), findByStartup(startupId), findByInvestidor(investidorId)",
+      "IPropostaRepository: find(id), save(proposta), findByMatch(matchId)",
+      "IReuniaoRepository: find(id), save(reuniao), findByMatch(matchId)",
+      "INotificacaoService: enviarEmail(destinatario, template, dados), enviarSMS(telefone, mensagem), enviarPush(userId, payload)",
+      "ICalendarioService: criarEvento(participantes, horario, pauta), verificarDisponibilidade(userId, janela)",
+      "IVerificacaoIdentidadeService: iniciarKYC(userId, documentos), obterStatus(verificacaoId)",
+      "IPagamentoService: criarAssinatura(customerId, plano), cancelarAssinatura(subscriptionId), processarWebhook(payload)",
+      "IMatchScoringService: calcularScore(startup, investidor): number",
+      "IGeolocalizacaoService: calcularDistancia(origem, destino), obterRegiao(coordenadas)",
+      "IDocumentoService: salvar(arquivo): url, validar(url, tipo): boolean",
+      "IAuthService: validarToken(token): UserClaims, criarUsuario(dados): UserId"
+    ],
+    "escalabilidade": {
+      "horizontal": {
+        "api": "Stateless por design (JWT + Redis para sessões), escala adicionando réplicas no Kubernetes HPA",
+        "matchmaking": "Worker de matchmaking separado em microserviço dedicado, consumindo fila BullMQ",
+        "banco": "Read replicas no RDS para queries de busca, write no primary"
+      },
+      "vertical": {
+        "algoritmo_matching": "Score computation pode ser paralelizado via workers, migrar para Python/ML se necessário sem afetar use cases (troca só o gateway)",
+        "cache": "Redis cluster para hot data (matches recentes, perfis populares)"
+      },
+      "multitenancy": "Isolamento por schema no PostgreSQL para futura expansão multi-região",
+      "event_driven": "Eventos de domínio (MatchCriado, PropostaAceita) publicados via EventBus permitem adicionar consumidores sem modificar use cases",
+      "cdn": "Pitch decks e assets servidos via CloudFront, reduzindo latência global",
+      "projecoes": "Até 10k usuários: monolito modular. 10k-100k: extração de matchmaking como serviço. 100k+: decomposição por domínio (Startup Service, Investor Service, Matching Service)"
+    },
+    "custos": {
+      "infraestrutura_inicial": {
+        "estimativa_mensal": "USD 400-800 para até 1.000 usuários ativos",
+        "breakdown": {
+          "compute": "2x t3.medium EKS nodes ≈ USD 120/mês",
+          "banco": "RDS db.t3.medium PostgreSQL ≈ USD 50/mês",
+          "redis": "ElastiCache t3.micro ≈ USD 20/mês",
+          "storage_s3": "50GB documentos ≈ USD 5/mês",
+          "outros": "SendGrid free tier, Auth0 free tier, monitoring ≈ USD 50/mês"
+        }
+      },
+      "otimizacoes": [
+        "Spot instances para workers de matchmaking (até 70% de economia)",
+        "Reserved instances para banco após validação do produto",
+        "Elasticsearch substituído por pg_trgm inicialmente para reduzir custo",
+        "Serverless (Lambda) para processamento de webhooks de baixo volume"
+      ],
+      "escala": "USD 2.000-5.000/mês para 10.000 usuários com otimizações adequadas",
+      "maior_custo_variavel": "Verificação de identidade KYC (USD 1-3 por verificação) — amortizado pela assinatura"
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS B2B2C com assinaturas por perfil e success fee",
+      "planos": [
+        {
+          "nome": "Startup Free",
+          "preco": "Gratuito",
+          "limites": "3 matches/mês, perfil básico, sem acesso a investidores verificados"
+        },
+        {
+          "nome": "Startup Growth",
+          "preco": "USD 99/mês ou USD 890/ano",
+          "features": "Matches ilimitados, analytics de compatibilidade, acesso a investidores Premium, suporte prioritário"
+        },
+        {
+          "nome": "Investidor Essencial",
+          "preco": "USD 199/mês",
+          "features": "Deal flow filtrado por tese, alertas de novas startups, relatórios setoriais"
+        },
+        {
+          "nome": "Investidor Premium",
+          "preco": "USD 499/mês",
+          "features": "Acesso irrestrito, API de integração com portfolio tools, white-glove onboarding"
+        },
+        {
+          "nome": "Success Fee",
+          "preco": "1-2% do deal fechado via plataforma",
+          "modelo": "Opcional, rastreado via Proposta entity — requer integração jurídica"
+        }
+      ],
+      "receitas_adicionais": [
+        "Destaque de perfil (boost) no feed de descoberta: USD 50-200/semana",
+        "Relatórios de mercado regionais por setor: USD 299/relatório",
+        "Aceleradoras e ecossistemas: licença white-label por região"
+      ],
+      "unit_economics_alvo": "LTV/CAC > 3x, payback < 12 meses"
+    },
+    "stack_sugerida": {
+      "backend": {
+        "linguagem": "TypeScript",
+        "framework": "NestJS 10+",
+        "orm": "TypeORM com PostgreSQL 15",
+        "cache": "Redis 7 via ioredis",
+        "filas": "BullMQ",
+        "validacao": "class-validator + class-transformer para DTOs",
+        "testes": "Jest + Testcontainers + Supertest"
+      },
+      "frontend": {
+        "framework": "Next.js 14 (App Router)",
+        "ui": "shadcn/ui + Tailwind CSS",
+        "state": "Zustand + React Query (TanStack)",
+        "formularios": "React Hook Form + Zod"
+      },
+      "mobile": "React Native (Expo) — fase 2, reutiliza lógica de validação Zod",
+      "infra": {
+        "cloud": "AWS (EKS, RDS, ElastiCache, S3, CloudFront)",
+        "iac": "Terraform",
+        "containers": "Docker + Kubernetes",
+        "ci_cd": "GitHub Actions + ArgoCD",
+        "secrets": "AWS Secrets Manager"
+      },
+      "terceiros": {
+        "auth": "Auth0",
+        "pagamento": "Stripe",
+        "email": "SendGrid",
+        "kyc": "Jumio ou Unico Check (Brasil)",
+        "analytics": "PostHog (product analytics)",
+        "monitoramento": "Datadog",
+        "erros": "Sentry"
+      },
+      "algoritmo_matchmaking": {
+        "v1": "Score ponderado em TypeScript puro (setor, região, ticket, estágio)",
+        "v2": "Modelo de recomendação colaborativo em Python (FastAPI microserviço)",
+        "isolamento": "Troca transparente via IMatchScoringService sem impacto nos use cases"
+      }
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio puros, sem dependências externas\",\n    \"lista\": [\n      {\n        \"nome\": \"Startup\",\n        \"atributos\": [\"id\", \"nome\", \"setor\", \"estagio\", \"localizacao\", \"pitchDeck\", \"necessidadeCapital\", \"valuacao\", \"fundadores\"],\n        \"regras_negocio\": [\"Valida estágio de maturidade\", \"Calcula score de completude do perfil\", \"Verifica elegibilidade para matchmaking\"]\n      },\n      {\n        \"nome\": \"Investidor\",\n        \"atributos\": [\"id\", \"nome\", \"regiao\", \"tesesDeInvestimento\", \"ticketMinimo\", \"ticketMaximo\", \"portfólio\", \"preferenciasSetor\"],\n        \"regras_negocio\": [\"Valida tese de investimento\", \"Verifica disponibilidade de capital\", \"Calcula fit regional\"]\n      },\n      {\n        \"nome\": \"Match\",\n        \"atributos\": [\"id\", \"startupId\", \"investidorId\", \"scoreCompatibilidade\", \"status\", \"dataCriacao\", \"historico\"],\n        \"regras_negocio\": [\"Calcula score de compatibilidade\", \"Gerencia estados do match (pendente, aceito, recusado, em_negociacao, concluido)\", \"Impede matches duplicados\"]\n      },\n      {\n        \"nome\": \"Proposta\",\n        \"atributos\": [\"id\", \"matchId\", \"valorOferecido\", \"percentualEquidade\", \"condicoes\", \"prazoVencimento\", \"status\"],\n        \"regras_negocio\": [\"Valida termos da proposta\", \"Controla prazo de validade\", \"Gerencia contra-propostas\"]\n      },\n      {\n        \"nome\": \"Perfil\",\n        \"atributos\": [\"id\", \"usuarioId\", \"tipo\", \"documentos\", \"verificado\", \"reputacao\"],\n        \"regras_negocio\": [\"Calcula score de reputação\", \"Valida documentos obrigatórios\", \"Controla nível de visibilidade\"]\n      },\n      {\n        \"nome\": \"Reuniao\",\n        \"atributos\": [\"id\", \"matchId\", \"dataHora\", \"formato\", \"agenda\", \"notas\", \"resultado\"],\n        \"regras_negocio\": [\"Valida disponibilidade de ambas as partes\", \"Registra outcomes\"]\n      }\n    ]\n  },\n\n  \"use_cases\": {\n    \"descricao\": \"Orquestração das regras de negócio, independentes de frameworks\",\n    \"lista\": [\n      {\n        \"nome\": \""
+}

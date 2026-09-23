@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 43,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está explicitamente nomeado ('motor de recomendação personalizada'), isolado em uma camada de serviço com contrato formal (ProfileDTO → RankedPlansDTO), e é extensível tanto na implementação (regras/LLM hoje, modelo próprio amanhã) quanto na fonte de dados (adapter abstrato); perde um ponto porque a implementação atual ainda depende de componentes commoditizados (LLM + regras configuráveis) sem articular claramente por que alternativas existentes de comparação — como ferramentas das próprias operadoras ou corretores — falham especificamente no problema de letramento decisório que o produto se propõe a resolver."
+}

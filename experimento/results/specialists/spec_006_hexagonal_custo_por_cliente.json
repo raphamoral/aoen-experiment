@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura lista componentes com custos variáveis por natureza (OpenAIAdapter, AnthropicAdapter, S3FileStorageAdapter, FirebaseNotificationAdapter), o que torna o custo por operação teoricamente calculável, mas não há nenhum mecanismo explícito de rastreamento por tenant — o DatadogAuditLogger é descrito para compliance LGPD/HIPAA, não para unit economics, e o IManageSubscription/StripePaymentAdapter cobre o lado da receita, não o custo por cliente; ausência total de design intencional para atribuição de consumo de IA, storage e notificações por tenant."
+}

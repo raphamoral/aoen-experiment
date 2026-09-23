@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A proposta prevê seis interfaces distintas (Admin Dashboard, Driver App nativa iOS/Android, Customer Tracking, REST/GraphQL API, Webhooks e WebSocket), cada uma justificada por um perfil de usuário ou caso de uso real e de mercado — operadores de frota, motoristas em campo, clientes finais, parceiros logísticos e integrações sistêmicas — com lógica de negócio desacoplada via bounded contexts, event-driven architecture e API layer própria por contexto, permitindo adicionar novas interfaces sem reescrever regras de negócio; perde um ponto por não detalhar explicitamente a estratégia de design system ou contrato de API compartilhado que garanta consistência entre canais."
+}

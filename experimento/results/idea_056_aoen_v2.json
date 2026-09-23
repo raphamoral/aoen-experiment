@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 56,
+  "ideia": "Marketplace de peças industriais com entrega expressa regional",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de disponibilidade regional em tempo real: cruzamento entre demanda urgente de peças industriais e estoque físico de fornecedores regionais com capacidade de entrega expressa. Sem esse matching instantâneo, o produto é apenas um catálogo — o diferenciador é a promessa de entrega dentro de uma janela de tempo com base em estoque real confirmado.",
+    "fase1_mercado": "Gestores de manutenção (MRO buyers) e técnicos de chão de fábrica em indústrias com equipamentos críticos (manufatura, agro, mineração, construção). Parada de máquina = prejuízo por hora. O cliente paga pelo tempo recuperado, não pela peça.",
+    "fase1_extensivel": "Sim. O core é o algoritmo de matching e roteamento — ele consome: (1) inventário de fornecedores via API/EDI/scraping, (2) capacidade logística via integrações com transportadoras regionais, (3) histórico de SLA por rota. Fornecedor A pode ser substituído por B sem reescrever o core. Transportadora pode ser trocada injetando novo adaptador. O motor opera sobre abstrações, não implementações concretas.",
+    "fase2_interfaces": [
+      "Web Portal (desktop) — painel de compra para compradores formais e gestores de suprimentos",
+      "App Mobile (iOS/Android) — técnicos de campo buscando peças com urgência, câmera para identificação visual",
+      "API REST/Webhook — integração com ERPs como SAP, TOTVS, Oracle para grandes indústrias",
+      "Bot WhatsApp — compradores informais de pequenas indústrias e oficinas regionais",
+      "Portal do Fornecedor (web) — gestão de estoque, pedidos, SLA e recebimento"
+    ],
+    "fase2_justificativa_mercado": "Web Portal abre o mercado corporativo (procurement formal, aprovações em fluxo). Mobile abre o mercado de urgência real (técnico no chão de fábrica sem acesso a desktop). API/ERP abre contas enterprise com volume e contratos (ticket alto, receita previsível). WhatsApp abre PMEs e mercado informal que não adota apps dedicados — maior base, menor ticket. Portal do Fornecedor é aquisição do lado da oferta: sem fornecedores onboardados, o marketplace não existe.",
+    "fase2_service_layer": "Uma Service Layer central expõe casos de uso como: buscarPecas(query, localizacao, urgencia), criarPedido(itens, comprador, sla), rastrearEntrega(pedidoId), consultarEstoque(skuId, regiao). Todas as interfaces chamam essa camada — nunca acessam banco ou lógica diretamente. Isso permite que uma nova interface (ex: Alexa, Telegram) seja adicionada sem tocar em regras de negócio.",
+    "fase3_fluxo_fixo": "Busca → Matching Regional (estoque + SLA) → Seleção → Cotação → Aprovação (opcional) → Pagamento → Roteamento Logístico → Coleta → Rastreamento em Trânsito → Confirmação de Entrega → Avaliação do Fornecedor. Este fluxo é imutável no código — o que varia são os parâmetros que o moldam.",
+    "fase3_parametros_configuraveis": [
+      "Raio de cobertura regional por cliente (km ou cidades habilitadas)",
+      "SLA máximo de entrega aceito (2h, 4h, 24h, D+1)",
+      "Categorias de peças habilitadas (hidráulica, elétrica, mecânica, pneumática)",
+      "Lista de fornecedores aprovados ou bloqueados por cliente",
+      "Workflow de aprovação de pedido (valor mínimo para aprovação manual, alçadas por cargo)",
+      "Métodos de pagamento aceitos (boleto, cartão, faturamento, PIX)",
+      "Markup ou comissão por categoria de produto",
+      "Valor mínimo e máximo de pedido",
+      "Integrações ativas (qual ERP, qual transportadora prioritária)",
+      "Idioma e moeda (para expansão regional)",
+      "Política de devolução e prazo de garantia por segmento"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro no banco de configurações com seus parâmetros específicos. O sistema lê a config do tenant no início de cada request e adapta o fluxo sem ramificações no código. Onboarding via painel administrativo: preenche região, categorias, fornecedores, SLA, métodos de pagamento e alçadas. Nenhum deploy necessário.",
+    "fase4_core_isolado": "O Motor de Matching e Roteamento roda como serviço isolado (worker assíncrono): recebe eventos de pedido via fila (ex: RabbitMQ/SQS), executa o algoritmo de seleção de fornecedor + transportadora, e publica o resultado. Separado da API principal em processo e infraestrutura próprios — pode escalar independentemente e falhar sem derrubar o resto.",
+    "fase4_custo_total_cliente": "Custo core (por pedido processado): compute do motor de matching (~$0.002/req) + chamadas a APIs de transportadoras (~$0.01/pedido) + geolocalização (~$0.005/busca). Custo infra proporcional: banco de dados (storage proporcional ao catálogo do cliente + histórico de pedidos, ~$5-15/mês base), CDN para imagens de produtos (~$0.02/GB), banda de API (~$0.01/GB). Custo operacional: suporte tier-1 amortizado por cliente, notificações SMS/email (~$0.005/mensagem). Custo total estimado por cliente ativo (PME): $30-80/mês em infraestrutura + variável por volume de pedidos. Enterprise: $150-400/mês com SLA dedicado.",
+    "fase4_continuidade": "O Motor de Matching é consumidor de fila — se ele falhar, os pedidos ficam na fila sem perda. A API principal continua recebendo pedidos, confirmando ao comprador que estão em processamento. Um circuit breaker detecta falha do motor e aciona fallback: matching simplificado síncrono com conjunto reduzido de fornecedores pré-qualificados. SLA degradado, mas operação não para.",
+    "fase4_manutencao": "O motor expõe uma interface contratual: recebe(PedidoEvent) → emite(RotaDecidida). A implementação interna pode ser trocada (novo algoritmo de otimização, novo modelo de ML para previsão de SLA) sem impacto nas interfaces ou na API principal. Deploy blue-green: nova versão recebe % do tráfego da fila, monitorada por métricas de SLA antes de assumir 100%.",
+    "monetizacao": "Comissão por transação (5-12% do GMV, variável por categoria e urgência). Assinatura mensal por fornecedor (acesso ao painel, destaque no matching, analytics de estoque). Assinatura enterprise para compradores (API, fluxo de aprovação, relatórios, SLA garantido). Taxa de entrega expressa (margem sobre o frete cobrado ao comprador). Dados agregados de demanda regional vendidos como inteligência de mercado para distribuidores.",
+    "stack_sugerida": "Backend: Node.js (NestJS) ou Python (FastAPI) para API principal, Go para o Motor de Matching (latência crítica). Fila: RabbitMQ ou AWS SQS. Banco: PostgreSQL (dados transacionais + multi-tenant com schema-per-tenant ou row-level RLS), Redis (cache de estoque e sessões). Busca: Elasticsearch ou Typesense (busca de peças por código, descrição, compatibilidade). CDN: Cloudflare R2 para imagens de catálogo. Mobile: React Native (iOS + Android com base única). Frontend web: Next.js. Infra: AWS (ECS Fargate para workers, RDS, ElastiCache) ou Railway/Render para estágio inicial. Observabilidade: OpenTelemetry + Grafana. Auth: Auth0 ou Keycloak (multi-tenant nativo)."
+  }
+}

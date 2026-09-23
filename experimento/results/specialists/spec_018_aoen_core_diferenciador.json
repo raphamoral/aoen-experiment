@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor preditivo (PredictionEngine) é claramente identificado como núcleo insubstituível, abstraído atrás de uma interface que permite trocar backends de ML sem impacto nas demais camadas, e resolve um problema real — transformar sinais comportamentais em janelas de intervenção acionáveis — que relatórios estáticos e ferramentas de BI genéricas não resolvem; perde um ponto por não detalhar qual vantagem competitiva sustentável o modelo próprio oferece frente a soluções out-of-the-box como AWS Fraud Detector ou ferramentas nativas de CRM com scoring embutido."
+}

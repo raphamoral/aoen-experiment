@@ -1,0 +1,3714 @@
+[
+  {
+    "ideia_idx": 0,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 3,
+      "multi_interface": 4,
+      "configurabilidade": 6,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 0,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 4,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 0,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 7,
+      "multi_interface": 9,
+      "configurabilidade": 4,
+      "isolamento_processamento": 9,
+      "custo_infraestrutura": 8,
+      "custo_por_cliente": 5,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 0,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 4,
+      "multi_interface": 3,
+      "configurabilidade": 3,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 2,
+      "evolucao": 7,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 0,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 6,
+      "multi_interface": 5,
+      "configurabilidade": 5,
+      "isolamento_processamento": 9,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 6,
+      "monetizacao": 4,
+      "evolucao": 10,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 0,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 7,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 5,
+      "monetizacao": 8,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 0,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 3,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 5,
+      "monetizacao": 8,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 1,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 8,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 1,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 1,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 7,
+      "multi_interface": 9,
+      "configurabilidade": 4,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 4,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 1,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 4,
+      "multi_interface": 7,
+      "configurabilidade": 2,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 1,
+      "monetizacao": 1,
+      "evolucao": 7,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 1,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 8,
+      "custo_por_cliente": 6,
+      "monetizacao": 9,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 1,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 7,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 4,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 1,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 6,
+      "multi_interface": 8,
+      "configurabilidade": 2,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 3,
+      "monetizacao": 7,
+      "evolucao": 5,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 2,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 3,
+      "multi_interface": 5,
+      "configurabilidade": 4,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 2,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 7,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 2,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 5,
+      "configurabilidade": 4,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 4,
+      "monetizacao": 7,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 2,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 6,
+      "multi_interface": 3,
+      "configurabilidade": 2,
+      "isolamento_processamento": 2,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 1,
+      "monetizacao": 3,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 2,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 6,
+      "multi_interface": 3,
+      "configurabilidade": 4,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 2,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 4,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 2,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 8,
+      "multi_interface": 8,
+      "configurabilidade": 2,
+      "isolamento_processamento": 3,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 3,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 3,
+      "visao_mercado": 2,
+      "multi_interface": 3,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 7,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 3,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 3,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 8,
+      "multi_interface": 6,
+      "configurabilidade": 7,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 5,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 3,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 4,
+      "configurabilidade": 6,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 3,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 5,
+      "multi_interface": 3,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 3,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 3,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 7,
+      "multi_interface": 8,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 4,
+      "monetizacao": 7,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 4,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 2,
+      "multi_interface": 5,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 4,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 8,
+      "isolamento_processamento": 3,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 4,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 8,
+      "multi_interface": 6,
+      "configurabilidade": 8,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 8,
+      "custo_por_cliente": 6,
+      "monetizacao": 8,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 4,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 3,
+      "configurabilidade": 3,
+      "isolamento_processamento": 3,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 2,
+      "evolucao": 6,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 4,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 3,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 4,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 4,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 3,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 4,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 3,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 2,
+      "monetizacao": 2,
+      "evolucao": 6,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 5,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 3,
+      "multi_interface": 4,
+      "configurabilidade": 5,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 5,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 5,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 5,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 5,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 5,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 5,
+      "multi_interface": 4,
+      "configurabilidade": 6,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 5,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 5,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 5,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 7,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 5,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 4,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 5,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 8,
+      "multi_interface": 8,
+      "configurabilidade": 4,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 4,
+      "monetizacao": 6,
+      "evolucao": 6,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 6,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 2,
+      "multi_interface": 3,
+      "configurabilidade": 4,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 1,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 6,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 6,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 6,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 7,
+      "multi_interface": 6,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 5,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 6,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 2,
+      "multi_interface": 1,
+      "configurabilidade": 2,
+      "isolamento_processamento": 2,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 1,
+      "monetizacao": 1,
+      "evolucao": 6,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 6,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 4,
+      "multi_interface": 3,
+      "configurabilidade": 4,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 3,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 6,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 5,
+      "multi_interface": 9,
+      "configurabilidade": 3,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 6,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 7,
+      "multi_interface": 8,
+      "configurabilidade": 2,
+      "isolamento_processamento": 9,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 4,
+      "monetizacao": 3,
+      "evolucao": 6,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 7,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 3,
+      "visao_mercado": 2,
+      "multi_interface": 3,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 7,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 1,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 7,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 6,
+      "configurabilidade": 7,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 6,
+      "monetizacao": 8,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 7,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 2,
+      "configurabilidade": 4,
+      "isolamento_processamento": 2,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 7,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 7,
+      "multi_interface": 4,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 7,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 7,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 7,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 7,
+      "multi_interface": 8,
+      "configurabilidade": 2,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 8,
+      "custo_por_cliente": 3,
+      "monetizacao": 8,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 8,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 4,
+      "multi_interface": 3,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 8,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 6,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 2,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 8,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 8,
+      "multi_interface": 5,
+      "configurabilidade": 7,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 7,
+      "monetizacao": 8,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 8,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 5,
+      "multi_interface": 3,
+      "configurabilidade": 4,
+      "isolamento_processamento": 3,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 3,
+      "monetizacao": 3,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 8,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 5,
+      "multi_interface": 4,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 5,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 8,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 7,
+      "monetizacao": 7,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 8,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 3,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 2,
+      "monetizacao": 2,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 9,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 6,
+      "configurabilidade": 5,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 9,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 5,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 9,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 5,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 4,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 9,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 7,
+      "multi_interface": 4,
+      "configurabilidade": 3,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 7,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 9,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 5,
+      "multi_interface": 3,
+      "configurabilidade": 4,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 4,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 9,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 4,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 9,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 2,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 3,
+      "monetizacao": 8,
+      "evolucao": 6,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 10,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 3,
+      "multi_interface": 3,
+      "configurabilidade": 5,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 10,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 6,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 10,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 5,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 5,
+      "monetizacao": 8,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 10,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 3,
+      "configurabilidade": 3,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 7,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 10,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 6,
+      "multi_interface": 5,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 2,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 10,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 10,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 8,
+      "multi_interface": 5,
+      "configurabilidade": 4,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 11,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 4,
+      "configurabilidade": 6,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 11,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 1,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 11,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 5,
+      "configurabilidade": 4,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 4,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 11,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 5,
+      "multi_interface": 4,
+      "configurabilidade": 3,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 7,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 11,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 5,
+      "multi_interface": 3,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 11,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 11,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 8,
+      "multi_interface": 8,
+      "configurabilidade": 2,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 2,
+      "monetizacao": 7,
+      "evolucao": 6,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 12,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 3,
+      "multi_interface": 4,
+      "configurabilidade": 7,
+      "isolamento_processamento": 9,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 12,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 12,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 7,
+      "multi_interface": 6,
+      "configurabilidade": 7,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 6,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 12,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 2,
+      "configurabilidade": 5,
+      "isolamento_processamento": 2,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 3,
+      "monetizacao": 3,
+      "evolucao": 6,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 12,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 6,
+      "multi_interface": 5,
+      "configurabilidade": 3,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 8,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 12,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 7,
+      "monetizacao": 6,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 12,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 7,
+      "multi_interface": 8,
+      "configurabilidade": 4,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 13,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 2,
+      "visao_mercado": 1,
+      "multi_interface": 3,
+      "configurabilidade": 4,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 1,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 13,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 13,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 8,
+      "multi_interface": 5,
+      "configurabilidade": 4,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 4,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 13,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 3,
+      "multi_interface": 2,
+      "configurabilidade": 2,
+      "isolamento_processamento": 2,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 7,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 13,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 3,
+      "configurabilidade": 4,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 6,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 13,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 5,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 13,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 2,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 6,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 14,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 4,
+      "multi_interface": 3,
+      "configurabilidade": 5,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 4,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 14,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 7,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 14,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 5,
+      "configurabilidade": 6,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 6,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 14,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 3,
+      "multi_interface": 2,
+      "configurabilidade": 4,
+      "isolamento_processamento": 3,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 4,
+      "monetizacao": 5,
+      "evolucao": 7,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 14,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 5,
+      "configurabilidade": 7,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 5,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 14,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 7,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 6,
+      "monetizacao": 7,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 14,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 3,
+      "monetizacao": 3,
+      "evolucao": 6,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 15,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 4,
+      "multi_interface": 5,
+      "configurabilidade": 6,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 15,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 4,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 15,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 6,
+      "configurabilidade": 7,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 4,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 15,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 5,
+      "multi_interface": 4,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 5,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 15,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 6,
+      "multi_interface": 4,
+      "configurabilidade": 9,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 8,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 15,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 15,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 7,
+      "multi_interface": 8,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 16,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 3,
+      "multi_interface": 6,
+      "configurabilidade": 4,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 16,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 8,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 16,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 8,
+      "multi_interface": 6,
+      "configurabilidade": 8,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 3,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 16,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 3,
+      "visao_mercado": 2,
+      "multi_interface": 2,
+      "configurabilidade": 4,
+      "isolamento_processamento": 2,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 1,
+      "monetizacao": 1,
+      "evolucao": 6,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 16,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 4,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 16,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 5,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 16,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 2,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 4,
+      "monetizacao": 6,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 17,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 3,
+      "multi_interface": 4,
+      "configurabilidade": 5,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 17,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 17,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 7,
+      "multi_interface": 7,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 7,
+      "monetizacao": 8,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 17,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 5,
+      "multi_interface": 3,
+      "configurabilidade": 6,
+      "isolamento_processamento": 2,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 7,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 17,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 4,
+      "multi_interface": 3,
+      "configurabilidade": 4,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 4,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 17,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 3,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 17,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 7,
+      "multi_interface": 8,
+      "configurabilidade": 2,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 18,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 3,
+      "multi_interface": 4,
+      "configurabilidade": 7,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 4,
+      "monetizacao": 2,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 18,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 18,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 6,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 5,
+      "monetizacao": 7,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 18,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 7,
+      "multi_interface": 3,
+      "configurabilidade": 5,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 4,
+      "monetizacao": 5,
+      "evolucao": 7,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 18,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 6,
+      "multi_interface": 5,
+      "configurabilidade": 6,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 8,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 18,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 7,
+      "multi_interface": 10,
+      "configurabilidade": 6,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 6,
+      "monetizacao": 6,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 18,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 7,
+      "multi_interface": 8,
+      "configurabilidade": 4,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 3,
+      "monetizacao": 2,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 19,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 3,
+      "visao_mercado": 2,
+      "multi_interface": 4,
+      "configurabilidade": 4,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 7,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 19,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 19,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 8,
+      "multi_interface": 5,
+      "configurabilidade": 4,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 4,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 19,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 3,
+      "visao_mercado": 2,
+      "multi_interface": 2,
+      "configurabilidade": 3,
+      "isolamento_processamento": 2,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 1,
+      "monetizacao": 1,
+      "evolucao": 6,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 19,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 7,
+      "multi_interface": 5,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 8,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 19,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 5,
+      "multi_interface": 9,
+      "configurabilidade": 4,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 19,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 3,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 6,
+      "monetizacao": 8,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 20,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 4,
+      "visao_mercado": 2,
+      "multi_interface": 5,
+      "configurabilidade": 3,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 20,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 20,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 5,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 5,
+      "monetizacao": 7,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 20,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 3,
+      "multi_interface": 2,
+      "configurabilidade": 2,
+      "isolamento_processamento": 2,
+      "custo_infraestrutura": 1,
+      "custo_por_cliente": 1,
+      "monetizacao": 3,
+      "evolucao": 6,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 20,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 5,
+      "multi_interface": 3,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 4,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 20,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 5,
+      "multi_interface": 9,
+      "configurabilidade": 4,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 20,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 3,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 6,
+      "evolucao": 5,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 21,
+    "abordagem": "12factor",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 2,
+      "multi_interface": 4,
+      "configurabilidade": 4,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 2,
+      "monetizacao": 1,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 21,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 21,
+    "abordagem": "arch_flow",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 7,
+      "multi_interface": 5,
+      "configurabilidade": 8,
+      "isolamento_processamento": 9,
+      "custo_infraestrutura": 7,
+      "custo_por_cliente": 6,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 21,
+    "abordagem": "clean_arch",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 3,
+      "multi_interface": 4,
+      "configurabilidade": 4,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 3,
+      "monetizacao": 3,
+      "evolucao": 7,
+      "coerencia": 6
+    }
+  },
+  {
+    "ideia_idx": 21,
+    "abordagem": "evolutionary",
+    "scores": {
+      "core_diferenciador": 5,
+      "visao_mercado": 4,
+      "multi_interface": 4,
+      "configurabilidade": 4,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 21,
+    "abordagem": "hexagonal",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 6,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 6,
+      "custo_por_cliente": 5,
+      "monetizacao": 6,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 21,
+    "abordagem": "sem_framework",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 6,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 22,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 7,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 2,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 23,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 2,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 24,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 25,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 26,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 3,
+      "monetizacao": 7,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 27,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 28,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 8,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 29,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 30,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 31,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 4,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 32,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 33,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 34,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 7,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 35,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 36,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  },
+  {
+    "ideia_idx": 37,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 38,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 39,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 40,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 41,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 4,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 2,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 42,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 43,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 44,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 45,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 46,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 47,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 48,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 2,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 49,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 50,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 7,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 51,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 52,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 53,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 3,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 54,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 5,
+      "custo_por_cliente": 5,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 55,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 2,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 56,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 57,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 58,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 59,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 9,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 60,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 61,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 5,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 62,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 63,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 8,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 6,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 64,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 10,
+      "multi_interface": 9,
+      "configurabilidade": 8,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 65,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 66,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 6,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 4,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 67,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 68,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 69,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 70,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 71,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 72,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 73,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 6,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 74,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 75,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 4,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 76,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 4,
+      "monetizacao": 8,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 77,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 9,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 78,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 5,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 79,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 5,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 80,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 81,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 82,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 7,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 7,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 83,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 5,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 1,
+      "monetizacao": 6,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 84,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 85,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 86,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 87,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 88,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 89,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 7,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 90,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 4,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 91,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 6,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 92,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 93,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 8,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 3,
+      "monetizacao": 7,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 94,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 6,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 95,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 6,
+      "isolamento_processamento": 7,
+      "custo_infraestrutura": 4,
+      "custo_por_cliente": 5,
+      "monetizacao": 8,
+      "evolucao": 9,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 96,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 9,
+      "configurabilidade": 9,
+      "isolamento_processamento": 6,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 5,
+      "evolucao": 9,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 97,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 8,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 5,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 3,
+      "evolucao": 8,
+      "coerencia": 8
+    }
+  },
+  {
+    "ideia_idx": 98,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 9,
+      "visao_mercado": 9,
+      "multi_interface": 10,
+      "configurabilidade": 7,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 2,
+      "custo_por_cliente": 2,
+      "monetizacao": 6,
+      "evolucao": 8,
+      "coerencia": 9
+    }
+  },
+  {
+    "ideia_idx": 99,
+    "abordagem": "aoen",
+    "scores": {
+      "core_diferenciador": 6,
+      "visao_mercado": 8,
+      "multi_interface": 9,
+      "configurabilidade": 4,
+      "isolamento_processamento": 5,
+      "custo_infraestrutura": 3,
+      "custo_por_cliente": 2,
+      "monetizacao": 4,
+      "evolucao": 8,
+      "coerencia": 7
+    }
+  }
+]

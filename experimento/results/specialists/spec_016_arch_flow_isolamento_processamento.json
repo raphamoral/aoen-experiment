@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta implica separação física via bounded contexts em EKS (containers distintos), mas não menciona explicitamente filas/workers assíncronos para isolar os processos pesados (ML de fraude, InspectionGrading com fotos, DispositionDecision com ML, Analytics), nem descreve fallback em caso de falha nesses componentes, nem estratégia de escalonamento independente para workloads computacionalmente intensivos."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 31,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A arquitetura conta uma história coerente e bem encadeada: o núcleo abstrato (MatchingEngine com contrato fixo) justifica a independência de fornecedor de IA, que por sua vez habilita escalar para múltiplos segmentos de mercado sem reescritas; cada segmento declarado (B2C, B2B, universidades) tem um artefato técnico correspondente (Web App, API/Dashboard, Widget); a camada de serviços centralizada resolve elegantemente a complexidade de múltiplas interfaces sem duplicação de lógica — as decisões se reforçam em cadeia. A nota não chega a 10 por dois pontos de tensão detectados: (1) o fluxo fixo da fase 3 pressupõe um questionário estruturado de onboarding que entra em fricção com o canal Chatbot (Slack/Teams), onde esse fluxo seria difícil de conduzir sem quebrar a experiência conversacional, criando uma contradição entre a premissa de 'adoção zero-fricção' e a coleta multidimensional de perfil exigida pelo motor de pareamento; (2) a coleta progressiva de sinais comportamentais mencionada na fase 1 não tem um serviço explícito correspondente na camada de serviços da fase 2 (há MatchService, SessionService, ProgressService e FeedbackService, mas nenhum BehavioralSignalService), deixando esse mecanismo central arquiteturalmente sem ancoragem clara."
+}

@@ -1,0 +1,439 @@
+{
+  "ideia_idx": 0,
+  "ideia": "Plataforma de telemedicina veterinária com IA para diagnóstico por imagem",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio com regras críticas independentes de qualquer framework ou tecnologia",
+      "lista": [
+        {
+          "nome": "Animal",
+          "atributos": [
+            "id",
+            "nome",
+            "especie",
+            "raca",
+            "dataNascimento",
+            "peso",
+            "historico"
+          ],
+          "regras": [
+            "Validação de espécie suportada",
+            "Cálculo de idade",
+            "IMC por espécie"
+          ]
+        },
+        {
+          "nome": "Tutor",
+          "atributos": [
+            "id",
+            "nome",
+            "cpf",
+            "email",
+            "telefone",
+            "endereco",
+            "animais"
+          ],
+          "regras": [
+            "Validação de CPF",
+            "Vínculo com animais",
+            "Consentimento LGPD"
+          ]
+        },
+        {
+          "nome": "Veterinario",
+          "atributos": [
+            "id",
+            "nome",
+            "crmv",
+            "especialidades",
+            "estadoRegistro",
+            "disponibilidade"
+          ],
+          "regras": [
+            "Validação de CRMV ativo",
+            "Verificação de especialidade por espécie"
+          ]
+        },
+        {
+          "nome": "Consulta",
+          "atributos": [
+            "id",
+            "animal",
+            "veterinario",
+            "dataHora",
+            "status",
+            "tipo",
+            "duracao",
+            "valor"
+          ],
+          "regras": [
+            "Transições de estado válidas",
+            "Duração mínima obrigatória",
+            "Cancelamento com antecedência"
+          ]
+        },
+        {
+          "nome": "ImagemDiagnostica",
+          "atributos": [
+            "id",
+            "consulta",
+            "tipo",
+            "urlArquivo",
+            "hash",
+            "laudoIA",
+            "laudoVet",
+            "dataUpload"
+          ],
+          "regras": [
+            "Formato DICOM ou JPEG/PNG validado",
+            "Integridade por hash",
+            "Laudo IA não substitui laudo veterinário"
+          ]
+        },
+        {
+          "nome": "LaudoIA",
+          "atributos": [
+            "id",
+            "imagem",
+            "modeloUsado",
+            "confianca",
+            "achados",
+            "diferenciais",
+            "dataGeracao"
+          ],
+          "regras": [
+            "Confiança mínima para exibição",
+            "Achados ordenados por relevância"
+          ]
+        },
+        {
+          "nome": "Prescricao",
+          "atributos": [
+            "id",
+            "consulta",
+            "medicamentos",
+            "posologia",
+            "veterinario",
+            "assinaturaDigital",
+            "validade"
+          ],
+          "regras": [
+            "Assinatura digital obrigatória",
+            "Validade máxima de 30 dias",
+            "Medicamentos controlados exigem justificativa"
+          ]
+        },
+        {
+          "nome": "Prontuario",
+          "atributos": [
+            "id",
+            "animal",
+            "consultas",
+            "prescricoes",
+            "exames",
+            "alergias",
+            "vacinas"
+          ],
+          "regras": [
+            "Imutabilidade de registros históricos",
+            "Acesso restrito por LGPD"
+          ]
+        },
+        {
+          "nome": "Plano",
+          "atributos": [
+            "id",
+            "nome",
+            "limiteConsultas",
+            "limiteImagens",
+            "valorMensal",
+            "recursos"
+          ],
+          "regras": [
+            "Limite de uso por billing cycle",
+            "Downgrade sem perda de histórico"
+          ]
+        },
+        {
+          "nome": "Assinatura",
+          "atributos": [
+            "id",
+            "tutor",
+            "plano",
+            "status",
+            "dataInicio",
+            "dataRenovacao",
+            "metodoPagamento"
+          ],
+          "regras": [
+            "Grace period de 3 dias em falha de pagamento",
+            "Cancelamento sem multa acima de 30 dias"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Orquestração das regras de negócio específicas da aplicação, independente de UI e banco de dados",
+      "agendamento": [
+        "AgendarConsulta: valida disponibilidade, plano e cria consulta pendente",
+        "CancelarConsulta: aplica política de cancelamento e reembolso",
+        "RemanejarConsulta: cancela e reagenda respeitando restrições",
+        "ListarHorariosDisponiveis: agrega disponibilidade do veterinário com fuso horário do tutor"
+      ],
+      "diagnostico_por_imagem": [
+        "EnviarImagemDiagnostica: valida formato, calcula hash, persiste e enfileira para análise IA",
+        "AnalisarImagemComIA: consome modelo de visão computacional, persiste LaudoIA, notifica veterinário",
+        "RevisarLaudoIA: veterinário aceita, rejeita ou modifica achados da IA e emite laudo final",
+        "CompartilharLaudo: gera PDF assinado e envia ao tutor com consentimento"
+      ],
+      "consulta_video": [
+        "IniciarSessaoVideo: gera token de sala, verifica assinatura ativa",
+        "EncerrarSessaoVideo: registra duração, dispara cobrança por minuto se pay-per-use",
+        "GravarSessao: persiste gravação criptografada vinculada ao prontuário"
+      ],
+      "prescricao": [
+        "EmitirPrescricao: valida CRMV, aplica assinatura digital, persiste em prontuário",
+        "ValidarPrescricaoControlada: verifica justificativa e dosagem para substâncias controladas",
+        "HistoricoPrescricoes: recupera prescrições por animal com filtros"
+      ],
+      "prontuario": [
+        "AbrirProntuario: retorna histórico completo respeitando permissões",
+        "AdicionarEntradaProntuario: cria entrada imutável com timestamp e autor",
+        "ExportarProntuario: gera PDF estruturado para outros estabelecimentos"
+      ],
+      "assinatura_e_billing": [
+        "ContratarPlano: valida método de pagamento e ativa assinatura",
+        "RenovarAssinatura: processa cobrança recorrente, atualiza ciclo",
+        "CancelarAssinatura: agenda término, mantém acesso até fim do período pago",
+        "VerificarLimiteUso: bloqueia ação se cota do plano foi excedida"
+      ],
+      "notificacoes": [
+        "NotificarConsultaAgendada: dispara lembretes por canal preferido",
+        "NotificarLaudoPronto: avisa tutor quando veterinário concluiu laudo",
+        "NotificarFalhaPagamento: inicia fluxo de recuperação de cobrança"
+      ],
+      "onboarding": [
+        "CadastrarTutor: valida dados, solicita consentimento LGPD, cria conta",
+        "CadastrarVeterinario: valida CRMV na API do CFMV, envia para aprovação manual",
+        "AdicionarAnimal: vincula animal ao tutor com validação de espécie suportada"
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Conversão de dados entre o formato dos Use Cases/Entities e o formato conveniente para camadas externas",
+      "controllers": [
+        "ConsultaController: mapeia requests HTTP para DTOs de AgendarConsulta, CancelarConsulta",
+        "ImagemController: recebe multipart/form-data, converte para ImagemDiagnosticaDTO",
+        "ProntuarioController: serializa Prontuario entity para resposta paginada",
+        "AuthController: gerencia JWT e sessões, delega autenticação ao use case",
+        "WebhookController: recebe eventos de gateway de pagamento e os traduz para use cases"
+      ],
+      "presenters": [
+        "ConsultaPresenter: formata Consulta entity para visão do tutor vs visão do veterinário",
+        "LaudoPresenter: converte LaudoIA + LaudoVet em estrutura unificada para UI",
+        "ProntuarioPresenter: organiza entradas cronologicamente com formatação por tipo"
+      ],
+      "gateways": [
+        "ConsultaRepository (interface): CRUD de Consulta — implementada pela camada de frameworks",
+        "AnimalRepository (interface): busca e persistência de Animal",
+        "ImagemStorageGateway (interface): upload e download de imagens diagnósticas",
+        "IADiagnosticoGateway (interface): contrato para análise de imagem por IA externa ou interna",
+        "PagamentoGateway (interface): cobrança, reembolso, gestão de assinaturas",
+        "NotificacaoGateway (interface): envio de e-mail, SMS e push notification",
+        "VideoGateway (interface): criação e gerenciamento de salas de videochamada",
+        "CRMVValidacaoGateway (interface): consulta de CRMV na API do CFMV",
+        "AssinaturaDigitalGateway (interface): emissão e validação de assinatura digital de documentos"
+      ],
+      "mappers": [
+        "AnimalMapper: Animal entity <-> AnimalDTO <-> AnimalORM",
+        "ConsultaMapper: Consulta entity <-> ConsultaDTO <-> ConsultaORM",
+        "ImagemMapper: ImagemDiagnostica entity <-> ImagemDTO <-> ImagemORM"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa — detalhes de implementação substituíveis sem impacto nas regras de negócio",
+      "web_api": {
+        "framework": "NestJS (Node.js/TypeScript)",
+        "justificativa": "Módulos isolados por contexto, injeção de dependências nativa, suporte a decorators para OpenAPI"
+      },
+      "banco_de_dados": {
+        "principal": "PostgreSQL via TypeORM (dados transacionais: consultas, prontuários, assinaturas)",
+        "documentos": "MongoDB (laudos IA com estrutura variável por modelo)",
+        "cache": "Redis (disponibilidade de veterinários, sessões, rate limiting)",
+        "busca": "Elasticsearch (busca em prontuários, histórico de achados)"
+      },
+      "armazenamento_imagens": {
+        "servico": "AWS S3 com presigned URLs",
+        "processamento": "AWS Lambda para resize e validação de formato na ingestão"
+      },
+      "ia_diagnostico": {
+        "modelos": "Google Cloud Healthcare API (DICOM) + modelo próprio fine-tuned em Vertex AI",
+        "fallback": "Azure AI Health Insights para segunda opinião automatizada",
+        "orquestracao": "AWS SQS para fila de análise assíncrona"
+      },
+      "video": {
+        "servico": "Daily.co ou Twilio Video (WebRTC gerenciado)",
+        "gravacao": "Armazenamento criptografado no S3 com lifecycle de 5 anos"
+      },
+      "pagamentos": {
+        "gateway": "Stripe (recorrência, webhooks, marketplace para repasse ao veterinário)",
+        "nfe": "Focus NFe API para emissão de nota fiscal"
+      },
+      "notificacoes": {
+        "email": "AWS SES com templates HTML",
+        "sms": "Twilio SMS",
+        "push": "Firebase Cloud Messaging",
+        "orquestracao": "AWS SNS + SQS fan-out"
+      },
+      "autenticacao": {
+        "protocolo": "JWT com refresh token rotation",
+        "provider": "AWS Cognito ou Auth0",
+        "mfa": "TOTP obrigatório para veterinários"
+      },
+      "assinatura_digital": {
+        "servico": "Docusign ou BirdSign (certificado ICP-Brasil para validade jurídica)"
+      },
+      "infraestrutura": {
+        "container": "Docker + Kubernetes (EKS)",
+        "ci_cd": "GitHub Actions + ArgoCD",
+        "observabilidade": "Datadog (APM, logs, métricas), Sentry (erros)",
+        "iac": "Terraform"
+      },
+      "frontend": {
+        "web": "Next.js (React) com PWA para acesso mobile",
+        "app_nativo": "React Native (fase 2)"
+      }
+    },
+    "dependency_rule": {
+      "descricao": "Nenhuma camada interna conhece qualquer coisa sobre camadas externas. O fluxo de controle e o fluxo de dependência são invertidos via interfaces.",
+      "aplicacao": {
+        "entities": "Zero dependências externas. Apenas TypeScript puro. Não importam nada das outras camadas.",
+        "use_cases": "Dependem apenas de Entities e de interfaces (contratos abstratos) como IConsultaRepository e IPagamentoGateway. Nunca importam TypeORM, Stripe ou NestJS diretamente.",
+        "interface_adapters": "Dependem de Use Cases e Entities. Implementam as interfaces definidas pelos Use Cases. Controllers chamam Use Cases; Repositories implementam IRepository.",
+        "frameworks_drivers": "Dependem de Interface Adapters. TypeORM implementa IConsultaRepository. StripeAdapter implementa IPagamentoGateway. NestJS injeta as implementações concretas via IoC container."
+      },
+      "inversao_de_dependencia": {
+        "exemplo": "Use Case AnalisarImagemComIA depende de IADiagnosticoGateway (interface). A implementação GoogleHealthcareAdapter está na camada de Frameworks & Drivers e implementa essa interface. O Use Case nunca sabe que é Google — poderia ser qualquer outro provider."
+      },
+      "fronteiras_arquiteturais": [
+        "Entities <-> Use Cases: boundary via parâmetros e retornos tipados com Entities",
+        "Use Cases <-> Interface Adapters: boundary via interfaces de repositório e gateway + DTOs",
+        "Interface Adapters <-> Frameworks: boundary via injeção de dependência do NestJS IoC"
+      ]
+    },
+    "testability": {
+      "descricao": "Cada camada é testável de forma independente, sem subir servidores, bancos ou serviços externos",
+      "unit_tests": {
+        "entities": "Testes puros de regras de negócio: valida CRMV inativo, transição de estado de consulta inválida, cálculo de validade de prescrição. Zero mocks necessários.",
+        "use_cases": "Mocks/stubs das interfaces de repositório e gateway. AgendarConsultaUseCase testado com InMemoryConsultaRepository e FakeVeterinarioRepository. Sem banco real.",
+        "exemplo": "test('deve bloquear agendamento quando plano excede limite mensal', () => { const repo = new InMemoryAssinaturaRepository({ limiteConsultas: 2, usadas: 2 }); const useCase = new AgendarConsultaUseCase(repo, ...); expect(() => useCase.execute(dto)).toThrow(LimitePlanoExcedidoError); })"
+      },
+      "integration_tests": {
+        "escopo": "Controllers + Use Cases + implementações reais de repositório contra banco de dados de teste (PostgreSQL via Docker Compose)",
+        "ferramentas": "Jest + Supertest + Testcontainers"
+      },
+      "e2e_tests": {
+        "escopo": "Fluxos completos: tutor agenda consulta -> veterinário envia imagem -> IA analisa -> laudo emitido",
+        "ferramentas": "Playwright para web, Detox para mobile (fase 2)"
+      },
+      "contract_tests": {
+        "escopo": "Verificação de contratos das interfaces de gateway externo (IA, pagamento, vídeo) com Pact",
+        "justificativa": "Garante que mudanças no provider externo não quebram silenciosamente o sistema"
+      },
+      "cobertura_minima": "80% nas camadas de Entities e Use Cases. Interface Adapters e Frameworks com testes de integração obrigatórios para fluxos críticos (pagamento, emissão de laudo)."
+    },
+    "interfaces": [
+      "IConsultaRepository: findById, save, cancel, listByVeterinario, listByAnimal",
+      "IAnimalRepository: findById, save, findByTutor",
+      "IVeterinarioRepository: findById, save, findDisponivel, validarCRMV",
+      "ITutorRepository: findById, save, findByEmail",
+      "IProntuarioRepository: findByAnimal, addEntrada, export",
+      "IAssinaturaRepository: findByTutor, renovar, cancelar, verificarLimite",
+      "IImagemStorageGateway: upload(file, metadata): Promise<ImagemUrl>, download(id): Promise<Stream>, delete(id): Promise<void>",
+      "IIADiagnosticoGateway: analisar(imagem: ImagemDiagnostica): Promise<LaudoIA>",
+      "IPagamentoGateway: cobrar(assinatura), reembolsar(consultaId), criarAssinatura, cancelarAssinatura",
+      "INotificacaoGateway: enviarEmail(dest, template, vars), enviarSMS(tel, msg), enviarPush(userId, payload)",
+      "IVideoGateway: criarSala(consultaId): Promise<SalaVideo>, encerrarSala(salaId), iniciarGravacao(salaId)",
+      "ICRMVValidacaoGateway: validar(crmv: string, estado: string): Promise<StatusCRMV>",
+      "IAssinaturaDigitalGateway: assinar(documento: Buffer, veterinarioId): Promise<DocumentoAssinado>, validar(doc): Promise<boolean>",
+      "IEventBus: publicar(evento: DomainEvent): Promise<void>, assinar(tipo, handler)",
+      "ILogger: info, warn, error, debug — abstração para não acoplar Entities/UseCases ao console ou Datadog"
+    ],
+    "escalabilidade": {
+      "horizontal": "Serviço stateless em containers Kubernetes com HPA (Horizontal Pod Autoscaler) baseado em CPU e custom metrics de fila SQS",
+      "analise_ia_assincrona": "Imagens enfileiradas no SQS e processadas por workers independentes escaláveis sem impactar latência da API principal",
+      "separacao_de_dominios": "Bounded Contexts separados: Agendamento, Prontuário, Diagnóstico por Imagem, Billing — podem virar microsserviços independentes quando a equipe e o volume justificarem. Início como monólito modular.",
+      "leitura_vs_escrita": "CQRS aplicado no contexto de Prontuário e Diagnóstico: writes no PostgreSQL, reads desnormalizados no Elasticsearch para buscas complexas",
+      "cache": "Redis para disponibilidade de veterinários (TTL 5 min) e cache de laudos já processados (evita reprocessamento de imagem duplicada via hash)",
+      "database": "PostgreSQL com read replicas para relatórios e exportações pesadas. Connection pooling via PgBouncer.",
+      "cdn": "CloudFront para assets estáticos e presigned URLs de imagens diagnósticas com expiração curta"
+    },
+    "custos": {
+      "ia_por_imagem": "Google Cloud Healthcare API: ~$0.01 a $0.05 por imagem DICOM. Modelo próprio no Vertex AI reduz custo marginal após break-even de treinamento.",
+      "video": "Daily.co: ~$0.004/minuto/participante. Consulta média de 20 min = ~$0.16/consulta.",
+      "armazenamento": "S3 Standard para imagens recentes, S3 Glacier Instant Retrieval após 90 dias. Custo estimado $0.023/GB/mês para imagens ativas.",
+      "banco_de_dados": "RDS PostgreSQL Multi-AZ: ~$150-400/mês dependendo da instância. ElastiCache Redis: ~$50-100/mês.",
+      "notificacoes": "SES: $0.0001/email. Twilio SMS: ~$0.0075/mensagem Brasil. FCM: gratuito.",
+      "principais_alavancas_de_reducao": [
+        "Modelo de IA próprio fine-tuned para reduzir chamadas a APIs pagas",
+        "Lifecycle de imagens para Glacier reduz storage em 70%",
+        "CDN elimina egress repetitivo de imagens",
+        "Reserva de instâncias EC2/RDS (1 ano) com desconto de 30-40%"
+      ]
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS B2C por assinatura (tutores) + B2B (clínicas veterinárias)",
+      "planos_tutor": [
+        {
+          "nome": "Básico",
+          "valor": "R$ 49/mês",
+          "inclui": "2 consultas/mês, 5 imagens/mês, histórico 12 meses"
+        },
+        {
+          "nome": "Plus",
+          "valor": "R$ 99/mês",
+          "inclui": "5 consultas/mês, 20 imagens/mês, histórico ilimitado, prioridade de agenda"
+        },
+        {
+          "nome": "Premium",
+          "valor": "R$ 179/mês",
+          "inclui": "Consultas ilimitadas, imagens ilimitadas, segunda opinião IA avançada, relatórios exportáveis"
+        }
+      ],
+      "plano_clinica": {
+        "modelo": "Licença por veterinário ativo: R$ 199/vet/mês com faturamento no cartão da clínica",
+        "inclui": "Dashboard de gestão, repasse automático via Stripe Connect, relatórios de produtividade"
+      },
+      "pay_per_use": "Consultas avulsas sem assinatura: R$ 89/consulta (tutor paga no ato)",
+      "marketplace": "Clínicas recebem 80% do valor da consulta; 20% de take rate da plataforma via Stripe Connect",
+      "upsell": [
+        "Relatório IA Premium com comparativo histórico de imagens: R$ 29/relatório",
+        "Exportação de prontuário completo em PDF: R$ 9",
+        "Armazenamento estendido de imagens além de 1 ano: R$ 5/mês"
+      ],
+      "b2b_integracao": "API para integradores e sistemas de gestão veterinária (petshops, pet plans): R$ 500/mês + R$ 0.50/chamada de API acima de 1000/mês"
+    },
+    "stack_sugerida": {
+      "linguagem": "TypeScript (backend + frontend) — type safety atravessa todas as camadas, reduz erros de contrato entre adapters",
+      "backend": "NestJS — módulos isolados por bounded context, DI nativo, decorators para Swagger, Guards para RBAC",
+      "frontend_web": "Next.js 14 (App Router) — SSR para SEO, RSC para performance, PWA para acesso mobile sem app nativo",
+      "mobile_fase2": "React Native + Expo — reuso de lógica de negócio com TypeScript shared packages",
+      "banco_principal": "PostgreSQL 16 (RDS Multi-AZ) — ACID para transações financeiras e prontuários",
+      "banco_documentos": "MongoDB Atlas — laudos IA com schema variável por modelo de visão",
+      "cache_filas": "Redis 7 (ElastiCache) + AWS SQS — sessões, disponibilidade, fila de análise de imagem",
+      "busca": "Elasticsearch 8 (OpenSearch) — busca full-text em prontuários e histórico de achados",
+      "storage": "AWS S3 + CloudFront — imagens DICOM e PDF com presigned URLs",
+      "ia": "Vertex AI (Google Cloud) para modelo próprio + Google Healthcare API para DICOM nativo",
+      "video": "Daily.co WebRTC — simples integração, baixa latência, suporte a gravação",
+      "pagamentos": "Stripe (subscriptions + Connect para marketplace) + Focus NFe",
+      "autenticacao": "AWS Cognito + JWT RS256 + TOTP (Google Authenticator) para veterinários",
+      "assinatura_digital": "BirdSign com certificado ICP-Brasil A1/A3 para validade jurídica de laudos",
+      "observabilidade": "Datadog APM + Winston logger + Sentry para rastreamento de erros em produção",
+      "ci_cd": "GitHub Actions (build, test, lint) + ArgoCD (GitOps para deploy no EKS)",
+      "iac": "Terraform com módulos reutilizáveis por ambiente (dev, staging, prod)",
+      "testes": "Jest (unit/integration) + Playwright (E2E web) + Pact (contract tests de gateways externos)",
+      "monorepo": "Turborepo — compartilhamento de tipos, DTOs e regras de validação entre backend, web e mobile sem duplicação"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio com regras críticas independentes de qualquer framework ou tecnologia\",\n    \"lista\": [\n      {\n        \"nome\": \"Animal\",\n        \"atributos\": [\"id\", \"nome\", \"especie\", \"raca\", \"dataNascimento\", \"peso\", \"historico\"],\n        \"regras\": [\"Validação de espécie suportada\", \"Cálculo de idade\", \"IMC por espécie\"]\n      },\n      {\n        \"nome\": \"Tutor\",\n        \"atributos\": [\"id\", \"nome\", \"cpf\", \"email\", \"telefone\", \"endereco\", \"animais\"],\n        \"regras\": [\"Validação de CPF\", \"Vínculo com animais\", \"Consentimento LGPD\"]\n      },\n      {\n        \"nome\": \"Veterinario\",\n        \"atributos\": [\"id\", \"nome\", \"crmv\", \"especialidades\", \"estadoRegistro\", \"disponibilidade\"],\n        \"regras\": [\"Validação de CRMV ativo\", \"Verificação de especialidade por espécie\"]\n      },\n      {\n        \"nome\": \"Consulta\",\n        \"atributos\": [\"id\", \"animal\", \"veterinario\", \"dataHora\", \"status\", \"tipo\", \"duracao\", \"valor\"],\n        \"regras\": [\"Transições de estado válidas\", \"Duração mínima obrigatória\", \"Cancelamento com antecedência\"]\n      },\n      {\n        \"nome\": \"ImagemDiagnostica\",\n        \"atributos\": [\"id\", \"consulta\", \"tipo\", \"urlArquivo\", \"hash\", \"laudoIA\", \"laudoVet\", \"dataUpload\"],\n        \"regras\": [\"Formato DICOM ou JPEG/PNG validado\", \"Integridade por hash\", \"Laudo IA não substitui laudo veterinário\"]\n      },\n      {\n        \"nome\": \"LaudoIA\",\n        \"atributos\": [\"id\", \"imagem\", \"modeloUsado\", \"confianca\", \"achados\", \"diferenciais\", \"dataGeracao\"],\n        \"regras\": [\"Confiança mínima para exibição\", \"Achados ordenados por relevância\"]\n      },\n      {\n        \"nome\": \"Prescricao\",\n        \"atributos\": [\"id\", \"consulta\", \"medicamentos\", \"posologia\", \"veterinario\", \"assinaturaDigital\", \"validade\"],\n        \"regras\": [\"Assinatura digital obrigatória\", \"Validade máxima de 30 dias\", \"Medicamentos controlados exigem justificativa\"]\n      },\n      {\n        \"nome\": \"Prontuario\",\n        \"atributos\": [\"id\", \"animal\", \"co"
+}

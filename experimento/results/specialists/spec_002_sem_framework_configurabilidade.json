@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "A proposta descreve um marketplace com auto-cadastro de usuários (qualquer empresa pode se registrar), o que evita o pior cenário de fork por cliente, mas não há nenhuma menção a camada de configuração por tenant: sem tabela de settings, sem feature flags, sem parâmetros de comportamento por cliente, sem white-label — qualquer customização de fluxo exigiria alteração de código."
+}

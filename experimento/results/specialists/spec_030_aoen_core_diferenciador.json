@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 30,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está explicitamente identificado (motor de reconhecimento visual que elimina contagem manual e leitura de código de barras), corretamente isolado atrás da interface VisionProvider com contrato claro (detect → SKU/confidence/bbox/quantity), comprovadamente extensível com pelo menos quatro implementações intercambiáveis documentadas, e resolve um problema real — ruptura de gôndola em PME sem equipe de TI — que ERPs tradicionais e apps de inventário manuais não atacam; perde um ponto porque a proposta não endereça por que esse núcleo é difícil de copiar (ausência de argumento sobre dados proprietários de treinamento, rede de clientes como flywheel ou barreira de switching), o que enfraquece levemente o critério de 'insubstituível'."
+}

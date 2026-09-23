@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta indica Celery como Scheduler Adapter (workers assíncronos em processo separado) e SageMaker para ML (serviço externo fisicamente isolado), o que demonstra consciência de isolamento físico para processos pesados; porém, faltam mecanismos explícitos de fallback quando o modelo ML ou o scraping de concorrentes falhar, não há menção de circuit breakers ou bulkheads entre os workers e o core, e o isolamento do Scrapy/SerpAPI (potencialmente caro) não é claramente definido como processo independente escalável."
+}

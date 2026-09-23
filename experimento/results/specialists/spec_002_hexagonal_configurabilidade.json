@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A arquitetura hexagonal (ports & adapters) cria uma base sólida para variação de comportamento via troca de adaptadores, mas a proposta não define explicitamente nenhum mecanismo de configuração por tenant — falta um IConfigurationRepository/TenantSettingsService nos secondary ports, não há menção a feature flags, workflows configuráveis por cliente, estratégia de isolamento multi-tenant (shared schema vs. schema-per-tenant), nem regras de negócio dirigidas por dados (ex: SLAs, certificações exigidas, splits de pagamento variáveis por tenant); sem esses elementos declarados, onboarding de novo cliente provavelmente ainda exigiria código ou deploy."
+}

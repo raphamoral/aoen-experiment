@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 49,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente a arquitetura de produto e serviços técnicos (MatchingService, ProjectService, PaymentService, portais, API) sem nenhuma menção a custo por cliente, custo por operação de matching, rastreamento de consumo por tenant ou conexão entre custo e precificação — não há sequer referência à camada de observabilidade de custos por cliente."
+}

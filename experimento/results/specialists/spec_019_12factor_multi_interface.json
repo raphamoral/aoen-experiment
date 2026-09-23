@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta implica uma interface web (diretório web/) consumindo uma API desacoplada (api/), o que tecnicamente habilita múltiplos clientes, mas não há menção explícita a interfaces adicionais (mobile, portal do paciente, painel administrativo), nenhuma justificativa baseada em perfis de usuário distintos (dentista, recepcionista, paciente) e nenhuma escolha de canal fundamentada em alcance de mercado — WhatsApp/SMS aparecem apenas como canais de notificação, não como interfaces interativas projetadas intencionalmente."
+}

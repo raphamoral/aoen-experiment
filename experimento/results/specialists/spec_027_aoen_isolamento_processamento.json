@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 27,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta não menciona nenhum mecanismo de isolamento de processamento pesado — não há filas, workers separados, processamento assíncrono, circuit breakers nem fallbacks explícitos; a EventService Layer centralizada sugere que gravação de vídeo, consolidação de métricas, disparo em massa de notificações e geração de relatórios rodam no mesmo processo da lógica de negócio, com risco de falha em cascata. O único indício marginal de separação é a delegação do streaming a SDKs externos (Zoom, Agora), mas isso é abstração de fornecedor, não arquitetura de isolamento."
+}

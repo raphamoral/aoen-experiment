@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 8,
+  "justificativa": "A proposta prevê sete interfaces distintas (REST, GraphQL, WebSocket, CLI, gRPC, WebhookReceiver, Scheduler), cada uma com justificativa de contexto de uso, e a arquitetura hexagonal garante desacoplamento total da lógica de negócio — permitindo adicionar novas interfaces sem reescrever o core; a perda de dois pontos se deve ao fato de as justificativas serem predominantemente técnicas (ex.: gRPC por 'baixa latência', GraphQL por 'consultas flexíveis') em vez de explicitamente ancoradas em perfis de mercado ou personas (ex.: corretor em campo via mobile, construtora via API batch), e à ausência de uma interface mobile nativa num domínio imobiliário onde esse canal tem alto alcance comercial."
+}

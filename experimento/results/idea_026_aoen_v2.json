@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 26,
+  "ideia": "App de acompanhamento pós-operatório com IA e teleconsulta",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de triagem contínua pós-operatória: coleta estruturada de sintomas do paciente, análise por IA para classificação de risco (baixo/médio/alto/crítico) e roteamento automático para resposta clínica adequada — sem esse ciclo, o produto vira apenas uma agenda de teleconsulta genérica",
+    "fase1_mercado": "B2B médico: clínicas cirúrgicas, hospitais day-clinic, cirurgiões autônomos e operadoras de saúde que precisam reduzir reinternações, complicações não detectadas e custos de suporte pós-alta; secundariamente B2G via contratos com planos de saúde que pagam por desfecho",
+    "fase1_extensivel": "Sim. O core de análise de risco é abstraído atrás de uma interface RiskAnalysisProvider — pode ser implementado via LLM (OpenAI, Anthropic, Gemini), modelo proprietário fine-tuned, regras clínicas hardcoded ou ensemble. Trocar o provedor não exige mudança no fluxo de triagem nem nas interfaces do produto",
+    "fase2_interfaces": [
+      "App mobile do paciente (iOS/Android) — relato de sintomas, fotos da ferida, dor em escala, temperatura",
+      "Dashboard web do médico/clínica — painel de risco por paciente, alertas, histórico de evolução, agendamento de teleconsulta",
+      "Bot conversacional WhatsApp/SMS — para pacientes de baixa literacia digital ou sem smartphone, via Twilio/Z-API",
+      "Portal do administrador da clínica — gestão de protocolos, equipes, relatórios de compliance e exportação para prontuário",
+      "API REST/webhook para integração com HIS/EMR hospitalares — para clientes enterprise que já têm sistemas próprios"
+    ],
+    "fase2_justificativa_mercado": "App mobile abre o mercado de clínicas médias e cirurgiões autônomos que querem diferencial competitivo sem TI interna. WhatsApp/SMS abre o mercado de hospitais públicos e regiões com baixa penetração de smartphones, ampliando TAM para saúde suplementar de baixa renda. Dashboard web é o ponto de entrada para clínicas com múltiplos médicos. API enterprise destrava contratos com hospitais e operadoras de grande porte que exigem integração, tickets maiores e contratos anuais",
+    "fase2_service_layer": "Uma ClinicalService Layer centraliza toda a lógica: criar acompanhamento, registrar relato, calcular risco, emitir alerta, agendar teleconsulta. Cada interface (mobile, web, bot, API) chama essa camada via contratos de serviço — nenhuma interface contém regra clínica. Trocar o canal WhatsApp por Telegram ou adicionar Alexa não toca na lógica de triagem",
+    "fase3_fluxo_fixo": "Ciclo fixo imutável: (1) Paciente recebe checkin agendado → (2) Coleta estruturada de sintomas conforme protocolo → (3) IA classifica risco → (4) Motor de roteamento decide resposta (mensagem automática / alerta para médico / abertura de slot de teleconsulta emergencial) → (5) Resposta registrada no histórico → (6) Próximo checkin agendado com frequência adaptada ao risco atual",
+    "fase3_parametros_configuraveis": [
+      "Tipo de procedimento cirúrgico e protocolo de sintomas associado (ex: colecistectomia vs artroplastia)",
+      "Frequência de checkins por fase do pós-operatório (D1, D3, D7, D14, D30)",
+      "Limiares de risco para cada classificação (customizável por especialidade)",
+      "Canal de notificação preferencial do paciente (app, WhatsApp, SMS, e-mail)",
+      "SLA de resposta médica por nível de risco (ex: crítico = 15min, alto = 2h)",
+      "Templates de perguntas e escalas de dor por especialidade",
+      "Idioma e localização (pt-BR, es, en)",
+      "Equipe de plantão e escalonamento de alertas",
+      "Integração de teleconsulta (Daily.co, Whereby, Zoom SDK, ou link próprio)",
+      "Duração total do protocolo de acompanhamento em dias"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel admin: criar tenant → selecionar especialidade → carregar protocolo pré-existente ou clonar template → configurar canais, SLAs e equipe → importar lista de pacientes via CSV ou integração HIS. Zero código novo — novo cliente é um conjunto de parâmetros num registro de tenant isolado",
+    "fase4_core_isolado": "Worker assíncrono de análise de risco: processo separado (ex: fila SQS/BullMQ + worker Node/Python) que consome relatos, chama RiskAnalysisProvider (LLM ou modelo), persiste resultado e dispara eventos. Completamente desacoplado do ciclo HTTP — se o worker falhar, checkins continuam sendo coletados e ficam na fila para reprocessamento",
+    "fase4_custo_total_cliente": "Core IA: ~$0.01–0.05 por análise de relato (GPT-4o-mini ou Claude Haiku), média de 8–12 checkins por paciente = ~$0.10–0.60 por paciente por protocolo. Armazenamento: fotos de ferida ~2MB/imagem, 5–15 fotos por protocolo = ~30MB/paciente, custo S3 desprezível (<$0.001). Vídeo teleconsulta: $0.003–0.006/min (Daily.co), média 15min/consulta = ~$0.05–0.09/consulta. Banco de dados: ~$0.02/paciente/mês proporcional. CDN e banda: ~$0.01/paciente. Infra compartilhada (servidor, load balancer): ~$0.05–0.15/paciente/protocolo. Custo total por paciente por protocolo de 30 dias: ~$0.50–1.50. Margem viável com ticket de R$15–50/paciente/protocolo cobrado à clínica",
+    "fase4_continuidade": "Coleta de sintomas e checkins funcionam mesmo com worker de IA offline — relatos são persistidos e enfileirados com status 'pending_analysis'. Alertas críticos têm fallback por regra determinística (ex: febre >38.5°C ou sangramento relatado dispara alerta imediato sem precisar de IA). Circuit breaker no RiskAnalysisProvider troca automaticamente para modelo de fallback (regras clínicas) se LLM retornar erro por N tentativas",
+    "fase4_manutencao": "RiskAnalysisProvider é uma interface com implementações plugáveis. Deploy de nova implementação via feature flag por tenant — migração gradual sem downtime. Worker versionado: fila antiga continua sendo consumida pela versão anterior enquanto nova versão processa novos relatos. Rollback = desativar flag, sem migração de dados",
+    "monetizacao": "B2B SaaS por paciente ativo: clínica paga R$15–50/paciente/protocolo (30 dias). Plano base inclui até N pacientes simultâneos; acima disso, cobrança por excedente. Add-ons: teleconsulta ilimitada (+R$X/mês), integração HIS/EMR (setup fee + mensalidade), white-label para operadoras de saúde (contrato enterprise anual). Modelo de receita recorrente atrelado ao volume cirúrgico da clínica — cresce com o cliente sem custo de engenharia proporcional",
+    "stack_sugerida": "Backend: Node.js (NestJS) com TypeScript para API e Service Layer; Python para worker de análise de risco (LangChain + Anthropic/OpenAI SDK). Fila: BullMQ com Redis. Banco: PostgreSQL (dados clínicos) + S3 para imagens. Frontend web: Next.js. Mobile: React Native (iOS + Android com codebase único). Bot: Twilio (SMS/WhatsApp). Teleconsulta: Daily.co SDK. Infra: Railway ou Render para MVP; migração para AWS ECS por tenant na escala. Auth: Auth0 ou Clerk com multi-tenant RBAC. Observabilidade: Datadog ou BetterStack para monitorar custo por worker job e latência de análise"
+  }
+}

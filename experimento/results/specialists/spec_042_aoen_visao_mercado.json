@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 42,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está bem definido com segmentação clara (large caps → mid caps, B3/NYSE/LSE) e usuários nomeados (IR Officers, ESG Officers, auditores externos), e a dor regulatória está implicitamente presente via obrigação de submissão à CVM/SEC; porém faltam três elementos críticos para nota máxima: (1) a dor do cliente não é articulada como jornada de sofrimento atual — não há descrição do processo manual, custo de não-conformidade ou risco de prazo que o produto resolve; (2) não há estimativa de tamanho de mercado (TAM/SAM/SOM), tornando inviável avaliar o potencial; e (3) a diferenciação é arquitetural (multi-framework plugável, LLM provider agnóstico) mas não é posicionada contra alternativas existentes como Workiva, IBM Envizi ou SAP Sustainability — o cliente não consegue entender por que abandonar o concorrente atual."
+}

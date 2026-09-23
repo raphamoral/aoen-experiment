@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de predição de falhas é explicitamente identificado como o núcleo diferenciador, está arquiteturalmente isolado via Device Adapter Layer e contratos de interface intercambiáveis, suporta múltiplos protocolos e modelos preditivos sem lock-in, e resolve um problema real (parada não planejada de equipamentos) que CMMSs tradicionais não resolvem — perde um ponto por não detalhar como o diferenciador se sustenta competitivamente frente a players como IBM Maximo ou Uptake que já operam nesse espaço."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 27,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (Dashboard web, PWA, mobile nativo, API REST/Webhooks, widget embarcável e kiosk), cada uma com justificativa explícita de perfil de usuário e segmento de mercado, e toda a lógica de negócio está centralizada na EventService Layer com contratos via DTOs, garantindo desacoplamento total que permite adicionar ou substituir interfaces sem alterar o core."
+}

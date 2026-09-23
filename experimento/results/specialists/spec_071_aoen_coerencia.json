@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 71,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta apresenta coerência sistêmica muito alta: os três contratos abstratos da Fase 1 (DataCollector, AnchorProvider, CertificateIssuer) justificam diretamente cada interface da Fase 2, que por sua vez mapeia exatamente para os segmentos de mercado declarados na Fase 1 — o App Mobile offline-first resolve o problema de origens remotas identificado no mercado primário, o QR de verificação fecha o ciclo de confiança do produtor ao consumidor, e a API B2B é a consequência inevitável do requisito enterprise; a camada de serviços (CertificationService, ProvenanceService, DocumentService, VerificationService) espelha com precisão o pipeline core descrito na Fase 1, sem que nenhuma interface carregue regra de negócio, o que é consistente com a promessa de extensibilidade tecnológica; a única tensão menor está na coexistência de W3C Verifiable Credentials e NFTs como formatos de certificado, que são paradigmas arquiteturalmente distintos, mas a abstração do CertificateIssuer é suficiente para absorvê-la sem contradição."
+}

@@ -1,0 +1,146 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Estudante conclui curso → Instituição valida aprendizado → Certificado digital é emitido com assinatura criptográfica → Certificado é armazenado em carteira digital → Empregador/terceiro verifica autenticidade via portal público → Confiança é estabelecida sem intermediários",
+    "bounded_contexts": [
+      "Identity & Access: autenticação de estudantes, instituições e verificadores; SSO e federação de identidade",
+      "Institution Management: onboarding de instituições, configuração de cursos, gestão de emissores",
+      "Learning & Assessment: trilhas de curso, avaliações, registro de progresso e conclusão",
+      "Certification Issuance: geração de credenciais, assinatura digital (Ed25519/RSA), hash de integridade, ancoragem blockchain opcional",
+      "Credential Wallet: armazenamento e portabilidade de certificados do estudante (Open Badges / W3C Verifiable Credentials)",
+      "Public Verification: portal de consulta pública, validação de QR code e hash, API de verificação para terceiros",
+      "Notification & Delivery: envio de certificados por e-mail, webhooks para sistemas externos, push notifications",
+      "Billing & Subscriptions: planos por instituição, cobrança por volume de certificados emitidos, repasse de taxas"
+    ],
+    "component_evolution": {
+      "genesis": [
+        "Ancoragem de certificados em blockchain público (prova de existência imutável)",
+        "Interoperabilidade via W3C Verifiable Credentials + DID (Decentralized Identifiers)"
+      ],
+      "custom_built": [
+        "Motor de assinatura digital de certificados com chave privada da instituição",
+        "Pipeline de geração de PDF/SVG com template personalizado por instituição",
+        "Portal de verificação pública com validação offline (QR code auto-contido)"
+      ],
+      "product": [
+        "LMS leve para registro de progresso (Moodle API / Canvas LTI como alternativa)",
+        "Gestão de identidade federada (Auth0 / Keycloak como base)",
+        "Gestão de assinaturas e billing (Stripe como núcleo)"
+      ],
+      "commodity": [
+        "Infraestrutura de nuvem (AWS / GCP — S3, RDS, CDN)",
+        "Envio de e-mail transacional (SendGrid / Postmark)",
+        "Geração de QR code",
+        "Monitoramento e observabilidade (Datadog / Grafana Cloud)",
+        "CI/CD pipeline (GitHub Actions)"
+      ]
+    },
+    "team_topology": {
+      "stream_aligned_teams": [
+        {
+          "nome": "Team Emissão",
+          "responsabilidade": "Fluxo de conclusão de curso → geração → entrega do certificado",
+          "bounded_contexts": [
+            "Learning & Assessment",
+            "Certification Issuance",
+            "Notification & Delivery"
+          ]
+        },
+        {
+          "nome": "Team Verificação",
+          "responsabilidade": "Portal público, API de verificação, integridade de credenciais",
+          "bounded_contexts": [
+            "Public Verification",
+            "Credential Wallet"
+          ]
+        },
+        {
+          "nome": "Team Instituições",
+          "responsabilidade": "Onboarding, configuração, experiência B2B e cobrança",
+          "bounded_contexts": [
+            "Institution Management",
+            "Billing & Subscriptions"
+          ]
+        }
+      ],
+      "platform_team": {
+        "nome": "Team Plataforma",
+        "responsabilidade": "Developer experience interna: infra como código, pipelines, observabilidade, SDK de assinatura compartilhado, event broker"
+      },
+      "enabling_team": {
+        "nome": "Team Segurança & Compliance",
+        "responsabilidade": "Padrões criptográficos, conformidade LGPD/GDPR, gestão de chaves (HSM), auditoria"
+      },
+      "complicated_subsystem_team": {
+        "nome": "Team Credenciais",
+        "responsabilidade": "Implementação de W3C VC, DID, ancoragem blockchain — alta especialização técnica"
+      }
+    },
+    "flow_optimization": {
+      "event_driven_core": "Eventos de domínio (CourseCompleted, CertificateIssued, CertificateVerified) propagados via broker (Kafka / EventBridge) desacoplam times e permitem evolução independente",
+      "async_issuance": "Emissão de certificado é assíncrona: estudante recebe confirmação imediata e o PDF/credencial é entregue em segundo plano sem bloquear o fluxo",
+      "cognitive_load_reduction": "Cada time possui um contexto delimitado com API bem definida; Platform Team fornece templates e SDKs que eliminam decisões repetitivas",
+      "fast_feedback": "Verificação pública é leitura pura (eventual consistency tolerada), isolada do fluxo de escrita — escalamento independente e sem contenção",
+      "bounded_context_contracts": "Integração entre contextos via eventos publicados ou APIs versionadas (ACL — Anti-Corruption Layer) impedindo acoplamento acidental"
+    },
+    "interfaces": [
+      "REST API pública de verificação: GET /verify/{certificateId} → retorna status, emissor, destinatário (anonimizado opcional), hash",
+      "API B2B para instituições: emissão em lote, webhooks de status, gestão de templates via REST/GraphQL",
+      "Endpoint LTI 1.3 para integração com LMS externos (Moodle, Canvas, Blackboard)",
+      "Portal web de verificação pública (Next.js — zero autenticação necessária)",
+      "Credential Wallet (PWA) para estudantes: visualização, compartilhamento e download",
+      "QR Code auto-contido: payload JWT assinado com dados mínimos para verificação offline",
+      "Webhook de notificação para sistemas de RH e LinkedIn (emissão de badge automática)",
+      "Admin dashboard B2B (SPA) para gestão da instituição, relatórios e billing"
+    ],
+    "escalabilidade": {
+      "read_write_separation": "Verificação pública (leitura intensiva) servida por réplicas de leitura + CDN com cache longo (certificados são imutáveis)",
+      "issuance_scaling": "Emissão em lote processada por workers stateless (Lambda / Cloud Run) consumindo fila SQS/Pub-Sub — escala horizontal por demanda",
+      "database_strategy": "PostgreSQL para dados transacionais (instituições, billing); DynamoDB/Redis para lookup rápido de certificados por hash; S3 para artefatos imutáveis (PDFs)",
+      "multi_tenancy": "Schema-per-tenant no PostgreSQL para isolamento de dados de instituições com volume moderado; sharding por tenant para grandes volumes",
+      "global_reach": "CDN com edge caching para portal de verificação (latência mínima global); certificados armazenados em S3 com replicação multi-região"
+    },
+    "custos": {
+      "modelo_operacional": "Custos variáveis dominantes: armazenamento S3 (baixo — PDFs ~200KB cada), processamento serverless (por emissão), e-mail transacional (por certificado)",
+      "custos_fixos": "RDS PostgreSQL (instância reservada), Kafka/EventBridge, instâncias mínimas para APIs críticas",
+      "otimizacoes": [
+        "Certificados imutáveis → cache agressivo no CDN elimina custo de compute em verificações",
+        "Emissão serverless elimina custo de idle em períodos sem demanda",
+        "Blockchain opcional somente para clientes premium — evita custo de gas para todos os planos"
+      ],
+      "estimativa_referencia": "Custo operacional estimado de USD 0.003–0.01 por certificado emitido em escala, dominado por storage e e-mail"
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS B2B por assinatura mensal com tiers baseados em volume de certificados emitidos por instituição",
+      "tiers": [
+        "Starter: até 500 cert/mês — foco em pequenas escolas e instrutores independentes",
+        "Growth: até 5.000 cert/mês + white-label do portal de verificação + API access",
+        "Enterprise: volume ilimitado + SLA garantido + ancoragem blockchain + SSO/SAML + suporte dedicado"
+      ],
+      "receitas_adicionais": [
+        "Marketplace de verificação: cobrar verificadores corporativos por chamadas em volume à API de verificação",
+        "Credenciais avançadas (W3C VC + DID): funcionalidade premium para interoperabilidade com carteiras digitais globais",
+        "Integrações LMS como add-on pago",
+        "Plano freemium para instrutores individuais (até 50 cert/mês) como funil de aquisição"
+      ],
+      "metricas_chave": "NRR (Net Revenue Retention), CAC por canal, certificados emitidos/mês como proxy de engajamento, churn por tier"
+    },
+    "stack_sugerida": {
+      "frontend": "Next.js 14 (App Router) + TypeScript — portal de verificação pública (SSG/ISR) e dashboard B2B (SSR); Tailwind CSS + Radix UI",
+      "backend_apis": "Node.js + Fastify (APIs públicas de alta throughput) ou NestJS (domínios complexos com DI); TypeScript em toda a stack",
+      "issuance_workers": "AWS Lambda (Node.js) ou Google Cloud Run para workers de emissão assíncrona — escala a zero",
+      "event_broker": "AWS EventBridge (managed, serverless) para eventos de domínio; Kafka via Confluent Cloud para streaming em escala Enterprise",
+      "databases": "PostgreSQL 16 (RDS Aurora Serverless v2) — dados transacionais; Redis (ElastiCache) — cache e rate limiting; S3 — artefatos de certificados",
+      "crypto_signing": "Node.js crypto nativo (Ed25519) + AWS KMS para custódia de chaves privadas das instituições; HSM CloudHSM para plano Enterprise",
+      "blockchain_optional": "Ethereum L2 (Polygon) ou Hyperledger Fabric para ancoragem — implementado pelo Complicated Subsystem Team",
+      "credentials_standard": "Open Badges 3.0 + W3C Verifiable Credentials + JSON-LD para interoperabilidade",
+      "auth": "Auth0 ou Keycloak — SSO, SAML, LTI 1.3 provider",
+      "infra_iac": "Terraform + AWS CDK; GitHub Actions para CI/CD; Docker + ECS Fargate para serviços persistentes",
+      "observabilidade": "OpenTelemetry (traces + metrics) → Grafana Cloud ou Datadog; Sentry para error tracking; PagerDuty para alertas",
+      "billing": "Stripe Billing com Stripe Meter para cobrança por volume de certificados emitidos"
+    }
+  },
+  "raw": "```json\n{\n  \"value_chain\": \"Estudante conclui curso → Instituição valida aprendizado → Certificado digital é emitido com assinatura criptográfica → Certificado é armazenado em carteira digital → Empregador/terceiro verifica autenticidade via portal público → Confiança é estabelecida sem intermediários\",\n\n  \"bounded_contexts\": [\n    \"Identity & Access: autenticação de estudantes, instituições e verificadores; SSO e federação de identidade\",\n    \"Institution Management: onboarding de instituições, configuração de cursos, gestão de emissores\",\n    \"Learning & Assessment: trilhas de curso, avaliações, registro de progresso e conclusão\",\n    \"Certification Issuance: geração de credenciais, assinatura digital (Ed25519/RSA), hash de integridade, ancoragem blockchain opcional\",\n    \"Credential Wallet: armazenamento e portabilidade de certificados do estudante (Open Badges / W3C Verifiable Credentials)\",\n    \"Public Verification: portal de consulta pública, validação de QR code e hash, API de verificação para terceiros\",\n    \"Notification & Delivery: envio de certificados por e-mail, webhooks para sistemas externos, push notifications\",\n    \"Billing & Subscriptions: planos por instituição, cobrança por volume de certificados emitidos, repasse de taxas\"\n  ],\n\n  \"component_evolution\": {\n    \"genesis\": [\n      \"Ancoragem de certificados em blockchain público (prova de existência imutável)\",\n      \"Interoperabilidade via W3C Verifiable Credentials + DID (Decentralized Identifiers)\"\n    ],\n    \"custom_built\": [\n      \"Motor de assinatura digital de certificados com chave privada da instituição\",\n      \"Pipeline de geração de PDF/SVG com template personalizado por instituição\",\n      \"Portal de verificação pública com validação offline (QR code auto-contido)\"\n    ],\n    \"product\": [\n      \"LMS leve para registro de progresso (Moodle API / Canvas LTI como alternativa)\",\n      \"Gestão de identidade federada (Auth0 / Keycloak como base)\",\n      \"Gestão de assinaturas e billing (Strip"
+}

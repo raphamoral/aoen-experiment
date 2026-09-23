@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A proposta lista custos exclusivamente como percentuais do OpEx total (GPU ~40-50%, storage ~25%, rede ~15%), caracterizando puro FinOps — não há cálculo de custo por operação (ex: 'cada inferência custa R$X'), nenhuma menção a rastreamento de consumo por tenant, e nenhuma conexão entre estrutura de custo e margem por cliente; a presença de 'Subscription & Billing' como bounded context e sharding por clínica são fundações multi-tenant que PODERIAM suportar Unit Economics, mas o projeto não as conecta a qualquer modelo de custo por cliente."
+}

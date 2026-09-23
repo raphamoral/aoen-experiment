@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta implica múltiplos canais (authoring web, dashboard de RH, notificações multicanal, integrações SCORM/xAPI/LTI via API), e a separação em bounded contexts sugere potencial de desacoplamento, mas não há declaração explícita de uma camada de interface agnóstica, nenhum mapeamento formal de perfil de usuário → interface, ausência de estratégia mobile para o aprendiz (o canal de maior alcance em treinamento corporativo) e nenhuma justificativa orientada a mercado para as escolhas de canal."
+}

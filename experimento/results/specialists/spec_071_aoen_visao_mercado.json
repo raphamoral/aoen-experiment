@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 71,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 7,
+  "justificativa": "O mercado-alvo está bem segmentado em três camadas com lógica clara de adoção (produtores → certificadores → importadores), a dor está articulada de forma funcional ('provar origem para acessar mercados premium', 'substituir planilhas e visitas presenciais'), e há diferenciais técnicos implícitos (offline-first, extensibilidade de âncora, QR de verificação para consumidor final); porém faltam tamanho de mercado quantificado (TAM/SAM), comparação explícita com alternativas existentes (e.g. Farmer Connect, Bext360, rastreabilidade blockchain da IBM Food Trust) e articulação do custo real da dor para o comprador caso a prova de origem falhe."
+}

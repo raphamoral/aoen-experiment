@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta inicia como Modular Monolith sem qualquer menção explícita a filas de mensagens, workers assíncronos ou bulkheads para isolar processos pesados como o workflow de certificação — significa que, inicialmente, uma falha ou sobrecarga no processamento de certificação (validação documental, checks regulatórios) pode degradar ou derrubar todo o sistema; a extração para serviços independentes está prevista apenas quando fitness functions sinalizarem gargalo, e a escalabilidade elástica é citada como característica arquitetural desejada mas sem nenhum mecanismo de implementação descrito (sem menção a SQS/RabbitMQ/Kafka, sem circuit breakers à la Bulkhead, sem fallback em caso de falha do worker de certificação)."
+}

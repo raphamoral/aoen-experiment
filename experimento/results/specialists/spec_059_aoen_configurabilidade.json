@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 59,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 9,
+  "justificativa": "A proposta demonstra separação explícita e deliberada entre fluxo fixo no código (fase3_fluxo_fixo) e parâmetros configuráveis por tenant (fase3_parametros_configuraveis), com adapter pattern cobrindo variabilidade de integrações — novo cliente é onboardado via configuração de templates, SLAs, aprovadores, branding e ativação de adapters, sem toque no core; o ponto que impede o 10 é a ausência de descrição do mecanismo de provisionamento de tenant (como a 'nova row no banco' é criada, validada e isolada), deixando implícito algo que deveria ser explícito para garantir zero-code onboarding de ponta a ponta."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma narrativa altamente coesa: a elasticidade irregular de GPU justifica a extração prioritária do serviço de inferência via Strangler Fig; a evolucionabilidade dos modelos é suportada por ONNX (reversibilidade de framework), feature flags (rollout sem big bang) e gate de AUC-ROC no CI/CD; a confiabilidade se ancora no MTTR ≤ 30min e disponibilidade ≥ 99,5%; segurança/LGPD se traduz diretamente em fitness function de auditoria de criptografia e cobertura OWASP; observabilidade fecha o loop com Evidently AI para drift, tracing distribuído para latência P95 e FinOps para custo por exame — a única tensão não resolvida explicitamente é o potencial conflito entre o SLA de custo (R$ 0,80/exame) e os requisitos de redundância que sustentam os 99,5% de disponibilidade, e a seção de reversibilidade aparece truncada, impedindo avaliação completa desse eixo."
+}

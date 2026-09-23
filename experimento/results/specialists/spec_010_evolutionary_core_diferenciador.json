@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 4,
+  "justificativa": "O diferenciador — automação fiscal resiliente para MEIs via camada anti-corrupção sobre múltiplos provedores de NF — está implícito na arquitetura, mas nunca declarado explicitamente como núcleo proprietário; a emissão de NF é inteiramente delegada a terceiros (NFe.io, Focus NFe, Plugnotas) e o MVP nem a inclui, sinalizando que o produto sobrevive sem seu suposto core, o que o aproxima de um agregador bem arquitetado, e não de um produto insubstituível."
+}

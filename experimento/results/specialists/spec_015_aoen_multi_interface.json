@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê cinco interfaces distintas (Dashboard Web, API REST/Webhook, plugin nativo, WhatsApp/Email e API white-label), cada uma justificada por um perfil de usuário e segmento de mercado específico, com a lógica de domínio centralizada na PricingService e as interfaces operando como meros adaptadores, garantindo desacoplamento total e extensibilidade sem alteração do núcleo."
+}

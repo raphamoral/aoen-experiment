@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 45,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "O projeto exibe coerência sistêmica excepcional: o core regulatório (imutabilidade + trilhas de auditoria) justifica diretamente os três mercados-alvo, cada interface da fase 2 mapeia precisamente para um segmento de mercado identificado na fase 1 (Portal de Conformidade → farmacêuticas, App Mobile → motoristas, API ERP → grandes contas), a extensibilidade declarada no core (adaptadores plugáveis, rulesets regulatórios parametrizados) é concretizada pelo Gateway IoT e pelo suporte multi-framework (ANVISA/FDA/EMA), e a Service Layer centralizada é a consequência arquitetural natural da decisão de servir múltiplas interfaces sem duplicar lógica de negócio — cada decisão é ao mesmo tempo consequência das anteriores e premissa das seguintes, com perda mínima de 1 ponto pela descrição da Service Layer truncada, impedindo avaliar se a coerência se sustenta até o fim."
+}

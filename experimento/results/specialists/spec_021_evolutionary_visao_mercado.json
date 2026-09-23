@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 0,
+  "justificativa": "A proposta é integralmente técnico-arquitetural — não há definição de público-alvo, tamanho de mercado, articulação de dor do cliente, diferenciação frente a concorrentes (ex.: Infraspeak, Maximo, Freshdesk Facility) nem proposta de valor explícita; o nome do produto sugere o domínio, mas isso não constitui visão de mercado."
+}

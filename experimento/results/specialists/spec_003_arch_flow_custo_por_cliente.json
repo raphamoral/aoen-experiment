@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura possui contextos de Billing e TenantManagement que indicam consciência de multi-tenancy e monetização, mas não há nenhum mecanismo descrito para rastrear consumo de recursos por tenant, calcular custo por operação (ex: custo do pipeline ML por empresa, custo de anonimização por check-in), ou conectar consumo real ao modelo de precificação — os componentes de infraestrutura (AWS, Datadog, etc.) são listados como itens de commodity arquitetural, não como insumos de um cálculo de margem por cliente."
+}

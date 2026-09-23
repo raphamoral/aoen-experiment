@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — o grafo de matching (empresa × especialista × regulação × jurisdição) com pré-validação de credenciais — está claramente identificado, isolado da camada de interfaces via service layer, e é extensível por design (novas regulações como novos tags, fornecedores de IA substituíveis via adapter pattern), resolvendo um problema real que plataformas genéricas (Upwork, 99Freelas) não resolvem; perde 2 pontos porque a proposta não explicita o que torna o algoritmo de matching tecnicamente superior a um banco de dados bem tagueado com filtros — a diferença entre 'grafo inteligente' e 'busca avançada com filtros' precisa ser articulada para justificar a insubstituibilidade."
+}

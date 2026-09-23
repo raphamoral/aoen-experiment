@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 28,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta descreve isolamento apenas lógico via ComplianceService (mesma aplicação, chamadas síncronas diretas das interfaces ao service layer), sem mencionar filas de mensagens, workers separados, processamento assíncrono ou qualquer mecanismo de fallback — operações pesadas como runScan (varredura contínua de bancos, e-mails, formulários) rodam acopladas ao request path, o que significa que uma falha ou sobrecarga no motor de conformidade derruba o sistema inteiro."
+}

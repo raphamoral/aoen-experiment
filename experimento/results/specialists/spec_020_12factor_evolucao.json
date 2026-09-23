@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra excelente separação em serviços independentes com deploy autônomo, statelessness completo e configuração externalizada via env vars — o que permite adicionar serviços e trocar backing services (ex: SQS→RabbitMQ, RDS→Supabase) com impacto mínimo; perde pontos por não mencionar explicitamente isolamento da lógica de negócio de frameworks internos a cada serviço (ausência de padrão hexagonal/ports-and-adapters), o que pode gerar acoplamento acidental a bibliotecas específicas dentro de cada serviço ao longo do tempo, além de não descrever estratégia de versionamento de API entre serviços — lacuna que pode dificultar evolução de contratos sem coordenação forçada entre times."
+}

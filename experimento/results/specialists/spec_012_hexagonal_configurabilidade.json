@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A arquitetura demonstra intenção multi-tenant clara (thresholds configuráveis via IMonitoringCommandPort, permissões por tenant em IUserManagementPort, limites regulatórios parametrizados por região/indústria em IRegulatoryStandardsPort, billing por tenant em IBillingPort), mas a proposta não descreve explicitamente um modelo de configuração de tenant, um fluxo de onboarding zero-código, nem evidencia que alertas, relatórios e regras de conformidade são inteiramente dirigidos por dados de configuração — deixando em aberto se novos clientes exigiriam apenas uma row no banco ou ainda algum desenvolvimento para casos fora do padrão."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta descreve configurabilidade por ambiente (staging/production/sandbox via variáveis de ambiente), não por tenant — FEATURE_FLAGS são globais ao deploy, não por cliente, e não há menção a tabela de configuração por tenant, regras de compliance configuráveis por cliente, ou mecanismo de onboarding que isole 'novo cliente = nova row', o que significa que clientes com requisitos regulatórios distintos ainda exigiriam desenvolvimento."
+}

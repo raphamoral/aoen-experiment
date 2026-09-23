@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 25,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de otimização de rotas é claramente identificado como núcleo diferenciador, explicitamente isolado via interface agnóstica de algoritmo (OR-Tools, OSRM, Vroom, ML próprio são intercambiáveis sem afetar contratos externos), e resolve um problema real — custo operacional de coleta seletiva — que planilhas e roteirizadores genéricos não resolvem com as restrições específicas do domínio (janelas de coleta, tipos de resíduo, capacidade veicular); perde um ponto por não demonstrar vantagem defensável sobre competidores já verticalizados no setor (ex: Routemaster, Locus) nem indicar onde reside a propriedade intelectual acumulável a longo prazo."
+}

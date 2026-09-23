@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 26,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente, custo por operação de triagem ou rastreamento de consumo por tenant — a abstração RiskAnalysisProvider é justificada como flexibilidade de fornecedor (vendor lock-in), não como instrumento de unit economics, e a ClinicalService Layer centraliza lógica clínica, não métricas de custo; o projeto trata infraestrutura e interfaces funcionais, mas é completamente silente sobre margem por cliente ou custo por análise de IA."
+}

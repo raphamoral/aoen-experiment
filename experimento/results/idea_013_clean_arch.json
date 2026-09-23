@@ -1,0 +1,426 @@
+{
+  "ideia_idx": 13,
+  "ideia": "App de reserva e gestão de espaços de coworking descentralizados",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "descricao": "Objetos de negócio puros, sem dependências externas, contendo regras de negócio críticas da empresa",
+      "lista": [
+        {
+          "nome": "Space",
+          "atributos": [
+            "id",
+            "name",
+            "address",
+            "capacity",
+            "amenities",
+            "operatingHours",
+            "isActive"
+          ],
+          "regras": [
+            "Capacidade deve ser maior que zero",
+            "Horário de operação deve ser válido",
+            "Espaço inativo não pode ser reservado"
+          ]
+        },
+        {
+          "nome": "Reservation",
+          "atributos": [
+            "id",
+            "userId",
+            "spaceId",
+            "resourceId",
+            "startTime",
+            "endTime",
+            "status",
+            "totalPrice"
+          ],
+          "regras": [
+            "Duração mínima de 30 minutos",
+            "endTime > startTime",
+            "Não pode sobrepor reservas existentes",
+            "Cancelamento gratuito até 24h antes"
+          ]
+        },
+        {
+          "nome": "User",
+          "atributos": [
+            "id",
+            "name",
+            "email",
+            "role",
+            "subscriptionPlan",
+            "credits",
+            "verificationStatus"
+          ],
+          "regras": [
+            "Email único no sistema",
+            "Usuário não verificado não pode reservar",
+            "Créditos não podem ser negativos"
+          ]
+        },
+        {
+          "nome": "Resource",
+          "atributos": [
+            "id",
+            "spaceId",
+            "type",
+            "name",
+            "pricePerHour",
+            "capacity",
+            "features"
+          ],
+          "regras": [
+            "Tipo deve ser: DESK | MEETING_ROOM | PRIVATE_OFFICE | EVENT_HALL",
+            "Preço por hora >= 0"
+          ]
+        },
+        {
+          "nome": "Availability",
+          "atributos": [
+            "resourceId",
+            "date",
+            "slots",
+            "blockedPeriods"
+          ],
+          "regras": [
+            "Slots calculados com base em horário de operação menos períodos bloqueados"
+          ]
+        },
+        {
+          "nome": "Subscription",
+          "atributos": [
+            "id",
+            "userId",
+            "plan",
+            "creditsPerMonth",
+            "startDate",
+            "endDate",
+            "status"
+          ],
+          "regras": [
+            "Plano BASIC: 20h/mês",
+            "Plano PRO: 80h/mês",
+            "Plano ENTERPRISE: ilimitado"
+          ]
+        },
+        {
+          "nome": "Payment",
+          "atributos": [
+            "id",
+            "reservationId",
+            "userId",
+            "amount",
+            "currency",
+            "status",
+            "method",
+            "transactionId"
+          ],
+          "regras": [
+            "Pagamento confirmado libera reserva",
+            "Reembolso só para cancelamentos elegíveis"
+          ]
+        },
+        {
+          "nome": "Review",
+          "atributos": [
+            "id",
+            "userId",
+            "spaceId",
+            "reservationId",
+            "rating",
+            "comment",
+            "createdAt"
+          ],
+          "regras": [
+            "Rating entre 1 e 5",
+            "Apenas usuário que completou reserva pode avaliar",
+            "Uma avaliação por reserva"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "descricao": "Casos de uso da aplicação contendo regras de negócio específicas do sistema, orquestram o fluxo de dados entre entidades",
+      "autenticacao_autorizacao": [
+        "RegisterUser: cadastra novo usuário com verificação de email",
+        "AuthenticateUser: valida credenciais e emite token JWT",
+        "RefreshToken: renova sessão ativa",
+        "VerifyEmail: confirma email via token único",
+        "RequestPasswordReset / ResetPassword"
+      ],
+      "gestao_espacos": [
+        "RegisterSpace: operador cadastra novo espaço com recursos",
+        "UpdateSpace: atualiza informações e disponibilidade",
+        "DeactivateSpace: desativa espaço (reservas futuras notificadas)",
+        "AddResource: adiciona recurso a espaço existente",
+        "BlockAvailability: operador bloqueia períodos específicos",
+        "GetSpaceDetails: retorna detalhes completos com disponibilidade"
+      ],
+      "reservas": [
+        "SearchAvailableSpaces: busca por localização, data, tipo e capacidade",
+        "CheckAvailability: verifica disponibilidade em tempo real para recurso/período",
+        "CreateReservation: cria reserva validando disponibilidade e saldo/pagamento",
+        "ConfirmReservation: confirma após pagamento processado",
+        "CancelReservation: cancela com lógica de reembolso condicional",
+        "ModifyReservation: altera horário respeitando regras de negócio",
+        "CheckIn: registra entrada via QR Code no momento da reserva",
+        "CheckOut: finaliza ocupação e libera recurso"
+      ],
+      "pagamentos_financeiro": [
+        "InitiatePayment: inicia transação com gateway externo",
+        "ProcessPaymentCallback: processa webhook de confirmação",
+        "RefundPayment: processa reembolso elegível",
+        "ApplyCredits: desconta créditos de assinatura antes de cobrar",
+        "GenerateInvoice: emite nota fiscal/recibo"
+      ],
+      "assinaturas": [
+        "CreateSubscription: ativa plano de assinatura",
+        "UpgradeSubscription: migra para plano superior",
+        "CancelSubscription: cancela ao final do período vigente",
+        "RenewSubscription: renovação automática mensal",
+        "AllocateMonthlyCredits: distribui créditos mensais"
+      ],
+      "notificacoes": [
+        "SendReservationConfirmation: envia confirmação com QR Code",
+        "SendReservationReminder: lembra usuário 2h antes",
+        "SendCancellationNotice: notifica cancelamento",
+        "SendPaymentReceipt: envia recibo de pagamento"
+      ],
+      "avaliacoes_relatorios": [
+        "SubmitReview: usuário avalia espaço após uso",
+        "GetSpaceRatings: agrega avaliações de um espaço",
+        "GenerateOccupancyReport: relatório de ocupação para operadores",
+        "GenerateRevenueReport: relatório financeiro para operadores",
+        "GetUserHistory: histórico de reservas do usuário"
+      ]
+    },
+    "interface_adapters": {
+      "descricao": "Converte dados entre o formato conveniente para casos de uso/entidades e o formato conveniente para agentes externos (DB, Web, etc.)",
+      "controllers": [
+        "SpaceController: endpoints REST para CRUD de espaços",
+        "ReservationController: endpoints para ciclo de vida de reservas",
+        "AuthController: endpoints de autenticação e registro",
+        "PaymentController: endpoints de pagamento e webhooks",
+        "SubscriptionController: endpoints de gestão de planos",
+        "ReviewController: endpoints de avaliações",
+        "ReportController: endpoints de relatórios e analytics"
+      ],
+      "presenters": [
+        "SpacePresenter: formata Space para resposta da API (com média de rating, disponibilidade resumida)",
+        "ReservationPresenter: formata Reservation (inclui QR Code URL, status humanizado)",
+        "UserPresenter: formata User (remove campos sensíveis, adiciona dados calculados)",
+        "AvailabilityPresenter: formata slots em formato de calendário",
+        "ReportPresenter: formata dados para dashboard e exportação CSV/PDF"
+      ],
+      "gateways_interfaces": [
+        "ISpaceRepository: interface para persistência de espaços",
+        "IReservationRepository: interface para persistência de reservas",
+        "IUserRepository: interface para persistência de usuários",
+        "IPaymentGateway: interface para processamento de pagamentos",
+        "INotificationService: interface para envio de notificações",
+        "IEmailService: interface para envio de emails",
+        "ICacheService: interface para cache de disponibilidade",
+        "IQRCodeService: interface para geração de QR Codes",
+        "IGeolocationService: interface para busca por proximidade"
+      ],
+      "repositories_implementacoes": [
+        "PostgresSpaceRepository implements ISpaceRepository",
+        "PostgresReservationRepository implements IReservationRepository",
+        "PostgresUserRepository implements IUserRepository",
+        "RedisAvailabilityCache implements ICacheService"
+      ],
+      "dtos": [
+        "CreateReservationDTO: valida e sanitiza input de criação de reserva",
+        "SearchSpacesDTO: parâmetros de busca com filtros",
+        "CreateUserDTO: dados de registro com validação de formato",
+        "PaymentWebhookDTO: payload de callback do gateway de pagamento"
+      ],
+      "middleware": [
+        "AuthMiddleware: valida JWT e injeta usuário no contexto",
+        "RateLimitMiddleware: limita requisições por IP/usuário",
+        "ValidationMiddleware: valida DTOs na borda da aplicação",
+        "LoggingMiddleware: registra requisições para observabilidade"
+      ]
+    },
+    "frameworks_drivers": {
+      "descricao": "Camada mais externa — detalhes de implementação que podem ser substituídos sem afetar regras de negócio",
+      "backend_framework": "NestJS (Node.js + TypeScript) — modular, suporte nativo a DI, ideal para Clean Architecture",
+      "banco_de_dados": "PostgreSQL com PostGIS (dados geoespaciais para busca por proximidade) via TypeORM ou Prisma como ORM",
+      "cache": "Redis — disponibilidade em tempo real, sessões, rate limiting, pub/sub para eventos",
+      "mensageria": "Apache Kafka ou AWS SQS — processamento assíncrono de pagamentos, notificações, eventos de domínio",
+      "autenticacao": "Auth0 ou Keycloak — OAuth2/OIDC, MFA, gestão de sessões",
+      "pagamentos": "Stripe (cartão, PIX via integração BR) + Adyen como alternativa enterprise",
+      "notificacoes": "Firebase Cloud Messaging (push) + SendGrid (email) + Twilio (SMS/WhatsApp)",
+      "armazenamento": "AWS S3 ou Cloudflare R2 — fotos de espaços, documentos, QR Codes gerados",
+      "busca_geolocalizacao": "PostGIS + Elasticsearch para busca full-text e geoespacial otimizada",
+      "frontend_web": "Next.js (React) — SSR para SEO, App Router",
+      "app_mobile": "React Native + Expo — iOS e Android compartilhando lógica de negócio",
+      "api_gateway": "AWS API Gateway ou Kong — rate limiting, autenticação centralizada, roteamento",
+      "containers": "Docker + Kubernetes (EKS/GKE) — orquestração e escalonamento",
+      "ci_cd": "GitHub Actions + ArgoCD — pipeline automatizado com testes obrigatórios",
+      "monitoramento": "Datadog ou Grafana Stack (Prometheus + Loki + Tempo) — métricas, logs, tracing",
+      "iac": "Terraform — infraestrutura como código, reproducível e versionada"
+    },
+    "dependency_rule": {
+      "descricao": "Dependências de código-fonte apontam exclusivamente de fora para dentro. Nenhuma camada interna conhece qualquer coisa sobre camadas externas.",
+      "fluxo": "Frameworks & Drivers → Interface Adapters → Use Cases → Entities",
+      "aplicacao_pratica": [
+        "Entities não importam nada além de outras entities ou primitivos da linguagem",
+        "Use Cases importam apenas Entities e interfaces (portas) definidas na própria camada",
+        "Interface Adapters importam Use Cases e Entities, implementam as interfaces/portas",
+        "Frameworks & Drivers importam Interface Adapters e configuram injeção de dependência",
+        "IPaymentGateway é definida na camada de Use Cases; StripeGateway a implementa em Frameworks & Drivers",
+        "IReservationRepository é definida em Use Cases; PostgresReservationRepository implementa em Interface Adapters",
+        "O Use Case CreateReservation depende de IReservationRepository (abstração), nunca do TypeORM diretamente",
+        "Inversão de Dependência: Use Cases definem interfaces que as camadas externas implementam",
+        "Crossing boundaries: dados passam por DTOs/ViewModels simples, nunca objetos de entidade expostos diretamente"
+      ],
+      "boundary_objects": "Dados cruzam fronteiras como DTOs simples (Plain Data Structures), nunca como objetos de domínio ricos, preservando o isolamento das camadas"
+    },
+    "testability": {
+      "descricao": "Cada camada é testável de forma isolada sem necessidade de infraestrutura real, pois dependências externas são abstraídas por interfaces",
+      "unit_tests": {
+        "alvo": "Entities e Use Cases",
+        "abordagem": "Mocks/Stubs das interfaces (IReservationRepository, IPaymentGateway) injetados via constructor injection",
+        "exemplo": "CreateReservationUseCase testado com InMemoryReservationRepository — nenhum banco necessário",
+        "cobertura_alvo": "90%+ nas camadas internas"
+      },
+      "integration_tests": {
+        "alvo": "Interface Adapters (Repositories, Gateways)",
+        "abordagem": "Testcontainers para PostgreSQL/Redis real em container efêmero",
+        "exemplo": "PostgresReservationRepository testado contra banco real descartável"
+      },
+      "e2e_tests": {
+        "alvo": "Fluxos completos via API HTTP",
+        "abordagem": "Supertest + ambiente de staging com serviços mockados (Stripe test mode, SendGrid sandbox)",
+        "exemplo": "Fluxo: buscar espaço → reservar → pagar → receber confirmação → cancelar"
+      },
+      "contract_tests": {
+        "alvo": "Integrações com serviços externos",
+        "abordagem": "Pact para consumer-driven contract testing com Stripe, Auth0",
+        "beneficio": "Detecta breaking changes em APIs externas antes da produção"
+      },
+      "principio_chave": "Se um teste falha por causa de um banco de dados ou rede, é um teste de integração, não unitário. Use Cases sempre testáveis com dependências em memória."
+    },
+    "interfaces": [
+      "ISpaceRepository: findById, findByLocation, save, update, deactivate",
+      "IReservationRepository: findById, findByUserId, findBySpaceId, findOverlapping, save, update",
+      "IUserRepository: findById, findByEmail, save, update",
+      "IPaymentGateway: initiatePayment, confirmPayment, refund, getTransactionStatus",
+      "INotificationService: sendPush, sendSMS",
+      "IEmailService: sendTransactional, sendMarketing",
+      "ICacheService: get, set, delete, invalidatePattern",
+      "IQRCodeService: generate, validate",
+      "IGeolocationService: findNearby, getDistance, geocode",
+      "IEventPublisher: publish(domainEvent)",
+      "ILogger: info, warn, error, debug",
+      "IFileStorage: upload, getSignedUrl, delete",
+      "ISubscriptionService: create, upgrade, cancel, getRemainingCredits",
+      "IReportGenerator: generateOccupancy, generateRevenue, exportCSV, exportPDF"
+    ],
+    "escalabilidade": {
+      "estrategia": "Arquitetura orientada a eventos com microserviços evolutivos — começa monolito modular (Modular Monolith) e extrai serviços conforme demanda",
+      "fase_1_mvp": "Monolito modular com NestJS — módulos bem delimitados refletem bounded contexts (Spaces, Reservations, Payments, Users). Deploy em container único no Kubernetes.",
+      "fase_2_crescimento": "Extração de serviços de alta carga: Availability Service (Redis + cálculo de slots em tempo real), Notification Service (processamento assíncrono via Kafka)",
+      "fase_3_escala": "Microserviços independentes por domínio, cada um com seu banco de dados (Database per Service pattern), comunicação via eventos de domínio",
+      "horizontal_scaling": "Pods Kubernetes com HPA (Horizontal Pod Autoscaler) baseado em CPU/RPS — reservas escalam independente do serviço de relatórios",
+      "disponibilidade_tempo_real": "Redis Pub/Sub para invalidação de cache de disponibilidade — múltiplas instâncias do app sincronizadas em tempo real evitando overbooking",
+      "cqrs": "CQRS para módulo de disponibilidade: Write Model (PostgreSQL para reservas) + Read Model (Redis/Elasticsearch para consultas rápidas de disponibilidade)",
+      "multi_regiao": "Active-Active multi-região com PostgreSQL Global Database (Aurora Global) — latência < 100ms globalmente",
+      "cdn": "Cloudflare CDN para assets estáticos e edge caching de responses de busca de espaços com TTL curto",
+      "database_scaling": "Read replicas PostgreSQL para relatórios e queries pesadas, connection pooling via PgBouncer"
+    },
+    "custos": {
+      "modelo": "Pay-as-you-grow — infra escala junto com receita",
+      "estimativa_mvp": {
+        "descricao": "Até 1.000 usuários ativos",
+        "kubernetes": "$150/mês (3 nodes t3.medium no EKS)",
+        "postgresql": "$80/mês (RDS db.t3.medium Multi-AZ)",
+        "redis": "$50/mês (ElastiCache t3.micro cluster)",
+        "outros": "$70/mês (S3, CloudFront, SES, logs)",
+        "total_estimado": "~$350/mês"
+      },
+      "estimativa_escala": {
+        "descricao": "Até 50.000 usuários ativos",
+        "kubernetes": "$800/mês (8 nodes m5.large)",
+        "postgresql": "$400/mês (RDS db.r5.large + read replica)",
+        "redis": "$200/mês (ElastiCache r6g.large cluster mode)",
+        "kafka": "$300/mês (MSK 3 brokers)",
+        "outros": "$300/mês",
+        "total_estimado": "~$2.000/mês"
+      },
+      "otimizacoes": [
+        "Reserved Instances na AWS (1 ano) — 40% de desconto em EC2/RDS",
+        "Spot Instances para workers assíncronos (notificações, relatórios) — 70% mais barato",
+        "Cache agressivo de disponibilidade no Redis — reduz queries no PostgreSQL em ~60%",
+        "Imagens otimizadas no S3 via Lambda@Edge — reduz CDN egress",
+        "Kafka compaction para reduzir storage de eventos históricos"
+      ],
+      "principais_vetores_de_custo": "Banco de dados (I/O intensivo em disponibilidade), transferência de dados (fotos de espaços), gateway de pagamento (2.9% + $0.30 por transação Stripe)"
+    },
+    "monetizacao": {
+      "modelo_principal": "Marketplace B2B2C — operadores de espaço pagam comissão por reservas + assinaturas de usuários finais",
+      "revenue_streams": [
+        {
+          "nome": "Comissão por Reserva (Take Rate)",
+          "descricao": "10-15% do valor de cada reserva realizada via plataforma",
+          "target": "Operadores de coworking",
+          "projecao": "Principal fonte de receita no início"
+        },
+        {
+          "nome": "Assinaturas de Usuário",
+          "planos": [
+            "BASIC: R$99/mês — 20h de uso em espaços parceiros",
+            "PRO: R$299/mês — 80h + salas de reunião ilimitadas",
+            "ENTERPRISE: R$799/mês — uso ilimitado + relatórios avançados + API access"
+          ],
+          "beneficio": "Receita recorrente previsível (MRR)"
+        },
+        {
+          "nome": "SaaS para Operadores (B2B)",
+          "descricao": "Plataforma white-label para operadores gerenciarem seus espaços",
+          "planos": [
+            "STARTER: R$199/mês — até 5 recursos, dashboard básico",
+            "GROWTH: R$599/mês — recursos ilimitados, analytics, API",
+            "ENTERPRISE: Custom — multi-unidade, integração ERP, SLA 99.9%"
+          ]
+        },
+        {
+          "nome": "Créditos Corporativos",
+          "descricao": "Empresas compram pacotes de créditos para distribuir a funcionários (home office / trabalho híbrido)",
+          "ticket_medio": "R$5.000-R$50.000/mês por empresa"
+        },
+        {
+          "nome": "Serviços Premium",
+          "descricao": "Posicionamento destacado na busca para operadores, relatórios customizados, integrações dedicadas"
+        }
+      ],
+      "metricas_chave": "GMV (Gross Merchandise Value), Take Rate efetiva, MRR, Churn de assinantes, Occupancy Rate médio dos espaços parceiros"
+    },
+    "stack_sugerida": {
+      "linguagem": "TypeScript — tipagem estática essencial para expressar contratos das interfaces Clean Architecture",
+      "backend": "NestJS — injeção de dependência nativa, módulos alinhados com bounded contexts, decorators para AOP",
+      "frontend_web": "Next.js 14+ com App Router — SSR para SEO de páginas de espaços, React Server Components",
+      "mobile": "React Native + Expo — compartilha tipos TypeScript com backend, OTA updates",
+      "banco_principal": "PostgreSQL 16 + PostGIS — transações ACID para reservas, queries geoespaciais nativas",
+      "cache": "Redis 7 — disponibilidade em tempo real, sessões, pub/sub para sincronia de slots",
+      "mensageria": "Apache Kafka — event sourcing de reservas, processamento assíncrono de pagamentos",
+      "busca": "Elasticsearch — busca full-text de espaços por nome/amenidades + geo queries",
+      "autenticacao": "Keycloak (self-hosted) ou Auth0 — OAuth2, OIDC, RBAC, MFA",
+      "pagamentos": "Stripe — checkout embarcado, webhooks confiáveis, suporte a PIX e boleto via extensões BR",
+      "email": "SendGrid — transacional com templates, analytics de abertura",
+      "push": "Firebase Cloud Messaging — iOS e Android unificados",
+      "storage": "AWS S3 + CloudFront — fotos com CDN global, signed URLs para acesso controlado",
+      "containers": "Docker + Kubernetes (EKS) + Helm Charts",
+      "service_mesh": "Istio ou Linkerd — observabilidade, circuit breaking, mTLS entre serviços",
+      "monitoramento": "Grafana + Prometheus + Loki + Tempo — métricas, logs estruturados, distributed tracing",
+      "ci_cd": "GitHub Actions (CI) + ArgoCD (GitOps CD) + Renovate (dependency updates)",
+      "iac": "Terraform + Terragrunt — ambientes reproducíveis, state no S3 + DynamoDB lock",
+      "testes": "Jest (unit/integration) + Testcontainers + Playwright (E2E) + Pact (contract)",
+      "qualidade": "ESLint + Prettier + SonarQube + Husky pre-commit hooks",
+      "documentacao_api": "OpenAPI 3.1 + Swagger UI gerado automaticamente dos decorators NestJS"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"descricao\": \"Objetos de negócio puros, sem dependências externas, contendo regras de negócio críticas da empresa\",\n    \"lista\": [\n      {\n        \"nome\": \"Space\",\n        \"atributos\": [\"id\", \"name\", \"address\", \"capacity\", \"amenities\", \"operatingHours\", \"isActive\"],\n        \"regras\": [\"Capacidade deve ser maior que zero\", \"Horário de operação deve ser válido\", \"Espaço inativo não pode ser reservado\"]\n      },\n      {\n        \"nome\": \"Reservation\",\n        \"atributos\": [\"id\", \"userId\", \"spaceId\", \"resourceId\", \"startTime\", \"endTime\", \"status\", \"totalPrice\"],\n        \"regras\": [\"Duração mínima de 30 minutos\", \"endTime > startTime\", \"Não pode sobrepor reservas existentes\", \"Cancelamento gratuito até 24h antes\"]\n      },\n      {\n        \"nome\": \"User\",\n        \"atributos\": [\"id\", \"name\", \"email\", \"role\", \"subscriptionPlan\", \"credits\", \"verificationStatus\"],\n        \"regras\": [\"Email único no sistema\", \"Usuário não verificado não pode reservar\", \"Créditos não podem ser negativos\"]\n      },\n      {\n        \"nome\": \"Resource\",\n        \"atributos\": [\"id\", \"spaceId\", \"type\", \"name\", \"pricePerHour\", \"capacity\", \"features\"],\n        \"regras\": [\"Tipo deve ser: DESK | MEETING_ROOM | PRIVATE_OFFICE | EVENT_HALL\", \"Preço por hora >= 0\"]\n      },\n      {\n        \"nome\": \"Availability\",\n        \"atributos\": [\"resourceId\", \"date\", \"slots\", \"blockedPeriods\"],\n        \"regras\": [\"Slots calculados com base em horário de operação menos períodos bloqueados\"]\n      },\n      {\n        \"nome\": \"Subscription\",\n        \"atributos\": [\"id\", \"userId\", \"plan\", \"creditsPerMonth\", \"startDate\", \"endDate\", \"status\"],\n        \"regras\": [\"Plano BASIC: 20h/mês\", \"Plano PRO: 80h/mês\", \"Plano ENTERPRISE: ilimitado\"]\n      },\n      {\n        \"nome\": \"Payment\",\n        \"atributos\": [\"id\", \"reservationId\", \"userId\", \"amount\", \"currency\", \"status\", \"method\", \"transactionId\"],\n        \"regras\": [\"Pagamento confirmado libera reserva\", \"Reembolso só para cancelamentos elegíveis\"]\n   "
+}

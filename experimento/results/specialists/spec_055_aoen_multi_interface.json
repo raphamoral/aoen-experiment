@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 55,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê cinco interfaces distintas (Web App, Mobile PWA/React Native, API REST/Webhook, Portal de autoatendimento e Canal de notificações), cada uma com justificativa explícita de perfil de usuário e impacto de mercado, e toda a lógica de negócio está centralizada na ShiftManagementService — permitindo adicionar novas interfaces sem tocar nas regras de negócio."
+}

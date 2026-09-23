@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta menciona isolamento por tabela/tenant e telas de configuração para fontes de dados e alertas, sinalizando consciência do problema, mas não descreve um sistema de configuração estruturado: não há menção a tabelas de parâmetros por tenant, os horizontes de previsão (30/60/90 dias) e limiares de risco parecem hardcoded, e o onboarding de um novo cliente com regras de negócio distintas (ex: pesos de features diferentes, janelas temporais customizadas, réguas de retenção próprias) quase certamente exigiria intervenção em código."
+}

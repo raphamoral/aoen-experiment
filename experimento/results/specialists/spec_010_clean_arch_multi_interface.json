@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "clean_arch",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta apresenta apenas a camada de entidades e casos de uso (Clean Architecture), o que implicitamente suporta desacoplamento de interfaces, mas não define nenhuma interface concreta, não menciona canais de acesso (web, mobile, API), não justifica contextos de uso por perfil de usuário MEI e não há qualquer consideração de alcance de mercado ou estratégia multi-canal."
+}

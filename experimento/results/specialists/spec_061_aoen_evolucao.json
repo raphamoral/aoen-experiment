@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 61,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida: o padrão Strategy nas camadas de matching (regras → vetorial → histórico) permite trocar provedores de IA sem reescrita, o Adapter nas interfaces de canal (WhatsApp → Telegram) isola mudanças de tecnologia, e a service layer com contratos tipados garante que lógica de negócio não vaza para as interfaces — princípios de Clean/Hexagonal Architecture bem aplicados; a nota fica em 8 (e não 9-10) porque a proposta não endereça explicitamente abstração do repositório de dados (trocar banco exigiria mudanças na service layer conforme descrita), não trata crescimento de carga (10→10.000 usuários demanda filas, cache, horizontal scaling — ausentes), o fluxo 'imutável' da fase 3 pode se tornar um gargalo evolutivo se regras de negócio mudarem, e a proposta está truncada, impedindo avaliar os parâmetros configuráveis da fase 3."
+}

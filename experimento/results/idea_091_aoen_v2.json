@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 91,
+  "ideia": "Plataforma de ensino de programação para crianças com IA adaptativa",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de IA adaptativa que avalia o nível cognitivo e de progresso de cada criança em tempo real, gerando trilhas de aprendizado personalizadas, desafios calibrados e feedback contextualizado — sem isso, é apenas mais uma plataforma de exercícios estáticos.",
+    "fase1_mercado": "Primário: pais de crianças entre 6–14 anos que investem em educação complementar (mercado EdTech B2C). Secundário: escolas privadas e redes de ensino que buscam diferencial curricular em tecnologia (B2B institucional). Terciário: franquias educacionais e cursinhos de programação infantil (B2B2C).",
+    "fase1_extensivel": "Sim. O core é a lógica de adaptação pedagógica — o modelo de IA subjacente (OpenAI, Anthropic, Google Gemini, modelo local via Ollama) é uma dependência injetável via interface abstrata `AIProvider`. Trocar o provedor não altera o algoritmo de trilha adaptativa nem o contrato com as interfaces. O currículo (conteúdo, fases, conceitos) é armazenado como dados configuráveis, não hardcoded.",
+    "fase2_interfaces": [
+      "Web App (criança) — ambiente de aprendizado gamificado, editor visual de blocos e/ou código, feedback em tempo real",
+      "Mobile App (criança) — microlearning, desafios diários, modo offline com conteúdo pré-carregado",
+      "Dashboard Web (pais) — acompanhamento de progresso, relatórios de evolução, controle de tempo de uso",
+      "Dashboard Web (professor/escola) — gestão de turmas, atribuição de trilhas, exportação de relatórios pedagógicos",
+      "API REST + Webhooks (integrações) — para LMS escolares (Moodle, Google Classroom), ERPs educacionais e white-label para parceiros"
+    ],
+    "fase2_justificativa_mercado": "Web App (criança) abre o mercado B2C direto com pais. Mobile abre o mercado de consumo casual e retém engajamento diário, aumentando LTV. Dashboard de pais é o gatilho de conversão e retenção no B2C — pais pagam quando veem progresso. Dashboard de professor viabiliza o B2B com escolas — o decisor de compra institucional precisa de controle e relatório. A API e white-label abrem o canal B2B2C com franquias e parceiros, multiplicando distribuição sem custo de aquisição proporcional.",
+    "fase2_service_layer": "Uma Service Layer central (`LearningEngine`, `ProgressService`, `CurriculumService`, `FeedbackService`) expõe contratos de domínio independentes de protocolo. Cada interface consome esses serviços via adaptadores: o Web App via GraphQL, o Mobile via REST com payload compacto, os dashboards via REST com agregações, a API pública via REST versionado. Nenhuma interface contém lógica de negócio — toda regra de adaptação, progressão e avaliação vive exclusivamente na service layer.",
+    "fase3_fluxo_fixo": "1. Criança inicia sessão → 2. Sistema recupera perfil de aprendizado atual → 3. Motor seleciona próximo desafio calibrado ao nível → 4. Criança executa o desafio (código ou blocos) → 5. Sistema avalia a resposta (corretude + padrão de erro) → 6. IA gera feedback contextualizado → 7. Sistema atualiza o modelo de proficiência da criança → 8. Motor recalcula a próxima etapa da trilha → 9. Progresso é persistido e relatório atualizado.",
+    "fase3_parametros_configuraveis": [
+      "curriculo_id: qual currículo seguir (BNCC, Common Core, currículo proprietário da escola)",
+      "faixa_etaria: 6-8, 9-11, 12-14 (ajusta vocabulário, complexidade e UX)",
+      "linguagens_habilitadas: ['scratch', 'python', 'javascript', 'lua']",
+      "ritmo_progressao: conservador | padrão | acelerado",
+      "tom_feedback: lúdico | neutro | formal",
+      "idioma: pt-BR | en-US | es-ES",
+      "tema_visual: padrão | tema_escola | white-label_parceiro",
+      "tempo_sessao_minutos: limite configurável por responsável",
+      "modo_avaliacao: formativo | somativo | misto",
+      "integracao_lms: null | google_classroom | moodle",
+      "modelo_ia: gpt-4o | claude-3-5-haiku | gemini-flash | local",
+      "nivel_inicial_forcado: null | iniciante | intermediario | avancado"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel administrativo: seleciona parâmetros do contrato, define domínio (white-label ou subdomínio), faz upload de logo e paleta (opcional), associa currículo e faixa etária. Sistema gera um `tenant_id` com configuração isolada. Zero deploy, zero código — novo cliente ativo em menos de 10 minutos.",
+    "fase4_core_isolado": "O processo de IA adaptativa é isolado em um worker assíncrono independente (`ai-worker`): recebe eventos de conclusão de desafio via fila de mensagens (Redis Streams ou SQS), executa a avaliação e geração de feedback via provedor de IA, publica o resultado de volta na fila. O serviço principal nunca chama a IA de forma síncrona — persiste o estado 'aguardando feedback' e serve o resultado quando disponível. O sandbox de execução de código (CodeRunner) é um microserviço isolado em container efêmero com limite de CPU/memória por execução.",
+    "fase4_custo_total_cliente": "Custo core (variável): ~$0.002–0.008 por interação de IA (input+output tokens, modelo tier 2); ~$0.001 por execução de código no sandbox. Custo infra proporcional (fixo rateado): servidor de aplicação ~$0.50–1.50/mês por aluno ativo (instâncias compartilhadas com auto-scaling). Armazenamento: ~$0.023/GB/mês (S3/equivalente) — ~50MB por aluno/ano → $0.001/aluno/mês. Banco de dados: $0.10–0.30/aluno/mês (RDS shared ou PlanetScale). Banda/CDN: ~$0.02–0.05/aluno/mês. Custo operacional total estimado: $0.80–2.50/aluno ativo/mês — viabiliza precificação de $8–15/mês por aluno B2C com margem bruta de 70–85%.",
+    "fase4_continuidade": "Se o `ai-worker` falhar: a plataforma continua servindo exercícios do pool pré-gerado e armazenado em cache (trilha de fallback determinística). O feedback é substituído por mensagens pré-escritas por nível de erro. O aluno não percebe interrupção imediata. A fila persiste os eventos — quando o worker volta, processa o backlog sem perda. SLA do core não afeta o SLA da plataforma.",
+    "fase4_manutencao": "O provedor de IA é encapsulado na interface `AIProvider` com implementações intercambiáveis. Para trocar de OpenAI para Anthropic (por exemplo): implementa `AnthropicProvider`, atualiza a variável de configuração `modelo_ia` no painel do tenant ou no `.env` global, faz deploy do worker sem downtime (blue-green). Nenhuma outra parte do sistema é alterada. Testes de contrato validam que a nova implementação respeita o schema de resposta esperado.",
+    "monetizacao": "B2C: assinatura mensal por criança ($8–15/mês) ou anual com desconto — conversão via freemium com 2 semanas grátis, retenção via dashboard de pais mostrando progresso. B2B Escola: licença por aluno/ano ($40–80/aluno/ano) com contrato mínimo de 30 alunos — decisor é coordenador pedagógico, gatilho é relatório de desempenho. B2B2C White-label: taxa de setup + royalty por aluno ativo ($3–5/aluno/mês) para franquias e parceiros. Upsell: relatórios avançados, certificações, tutoria ao vivo com professores parceiros. Monetização desde o dia zero via B2C direto; escala via B2B com LTV 5–10x maior.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com Fastify — performance e ecossistema amplo para EdTech. ORM: Prisma com PostgreSQL (multi-tenant via Row-Level Security). Fila de mensagens: Redis Streams (self-hosted) ou AWS SQS (managed). AI Worker: Node.js isolado consumindo a fila, abstraído via AIProvider interface. CodeRunner: container Docker efêmero por execução (Judge0 open-source ou implementação própria com gVisor). Frontend Web: Next.js 14 (App Router) — SSR para dashboards, CSR para o editor de código interativo. Mobile: React Native (Expo) — code sharing com a web. Editor de blocos: Blockly (Google, open-source) integrado ao editor Python/JS com Monaco Editor. Banco de dados: PostgreSQL (Supabase para MVP, RDS para produção). Cache/sessões: Redis. Storage: AWS S3 ou Cloudflare R2. CDN: Cloudflare. Infra: Railway ou Render para MVP; migração para AWS ECS + Fargate para escala. CI/CD: GitHub Actions. Observabilidade: OpenTelemetry + Grafana Cloud (métricas de custo por tenant integradas)."
+  }
+}

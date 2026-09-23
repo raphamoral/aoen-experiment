@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "arch_flow",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta prevê duas interfaces distintas com justificativa de perfil real (app do paciente via PlanDelivery e PractitionerPortal para profissionais de saúde), e os bounded contexts sugerem desacoplamento implícito da lógica de negócio; porém faltam decisões explícitas de mercado (mobile-first vs. web, API pública para integrações com laboratórios ou wearables) e não há menção a design API-first ou arquitetura headless que garantam formalmente a expansibilidade de canais."
+}

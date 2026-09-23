@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 6,
+  "justificativa": "O modelo menciona assinatura por funcionário ativo com faixa de preço (R$15-30/funcionário/mês) e insinua tiers de planos, mas a proposta está truncada e não detalha os tiers completos, métricas de LTV/CAC/churn, nem a sustentabilidade custo-receita de forma explícita."
+}

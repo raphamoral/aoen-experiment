@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A separação por bounded contexts (Analytics, Anonymization) e ownership de times distintos sugere isolamento lógico, e 'data pipelines' implica algum processamento assíncrono, mas a proposta não menciona explicitamente filas de mensagens (SQS/Kafka), workers independentes, circuit breakers nem fallback caso o pipeline de ML ou o motor de k-anonimato falhe — o isolamento é estrutural no papel, não garantido em tempo de execução."
+}

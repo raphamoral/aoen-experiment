@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra padrão ports-and-adapters bem executado: PredictionEngine como interface tecnologicamente agnóstica, ChurnService como núcleo isolado de lógica de negócio, e todas as interfaces externas (Dashboard, API, Webhooks, SFTP) como adaptadores substituíveis — permitindo trocar qualquer componente sem efeito colateral nas demais camadas; perde pontos porque o pipeline da fase 3 é declarado explicitamente 'imutável no código', criando um ponto de rigidez evolutiva, e a proposta não menciona abstração de persistência (trocar banco de dados exigiria mudanças no ChurnService), deixando a independência de infraestrutura incompleta."
+}

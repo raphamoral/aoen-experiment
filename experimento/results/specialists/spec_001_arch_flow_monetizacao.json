@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A proposta menciona um bounded context de 'Billing & Payments' com referência a modelos de faturamento por entrega e assinatura, mas sem qualquer detalhamento de tiers, valores, métricas de sustentabilidade (LTV, CAC, churn) ou conexão explícita entre o modelo de receita e o valor entregue ao cliente."
+}

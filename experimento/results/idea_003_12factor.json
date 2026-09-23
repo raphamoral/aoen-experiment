@@ -1,0 +1,63 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "12factor",
+  "response": {
+    "codebase": "Monorepo único no Git com múltiplos deploys (staging, production, enterprise-on-prem). Cada serviço vive em subdiretório próprio (api/, worker/, dashboard/, anonymizer/) mas compartilha o mesmo repositório. Tags semânticas marcam cada release. Branches por ambiente são proibidos — variáveis de ambiente diferenciam os deploys.",
+    "dependencies": "Cada serviço declara dependências explicitamente e isoladas: Python usa pyproject.toml + Poetry com lockfile (poetry.lock), Node usa package.json + pnpm-lock.yaml. Containers Docker garantem isolamento total — nenhuma dependência implícita do sistema operacional do host. Imagens base fixadas por digest SHA256. Dependências de sistema (libpq, ffmpeg) declaradas no Dockerfile. CI valida lockfiles a cada push.",
+    "config": "Zero configuração em código. Todas as variáveis sensíveis (DATABASE_URL, SECRET_KEY, SMTP_HOST, ENCRYPTION_KEY, STRIPE_SECRET) injetadas via variáveis de ambiente. Localmente: arquivo .env nunca comitado (.gitignore), carregado via direnv. Em produção: segredos gerenciados pelo Vault (HashiCorp) ou AWS Secrets Manager, injetados em runtime pelo orquestrador (Kubernetes Secrets / ECS Task Definitions). Configurações não-sensíveis (FEATURE_FLAGS, LOG_LEVEL, ANONYMIZATION_THRESHOLD) via env vars também. Validação de todas as vars obrigatórias na inicialização — app falha imediatamente (fail-fast) se alguma estiver ausente.",
+    "backing_services": {
+      "banco_de_dados_relacional": "PostgreSQL — dados estruturados de empresas, usuários, relatórios agregados",
+      "banco_dados_timeseries": "TimescaleDB (extensão Postgres) — séries temporais de indicadores de saúde mental",
+      "cache": "Redis — sessões, rate limiting, filas de jobs, pub/sub para notificações em tempo real",
+      "fila_de_mensagens": "RabbitMQ ou AWS SQS — desacoplamento entre coleta de respostas e pipeline de anonimização",
+      "object_storage": "S3-compatible (AWS S3 ou MinIO on-prem) — relatórios PDF gerados, exports de dados",
+      "email": "SendGrid ou AWS SES — notificações, alertas de threshold para RH",
+      "busca": "Elasticsearch — busca em relatórios anonimizados (sem PII indexado)",
+      "monitoramento": "Prometheus + Grafana — métricas de aplicação; Sentry — rastreamento de erros",
+      "identidade": "Auth0 ou Keycloak — SSO corporativo, SAML 2.0, OIDC para integração com Azure AD / Google Workspace",
+      "cdn": "CloudFront ou Cloudflare — assets estáticos do dashboard"
+    },
+    "build_release_run": {
+      "build": "CI (GitHub Actions) compila código, executa testes unitários e de integração, constrói imagem Docker imutável com versão SHA do commit, publica no registry (ECR ou GHCR). Nenhum segredo na imagem.",
+      "release": "Imagem do build + configuração do ambiente (env vars do Vault) combinadas no momento do deploy. Release é imutável e versionada. Rollback = redeployar release anterior.",
+      "run": "Orquestrador (Kubernetes ou ECS) executa os processos da release. Zero modificação em runtime — qualquer mudança gera novo release. Separação estrita: operadores não editam código em produção."
+    },
+    "processes": "Aplicação roda como conjunto de processos stateless e share-nothing. Processo web (Gunicorn/uvicorn) serve a API REST e GraphQL. Processo worker (Celery) processa anonimização, geração de relatórios e envio de notificações assincronamente. Processo scheduler (Celery Beat) dispara jobs periódicos (relatórios semanais, limpeza de dados expirados). Estado de sessão exclusivamente no Redis. Uploads temporários no S3, nunca no filesystem local. Cada processo pode ser iniciado, parado e substituído independentemente.",
+    "port_binding": "Cada serviço exporta sua interface via porta HTTP/HTTPS configurável por variável de ambiente (PORT). API REST: porta 8000. Dashboard Next.js: porta 3000. Worker: sem porta (consome fila). Service mesh (Istio ou AWS App Mesh) gerencia discovery e mTLS entre serviços. API Gateway (Kong ou AWS API GW) expõe endpoints públicos com rate limiting, autenticação JWT e CORS.",
+    "concurrency": "Escala horizontal por tipo de processo. Workers de anonimização escalam independentemente da API web durante picos de coleta. HPA (Horizontal Pod Autoscaler) no Kubernetes baseado em CPU/memória e tamanho da fila RabbitMQ (via KEDA). API web: 2–20 réplicas. Workers: 1–50 réplicas. Modelo de concorrência dentro do processo: async/await (FastAPI + asyncio) para I/O-bound na API; multiprocessing no Celery para CPU-bound (análise de sentimento, anonimização NLP).",
+    "disposability": "Startup em menos de 5 segundos — healthcheck /health retorna 200 antes de aceitar tráfego (readinessProbe). Shutdown gracioso: SIGTERM drena requests em andamento (grace period 30s), workers finalizam jobs correntes antes de parar. Containers são efêmeros e substituíveis. Estratégia de deploy: Rolling Update com zero downtime (maxSurge=1, maxUnavailable=0). Circuit breakers (Hystrix/Resilience4j) isolam falhas em backing services. Retry com exponential backoff para chamadas a serviços externos.",
+    "dev_prod_parity": "Docker Compose replica em desenvolvimento o mesmo stack de produção (PostgreSQL, Redis, RabbitMQ, MinIO). Mesmas versões de imagem. Seeds de dados realistas anonimizados para desenvolvimento. CI executa testes contra serviços reais (não mocks). Tempo entre commit e deploy em produção menor que 1 hora. Mesmos scripts de migração (Alembic) usados em todos os ambientes.",
+    "logs": "Todos os processos escrevem logs como streams de eventos no stdout/stderr — nunca em arquivos. Formato estruturado JSON (python-json-logger). Nenhum PII nos logs (user_id hasheado, emails mascarados). Coletor de logs (Fluentd/Fluent Bit) agrega streams de todos os containers e encaminha para Elasticsearch + Kibana (ELK) ou Loki + Grafana. Correlation ID propagado em todos os logs de uma requisição. Alertas no Grafana baseados em padrões de log (erro 5xx > threshold, latência p99 > 500ms).",
+    "admin_processes": "Migrações de banco de dados executadas como jobs Kubernetes (kubectl apply -f migration-job.yaml) antes de cada deploy — nunca embutidas no startup da aplicação. Scripts de backfill, limpeza de dados expirados (LGPD compliance), re-anonimização em lote executados como processos one-off via kubectl exec ou ECS run-task. Acesso ao shell de produção via auditoria completa (kubectl exec logado no SIEM). CLI administrativa separada (manage.py) para operações pontuais.",
+    "interfaces": [
+      "API REST (FastAPI) — endpoints para coleta de check-ins de bem-estar dos colaboradores",
+      "API GraphQL — consultas flexíveis de relatórios agregados pelo dashboard de RH",
+      "Dashboard Web (Next.js) — interface para gestores de RH visualizarem relatórios anônimos e trends",
+      "Portal do Colaborador (PWA React) — interface mobile-first para check-ins diários/semanais",
+      "Webhooks — integrações com Slack, Teams, notificando RH sobre alertas de threshold",
+      "API de Integração HRIS — conector com ADP, Workday, BambooHR para sync de estrutura organizacional",
+      "Export API — geração de relatórios em PDF/CSV para compliance e auditoria",
+      "Admin API (restrita por IP + MFA) — gestão de tenants, planos, configurações de anonimização"
+    ],
+    "escalabilidade": "Arquitetura multi-tenant com isolamento por schema PostgreSQL (schema-per-tenant) para empresas menores e database-per-tenant para enterprise (>5000 funcionários). Sharding por tenant_id nas filas RabbitMQ. Cache Redis com namespace por tenant. Relatórios pesados processados assincronamente (job na fila) — usuário recebe notificação quando pronto. Read replicas PostgreSQL para queries analíticas do dashboard. CDN para assets e relatórios PDF cacheados. Capacidade de escalar de 10 empresas a 10.000 empresas sem mudança arquitetural — apenas provisionamento de infra.",
+    "custos": "Modelo de infraestrutura cloud-native (AWS/GCP/Azure) com mix de instâncias On-Demand para web crítico e Spot/Preemptible para workers de batch (70% de economia). Auto-scaling reduz capacidade fora do horário comercial. RDS PostgreSQL Multi-AZ para HA sem gerenciar replicação manual. ElastiCache Redis gerenciado elimina overhead operacional. Estimativa inicial (100 empresas, 10k usuários): ~USD 800-1.500/mês. A 1.000 empresas: ~USD 5.000-8.000/mês com economia de escala. FinOps: tags de custo por tenant para chargeback, budget alerts no 80% do limite mensal.",
+    "monetizacao": "SaaS B2B com precificação por número de colaboradores ativos (seats). Plano Starter: até 100 colaboradores — USD 299/mês. Plano Growth: 101-500 colaboradores — USD 799/mês. Plano Enterprise: 500+ colaboradores — USD negociado + SLA garantido + SSO/SAML + data residency. Add-ons: Módulo de Benchmarking de Setor (+USD 199/mês), API de Integração HRIS (+USD 149/mês), Consultoria de Dados (+USD 500/sessão). Receita recorrente anual (ARR) como métrica norte. Trial gratuito de 30 dias com dados reais — conversão esperada 15-20%.",
+    "stack_sugerida": {
+      "backend_api": "Python 3.12 + FastAPI + Strawberry (GraphQL) + SQLAlchemy 2.0 (async) + Alembic",
+      "workers": "Celery 5 + Redis Broker + Flower (monitoramento)",
+      "anonimizacao_nlp": "spaCy + Presidio (Microsoft) para detecção e redação de PII em respostas abertas",
+      "frontend_dashboard": "Next.js 15 (App Router) + TypeScript + Tailwind CSS + Recharts/Tremor para visualizações",
+      "frontend_colaborador": "React 19 PWA + TypeScript + Vite + TanStack Query",
+      "banco_de_dados": "PostgreSQL 16 + TimescaleDB extension",
+      "cache_filas": "Redis 7 (cache + sessões + Celery broker)",
+      "mensageria": "RabbitMQ 3.13 ou AWS SQS (para deploys AWS-native)",
+      "autenticacao": "Auth0 (multi-tenant, SSO, SAML 2.0) ou Keycloak self-hosted para enterprise",
+      "infra": "Kubernetes (EKS/GKE) + Helm + ArgoCD (GitOps) + Terraform (IaC)",
+      "observabilidade": "Prometheus + Grafana + Loki + Tempo (traces) + Sentry",
+      "ci_cd": "GitHub Actions + Docker + ECR + ArgoCD",
+      "seguranca": "HashiCorp Vault, mTLS via Istio, OWASP ZAP no CI, Trivy (scan de imagens)"
+    }
+  },
+  "raw": "```json\n{\n  \"codebase\": \"Monorepo único no Git com múltiplos deploys (staging, production, enterprise-on-prem). Cada serviço vive em subdiretório próprio (api/, worker/, dashboard/, anonymizer/) mas compartilha o mesmo repositório. Tags semânticas marcam cada release. Branches por ambiente são proibidos — variáveis de ambiente diferenciam os deploys.\",\n\n  \"dependencies\": \"Cada serviço declara dependências explicitamente e isoladas: Python usa pyproject.toml + Poetry com lockfile (poetry.lock), Node usa package.json + pnpm-lock.yaml. Containers Docker garantem isolamento total — nenhuma dependência implícita do sistema operacional do host. Imagens base fixadas por digest SHA256. Dependências de sistema (libpq, ffmpeg) declaradas no Dockerfile. CI valida lockfiles a cada push.\",\n\n  \"config\": \"Zero configuração em código. Todas as variáveis sensíveis (DATABASE_URL, SECRET_KEY, SMTP_HOST, ENCRYPTION_KEY, STRIPE_SECRET) injetadas via variáveis de ambiente. Localmente: arquivo .env nunca comitado (.gitignore), carregado via direnv. Em produção: segredos gerenciados pelo Vault (HashiCorp) ou AWS Secrets Manager, injetados em runtime pelo orquestrador (Kubernetes Secrets / ECS Task Definitions). Configurações não-sensíveis (FEATURE_FLAGS, LOG_LEVEL, ANONYMIZATION_THRESHOLD) via env vars também. Validação de todas as vars obrigatórias na inicialização — app falha imediatamente (fail-fast) se alguma estiver ausente.\",\n\n  \"backing_services\": {\n    \"banco_de_dados_relacional\": \"PostgreSQL — dados estruturados de empresas, usuários, relatórios agregados\",\n    \"banco_dados_timeseries\": \"TimescaleDB (extensão Postgres) — séries temporais de indicadores de saúde mental\",\n    \"cache\": \"Redis — sessões, rate limiting, filas de jobs, pub/sub para notificações em tempo real\",\n    \"fila_de_mensagens\": \"RabbitMQ ou AWS SQS — desacoplamento entre coleta de respostas e pipeline de anonimização\",\n    \"object_storage\": \"S3-compatible (AWS S3 ou MinIO on-prem) — relatórios PDF gerados, export"
+}

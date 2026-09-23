@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "O mercado-alvo (operadoras de telecom) é inferível apenas pelo nome do produto, mas a proposta submetida é integralmente arquitetural/técnica — não há articulação da dor do cliente, estimativa de tamanho de mercado, diferenciação frente a concorrentes (ex: Salesforce Einstein, DataRobot, soluções in-house) nem proposta de valor explícita, tornando a visão de mercado praticamente ausente."
+}

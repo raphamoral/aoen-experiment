@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta menciona filas independentes por loja e workers paralelos (isolamento lógico com potencial físico), além de indicar que o scraping pode virar serviço separado — mas não especifica isolamento físico real do motor de regras (processo/container dedicado), não descreve fallback em caso de falha dos workers, e o 'pode virar serviço separado' indica que o componente mais pesado (scraping) ainda não está isolado de fato."
+}

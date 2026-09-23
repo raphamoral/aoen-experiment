@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 67,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "A proposta demonstra separação explícita e deliberada entre fluxo fixo no código (fase3_fluxo_fixo) e parâmetros configuráveis por tenant (fase3_parametros_configuraveis), com painel administrativo dedicado à gestão de configurações por cliente — o que indica onboarding por configuração sem deploy; perde pontos pela lista de parâmetros configuráveis truncada (impossível verificar cobertura completa) e pela ausência de menção a mecanismos de validação, versionamento ou schema store das configurações por tenant, que são os elementos que consolidariam a nota 10."
+}

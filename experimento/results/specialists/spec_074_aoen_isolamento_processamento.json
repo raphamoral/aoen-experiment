@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 74,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta introduz interfaces de abstração (PatentSearchPort, AIClassifierPort) que criam uma costura lógica útil, mas em nenhum momento menciona processamento assíncrono, filas de mensagens, workers isolados ou fallback para os processos computacionalmente pesados (avaliação de patenteabilidade por IA, busca em bases USPTO/EPO/WIPO) — que, como descritos, aparecem acoplados e síncronos dentro da mesma camada de serviços de domínio."
+}

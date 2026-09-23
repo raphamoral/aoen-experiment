@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "A arquitetura contém dois sinais positivos — a ClinicalService centralizada menciona explicitamente 'mesmo custo mensurável' por operação e o Dashboard Administrativo inclui 'gestão de uso e faturamento' — o que indica consciência da rastreabilidade, mas o projeto não apresenta nenhum cálculo real de custo por operação (ex: 'inferência = R$X + storage = R$Y'), não descreve como o custo por tenant é mensurado na prática, e não conecta esse custo ao modelo de precificação para derivar margem por cliente; ou seja, a arquitetura habilita o cálculo mas não o implementa."
+}

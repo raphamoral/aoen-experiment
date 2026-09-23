@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 8,
+  "justificativa": "O projeto prevê seis interfaces distintas, cada uma justificada por um perfil real de usuário (gestor, transportadora, destinador, motorista em campo, público, auditor), com o app mobile direcionado especificamente ao contexto offline/campo — o que demonstra raciocínio de alcance de mercado; perde pontos por não explicitar formalmente o desacoplamento da lógica de negócio das interfaces (ex: menção a uma API REST/GraphQL centralizada que todas consomem), deixando essa inferência implícita na arquitetura."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 4,
+  "justificativa": "Existe separação inicial sensata (worker de emissão isolado, JSONB para variações de prefeitura), mas a lógica de negócio está acoplada diretamente ao Express e às APIs externas de NFS-e sem camada anti-corrupção, o banco está vinculado ao Supabase sem abstração de repositório, e a estratégia de escala ('separo quando crescer') é reativa — não há interfaces ou contratos definidos que permitam substituir componentes sem modificar código existente."
+}

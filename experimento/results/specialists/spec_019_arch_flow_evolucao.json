@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A proposta demonstra maturidade evolutiva sólida — DDD com bounded contexts bem delimitados, mapeamento Wardley (Genesis→Commodity) explicitando o que deve ser construído vs. comprado, e opções de substituição listadas para componentes genéricos (Auth0/Cognito, Stripe/Pagar.me, Twilio/Vonage) — mas perde pontos por três lacunas críticas: (1) ausência explícita de camadas anticorrupção (ACL) entre os contextos, deixando incerto se a lógica de negócio realmente é isolada de SDKs externos; (2) o 'Fluxo de confirmação interativa via WhatsApp' classificado como custom-built introduz acoplamento direto a uma API de terceiro no coração do domínio de Agendamento, reduzindo a reversibilidade exatamente onde o risco é maior; e (3) a estratégia de comunicação entre contextos (eventos de domínio vs. chamadas síncronas) não foi definida, o que é a principal variável que determinará se os contextos crescem independentemente ou convergem em acoplamento temporal ao longo do tempo."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "O núcleo do sistema é coeso: o ciclo gamificação→reputação→tier→acesso a Challenges→Rewards se reforça mutuamente, a exigência de evidências para severidades altas conecta-se ao cálculo de Reward, e a penalização de reputação por bugs inválidos protege o bountyPool — porém há lacunas que quebram a coerência plena: a relação entre totalPoints e reputationScore é ambígua (métricas distintas ou a mesma?), o mecanismo de matching entre Project.requiredSkills e Tester.skills não está especificado, a avaliação automática dos Challenge.objectives carece de ligação explícita com BugReport, e a proposta está truncada (Reward rules incompletas), deixando o ciclo financeiro sem fechamento arquitetural."
+}

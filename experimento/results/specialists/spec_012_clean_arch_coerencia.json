@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 6,
+  "justificativa": "O núcleo do domínio forma uma cadeia narrativa coerente (Industry → Sensor → AirQualityReading → Alert → Threshold → Report → User), mas há tensões que enfraquecem o todo: Threshold tem papel duplo ambíguo (entidade global regulatória e atributo por sensor), Alert carrega sensorId redundante (derivável via readingId), SubscriptionPlan é referenciado em Industry sem definição própria, e Report embute readings diretamente — contradizendo implicitamente a necessidade de escala de um SaaS industrial com alto volume de leituras contínuas."
+}

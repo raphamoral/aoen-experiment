@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 92,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta estabelece boas separações arquiteturais (service layer, conectores como plugins intercambiáveis, fluxo principal fixo) e indica extensibilidade sem tocar no núcleo, mas não descreve explicitamente um mecanismo de configuração por tenant — não há menção a tabelas de configuração por cliente, feature flags por tenant, thresholds configuráveis por organização ou processo de onboarding zero-código; adicionar um novo conector ou ajustar regras de recomendação para um cliente específico ainda parece exigir desenvolvimento, não apenas configuração."
+}

@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 1,
+  "ideia": "SaaS de gestão de frotas para entregas last-mile com rastreamento em tempo real",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de rastreamento em tempo real com orquestração de estado da frota: recebe posições GPS contínuas dos motoristas, calcula ETA dinâmico, detecta desvios de rota e anomalias operacionais, e mantém o estado centralizado de cada entrega. Sem este núcleo, o produto é apenas um cadastro de veículos.",
+    "fase1_mercado": "Empresas de logística last-mile de pequeno e médio porte (10–500 veículos) que hoje gerenciam frotas por WhatsApp ou planilhas: transportadoras regionais, e-commerces com frota própria, operações de food delivery não-franqueadas, empresas de distribuição farmacêutica e de insumos.",
+    "fase1_extensivel": "Sim. O core é abstraído em três interfaces internas substituíveis: (1) LocationProvider — abstrai GPS nativo do celular, rastreadores veiculares (Teltonika, Suntech) ou API de terceiros; (2) RoutingEngine — abstrai Google Maps, HERE, OSRM ou engine própria; (3) NotificationBus — abstrai SMS, Push, WhatsApp Business API ou webhook do cliente. Trocar qualquer fornecedor exige mudar apenas o adaptador, não o núcleo.",
+    "fase2_interfaces": [
+      "Dashboard Web (gestores e despachantes): visão em tempo real do mapa, KPIs operacionais, re-roteirização manual",
+      "App Mobile para motoristas (Android-first): recebimento de ordens, navegação guiada, confirmação de entrega com foto/assinatura, modo offline",
+      "Portal de rastreamento para o destinatário final (link público, sem login): posição do entregador e ETA ao vivo",
+      "API REST + Webhooks para integração com ERP/WMS/e-commerce do cliente",
+      "Painel de controle white-label embeddável: iframe ou SDK para clientes que vendem rastreamento como feature própria"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre gestores operacionais que pagam pela visibilidade e controle. App Mobile abre o mercado de motoristas autônomos e frotas sem rádio. Portal do destinatário final reduz SAC em até 40% (abre mercado de e-commerce que compra pela redução de custo de atendimento). API/Webhooks abre empresas com TI interna que recusam SaaS fechado. White-label abre revendedores e integradores que multiplicam a base sem custo de aquisição direta.",
+    "fase2_service_layer": "Uma camada de serviços (FleetService, DeliveryService, TrackingService, NotificationService) exposta via API GraphQL/REST interna é consumida por todas as interfaces. Nenhuma interface contém lógica de negócio: o App Mobile não calcula ETA, o Dashboard não decide re-roteirização — ambos chamam os mesmos serviços. Isso permite adicionar um novo canal (ex: Alexa, Telegram bot) sem duplicar regras.",
+    "fase3_fluxo_fixo": "O ciclo de vida da entrega é fixo no código: Ordem criada → Motorista atribuído → Coleta confirmada → Em rota (loop de atualização GPS) → Geofence de destino ativado → Entrega tentada → [Sucesso com comprovante | Insucesso com motivo] → Ordem finalizada → Métricas calculadas. Este fluxo de estados é imutável; o que varia são os parâmetros de cada etapa.",
+    "fase3_parametros_configuraveis": [
+      "Frequência de ping GPS por tipo de operação (ex: 10s em entrega, 60s em trânsito vazio)",
+      "Regras de SLA: janela de entrega, tempo máximo por parada, prazo total",
+      "Geofences: raio de detecção de chegada/saída por ponto de entrega",
+      "Templates de notificação por evento (texto, idioma, canal — SMS/Push/WhatsApp)",
+      "Tipos de comprovante exigidos por operação (foto obrigatória, assinatura, código PIN)",
+      "Integrações ativas: webhook URL, formato de payload (REST/SOAP), autenticação",
+      "Regras de re-tentativa de entrega: quantidade, janela de reagendamento",
+      "Política de visibilidade do rastreamento público (ativar/desativar link, tempo de expiração)",
+      "Tipos de veículo e capacidades (moto, van, caminhão) com regras de lotação",
+      "Fuso horário, moeda e unidades de distância por operação"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro de Tenant com seu conjunto de parâmetros via painel de configuração ou API de provisionamento. Sem deploy, sem branch, sem migration manual. O onboarding flui: (1) criar tenant, (2) importar frota via CSV/API, (3) configurar integrações via formulário, (4) ativar interfaces desejadas. Tempo estimado: menos de 1 hora operacional.",
+    "fase4_core_isolado": "O processo de ingestão e processamento de posições GPS (TrackingWorker) é isolado em workers assíncronos separados (ex: processos Node.js com Bull/BullMQ ou serviço Python com Celery). Recebe eventos de localização via fila (Redis Streams ou Kafka), processa ETA, detecta geofences e publica eventos de estado — tudo desacoplado do servidor HTTP principal. Escala horizontalmente por volume de veículos ativos, independentemente do resto.",
+    "fase4_custo_total_cliente": "Custo mensal estimado por cliente com 50 veículos ativos: (1) Core de rastreamento: ~$8–15 (Redis para estado em tempo real + workers compute); (2) Routing/Maps API: ~$10–20 (Google Maps ou HERE — depende de chamadas de ETA e re-roteirização); (3) Banco de dados (histórico GPS, ordens): ~$5–10 (PostgreSQL com particionamento por tenant + TimescaleDB para séries temporais); (4) Notificações: ~$3–8 (WhatsApp Business API ou SMS gateway, variável por volume); (5) CDN e storage (comprovantes fotográficos, ~500 fotos/mês × 500KB): ~$2–4; (6) Infra proporcional (API server, load balancer, monitoring): ~$5–10. Total estimado: $33–67/mês por cliente de 50 veículos → margem viável com plano a partir de $149/mês.",
+    "fase4_continuidade": "O servidor HTTP (Dashboard, API, App) continua operando mesmo que o TrackingWorker falhe: entregadores continuam recebendo ordens, gestores veem o último estado conhecido com timestamp de desatualização visível, e a fila de eventos GPS acumula para reprocessamento quando o worker reinicia. O banco de dados é a fonte de verdade — o worker é apenas um processador, não um guardian de estado.",
+    "fase4_manutencao": "O TrackingWorker implementa a interface ILocationProcessor. Trocar de OSRM para Google Maps, ou de Redis Streams para Kafka, é trocar o adaptador atrás da interface — sem parar o serviço, via feature flag por tenant. A migração de tecnologia de core pode ser feita em shadow mode: novo processador roda em paralelo comparando resultados antes de assumir o tráfego real.",
+    "monetizacao": "Modelo híbrido: (1) SaaS por veículo ativo/mês em tiers (Starter $99/mês até 15 veículos, Growth $249/mês até 75 veículos, Scale $499/mês até 200 veículos); (2) Overage por veículo adicional fora do tier; (3) Add-ons pagos: white-label (+$99/mês), integração ERP prioritária (+$149 setup), API de alta frequência (+$79/mês); (4) Revenue share opcional com revendedores que trazem clientes via white-label. Precificação ancora no custo operacional mensurável da Fase 4 — margem bruta alvo de 70–75%.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) para API HTTP + Python para workers de processamento pesado (geofencing, ETA). Filas: Redis com BullMQ (início) → Kafka (escala). Banco de dados: PostgreSQL + TimescaleDB para séries temporais GPS. Cache de estado em tempo real: Redis. Frontend Web: React + Mapbox GL JS. App Mobile: React Native (Android prioritário). Infra: Railway ou Render (início) → AWS ECS com Fargate (escala). CDN e storage: Cloudflare R2. Observabilidade: OpenTelemetry + Grafana. Multi-tenancy: Row-level security no PostgreSQL."
+  }
+}

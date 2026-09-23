@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado no trio CertificationWorkflow + ComplianceRegulatory + score de confiabilidade — sem isso o produto é apenas um OLX de equipamentos médicos — e é extensível por ser agnóstico de inspetor e configurável por categoria; perde 2 pontos porque a IA de avaliação por visão computacional e a predição de life cycle estão em 'genesis' sem detalhamento de como esse núcleo se torna insubstituível frente a laudos manuais tradicionais."
+}

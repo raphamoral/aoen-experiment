@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O público-alvo é inferível (lojistas de e-commerce com integrações Shopify/VTEX/Magento) e há indícios do mercado brasileiro (carriers locais), mas a proposta não articula a dor do cliente, não quantifica o tamanho do mercado, não apresenta diferenciação frente a concorrentes e não constrói uma proposta de valor explícita — o documento é quase integralmente técnico-arquitetural."
+}

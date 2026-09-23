@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva exemplar: bounded contexts bem definidos desde o início, decisões reversíveis explicitamente catalogadas com abstrações (repositórios, adaptadores de fila, Terraform), fitness functions automatizadas que guiam extrações para microsserviços apenas quando necessário, Strangler Fig para integrações legadas e API versionada para nunca quebrar contratos — a única lacuna que impede nota máxima é a ausência de declaração explícita sobre inversão de dependências (portas e adaptadores/hexagonal) como princípio estrutural que garantiria que a lógica de negócio de cada bounded context seja genuinamente agnóstica a frameworks externos."
+}

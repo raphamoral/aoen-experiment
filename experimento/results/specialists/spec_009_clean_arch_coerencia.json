@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "O modelo de domínio apresenta coerência interna sólida — a cadeia Equipment → Certification → Listing → Transaction forma um pipeline lógico onde cada entidade justifica a existência da próxima, a conformidade regulatória (ANVISA) atravessa consistentemente Equipment, Seller e Inspector, e as regras de negócio se reforçam mutuamente (certificação válida habilita listagem, Inspector não pode ter vínculo com vendedor protege a integridade da certificação, rating mínimo do Seller fecha o ciclo de qualidade) — porém a proposta está truncada na entidade Transaction e apresenta exclusivamente a camada de domínio, sem decisões de infraestrutura, tecnologia ou casos de uso, o que impede avaliar se as escolhas arquiteturais de mais alto nível são igualmente coesas com os objetivos declarados."
+}

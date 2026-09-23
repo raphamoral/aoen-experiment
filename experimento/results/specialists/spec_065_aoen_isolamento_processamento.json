@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 65,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A arquitetura define um pipeline lógico plugável (SignalCollector → Aggregator → InsightEngine) que sugere separação de responsabilidades, mas não há qualquer menção a isolamento físico: nenhuma fila de mensagens (Kafka, SQS, RabbitMQ), nenhum worker separado, nenhum circuit breaker e nenhum fallback explícito — o ApplicationService centralizado implica que análise pesada, agregação e detecção de anomalias rodam no mesmo processo da aplicação, tornando uma falha ou sobrecarga no InsightEngine capaz de degradar todas as interfaces simultaneamente."
+}

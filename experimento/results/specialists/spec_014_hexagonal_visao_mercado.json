@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta descreve com riqueza técnica o que o produto faz (orquestração de tradução simultânea corporativa), mas não articula quem exatamente é o comprador-alvo, qual dor específica o motiva a pagar, qual o tamanho do mercado endereçável nem como se diferencia de soluções já estabelecidas como Kudo, KUDO, Interprefy ou os recursos nativos do Microsoft Teams/Zoom."
+}

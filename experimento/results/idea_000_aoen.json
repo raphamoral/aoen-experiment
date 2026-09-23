@@ -1,0 +1,36 @@
+{
+  "ideia_idx": 0,
+  "ideia": "Plataforma de telemedicina veterinária com IA para diagnóstico por imagem",
+  "abordagem": "aoen",
+  "response": {
+    "fase1_core": "Modelo de IA treinado para diagnóstico por análise de imagens veterinárias (detecção de patologias, lesões, anomalias) — o diferenciador que reduz fricção diagnóstica e custo operacional",
+    "fase1_mercado": "Mercado primário: clínicas veterinárias de médio porte (5-50 veterinários). Mercado secundário: veterinários autônomos. Mercado terciário: tutores de animais (diagnóstico preliminar)",
+    "fase1_extensivel": "Sim. O core IA é um serviço encapsulado: trocar modelo, fornecedor (OpenAI, Anthropic, modelo local) ou algoritmo sem afetar o resto da plataforma. Interface: /analyze-image",
+    "fase2_interfaces": [
+      "Portal web para veterinários (diagnóstico interativo, histórico, prescrições)",
+      "App mobile para tutores (envio de fotos, segunda opinião, agendamento)",
+      "Dashboard para gestores de clínicas (faturamento, auditoria, KPIs)",
+      "API REST para integração com prontuário eletrônico veterinário (PEV)"
+    ],
+    "fase2_justificativa_mercado": "Web alcança veterinários (workflow profissional). Mobile alcança tutores (acessibilidade, mercado de massa). Dashboard alcança gestores (retenção, upsell). API alcança clínicas com sistemas legados (lock-in, stickiness)",
+    "fase2_service_layer": "AnalisysService desacoplada: recebe imagem → chama IA core → retorna JSON. Todas as interfaces consomem o mesmo serviço. Camada de autenticação/permissões antes de chegar ao core",
+    "fase3_fluxo_fixo": "1. Upload/captura de imagem → 2. Validação (formato, tamanho, privacidade) → 3. Fila de processamento → 4. Análise IA → 5. Normalização de resultado → 6. Armazenamento de laudo → 7. Entrega ao cliente",
+    "fase3_parametros_configuraveis": [
+      "Protocolos de diagnóstico por especialidade (ortopedia, dermatologia, odontologia)",
+      "Templates de laudo (branding, campos obrigatórios por cliente)",
+      "Limites de análise mensal (throttling por tier)",
+      "Classificação de confiança mínima aceita (threshold de rejeição)",
+      "Integração com sistema de agendamento (Clínica A usa Vet-Soft, Clínica B usa Vetmanager)",
+      "Roteamento automático para veterinário especialista",
+      "Retenção de imagens (LGPD/compliance)"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo environment variable com chave de API + config JSON. Sem deploy. Sem código. Onboarding: 1. Criar tenant no banco → 2. Gerar credenciais → 3. Upload de template de laudo → 4. Sincronizar especialidades → 5. Pronto",
+    "fase4_core_isolado": "Serviço de análise de imagem IA em worker separado (Python + GPU). Fila: RabbitMQ/Celery. API principal não toca em processamento pesado. Imagens vão para blob storage (S3)",
+    "fase4_custo_variavel": "Por análise realizada: análise simples = U$0,50 (classificação). análise complexa com IA multimodal = U$2,00. Agregado em relatório mensal por cliente",
+    "fase4_continuidade": "Fila de processamento persiste análises. Se worker cair, análises esperam. API continua funcionando (retorna 'pendente'). Worker reinicia e processa backlog. Laudo é entregue quando pronto",
+    "fase4_manutencao": "Trocar modelo de IA: novo worker com nova imagem Docker, dirigido para nova fila. Clientes migrando gradualmente. Versão anterior segue operando até sunset. Zero downtime",
+    "monetizacao": "1. Tier por análises/mês (Básico: 100 análises/mês = U$99). 2. Tier por especialidades desbloqueadas. 3. Add-on: integração com PEV (U$500/mês). 4. Marketplace de templates de laudos (curadores externos ganham comissão). 5. API de terceiros (paga por call)",
+    "stack_sugerida": "Backend: FastAPI (Python) + PostgreSQL + Redis. Worker: Celery + TensorFlow/PyTorch + GPU. Frontend: React (web) + React Native (mobile). Infra: Docker + Kubernetes (worker auto-scaling) + AWS S3 (imagens) + CloudFront (delivery). DevOps: GitHub Actions + Terraform. Observabilidade: Prometheus + Grafana + Sentry"
+  },
+  "raw": "```json\n{\n  \"fase1_core\": \"Modelo de IA treinado para diagnóstico por análise de imagens veterinárias (detecção de patologias, lesões, anomalias) — o diferenciador que reduz fricção diagnóstica e custo operacional\",\n  \"fase1_mercado\": \"Mercado primário: clínicas veterinárias de médio porte (5-50 veterinários). Mercado secundário: veterinários autônomos. Mercado terciário: tutores de animais (diagnóstico preliminar)\",\n  \"fase1_extensivel\": \"Sim. O core IA é um serviço encapsulado: trocar modelo, fornecedor (OpenAI, Anthropic, modelo local) ou algoritmo sem afetar o resto da plataforma. Interface: /analyze-image\",\n  \"fase2_interfaces\": [\n    \"Portal web para veterinários (diagnóstico interativo, histórico, prescrições)\",\n    \"App mobile para tutores (envio de fotos, segunda opinião, agendamento)\",\n    \"Dashboard para gestores de clínicas (faturamento, auditoria, KPIs)\",\n    \"API REST para integração com prontuário eletrônico veterinário (PEV)\"\n  ],\n  \"fase2_justificativa_mercado\": \"Web alcança veterinários (workflow profissional). Mobile alcança tutores (acessibilidade, mercado de massa). Dashboard alcança gestores (retenção, upsell). API alcança clínicas com sistemas legados (lock-in, stickiness)\",\n  \"fase2_service_layer\": \"AnalisysService desacoplada: recebe imagem → chama IA core → retorna JSON. Todas as interfaces consomem o mesmo serviço. Camada de autenticação/permissões antes de chegar ao core\",\n  \"fase3_fluxo_fixo\": \"1. Upload/captura de imagem → 2. Validação (formato, tamanho, privacidade) → 3. Fila de processamento → 4. Análise IA → 5. Normalização de resultado → 6. Armazenamento de laudo → 7. Entrega ao cliente\",\n  \"fase3_parametros_configuraveis\": [\n    \"Protocolos de diagnóstico por especialidade (ortopedia, dermatologia, odontologia)\",\n    \"Templates de laudo (branding, campos obrigatórios por cliente)\",\n    \"Limites de análise mensal (throttling por tier)\",\n    \"Classificação de confiança mínima aceita (threshold de rejeição)\",\n    \"Integração com siste"
+}

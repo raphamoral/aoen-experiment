@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A proposta demonstra estrutura técnica coerente com entidades como Subscription, Organization e plan/monthlyMinutes que sugerem intenção de monetização por assinatura com limites de uso, mas não detalha tiers com valores, não conecta explicitamente custo de tradução (por minuto/idioma/provider) à receita, e não menciona métricas de negócio como MRR, churn, LTV ou CAC."
+}

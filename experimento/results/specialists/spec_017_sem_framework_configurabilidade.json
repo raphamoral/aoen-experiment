@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "O fluxo principal é genérico e novo cliente entra com dados (nova row de instituição), o que é correto — mas a proposta não descreve nenhuma camada de configuração por tenant: sem templates de certificado configuráveis, sem feature flags por plano, sem campos customizáveis por instituição, sem behaviors distintos por cliente; qualquer diferenciação além do conteúdo dos dados (logo, cores, campos extras no certificado) exigiria alteração de código."
+}

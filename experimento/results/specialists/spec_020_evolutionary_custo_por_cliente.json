@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "evolutionary",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A arquitetura menciona multi-tenancy como característica estrutural (isolamento de dados) e auditabilidade para rastrear pagamentos de recompensas a testers, mas nenhum desses elementos endereça custo por cliente: não há cálculo de custo por operação/transação, nenhuma menção a rastreamento de consumo de recursos por tenant, nenhum modelo de precificação conectado a margem por cliente — a observabilidade descrita serve métricas de gamificação, não unit economics."
+}

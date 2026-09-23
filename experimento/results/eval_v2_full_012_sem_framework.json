@@ -1,0 +1,16 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "sem_framework",
+  "scores": {
+    "core_diferenciador": 5,
+    "visao_mercado": 7,
+    "multi_interface": 8,
+    "configurabilidade": 4,
+    "isolamento_processamento": 6,
+    "custo_infraestrutura": 4,
+    "custo_por_cliente": 2,
+    "monetizacao": 3,
+    "evolucao": 6,
+    "coerencia": 7
+  }
+}

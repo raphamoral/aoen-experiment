@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "clean_arch",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "A proposta identifica implicitamente um público B2B (estabelecimentos de saúde, empresas com CNPJ e licença ANVISA) por meio das entidades arquiteturais, mas não articula explicitamente a dor do cliente, não apresenta tamanho de mercado, não compara com alternativas existentes e não formula uma proposta de valor — o documento é essencialmente técnico, sem camada estratégica de mercado."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O produto identifica claramente seu núcleo diferenciador nos componentes 'custom' e 'genesis' (PolicyEngine configurável, DispositionDecision híbrido e motor de fraude via ML), separando-os explicitamente de commodities, mas ainda falta evidenciar por que essas combinações são insubstituíveis frente a soluções como Loop Returns ou Returnly, e o núcleo de disposição preditiva — o real candidato a core — não está suficientemente isolado como bounded context próprio nem tem sua extensibilidade (multi-tenant, multi-vertical) formalmente descrita."
+}

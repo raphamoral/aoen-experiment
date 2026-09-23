@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador — a cadeia criptográfica de confiança (AssinaturaDigitalPort + CredencialRepository + VerificarCertificadoUseCase) que permite verificação pública sem login — está presente e bem isolado pela arquitetura hexagonal, é extensível (RSA/ECDSA, Polygon/Ethereum intercambiáveis) e resolve um problema real de credibilidade de cursos livres que PDFs tradicionais não resolvem; perde pontos por não nomear explicitamente esse conjunto como 'motor de confiança' verificável, por tornar a ancoragem blockchain opcional (diluindo o diferenciador mais forte) e por não articular na proposta por que alternativas como Credly ou Accredible falham nesse contexto específico."
+}

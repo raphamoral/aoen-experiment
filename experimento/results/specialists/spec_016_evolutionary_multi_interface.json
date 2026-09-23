@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta identifica o MerchantPortal como bounded context e lista integrações com marketplaces, transportadoras e ERPs, mas trata interfaces como preocupação técnica de integração — não há menção explícita a interfaces distintas por perfil de usuário (lojista admin, operador de CD, consumidor final, agente de transportadora), ausência total de estratégia mobile/web/API para diferentes contextos de uso, e embora o 'Framework de UI do portal do lojista' apareça como decisão reversível (indício de algum desacoplamento), não há evidência de que a lógica de negócio foi deliberadamente separada das interfaces nem de que a escolha dos canais foi guiada por alcance de mercado."
+}

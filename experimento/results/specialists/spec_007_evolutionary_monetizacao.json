@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona um bounded context de Billing e uma fitness function de custo por usuário ativo mensal, sinalizando consciência de custos operacionais, mas não define nenhum modelo de monetização concreto — ausência total de tiers, preços, estratégia de cobrança (por usuário, por tenant, usage-based), ou métricas de negócio como MRR, churn, LTV e CAC."
+}

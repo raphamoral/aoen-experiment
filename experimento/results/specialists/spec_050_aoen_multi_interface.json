@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 50,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (app ciclista, dashboard web, app técnico, API pública e painel embarcado), cada uma justificada por perfil de usuário e caso de uso real de mercado, com lógica de negócio centralizada na BikeFleetService Layer completamente desacoplada das UIs, permitindo adicionar ou substituir qualquer interface sem tocar nas regras de negócio."
+}

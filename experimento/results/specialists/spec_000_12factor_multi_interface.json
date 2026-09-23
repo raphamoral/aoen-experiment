@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A arquitetura possui um api-gateway desacoplado e serviços independentes que estruturalmente permitem adicionar novas interfaces sem reescrever a lógica de negócio, mas apenas um web-app é explicitamente definido como interface — sem menção a app mobile (relevante para veterinários em campo), portal administrativo, interface para clínicas parceiras ou API pública para integrações, e sem qualquer justificativa baseada em perfis de usuário distintos ou alcance de mercado."
+}

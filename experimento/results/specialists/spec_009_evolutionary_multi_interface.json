@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta demonstra desacoplamento implícito entre backend e frontend (Next.js substituível sem impacto no backend, versionamento de API), mas não define explicitamente múltiplas interfaces para perfis de usuário distintos (comprador, vendedor, inspetor de certificação, administrador ANVISA) nem justifica canais adicionais (mobile, API B2B para hospitais/clínicas, portal de certificadores) por alcance de mercado — o tema de interfaces é tratado como detalhe técnico reversível, não como decisão estratégica de produto."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura menciona IBillingGateway com 'limites de uso por tenant', sugerindo consciência de granularidade por cliente, mas não há nenhum mecanismo explícito de atribuição de custo por operação (ex: custo de inferência do IMLAnomalyDetector, ingestão de telemetria via ITelemetryIngestor ou storage no IFileStorageGateway) nem instrumento de rastreamento de consumo real por tenant — o que existe é controle de cobrança/limites, não cálculo de unit economics."
+}

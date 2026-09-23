@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra excelente suporte à evolução em nível de infraestrutura — serviços stateless, backing services intercambiáveis via URL/credencial, releases imutáveis com rollback trivial e escala horizontal declarativa — mas perde pontos por não mencionar explicitamente padrões de isolamento da lógica de negócio (ports & adapters, anti-corruption layers), o que significa que substituir Stripe, Elasticsearch ou o ORM provavelmente exige mudanças em múltiplas camadas internas, não apenas na configuração."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define abstrações lógicas relevantes (BlockchainAdapter, CustodyService) que permitem separação de responsabilidades, mas não menciona em nenhum momento isolamento físico de processos pesados: a escrita na blockchain — operação cara e com latência variável — não tem fila explícita (Kafka, RabbitMQ, SQS), não há worker separado para processamento assíncrono, não há fallback descrito para falha de escrita on-chain, e a ingestão IoT/RFID de alto volume é listada como interface sem qualquer menção a pipeline de processamento isolado; o padrão Bulkhead e circuit breakers são completamente ausentes, deixando o risco de uma operação blockchain lenta ou travada bloquear toda a CustodyService."
+}

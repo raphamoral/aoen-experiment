@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 54,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O pipeline RAG+LLM está claramente identificado como núcleo diferenciador, isolado por abstrações (LLMAdapter, VectorStoreAdapter) que garantem extensibilidade real de fornecedor, e resolve um problema concreto de PMEs sem equipe técnica — a única ressalva é que o diferenciador técnico (RAG no-code para PMEs) ainda não demonstra barreira proprietária sobre concorrentes como ManyChat ou Botpress, o que impede nota máxima."
+}

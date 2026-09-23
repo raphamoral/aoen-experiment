@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta descreve uma arquitetura tecnicamente sofisticada com componentes de infra bem definidos (EKS/GKE, TimescaleDB, Kafka, Redis, S3, etc.) e menciona mecanismos de escalabilidade (KEDA, HPA, Spot via subentendimento), mas não apresenta nenhuma estimativa de custo em dólares ou reais, nenhuma análise de custo por componente, nenhuma projeção de crescimento com base de usuários, e nenhuma estratégia explícita de otimização financeira como instâncias spot, reserved instances, scale-to-zero ou tiering de armazenamento."
+}

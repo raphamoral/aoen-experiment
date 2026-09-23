@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 38,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta implica assincronicidade via 'Agendamento de coleta' e descreve um pipeline com etapas intercambiáveis, mas não menciona nenhum mecanismo de isolamento físico real — não há filas de mensagens (Kafka, RabbitMQ, Redis Queue), workers em processos separados, circuit breakers nem estratégia de fallback caso o scraper falhe; o isolamento descrito é puramente lógico (interfaces e service layer na mesma aplicação), o que significa que um scraper travado ou um pico de normalização pode bloquear ou derrubar o restante do sistema."
+}

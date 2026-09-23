@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "hexagonal",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 4,
+  "justificativa": "O público-alvo é inferível (veterinários e clínicas) pelos nomes das portas e modelos de precificação, mas não há articulação explícita da dor do cliente, estimativa de tamanho de mercado (TAM/SAM/SOM), mapeamento de concorrentes ou diferenciação clara frente a soluções existentes — a proposta descreve 'o quê' o produto faz, não 'por quê' o mercado precisa dele."
+}

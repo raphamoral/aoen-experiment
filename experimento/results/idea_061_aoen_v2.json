@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 61,
+  "ideia": "Plataforma de matching entre ONGs e voluntários por competências",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de matching semântico entre perfis de competências de voluntários e demandas declaradas por ONGs — o algoritmo que transforma perfis heterogêneos em conexões de alto potencial de impacto. Sem ele, o produto é apenas um diretório estático.",
+    "fase1_mercado": "Mercado primário: ONGs de pequeno e médio porte com escassez de mão de obra qualificada e sem orçamento para RH dedicado. Mercado secundário: profissionais qualificados (tech, jurídico, marketing, saúde) que querem voluntariado de impacto alinhado ao seu perfil. Mercado terciário: empresas com programas de voluntariado corporativo que precisam reportar ESG.",
+    "fase1_extensivel": "Sim. O core é uma interface de matching abstraída do algoritmo concreto. Camada 1: matching por regras (tags + peso manual). Camada 2: scoring vetorial com embeddings (OpenAI/Cohere/modelo próprio). Camada 3: ranking por histórico de engajamento. Cada camada é plugável via padrão Strategy — trocar o provedor de embeddings não exige reescrever o produto.",
+    "fase2_interfaces": [
+      "Web App para ONGs (gestão de vagas, triagem de candidatos, histórico de voluntários)",
+      "Web App/PWA para voluntários (perfil de competências, candidaturas, histórico de impacto)",
+      "Dashboard analítico para empresas (relatórios ESG, horas doadas por colaborador, matching corporativo)",
+      "API REST pública (integração com sistemas legados de ONGs, CRMs, plataformas de RH corporativo)",
+      "Bot conversacional (WhatsApp/Telegram) para voluntários com baixa familiaridade digital"
+    ],
+    "fase2_justificativa_mercado": "Web ONG: abre o mercado de gestão de voluntariado — ONGs pagam por eficiência operacional. PWA Voluntário: abre o mercado de aquisição e retenção de voluntários — volume é o combustível do matching. Dashboard Corporativo: abre o mercado B2B enterprise — empresas pagam por compliance ESG e engajamento de colaboradores, ticket médio 10x maior. API: abre o mercado de integrações — ONGs maiores com sistemas próprios precisam de dado, não de interface. Bot: abre o mercado de baixa renda digital — regiões com acesso limitado a desktop, aumenta cobertura sem custo de app nativo.",
+    "fase2_service_layer": "Uma MatchingService, VolunteerService e OpportunityService expostas como módulos independentes de domínio. Cada interface (web, API, bot) consome essas services via contratos tipados — nenhuma interface contém lógica de negócio. Trocar o canal (ex: sair do WhatsApp para Telegram) exige apenas novo adaptador, não toca nas services. O banco é acessado exclusivamente pela service layer, nunca diretamente pela camada de interface.",
+    "fase3_fluxo_fixo": "Registro de perfil → extração/normalização de competências → indexação → busca por demanda compatível → geração de ranking de matches → notificação → conexão → coleta de feedback pós-voluntariado → atualização de score de reputação. Este ciclo é imutável no código e se repete para qualquer cliente.",
+    "fase3_parametros_configuraveis": [
+      "Taxonomia de competências (categorias e pesos específicos do setor da ONG)",
+      "Critérios de match priorizados (localização geográfica, disponibilidade, nível de experiência)",
+      "Raio geográfico máximo de matching",
+      "Threshold mínimo de score para exibir um match",
+      "Frequência e canal de notificações (email, push, WhatsApp)",
+      "Campos obrigatórios no perfil do voluntário (customizável por ONG)",
+      "Templates de e-mail e mensagens (marca branca para empresas)",
+      "Política de visibilidade do perfil (público, restrito, privado)",
+      "Fluxo de aprovação (matching direto vs. triagem manual pela ONG)",
+      "Relatórios e métricas exportadas (campos e periodicidade)"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro na tabela `tenants` com seu JSON de configuração. O onboarding consiste em: (1) criar tenant com slug único, (2) definir taxonomia de competências via painel admin ou CSV import, (3) configurar parâmetros de matching, (4) ativar interfaces desejadas (feature flags por tenant). Zero deploy, zero código novo.",
+    "fase4_core_isolado": "O motor de matching — especificamente o processo de geração de embeddings de perfis e o cálculo de similaridade vetorial — roda em worker assíncrono isolado (fila de mensagens). É acionado por eventos: novo perfil criado, perfil atualizado, nova vaga publicada. O restante do sistema (CRUD, autenticação, notificações) funciona normalmente mesmo se o worker estiver down — os matches já calculados são servidos do cache/banco.",
+    "fase4_custo_total_cliente": "Core IA: ~$0.0001/embedding (OpenAI text-embedding-3-small) × volume de perfis indexados + recálculos. Para uma ONG com 500 voluntários ativos e 50 vagas/mês: ~$2-5/mês em embeddings. Infra proporcional: banco (PostgreSQL + pgvector) ~$0.10/GB armazenado, ~$0.02/hora de worker por spike de processamento. Armazenamento: ~$0.023/GB (S3-compatible) para documentos e fotos de perfil — ~$0.50/mês por ONG pequena. Banda: ~$0.09/GB egress — irrelevante em escala inicial. CDN: ~$0.01/GB. Total estimado por ONG pequena (até 500 voluntários): $8-15/mês em infra. Break-even de precificação começa em $29/mês por ONG.",
+    "fase4_continuidade": "O matching engine é stateless e eventual — resultados são pré-calculados e armazenados. Se o worker cair, usuários continuam vendo matches do último ciclo calculado. A fila de mensagens (Redis Streams ou SQS) acumula eventos pendentes e o worker os processa ao retornar. Nenhum fluxo síncrono do usuário depende do worker estar online — a API retorna dados do banco, não chama o engine em tempo real.",
+    "fase4_manutencao": "O engine de matching é acessado via interface abstrata `IMatchingEngine` com método `score(volunteerProfile, opportunityProfile) → float`. Trocar de OpenAI embeddings para modelo próprio (ex: sentence-transformers rodando localmente) exige apenas nova implementação da interface + migração de índice vetorial em background, com feature flag por tenant para rollout gradual. O restante do sistema não sabe qual engine está ativo.",
+    "monetizacao": "Freemium por ONGs: plano gratuito (1 vaga ativa, até 50 voluntários, matching básico por tags). Plano Pro ONG ($29-79/mês): vagas ilimitadas, matching semântico, relatórios, notificações automatizadas. Plano Corporativo (B2B, $299-999/mês por empresa): dashboard ESG, matching para colaboradores, API, marca branca, SLA. Marketplace de impacto (futuro): ONGs promovem vagas para voluntários premium com visibilidade garantida (modelo CPC/CPM). Revenue share em doações facilitadas pela plataforma (2-3% de fee de transação).",
+    "stack_sugerida": "Backend: Node.js (Fastify) ou Python (FastAPI) com arquitetura modular por domínio. Banco relacional: PostgreSQL com extensão pgvector para armazenamento e busca de embeddings. Fila de mensagens: Redis Streams (simples) ou AWS SQS (escala). Worker de matching: Python com sentence-transformers ou integração OpenAI Embeddings API. Frontend Web: Next.js (SSR para SEO de voluntários + SPA para dashboard ONGs). Mobile/PWA: Next.js PWA ou React Native (Web first, mobile quando tiver tração). Bot: Twilio API (WhatsApp) com adapter pattern. Infra: Railway ou Render para início (baixo custo operacional), migração para AWS/GCP quando escalar. Auth: Clerk ou Auth0 com suporte a multi-tenant. Observabilidade: OpenTelemetry + Grafana Cloud."
+  }
+}

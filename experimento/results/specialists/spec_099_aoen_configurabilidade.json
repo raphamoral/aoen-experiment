@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 99,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra intenção clara de multi-tenancy via camadas abstraídas (ISourceCollector, ISentimentEngine) e um BrandReputationService centralizado aparentemente tenant-aware, e menciona parâmetros configuráveis como thresholds de alerta e canais de notificação — o que cobre a maioria dos casos de novos clientes usando fontes e engines já implementadas; porém, a proposta não descreve explicitamente o modelo de configuração por tenant (tabela de configurações, painel de onboarding, feature flags), e adicionar uma nova fonte de dados ou canal de notificação ainda exigiria desenvolvimento de um novo adapter, bloqueando onboarding 100% zero-código para perfis de cliente fora do conjunto pré-construído."
+}

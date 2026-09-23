@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 75,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A proposta apresenta separação lógica via camada de serviços com interfaces gRPC (OrchestrationService, ObservabilityService, TopologyService) e um fluxo de ingestão sequencial definido, o que demonstra algum pensamento arquitetural sobre fronteiras — mas não menciona em nenhum momento filas de mensagens, workers separados, subprocessos isolados ou mecanismos de fallback para o componente mais pesado do sistema (o motor de correlação topológica em tempo real), deixando sem resposta o que acontece com o restante da aplicação caso esse motor sobrecarregue ou falhe."
+}

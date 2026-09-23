@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "clean_arch",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "A proposta define regras de negócio diretamente nas entidades como constantes hardcoded (deadline mínimo de 7 dias, cap de 20% no bid, milestones somando 100%), sem qualquer entidade de configuração por tenant, feature flags, ou parâmetros variáveis por cliente — um novo cliente com requisitos diferentes (ex: deadline mínimo de 3 dias, domínio regulatório próprio com budget mínimo distinto) exigiria alteração de código; o único elemento que abre espaço para variação é o campo regulatoryDomain no Project, que sugere parametrização implícita mas sem infraestrutura de configuração explícita."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "A arquitetura contém elementos que sugerem um diferenciador latente — a combinação de negociação por cláusula (isNegotiable + acceptedBy), assinatura com rastreabilidade jurídica (hash imutável, IP, geolocalização) e domínio imobiliário específico (roles locador/locatário/fiador, registro único de imóvel, jurisdição no template) — mas o núcleo não é explicitamente isolado como bounded context, não é nomeado como capacidade central, e a proposta não articula por que essa combinação é insubstituível frente a alternativas como ClickSign + template Word ou DocuSign + sistema de gestão imobiliária."
+}

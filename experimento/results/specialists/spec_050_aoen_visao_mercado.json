@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 50,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 5,
+  "justificativa": "O mercado-alvo está segmentado (B2G, B2B, turismo) e há justificativas de valor por interface, mas a dor do cliente permanece implícita (custo operacional elevado, baixa utilização da frota) e nunca é explicitamente articulada; faltam dimensionamento de mercado (TAM/SAM/SOM), análise de concorrentes diretos (PBSC, Arcimoto, soluções municipais existentes) e uma proposta de valor centrada em outcome ('de X% de frota indisponível para Y%') em vez de features."
+}

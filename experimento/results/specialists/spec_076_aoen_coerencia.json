@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 76,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta forma uma narrativa arquitetural altamente coesa: o problema declarado (mobilidade comprometida por Long COVID) justifica diretamente a solução central (teleconsulta sem deslocamento), a diversidade real de usuários (tech-savvy, baixa digitalização, fadiga crônica) é mapeada precisamente para canais distintos (web, WhatsApp, mobile), e a Service Layer central com adaptadores elimina a contradição clássica de lógica duplicada por canal — cada decisão sustenta a próxima; perde um ponto por uma promessa de extensibilidade FHIR tratada como trivial quando integração hospitalar é notoriamente complexa, e pelo truncamento da fase3 que impede verificar se os parâmetros configuráveis resolvem a tensão entre pipeline clínico imutável e regras de negócio heterogêneas dos contratos B2B."
+}

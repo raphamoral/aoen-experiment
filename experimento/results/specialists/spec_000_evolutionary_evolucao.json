@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva exemplar: a estratégia de três horizontes com monólito modular DDD evitando over-engineering prematuro, Strangler Fig para extração cirúrgica guiada por fitness functions, abstração explícita de tecnologias voláteis via ONNX (ML), Kubernetes/Terraform (cloud) e interface sobre brokers de mensagem, além de feature flags para rollout sem big bang — tudo combinado resulta em um sistema onde cada camada pode ser substituída independentemente; perde apenas um ponto pela proposta truncada (abstração do broker incompleta no texto) e pelo risco latente de acoplamento acidental nas integrações com sistemas HIS/DICOM veterinários, que tipicamente impõem protocolos proprietários difíceis de abstrair."
+}

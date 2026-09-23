@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 4,
+  "justificativa": "A arquitetura menciona 'billing por minuto' e 'log de evento para billing e transcrição' na Service Layer, indicando consciência de rastreamento por sessão, mas não apresenta cálculo real de custo por operação (ex: custo de STT + MT + TTS por minuto por tenant), nem mecanismo explícito de atribuição de consumo de recursos por cliente — o que mantém o projeto no território de FinOps por sessão, não de unit economics por tenant."
+}

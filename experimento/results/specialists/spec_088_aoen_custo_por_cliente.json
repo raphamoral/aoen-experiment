@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 88,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente componentes arquiteturais e fluxos operacionais — nenhuma camada de rastreamento de custo por tenant, custo por operação (scoring, desembolso, monitoramento) ou conexão entre consumo de recursos e modelo de precificação foi mencionada em qualquer fase."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta prevê templates personalizáveis por conta e variáveis configuráveis por contrato — o que permite onboarding de novos clientes sem código para o caso de uso central — mas não descreve uma arquitetura dirigida por configuração: não há menção a feature flags por tenant, customização de fluxo de assinatura, regras de validação, notificações ou branding por tenant, o que significa que comportamentos além do template exigiriam desenvolvimento adicional."
+}

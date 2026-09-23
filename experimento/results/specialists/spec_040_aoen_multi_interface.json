@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 40,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (totem kiosk, dashboard de enfermagem, painel médico, API REST/webhooks e canal WhatsApp/SMS), cada uma justificada por um perfil de usuário e vetor de mercado específico, com a TriageService funcionando como camada intermediária que desacopla completamente a lógica de negócio das interfaces — permitindo adicionar novos canais sem alterar o TriageEngine ou qualquer outra camada."
+}

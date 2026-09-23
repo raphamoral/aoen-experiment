@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente entidades de domínio e casos de uso sem qualquer menção a filas, workers, processos separados ou mecanismos assíncronos — operações inerentemente pesadas do produto (geração de PDF, cômputo de hash criptográfico de assinatura, envio de notificações, archiving de documentos) rodariam acopladas à aplicação principal, tornando uma falha nessas operações capaz de derrubar toda a stack."
+}

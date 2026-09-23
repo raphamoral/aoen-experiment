@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista corretamente os componentes de infraestrutura (RDS Aurora Serverless v2, ElastiCache, S3, CloudFront, EKS) e menciona algumas práticas favoráveis a custo como Aurora Serverless (scale-to-zero) e imagens Alpine, mas não apresenta nenhuma estimativa concreta de valores em dólares/reais por componente, nenhuma projeção de custo por faixa de usuários e nenhuma estratégia explícita de otimização como instâncias Spot, Reserved Instances, S3 Intelligent-Tiering ou análise de TCO comparativo entre as opções listadas (ex: RabbitMQ auto-hospedado vs SQS, Auth0 vs Keycloak)."
+}

@@ -1,0 +1,65 @@
+{
+  "ideia_idx": 15,
+  "ideia": "SaaS de precificação dinâmica para e-commerces de moda",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Motor de precificação dinâmica: regras de negócio para calcular preços ótimos de produtos de moda com base em demanda, estoque, sazonalidade, concorrência e elasticidade de preço. Entidades centrais: Product, PricingRule, PriceRecommendation, Segment, Campaign.",
+    "primary_ports": [
+      "PricingCommandPort: interface para solicitar recálculo de preço de um produto",
+      "PricingQueryPort: interface para consultar preço atual recomendado e histórico",
+      "RuleManagementPort: interface para criar, editar e ativar regras de precificação",
+      "SegmentationPort: interface para definir segmentos de clientes e canais",
+      "CampaignPort: interface para acionar campanhas de pricing (liquidação, flash sale)",
+      "SimulationPort: interface para simular impacto de uma mudança de preço antes de aplicá-la"
+    ],
+    "secondary_ports": [
+      "ProductRepositoryPort: persistir e recuperar entidades de produto e SKU",
+      "PriceHistoryRepositoryPort: armazenar séries temporais de preços praticados",
+      "StockDataPort: ler níveis atuais de estoque por SKU",
+      "CompetitorPricePort: buscar preços de concorrentes para produtos equivalentes",
+      "DemandForecastPort: obter previsão de demanda futura por produto/categoria",
+      "EventPublisherPort: publicar eventos de domínio (PriceChanged, RuleActivated)",
+      "NotificationPort: enviar alertas de precificação para gestores",
+      "AnalyticsPort: exportar métricas de conversão e receita para análise",
+      "MLModelPort: delegar scoring de elasticidade e previsão a modelos externos",
+      "AuditLogPort: registrar todas as decisões de precificação para compliance"
+    ],
+    "primary_adapters": [
+      "REST API Adapter (FastAPI/NestJS): expõe endpoints HTTP para o painel SaaS e integrações externas",
+      "GraphQL Adapter: queries flexíveis para dashboards de analytics e relatórios",
+      "CLI Adapter: ferramenta de linha de comando para operações em batch e scripts de migração",
+      "Webhook Inbound Adapter: recebe eventos de plataformas de e-commerce (Shopify, VTEX, Magento)",
+      "Scheduler Adapter (Cron/Celery): aciona recálculos periódicos automáticos de preço",
+      "gRPC Adapter: comunicação interna de baixa latência para microserviços do próprio SaaS",
+      "Test Harness Adapter: implementação in-memory usada em testes unitários e de integração"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL Adapter: implementação de ProductRepositoryPort e PriceHistoryRepositoryPort via ORM (SQLAlchemy/Prisma)",
+      "Redis Adapter: cache de preços recomendados e rate limiting de recálculos",
+      "Shopify Adapter: implementação de StockDataPort e publicação de preços via Shopify Admin API",
+      "VTEX Adapter: integração bidirecional com VTEX IO para leitura de estoque e escrita de preços",
+      "Magento Adapter: conector para lojas Magento 2 via REST API",
+      "SerpAPI/Scrapy Adapter: implementação de CompetitorPricePort via scraping estruturado",
+      "Prophet/SageMaker Adapter: implementação de DemandForecastPort e MLModelPort",
+      "Kafka/RabbitMQ Adapter: implementação de EventPublisherPort para arquitetura orientada a eventos",
+      "SendGrid/Slack Adapter: implementação de NotificationPort para alertas de preço",
+      "BigQuery/Snowflake Adapter: implementação de AnalyticsPort para data warehouse",
+      "S3/GCS Adapter: armazenamento de snapshots de modelos ML e exports de relatórios",
+      "Datadog/OpenTelemetry Adapter: implementação de AuditLogPort e observabilidade"
+    ],
+    "isolation": "O core domain não importa nenhuma biblioteca de infraestrutura. Todas as dependências externas são invertidas via interfaces (ports) definidas dentro do core. Os adapters dependem do core, nunca o contrário. Injeção de dependência (IoC container) conecta adapters às ports em tempo de execução. O core pode ser executado completamente com adapters in-memory para testes, sem necessidade de banco, fila ou serviço externo.",
+    "interfaces": [
+      "Painel Web SaaS (React/Next.js): interface principal para gestores configurarem regras e monitorarem preços",
+      "API Pública REST/GraphQL: para integrações diretas com plataformas de e-commerce parceiras",
+      "Webhooks Outbound: notificações push para sistemas do cliente quando preço muda",
+      "SDK Client (Python/JS/PHP): facilita integração programática por desenvolvedores do cliente",
+      "Extensão para plataformas (Shopify App, VTEX App): instalação com um clique nas lojas",
+      "Relatórios exportáveis (CSV/PDF): para equipes financeiras e de merchandising"
+    ],
+    "escalabilidade": "Arquitetura stateless no core permite escalonamento horizontal de workers de recálculo via Kubernetes HPA. Filas de mensagens (Kafka) desacoplam picos de demanda de cálculo. Cache Redis reduz reprocessamento redundante. Banco de dados particionado por tenant_id (multi-tenancy). Modelos ML servidos via endpoints dedicados escaláveis independentemente. Recálculos batch distribuídos por produto/categoria com paralelismo controlado. Leitura de preços recomendados via CDN edge cache para latência mínima.",
+    "custos": "Maiores custos: inferência de modelos ML (mitigar com cache agressivo e batching), scraping de concorrentes (mitigar com frequência adaptativa por relevância), armazenamento de séries temporais de preços (mitigar com TTL e compressão). Multi-tenancy compartilhado reduz custo por cliente. Uso de spot/preemptible instances para jobs de recálculo batch. Custo cresce sublinearmente com número de SKUs devido ao caching de regras comuns.",
+    "monetizacao": "SaaS por assinatura mensal em tiers: Starter (até 1k SKUs), Growth (até 50k SKUs), Enterprise (ilimitado + SLA + suporte dedicado). Cobrança adicional por integração de plataforma extra. Revenue share opcional: percentual do uplift de receita comprovado via A/B testing integrado. Marketplace de regras e modelos pré-treinados por nicho (moda feminina, calçados, streetwear) como add-on. Trial gratuito de 14 dias com adapter de simulação sem escrita real de preços.",
+    "stack_sugerida": "Backend Core: Python 3.12 com domínio puro (dataclasses, protocols nativos). Framework Web: FastAPI (primary REST adapter). ORM: SQLAlchemy 2.0 async. Banco principal: PostgreSQL 16 com TimescaleDB para séries temporais. Cache: Redis 7 (preços recomendados, sessões). Fila: Apache Kafka (eventos de domínio e jobs assíncronos). ML: scikit-learn + Prophet para forecast, SageMaker para modelos avançados. Frontend: Next.js 14 + shadcn/ui + Recharts. Infra: Kubernetes (EKS/GKE) + Terraform. Observabilidade: OpenTelemetry + Datadog. CI/CD: GitHub Actions + ArgoCD. Containerização: Docker multi-stage builds."
+  },
+  "raw": "```json\n{\n  \"core_domain\": \"Motor de precificação dinâmica: regras de negócio para calcular preços ótimos de produtos de moda com base em demanda, estoque, sazonalidade, concorrência e elasticidade de preço. Entidades centrais: Product, PricingRule, PriceRecommendation, Segment, Campaign.\",\n\n  \"primary_ports\": [\n    \"PricingCommandPort: interface para solicitar recálculo de preço de um produto\",\n    \"PricingQueryPort: interface para consultar preço atual recomendado e histórico\",\n    \"RuleManagementPort: interface para criar, editar e ativar regras de precificação\",\n    \"SegmentationPort: interface para definir segmentos de clientes e canais\",\n    \"CampaignPort: interface para acionar campanhas de pricing (liquidação, flash sale)\",\n    \"SimulationPort: interface para simular impacto de uma mudança de preço antes de aplicá-la\"\n  ],\n\n  \"secondary_ports\": [\n    \"ProductRepositoryPort: persistir e recuperar entidades de produto e SKU\",\n    \"PriceHistoryRepositoryPort: armazenar séries temporais de preços praticados\",\n    \"StockDataPort: ler níveis atuais de estoque por SKU\",\n    \"CompetitorPricePort: buscar preços de concorrentes para produtos equivalentes\",\n    \"DemandForecastPort: obter previsão de demanda futura por produto/categoria\",\n    \"EventPublisherPort: publicar eventos de domínio (PriceChanged, RuleActivated)\",\n    \"NotificationPort: enviar alertas de precificação para gestores\",\n    \"AnalyticsPort: exportar métricas de conversão e receita para análise\",\n    \"MLModelPort: delegar scoring de elasticidade e previsão a modelos externos\",\n    \"AuditLogPort: registrar todas as decisões de precificação para compliance\"\n  ],\n\n  \"primary_adapters\": [\n    \"REST API Adapter (FastAPI/NestJS): expõe endpoints HTTP para o painel SaaS e integrações externas\",\n    \"GraphQL Adapter: queries flexíveis para dashboards de analytics e relatórios\",\n    \"CLI Adapter: ferramenta de linha de comando para operações em batch e scripts de migração\",\n    \"Webhook Inbound Adapter: recebe"
+}

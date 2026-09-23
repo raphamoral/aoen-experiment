@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra boa separação via bounded contexts e topologia de times bem definida, com interfaces explícitas (REST/gRPC/WebSocket) que permitem substituição independente de componentes; porém, o acoplamento implícito ao Kubernetes, RabbitMQ/Kafka e Redis como premissas de escalabilidade (em vez de abstrações sobre eles), combinado com a ausência explícita de anti-corruption layers e ports/adapters na camada de IA, limita a reversibilidade de decisões tecnológicas centrais sem impacto sistêmico."
+}

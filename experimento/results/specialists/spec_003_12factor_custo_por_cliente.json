@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "12factor",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura descreve infraestrutura compartilhada (PostgreSQL, Redis, RabbitMQ, S3, Elasticsearch) com boas práticas de deploy, mas não há nenhuma menção a rastreamento de consumo por tenant, tagging de recursos por cliente, cálculo de custo por operação ou conexão entre uso individual e modelo de precificação — os custos são tratados implicitamente como totais de infra, não como unit economics por cliente."
+}

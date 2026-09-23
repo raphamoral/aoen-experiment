@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (matching comprador-fornecedor + engine de regras configurável + auditoria imutável), isolado por abstração (interface AuctionEngine com portas de saída substituíveis) e resolve uma dor real que portais de cotação genéricos não endereçam — a opacidade e o favorecimento no processo de compras corporativas de TI; perde um ponto por não detalhar o que torna o algoritmo de matching propriamente inimitável frente a concorrentes que poderiam replicar a mesma arquitetura."
+}

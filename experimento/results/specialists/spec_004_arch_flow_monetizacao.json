@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O projeto menciona um contexto dedicado de 'Billing & Monetization' com referência a planos, comissões e pagamentos, e uma equipe 'Monetization & Growth' com métricas de MRR, churn e ARPU, mas não detalha tiers concretos, faixas de preço, lógica de comissionamento por transação nem análise de sustentabilidade custo-receita."
+}

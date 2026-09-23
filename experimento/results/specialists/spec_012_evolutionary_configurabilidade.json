@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta aborda isolamento de dados por tenant (row-level security) e flexibilidade de infraestrutura (adapter pattern para brokers/protocolos), mas não descreve nenhum mecanismo explícito de configuração por cliente — ausentes: engine de regras configuráveis para alertas, thresholds por tenant, canais de notificação configuráveis, perfis de conformidade regulatória por cliente ou modelo de onboarding zero-código; um novo cliente provavelmente ainda exigiria desenvolvimento para customizar comportamentos como limites de poluentes, frequência de amostragem ou integrações específicas."
+}

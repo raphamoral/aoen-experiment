@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 76,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de matching é o núcleo explicitamente nomeado, arquiteturalmente isolado como interface (MatchingService) na service layer, extensível por design em três gerações (regras → ML → LLM com embeddings clínicos), e resolve um gap real que plataformas genéricas de telemedicina não cobrem — a complexidade multissistêmica das sequelas de Long COVID exige matching clínico especializado, não apenas disponibilidade de agenda; o único ponto que impede nota máxima é a ausência de explicitação do que torna os critérios de matching clinicamente insubstituíveis (ex: quais variáveis do score de gravidade definem o diferencial frente a um concorrente que copie a mesma arquitetura)."
+}

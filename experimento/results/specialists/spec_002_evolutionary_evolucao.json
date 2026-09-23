@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A proposta demonstra maturidade evolutiva sólida: modular monolith com fronteiras DDD desde o início viabiliza extração incremental, o Strangler Fig pattern e feature flags endereçam evolução sem big-bang rewrites, o adapter pattern em pagamentos explicita a intenção de isolar o núcleo de negócio de fornecedores externos, e a categorização explícita de decisões reversíveis vs. irreversíveis revela disciplina arquitetural — perde 2 pontos por não declarar explicitamente o princípio de inversão de dependências (ports & adapters / hexagonal) como regra estrutural dos módulos, o que deixa em aberto se a lógica de domínio estará de fato protegida de frameworks e ORMs, e por não apresentar estratégia de mitigação para as decisões irreversíveis identificadas (especialmente multi-tenancy e modelo de identidade), cujo risco de lock-in permanece não resolvido."
+}

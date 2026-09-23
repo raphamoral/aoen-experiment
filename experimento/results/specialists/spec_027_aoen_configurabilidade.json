@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 27,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A separação entre fluxo fixo (ciclo de vida imutável no código) e parâmetros configuráveis é arquiteturalmente correta, e as três portas substituíveis de provedor reforçam a configurabilidade por tenant — mas a lista de parâmetros configuráveis está truncada na proposta, não há afirmação explícita de onboarding zero-código (nova row no banco = novo cliente), e não se menciona feature flags ou regras de negócio por tenant, o que impede nota máxima."
+}

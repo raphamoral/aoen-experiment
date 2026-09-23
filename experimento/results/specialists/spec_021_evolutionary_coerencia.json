@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma narrativa altamente coesa — cada característica arquitetural possui fitness function mensurável correspondente, a estratégia incremental é guiada explicitamente pela degradação dessas métricas (não por especulação), e as escolhas tecnológicas (MQTT, Flyway, Pact, ArchUnit, OpenTelemetry, chaos engineering) servem diretamente os objetivos declarados; a única tensão menor é entre 'sub-segundos' na característica de performance e o teto de P99 < 2s na fitness function, que podem divergir sob alta carga no MVP ainda com MQTT simples."
+}

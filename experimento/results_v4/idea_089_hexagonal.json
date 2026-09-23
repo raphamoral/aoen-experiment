@@ -1,0 +1,88 @@
+{
+  "ideia_idx": 89,
+  "ideia": "SaaS de planejamento de safra com dados climáticos e satelitais",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Planejamento agrícola de safra (Crop Planning): modelagem de Fazendas, Talhões (Fields), Culturas, Cultivares, Janelas de Plantio/Colheita, Ciclos Fenológicos, Risco Climático, Índices de Vegetação (NDVI/EVI), Balanço Hídrico, Estimativa de Produtividade, Cenários de Safra e Recomendações de Manejo. O core contém entidades (Farm, Field, CropPlan, Season), value objects (GeoPolygon, DateWindow, ClimateSeries, VegetationIndex, YieldEstimate), serviços de domínio (PlantingWindowAdvisor, RiskAssessor, YieldForecaster, ScenarioSimulator) e casos de uso (application services), sem qualquer dependência de framework, banco, HTTP ou provedores de dados.",
+    "primary_ports": [
+      "ManageFarmsAndFieldsUseCase (cadastrar fazendas, importar/desenhar talhões)",
+      "CreateCropPlanUseCase (criar e revisar plano de safra por talhão)",
+      "SimulateScenarioUseCase (simulação de cenários de plantio, cultivar e clima)",
+      "GetPlantingWindowRecommendationUseCase",
+      "AssessClimateRiskUseCase",
+      "MonitorCropHealthUseCase (acompanhar NDVI/EVI e anomalias em tempo quase real)",
+      "ForecastYieldUseCase",
+      "ManageAlertsUseCase (regras e assinaturas de alertas)",
+      "GenerateReportUseCase (relatórios e exportações)",
+      "ManageTenantAndSubscriptionUseCase (organizações, usuários, planos, quotas)"
+    ],
+    "secondary_ports": [
+      "FarmRepository / FieldRepository / CropPlanRepository (persistência)",
+      "WeatherDataProvider (histórico, observado e previsão)",
+      "SatelliteImageryProvider (busca de cenas e bandas)",
+      "VegetationIndexStore (séries temporais de índices por talhão)",
+      "SoilDataProvider (solo e relevo)",
+      "CropModelCatalog (parâmetros de culturas, cultivares e zoneamento agrícola)",
+      "GeospatialProcessor (recorte por polígono, máscara de nuvens, estatísticas zonais)",
+      "YieldModelRunner (modelos agronômicos ou de ML)",
+      "NotificationPort (e-mail, push, WhatsApp, SMS)",
+      "EventPublisher / JobScheduler (eventos de domínio e tarefas agendadas)",
+      "ObjectStoragePort (rasters, relatórios, anexos)",
+      "BillingPort (assinaturas, cobrança por uso)",
+      "IdentityPort (autenticação e autorização)",
+      "ClockPort / IdGeneratorPort (determinismo para testes)",
+      "AuditLogPort e TelemetryPort"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON) para o front-end",
+      "GraphQL API para dashboards e consultas geoespaciais flexíveis",
+      "Web App SPA (mapa, talhões, cenários)",
+      "App mobile / PWA com suporte offline para campo",
+      "Webhooks de entrada (ex.: ERPs, máquinas agrícolas, gateway de cobrança)",
+      "CLI e scripts de administração e migração",
+      "Consumidores de fila/eventos (ex.: 'nova cena disponível', 'previsão atualizada')",
+      "Agendadores (cron) que disparam rotinas diárias de ingestão e alertas",
+      "Test drivers (testes de aceitação e contrato executando os use cases diretamente)",
+      "Bot/Assistente conversacional (WhatsApp/Telegram) e API pública para parceiros"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL + PostGIS (repositórios)",
+      "TimescaleDB ou ClickHouse (séries temporais de clima e índices)",
+      "Adapters de clima: Open-Meteo, NASA POWER, INMET, ERA5/Copernicus, OpenWeather, Tomorrow.io",
+      "Adapters de satélite: Sentinel-2 (Copernicus / AWS Open Data via STAC), Landsat (USGS), Planet, Google Earth Engine, MODIS",
+      "Adapter de solo: SoilGrids, Embrapa",
+      "Processamento geoespacial: GDAL/Rasterio, Xarray, Titiler, COG",
+      "Storage: S3 / GCS / MinIO (Cloud Optimized GeoTIFF, Zarr)",
+      "Fila/eventos: SQS/SNS, Kafka ou RabbitMQ; agendador: Temporal, Airflow ou Celery/BullMQ",
+      "Notificações: SES/SendGrid, Twilio, WhatsApp Business API, FCM",
+      "Billing: Stripe, Pagar.me, Asaas",
+      "Identidade: Keycloak, Auth0, Cognito",
+      "Cache: Redis",
+      "Observabilidade: OpenTelemetry, Prometheus, Grafana, Sentry",
+      "Adapters fake/in-memory e de fixtures gravadas para todos os ports (testes e desenvolvimento offline)"
+    ],
+    "isolation": "O core (domínio + application services) fica em um módulo sem dependências de infraestrutura; só conhece interfaces (ports) declaradas por ele mesmo e tipos de domínio. A regra de dependência aponta sempre de fora para dentro: adapters dependem dos ports, nunca o contrário. Os adapters traduzem DTOs, payloads e formatos externos (GeoTIFF, JSON de APIs, SQL) para o modelo de domínio, atuando como anti-corruption layer. Injeção de dependência é feita apenas na composition root. Fitness functions (ArchUnit, import-linter ou dependency-cruiser) no CI bloqueiam imports indevidos. Todos os sistemas externos (clima, satélite, banco, billing, notificações) recebem o mesmo tratamento simétrico: um port e um ou mais adapters intercambiáveis. Testes do core rodam com adapters fake, sem rede e sem banco. Testes de contrato validam que cada adapter real cumpre o comportamento esperado do port. Trocar de provedor (ex.: Open-Meteo por Tomorrow.io) exige apenas um novo adapter e configuração.",
+    "interfaces": [
+      "Dashboard web com mapa interativo, camadas de NDVI e clima e linha do tempo da safra",
+      "Editor de plano de safra e calendário de operações",
+      "Simulador de cenários (what-if) com comparativo de risco e produtividade",
+      "App mobile/PWA para monitoramento em campo, com modo offline",
+      "Central de alertas (geada, seca, excesso de chuva, queda de NDVI, janela de plantio)",
+      "Relatórios exportáveis (PDF, CSV, GeoJSON, shapefile)",
+      "API pública documentada (OpenAPI) e webhooks",
+      "Integrações com ERP, FMIS e maquinário (ISOXML, shapefiles de prescrição)",
+      "Console administrativo (tenants, planos, uso e quotas)",
+      "Canal conversacional (WhatsApp) para alertas e consultas rápidas"
+    ],
+    "escalabilidade": "Módulos do core stateless, escalados horizontalmente atrás de balanceador. Multi-tenancy com isolamento por tenant_id (row-level security) e possibilidade de sharding para contas grandes. Separação CQRS: caminho de escrita transacional (PostGIS) e leitura otimizada (séries temporais, tiles e caches). Ingestão e processamento pesados (satélite, previsão) são assíncronos, orientados a eventos, com workers autoescaláveis (Kubernetes/KEDA ou serverless batch) e filas com idempotência. Processamento por cena e por região compartilhado entre clientes (calcula uma vez, serve muitos talhões próximos). Rasters em COG/Zarr com leitura por janela, sem baixar cenas inteiras. Cache de previsões por célula de grade (não por talhão) e CDN para tiles. Pré-computação de índices e estatísticas zonais. Como as dependências são ports, é possível migrar componentes isolados (ex.: extrair o módulo de ingestão satelital como serviço) sem reescrever o core, evoluindo de monólito modular para microsserviços por necessidade real.",
+    "custos": "Principais custos: (1) armazenamento e egress de imagens de satélite, mitigado por COG, ciclo de vida (hot/cold), guardar apenas índices e recortes por talhão e usar fontes abertas (Sentinel-2, Landsat, NASA POWER, ERA5, Open-Meteo); (2) computação de processamento raster, mitigada por instâncias spot, execução sob demanda, processamento compartilhado por tile/região e evitar reprocessamento; (3) APIs comerciais de clima e imagens de alta resolução (Planet), oferecidas apenas em planos premium com repasse de custo por hectare; (4) banco geoespacial e de séries temporais, com particionamento, compressão e retenção por plano; (5) mensagens (WhatsApp/SMS) cobradas por uso, com franquia e cobrança excedente; (6) modelos de ML, com inferência em lote e cache. Estratégias gerais: monolito modular no início para reduzir custo de operação, FinOps com tags por tenant para medir custo por hectare monitorado, quotas por plano, cache agressivo e fallback entre provedores para não depender de um único fornecedor pago. Custo-alvo: margem bruta acima de 70%, com custo de dados por hectare/ano bem abaixo do preço cobrado.",
+    "monetizacao": "Assinatura SaaS por hectare monitorado, em faixas: Free/Starter (poucos talhões, imagens de média resolução e clima básico), Pro (monitoramento contínuo, alertas, simulação de cenários, relatórios), Enterprise (multi-fazenda, SSO, API, SLA, imagens de alta resolução, modelos customizados, integrações com ERP/FMIS). Receitas adicionais: add-ons pagos (previsão de produtividade, zoneamento de risco, imagens comerciais, alertas por WhatsApp), cobrança por uso da API para parceiros (cooperativas, tradings, revendas de insumos, consultorias agronômicas), white-label para cooperativas e consultores, licenciamento de relatórios de risco para seguradoras e bancos (crédito rural e seguro agrícola) e marketplace de integrações. Modelo de cobrança via BillingPort (Stripe/Asaas), com planos anuais com desconto, trial e faturamento por safra para adequação à sazonalidade do agro.",
+    "stack_sugerida": "Backend: monolito modular em Python (FastAPI) ou TypeScript (NestJS) com estrutura hexagonal explícita (domain / application / ports / adapters) e composition root para DI; processamento geoespacial em Python (Rasterio, GDAL, Xarray, pystac-client, Shapely). Dados: PostgreSQL + PostGIS (transacional), TimescaleDB/ClickHouse (séries temporais), Redis (cache), S3/GCS com COG/Zarr (rasters). Mensageria e orquestração: SQS/SNS ou RabbitMQ/Kafka; Temporal ou Airflow/Prefect para pipelines de ingestão. Front-end: React/Next.js + MapLibre GL/deck.gl (mapas), PWA ou React Native para campo. Infra: Docker, Kubernetes (ou ECS/Cloud Run + batch serverless), Terraform, CI/CD com GitHub Actions, CDN para tiles. Identidade: Keycloak/Auth0. Billing: Stripe/Asaas. Observabilidade: OpenTelemetry, Prometheus, Grafana, Sentry. Qualidade: testes de aceitação nos primary ports com adapters fake, testes de contrato por adapter, fitness functions de arquitetura no CI, ADRs. ML/Agronomia: PyTorch/scikit-learn e modelos de simulação de cultura (ex.: DSSAT/APSIM/AquaCrop) encapsulados atrás do YieldModelRunner."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T05:45:42+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "aoen",
+  "scores": {
+    "core_diferenciador": 8,
+    "visao_mercado": 9,
+    "multi_interface": 9,
+    "configurabilidade": 7,
+    "isolamento_processamento": 6,
+    "custo_infraestrutura": 2,
+    "custo_por_cliente": 1,
+    "monetizacao": 5,
+    "evolucao": 9,
+    "coerencia": 8
+  }
+}

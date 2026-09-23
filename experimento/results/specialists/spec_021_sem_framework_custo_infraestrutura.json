@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona AWS (EC2 + RDS) e justifica a escolha como 'simples e barata', mas não apresenta nenhuma estimativa concreta de custo (sem valores em USD/BRL por componente), nenhuma estratégia de otimização (sem menção a instâncias spot, scale-to-zero, reserved instances, cold storage para séries temporais antigas) e nenhuma projeção de como os custos evoluem com o crescimento de clientes, sensores ou volume de dados de séries temporais — que tendem a ser o maior driver de custo em plataformas IoT."
+}

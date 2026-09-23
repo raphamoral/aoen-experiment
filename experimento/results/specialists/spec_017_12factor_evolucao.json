@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "Arquitetura modular com serviços independentes, backing services trocáveis por abstração de interface (S3-compatible, SQS/BullMQ), configuração externalizada e processos stateless permitem substituição de componentes e escala sem mudança estrutural — perde um ponto pela ausência explícita de camada anti-corrupção (ACL/ports-and-adapters) isolando a lógica de negócio do blockchain RPC e demais SDKs externos, o que pode gerar acoplamento oculto a provedores específicos."
+}

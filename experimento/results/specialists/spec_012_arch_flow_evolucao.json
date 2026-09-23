@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte maturidade evolutiva: os 8 bounded contexts delimitados permitem evolução independente por domínio, a classificação Wardley (genesis→custom→product→commodity) evidencia decisões conscientes de reversibilidade (ex: TimescaleDB *ou* InfluxDB, Auth0 *ou* Cognito), e o isolamento explícito da lógica proprietária (motor de conformidade, pipeline com gap-filling) das camadas de commodity reduz o acoplamento tecnológico — porém a nota não chega a 10 porque não há menção explícita de contratos de API versionados entre contextos, padrões de portas-e-adaptadores dentro de cada serviço para isolar o domínio de frameworks externos, nem estratégia clara para evitar que os modelos de ML em genesis se tornem um ponto de acoplamento rígido conforme amadurecem."
+}

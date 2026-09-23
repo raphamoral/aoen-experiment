@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta esboça estrutura multi-tenant correta (accounts no PostgreSQL, painel admin para configurar idiomas e usuários por empresa, campo 'configurações' no banco), o que permite onboarding básico sem código; porém não especifica o modelo de configuração em profundidade — glossários corporativos por cliente, regras de vocabulário técnico, níveis de feature por plano, integrações específicas por tenant ou thresholds de latência customizados ainda exigiriam desenvolvimento, revelando uma configurabilidade parcial e não um sistema totalmente dirigido por configuração."
+}

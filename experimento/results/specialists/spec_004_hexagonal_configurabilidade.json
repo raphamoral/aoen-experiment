@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A arquitetura hexagonal oferece boa separação de responsabilidades e os ports/adapters permitem variação técnica por tenant, mas a proposta não define nenhum mecanismo explícito de configurabilidade por cliente — ausência de TenantConfigurationPort, motor de regras configurável, definição de workflows por tenant ou modelo de onboarding via configuração — sugerindo que clientes com regras de negócio distintas (critérios de qualificação, decrementos mínimos, fluxos de aprovação, SLAs de leilão) ainda exigiriam alteração de código."
+}

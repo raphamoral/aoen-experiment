@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "arch_flow",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra maturidade evolutiva sólida — bounded contexts bem definidos com classificação Wardley (genesis→commodity), camada de commodity explicitamente intercambiável (Auth0 ou Keycloak, Stripe ou Iugu, múltiplos provedores ICP-Brasil) e Integration Gateway como barreira de isolamento de terceiros —, mas perde pontos por não documentar explicitamente portas e adaptadores (hexagonal/ports-adapters) para proteger o núcleo de domínio de frameworks externos, ausência de domain events entre BCs (comunicação inter-contexto não especificada, risco de acoplamento temporal), e nenhuma menção a fitness functions automatizadas que garantam as fronteiras arquiteturais ao longo do tempo."
+}

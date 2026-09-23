@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 7,
+  "justificativa": "O modelo apresenta tiers definidos com valores concretos (Starter $99/mês, Pro $299/mês), modalidade pay-per-use e add-on de IA premium, além de listar custos operacionais relevantes (imagem, armazenamento, infraestrutura), demonstrando conexão parcial entre custo e receita; porém faltam métricas explícitas de sustentabilidade do negócio (MRR projetado, LTV, CAC, churn esperado) e análise de margem por tier que comprovem viabilidade econômica."
+}

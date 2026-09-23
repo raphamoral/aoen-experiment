@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 56,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra princípios evolutivos sólidos — service layer isolando regras de negócio, padrão de adaptadores para fornecedores e transportadoras, e parâmetros configuráveis que evitam mudanças de código para variações de comportamento — mas não endereça explicitamente escalabilidade de carga (10 → 10.000 usuários), independência de banco de dados, nem estratégia de evolução de schema, deixando lacunas relevantes para substituição de infraestrutura sem impacto no core."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 25,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Web Dashboard, App Mobile, API REST, White-Label e Notificações), cada uma justificada por um perfil de usuário e caso de uso real de mercado, com lógica de negócio completamente desacoplada via RouteService — permitindo adicionar novas interfaces sem alterar regras de negócio ou o solver de otimização."
+}

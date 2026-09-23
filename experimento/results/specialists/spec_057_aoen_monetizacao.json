@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 57,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta detalha segmentos de mercado e canais de distribuição (B2C, B2B escolar, WhatsApp), reconhecendo implicitamente que tickets B2B são 10-50x maiores, mas não define nenhum modelo de monetização — não há menção a freemium, tiers de assinatura, valores, pricing por usage, métricas de LTV/CAC/churn ou análise de sustentabilidade financeira."
+}

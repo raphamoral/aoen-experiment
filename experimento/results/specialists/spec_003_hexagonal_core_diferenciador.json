@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo diferenciador — anonimização estrutural com hash salgado por empresa combinada à agregação estatística com detecção de padrões de risco — está identificado e parcialmente isolado (IAnonymizationServicePort + IAnalyticsPort como portas dedicadas), e resolve um problema real que CRUDs genéricos de RH não resolvem; porém a proposta não explicita por que o modelo de anonimização escolhido (SHA256 salgado) é insubstituível frente a alternativas como k-anonimato ou differential privacy, e o componente de detecção de padrões de risco — o verdadeiro coração do valor — aparece apenas implícito no IAnalyticsPort sem domínio próprio isolado, enfraquecendo a separação arquitetural do diferenciador."
+}

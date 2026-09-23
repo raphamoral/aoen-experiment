@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta apresenta redundância de engines de IA (OpenAI + Anthropic) e o WebSocketHandler sugere algum processamento assíncrono, mas não há menção explícita a filas de mensagens, workers isolados, circuit breakers ou separação física de processos para operações computacionalmente pesadas como OCR de PDF e inferência de IA — sem isso, uma falha ou sobrecarga nessas operações compromete toda a aplicação."
+}

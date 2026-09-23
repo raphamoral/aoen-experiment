@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador existe e é real — a combinação de matching especializado em compliance com validação de certificações regulatórias (IComplianceCertificationService) e escrow estruturado resolve um gap genuíno que marketplaces genéricos não cobrem — mas o núcleo não está isolado com precisão: a lógica que define o que torna o matching de compliance único (grafo de domínio regulatório? scoring proprietário? mapeamento de frameworks?) não é descrita, e o IComplianceCertificationService foi posicionado como porta secundária (infraestrutura), quando deveria ser o coração do core domain se for o ativo diferenciador central."
+}

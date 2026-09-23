@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta prevê múltiplas interfaces (buyer-portal, supplier-portal, admin-api) com separação implícita por perfil de usuário, e a estrutura de pacotes (auction-core, bidding-engine isolados) sugere algum desacoplamento, mas não há justificativa explícita de alcance de mercado, ausência de canais mobile/PWA/API pública e nenhuma afirmação de que novas interfaces podem ser adicionadas sem reescrita."
+}

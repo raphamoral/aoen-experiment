@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 23,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte separação de responsabilidades com o padrão adapter para IA (LegalReasoningProvider), service layer centralizado que isola interfaces de lógica de negócio, e pipeline configurável por parâmetros — permitindo substituição de componentes e adição de interfaces sem tocar no core; perde pontos por não explicitar estratégias de escalabilidade (ex: filas, cache, sharding) que seriam necessárias na transição de dezenas para milhares de usuários simultâneos."
+}

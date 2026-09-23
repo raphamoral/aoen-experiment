@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "sem_framework",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta menciona filas (Redis Streams ou RabbitMQ) entre ingestão e gravação no banco, o que indica processamento assíncrono básico, mas não há menção a workers separados, isolamento físico de processos computacionalmente pesados (como geração de relatórios, alertas ou processamento de séries temporais), nem estratégias de fallback explícitas caso o processamento falhe."
+}

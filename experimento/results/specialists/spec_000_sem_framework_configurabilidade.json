@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "sem_framework",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "A proposta reconhece múltiplos tipos de usuário e planos de monetização distintos, mas não descreve nenhum mecanismo arquitetural de configuração por tenant — sem tabela de configurações por clínica, sem feature flags, sem white-label, sem lógica de onboarding declarativa; adicionar uma nova clínica com comportamento diferente (ex: fluxo de agendamento próprio, integrações específicas, limites por plano) quase certamente exigiria código novo ou deploy customizado."
+}

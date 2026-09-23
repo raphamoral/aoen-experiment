@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "12factor",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta menciona Stripe para 'assinaturas SaaS e marketplace fees', indicando consciência de monetização, mas não detalha tiers, valores, lógica de cobrança (por match, por perfil ativo, por introdução realizada), nem analisa sustentabilidade (CAC, LTV, churn esperado) — é uma referência de infra, não um modelo de negócio."
+}

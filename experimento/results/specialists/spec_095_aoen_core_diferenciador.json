@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 95,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador (motor de análise de imagem dermatológica com extração de features ABCDE + cruzamento com histórico clínico + hipóteses ranqueadas) está claramente identificado, explicitamente isolado via interface interna agnóstica de provedor, e resolve um problema real — escassez de especialistas e demanda reprimida — de forma que CRUDs de telemedicina genérica não resolvem; perde um ponto por não detalhar como o modelo é treinado/validado clinicamente, que é onde o diferenciador de fato se sustenta ou colapsa."
+}

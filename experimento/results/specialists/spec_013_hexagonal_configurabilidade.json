@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A arquitetura possui IGerenciarPoliticaEspaco e referências a política de reembolso/precificação dinâmica que indicam configurabilidade parcial no nível do espaço, mas não há nenhuma entidade de tenant explícita, mecanismo de feature flags, engine de regras configuráveis por cliente, nem evidência de que o comportamento sistêmico (fluxos de aprovação, modelos de cobrança, regras de check-in) seja dirigido por configuração em runtime — sugerindo que onboarding de clientes com requisitos diferentes ainda exigiria desenvolvimento."
+}

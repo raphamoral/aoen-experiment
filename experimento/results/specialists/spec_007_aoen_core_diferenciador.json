@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de aprendizagem adaptativa está claramente identificado como núcleo diferenciador, isolado atrás de uma interface ContentProcessor extensível com suporte a múltiplos provedores de IA e fontes de conteúdo, resolvendo um problema real (transformar conteúdo bruto corporativo em microlearning calibrado por perfil e objetivo de negócio) que LMS tradicionais não resolvem — perde um ponto por não detalhar o mecanismo de calibração adaptativa em si (como o motor aprende e se ajusta ao longo do tempo), que é justamente o que o tornaria verdadeiramente insubstituível."
+}

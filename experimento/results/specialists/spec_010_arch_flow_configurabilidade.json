@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta indica configurabilidade implícita em pontos-chave (perfil fiscal por CNPJ/CNAE, variações municipais no orquestrador de NF-e, planos SaaS), mas não explicita nenhuma camada de configuração por tenant — ausência de modelo de dados de configuração, feature flags, rules engine configurável ou separação formal entre o que é código e o que é config — deixando em aberto se suporte a novo município ou nova regra de DAS exigiria deploy ou apenas uma nova row."
+}

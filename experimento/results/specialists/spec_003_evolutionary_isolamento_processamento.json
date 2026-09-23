@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 6,
+  "justificativa": "A proposta demonstra consciência do problema e traça um caminho concreto de isolamento físico via filas e extração do módulo de anonimização como serviço independente (Fase 2, strangler fig + queue), além de CQRS para analytics pesados (Fase 3); porém, no MVP (Fase 1) o isolamento é apenas lógico dentro do monolith — uma falha no engine de anonimização pode impactar a coleta —, e não há menção explícita a mecanismo de fallback para quando o worker de anonimização estiver indisponível (ex: buffer de submissões, modo degradado), nem a circuit breakers ou bulkhead para proteger o path crítico de coleta contra backpressure do processamento pesado."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 46,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra padrões corretos — pipeline fixo com parâmetros variáveis explicitamente declarados, adapter pattern para CV e LLM, service layer com contratos bem definidos — mas permanece no nível de intenção de design: não especifica o mecanismo concreto de armazenamento de configuração por tenant (schema da tabela, config store, feature flags), o processo de onboarding de um novo cliente B2B2C sem deploy, nem a taxonomia completa dos parâmetros configuráveis (lista truncada), deixando lacunas que na prática podem ainda exigir código para casos como bibliotecas de exercícios customizadas por academia ou regras biomecânicas específicas de modalidade."
+}

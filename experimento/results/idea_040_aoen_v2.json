@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 40,
+  "ideia": "App de triagem médica com IA para pronto-atendimento",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de triagem clínica orientado a IA que coleta sintomas, interpreta urgência e classifica o paciente em protocolo de risco (Manchester, ESI ou proprietário) antes do contato com o profissional de saúde — gerando uma ficha estruturada que reduz o tempo de avaliação inicial e padroniza o fluxo de atendimento.",
+    "fase1_mercado": "Pronto-atendimentos privados (UPAs conveniadas, clínicas de emergência), ambulatórios hospitalares com alto volume, planos de saúde que operam unidades próprias, e redes de medicina ocupacional. Mercado primário: gestores de operações clínicas que precisam reduzir tempo médio de espera e custos com superlotação.",
+    "fase1_extensivel": "Sim. O core é modelado como uma interface abstrata de triagem (TriageEngine) com contrato fixo: recebe anamnese estruturada e devolve classificação de risco + ficha clínica. Internamente pode ser implementado por OpenAI GPT-4o, Anthropic Claude, modelo fine-tuned local (LLaMA médico), ou regras determinísticas. Troca de fornecedor = nova implementação da interface, sem alterar nenhuma outra camada.",
+    "fase2_interfaces": [
+      "Totem/tablet de autoatendimento na recepção (kiosk web PWA — paciente responde anamnese guiada)",
+      "Dashboard web para enfermagem (validação, override manual, histórico de triagens)",
+      "Painel médico web/mobile (fila priorizada, fichas geradas, alertas de risco crítico)",
+      "API REST/webhooks para integração com HIS/PEP existentes (MV, Tasy, Soul MV, TOTVS Saúde)",
+      "Canal conversacional WhatsApp/SMS para pré-triagem remota antes da chegada do paciente"
+    ],
+    "fase2_justificativa_mercado": "O totem abre o mercado de clínicas físicas de alto volume (UPAs, pronto-socorros); o dashboard de enfermagem é o critério de compra do gestor clínico, pois valida conformidade regulatória (CFM/ANVISA); o painel médico reduz fricção de adoção pelos profissionais; a API abre o mercado enterprise de hospitais que já têm HIS e não vão trocar — o produto entra como módulo de triagem plugável; o canal WhatsApp abre o mercado de planos de saúde que querem deflexão de PA com triagem remota.",
+    "fase2_service_layer": "Uma TriageService centraliza toda a lógica de negócio: receber anamnese, invocar o TriageEngine, aplicar o protocolo do cliente, persistir resultado e notificar stakeholders. Nenhuma interface conhece o TriageEngine diretamente. O totem, o dashboard e a API chamam exclusivamente endpoints da TriageService via HTTP ou WebSocket — podendo ser substituídos ou adicionados sem tocar na lógica de classificação.",
+    "fase3_fluxo_fixo": "1. Paciente inicia atendimento e fornece identificação. 2. Sistema coleta anamnese guiada (sintomas, intensidade, duração, histórico relevante). 3. TriageService envia anamnese estruturada ao TriageEngine. 4. Engine retorna classificação de risco, justificativa clínica e flags de alerta. 5. Sistema aplica protocolo de filas do cliente (por cor/nível/especialidade). 6. Ficha é persistida e profissional é notificado. 7. Auditoria e métricas são registradas. Este fluxo é invariante — o que muda são os parâmetros de cada etapa.",
+    "fase3_parametros_configuraveis": [
+      "Protocolo de triagem ativo (Manchester / ESI / CTAS / protocolo proprietário do cliente)",
+      "Especialidades e subespecialidades atendidas por unidade",
+      "Árvore de sintomas e perguntas de anamnese por especialidade",
+      "Thresholds de risco para cada cor/nível de urgência",
+      "Regras de encaminhamento automático (ex: dor torácica → alerta imediato ao cardiologista)",
+      "Integrações externas ativas (HIS, PEP, prontuário, HL7 FHIR endpoint)",
+      "Idioma e tom da interface do paciente",
+      "SLA máximo por nível de urgência (minutos) para alertas de breach",
+      "Logo, cores e identidade visual (white-label)",
+      "Modelo de IA ativo (GPT-4o, Claude, modelo local) e temperatura/parâmetros"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel de configuração (sem deploy): administrador da clínica seleciona protocolo, cadastra especialidades, define thresholds, configura integrações via formulário e ativa o tenant. O sistema provisiona um tenant isolado com os parâmetros definidos. Tempo estimado de go-live: menos de 1 dia útil sem intervenção de engenharia.",
+    "fase4_core_isolado": "O TriageEngine — o processo de inferência de IA — roda em workers assíncronos isolados (fila de mensagens: RabbitMQ ou SQS). A TriageService publica a anamnese na fila e registra status 'aguardando classificação'. O worker consome, processa e publica o resultado. O resto do sistema (recepção, dashboard, auditoria) opera normalmente mesmo que o worker esteja sobrecarregado ou temporariamente indisponível.",
+    "fase4_custo_total_cliente": "Custo do core (IA): ~$0,01–$0,04 por triagem (GPT-4o input/output para anamnese média de 800 tokens). Infra proporcional: $0,003–$0,008 por triagem (CPU do worker, banco de dados, Redis). Armazenamento: ~$0,0005/triagem (ficha JSON + logs, ~2KB médios, S3/Blob). Banda: desprezível (<5KB por transação). Custo operacional unitário estimado: $0,015–$0,055 por triagem. Clínica com 200 triagens/dia = ~$3–$11/dia = $90–$330/mês em custo variável. Margem de segurança de 3x: precificação mínima viável ~$270–$990/mês por unidade.",
+    "fase4_continuidade": "Se o TriageEngine falhar: (1) a fila retém as tarefas pendentes com TTL configurável; (2) o sistema ativa automaticamente modo de triagem manual assistida — enfermeiro recebe formulário estruturado sem classificação de IA, podendo classificar manualmente; (3) o paciente não é bloqueado na recepção. O produto não para — degrada graciosamente. Alertas são disparados para o time de ops via PagerDuty/Opsgenie.",
+    "fase4_manutencao": "O TriageEngine é acessado exclusivamente através da interface TriageEngine com método classify(anamnesis: AnamnesisDTO): TriageResult. Para trocar o fornecedor de IA: implementar nova classe (ex: ClaudeTriageEngine), registrá-la no container de injeção de dependência e alterar o parâmetro de configuração do tenant. Zero downtime — workers antigos drenam a fila atual enquanto novos workers com a nova implementação sobem em paralelo (blue-green no nível de worker).",
+    "monetizacao": "SaaS B2B com modelo por unidade/tenant: plano base por unidade (acesso ao totem + dashboard + até N triagens/mês) + overage por triagem excedente. Tiers: Clínica Pequena (<500 triagens/mês), Médio Porte (<2000/mês), Enterprise (ilimitado + SLA + suporte dedicado + white-label + integração HIS). Add-ons pagos: canal WhatsApp, relatórios regulatórios (ANS/CFM), API para HIS. Receita previsível (MRR) com crescimento via expansão de unidades no mesmo grupo hospitalar.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com NestJS para TriageService e API REST; workers em Python para o TriageEngine (ecossistema ML/IA mais rico). Banco: PostgreSQL com multi-tenancy por schema. Fila: RabbitMQ (self-hosted) ou AWS SQS (cloud). Cache: Redis (sessões de anamnese, filas de atendimento em tempo real). Frontend: React (PWA para totem + dashboard + painel médico — única codebase com layouts responsivos). Realtime: WebSocket via Socket.io (atualizações de fila ao vivo). IA: OpenAI API (default) com adaptadores para Anthropic e Ollama (modelos locais para clientes com restrição de dados). Infra: Docker + Kubernetes (EKS ou GKE) para escalar workers independentemente. Observabilidade: OpenTelemetry + Grafana Stack (Loki, Tempo, Prometheus). Conformidade LGPD: criptografia em repouso (AES-256), pseudonimização de dados do paciente, audit log imutável."
+  }
+}

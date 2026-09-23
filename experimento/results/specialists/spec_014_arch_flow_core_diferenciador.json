@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado no 'Translation Engine' com glossário corporativo vivo e tradução contextual por domínio, isolado como bounded context próprio e extensível por suportar múltiplos fornecedores (DeepL, Google), mas perde pontos por não explicitar com precisão por que o loop de feedback em tempo real durante a sessão — o componente realmente insubstituível — é superior às soluções existentes como Kudo ou KUDO Interpreter, deixando a unicidade implícita em vez de demonstrada."
+}

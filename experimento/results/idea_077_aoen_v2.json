@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 77,
+  "ideia": "App de gestão de fazendas solares com monitoramento IoT",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Pipeline de ingestão, normalização e análise de dados IoT em tempo real com detecção de anomalias e geração de alertas acionáveis — sem isso o produto é apenas um painel estático sem valor operacional.",
+    "fase1_mercado": "Operadores e gestores de fazendas solares (utility-scale e C&I), empresas de O&M (Operations & Maintenance) terceirizadas, EPCs que entregam projetos e precisam monitorar pós-comissionamento, e fundos de energia renovável com portfólio de ativos solares.",
+    "fase1_extensivel": "Sim. O core é agnóstico de protocolo e fabricante: abstrai a camada de comunicação via adaptadores plugáveis (MQTT, Modbus TCP, HTTP REST, OPC-UA). Trocar o broker MQTT por outro ou adicionar suporte a novos inversores (Huawei, SMA, Growatt) é adição de adaptador, não reescrita do core. O motor de regras de anomalia é configurável por cliente, não hardcoded.",
+    "fase2_interfaces": [
+      "Web Dashboard (SPA) — gestores e analistas de portfólio",
+      "Mobile App (PWA/React Native) — técnicos de campo em inspeção",
+      "REST/WebSocket API pública — integrações com SCADA, ERP, plataformas de trading de energia",
+      "Canal de alertas (WhatsApp Business API, SMS, e-mail) — operadores on-call",
+      "Relatórios PDF/Excel agendados — diretores e investidores"
+    ],
+    "fase2_justificativa_mercado": "Web Dashboard abre o mercado de gestores de portfólio que precisam de visão consolidada de múltiplos ativos. Mobile abre o mercado de equipes de campo de O&M que operam sem desktop. A API abre o mercado enterprise (utilities e EPCs) que já possuem sistemas proprietários e precisam de integração, não de mais uma tela. Alertas via WhatsApp/SMS abrem o mercado de operadores regionais sem NOC dedicado que dependem de notificação proativa. Relatórios automatizados abrem o mercado de investidores e fundos que exigem compliance documental periódico.",
+    "fase2_service_layer": "Uma Service Layer centralizada expõe contratos de domínio (FarmService, DeviceService, AlertService, ReportService) consumidos por todas as interfaces. Nenhuma interface contém lógica de negócio — apenas chama os serviços e renderiza. Trocar a interface web por outro framework ou adicionar um chatbot não exige alterar nenhuma regra de negócio.",
+    "fase3_fluxo_fixo": "Ingestão de telemetria → normalização de unidades e metadados → persistência em série temporal → avaliação de regras de anomalia → disparo de eventos → roteamento de alertas → agregação para dashboards → geração de relatórios. Este pipeline é idêntico para todos os clientes.",
+    "fase3_parametros_configuraveis": [
+      "Mapa de dispositivos IoT por fazenda (IDs, protocolos, endereços)",
+      "Especificações dos painéis e inversores (potência nominal, curva de degradação)",
+      "Thresholds de anomalia por métrica (irradiância, temperatura, potência, PR)",
+      "Regras de alerta (condição + severidade + canal de notificação + destinatários)",
+      "Timezone e moeda local para relatórios",
+      "Frequência de amostragem por dispositivo",
+      "SLA de disponibilidade contratado (uptime mínimo esperado)",
+      "Integrações ativas (quais webhooks e APIs externas habilitar)",
+      "Logotipo e paleta de cores para white-label de relatórios",
+      "Plano de faturamento e limites de uso (número de dispositivos, retenção de histórico)"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário de configuração ou import de arquivo YAML/JSON: define a fazenda, mapeia os dispositivos IoT, seta thresholds e canais de alerta. Um job de provisionamento cria o tenant isolado, registra os dispositivos no broker e ativa o pipeline. Zero código novo — novo cliente é novo registro de configuração no banco.",
+    "fase4_core_isolado": "O worker de processamento de telemetria (ingestion + anomaly detection) roda como processo isolado e escalável horizontalmente (ex: container dedicado por região ou por volume de dispositivos). Consome mensagens de uma fila durável (Kafka ou SQS) e é completamente separado da camada web/API.",
+    "fase4_custo_total_cliente": "Custo core: processamento do pipeline IoT proporcional ao número de dispositivos e frequência de amostragem (~$0,002/dispositivo/hora em compute + broker). Custo de armazenamento: série temporal comprimida ~50MB/dispositivo/mês (TimescaleDB ou InfluxDB). Custo de infra proporcional: parcela do servidor de API/web rateada por tenant (~$3–8/cliente/mês em small). Banda de saída: dashboards em tempo real + alertas (~1–5GB/mês por fazenda média). Custo operacional: suporte + SLA de uptime. Total estimado para fazenda de 100 dispositivos com amostragem a cada 5 min: $40–80/mês de custo real, viabilizando planos a partir de $200/mês com margem saudável.",
+    "fase4_continuidade": "A fila durável (Kafka/SQS) absorve picos e falhas do worker — mensagens não se perdem. A camada web e a API continuam servindo dados históricos mesmo se o worker estiver down. Circuit breakers impedem que falha no motor de anomalia bloqueie a ingestão. Healthchecks e restart automático via orquestrador (Kubernetes/ECS). O cliente vê dados históricos e recebe alerta de degradação de serviço, mas o produto não cai.",
+    "fase4_manutencao": "O worker é substituível sem downtime: novo worker consome a mesma fila com o mesmo contrato de mensagem. A troca de broker IoT (ex: de Mosquitto para HiveMQ) impacta apenas o adaptador de entrada, não o motor de análise. Migrações de banco de série temporal são feitas com dual-write temporário. Cada componente tem interface de contrato estável — a implementação é intercambiável.",
+    "monetizacao": "SaaS por assinatura mensal tiered por número de dispositivos IoT monitorados: Starter (até 50 dispositivos, $149/mês), Professional (até 500 dispositivos, $499/mês), Enterprise (ilimitado + SLA + white-label + API dedicada, $1.500+/mês). Add-ons: retenção de histórico estendida, relatórios customizados, integração SCADA. Modelo previsível com custo marginal baixo por cliente adicional após infrastructure mínima estabelecida.",
+    "stack_sugerida": "Broker IoT: MQTT (Mosquitto/HiveMQ) + adaptadores Modbus/HTTP. Fila: Apache Kafka (ou AWS SQS para menor complexidade operacional inicial). Worker de processamento: Python (asyncio) ou Go — containers Docker escaláveis. Banco de série temporal: TimescaleDB (PostgreSQL-compatible, menor custo operacional) ou InfluxDB. Banco relacional (configurações/tenants): PostgreSQL. Backend API: FastAPI (Python) ou NestJS (Node). Frontend web: React + Recharts/ApexCharts. Mobile: React Native (PWA como primeira versão para reduzir custo). Alertas: Twilio (SMS/WhatsApp), SendGrid (e-mail). Infraestrutura: AWS ECS Fargate ou Railway/Render (early stage) → Kubernetes em escala. Observabilidade: OpenTelemetry + Grafana Cloud."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "O projeto prevê múltiplas interfaces claramente justificadas por perfis reais (REST/GraphQL para web e mobile, WebSocket para negociações em tempo real, CLI para operações administrativas, Webhook para integrações com pagamentos e transportadoras, Admin Dashboard para equipe interna), com lógica de negócio desacoplada via ports/use cases que permite adicionar novas interfaces sem reescrever o domínio — perde um ponto por não explicitar justificativas de alcance de mercado para cada canal (ex: mobile-first para compradores de campo, CLI para certificadores técnicos)."
+}

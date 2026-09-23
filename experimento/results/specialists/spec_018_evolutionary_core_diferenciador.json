@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador — predição calibrada de churn com isolamento multi-tenant regulatório e integração nativa BSS/OSS para telecom — é inferível das fitness functions (calibration < 5pp, data freshness SLA, tenant isolation) e das características arquiteturais, e a extensibilidade é endereçada via portabilidade explícita; porém o núcleo não está arquiteturalmente isolado como componente próprio nem há argumentação direta de por que alternativas genéricas (plataformas de ML, outros SaaS de churn) falham nesse contexto específico."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "Arquitetura exemplar de evolução: Modular Monolith com bounded contexts isolados como ponto de partida correto, fitness functions automatizadas que disparam extração de serviços apenas quando necessário (evitando prematuridade), reversibilidade explicitamente planejada para cada decisão técnica relevante (banco, cloud, protocolo, cache), feature flags para evolução sem branches, e Strangler Fig para substituição incremental — a única lacuna é a ausência explícita de inversão de dependências (portas e adaptadores) garantindo que a lógica de negócio seja agnóstica a frameworks externos."
+}

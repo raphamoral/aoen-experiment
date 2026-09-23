@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta não menciona explicitamente filas de mensagens, workers assíncronos ou isolamento físico de processos pesados (scraping anti-bot, modelos de ML, predição de demanda); a separação por bounded contexts e times é apenas organizacional/lógica, e embora a presença de Redis e S3 no commodity layer sugira infraestrutura compatível com padrões assíncronos, nenhum mecanismo de fallback, circuit breaker ou escalonamento independente do processamento pesado foi descrito na arquitetura."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 5,
+  "justificativa": "A proposta demonstra consciência de separação de responsabilidades (filas por loja, scraping como serviço candidato, dois bancos com propósitos distintos), mas não menciona camadas de abstração sobre as SDKs das plataformas (Shopify/VTEX/WooCommerce acoplam diretamente à lógica de negócio), não há isolamento explícito do domínio de precificação de sua infraestrutura (sem ports/adapters ou repositórios), e a reversibilidade de decisões-chave — como trocar o motor de regras ou migrar de plataforma — exigiria refatoração significativa; o potencial de escala horizontal via workers é o ponto mais sólido, mas o restante fica na metade do caminho entre um monolito acoplado e uma arquitetura verdadeiramente modular."
+}

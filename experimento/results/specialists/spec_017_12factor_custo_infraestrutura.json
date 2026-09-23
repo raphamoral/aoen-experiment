@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista os componentes de infraestrutura (RDS, ElastiCache, S3, SES, Cloudflare, EKS/GKE) e menciona alternativas de menor overhead operacional (Railway/Render), mas não apresenta nenhuma estimativa concreta de custo em valores monetários, nenhuma estratégia explícita de otimização financeira (scale-to-zero, spot instances, reserved capacity, storage tiering) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

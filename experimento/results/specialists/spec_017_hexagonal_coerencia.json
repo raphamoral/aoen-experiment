@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "hexagonal",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A arquitetura conta uma história internamente consistente — a verificação pública frequente justifica o RedisCredencialCacheAdapter, a exigência de auditabilidade justifica tanto o LogAuditoriaPort quanto o RevogarCertificadoUseCase com motivo, o processamento em lote é suportado pelo Worker/Queue e pelo CLI Adapter, e o RegistroBlockchainPort corretamente marcado como opcional evita dependência desnecessária — porém há duas lacunas de coerência que impedem nota máxima: ausência visível de um port/adapter de autenticação e autorização (crítico para uma plataforma pública com revogação e emissão sensíveis), e nenhuma estratégia explicitada para invalidação do cache Redis quando um certificado é revogado, o que contradiz a garantia de integridade que o próprio domínio declara como central."
+}

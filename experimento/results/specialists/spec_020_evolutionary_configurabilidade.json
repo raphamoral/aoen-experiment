@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta reconhece multi-tenancy como característica e prevê um módulo Tenant + feature flags via LaunchDarkly, mas não especifica nenhum mecanismo de configuração por cliente para comportamentos de negócio — tipos de missão, algoritmos de pontuação, estruturas de recompensa e mecânicas de gamificação aparecem como extensibilidade via código ('novos tipos de missões'), não via configuração, o que implica que onboarding de um cliente com regras distintas ainda exigiria desenvolvimento."
+}

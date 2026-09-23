@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 2,
+  "justificativa": "A proposta menciona apenas APIs públicas e SDK para integradores na fase_4 como interface adicional, sem nenhuma estratégia explícita de múltiplos canais (web, mobile para técnicos de campo, painel para gestores), sem mapeamento de perfis de usuário a interfaces distintas e sem arquitetura de desacoplamento UI/lógica de negócio deliberadamente planejada."
+}

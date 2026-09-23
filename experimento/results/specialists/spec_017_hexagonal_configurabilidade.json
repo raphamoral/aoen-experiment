@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A arquitetura hexagonal (ports & adapters) fornece a fundação técnica para configurabilidade e há indícios pontuais (CriteriosConclusao como entidade, blockchain 'opcional', múltiplos adapters de notificação), mas a proposta não descreve nenhuma camada explícita de configuração por tenant — não há entidade TenantConfig, nenhum mecanismo de feature flags, nenhuma lógica de roteamento por cliente entre os adapters concorrentes (SendGrid vs WhatsApp, blockchain on/off), e nenhum modelo de onboarding baseado apenas em dados; onboarding de novo cliente ainda exigiria desenvolvimento para cabeamento das dependências."
+}

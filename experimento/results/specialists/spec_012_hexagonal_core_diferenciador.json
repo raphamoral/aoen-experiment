@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O diferenciador existe e é identificável na combinação de ingestão industrial multi-protocolo (MQTT + OPC-UA), conformidade regulatória multi-norma (CONAMA/EPA/ISO via ICompliancePort + IRegulatoryStandardsPort) e predição por ML (IMLModelPort), com extensibilidade garantida pela arquitetura hexagonal — porém o núcleo não está explicitamente isolado como core estratégico: o IMLModelPort aparece como port secundário junto a billing e cache, sem articular por que a inteligência preditiva sobre dispersão de poluentes é insubstituível frente a plataformas genéricas de monitoramento IoT como AWS IoT SiteWise ou Azure Industrial IoT."
+}

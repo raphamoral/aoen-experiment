@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta tem isolamento lógico via interface PredictionEngine e ChurnService, e menciona provedores gerenciados (SageMaker, Vertex AI) como opção que naturalmente isolariam o processamento pesado, mas o pipeline da fase 3 é descrito como síncrono e sequencial sem nenhuma menção a filas, workers assíncronos, processos separados ou mecanismos de fallback — se o scoring travar ou falhar, a evidência arquitetural disponível sugere que toda a cadeia falha junto."
+}

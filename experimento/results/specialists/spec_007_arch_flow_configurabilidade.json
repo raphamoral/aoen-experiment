@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta reconhece multi-tenancy como contexto delimitado explícito (Identity & Tenant Management) e alguns componentes sugerem parametrização natural (Billing com planos/licenças, SSO via SAML/OIDC, integrações SCORM/xAPI), mas o Gamification Engine e o Learning Path Orchestration são classificados como 'custom' com 'regras de negócio únicas' sem nenhuma menção a mecanismos concretos de configuração por tenant (rule engines, feature flags, schema de configuração, onboarding zero-code), deixando em aberto se novo cliente exige apenas uma row no banco ou um ciclo de desenvolvimento."
+}

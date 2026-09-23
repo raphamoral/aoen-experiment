@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "A arquitetura conta uma história coerente — integrações como fundação, filas por loja para escala, PostgreSQL para relacional e Redis para cache/filas se reforçam bem — mas há uma tensão não resolvida entre o 'tempo real' prometido no dashboard e o job que roda a cada hora, e a descrição da tabela de histórico como 'simples' contradiz a ambição dos relatórios de performance exigidos nas interfaces."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "arch_flow",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "A proposta apresenta coerência sistêmica forte: a value chain mapeia diretamente para os bounded contexts, as escolhas de commodity (Stripe Connect para RewardsPayout, Auth0 para IdentityAccess, S3 para evidências de BugLifecycle) validam exatamente o que cada contexto declarou precisar, e o team topology reflete a estrutura necessária para entregar a cadeia de valor — porém há uma lacuna relevante: os três itens genesis (matching por IA, deduplicação semântica, sugestão de casos de teste) exigem capacidade de ML/dados que nenhum team topology assume explicitamente, criando um gap organizacional que contradiz a ambição técnica declarada; além disso, os contextos NotificationHub, BillingSubscription e IdentityAccess ficam sem ownership claro de time, fragilizando a coesão no último quilômetro."
+}

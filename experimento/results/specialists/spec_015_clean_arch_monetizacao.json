@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona a entidade Tenant com atributo 'plan' e regra de limites por SKUs e requisições, sinalizando consciência de tiers, mas não há nenhum detalhamento de modelo de receita, valores, estratégia freemium/subscription/usage-based, métricas de negócio (MRR, LTV, CAC) ou análise de sustentabilidade econômica."
+}

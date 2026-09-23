@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 35,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra separação clara entre fluxo fixo (código) e parâmetros variáveis (config): o pipeline fase3 é imutável, o Risk Scorer é abstraído como interface trocável, a API de Onboarding/Config permite auto-serviço e o dashboard expõe thresholds ajustáveis por tenant — indicando que novo cliente pode ser onboardado via configuração; porém a proposta não explicita se a seleção de backend de scoring (regras vs. XGBoost vs. provider externo) é configurável por tenant individualmente ou é um parâmetro global, e não descreve o modelo de armazenamento de configuração por tenant (schema, isolamento, herança de defaults), deixando em aberto se o onboarding é realmente zero-código para todos os casos ou apenas para o caminho feliz."
+}

@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 62,
+  "ideia": "SaaS de gestão de royalties para editoras musicais independentes",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de cálculo de royalties: ingere dados de uso de múltiplas fontes (DSPs, rádio, sync, ao vivo), aplica regras de divisão configuráveis por obra/contrato e gera demonstrativos auditáveis com rastreabilidade completa por direito.",
+    "fase1_mercado": "Editoras musicais independentes com catálogo ativo mas sem estrutura para soluções enterprise (ex: Music Publisher Solutions, Counterpoint). Segmento subatendido: 5 a 500 obras gerenciadas, 1 a 20 artistas/compositores, receita de royalties entre R$2k e R$50k/mês.",
+    "fase1_extensivel": "Sim. O core é um pipeline de transformação agnóstico de fonte: entrada via adaptadores (Spotify for Artists CSV, ECAD, ASCAP, BMI, planilha manual), processamento central invariante, saída via geradores (PDF, transferência bancária, API). Trocar ou adicionar fonte = novo adaptador, sem alterar o motor.",
+    "fase2_interfaces": [
+      "Web Dashboard (publisher admin): gestão de catálogo, contratos, relatórios e pagamentos",
+      "Portal do Artista/Compositor (read-only): visualização de extratos, histórico e projeções",
+      "API REST: integração com distribuidoras, ERPs contábeis e ferramentas de BI",
+      "Importação em lote CSV/XLSX: onboarding de publishers que vêm de planilhas",
+      "Relatórios automatizados por e-mail/PDF: atende publishers que operam por documentos",
+      "Webhooks de eventos: notifica sistemas externos sobre pagamentos processados"
+    ],
+    "fase2_justificativa_mercado": "Web Dashboard abre o mercado primário (publisher admin). Portal do Artista cria valor percebido pelo artista, reduz churn por transparência e gera boca-a-boca. API abre mercado B2B para distribuidoras e escritórios contábeis que buscam white-label. Importação CSV elimina fricção de migração — converte leads que usam Excel. Email/PDF mantém publishers analógicos sem forçar mudança de hábito. Webhooks permitem ecossistema de integrações sem suporte técnico contínuo.",
+    "fase2_service_layer": "Uma RoyaltyService centraliza toda lógica de negócio: cálculo de splits, validação de contratos, geração de demonstrativos, autorização de pagamento. As interfaces (web, API, importador, e-mail) chamam apenas métodos da RoyaltyService via DTOs — nenhuma regra de cálculo vive nas camadas de apresentação. Substituir o dashboard não afeta o motor; adicionar nova interface não duplica regras.",
+    "fase3_fluxo_fixo": "1. Ingestão de dados de uso (fonte variável) → 2. Normalização para modelo canônico de evento de uso → 3. Matching com obras do catálogo → 4. Aplicação das regras de split por contrato → 5. Agregação por período de apuração → 6. Dedução de retenções e taxas configuradas → 7. Geração de demonstrativo auditável → 8. Autorização e disparo de pagamento. Este fluxo é imutável no código; apenas os parâmetros de cada etapa variam por cliente.",
+    "fase3_parametros_configuraveis": [
+      "Percentuais de split por obra, território e tipo de uso (stream, radio, sync, live)",
+      "Período de apuração (mensal, trimestral, semestral)",
+      "Moedas aceitas e taxas de câmbio aplicáveis",
+      "Threshold mínimo para disparo de pagamento",
+      "Alíquotas de retenção fiscal por país do beneficiário",
+      "Fontes de dados habilitadas por cliente (quais adaptadores estão ativos)",
+      "Templates de relatório e logotipo da editora",
+      "Método de pagamento preferido (PIX, transferência, PayPal, Wise)",
+      "Regras de carência e antecipação por contrato",
+      "Notificações e alertas configuráveis por evento"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário de configuração: cria tenant isolado, define parâmetros contratuais padrão, habilita adaptadores de fonte, configura método de pagamento e threshold. Nenhuma linha de código é escrita. O pipeline existente absorve o novo cliente com os parâmetros fornecidos. Migração de catálogo via importação CSV com template pré-formatado fornecido no onboarding.",
+    "fase4_core_isolado": "O motor de cálculo roda como worker assíncrono isolado (processo separado, fila de jobs). O job recebe: tenant_id, período, fonte de dados. Processa de forma idempotente e grava resultado em tabela de demonstrativos. A API web nunca calcula em tempo real — apenas lê resultados já processados. Falha no worker não derruba o dashboard nem o portal do artista.",
+    "fase4_custo_total_cliente": "Core: $0.002–$0.01/run de cálculo (Lambda/Cloud Run por execução, escala com volume de eventos de uso). Armazenamento: ~$0.023/GB/mês (S3/GCS para PDFs e logs de auditoria; ~50MB/cliente/mês no início). Banco de dados: ~$2–8/cliente/mês proporcional ao tamanho do catálogo (RDS ou PlanetScale por linhas). Banda: ~$0.05–0.20/cliente/mês (relatórios PDF, downloads). Pagamentos: 0.5–1.5% do volume processado (Stripe ou Zoop). Operacional fixo rateado: ~$3–6/cliente/mês (suporte, monitoramento). Total estimado: $8–25/cliente/mês + % do volume de royalties processados — permite precificação de $49–199/mês por tier com margem saudável.",
+    "fase4_continuidade": "Worker de cálculo usa fila durável (SQS, RabbitMQ ou BullMQ). Se o worker cair, jobs ficam na fila sem perda. Dashboard e portais operam normalmente — mostram último demonstrativo calculado com timestamp visível. Alertas automáticos notificam o time de engenharia. Reprocessamento é idempotente: reexecutar o mesmo job produz o mesmo resultado sem duplicar pagamentos.",
+    "fase4_manutencao": "O motor de cálculo é encapsulado atrás de uma interface RoyaltyCalculatorPort. Implementação atual pode ser substituída (ex: migrar de lógica própria para motor com IA para detecção de anomalias) sem alterar a fila, os adaptadores de entrada ou os geradores de saída. Deploy do novo motor é blue/green: worker antigo drena a fila atual enquanto novo worker processa novos jobs. Rollback em minutos.",
+    "monetizacao": "Tier Starter ($49/mês): até 50 obras, 1 usuário publisher, relatórios PDF, importação manual. Tier Growth ($149/mês): até 500 obras, 5 usuários, portal de artistas, API, múltiplas fontes. Tier Scale ($349/mês): obras ilimitadas, usuários ilimitados, white-label, webhooks, SLA de suporte. Revenue share opcional: 0.5% do volume de royalties processados como alternativa ao plano fixo para publishers com fluxo variável. Add-on de compliance fiscal internacional: +$30/mês. Modelo freemium não recomendado — público-alvo tem receita real e disposição a pagar por precisão e conformidade.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) com Fastify para API; BullMQ + Redis para fila de jobs do motor de cálculo. Banco: PostgreSQL (multi-tenant com schema isolation por tenant_id). Storage: S3-compatible (Cloudflare R2 para custo) para PDFs e arquivos de importação. Worker: processo Node.js separado em container Docker, escalável horizontalmente via Kubernetes ou Railway. Frontend Dashboard: Next.js 14 (App Router) com Tailwind. Portal do Artista: mesma stack, subdomain isolado. Pagamentos: Stripe Connect (internacional) + Zoop/Pagar.me (Brasil). Observabilidade: OpenTelemetry + Grafana Cloud. CI/CD: GitHub Actions. IaC: Terraform. Hospedagem inicial: Railway ou Render (baixo overhead operacional para MVP); migrar para AWS/GCP quando MRR > $10k."
+  }
+}

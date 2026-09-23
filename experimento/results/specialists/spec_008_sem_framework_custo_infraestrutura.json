@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 3,
+  "justificativa": "A proposta menciona componentes de infra (Hetzner/DigitalOcean, PostgreSQL, Redis, S3/R2, CDN, load balancer) e demonstra consciência de custo ao preferir provedores mais baratos e iniciar em servidor único, mas não apresenta nenhuma estimativa concreta em valores monetários, nenhuma estratégia explícita de otimização (spot instances, scale-to-zero, tiers de armazenamento) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

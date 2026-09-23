@@ -1,0 +1,15 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "aoen",
+  "scores": {
+    "core_diferenciador": 9,
+    "visao_mercado": 9,
+    "multi_interface": 10,
+    "configurabilidade": 9,
+    "isolamento_processamento": 5,
+    "consideracao_custo": 6,
+    "monetizacao": 5,
+    "evolucao": 9,
+    "coerencia": 9
+  }
+}

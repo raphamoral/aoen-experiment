@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 62,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta forma um sistema coeso onde cada camada justifica a seguinte: o pipeline com adaptadores (fase1) viabiliza as 6 interfaces sem duplicação de regras (fase2), a RoyaltyService garante que o fluxo imutável de 8 etapas (fase3) permaneça intacto independente de qual interface o aciona, e cada interface escolhida tem justificativa de mercado que aponta para o mesmo segmento-alvo declarado na fase1 — a única lacuna que impede nota 10 é a ausência de decisões tecnológicas concretas (banco de dados, linguagem, infraestrutura) que permitiriam verificar se a consistência arquitetural se sustenta até o nível de implementação."
+}

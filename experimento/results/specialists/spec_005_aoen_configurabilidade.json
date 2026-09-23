@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "A proposta demonstra separação clara entre fluxo fixo (fase3_fluxo_fixo) e parâmetros variáveis por cliente (fase3_parametros_configuraveis), com adaptadores abstratos para TemplateEngine e SignatureProvider permitindo troca de fornecedor por configuração — mas a nota não atinge 10 porque a proposta não detalha o mecanismo concreto de gerenciamento de configuração por tenant (tabela de configuração, rule engine para cláusulas condicionais por jurisdição, isolamento de dados), deixando em aberto se o onboarding de um novo cliente com jurisdição ou fluxo de assinantes inédito exigiria apenas dados ou ainda algum artefato de código."
+}

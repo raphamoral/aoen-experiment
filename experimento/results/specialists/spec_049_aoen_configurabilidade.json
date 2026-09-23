@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 49,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra intenção clara de configurabilidade (catálogo de especialidades configurável, origem do score trocável, service layer sem regras nas interfaces), mas não especifica o mecanismo concreto de configuração por tenant — não há menção a tabelas de configuração por cliente, feature flags, parâmetros de workflow por tenant ou processo explícito de onboarding zero-código; 'score pode ser trocado' e 'catálogo configurável' soam como decisões de deploy, não de runtime configuration, o que mantém o sistema na zona de configurabilidade parcial."
+}

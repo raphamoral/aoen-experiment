@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 42,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado (pipeline: dados brutos → indicadores → narrativa LLM → documento auditável), isolado em uma service layer coesa, extensível via arquitetura de plugins para frameworks e abstração do provedor LLM, e resolve um problema real — conformidade multi-framework com auditabilidade — que planilhas e relatórios manuais não resolvem; perde um ponto por não explicitar o mecanismo de vantagem competitiva sustentável (ex: dataset proprietário de benchmarks setoriais ou modelo fine-tuned) que impediria comoditização do pipeline por concorrentes."
+}

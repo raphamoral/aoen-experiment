@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal com portas e adaptadores bem definidos permite substituição independente de qualquer tecnologia (banco, auth, notificação, analytics) sem tocar no domínio central, múltiplas implementações do mesmo port já demonstram reversibilidade em prática (SendGrid/Slack, futuras trocas de Kafka ou Auth0 são triviais), e a separação entre primary/secondary adapters garante que o crescimento de usuários exija apenas escalonamento de infraestrutura — não mudança arquitetural — com o único ponto de atenção sendo que a escolha de SHA256+salt para anonimização, embora abstraída atrás de IAnonymizationServicePort, pode exigir troca futura conforme regulações de privacidade evoluem, o que porém já está corretamente encapsulado para ser feito sem impacto no restante do sistema."
+}

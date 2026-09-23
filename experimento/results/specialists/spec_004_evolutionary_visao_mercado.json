@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "evolutionary",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 1,
+  "justificativa": "O único sinal de mercado presente é o nome do produto ('compras corporativas de TI'), que sugere implicitamente um público-alvo, mas a proposta é integralmente arquitetural — não há articulação da dor do cliente, estimativa de tamanho de mercado, diferenciação frente a alternativas existentes (SAP Ariba, Coupa, GEP, etc.) nem proposta de valor que justifique adoção."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 35,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (REST síncrona, Webhook assíncrono, Dashboard Web, SDK cliente e API de Config), cada uma explicitamente justificada por um perfil de usuário ou segmento de mercado real, com a lógica de negócio centralizada em uma FraudService desacoplada que permite adicionar novas interfaces sem reescrever o domínio."
+}

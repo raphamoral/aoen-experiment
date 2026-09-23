@@ -1,0 +1,84 @@
+{
+  "ideia_idx": 37,
+  "ideia": "Plataforma de orçamento automatizado para reformas residenciais",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Orçamentação de reformas residenciais: transformar o escopo de uma reforma (ambientes, serviços, medidas, padrão de acabamento) em um orçamento detalhado e auditável. Agregados principais: Projeto de Reforma, Ambiente, Serviço/Composição de Custo (insumos + mão de obra + produtividade), Orçamento (versões, itens, BDI/margem, impostos), Proposta comercial, Catálogo de Preços (SINAPI/TCPO/tabelas próprias de fornecedores), Cliente e Profissional/Empreiteiro. Regras de negócio no core: cálculo de quantitativos a partir de medidas, aplicação de composições e índices regionais, perdas e retrabalho, BDI, cenários (básico/médio/alto padrão), versionamento e aprovação da proposta, validade e reajuste de preços.",
+    "primary_ports": [
+      "CriarProjetoDeReforma (cadastro de escopo, ambientes e medidas)",
+      "GerarOrcamentoAutomatico (cálculo a partir do escopo e do padrão de acabamento)",
+      "AjustarOrcamento (edição de itens, quantidades, margens e cenários)",
+      "ComparecerCenariosDeOrcamento (comparação básico/médio/alto)",
+      "EmitirPropostaComercial (geração e envio da proposta)",
+      "AprovarOuRecusarProposta (fluxo de aceite do cliente)",
+      "GerenciarCatalogoDePrecos (composições, insumos, tabelas regionais)",
+      "GerenciarAssinaturaEPlano (tenant, plano, limites de uso)",
+      "ConsultarRelatoriosEIndicadores (funil, ticket médio, margem)"
+    ],
+    "secondary_ports": [
+      "RepositorioDeProjetos",
+      "RepositorioDeOrcamentos",
+      "RepositorioDeCatalogo",
+      "RepositorioDeUsuariosETenants",
+      "FonteDePrecosExternos (SINAPI, TCPO, lojas de materiais)",
+      "InterpretadorDeEscopo (extração de ambientes, medidas e serviços a partir de texto, fotos e plantas)",
+      "GeradorDeDocumentos (PDF da proposta)",
+      "ArmazenamentoDeArquivos (fotos, plantas, anexos)",
+      "GatewayDePagamento (cobrança de assinatura e sinal da obra)",
+      "NotificadorDeMensagens (e-mail, WhatsApp, push)",
+      "AssinaturaEletronica",
+      "PublicadorDeEventos (mensageria de domínio)",
+      "ProvedorDeIdentidade (autenticação e autorização)",
+      "RelogioEGeradorDeIds (tempo e identificadores, para testabilidade)",
+      "Observabilidade (logs, métricas, traces)"
+    ],
+    "primary_adapters": [
+      "API REST/GraphQL para o front-end web",
+      "Aplicação web SPA (cliente final e profissional)",
+      "App mobile (levantamento de medidas e fotos em campo)",
+      "Webhooks de entrada (pagamento, assinatura eletrônica, mensageria)",
+      "Bot de WhatsApp/chat para captação e pré-orçamento",
+      "CLI e scripts administrativos (importação de tabelas, reprocessamento)",
+      "Consumidores de fila/eventos (jobs agendados de reajuste de preços)",
+      "Suíte de testes automatizados (dirige o core com adapters em memória)",
+      "API pública para parceiros e integrações (lojas, ERPs, construtoras)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios de projetos, orçamentos, tenants)",
+      "Repositório em memória (testes e desenvolvimento)",
+      "Importador SINAPI/TCPO e scrapers/APIs de lojas de materiais",
+      "Adapter de LLM/visão computacional (interpretação de escopo, fotos e plantas)",
+      "Adapter de geração de PDF (HTML→PDF)",
+      "S3 ou compatível (armazenamento de arquivos)",
+      "Stripe ou Pagar.me/Asaas (pagamentos, com PIX e boleto para o Brasil)",
+      "SendGrid/SES (e-mail) e API oficial do WhatsApp Business",
+      "Clicksign/DocuSign (assinatura eletrônica)",
+      "Kafka, SNS/SQS ou RabbitMQ (eventos)",
+      "Auth0/Keycloak/Cognito (identidade)",
+      "OpenTelemetry com Grafana ou Datadog (observabilidade)",
+      "Relógio fixo e gerador de IDs determinístico (testes)"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) não importa nenhum framework, ORM, SDK ou cliente HTTP. Ele depende apenas de interfaces (ports) declaradas dentro do próprio núcleo. As dependências apontam sempre para dentro: adapters conhecem o core, o core nunca conhece os adapters. A composição ocorre na raiz da aplicação (composition root) por injeção de dependência. Os adapters convertem DTOs e formatos externos (JSON, SQL, respostas de LLM, tabelas SINAPI) em objetos de domínio via anti-corruption layers, de modo que mudanças em fornecedores não afetam as regras de negócio. Serviços externos, inclusive o LLM, são tratados de forma simétrica, sempre atrás de ports, e o LLM só propõe um escopo estruturado que o core valida; o cálculo do orçamento é determinístico e fica no domínio. Regras de dependência são verificadas em CI (ArchUnit, dependency-cruiser ou import-linter) e cada port tem testes de contrato executados contra todos os seus adapters.",
+    "interfaces": [
+      "Portal web do cliente (solicitar orçamento, acompanhar e aprovar proposta)",
+      "Painel web do profissional/empresa (catálogo, margens, propostas, funil)",
+      "App mobile para levantamento de medidas e fotos",
+      "Chat/WhatsApp para pré-orçamento conversacional",
+      "API REST pública documentada com OpenAPI e autenticação por chave/OAuth2",
+      "Webhooks de saída (proposta emitida, aprovada, orçamento atualizado)",
+      "Widget incorporável para sites de lojas e arquitetos",
+      "CLI/backoffice para operações e importação de dados",
+      "Documentos PDF de proposta com marca do tenant (white-label)"
+    ],
+    "escalabilidade": "Monolito modular com o core empacotado como biblioteca, o que permite extrair serviços depois sem reescrever regras de negócio. Aplicação stateless com escala horizontal atrás de load balancer. Multi-tenancy com tenant_id em todas as tabelas (row-level security) e possibilidade de sharding por tenant no futuro. Cargas pesadas (interpretação por LLM, geração de PDF, importação de tabelas de preços, reajustes em lote) rodam de forma assíncrona em filas com workers autoescaláveis. Cache (Redis) do catálogo de preços por região e versão. Read models/CQRS para relatórios, evitando pressão sobre o banco transacional. Cálculo de orçamento é puro e determinístico, então é barato e fácil de paralelizar. Como todos os pontos de saída são ports, é possível trocar ou duplicar adapters (por exemplo, múltiplos provedores de LLM com fallback) sem tocar no core. Eventos de domínio permitem evoluir para arquitetura orientada a eventos quando necessário.",
+    "custos": "Principais custos: (1) inferência de LLM/visão por orçamento, mitigada com cache de interpretações, modelos menores para tarefas simples e modelo maior só para casos ambíguos, além de limite por plano; (2) licenciamento ou coleta de dados de preços (TCPO é pago; SINAPI é público), com custo de manutenção de scrapers; (3) infraestrutura de nuvem (banco gerenciado, filas, armazenamento de fotos e plantas, com ciclo de vida para dados antigos); (4) taxas de gateway de pagamento e de mensagens do WhatsApp Business (cobradas por conversa); (5) assinatura eletrônica por documento; (6) suporte e curadoria de composições de custo, que exigem especialistas (engenheiro/orçamentista); (7) conformidade com a LGPD. Começar com monolito modular em poucas instâncias, serverless para jobs esporádicos e observabilidade de custo por tenant (FinOps) para proteger a margem.",
+    "monetizacao": "SaaS por assinatura com planos escalonados: gratuito ou trial (poucos orçamentos por mês, marca d'água), Profissional (autônomos e pequenas empreiteiras, com limite de orçamentos e catálogo próprio), Empresa (equipes, multiusuário, white-label, integrações, relatórios) e Enterprise (construtoras e redes de lojas, SSO, SLA, API dedicada). Cobrança híbrida com excedente por orçamento gerado além da franquia. Receitas complementares: comissão ou lead fee por encaminhar clientes finais a profissionais e lojas parceiras, marketplace de materiais com comissão de venda, taxa sobre o sinal da obra processado pela plataforma, venda de pacotes de composições e tabelas de preços premium, e API paga para parceiros.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (módulos usados apenas nos adapters) ou Kotlin/Spring Boot, com core em código puro, sem dependência de framework. Banco: PostgreSQL com row-level security, Redis para cache, S3 para arquivos. Mensageria: SQS/SNS ou RabbitMQ (Kafka apenas se o volume justificar). Front-end: Next.js/React com TypeScript e Tailwind; app mobile em React Native ou Flutter. IA: adapter para LLMs com saída estruturada (JSON schema) e visão computacional para fotos e plantas, sempre atrás de port. Pagamentos: Stripe ou Asaas/Pagar.me. Identidade: Keycloak ou Cognito. Infra: Docker, AWS (ECS Fargate ou EKS) ou GCP Cloud Run, Terraform, CI/CD com GitHub Actions. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Testes: Vitest/Jest, testes de contrato por port, Testcontainers, testes de arquitetura (dependency-cruiser) e adapters em memória para testar o core sem infraestrutura."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:57:50+00:00",
+    "runner": "runner.py"
+  }
+}

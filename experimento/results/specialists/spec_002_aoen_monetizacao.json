@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta descreve com precisão o produto, interfaces e arquitetura técnica, mas não contém nenhuma menção explícita a modelo de monetização — não há referência a comissão sobre transações, assinatura, taxa de listagem, revenue share estruturado, tiers de preço, valores, métricas de LTV/CAC/churn ou qualquer mecanismo de geração de receita; o white-label com 'revenue share de alto volume' é citado en passant como justificativa de canal, não como modelo definido."
+}

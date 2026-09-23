@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso e auto-reforçante: processos stateless justificam a escala horizontal, que é viabilizada pelo estado externalizado no Redis/PostgreSQL, que por sua vez é acessado de forma segura via env vars gerenciadas centralmente, cujo isolamento é garantido pelos containers imutáveis com multi-stage build — cada camada sustenta as outras; a única tensão é a redundância não explicada entre Redis (leaderboards em tempo real) e PostgreSQL (rankings persistidos), além das escolhas em aberto (RabbitMQ *ou* SQS, Datadog *ou* Grafana) que revelam decisões ainda não fechadas, impedindo o 10."
+}

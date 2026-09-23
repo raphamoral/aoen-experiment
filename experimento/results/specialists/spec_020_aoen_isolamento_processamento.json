@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta demonstra isolamento lógico via abstrações de interface (IValidationEngine, IRewardEngine) e service layer com contratos tipados, o que é melhor que zero, mas não há nenhuma menção a filas de mensagens, workers separados, processos físicos distintos, mecanismos de fallback ou estratégias de resiliência para os processos computacionalmente pesados — validação/deduplicação de submissões, matching de testadores e cálculo de recompensas — que, se executados no mesmo processo da aplicação principal, podem causar degradação em cascata ou falha total do sistema sob carga."
+}

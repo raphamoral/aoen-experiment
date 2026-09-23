@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "clean_arch",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 0,
+  "justificativa": "A proposta não menciona nenhum mecanismo de isolamento: emissão de NF (assinatura XML, integração com prefeitura), cálculo de impostos e geração de DAS rodam dentro das próprias entidades/use cases, sem filas, workers separados, processamento assíncrono ou qualquer fallback — uma falha no processo de emissão pode travar toda a aplicação."
+}

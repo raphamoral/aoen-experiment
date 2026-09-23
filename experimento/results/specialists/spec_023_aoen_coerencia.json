@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 23,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "O projeto conta uma história arquitetural com encadeamento lógico forte: o mercado-alvo (escritórios sem orçamento enterprise) justifica o core de raciocínio jurídico; o core exige a abstração LegalReasoningProvider (evitando lock-in em LLM caro); a fragmentação do mercado justifica as cinco interfaces; as cinco interfaces justificam o LegalAssistantService centralizado (que evita replicação de lógica); o service layer justifica o pipeline fixo da Fase 3; e o pipeline fixo com parâmetros configuráveis resolve a variabilidade de área/jurisdição sem quebrar a coerência do fluxo — cada camada existe porque a camada anterior a exige, com o único ponto de tensão não resolvido sendo como o canal WhatsApp (o menos adequado para upload de documentos) se encaixa no pipeline de ingestão descrito na Fase 3, que pressupõe documento como ponto de entrada."
+}

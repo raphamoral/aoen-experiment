@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 77,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona em nenhum momento mensuração de custo por cliente, custo por operação, rastreamento de consumo por tenant ou conexão entre uso de recursos e modelo de precificação — toda a arquitetura é descrita em termos funcionais, sem nenhuma camada de observabilidade financeira por cliente."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "12factor",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta descreve exclusivamente a arquitetura técnica do produto; o mercado-alvo é inferível apenas pelo nome do produto ('gestão de resíduos industriais'), sem qualquer articulação explícita de segmento-alvo, tamanho de mercado, dor do cliente, diferenciação competitiva ou proposta de valor."
+}

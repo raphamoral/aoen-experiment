@@ -1,0 +1,200 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Startup busca capital → Cria perfil e pitch → Plataforma mapeia compatibilidade → Investidor descobre oportunidade → Ambos se conectam → Due diligence facilitada → Deal fechado → Portfólio gerenciado → Reputação e novos deals gerados",
+    "bounded_contexts": [
+      "IdentityAccess: autenticação, autorização e gestão de perfil base (startup / investidor / admin)",
+      "StartupProfile: dados da empresa, estágio, setor, métricas financeiras, pitch deck e necessidades de capital",
+      "InvestorProfile: tese de investimento, ticket médio, regiões de atuação, portfólio e preferências setoriais",
+      "MatchingEngine: algoritmo de compatibilidade, scoring multidimensional, ranking e recomendações personalizadas",
+      "Discovery: busca, filtragem avançada, feed curado e exploração de oportunidades",
+      "ConnectionFlow: solicitações de contato, aceite/rejeição, agenda de reuniões e histórico de interações",
+      "DueDiligence: data room virtual, compartilhamento seguro de documentos, checklist e NDA digital",
+      "DealTracking: pipeline de deals, status de negociação, term sheet, closing e registro de investimentos",
+      "Analytics: métricas de plataforma, insights para startups/investidores, relatórios de performance e benchmarks regionais",
+      "Billing: planos de assinatura, cobrança de success fee, emissão de nota fiscal e gestão de pagamentos"
+    ],
+    "component_evolution": {
+      "genesis": [
+        "Algoritmo de matching semântico com embedding de perfis (NLP sobre pitch decks e teses)",
+        "Mapa dinâmico de ecossistema regional de investimento",
+        "Score de fit cultural startup-investidor baseado em comportamento histórico"
+      ],
+      "custom": [
+        "Motor de recomendação com feedback loop (likes, reuniões, deals)",
+        "Fluxo de due diligence adaptativo por setor e estágio",
+        "Detecção de anomalias em perfis (fraude / dados inconsistentes)"
+      ],
+      "product": [
+        "Gestão de pipeline de deals (CRM simplificado)",
+        "Data room com controle de acesso granular",
+        "Agendamento de reuniões integrado com calendário",
+        "Sistema de mensageria assíncrona com threads por deal"
+      ],
+      "commodity": [
+        "Autenticação OAuth2/OIDC (Auth0 / Keycloak)",
+        "Processamento de pagamentos (Stripe)",
+        "Armazenamento de documentos (S3 / GCS)",
+        "E-mail transacional e notificações push (SendGrid / Firebase)",
+        "Infraestrutura cloud (AWS / GCP)",
+        "Busca full-text (Elasticsearch / Typesense)"
+      ]
+    },
+    "team_topology": {
+      "stream_aligned_teams": [
+        "Team Startup Experience: onboarding, perfil, pitch deck, notificações e jornada da startup até o primeiro match",
+        "Team Investor Experience: onboarding de investidores, configuração de tese, discovery e gestão de portfólio",
+        "Team Connection & DealFlow: fluxo de conexão, mensageria, agendamento, due diligence e deal tracking",
+        "Team Growth & Monetization: billing, planos, campanhas de aquisição e métricas de conversão"
+      ],
+      "complicated_subsystem_team": [
+        "Team Matching & Intelligence: desenvolvimento e evolução do motor de matching, ML pipeline, embeddings e scoring"
+      ],
+      "enabling_team": [
+        "Team Platform Engineering: developer experience, padrões de API, observabilidade, CI/CD e bibliotecas internas"
+      ],
+      "platform_team": [
+        "Team Core Platform: infraestrutura cloud, data platform, segurança, autenticação centralizada e event bus"
+      ],
+      "interaction_modes": {
+        "X_as_a_Service": "Platform Team entrega infraestrutura e serviços de autenticação como serviço consumível pelos stream-aligned teams",
+        "Facilitating": "Enabling Team apoia temporariamente stream-aligned teams na adoção de novos padrões",
+        "Collaboration": "Matching Team colabora com Startup/Investor Experience para calibrar algoritmo com feedback de UX"
+      }
+    },
+    "flow_optimization": {
+      "principios": [
+        "Fast Flow: cada bounded context tem deploy independente para evitar acoplamento de release",
+        "Redução de cognitive load: interfaces internas simples entre times via eventos de domínio (não chamadas síncronas diretas)",
+        "Feedback loops curtos: métricas de qualidade de match (reuniões realizadas, deals fechados) retroalimentam o algoritmo em tempo quase real",
+        "Minimize handoffs: cada stream-aligned team é dono ponta-a-ponta de seu fluxo de valor"
+      ],
+      "padroes_arquiteturais": [
+        "Event-driven com event sourcing no DealTracking para auditabilidade completa",
+        "CQRS no MatchingEngine e Discovery para separar leituras de alta frequência das escritas",
+        "Saga pattern para o fluxo de conexão (solicitação → aceite → agendamento → due diligence) garantindo consistência eventual",
+        "API Gateway como ponto de entrada único com BFF (Backend for Frontend) por canal (web / mobile)"
+      ]
+    },
+    "interfaces": [
+      "Web App (Next.js SPA/SSR): dashboard para startups e investidores, discovery, mensageria e deal tracking",
+      "Mobile App (React Native): notificações push, feed de matches, mensageria e aprovação rápida de conexões",
+      "REST API pública v1: para integrações com aceleradoras, hubs de inovação e parceiros regionais",
+      "GraphQL API interna: consumida pelos BFFs para queries compostas com menor over-fetching",
+      "WebSocket (via Socket.io / Ably): mensageria em tempo real e notificações de status de deal",
+      "Webhook outbound: notificações para sistemas externos (CRM de investidores, ERPs de startups)",
+      "Admin Portal (React): gestão de usuários, moderação de conteúdo, analytics e configuração de campanhas"
+    ],
+    "escalabilidade": {
+      "estrategia": "Arquitetura de microserviços por bounded context, com comunicação assíncrona via event bus (Kafka) para desacoplamento temporal e resiliência",
+      "dados": [
+        "PostgreSQL por contexto (database-per-service) para isolamento de schema",
+        "Redis para cache de matches, sessões e rate limiting",
+        "Elasticsearch / Typesense para busca e discovery com baixa latência",
+        "S3/GCS para documentos de due diligence com CDN na frente",
+        "Data warehouse (BigQuery / Redshift) para analytics e treinamento de modelos ML"
+      ],
+      "computacao": [
+        "Horizontal scaling stateless nos serviços de API via Kubernetes (EKS/GKE)",
+        "Auto-scaling baseado em métricas de fila Kafka para o MatchingEngine",
+        "Serverless (AWS Lambda / Cloud Functions) para jobs de batch e processamento de documentos",
+        "GPU spot instances para re-treinamento periódico dos modelos de matching"
+      ],
+      "resiliencia": [
+        "Circuit breaker entre serviços síncronos (Resilience4j / Polly)",
+        "Retry com backoff exponencial em consumers Kafka",
+        "Multi-AZ deployment para componentes críticos",
+        "Rate limiting por tenant no API Gateway"
+      ]
+    },
+    "custos": {
+      "fixos_mensais_estimados": {
+        "kubernetes_cluster": "Cluster gerenciado (EKS/GKE) com 3-5 nós médios para MVP: ~$300-600/mês",
+        "banco_de_dados": "RDS PostgreSQL Multi-AZ + ElastiCache Redis: ~$200-400/mês",
+        "kafka": "Confluent Cloud ou MSK gerenciado: ~$150-300/mês",
+        "storage": "S3 com CDN CloudFront para documentos: variável por volume (~$0.023/GB)",
+        "ml_inference": "Endpoints de inferência de modelos de matching: ~$100-300/mês (escalável por demanda)"
+      },
+      "variaveis": [
+        "Custo de embeddings via OpenAI API ou modelos próprios em GPU spot: proporcional ao volume de novos perfis",
+        "SendGrid/SES: ~$0.001 por e-mail transacional",
+        "Stripe: 2.9% + $0.30 por transação de assinatura",
+        "Elasticsearch: escala com volume de dados indexados"
+      ],
+      "otimizacoes": [
+        "Commodity components (auth, email, payments) como SaaS para evitar custo de operação própria",
+        "Tiered storage para documentos antigos de due diligence (S3 Glacier)",
+        "Spot/preemptible instances para workloads de ML e batch",
+        "Reserved instances para componentes de baseline (banco, Kafka)"
+      ]
+    },
+    "monetizacao": {
+      "modelo_primario": "SaaS B2B com planos por perfil de usuário",
+      "planos": {
+        "startup_free": "Criação de perfil, até 5 conexões/mês, sem data room — objetivo: aquisição e validação",
+        "startup_pro": "$49/mês — conexões ilimitadas, data room, analytics de perfil, badge de verificação",
+        "startup_premium": "$149/mês — destaque no feed, relatório de compatibilidade com investidores, acesso a eventos",
+        "investor_pro": "$199/mês — acesso completo ao deal flow regional, filtros avançados, alertas de novos matches, CRM integrado",
+        "investor_enterprise": "$599/mês — multi-seat para family offices / fundos, API access, relatórios customizados, suporte dedicado"
+      },
+      "receitas_adicionais": [
+        "Success fee: 0.5-1% sobre deals fechados rastreados pela plataforma (opt-in, exige declaração voluntária)",
+        "Sponsored visibility: startups pagam para aparecer em destaque para investidores segmentados",
+        "Eventos e demo days virtuais: ticketing para pitch sessions regionais patrocinadas",
+        "API para parceiros: aceleradoras e hubs de inovação pagam por acesso programático ao match engine"
+      ],
+      "metricas_chave": [
+        "MRR (Monthly Recurring Revenue)",
+        "Match-to-Meeting Conversion Rate",
+        "Meeting-to-Deal Conversion Rate",
+        "NPS por perfil (startup vs investidor)",
+        "Churn rate por plano"
+      ]
+    },
+    "stack_sugerida": {
+      "frontend": {
+        "web": "Next.js 14 (App Router) + TypeScript + Tailwind CSS + shadcn/ui",
+        "mobile": "React Native (Expo) com shared component library",
+        "estado": "Zustand para estado local + React Query (TanStack) para cache de servidor"
+      },
+      "backend": {
+        "api_gateway_bff": "Node.js + Fastify (TypeScript) — leve, alta performance, plugin ecosystem robusto",
+        "servicos_dominio": "Node.js + Fastify para serviços CRUD (Startup Profile, Investor Profile, Billing)",
+        "matching_engine": "Python + FastAPI — ecossistema ML nativo (scikit-learn, sentence-transformers, FAISS)",
+        "real_time": "Socket.io sobre Node.js ou Ably managed service"
+      },
+      "dados": {
+        "relacional": "PostgreSQL 16 (RDS ou Supabase para MVP)",
+        "cache": "Redis 7 (ElastiCache ou Upstash)",
+        "busca": "Typesense (mais simples) ou Elasticsearch 8",
+        "eventos": "Apache Kafka (Confluent Cloud) ou AWS MSK",
+        "documentos": "AWS S3 + CloudFront CDN",
+        "analytics": "BigQuery + dbt + Metabase"
+      },
+      "ml": {
+        "embeddings": "sentence-transformers (all-MiniLM-L6-v2) para encoding de perfis",
+        "similarity_search": "FAISS ou Pinecone para approximate nearest neighbor",
+        "orquestracao_ml": "MLflow para tracking de experimentos + Airflow para pipelines de re-treino",
+        "inferencia": "FastAPI + Docker + EKS com HPA"
+      },
+      "infraestrutura": {
+        "cloud": "AWS (principal) ou GCP",
+        "containers": "Kubernetes (EKS) + Helm charts",
+        "iac": "Terraform + Terragrunt",
+        "ci_cd": "GitHub Actions + ArgoCD (GitOps)",
+        "observabilidade": "OpenTelemetry + Grafana Stack (Loki + Tempo + Prometheus) ou Datadog",
+        "seguranca": "Auth0 (autenticação) + AWS Secrets Manager + Vault (secrets)"
+      },
+      "saas_commodities": {
+        "auth": "Auth0 ou Clerk",
+        "pagamentos": "Stripe (subscriptions + connect para success fee)",
+        "email": "Resend ou SendGrid",
+        "feature_flags": "LaunchDarkly ou Unleash (self-hosted)",
+        "erros": "Sentry"
+      }
+    }
+  },
+  "raw": "```json\n{\n  \"value_chain\": \"Startup busca capital → Cria perfil e pitch → Plataforma mapeia compatibilidade → Investidor descobre oportunidade → Ambos se conectam → Due diligence facilitada → Deal fechado → Portfólio gerenciado → Reputação e novos deals gerados\",\n\n  \"bounded_contexts\": [\n    \"IdentityAccess: autenticação, autorização e gestão de perfil base (startup / investidor / admin)\",\n    \"StartupProfile: dados da empresa, estágio, setor, métricas financeiras, pitch deck e necessidades de capital\",\n    \"InvestorProfile: tese de investimento, ticket médio, regiões de atuação, portfólio e preferências setoriais\",\n    \"MatchingEngine: algoritmo de compatibilidade, scoring multidimensional, ranking e recomendações personalizadas\",\n    \"Discovery: busca, filtragem avançada, feed curado e exploração de oportunidades\",\n    \"ConnectionFlow: solicitações de contato, aceite/rejeição, agenda de reuniões e histórico de interações\",\n    \"DueDiligence: data room virtual, compartilhamento seguro de documentos, checklist e NDA digital\",\n    \"DealTracking: pipeline de deals, status de negociação, term sheet, closing e registro de investimentos\",\n    \"Analytics: métricas de plataforma, insights para startups/investidores, relatórios de performance e benchmarks regionais\",\n    \"Billing: planos de assinatura, cobrança de success fee, emissão de nota fiscal e gestão de pagamentos\"\n  ],\n\n  \"component_evolution\": {\n    \"genesis\": [\n      \"Algoritmo de matching semântico com embedding de perfis (NLP sobre pitch decks e teses)\",\n      \"Mapa dinâmico de ecossistema regional de investimento\",\n      \"Score de fit cultural startup-investidor baseado em comportamento histórico\"\n    ],\n    \"custom\": [\n      \"Motor de recomendação com feedback loop (likes, reuniões, deals)\",\n      \"Fluxo de due diligence adaptativo por setor e estágio\",\n      \"Detecção de anomalias em perfis (fraude / dados inconsistentes)\"\n    ],\n    \"product\": [\n      \"Gestão de pipeline de deals (CRM simplificado)\",\n      "
+}

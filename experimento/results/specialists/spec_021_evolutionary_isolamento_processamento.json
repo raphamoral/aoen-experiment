@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "evolutionary",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "O MQTT broker introduz desacoplamento assíncrono na ingestão, mas na Fase 1 todo o processamento — incluindo o pipeline IoT de alta volumetria — ocorre dentro do monólito (isolamento apenas lógico, mesmo processo), sem menção a bulkheads, circuit breakers ou fallback explícito caso o pipeline sobrecarregue; a extração para processo físico separado é diferida para a Fase 2, condicional a fitness function degradada, e não há garantia documentada de que uma sobrecarga de ingestão não afeta a entrega de alertas críticos que residem no mesmo runtime."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "aoen",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 6,
+  "justificativa": "O mercado-alvo está segmentado em três níveis com lógica clara (primário/secundário/terciário) e a dor principal é nomeada ('cobertura ampla sem time fixo de QA'), mas faltam tamanho de mercado (TAM/SAM/SOM), diferenciação explícita frente a concorrentes diretos como Testlio, Applause e uTest, e uma proposta de valor formalizada que articule por que o cliente trocaria de solução atual."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 91,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta reconhece implicitamente que a IA é uma dependência externa via interface injetável (`AIProvider`), mas não descreve nenhum mecanismo de isolamento físico: ausência de filas de mensagens, workers separados ou processamento assíncrono — o fluxo descrito na fase3 é puramente síncrono e sequencial, o que significa que uma lentidão ou falha na chamada ao provedor de IA (geração de feedback, seleção de desafio) bloqueia a sessão inteira da criança e potencialmente degrada todo o sistema sem qualquer fallback documentado."
+}

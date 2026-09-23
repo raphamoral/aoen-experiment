@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 70,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador ('registro clínico-temporal integrado') está claramente nomeado, isolado em interfaces de serviço independentes (AgendamentoService + ProntuarioService), extensível em persistência, notificação e IA, e resolve uma ruptura real no mercado — porém a proposta compara o diferenciador apenas contra soluções analógicas (WhatsApp, caderno), sem evidenciar por que softwares veterinários digitais já existentes não resolvem essa fusão, o que enfraquece a afirmação de insubstituibilidade."
+}

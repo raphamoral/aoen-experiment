@@ -1,0 +1,48 @@
+{
+  "ideia_idx": 68,
+  "ideia": "Plataforma de financiamento coletivo para projetos de infraestrutura local",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Usuário final (cidadão/investidor local, prefeitura, associação de moradores, empreiteira) → necessidade: financiar e acompanhar uma obra local (ponte, praça, saneamento, energia solar comunitária) → Descoberta e curadoria de projetos → Validação técnica, jurídica e orçamentária do projeto → Campanha de captação → Pagamentos, custódia (escrow) e conciliação → Liberação de recursos por marcos de obra → Execução e acompanhamento da obra (evidências, medições) → Prestação de contas pública e retorno ao apoiador → Reputação e recorrência. Componentes de suporte: identidade/KYC, antifraude, notificações, dados e analytics.",
+    "bounded_contexts": [
+      "Descoberta e Campanhas (vitrine, busca, páginas de projeto, metas e prazos)",
+      "Curadoria e Elegibilidade de Projetos (validação técnica, orçamentária e legal, licenças e alvarás)",
+      "Apoiadores e Relacionamento (perfil, histórico, recompensas ou cotas, comunicação)",
+      "Pagamentos e Custódia (checkout, PIX/cartão, escrow, split, reembolsos)",
+      "Liberação por Marcos (regras de desembolso, aprovação de medições, disputa)",
+      "Execução e Acompanhamento de Obras (cronograma, evidências, fotos/geodados, fornecedores)",
+      "Prestação de Contas e Transparência (relatórios públicos, trilha de auditoria)",
+      "Identidade, KYC e Conformidade (verificação de proponentes, PLD/AML, LGPD)",
+      "Parcerias Institucionais (prefeituras, ONGs, contrapartida pública, matching funds)",
+      "Cobrança, Taxas e Financeiro da Plataforma (comissões, faturamento, conciliação contábil)",
+      "Confiança e Segurança (antifraude, moderação, reputação)",
+      "Notificações e Engajamento (e-mail, WhatsApp, push)"
+    ],
+    "component_evolution": "GENESIS: modelo de liberação de recursos por marcos de obra validados por evidências e o score de confiabilidade de projetos locais (diferenciais do domínio; ainda sem padrão de mercado). CUSTOM: curadoria e elegibilidade de projetos, acompanhamento de obras com geodados, motor de regras de desembolso, prestação de contas pública, parcerias com prefeituras. PRODUCT: gateway de pagamentos com split e escrow (Stripe Connect, Pagar.me, Mercado Pago, Asaas), KYC/antifraude (Idwall, Unico, Sumsub), CMS, busca (Algolia/Meilisearch), e-mail/WhatsApp transacional, analytics de produto. COMMODITY: nuvem (compute, storage, banco gerenciado), CDN, autenticação básica (OIDC), observabilidade, CI/CD, mapas (tiles), assinatura eletrônica. Regra: construir apenas o que está em genesis/custom e é diferencial; comprar product; consumir commodity.",
+    "team_topology": "Stream-aligned teams (uma por fluxo de valor): (1) Time Proponentes e Curadoria (criação, validação e publicação de projetos); (2) Time Apoiadores e Campanhas (descoberta, conversão, checkout); (3) Time Obra e Transparência (marcos, evidências, liberação, prestação de contas). Platform team: plataforma interna de desenvolvimento (IaC, CI/CD, observabilidade, ambientes, templates de serviço) tratada como produto. Enabling team (temporário): especialistas em conformidade financeira/LGPD, segurança e domínio jurídico de obras e captação, que capacitam os times stream-aligned e depois se retiram. Complicated-subsystem team: motor de regras de desembolso/escrow e antifraude/score de risco, que exigem conhecimento especializado. Interações: colaboração intensa no início entre Obra e o time de subsistema do motor de desembolso; depois X-as-a-Service. A plataforma opera em X-as-a-Service; o enabling facilita. Carga cognitiva limitada, com cada time dono de 1–3 bounded contexts e alinhamento de Conway entre times e contextos.",
+    "flow_optimization": "Mapear o fluxo ponta a ponta (ideia → projeto aprovado → meta batida → primeira liberação → obra concluída) e medir DORA + métricas de fluxo (lead time de aprovação de projeto, tempo até primeira campanha, taxa de conversão de apoio, tempo de liberação por marco). Alinhar times e bounded contexts ao fluxo para reduzir handoffs. Reduzir dependências com contratos de eventos (Event Storming, context mapping com ACL para gateways e KYC). Comprar produtos/commodities para focar em genesis/custom. Automatizar curadoria com checklists e regras, deixando análise humana só para exceções. Trunk-based development, feature flags, deploy contínuo por serviço, plataforma self-service. Revisões periódicas do Wardley Map para reavaliar build vs. buy conforme a evolução dos componentes.",
+    "interfaces": [
+      "API pública REST/GraphQL para vitrine, busca e páginas de projeto (BFF web e mobile)",
+      "API de Proponentes (submissão de projeto, documentos, cronograma, medições)",
+      "API de Pagamentos (checkout, webhooks do gateway, escrow, split, reembolso) via Anti-Corruption Layer",
+      "Eventos de domínio assíncronos (ProjetoAprovado, CampanhaMetaAtingida, PagamentoConfirmado, MarcoValidado, RecursoLiberado, ObraConcluída) em broker de mensagens",
+      "API de KYC/antifraude via ACL (Sumsub, Idwall, Unico)",
+      "Portal e API para prefeituras e parceiros institucionais (contrapartida, aprovação de licenças, dados abertos)",
+      "API/SDK de dados abertos de transparência e prestação de contas (open data, CSV/JSON)",
+      "Integrações de notificação (e-mail, WhatsApp Business, push)",
+      "Backoffice/Admin para curadoria, moderação, disputas e suporte",
+      "Integração contábil/fiscal (NFS-e, ERP, conciliação bancária, Open Finance)",
+      "Webhooks para parceiros e widgets embutíveis de campanha"
+    ],
+    "escalabilidade": "Monólito modular no início, com fronteiras dos bounded contexts explícitas, evoluindo para serviços independentes só onde há pressão de escala ou autonomia de time (pagamentos, descoberta, notificações). Leitura escala com CDN, cache e réplicas de leitura, com busca dedicada para a vitrine. Picos de tráfego (campanha viral, fim de prazo) absorvidos por autoscaling, filas e processamento assíncrono de webhooks, com idempotência e fila de retentativas nos pagamentos. Consistência eventual entre contextos via eventos e outbox pattern, com consistência forte só no ledger financeiro (banco relacional transacional, ledger de dupla entrada, imutável). Escala geográfica multi-tenant por município/região com particionamento por tenant. Escala organizacional via plataforma self-service e times com baixa carga cognitiva.",
+    "custos": "Principais custos: taxas de gateway (variáveis, repassadas ou embutidas na comissão), KYC/antifraude por verificação, infraestrutura em nuvem (predominantemente variável, com custo baixo no início por usar serviços gerenciados), armazenamento de mídia e evidências de obra (fotos, vídeos, documentos), suporte e curadoria humana (maior custo operacional recorrente), conformidade jurídica, regulatória e LGPD (possível enquadramento em regulação de crowdfunding/CVM, Banco Central ou modelo via instituição de pagamento parceira), seguros e auditoria. Mitigação: comprar produtos e commodities, automatizar curadoria por regras, FinOps com tags por contexto e time, começar sem infraestrutura própria de custódia usando conta de pagamento de parceiro regulado, e evitar microsserviços prematuros.",
+    "monetizacao": "Comissão sobre valor arrecadado em campanhas bem-sucedidas (por exemplo 3–8%, modelo tudo-ou-nada ou por meta mínima) mais taxa de processamento de pagamento repassada. SaaS B2G/B2B para prefeituras, associações e ONGs (assinatura de portal white-label, dashboards e gestão de obras). Serviços premium ao proponente: curadoria acelerada, consultoria de orçamento e elaboração de projeto, verificação técnica. Marketplace de fornecedores e empreiteiras homologadas (taxa de intermediação ou lead). Fundos de contrapartida e matching com empresas e governos (patrocínio, ESG e incentivos fiscais como leis de incentivo, quando aplicável). Receita de float ou rendimento do escrow, sujeita à regulação, e dados agregados anonimizados para planejamento urbano.",
+    "stack_sugerida": "Frontend: Next.js/React (SSR/ISR para SEO da vitrine) e app mobile com React Native ou PWA. Backend: TypeScript (NestJS) ou Kotlin/Java (Spring Boot) como monólito modular com DDD, evoluindo para serviços por contexto. Dados: PostgreSQL gerenciado (ledger financeiro em tabelas de dupla entrada imutáveis), Redis para cache, OpenSearch/Meilisearch para busca, S3-compatível para evidências, PostGIS para geodados de obras. Mensageria: Kafka ou SNS/SQS/RabbitMQ com outbox pattern. Pagamentos: PIX e cartão via gateway com split/escrow (Pagar.me, Asaas, Mercado Pago ou Stripe Connect onde aplicável). Identidade: Keycloak/Auth0/Cognito (OIDC) e KYC via Sumsub/Idwall. Infra: AWS ou GCP com Kubernetes gerenciado ou serviços serverless/containers gerenciados (ECS/Cloud Run), Terraform, GitHub Actions/ArgoCD. Observabilidade: OpenTelemetry, Grafana/Prometheus/Loki ou Datadog, Sentry. Segurança: WAF, gerenciamento de segredos, criptografia de dados sensíveis, trilha de auditoria. Analytics: dbt + BigQuery/Redshift, Metabase. Documentação de decisões com ADRs e Wardley Maps versionados."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "dfd4115afd4e",
+    "gerado_em": "2026-09-21T04:00:11+00:00",
+    "runner": "runner.py"
+  }
+}

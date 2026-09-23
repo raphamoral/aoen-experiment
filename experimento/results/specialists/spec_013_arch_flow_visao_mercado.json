@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 2,
+  "justificativa": "A proposta é inteiramente arquitetural/técnica — value chain, bounded contexts e topologia de times — sem nenhuma seção dedicada a mercado-alvo, tamanho de mercado, dor do cliente, análise competitiva ou proposta de valor; os dois perfis de usuário (proprietário e usuário final) são inferíveis apenas pelo fluxo operacional, mas sem qualquer profundidade sobre quem são, por que precisam do produto ou como ele se diferencia de alternativas como Coworker.com, Nexudus ou WeWork."
+}

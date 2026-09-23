@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "A proposta revela o público implicitamente pela cadeia de valor (usuários que fazem exames laboratoriais e profissionais de saúde), e há indícios de diferenciação técnica (OCR para laudos brasileiros, faixas de referência contextualizadas por etnia/sexo/idade), mas faltam completamente: definição explícita de segmentos-alvo (ex: pacientes com doenças crônicas? biohackers? atletas?), tamanho de mercado (TAM/SAM/SOM), articulação da dor do cliente em linguagem de negócio (não técnica), e posicionamento competitivo frente a alternativas como Viome, InsideTracker ou nutricionistas tradicionais."
+}

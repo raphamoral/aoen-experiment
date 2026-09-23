@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 70,
+  "ideia": "App de gestão de pet shops com agendamento e prontuário veterinário",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Registro clínico-temporal integrado: vincula cada agendamento ao histórico veterinário do pet, criando um prontuário vivo que evolui a cada visita. Sem esse vínculo, o sistema é apenas uma agenda ou apenas um fichário — a fusão é o diferenciador.",
+    "fase1_mercado": "Pet shops independentes e clínicas veterinárias de pequeno e médio porte (1–20 profissionais) que hoje operam com WhatsApp, caderno ou planilhas. Mercado secundário: redes de franquias que precisam padronizar operações entre unidades.",
+    "fase1_extensivel": "Sim. O core é uma interface abstrata de AgendamentoService e ProntuarioService. A persistência pode trocar de PostgreSQL para MongoDB. As notificações podem trocar de Twilio para Z-API. O motor de IA para sugestão diagnóstica pode trocar de OpenAI para Gemini ou modelo local — sem alterar o fluxo clínico central.",
+    "fase2_interfaces": [
+      "Web Dashboard (pet shop owner / recepcionista): gestão completa — agenda, cadastro de clientes, prontuários, relatórios financeiros",
+      "Mobile App veterinário (iOS/Android): acesso ao prontuário durante a consulta, registro rápido de exames e prescrições",
+      "Portal do Tutor (PWA): visualização de agendamentos, histórico do pet, confirmação de consultas, upload de exames externos",
+      "WhatsApp Bot: agendamento conversacional, confirmações, lembretes automáticos — alcança tutores sem instalar nada",
+      "API REST pública: integração com sistemas de PDV, ERPs de redes franqueadas e marketplaces pet"
+    ],
+    "fase2_justificativa_mercado": "Web Dashboard captura o dono do negócio (decisor da compra). Mobile veterinário reduz fricção na adoção interna (usuário resistente). Portal do tutor aumenta retenção do cliente final do pet shop. WhatsApp Bot é o canal de menor barreira no Brasil — abre mercado com tutores digitalmente avessos. API REST abre o segmento enterprise de redes e franquias, viabilizando tickets maiores.",
+    "fase2_service_layer": "Todas as interfaces consomem exclusivamente a AgendamentoService, ProntuarioService, NotificacaoService e ClienteService via chamadas internas ou API REST. Nenhuma interface acessa o banco diretamente. A lógica de negócio (regras de sobreposição de horário, validação clínica, cálculo de retorno) vive nos Services — não nos controllers, não nos componentes de UI.",
+    "fase3_fluxo_fixo": "Agendamento criado → validação de disponibilidade → confirmação ao tutor → lembrete pré-consulta → consulta realizada → registro no prontuário → geração de retorno/follow-up → notificação pós-consulta. Este pipeline é invariante para todos os clientes.",
+    "fase3_parametros_configuraveis": [
+      "Tipos de serviço e duração (banho 60min, consulta 30min, cirurgia 120min)",
+      "Janelas de horário de funcionamento por dia da semana",
+      "Intervalos de lembrete (24h antes, 2h antes, customizável)",
+      "Canais de notificação habilitados (WhatsApp, SMS, e-mail)",
+      "Campos customizados do prontuário por especialidade",
+      "Número máximo de agendamentos simultâneos por profissional",
+      "Templates de mensagem com variáveis (nome do pet, horário, profissional)",
+      "Tabela de preços por serviço",
+      "Logotipo, nome e paleta de cores (white-label)",
+      "Regras de cancelamento e política de reagendamento",
+      "Integrações ativas (Google Calendar sync, gateway de pagamento)"
+    ],
+    "fase3_novo_cliente": "Onboarding via formulário de configuração inicial: razão social, horários, serviços oferecidos, canais de notificação, tabela de preços. O sistema provisiona um tenant isolado (schema PostgreSQL separado por cliente), aplica os parâmetros e o cliente opera em menos de 15 minutos — zero código novo.",
+    "fase4_core_isolado": "Worker de Notificações e Worker de Processamento de Prontuário rodam como processos assíncronos separados via fila (BullMQ/Redis). O agendamento é registrado sincronamente no banco; o disparo de WhatsApp, geração de PDF do prontuário e integrações externas são enfileirados e processados independentemente — falha no worker não impede novos agendamentos.",
+    "fase4_custo_total_cliente": "Custo fixo por tenant/mês: R$ 8–15 (PostgreSQL schema + storage S3 para anexos clínicos, ~500MB médio). Custo variável: R$ 0,08–0,15 por notificação WhatsApp (Z-API/Twilio), média de 80 notificações/mês = R$ 6–12. Infra proporcional (CPU/RAM Railway ou ECS Fargate): R$ 3–8 por tenant ativo. IA diagnóstica opcional (OpenAI GPT-4o-mini): R$ 0,002 por consulta registrada, média 40/mês = R$ 0,08. Custo total real por cliente ativo: R$ 17–35/mês. Margem viável com plano a R$ 149/mês: ~76–88%.",
+    "fase4_continuidade": "Os workers de notificação são stateless e reiniciam automaticamente (Kubernetes restartPolicy ou Railway auto-restart). A fila persiste no Redis com dead-letter queue — mensagens não entregues são retentadas até 3x. Se o worker cair, agendamentos continuam sendo criados; as notificações são entregues quando o worker se recupera. O banco principal (PostgreSQL) tem réplica de leitura — operações de consulta não dependem do primário.",
+    "fase4_manutencao": "Cada provider externo (WhatsApp, IA, storage) é acessado via interface abstrata (ex: NotificacaoProvider, StorageProvider). Trocar de Z-API para Twilio = implementar nova classe + variável de ambiente. Trocar modelo de IA = nova implementação do DiagnosticoAdapter. Feature flags por tenant permitem migrar clientes gradualmente sem downtime. Testes de contrato garantem que o novo provider respeita a interface antes de ir para produção.",
+    "monetizacao": "SaaS com três planos mensais: Básico R$89 (1 profissional, agenda + prontuário simples, sem WhatsApp), Profissional R$149 (até 5 profissionais, WhatsApp bot, portal do tutor, relatórios), Clínica R$299 (profissionais ilimitados, white-label, API REST, suporte prioritário). Add-ons: IA diagnóstica R$49/mês, integração gateway de pagamento R$29/mês. Redes/franquias: contrato anual por unidade com desconto de volume. LTV estimado 18–24 meses com churn abaixo de 3% (alta dependência operacional do prontuário).",
+    "stack_sugerida": "Backend: Node.js + TypeScript + Fastify (APIs síncronas) + BullMQ (filas assíncronas). Banco: PostgreSQL com multi-tenancy por schema (pg). Cache/Fila: Redis (upstash.com no tier gratuito até escala). Storage: Cloudflare R2 (S3-compatível, custo zero de egress). Frontend Web: Next.js 14 (App Router) + shadcn/ui. Mobile: React Native + Expo (iOS e Android com codebase único). WhatsApp: Z-API (menor custo no Brasil) com fallback Twilio. IA: OpenAI GPT-4o-mini via Vercel AI SDK. Autenticação: JWT + refresh token, isolamento por tenant no middleware. Infra: Railway (dev/staging) → AWS ECS Fargate + RDS PostgreSQL (produção). Observabilidade: Sentry (erros) + Axiom (logs) + Checkly (uptime por tenant)."
+  }
+}

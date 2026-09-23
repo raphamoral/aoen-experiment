@@ -1,0 +1,183 @@
+{
+  "ideia_idx": 18,
+  "ideia": "SaaS de análise preditiva de churn para operadoras de telecom",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Dados brutos da operadora (CDRs, CRM, billing, uso de rede) → Ingestão e normalização → Feature engineering telecom → Modelos preditivos de churn → Score de risco por cliente → Alertas e recomendações de retenção → Ações de retenção executadas pela operadora → Redução de churn mensurável → Renovação de contrato SaaS",
+    "bounded_contexts": [
+      "Data Ingestion: responsável pela coleta, validação e normalização de dados heterogêneos de fontes da operadora (SFTP, APIs, CDC, Kafka). Linguagem ubíqua: feed, connector, pipeline, raw-event, schema-contract.",
+      "Customer 360: agrega visão unificada do cliente consolidando comportamento de uso, histórico de billing, interações com suporte e dados contratuais. Linguagem ubíqua: subscriber, lifecycle-stage, touchpoint, segment.",
+      "Churn Intelligence: coração do domínio — treina, versiona e serve modelos preditivos; calcula churn score e probabilidade de evasão em horizontes temporais (30/60/90 dias). Linguagem ubíqua: churn-score, risk-tier, prediction-horizon, model-version, feature-vector.",
+      "Retention Playbook: converte scores em ações recomendadas, prioriza intervenções por ROI estimado e integra com sistemas de campanha da operadora. Linguagem ubíqua: intervention, retention-offer, expected-ltv-impact, campaign-trigger.",
+      "Alerting & Workflow: gerencia SLAs de notificação, escalation rules e integrações com ferramentas externas (CRM, call-center, marketing automation). Linguagem ubíqua: alert, escalation-policy, notification-channel, ack.",
+      "Analytics & Reporting: self-service BI para analistas da operadora, benchmarks de mercado, cohort analysis e mensuração de impacto das ações de retenção. Linguagem ubíqua: cohort, retention-rate, lift, dashboard, drill-down.",
+      "Tenant Management: isolamento multi-tenant, configuração de conectores por operadora, limites de uso e customizações de modelo por cliente. Linguagem ubíqua: tenant, workspace, data-partition, config-schema.",
+      "Billing & Subscription: monetização baseada em assinatura e consumo, faturamento de overage, trials e upgrades de plano. Linguagem ubíqua: plan, usage-meter, invoice, overage, seat."
+    ],
+    "component_evolution": {
+      "genesis": [
+        "Modelos especializados por tecnologia de acesso (5G SA vs. FTTH) com feature engineering de slicing e QoS",
+        "Churn causality explainability com LLM para justificativas legíveis pelo agente de retenção",
+        "Detecção de churn silencioso via anomalia em padrões de uso pré-portabilidade"
+      ],
+      "custom_built": [
+        "Conectores de ingestão para sistemas legados de OSS/BSS (Amdocs, Ericsson, Huawei)",
+        "Feature engineering específico de telecom (CLV, ARPU decay, roaming pattern, ticket sentiment)",
+        "Pipeline de retraining contínuo com feedback loop de campanhas de retenção",
+        "Motor de priorização de intervenções por ROI com constraints de capacidade do call-center"
+      ],
+      "product": [
+        "Serving de modelos ML via MLflow + Seldon/BentoML",
+        "Plataforma de feature store (Feast ou Tecton)",
+        "Orquestração de pipelines (Airflow ou Prefect)",
+        "Dashboard de BI (Metabase, Superset)",
+        "Motor de alertas e notificações (PagerDuty-like)"
+      ],
+      "commodity": [
+        "Infraestrutura cloud (AWS/GCP/Azure)",
+        "Object storage para data lake (S3/GCS)",
+        "Message broker (Kafka/Pub-Sub)",
+        "Auth e IAM (Auth0/Okta)",
+        "Observabilidade (Datadog/Grafana Stack)",
+        "CI/CD (GitHub Actions)",
+        "Banco de dados OLAP (BigQuery/Snowflake/Redshift)",
+        "Banco operacional (PostgreSQL gerenciado)",
+        "Cache distribuído (Redis gerenciado)"
+      ]
+    },
+    "team_topology": {
+      "stream_aligned_teams": [
+        {
+          "nome": "Team Churn Intelligence",
+          "responsabilidade": "BCs Churn Intelligence + Customer 360. Detém o modelo core de churn end-to-end: da feature até o score em produção.",
+          "apis_proprietárias": [
+            "POST /scores/compute",
+            "GET /subscribers/{id}/risk-profile"
+          ],
+          "cadencia": "Sprint 2 semanas, model release quinzenal"
+        },
+        {
+          "nome": "Team Retention & Workflow",
+          "responsabilidade": "BCs Retention Playbook + Alerting & Workflow. Converte inteligência em ação e garante que os alertas cheguem aos sistemas corretos da operadora.",
+          "apis_proprietárias": [
+            "POST /interventions/recommend",
+            "POST /alerts/dispatch"
+          ],
+          "cadencia": "Sprint 2 semanas"
+        },
+        {
+          "nome": "Team Insights",
+          "responsabilidade": "BC Analytics & Reporting. Serve analistas da operadora com dashboards, cohorts e relatórios de ROI das campanhas.",
+          "apis_proprietárias": [
+            "GET /reports/{tenant}/cohort",
+            "GET /benchmarks/industry"
+          ],
+          "cadencia": "Sprint 2 semanas, release contínua via feature flags"
+        },
+        {
+          "nome": "Team Growth",
+          "responsabilidade": "BCs Billing & Subscription + Tenant Management. Responsável pelo onboarding de novas operadoras e monetização.",
+          "apis_proprietárias": [
+            "POST /tenants",
+            "GET /billing/usage",
+            "POST /subscriptions"
+          ],
+          "cadencia": "Sprint 2 semanas"
+        }
+      ],
+      "platform_team": {
+        "nome": "Platform Engineering",
+        "responsabilidade": "Data platform (feature store, lakehouse, pipelines), infraestrutura cloud, developer experience (IDP interno), observabilidade e segurança.",
+        "produto_interno": "Internal Developer Platform com self-service de criação de conectores, deploy de modelos e provisionamento de tenants.",
+        "interacao_com_stream_teams": "X-as-a-Service — stream teams consomem via APIs e Terraform modules, sem dependência de tickets."
+      },
+      "enabling_team": {
+        "nome": "ML & Data Science Guild",
+        "responsabilidade": "Pesquisa em novos algoritmos, benchmarking de modelos, definição de padrões de feature engineering e coaching dos stream teams em boas práticas de MLOps.",
+        "modo_interacao": "Temporário (pairing de 4–6 semanas por stream team) conforme demanda de inovação — não é gargalo no fluxo."
+      },
+      "complicated_subsystem_team": {
+        "nome": "Connectors Core",
+        "responsabilidade": "Manutenção dos conectores com sistemas legados de OSS/BSS de alta complexidade (protocolos proprietários, schemas instáveis). Expõe interface estável para o resto da plataforma.",
+        "justificativa": "Complexidade essencial dos sistemas de billing e medição de operadoras justifica time dedicado para não contaminar cognitive load dos stream teams."
+      }
+    },
+    "flow_optimization": {
+      "cognitive_load": "Cada stream team possui domínio completo de seu BC — nenhum time precisa de outro para deployar suas features críticas. Boundaries reforçados por APIs versionadas com SLAs internos.",
+      "fast_flow": "Feature flags para releases desacopladas de deploys. Trunk-based development com feature branches curtos (< 2 dias). Ambientes de preview por PR para validação rápida.",
+      "feedback_loops": "Métricas de negócio (churn rate, recall do modelo, lift de campanha) integradas ao dashboard do time — não apenas métricas técnicas. Alertas automáticos de model drift disparam retraining sem intervenção manual.",
+      "eliminacao_de_desperdicio": "Orquestração event-driven elimina polling. Processamento incremental no feature store evita recomputação full-scan. Modelos servidos online para scores em tempo real; batch para relatórios analíticos.",
+      "inner_loop": "Ambiente local de desenvolvimento com dados sintéticos de telecom e mock de conectores. Dev containers padronizados eliminam 'works on my machine'. Pipeline de CI com testes de qualidade de dados integrados.",
+      "deployment_frequency": "Objetivo: múltiplos deploys/dia por time. Métricas DORA monitoradas por time no IDP."
+    },
+    "interfaces": [
+      "REST API pública v1: autenticação OAuth2/OIDC, endpoints para consulta de scores, configuração de alertas e exportação de relatórios — consumida por sistemas da operadora.",
+      "Webhook Engine: entrega push de eventos de alto risco (churn-score-threshold-exceeded) para CRM e call-center da operadora em tempo real.",
+      "Bulk Data API: upload de arquivos CSV/Parquet via presigned URLs para ingestão de dados históricos na integração inicial.",
+      "Streaming Connector (Kafka/EventBridge): ingestão contínua de CDRs e eventos de uso para scores near-real-time.",
+      "SDK Python/Node.js: wrapper para operadoras que integram scoring diretamente em seus sistemas de campanha.",
+      "SFTP Managed Drop Zone: ingestão legada para operadoras sem capacidade de API (batch diário).",
+      "Dashboard Web App (SPA): portal self-service para analistas da operadora — React + BFF GraphQL.",
+      "Admin Portal: gestão de tenants, conectores, limites de plano e configurações de modelo — uso interno.",
+      "Webhook de Billing: integração com Stripe para eventos de cobrança e overage.",
+      "Internal Event Bus (Kafka interno): comunicação assíncrona entre BCs — Customer 360 → Churn Intelligence → Retention Playbook."
+    ],
+    "escalabilidade": {
+      "modelo": "Multi-tenant com isolamento por namespace de dados no data lake (particionamento por tenant_id) e por schema no banco operacional. Compute compartilhado com quotas por tenant.",
+      "scoring_online": "Modelo servido via BentoML/Seldon em Kubernetes com HPA baseado em latência P99. Cache de scores no Redis com TTL configurável por tenant (default 1h) para absorver picos de consulta.",
+      "scoring_batch": "Processamento paralelo por partição de tenant em Spark/Ray no Kubernetes. Job de scoring noturno para base completa; jobs incrementais a cada 4h para cohorts de alto risco.",
+      "ingestao": "Kafka com particionamento por tenant_id suporta ingestão de múltiplos operadores simultaneamente. Consumers independentes por tenant evitam head-of-line blocking.",
+      "feature_store": "Feast com backend online (Redis) e offline (BigQuery/Parquet). Features computadas em pipeline streaming (Flink) para atributos de alta frequência; batch para features de janela longa.",
+      "banco_de_dados": "TimescaleDB ou BigQuery para séries temporais de uso. PostgreSQL para dados operacionais com read replicas por tenant tier. Sharding horizontal via Citus para tenants enterprise com >50M subscribers.",
+      "tenants_grandes": "Opção de dedicated compute pool para operadoras Tier 1 (>20M assinantes) com SLA diferenciado — isolamento de workload sem multitenancy compartilhado.",
+      "global": "Deploy multi-region ativo-ativo para requisitos de residência de dados (LGPD, GDPR). Roteamento por geolocalização no API Gateway."
+    },
+    "custos": {
+      "principais_drivers": [
+        "Compute de treinamento de modelos (GPU/CPU spot instances para retraining periódico)",
+        "Armazenamento de dados brutos de telecom (alto volume — CDRs são dados de altíssima cardinalidade)",
+        "Serving de modelos online (instâncias sempre ativas para baixa latência)",
+        "Transferência de dados na ingestão (egress dos sistemas da operadora)"
+      ],
+      "otimizacoes": [
+        "Spot/preemptible instances para jobs de treinamento e batch scoring — redução de 60-70% vs. on-demand",
+        "Tiering automático de dados no data lake: hot (último mês) em armazenamento rápido; cold (histórico) em Glacier/Nearline",
+        "Modelo serverless para tenants pequenos (< 500k assinantes) — scoring on-demand sem instâncias ociosas",
+        "Compressão Parquet + particionamento eficiente reduz custo de queries OLAP em 40-80%",
+        "Reserved instances para componentes de baseline estável (banco operacional, cache)"
+      ],
+      "unit_economics": "Custo de infra por tenant deve ser monitorado via FinOps dashboard. Target: custo de infra < 20% da receita por tenant. Alertas automáticos se tenant exceder baseline de custo por subscriber processado.",
+      "modelo_de_custo": "Majoritariamente variável com componente fixo de baseline de plataforma. Escala sub-linear com volume de assinantes processados devido a otimizações de batch e cache."
+    },
+    "monetizacao": {
+      "modelo_principal": "SaaS por assinatura mensal/anual com pricing baseado em volume de assinantes gerenciados (subscriber-based pricing). Tiers: Starter (até 1M subs), Growth (até 10M), Enterprise (10M+).",
+      "pricing_tiers": {
+        "starter": "Acesso ao dashboard, scoring batch diário, alertas básicos, 1 conector incluído. Target: MVNOs e operadoras regionais.",
+        "growth": "Scoring near-real-time, playbooks de retenção, API completa, até 3 conectores, SLA 99.9%. Target: operadoras médias.",
+        "enterprise": "Dedicated compute pool, modelos customizados por segmento, integrações ilimitadas, SLA 99.95%, suporte dedicado, on-premise option. Target: Tier 1 operators."
+      },
+      "receitas_complementares": [
+        "Professional Services: implementação de conectores customizados para sistemas legados e projetos de modelagem específicos por vertical (pré-pago, pós-pago, IoT/M2M)",
+        "Overage: cobrança por assinantes acima do tier contratado (pro-rata mensal)",
+        "Data Enrichment Add-on: enriquecimento de dados com fontes externas (dados socioeconômicos, propensão a consumo)",
+        "API Calls Add-on: chamadas de scoring online acima da quota do plano"
+      ],
+      "estrategia_go_to_market": "Land com Starter em operadoras regionais (sales cycle mais curto) → Expand com upsell para Growth conforme crescimento da base → Enterprise direto para Tier 1 com POC de 90 dias.",
+      "metricas_saas": "MRR, NRR (Net Revenue Retention), churn de clientes SaaS, CAC, LTV, payback period. Benchmark de sucesso: NRR > 120% indicando expansão consistente."
+    },
+    "stack_sugerida": {
+      "linguagens": "Python (ML, pipelines, APIs de dados), TypeScript/Node.js (APIs de produto, BFFs, frontend), Go (conectores de alta performance, componentes de ingestão críticos)",
+      "ml_platform": "MLflow (experiment tracking + model registry), BentoML ou Seldon Core (model serving), Feast (feature store), Optuna (hyperparameter tuning), scikit-learn + XGBoost + LightGBM (modelos principais), PyTorch para deep learning em features sequenciais",
+      "data_platform": "Apache Kafka (streaming), Apache Spark ou Ray (batch processing), Apache Flink (stream processing para features), dbt (transformações no data warehouse), Great Expectations (data quality), Delta Lake ou Apache Iceberg (table format no lakehouse)",
+      "data_warehouse": "BigQuery (GCP) ou Snowflake — OLAP queries para analytics. TimescaleDB para séries temporais operacionais.",
+      "banco_operacional": "PostgreSQL (Amazon RDS ou Cloud SQL) com Citus para sharding. Redis (ElastiCache/Memorystore) para cache e feature serving online.",
+      "apis_e_backend": "FastAPI (APIs Python de ML/scoring), NestJS (APIs de produto TypeScript), GraphQL com Apollo Server (BFF para dashboard), API Gateway (Kong ou AWS API Gateway), gRPC para comunicação interna de baixa latência",
+      "frontend": "React + TypeScript, Vite, TanStack Query, Recharts/D3.js para visualizações, Tailwind CSS, Storybook",
+      "infraestrutura": "Kubernetes (GKE/EKS) com Helm, Terraform (IaC), ArgoCD (GitOps), Istio (service mesh para observabilidade e segurança interna)",
+      "observabilidade": "OpenTelemetry (instrumentação), Grafana Stack (Loki + Tempo + Mimir) ou Datadog, Sentry (error tracking frontend/backend), evidently.ai (model monitoring e drift detection)",
+      "seguranca": "Vault (gestão de secrets), OPA (policy as code), SAST via Semgrep no CI, DAST periódico, SOC 2 Type II como certificação alvo",
+      "devex": "GitHub (SCM + Actions para CI/CD), Dev Containers, Backstage (IDP interno), Renovate (dependency updates automáticos)"
+    }
+  },
+  "raw": "```json\n{\n  \"value_chain\": \"Dados brutos da operadora (CDRs, CRM, billing, uso de rede) → Ingestão e normalização → Feature engineering telecom → Modelos preditivos de churn → Score de risco por cliente → Alertas e recomendações de retenção → Ações de retenção executadas pela operadora → Redução de churn mensurável → Renovação de contrato SaaS\",\n\n  \"bounded_contexts\": [\n    \"Data Ingestion: responsável pela coleta, validação e normalização de dados heterogêneos de fontes da operadora (SFTP, APIs, CDC, Kafka). Linguagem ubíqua: feed, connector, pipeline, raw-event, schema-contract.\",\n    \"Customer 360: agrega visão unificada do cliente consolidando comportamento de uso, histórico de billing, interações com suporte e dados contratuais. Linguagem ubíqua: subscriber, lifecycle-stage, touchpoint, segment.\",\n    \"Churn Intelligence: coração do domínio — treina, versiona e serve modelos preditivos; calcula churn score e probabilidade de evasão em horizontes temporais (30/60/90 dias). Linguagem ubíqua: churn-score, risk-tier, prediction-horizon, model-version, feature-vector.\",\n    \"Retention Playbook: converte scores em ações recomendadas, prioriza intervenções por ROI estimado e integra com sistemas de campanha da operadora. Linguagem ubíqua: intervention, retention-offer, expected-ltv-impact, campaign-trigger.\",\n    \"Alerting & Workflow: gerencia SLAs de notificação, escalation rules e integrações com ferramentas externas (CRM, call-center, marketing automation). Linguagem ubíqua: alert, escalation-policy, notification-channel, ack.\",\n    \"Analytics & Reporting: self-service BI para analistas da operadora, benchmarks de mercado, cohort analysis e mensuração de impacto das ações de retenção. Linguagem ubíqua: cohort, retention-rate, lift, dashboard, drill-down.\",\n    \"Tenant Management: isolamento multi-tenant, configuração de conectores por operadora, limites de uso e customizações de modelo por cliente. Linguagem ubíqua: tenant, workspace, data-partition, config-schema."
+}

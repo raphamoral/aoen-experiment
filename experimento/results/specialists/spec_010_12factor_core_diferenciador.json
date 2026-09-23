@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "12factor",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador (automação de NF-e integrada à gestão financeira do MEI) é identificável na proposta, mas está tratado como mais um worker técnico entre outros, sem isolamento explícito como núcleo de valor, sem explicação do que torna o motor fiscal único frente a concorrentes como ContaAzul ou MEI Fácil, e sem evidência de IP proprietário nas regras de negócio (contingência SEFAZ, validações estaduais, gestão de certificados A1/A3) que justifiquem insubstituibilidade."
+}

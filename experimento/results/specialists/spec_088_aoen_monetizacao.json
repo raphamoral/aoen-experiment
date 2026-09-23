@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 88,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "A proposta implica um modelo de receita transacional via 'taxa_desconto_base_percentual' (spread sobre antecipações), mas nunca o explicita como estratégia de monetização — não há tiers de planos, valores referência, análise de unit economics (CAC/LTV), diferenciação de cobrança por segmento (fornecedor vs. âncora vs. FIDC) nem qualquer menção a MRR, churn ou sustentabilidade da operação."
+}

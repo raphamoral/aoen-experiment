@@ -1,0 +1,83 @@
+{
+  "ideia_idx": 65,
+  "ideia": "SaaS de análise de produtividade de equipes remotas sem invasão de privacidade",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Análise de produtividade de equipes remotas baseada em sinais agregados e consentidos, sem vigilância individual. Agregados centrais: Team, Member (pseudonimizado), WorkSignal (evento de trabalho já anonimizado/agregado na origem, ex.: contagem de PRs, tickets concluídos, blocos de foco declarados, latência de resposta em nível de equipe), ConsentPolicy (o que cada membro autoriza compartilhar), Metric (fluxo de trabalho, carga, saúde de colaboração, sobreposição de fusos), Insight e Recommendation. Regras de negócio invariantes: k-anonimato mínimo (ex.: k>=5) em qualquer visão; nenhuma métrica ranqueia ou expõe indivíduos; nenhum conteúdo (texto, tela, teclas, mensagens) é coletado; consentimento revogável com efeito retroativo; retenção mínima e agregação temporal; ruído de privacidade diferencial em consultas de pequenos grupos.",
+    "primary_ports": [
+      "IngestWorkSignalsUseCase (receber sinais de trabalho já minimizados)",
+      "ManageConsentUseCase (conceder, revisar, revogar consentimento e exportar/apagar dados - LGPD/GDPR)",
+      "ManageTeamAndMembersUseCase (times, papéis, convites, pseudonimização)",
+      "QueryTeamMetricsUseCase (métricas agregadas com garantia de k-anonimato)",
+      "GenerateInsightsUseCase (insights e recomendações de bem-estar e fluxo de trabalho)",
+      "ConfigureMetricsAndGoalsUseCase (definir métricas, metas de equipe e janelas de foco)",
+      "ManageSubscriptionUseCase (plano, assentos, faturamento)",
+      "AuditPrivacyUseCase (relatório de transparência: o que é coletado, quem viu o quê)",
+      "RunScheduledAggregationUseCase (agregações e retenção disparadas por scheduler, teste ou script)"
+    ],
+    "secondary_ports": [
+      "WorkSignalSourcePort (Git, issue trackers, calendário, chat - somente metadados agregados)",
+      "TeamRepositoryPort",
+      "SignalStorePort (armazenamento de séries temporais agregadas)",
+      "ConsentRepositoryPort",
+      "PrivacyGuardPort (k-anonimato, ruído diferencial, mascaramento)",
+      "PseudonymizationPort (tokenização e gestão de chaves por tenant)",
+      "InsightEnginePort (heurísticas/ML/LLM para gerar insights sobre dados já agregados)",
+      "NotificationPort (email, Slack/Teams, push)",
+      "BillingPort (cobrança e assentos)",
+      "IdentityProviderPort (SSO/SAML/OIDC, SCIM)",
+      "AuditLogPort (log imutável de acessos)",
+      "EventBusPort (eventos de domínio e mensageria assíncrona)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)",
+      "ReportExportPort (PDF/CSV/BI)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API (HTTP) consumida pelo dashboard web",
+      "Dashboard web SPA (via API pública)",
+      "Webhook receivers (GitHub, GitLab, Jira, Linear, Google Calendar)",
+      "Bot de Slack/Microsoft Teams (comandos slash e check-ins de bem-estar)",
+      "CLI/agente local opcional que envia apenas contadores agregados, com código aberto e auditável",
+      "Scheduler (cron/Temporal) para agregações, retenção e relatórios",
+      "Endpoint SCIM para provisionamento",
+      "Adaptador de testes (test driver in-memory / BDD) usando as mesmas portas",
+      "Scripts de administração e migração"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios de Team, Consent, Subscription) com RLS por tenant",
+      "TimescaleDB ou ClickHouse (SignalStorePort)",
+      "Conectores GitHub/GitLab/Jira/Linear/Google Calendar/Slack (WorkSignalSourcePort, filtrando na borda para metadados)",
+      "Serviço de pseudonimização com HMAC por tenant + KMS (AWS KMS/HashiCorp Vault)",
+      "Implementação de PrivacyGuard (k-anonimato + mecanismo de Laplace/Gauss, ex.: OpenDP)",
+      "Adaptador de InsightEngine: regras + modelos estatísticos locais; LLM (ex.: Claude API) apenas sobre agregados anonimizados",
+      "Stripe (BillingPort)",
+      "Auth0/Keycloak/Okta (IdentityProviderPort)",
+      "SendGrid/SES, Slack API (NotificationPort)",
+      "Kafka/NATS/SQS (EventBusPort)",
+      "S3 com Object Lock / tabela append-only (AuditLogPort)",
+      "Adaptadores in-memory/fakes para todas as portas (testes e desenvolvimento)",
+      "Gerador de relatórios PDF/CSV e conector BI (ReportExportPort)"
+    ],
+    "isolation": "O core (módulo de domínio + camada de aplicação/casos de uso) não importa nenhum framework, ORM, SDK ou cliente HTTP; depende apenas de interfaces (portas) definidas dentro dele. A inversão de dependência é aplicada estritamente: adapters dependem do core, nunca o contrário. Objetos de domínio são puros e sem I/O; DTOs e schemas externos (payloads de webhook, linhas SQL, respostas de API) são traduzidos nos adapters por anti-corruption layers. A minimização de privacidade é imposta em duas camadas: (1) na borda, os adapters de entrada descartam qualquer conteúdo e enviam só metadados; (2) no core, PrivacyGuardPort é obrigatório em toda consulta, portanto nenhum adapter primário consegue contornar o k-anonimato. A composição das dependências ocorre em um único composition root, e regras de arquitetura (ArchUnit/dependency-cruiser) falham o build se o core importar infraestrutura. Todos os sistemas externos, sejam bancos, SaaS de terceiros ou filas, são tratados de forma simétrica, cada um atrás de sua porta e substituível por fakes.",
+    "interfaces": [
+      "Dashboard web para gestores (métricas agregadas de equipe, sem ranking individual)",
+      "Painel pessoal do membro (o que foi compartilhado, controle de consentimento, exportação e exclusão de dados)",
+      "Página pública de transparência e política de privacidade verificável",
+      "API pública REST/GraphQL com OpenAPI e chaves por tenant",
+      "Webhooks de saída (alertas de risco de burnout ou sobrecarga em nível de equipe)",
+      "Bot Slack/Teams (check-ins anônimos e resumos semanais)",
+      "CLI open source do agente local",
+      "Console de administração (tenants, SSO, retenção, políticas de k-anonimato)",
+      "Relatórios exportáveis (PDF/CSV) e conector para BI"
+    ],
+    "escalabilidade": "Serviços stateless atrás de load balancer, com escala horizontal automática (Kubernetes/Fargate). Ingestão assíncrona: webhooks e sinais entram em uma fila (Kafka/SQS/NATS) e são consumidos por workers idempotentes que podem escalar por partição de tenant. Separação CQRS: escrita em Postgres e séries temporais em ClickHouse/Timescale, com leituras servidas por agregados pré-computados (continuous aggregates/materialized views) e cache (Redis). Particionamento por tenant_id e por tempo, com retenção e downsampling automáticos que também reduzem o volume e reforçam a privacidade. Multi-tenant com RLS e opção de células/regiões isoladas para clientes enterprise e residência de dados. Como o core é isolado, é possível extrair contextos (ingestão, métricas, insights) como serviços independentes sem reescrever regras de negócio, apenas trocando adapters. Jobs de insight rodam em batch fora do caminho crítico.",
+    "custos": "Principais vetores: armazenamento e computação de séries temporais (mitigados por agregação na origem, downsampling e retenção curta); chamadas a LLM (mitigadas por gerar insights só sobre agregados, com cache e execução em lote semanal); egress e rate limits de APIs de terceiros (mitigados por webhooks em vez de polling e conectores com backoff); KMS/segurança e auditoria (custo fixo baixo); conformidade (SOC 2, ISO 27001, DPA, LGPD/GDPR) como investimento inicial relevante e recorrente. Começar com um monolito modular hexagonal em um único deploy (Postgres + ClickHouse gerenciado ou Timescale) mantém o custo baixo no início, e a arquitetura permite dividir em serviços apenas quando o volume justificar. Custo por assento estimado em centavos de dólar por mês na infraestrutura, com margem bruta alta. Suporte e onboarding de integrações são o principal custo humano.",
+    "monetizacao": "SaaS por assento (per-seat/mês) com planos escalonados: Free/Starter (times pequenos, integrações limitadas, retenção curta), Team (métricas completas, bot de Slack/Teams, insights semanais), Business (SSO, API, retenção configurável, relatórios exportáveis) e Enterprise (SCIM, células dedicadas, residência de dados, SLA, auditoria e DPA customizado). Trial de 14 dias sem cartão. Complementos: pacote de insights avançados/benchmarks anônimos entre empresas do setor, conector premium e serviços de consultoria em cultura de trabalho remoto. Cobrança via Stripe, atrelada a assentos ativos consentidos. Diferencial de venda: a privacidade como funcionalidade central, com transparência auditável e certificações, o que reduz a resistência dos colaboradores e acelera a adoção bottom-up.",
+    "stack_sugerida": "Core: TypeScript (Node.js) ou Kotlin/Java, com módulos hexagonais separados (domain, application, ports) sem dependência de framework; regras de arquitetura verificadas por dependency-cruiser ou ArchUnit. Adapters primários: NestJS/Fastify ou Spring Boot para REST/GraphQL, Slack Bolt SDK, cron/Temporal para agendamento. Front-end: React/Next.js + TypeScript com TanStack Query e biblioteca de gráficos (ex.: Recharts/ECharts). Persistência: PostgreSQL (com RLS) + ClickHouse ou TimescaleDB, Redis para cache. Mensageria: Kafka, NATS ou SQS. Privacidade: OpenDP ou implementação própria de k-anonimato e ruído diferencial, HMAC/KMS (AWS KMS ou Vault) para pseudonimização. Identidade: Keycloak/Auth0 com OIDC/SAML/SCIM. Billing: Stripe. Insights: regras + estatística (Python/scikit-learn em worker isolado) e LLM opcional sobre agregados. Infra: Docker, Kubernetes (EKS) ou ECS Fargate, Terraform, GitHub Actions, OpenTelemetry + Grafana/Prometheus, Sentry. Testes: Vitest/JUnit com fakes in-memory dos adapters, testes de contrato por porta, Testcontainers para integração, Playwright para E2E."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:53:24+00:00",
+    "runner": "runner.py"
+  }
+}

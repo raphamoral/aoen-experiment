@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 46,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 10,
+  "justificativa": "O núcleo diferenciador (pipeline de análise de movimento em tempo real com CV + IA generativa para feedback biomecânico) está claramente identificado, isolado via adapter pattern com fornecedores plugáveis, e resolve um gap real — coaching técnico contínuo e personalizado que alternativas como apps de vídeo ou wearables isolados não entregam."
+}

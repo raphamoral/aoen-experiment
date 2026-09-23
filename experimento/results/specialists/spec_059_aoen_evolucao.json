@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 59,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "O padrão de adapters plugáveis e a WorkflowService agnóstica de interface demonstram forte intenção evolutiva — trocar integrações e adicionar canais não toca o core — mas a proposta não endereça abstração da camada de dados (lock-in de banco), mecanismos de escala horizontal do engine, versionamento de API/workflows, nem a substituibilidade do próprio motor de orquestração, deixando o componente mais crítico como caixa-preta arquitetural."
+}

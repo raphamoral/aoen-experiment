@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 79,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta descreve bem a separação de camadas (service layer, adapters) e cita que trocar fonte de dados é 'trocar um adaptador', o que implica alguma extensibilidade, mas em nenhum momento menciona um modelo de configuração por tenant — não há referência a feature flags, tabela de configurações por cliente, templates de notificação parametrizáveis, formatos regulatórios selecionáveis por config ou workflow configurável; o 'fluxo fixo' (fase3_fluxo_fixo) reforça que o comportamento é hardcoded, e a adaptação a diferentes setores/reguladores (ANVISA vs FDA vs MAPA) provavelmente exige código novo por cliente, não configuração."
+}

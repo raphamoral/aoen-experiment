@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 61,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "Cinco interfaces distintas (Web ONG, PWA Voluntário, Dashboard Corporativo, API REST, Bot conversacional), cada uma com segmento de mercado e perfil de usuário explicitamente justificados, sobre uma service layer desacoplada com contratos tipados que permite adicionar ou trocar canais sem tocar na lógica de negócio."
+}

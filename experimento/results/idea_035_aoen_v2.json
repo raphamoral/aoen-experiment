@@ -1,0 +1,43 @@
+{
+  "ideia_idx": 35,
+  "ideia": "SaaS de detecção de fraudes em transações de marketplace",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de pontuação de risco transacional: pipeline que ingere sinais brutos de uma transação (valor, comprador, vendedor, histórico, dispositivo, geolocalização, padrão comportamental) e emite um score de fraude com razão auditável, em tempo real ou near-real-time.",
+    "fase1_mercado": "Operadores de marketplaces digitais que processam transações entre partes (e-commerce P2P, plataformas de serviços freelance, marketplaces de ingresso, aluguel por temporada, gig economy) e não têm capacidade interna de construir e manter um sistema de detecção de fraudes — startups em crescimento e PMEs de médio porte que precisam de proteção sem um time de data science dedicado.",
+    "fase1_extensivel": "Sim. O core é abstraído como uma interface de 'Risk Scorer' que recebe um payload normalizado e retorna {score, label, reasons[]}. Internamente pode ser: (1) motor de regras configuráveis, (2) modelo ML próprio (XGBoost, LightGBM), (3) chamada a provider externo (Sift, Sardine, Stripe Radar) ou (4) ensemble híbrido. A troca de backend de scoring não afeta as interfaces nem os clientes.",
+    "fase2_interfaces": [
+      "REST API síncrona — decisão em tempo real no momento do checkout",
+      "Webhook de eventos assíncronos — recebe batch de transações e notifica resultado via callback",
+      "Dashboard Web — painel para analistas de fraude: fila de revisão manual, métricas, ajuste de thresholds",
+      "SDK cliente (JavaScript/Python/PHP) — integração simplificada para desenvolvedores de marketplace",
+      "API de Onboarding/Config — permite que o cliente configure regras, listas e parâmetros sem contato com o suporte"
+    ],
+    "fase2_justificativa_mercado": "REST API síncrona abre marketplaces com checkout programático (e-commerce, apps móveis). Webhook abre plataformas com processamento batch ou revisão pós-transação (marketplaces de serviços, plataformas de recorrência). Dashboard abre empresas com time de operações antifraude que precisam de interface humana para revisar casos limítrofes. SDK reduz friction de integração e abre o mercado de desenvolvedores sem infraestrutura sofisticada. API de Config abre o mercado de clientes enterprise que precisam de autonomia operacional sem depender de suporte técnico.",
+    "fase2_service_layer": "Uma FraudService centraliza toda a lógica de negócio: normalização do payload, enriquecimento de contexto (busca histórico, reputação de vendedor/comprador), chamada ao Risk Scorer, aplicação de regras pós-score, decisão final e auditoria. Cada interface (REST handler, webhook consumer, dashboard BFF) chama a FraudService com um DTO padronizado e recebe um resultado tipado — sem lógica de domínio nas camadas de interface.",
+    "fase3_fluxo_fixo": "Ingestão do evento transacional → normalização para schema interno → enriquecimento com contexto histórico e reputacional → scoring de risco pelo motor configurado → aplicação de regras pós-score (bloqueio, revisão, aprovação) → emissão de decisão com razão auditável → registro em log imutável → notificação ao cliente (resposta síncrona ou webhook).",
+    "fase3_parametros_configuraveis": [
+      "score_threshold_block: score acima do qual a transação é bloqueada automaticamente",
+      "score_threshold_review: score acima do qual vai para fila de revisão manual",
+      "velocity_rules: limite de transações por janela de tempo por usuário/dispositivo/IP",
+      "allowed_countries: lista de países aceitos por cliente",
+      "blocked_bins: prefixos de cartão bloqueados",
+      "custom_blacklists: listas de CPF/CNPJ/email/IP bloqueados por cliente",
+      "custom_whitelist: entidades confiáveis que bypass o scoring",
+      "risk_weights: peso de cada sinal no score final (ex: geolocation_mismatch: 0.4)",
+      "review_queue_enabled: habilitar ou não revisão manual",
+      "webhook_url: endpoint de callback por cliente",
+      "notification_channels: email, Slack, PagerDuty para alertas",
+      "currency_limits: valor máximo por transação sem revisão adicional",
+      "sector_profile: perfil de risco padrão por vertical (ingresso, serviços, produtos físicos)",
+      "model_backend: qual motor usar (rules_only | ml_internal | external_provider)"
+    ],
+    "fase3_novo_cliente": "Novo cliente cria conta, recebe API key, e via API de Config ou painel de onboarding define: setor, país, limites, thresholds e canais de notificação. O sistema instancia um contexto de configuração isolado para aquele tenant_id. Nenhum código novo é escrito — o pipeline existente executa com os parâmetros do cliente injetados em runtime via config store (banco de dados de configuração por tenant).",
+    "fase4_core_isolado": "O Risk Scorer (motor de ML ou regras pesadas) roda como processo assíncrono isolado — um worker pool separado que consome de uma fila de trabalho (ex: Redis Streams ou RabbitMQ). A API síncrona publica o job e aguarda resultado via canal de resposta com timeout configurável. Assim, picos de carga no scoring não afetam a disponibilidade da API de ingestão.",
+    "fase4_custo_total_cliente": "Custo core por transação: inferência ML (0,0001–0,001 USD/transação dependendo se self-hosted GPU ou API externa) + enriquecimento de dados externos quando aplicável (0–0,005 USD). Custo de infra proporcional: armazenamento de logs de transações (~0,023 USD/GB/mês S3-class) + banco relacional por tenant (particionado, ~0,10 USD/GB/mês RDS) + processamento de CPU no worker pool (escalonado por volume) + banda de saída para webhooks (~0,09 USD/GB). Custo operacional: suporte, monitoramento. Exemplo: cliente com 100k transações/mês → core ~10–50 USD + infra ~20–40 USD + operacional ~10 USD = 40–100 USD de custo total → precificação mínima viável ~300–500 USD/mês com margem.",
+    "fase4_continuidade": "A ingestão de transações é desacoplada do scoring por fila durável. Se o worker de ML cair: (1) transações continuam sendo enfileiradas sem perda, (2) fallback automático para motor de regras síncronas leve que garante decisão básica (allow/block por regras hardcoded de baixo risco), (3) alerta imediato ao time de operações. O restante do sistema (API, dashboard, logs) continua operando. SLA de scoring é independente do SLA de ingestão.",
+    "fase4_manutencao": "O Risk Scorer implementa uma interface contratual (score(payload) → result). Para trocar o modelo: (1) novo worker implementa a mesma interface, (2) deploy em paralelo com feature flag por tenant_id, (3) shadow mode: ambos rodam, resultado do novo é logado mas não usado, (4) comparação de distribuição de scores, (5) rollout gradual por percentual de tráfego, (6) desligamento do modelo antigo. Zero downtime, rollback instantâneo por flag.",
+    "monetizacao": "SaaS com preço por volume de transações analisadas: Free tier (até 1.000 transações/mês para validação técnica) + Starter (~299 USD/mês, até 50k transações) + Growth (~799 USD/mês, até 500k transações) + Enterprise (pricing personalizado com SLA contratual, modelos customizados e suporte dedicado). Add-ons: revisão manual humana assistida por IA (por caso analisado), relatórios de compliance e chargebacks, integração com provider externo premium (Sift, Sardine) como backend do scorer.",
+    "stack_sugerida": "API Gateway: FastAPI (Python) ou Node.js/Fastify para latência baixa. Fila de trabalho: Redis Streams (baixo volume) ou Apache Kafka (alto volume / multi-tenant isolado). Workers de scoring: Python com XGBoost/LightGBM self-hosted, ou abstração sobre Sift/Sardine API. Banco principal: PostgreSQL com particionamento por tenant_id. Cache e sessões: Redis. Config store por tenant: PostgreSQL + cache Redis com TTL curto. Dashboard: Next.js + React. Auth multitenant: JWT com tenant_id no claim + API keys hashed em banco. Observabilidade: OpenTelemetry + Grafana + Prometheus. Infra: Docker + Kubernetes (HPA nos workers de scoring). Cloud: AWS (EKS, RDS, ElastiCache, S3, SQS como fallback de fila). CI/CD: GitHub Actions com deploy blue-green nos workers."
+  }
+}

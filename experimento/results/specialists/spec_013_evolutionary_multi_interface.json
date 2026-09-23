@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "A proposta menciona BFF (Backend for Frontend) como camada de desacoplamento e cita integrações com IoT, calendários e gateways — o que implicitamente suporta múltiplas interfaces — mas não enumera explicitamente quais interfaces existem, não as justifica por perfis de usuário distintos (ex: coworker, gestor do espaço, admin) nem as conecta a decisões de alcance de mercado."
+}

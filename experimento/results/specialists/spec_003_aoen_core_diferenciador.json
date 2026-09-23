@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado como a equação 'anonimidade real + inteligência agregada', isolado em contratos abstratos (ICollector, IAnonymizer, IAnalysisEngine) que o tornam extensível e independente de fornecedor, resolvendo o problema real de burnout invisível que ferramentas genéricas de pesquisa não resolvem — perde um ponto por não detalhar o mecanismo técnico específico de anonimização (k-anonimidade vs. differential privacy) que seria o verdadeiro fosso competitivo."
+}

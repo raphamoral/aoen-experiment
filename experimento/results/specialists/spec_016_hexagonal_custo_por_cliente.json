@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 16,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não menciona nenhum mecanismo de rastreamento de custo por tenant — não há port, adapter, entidade ou caso de uso voltado a metering de consumo, alocação de custo por cliente ou conexão entre uso de recursos e precificação; todos os custos são implicitamente tratados como infra total."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "O modelo de domínio exibe coerência interna notável — o princípio de imutabilidade se repete de forma consistente em Contract, Signature, AuditLog e Template, formando uma narrativa legal coesa; o Tenant ancora o modelo SaaS; e os atributos de Signature (hash, UTC, IP, geolocalização) reforçam diretamente os requisitos de validade jurídica declarados — porém a proposta está truncada (use_cases incompleto), faltam referências cruzadas explícitas entre entidades (ex: Contract→Property, Clause.acceptedBy→Party), e a jurisdição presente em Template não se propaga para Contract nem Party, criando uma lacuna de coerência que impede nota mais alta."
+}

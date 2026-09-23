@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A proposta demonstra pensamento evolutivo sólido: Modular Monolith com bounded contexts bem definidos como ponto de partida evita complexidade prematura; Strangler Fig Pattern garante extrações reversíveis; fitness function via ArchUnit/Dependency-Cruiser impõe inversão de dependências no CI/CD de forma automatizada; e a progressão por evidência (Fase 3 só extrai quando métricas indicam necessidade real) evita over-engineering — os 2 pontos de desconto refletem a estratégia de deploy/API versioning truncada ('estrateg...') que impede avaliar como contratos entre módulos evoluem sem quebra de compatibilidade, e a ausência explícita de política de evolução de esquemas de eventos/mensagens, que é o principal vetor de acoplamento temporal em arquiteturas que transitam para serviços."
+}

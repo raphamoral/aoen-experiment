@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta detalha bem os componentes de infraestrutura (PostgreSQL, TimescaleDB, Redis, RabbitMQ, S3, Elasticsearch, CDN, etc.), mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia explícita de otimização financeira (spot instances, scale-to-zero, storage tiering, reserved capacity) e nenhuma projeção de crescimento de custos com a base de usuários — a arquitetura foi pensada para robustez técnica, não para eficiência de custo."
+}

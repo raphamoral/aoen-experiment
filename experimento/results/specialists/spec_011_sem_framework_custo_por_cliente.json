@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "O projeto lista apenas custos fixos de infraestrutura total (Vercel $20, Supabase $25, etc.) sem nenhum cálculo de custo por cliente, por operação ou por tenant — não há rastreamento de consumo individual nem conexão entre custo unitário e o modelo de precificação de R$150/mês."
+}

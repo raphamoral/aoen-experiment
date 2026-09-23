@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 1,
+  "justificativa": "A entidade Tenant possui limiteAssets e limiteDevices com a regra 'Calcular uso atual', mas isso mensura *quantidade consumida* para controle de plano (quota enforcement), não *custo financeiro por tenant* — não há nenhum atributo de custo por operação, nenhuma lógica de custeio por leitura IoT/ordem de manutenção/análise, e nenhuma conexão entre consumo de recursos e margem por cliente."
+}

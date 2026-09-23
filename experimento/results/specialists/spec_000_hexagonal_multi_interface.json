@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "hexagonal",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 9,
+  "justificativa": "A proposta prevê múltiplas interfaces claramente justificadas por perfis de uso distintos (veterinários mobile, gestores web, integrações B2B via REST, consultas ao vivo via WebSocket), com lógica de negócio desacoplada via ports & adapters (arquitetura hexagonal), permitindo adição de novos canais sem reescrever o core — perde apenas um ponto pela ausência de menção explícita a estratégias de UX diferenciadas por canal ou validação de mercado para cada interface."
+}

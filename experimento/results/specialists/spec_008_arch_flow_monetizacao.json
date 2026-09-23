@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 3,
+  "justificativa": "O projeto menciona um contexto de Billing com assinaturas e cobrança por volume de MTRs, mas sem detalhamento de tiers, faixas de preço, análise de sustentabilidade (LTV/CAC) ou métricas de negócio — indica consciência do modelo sem estruturá-lo."
+}

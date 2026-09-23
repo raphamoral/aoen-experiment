@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta sustenta uma narrativa arquitetural única e consistente do núcleo ao fluxo: o princípio 'anonimidade real + inteligência agregada' nasce no core, é protegido pela Service Layer, habilitado pelos três contratos extensíveis (ICollector/IAnonymizer/IAnalysisEngine) e materializado no pipeline fixo — cada interface de mercado (WhatsApp, Slack, API REST) existe porque o ICollector abstrai o canal sem expor a lógica de anonimização; a única tensão detectada é que o fluxo da fase 3 concretiza a estratégia de anonimização como 'supressão + agregação mínima de N', instanciando parcialmente o que o IAnonymizer deveria manter aberto, o que cria uma leve contradição entre a promessa de extensibilidade e a decisão de design do pipeline."
+}

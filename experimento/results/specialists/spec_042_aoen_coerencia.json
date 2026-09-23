@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 42,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta apresenta coerência sistêmica forte: o mercado-alvo (empresas listadas com obrigação regulatória) justifica o suporte multi-framework, que justifica a arquitetura plugin/adaptador, que justifica a abstração LanguageModelProvider, que justifica a ESGReportService centralizada, que justifica as interfaces finas — cada decisão flui logicamente da anterior, com o pipeline invariante da fase 3 operacionalizando exatamente o que a fase 1 promete, e as interfaces da fase 2 servindo exatamente os segmentos de mercado mapeados; a única fricção observável é a ausência de decisões explícitas de escalabilidade (sharding, filas, cache) apesar do alvo ser large caps com alto volume de dados regulatórios, criando uma lacuna entre ambição de mercado e mecânica técnica declarada."
+}

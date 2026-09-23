@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura descreve exclusivamente entidades de domínio de negócio (Auction, Bid, Buyer, Supplier, PurchaseOrder, Contract, Rating) sem qualquer mecanismo de rastreamento de custo por tenant — não há entidades de metering, atributos de consumo de recursos, cálculo de custo por operação, nem conexão entre uso do cliente e modelo de precificação."
+}

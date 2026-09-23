@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso e auto-reforçante: artefatos imutáveis exigem config externalizada, que viabiliza a promoção entre ambientes, que sustenta os processos stateless, que por sua vez justificam o escalonamento horizontal independente por tipo de workload — cada pilar arquitetural é consequência lógica do anterior, com tecnologias escolhidas de forma consistente com os requisitos do domínio (contratos assíncronos, billing SaaS, documentos digitais); o único atrito é o uso de 'ou' em SQS/RabbitMQ e Elasticsearch/Typesense, sinalizando decisões ainda abertas que poderiam introduzir inconsistências operacionais dependendo da escolha final."
+}

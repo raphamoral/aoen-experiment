@@ -1,0 +1,173 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "arch_flow",
+  "response": {
+    "value_chain": "Colaborador responde check-in de bem-estar → Dados anonimizados na borda → Agregação e análise de padrões → Relatórios anônimos gerados → RH/Gestão recebe insights acionáveis → Intervenções organizacionais realizadas → Saúde mental coletiva melhora → Retenção e produtividade aumentam → Empresa renova e expande plano",
+    "bounded_contexts": [
+      "CheckIn: Coleta de respostas de bem-estar dos colaboradores (domínio core)",
+      "Anonymization: Motor de anonimização e k-anonimato para garantir privacidade (domínio core)",
+      "Analytics: Processamento de padrões agregados, scoring de clima organizacional (domínio core)",
+      "Reporting: Geração e entrega de relatórios para RH/Gestão (domínio suporte)",
+      "Alerting: Detecção de limiares críticos e notificações automáticas (domínio suporte)",
+      "TenantManagement: Onboarding, configuração e hierarquia organizacional das empresas (domínio suporte)",
+      "IAM: Identidade, autenticação e controle de acesso por papel (domínio genérico)",
+      "Billing: Assinatura, cobrança e gestão de planos (domínio genérico)",
+      "Compliance: Auditoria, retenção de dados, LGPD/GDPR e trilha de consentimento (domínio suporte)"
+    ],
+    "component_evolution": {
+      "genesis": [
+        "Algoritmos preditivos de risco psicológico coletivo com ML",
+        "Motor de recomendação de intervenções organizacionais",
+        "Detecção de padrões de burnout em séries temporais anônimas"
+      ],
+      "custom_build": [
+        "Motor de anonimização com k-anonimato e differential privacy",
+        "Pipeline de agregação que preserva privacidade individual",
+        "Modelo de scoring de saúde mental organizacional",
+        "Templates de relatório configuráveis por setor/porte"
+      ],
+      "product": [
+        "Engine de surveys e check-ins recorrentes",
+        "Dashboard de analytics para RH",
+        "Sistema de alertas e limiares configuráveis",
+        "Gerenciamento multi-tenant de organizações"
+      ],
+      "commodity": [
+        "Autenticação e SSO (Auth0 / Cognito / SAML para enterprise)",
+        "Armazenamento de objetos (S3)",
+        "Serviço de e-mail transacional (SES / SendGrid)",
+        "Pagamentos (Stripe)",
+        "Infraestrutura cloud (AWS / GCP)",
+        "Observabilidade (Datadog / Grafana)",
+        "CDN (CloudFront / Cloudflare)"
+      ]
+    },
+    "team_topology": {
+      "stream_aligned_teams": [
+        {
+          "nome": "Employee Experience Team",
+          "responsabilidade": "Bounded contexts CheckIn e Anonymization — interface do colaborador, UX de check-in, motor de privacidade",
+          "ownership": "App mobile/web do colaborador + API de ingestão + serviço de anonimização"
+        },
+        {
+          "nome": "Insights & Reporting Team",
+          "responsabilidade": "Bounded contexts Analytics e Reporting — pipeline de dados agregados, dashboards de RH, exportações",
+          "ownership": "Data pipelines, dashboards, relatórios programados"
+        },
+        {
+          "nome": "Growth & Tenant Team",
+          "responsabilidade": "Bounded contexts TenantManagement, Billing e onboarding — jornada de ativação e receita",
+          "ownership": "Portal de administração da empresa, onboarding, integrações HRIS, cobrança"
+        }
+      ],
+      "platform_team": {
+        "nome": "Platform & Compliance Team",
+        "responsabilidade": "IAM, Compliance, infraestrutura como produto interno, pipelines CI/CD, padrões de segurança e LGPD/GDPR",
+        "ownership": "Módulos reutilizáveis de autenticação, trilha de auditoria, ambientes cloud, ferramentas de observabilidade"
+      },
+      "complicated_subsystem_team": {
+        "nome": "Privacy Engineering Team",
+        "responsabilidade": "Evolução do motor de anonimização (differential privacy, k-anonimato) — alto especialismo técnico necessário",
+        "ownership": "Biblioteca de privacidade consumida pelos times stream-aligned"
+      },
+      "enabling_team": {
+        "nome": "Data Science Enabling Team",
+        "responsabilidade": "Capacitar Insights Team com modelos de ML para detecção de padrões — temporário até o knowledge ser absorvido",
+        "ownership": "Prototipagem de modelos preditivos, documentação de feature engineering"
+      }
+    },
+    "flow_optimization": {
+      "principios": [
+        "Cognitive load reduzido: cada time possui ownership completo de no máximo 2 bounded contexts",
+        "Fast flow via APIs bem definidas entre CheckIn → Anonymization → Analytics, sem acoplamento direto entre times",
+        "Event-driven entre contextos: eventos publicados no broker permitem evolução independente dos consumidores",
+        "Platform as a product: Platform Team oferece self-service para IAM, compliance e infra, eliminando dependências bloqueantes",
+        "Innerloop otimizado: ambientes de dev locais com dados sintéticos anônimos, sem necessidade de acessar dados reais"
+      ],
+      "padroes_arquiteturais": [
+        "CQRS no Analytics context: writes otimizados para ingestão, reads otimizados para queries analíticas",
+        "Event Sourcing no CheckIn context: histórico imutável dos check-ins antes da anonimização",
+        "Saga pattern para fluxo de onboarding de tenant (operação multi-step distribuída)",
+        "Strangler Fig para evolução incremental do motor de anonimização sem big bang"
+      ]
+    },
+    "interfaces": [
+      "App mobile (iOS/Android) — interface primária do colaborador para check-ins recorrentes",
+      "Web App PWA — alternativa ao mobile para check-in via browser",
+      "Dashboard Web RH/Gestão — visualização de relatórios e métricas agregadas",
+      "Portal de Administração de Tenant — configuração de empresa, departamentos, ciclos de check-in",
+      "REST API pública — integrações com sistemas HRIS (SAP SuccessFactors, Workday, BambooHR)",
+      "Webhooks — notificações de alertas críticos para sistemas externos (Slack, Teams, e-mail)",
+      "API de Exportação — exportação de relatórios em PDF/CSV para compliance",
+      "SAML/OIDC SSO — integração com provedores de identidade corporativos para enterprise"
+    ],
+    "escalabilidade": {
+      "modelo": "Multi-tenant com isolamento lógico por schema de banco de dados (schema-per-tenant para enterprise, shared schema para SMB)",
+      "ingestao": "Serviço de CheckIn stateless com auto-scaling horizontal — picos em horários de início de turno absorvidos por filas (SQS/Kafka)",
+      "analytics": "Pipeline assíncrono: ingestão → anonimização → stream processing (Flink/Kafka Streams) → data warehouse columnar (ClickHouse/BigQuery) separado do OLTP",
+      "leitura": "Read replicas para dashboards + cache Redis para relatórios pré-computados com TTL configurável por empresa",
+      "geografica": "Deploy multi-região para cumprir requisitos de residência de dados (LGPD Brasil, GDPR Europa) com routing por tenant",
+      "limites": "Rate limiting por empresa para isolar noisy neighbors; circuit breakers entre serviços core",
+      "observabilidade": "Tracing distribuído (OpenTelemetry), métricas por tenant, alertas de SLO — visibilidade sem expor dados individuais"
+    },
+    "custos": {
+      "modelo_operacional": "~70% dos custos variáveis são compute e storage do pipeline de analytics — otimização crítica",
+      "estrategias": [
+        "Compute reservado (Reserved Instances / Committed Use) para workloads previsíveis de analytics",
+        "Spot/Preemptible para jobs batch de geração de relatórios fora do horário de pico",
+        "Tiered storage: dados quentes (últimos 90 dias) em SSD, dados frios em object storage (S3 Glacier)",
+        "Data warehouse columnar (ClickHouse self-hosted ou BigQuery on-demand) evita custo de bancos OLTP para queries analíticas",
+        "Anonimização na borda reduz volume de dados transmitidos e armazenados com PII",
+        "Commoditizar autenticação (Auth0 free tier → Cognito em escala) evita build custoso de IAM próprio"
+      ],
+      "unit_economics": "Custo alvo por colaborador ativo por mês: < R$ 2,00 em infraestrutura para margens saudáveis no plano base"
+    },
+    "monetizacao": {
+      "modelo_principal": "B2B SaaS com assinatura mensal/anual por empresa, precificado por número de colaboradores ativos (per-seat)",
+      "planos": [
+        {
+          "tier": "Starter",
+          "alvo": "Empresas 50–200 colaboradores",
+          "preco": "R$ 12–18/colaborador/mês",
+          "features": "Check-ins semanais, relatórios mensais básicos, alertas por e-mail"
+        },
+        {
+          "tier": "Professional",
+          "alvo": "Empresas 200–2000 colaboradores",
+          "preco": "R$ 22–30/colaborador/mês",
+          "features": "Check-ins configuráveis, dashboards em tempo real, integração HRIS, comparativo por departamento, SSO"
+        },
+        {
+          "tier": "Enterprise",
+          "alvo": "Empresas 2000+ colaboradores",
+          "preco": "Contrato anual negociado",
+          "features": "Multi-subsidiary, SLA dedicado, relatórios customizados, DPO support, deploy em VPC privada"
+        }
+      ],
+      "receitas_adicionais": [
+        "Professional Services: implementação, treinamento de RH e workshops de cultura — alta margem inicial",
+        "Add-on de benchmarking setorial: empresa compara seus índices com médias anônimas do setor",
+        "API access tier para integrações avançadas com plataformas de benefícios"
+      ],
+      "metricas_saas": "North Star Metric: % de colaboradores com check-in ativo nos últimos 14 dias (engagement rate) — proxy de valor entregue e preditor de churn"
+    },
+    "stack_sugerida": {
+      "frontend": "Next.js 14 (App Router) + TypeScript + Tailwind CSS — SSR para dashboard RH, React Native (Expo) para app mobile",
+      "backend_core": "Node.js + TypeScript com NestJS (modulare, alinhado a bounded contexts) ou Go para serviços de alta throughput (ingestão, anonimização)",
+      "api_gateway": "Kong ou AWS API Gateway — rate limiting, autenticação centralizada, roteamento por tenant",
+      "mensageria": "Apache Kafka (MSK) — event streaming entre CheckIn → Anonymization → Analytics com garantias de ordering e replay",
+      "banco_oltp": "PostgreSQL (RDS / Aurora Serverless v2) com schema-per-tenant para isolamento; PgBouncer para connection pooling",
+      "banco_analitico": "ClickHouse (self-hosted em ECS) ou BigQuery — queries OLAP em dados agregados anônimos com custo por query",
+      "cache": "Redis (ElastiCache) — sessões, rate limiting, relatórios pré-computados",
+      "armazenamento": "S3 + lifecycle policies para dados frios; S3 KMS encryption em repouso",
+      "autenticacao": "Auth0 (SMB/Pro) + SAML enterprise via Auth0 Enterprise Connections; JWT com rotação de chaves",
+      "privacidade": "Python library interna com Google's differential-privacy library + ARX Data Anonymization Tool para pesquisa",
+      "infra_iac": "Terraform + Terragrunt — infraestrutura como código com módulos reutilizáveis por ambiente",
+      "ci_cd": "GitHub Actions + ArgoCD (GitOps) — deploy independente por serviço/bounded context",
+      "observabilidade": "OpenTelemetry SDK → Datadog (traces + metrics + logs) ou stack self-hosted Grafana + Tempo + Loki",
+      "seguranca": "SAST com Semgrep no CI, secrets scanning com GitGuardian, DAST com OWASP ZAP em staging, pen-test anual"
+    }
+  },
+  "raw": "```json\n{\n  \"value_chain\": \"Colaborador responde check-in de bem-estar → Dados anonimizados na borda → Agregação e análise de padrões → Relatórios anônimos gerados → RH/Gestão recebe insights acionáveis → Intervenções organizacionais realizadas → Saúde mental coletiva melhora → Retenção e produtividade aumentam → Empresa renova e expande plano\",\n\n  \"bounded_contexts\": [\n    \"CheckIn: Coleta de respostas de bem-estar dos colaboradores (domínio core)\",\n    \"Anonymization: Motor de anonimização e k-anonimato para garantir privacidade (domínio core)\",\n    \"Analytics: Processamento de padrões agregados, scoring de clima organizacional (domínio core)\",\n    \"Reporting: Geração e entrega de relatórios para RH/Gestão (domínio suporte)\",\n    \"Alerting: Detecção de limiares críticos e notificações automáticas (domínio suporte)\",\n    \"TenantManagement: Onboarding, configuração e hierarquia organizacional das empresas (domínio suporte)\",\n    \"IAM: Identidade, autenticação e controle de acesso por papel (domínio genérico)\",\n    \"Billing: Assinatura, cobrança e gestão de planos (domínio genérico)\",\n    \"Compliance: Auditoria, retenção de dados, LGPD/GDPR e trilha de consentimento (domínio suporte)\"\n  ],\n\n  \"component_evolution\": {\n    \"genesis\": [\n      \"Algoritmos preditivos de risco psicológico coletivo com ML\",\n      \"Motor de recomendação de intervenções organizacionais\",\n      \"Detecção de padrões de burnout em séries temporais anônimas\"\n    ],\n    \"custom_build\": [\n      \"Motor de anonimização com k-anonimato e differential privacy\",\n      \"Pipeline de agregação que preserva privacidade individual\",\n      \"Modelo de scoring de saúde mental organizacional\",\n      \"Templates de relatório configuráveis por setor/porte\"\n    ],\n    \"product\": [\n      \"Engine de surveys e check-ins recorrentes\",\n      \"Dashboard de analytics para RH\",\n      \"Sistema de alertas e limiares configuráveis\",\n      \"Gerenciamento multi-tenant de organizações\"\n    ],\n    \"commodity\": [\n      \"Autenticaçã"
+}

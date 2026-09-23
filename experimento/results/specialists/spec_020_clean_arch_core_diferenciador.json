@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "clean_arch",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 5,
+  "justificativa": "O diferenciador — motor de reputação gamificada acoplado à validação de qualidade de bugs — está presente nas entidades (Tester.reputationScore, Badge.criteria, Challenge.eligibleTiers), mas não foi isolado como um núcleo explícito: está pulverizado em atributos de entidades genéricas, sem um bounded context próprio, sem explicação de por que plataformas como uTest ou Applause não replicam a mesma mecânica, e sem evidência de extensibilidade do mecanismo de scoring para além das regras hardcoded descritas."
+}

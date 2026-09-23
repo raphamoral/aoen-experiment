@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 85,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta descreve exclusivamente arquitetura funcional e técnica (ledger, motor de regras, interfaces, LoyaltyService) sem nenhuma menção a mensuração de custo por tenant, custo por operação/transação, rastreamento de consumo de recursos por cliente ou conexão entre custos e modelo de precificação."
+}

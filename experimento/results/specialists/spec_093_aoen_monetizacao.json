@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 93,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O projeto menciona múltiplas fontes de receita de forma dispersa (comissão sobre transações, planos de destaque para fornecedores, API B2B2B para seguradoras/consultorias e relatório com valor regulatório), demonstrando consciência sobre a natureza bilateral do marketplace, mas nenhuma dessas fontes é desenvolvida com tiers definidos, faixas de preço, análise de custo por cliente, ou métricas de sustentabilidade (MRR, LTV, CAC, churn) — a monetização aparece como justificativa lateral às decisões de interface, não como modelo estruturado."
+}

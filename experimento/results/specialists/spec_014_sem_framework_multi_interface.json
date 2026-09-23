@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 8,
+  "justificativa": "O projeto prevê cinco interfaces bem justificadas por perfis reais de usuário e casos de uso distintos (web para reuniões remotas, mobile para salas físicas, plugins para Zoom/Teams, painel admin para gestores e API para integrações), com a lógica de tradução claramente centralizada no backend e desacoplada das interfaces via WebSockets e API — perde pontos por não explicitar explicitamente a separação de camadas (ex: BFF, contrato de API interno) que garantiria a adição de novas interfaces sem reescrita."
+}

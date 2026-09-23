@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona monitoramento de custo por sensor via tags de billing como fitness function, mas não apresenta estimativas concretas em dólares/reais, não detalha os componentes de infra com seus custos associados, e não possui estratégia explícita de otimização (scale-to-zero, spot instances, storage tiering), ficando muito aquém de uma análise FinOps real."
+}

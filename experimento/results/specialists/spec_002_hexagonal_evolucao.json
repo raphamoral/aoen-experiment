@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura hexagonal (ports & adapters) com interfaces explícitas em todas as bordas (primary e secondary ports) garante substituição independente de componentes e proteção da lógica de negócio contra frameworks externos, mas a ausência de fronteiras explícitas entre os próprios use cases internos (ex: acoplamento entre IMatchingUseCase e IProposalUseCase) e de uma estratégia declarada de evolução de escala (eventos de domínio, CQRS) deixa margem para acoplamento oculto que pode dificultar crescimento além de alguns milhares de usuários sem ajuste arquitetural."
+}

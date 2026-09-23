@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A arquitetura exibe coerência excepcional: cada decisão reforça as demais através de um fio condutor claro — os princípios 12-factor aplicados a SaaS de pricing. Processos stateless justificam o escalonamento horizontal, que justifica backing services como recursos anexáveis, que justifica config via variáveis de ambiente, que justifica a validação fail-fast; imutabilidade dos artifacts sustenta o GitOps, que sustenta o trunk-based development, que sustenta as feature flags no monorepo — o sistema conta uma história arquitetural consistente do primeiro ao último componente. A única fricção menor é a multiplicidade de datastores com responsabilidades parcialmente sobrepostas (PostgreSQL + Redis + Elasticsearch) que, embora justificada individualmente, eleva a complexidade operacional de forma que a proposta não endereça explicitamente."
+}

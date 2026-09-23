@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 7,
+  "justificativa": "A proposta demonstra separação explícita entre fluxo fixo e parâmetros configuráveis (espécies, modalidades) e o service layer centralizado evita lógica duplicada por canal — boa base multi-tenant — mas não descreve o modelo de armazenamento de configuração por tenant (tabela de config? feature flags?), a troca de provedor de IA parece decisão de deploy e não runtime por cliente, e o onboarding zero-código não é comprovado concretamente: falta evidência de que um novo cliente é realmente apenas uma nova row no banco sem toque em código ou infraestrutura."
+}

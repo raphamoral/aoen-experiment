@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 95,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (mobile paciente, web médico, portal clínica, API HIS/EMR, telemedicina assíncrona, dashboard operadora), cada uma com justificativa explícita de segmento de mercado e perfil de usuário, enquanto a Service Layer centralizada garante desacoplamento total da lógica de negócio — permitindo adicionar novas interfaces sem alterar regras clínicas ou de análise."
+}

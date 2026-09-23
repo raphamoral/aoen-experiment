@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 88,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta define seis interfaces distintas (Portal Web do Fornecedor, Portal do Âncora, Dashboard Financeiro, API REST/ERP, WhatsApp/Chatbot e PWA Mobile), cada uma justificada por um perfil de usuário e contexto de uso real — incluindo o segmento de menor digitalização via WhatsApp — com lógica de negócio centralizada em uma SupplyChainFinanceService desacoplada das interfaces via adapters, permitindo adição de novos canais sem reescrever o core."
+}

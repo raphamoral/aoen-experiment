@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "clean_arch",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A arquitetura oferece configuração superficial por tenant (plan, maxUsers, customBranding na Organization; passingScore e maxAttempts no Quiz), permitindo onboarding sem deploy, mas as regras centrais de gamificação — thresholds de XP por nível, lógica de streak, desbloqueio de conteúdo — estão implicitamente hardcoded nas rules das entidades, sem uma entidade TenantConfig ou engine de regras que permita que um cliente configure, por exemplo, multiplicadores de XP, janelas de streak ou critérios de progressão de forma independente."
+}

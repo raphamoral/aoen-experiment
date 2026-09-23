@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 9,
+  "justificativa": "O isolamento é físico e completo: api-server, worker-nfe, worker-email, scheduler e migration-runner são processos separados orquestrados individualmente (ECS/K8s), comunicam-se via filas (SQS/RabbitMQ) de forma assíncrona, e cada tipo escala por sua própria métrica (RPS para API, tamanho da fila para workers) — falta apenas menção explícita a mecanismos de fallback para falhas no processamento pesado (Dead Letter Queue, circuit breaker para o webservice da SEFAZ, política de retry), o que impede nota máxima."
+}

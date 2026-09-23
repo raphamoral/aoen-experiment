@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "clean_arch",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 2,
+  "justificativa": "As regras de negócio estão hardcoded com valores fixos nas entidades (certificação expira em '12 meses', grau mínimo 'A', máximo '20 fotos', rating mínimo '3.0', ANVISA obrigatória) e não há nenhuma entidade de configuração por tenant — onboarding de novo cliente com regras distintas exigiria alteração de código."
+}

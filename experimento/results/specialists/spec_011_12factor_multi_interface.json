@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta expõe apenas um processo de api-server (HTTP/REST + WebSocket) sem mencionar nenhuma interface concreta para usuários finais — não há distinção entre web app, mobile, painel administrativo ou API pública para integradores; embora a arquitetura stateless com API desacoplada permita tecnicamente adicionar interfaces futuras, a ausência de qualquer justificativa de mercado ou mapeamento por perfil de usuário (startup vs. investidor vs. admin) impede nota mais alta."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 23,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta define uma boa separação lógica via adapter pattern (LegalReasoningProvider) e service layer centralizado, o que oferece algum isolamento de responsabilidades no código, mas não há nenhuma menção a processamento assíncrono (filas, message brokers), workers separados, processos físicos independentes, circuit breakers ou fallbacks para falha nas chamadas ao LLM — o pipeline descrito na fase3 é explicitamente sequencial e síncrono, o que significa que uma falha ou lentidão na chamada ao provider de IA (o processo mais pesado e caro do sistema) bloqueia e potencialmente derruba o fluxo inteiro para todos os canais simultaneamente."
+}

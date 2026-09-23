@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta estabelece boas bases de configuração por ambiente (zero hardcode, env vars, secrets externos), mas contradiz a multi-tenancy real ao declarar explicitamente que 'cada espaço parceiro é um deploy' — ou seja, onboarding de novo cliente ainda exige um novo deployment, não apenas uma nova linha no banco; além disso, não há menção a tabelas de configuração por tenant, feature flags por cliente, regras de negócio customizáveis por parceiro (ex: políticas de cancelamento, split de pagamento, branding), nem a um plano de controle (control plane) que separe a camada de configuração de tenant da aplicação em si."
+}

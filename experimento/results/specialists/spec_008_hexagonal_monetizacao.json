@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "hexagonal",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona um BillingPort com cobrança metered por manifesto ou volume, indicando uma intenção de monetização baseada em uso, mas não há definição de tiers, valores, estratégia de precificação, análise de sustentabilidade custo-receita nem métricas de negócio (MRR, LTV, CAC, churn)."
+}

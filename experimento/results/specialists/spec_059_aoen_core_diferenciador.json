@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 59,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O núcleo (motor de orquestração) está claramente identificado, bem isolado via Service Layer e genuinamente extensível pelo padrão de adapters plugáveis — mas a proposta não articula por que esse engine é insubstituível frente a concorrentes já estabelecidos (Rippling, Enboarder, BambooHR) que também oferecem orquestração configurável, faltando evidenciar qual capacidade técnica específica esse motor possui que os demais não conseguem replicar."
+}

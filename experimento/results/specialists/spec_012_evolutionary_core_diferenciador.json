@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 7,
+  "justificativa": "O produto identifica como diferenciador o pipeline de ingestão temporal com garantia de integridade (seq numbers, reconciliação, latência < 5s P99) combinado com auditabilidade regulatória (CONAMA, EPA), mas não isola explicitamente esse núcleo como um componente nomeado e separado — ele está diluído entre características arquiteturais genéricas de SaaS, e a extensibilidade existe no transporte (MQTT/HTTP/CoAP) mas não fica claro se o core de detecção de anomalias e compliance é verdadeiramente agnóstico de fornecedor ou apenas o broker o é."
+}

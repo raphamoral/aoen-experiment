@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "arch_flow",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "O projeto menciona um modelo de billing com planos por instituição e cobrança por volume de certificados emitidos, o que conecta receita ao valor entregue, mas falta detalhamento de tiers específicos, faixas de preço, análise de sustentabilidade (LTV vs CAC) e métricas de negócio como MRR ou churn."
+}

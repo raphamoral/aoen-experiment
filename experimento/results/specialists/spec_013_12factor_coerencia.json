@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A proposta é notavelmente coesa: os 12 fatores permeiam todas as camadas de forma orgânica — processos stateless justificam o Redis para sessões, que justifica a escala horizontal, que justifica o build imutável, que justifica a injeção de config, que justifica o modelo 'cada espaço é um deploy'; cada decisão existe porque as anteriores exigem ela, formando uma cadeia causal sem contradições visíveis — a única ressalva é o trecho de concorrência truncado e as escolhas tecnológicas abertas (RabbitMQ ou SQS, S3 ou R2) que, se não unificadas, podem gerar drift operacional leve."
+}

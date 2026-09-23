@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 1,
+  "justificativa": "O campo de monetização está truncado em 'Comis' (presumivelmente 'Comissão'), sugerindo intenção de um modelo de marketplace com take-rate, mas sem nenhum detalhe sobre percentual cobrado, tiers de planos, valores, análise de sustentabilidade ou métricas de negócio como MRR, LTV ou CAC."
+}

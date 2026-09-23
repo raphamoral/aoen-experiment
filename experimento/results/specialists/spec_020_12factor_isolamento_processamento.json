@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 9,
+  "justificativa": "Processamento pesado (resultados de testes, gamificação, notificações, relatórios) roda em workers independentes consumindo filas assíncronas (SQS/RabbitMQ/Redis), com isolamento físico real via processos separados no Kubernetes escaláveis independentemente por profundidade de fila — perde apenas um ponto pela ausência de menção explícita a fallback/circuit breaker em caso de falha dos workers."
+}

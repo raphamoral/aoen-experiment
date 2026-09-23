@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 5,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador é claramente identificado (motor de geração + orquestração de assinatura multi-parte), isolado via adaptadores abstratos (TemplateEngine e SignatureProvider), extensível a múltiplos fornecedores sem impacto na lógica de negócio, e resolve uma dor real e mensurável — a única ressalva é que o diferenciador ainda depende de provedores externos para assinatura e geração, o que o torna poderoso mas não completamente proprietário."
+}

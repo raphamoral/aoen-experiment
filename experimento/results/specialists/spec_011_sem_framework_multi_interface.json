@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 4,
+  "justificativa": "O projeto lista múltiplas telas/views diferenciadas por papel (startup, investidor, admin), mas todas operam no mesmo canal web via Next.js — não há consideração de contextos reais distintos como mobile nativo (investidores-anjo verificando sugestões em trânsito), API pública (integrações futuras) ou notificações push; a menção ao redirecionamento para WhatsApp é passiva e não arquitetada; e a escolha de 'Next.js para o site inteiro' sinaliza conveniência técnica, não cobertura de mercado, sem qualquer estratégia explícita de desacoplamento da lógica de negócio que permitiria adicionar um novo canal sem reescrita."
+}

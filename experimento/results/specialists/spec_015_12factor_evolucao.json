@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra forte capacidade evolutiva em infraestrutura — backing services intercambiáveis via URL, processos stateless com escala horizontal, feature flags para evolução incremental e rollback instantâneo via releases imutáveis — mas perde pontos por dois gaps críticos: (1) o ciclo de deploy é acoplado entre todos os serviços (mesma tag semântica para o codebase inteiro), impedindo que pricing-engine ou ingestion-api evoluam e sejam promovidos a produção de forma verdadeiramente independente; e (2) a proposta não menciona isolamento explícito da lógica de negócio de frameworks e infraestrutura (ex: Hexagonal/Ports & Adapters), deixando em aberto o risco de que regras de precificação estejam acopladas diretamente ao ORM, Kafka client ou bibliotecas de ML."
+}

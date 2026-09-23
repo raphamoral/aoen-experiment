@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 5,
+  "justificativa": "A proposta menciona implicitamente múltiplas interfaces (dashboard-frontend web, FCM para mobile de técnicos em campo, MQTT para dispositivos IoT e um api-gateway que sugere API consumível), e a arquitetura de serviços desacoplados com gateway favorece a adição de novas interfaces sem reescrita de lógica; porém nenhuma interface é explicitamente justificada por perfil de usuário ou estratégia de mercado, não há menção a app mobile próprio além do canal de push, e o desacoplamento UI/negócio não é declarado como princípio intencional — ficando como consequência estrutural, não como decisão consciente de produto."
+}

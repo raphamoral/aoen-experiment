@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 3,
+  "justificativa": "A arquitetura demonstra consciência multi-tenant (tenantId presente em IBillingPort, IAuditLogPort, IChurnReportUseCase) e prevê controle de uso via checkUsageLimit(tenantId), mas nenhum port ou use case calcula custo real por operação — não há mecanismo para mensurar quanto cada triggerPrediction() consome de ML, storage ou compute por cliente, nem conexão entre consumo por tenant e margem unitária."
+}

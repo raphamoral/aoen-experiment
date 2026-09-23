@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "hexagonal",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador — orquestração de testes colaborativos com sistema de reputação, validação de defeitos e gamificação — está claramente identificado e bem isolado via ports hexagonais, tornando-o independente de fornecedores; perde pontos por não articular explicitamente o mecanismo de deduplicação de bugs e o algoritmo de reputação como ativos proprietários que concretamente impedem a substituição por plataformas como Rainforest QA ou Testbirds."
+}

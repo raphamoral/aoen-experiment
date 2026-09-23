@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 17,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 6,
+  "justificativa": "O núcleo diferenciador (verificação pública de autenticidade via código único + URL compartilhável) está identificado e resolve um problema real, mas a proposta não isola esse componente como camada independente nem articula por que seria insubstituível frente a concorrentes como Credly ou Accredible — a geração de UUID e QR Code são commodities, e falta explicar o que impede um clone de replicar a mesma lógica."
+}

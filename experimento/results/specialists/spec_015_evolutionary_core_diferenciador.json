@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 15,
+  "abordagem": "evolutionary",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "A engine de precificação dinâmica com decisão em <150ms, isolamento multi-tenant, rollback de modelo ML em <1min e algoritmos plugáveis via feature flags constitui um núcleo diferenciador claro e extensível — mas a proposta não explicita por que alternativas existentes (ex: Prisync, Omnia) não resolvem o problema, deixando a singularidade de mercado implícita em vez de demonstrada."
+}

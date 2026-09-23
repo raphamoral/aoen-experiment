@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 97,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta apresenta boas fundações para configurabilidade — adapter pattern para providers de mapa, Service Layer com contratos estáveis e configuração de políticas/incentivos no portal de RH —, mas não descreve um modelo explícito de configuração por tenant (schema, store, resolução em runtime), e o termo 'fluxo fixo' na fase 3 (truncado) levanta dúvida sobre quais parâmetros são variáveis por cliente; onboarding zero-código não é garantido pela arquitetura descrita."
+}

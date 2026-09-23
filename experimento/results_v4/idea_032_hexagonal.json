@@ -1,0 +1,87 @@
+{
+  "ideia_idx": 32,
+  "ideia": "SaaS de análise de sentimento de reviews para hotelaria",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Análise de reputação e sentimento de hóspedes em hotelaria. O core contém as entidades Hotel/Propriedade, Review, Fonte, Análise de Sentimento, Aspecto (limpeza, atendimento, localização, café da manhã, custo-benefício etc.), Tópico, Tendência, Alerta e Tenant/Assinatura. As regras de negócio são: normalização de reviews, deduplicação, classificação de sentimento por aspecto, cálculo de score de reputação (NPS/CSAT sintético), detecção de anomalias e regressões, comparação com concorrentes e limites de plano por tenant.",
+    "primary_ports": [
+      "IngestReviewsUseCase (importar/receber reviews em lote ou individualmente)",
+      "AnalyzeSentimentUseCase (solicitar análise de um review ou lote)",
+      "QueryReputationDashboardUseCase (consultar scores, aspectos e tendências por hotel/período)",
+      "CompareCompetitorsUseCase (benchmark entre propriedades)",
+      "ManageAlertRulesUseCase (configurar e consultar alertas de queda de sentimento)",
+      "GenerateReportUseCase (relatórios periódicos)",
+      "ManageTenantAndPropertiesUseCase (contas, hotéis, usuários, planos)",
+      "ReplyToReviewUseCase (sugerir e aprovar respostas)",
+      "SyncSourceUseCase (disparar sincronização de uma fonte)"
+    ],
+    "secondary_ports": [
+      "ReviewSourcePort (buscar reviews de plataformas externas)",
+      "SentimentAnalyzerPort (classificar sentimento e extrair aspectos)",
+      "TranslationPort / LanguageDetectionPort",
+      "ReviewRepositoryPort",
+      "AnalysisRepositoryPort",
+      "TenantRepositoryPort",
+      "EventPublisherPort (eventos de domínio)",
+      "JobQueuePort (processamento assíncrono)",
+      "NotificationPort (e-mail, Slack, WhatsApp)",
+      "ReportRendererPort (PDF/CSV/XLSX)",
+      "ResponsePublisherPort (publicar resposta na plataforma de origem)",
+      "BillingPort (assinaturas, metering de uso)",
+      "IdentityPort (autenticação e autorização)",
+      "CachePort",
+      "ClockPort / IdGeneratorPort",
+      "ObjectStoragePort (arquivos importados e relatórios)"
+    ],
+    "primary_adapters": [
+      "REST/HTTP API (controllers)",
+      "GraphQL API para o dashboard",
+      "Adaptador Web SPA (dashboard)",
+      "Adaptador de Webhooks de entrada (PMS, plataformas)",
+      "CLI para operação e backfill",
+      "Adaptador de upload CSV/XLSX",
+      "Scheduler/cron (sincronizações e relatórios periódicos)",
+      "Consumidor de fila/eventos",
+      "Adaptador de testes (test driver / BDD) que aciona os mesmos ports",
+      "Bot Slack/Teams para consultas"
+    ],
+    "secondary_adapters": [
+      "Adaptadores de fonte: Booking.com, Expedia, TripAdvisor, Google Business Profile, Airbnb, Decolar, via agregador (ex.: SerpApi, Apify) ou APIs oficiais",
+      "Adaptadores de PMS/CRM: Cloudbeds, Omnibus, Opera, Stays",
+      "Adaptador LLM (Claude via Anthropic API) para sentimento por aspecto, com saída estruturada",
+      "Adaptador de modelo local/fine-tuned (BERTimbau, XLM-R) como fallback ou caminho de baixo custo",
+      "Adaptador de tradução (DeepL/Google Translate)",
+      "PostgreSQL adapter (repositórios), com Row-Level Security por tenant",
+      "ClickHouse/TimescaleDB adapter para séries temporais e agregações",
+      "Redis adapter (cache e rate limiting)",
+      "SQS/RabbitMQ/Kafka adapter (fila e eventos)",
+      "S3-compatible adapter (armazenamento de objetos)",
+      "SES/SendGrid, Slack e Twilio adapters (notificações)",
+      "Stripe/Asaas/Pagar.me adapter (cobrança)",
+      "Auth0/Keycloak/Cognito adapter (identidade)",
+      "In-memory e fake adapters para testes (repositórios, analisador determinístico, fontes gravadas)"
+    ],
+    "isolation": "O core (domínio + casos de uso) fica em um módulo sem dependências de framework, banco, SDK ou HTTP. A regra de dependência aponta sempre para dentro: adapters dependem dos ports, e o core nunca importa adapters. Os ports são interfaces definidas pelo core na linguagem do domínio (por exemplo, SentimentAnalyzerPort.analyze(review): AspectSentiments, e não 'callClaude'). DTOs e schemas externos são traduzidos por mappers (anti-corruption layer) nas bordas, de modo que o core só vê entidades e value objects próprios. A injeção de dependências é feita em um composition root único. Testes de arquitetura (ArchUnit/dependency-cruiser) impedem imports proibidos. Como todos os sistemas externos (LLM, banco, fontes, cobrança) são tratados de forma simétrica atrás de ports, cada um pode ser trocado ou simulado. O core inteiro é testável com adapters in-memory, sem rede nem infraestrutura, e é acionado da mesma forma por UI, API, script ou teste.",
+    "interfaces": [
+      "Dashboard web multi-tenant (visão geral de reputação, aspectos, tendências, comparativo com concorrentes)",
+      "Inbox de reviews com filtros, tags e sugestão de resposta",
+      "API REST pública e webhooks de saída (para integração com PMS e BI)",
+      "Alertas por e-mail, Slack e WhatsApp",
+      "Relatórios agendados em PDF/CSV",
+      "Importação manual por CSV/XLSX",
+      "CLI administrativa",
+      "Integrações com Power BI/Looker via conector ou export",
+      "Portal de configuração de conta, plano e cobrança"
+    ],
+    "escalabilidade": "Ingestão e análise são assíncronas e desacopladas por fila. Workers stateless escalam horizontalmente por profundidade de fila e concorrência por tenant, com rate limit por fonte e por provedor de LLM. A análise é idempotente (hash do review + versão do modelo), o que permite reprocessar e reanalisar em lote com segurança. A API é stateless, atrás de load balancer e com cache Redis em leituras de dashboard. Os dados analíticos ficam em armazenamento colunar ou de séries temporais, com agregações pré-computadas via read models (CQRS leve). O Postgres é particionado por tenant/data, com réplicas de leitura. O isolamento multi-tenant é feito por RLS e chaves de tenant, com opção de banco dedicado para clientes enterprise (redes hoteleiras). Como a arquitetura é hexagonal, o ponto de escala pode ser trocado por adapter (por exemplo, migrar de SQS para Kafka ou de LLM para modelo local) sem tocar no core. Começa como monolito modular e evolui para serviços apenas onde houver gargalo (ingestão, NLP).",
+    "custos": "O maior custo variável é a inferência de NLP/LLM. Mitigações: (1) roteamento em cascata, com modelo local ou pequeno para casos simples e modelo maior só para reviews ambíguos ou longos; (2) batching e prompt caching; (3) cache por hash de conteúdo e deduplicação; (4) análise incremental, sem reprocessar reviews antigos; (5) saída estruturada com prompts enxutos. Segundo custo: coleta de dados, seja por APIs oficiais (mais baratas e estáveis) ou por scraping/agregadores pagos, que trazem risco de ToS e de manutenção. Outros itens: armazenamento (baixo, por ser texto), tradução, notificações e taxas de gateway de pagamento. Infraestrutura: usar serverless ou containers com autoscaling e scale-to-zero para workers. Controlar margem por tenant com metering de tokens/reviews analisados e limites por plano. Custos fixos iniciais são baixos, com monolito modular, um Postgres gerenciado e uma fila.",
+    "monetizacao": "Assinatura SaaS recorrente (mensal/anual) por número de propriedades e volume de reviews analisados, em planos escalonados: Starter (1 hotel, fontes limitadas, dashboard básico), Pro (múltiplas fontes, aspectos, alertas, respostas sugeridas por IA, benchmark de concorrentes) e Enterprise/Redes (multi-propriedade, SSO, SLA, API, BI, banco dedicado, relatórios white-label). Add-ons: monitoramento extra de concorrentes, geração de respostas com IA, relatórios personalizados, consumo de API e reprocessamento histórico. Modelo híbrido com franquia incluída e overage por review adicional. Trial gratuito com análise dos últimos 90 dias de reviews como gancho. Canais de aquisição: parcerias com PMS/channel managers, associações hoteleiras e consultorias de revenue management. Métricas de negócio: MRR, churn, custo de inferência por review e margem bruta por tenant.",
+    "stack_sugerida": "Backend: TypeScript (NestJS com módulos hexagonais) ou Kotlin/Java (Spring), ou Python (FastAPI) no pipeline de NLP. Estrutura de pacotes: domain / application (use cases + ports) / adapters (in, out) / bootstrap. Dados: PostgreSQL (com RLS e pgvector opcional para embeddings e busca semântica) e ClickHouse ou TimescaleDB para agregações. Cache: Redis. Mensageria: SQS+SNS ou RabbitMQ (Kafka apenas se houver alto volume). IA: Claude API (saída estruturada e prompt caching) como principal, com modelo local (BERTimbau/XLM-R via ONNX) para cascata de baixo custo. Frontend: React/Next.js com TanStack Query e Recharts/ECharts. Infra: AWS (ECS Fargate/Lambda, RDS, S3, SQS) ou GCP Cloud Run, com Terraform. Auth: Keycloak/Auth0/Cognito. Cobrança: Stripe (ou Asaas/Pagar.me para o Brasil). Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Qualidade: testes de domínio com adapters in-memory, contract tests por port, testes de arquitetura (dependency-cruiser/ArchUnit), CI/CD com GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:48:50+00:00",
+    "runner": "runner.py"
+  }
+}

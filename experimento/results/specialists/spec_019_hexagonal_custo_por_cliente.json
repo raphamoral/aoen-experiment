@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "hexagonal",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural descreve componentes de infraestrutura (Twilio, SendGrid, Stripe, PostgreSQL, Redis, RabbitMQ) sem nenhuma menção a rastreamento de consumo por tenant, custo por operação/transação ou mecanismo que conecte gasto de recursos ao cliente que o gerou — o IRelatorioService cobre métricas de negócio (ocupação, receita, cancelamentos), não unit economics por cliente."
+}

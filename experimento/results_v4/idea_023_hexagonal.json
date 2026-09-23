@@ -1,0 +1,93 @@
+{
+  "ideia_idx": 23,
+  "ideia": "App de assistente jurídico com IA para pequenos escritórios",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Gestão assistida por IA da prática jurídica de pequenos escritórios: Casos/Processos (Matter), Clientes, Documentos jurídicos (contratos, petições, pareceres), Prazos e Compromissos, Pesquisa jurídica (legislação, jurisprudência), Tarefas, Honorários/Timesheet e Conflito de Interesses. O núcleo contém regras de negócio puras: ciclo de vida do caso, cálculo de prazos processuais (dias úteis, feriados, suspensões), políticas de sigilo profissional e privilégio advogado-cliente, revisão humana obrigatória de saídas da IA (human-in-the-loop), rastreabilidade de fontes/citações e trilha de auditoria. A IA é tratada como capacidade externa (porta), nunca como parte do domínio.",
+    "primary_ports": [
+      "CaseManagementPort (abrir, atualizar, encerrar casos; vincular partes e documentos)",
+      "DocumentDraftingPort (gerar, revisar e versionar minutas com apoio de IA)",
+      "ContractAnalysisPort (extrair cláusulas, riscos e obrigações de contratos)",
+      "LegalResearchPort (consultar legislação e jurisprudência com respostas fundamentadas e citações)",
+      "DeadlineManagementPort (calcular, registrar e acompanhar prazos processuais)",
+      "ClientIntakePort (triagem de novos clientes e verificação de conflito de interesses)",
+      "BillingPort (timesheet, honorários, faturas)",
+      "AssistantConversationPort (chat assistente contextualizado ao caso)",
+      "TenantAdminPort (escritório, usuários, papéis, assinatura/plano)",
+      "AuditQueryPort (consulta à trilha de auditoria e relatórios de conformidade)"
+    ],
+    "secondary_ports": [
+      "LLMPort (geração/resumo/extração; agnóstico de provedor)",
+      "EmbeddingPort e VectorSearchPort (busca semântica sobre acervo do escritório)",
+      "LegalSourcesPort (bases de legislação e jurisprudência, ex.: tribunais, diários oficiais)",
+      "CaseRepositoryPort / ClientRepositoryPort / DocumentRepositoryPort / DeadlineRepositoryPort / BillingRepositoryPort",
+      "DocumentStoragePort (armazenamento de arquivos com criptografia)",
+      "OCRPort e DocumentParserPort (PDF, DOCX, digitalizações)",
+      "CourtIntegrationPort (consulta/monitoramento de andamentos processuais e intimações)",
+      "CalendarPort (sincronização de agenda)",
+      "NotificationPort (e-mail, push, WhatsApp/SMS)",
+      "EmailIngestionPort (importação de e-mails e anexos para o caso)",
+      "ESignaturePort (assinatura eletrônica)",
+      "PaymentGatewayPort (cobrança de assinatura e de honorários)",
+      "IdentityPort / AuthorizationPort (SSO, MFA, RBAC por caso)",
+      "PIIRedactionPort (anonimização antes de enviar dados a serviços externos)",
+      "AuditLogPort (registro imutável)",
+      "ClockPort e IdGeneratorPort (determinismo em testes)",
+      "EventBusPort (eventos de domínio)",
+      "FeatureFlagPort e UsageMeteringPort (limites de plano e consumo de IA)"
+    ],
+    "primary_adapters": [
+      "REST/GraphQL API (BFF) consumida pelo front-end web",
+      "Web app SPA/PWA para advogados e assistentes",
+      "Aplicativo mobile (consulta de prazos, captura de documentos)",
+      "Adaptador de chat (interface conversacional)",
+      "Webhooks de entrada (Stripe, assinatura eletrônica, provedores de e-mail)",
+      "CLI/scripts administrativos e de migração",
+      "Consumidores de fila/eventos (jobs agendados, ex.: varredura diária de prazos)",
+      "Suíte de testes automatizados (unitários, de contrato e E2E) dirigindo o core com adaptadores fake",
+      "Add-ins para Word/Outlook",
+      "API pública/integrações de parceiros (Zapier, ERPs contábeis)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (repositórios) com isolamento multi-tenant por Row-Level Security",
+      "pgvector ou Qdrant (VectorSearchPort)",
+      "Adaptadores LLM: Anthropic Claude, OpenAI, modelo open-source self-hosted (intercambiáveis por política de tenant)",
+      "S3/GCS/Azure Blob com criptografia por tenant via KMS (DocumentStoragePort)",
+      "Tesseract / AWS Textract / Google Document AI (OCR)",
+      "Adaptadores de tribunais e diários oficiais (APIs oficiais, PJe/e-SAJ, scrapers com contrato de teste)",
+      "Google Calendar / Microsoft Outlook Calendar",
+      "SendGrid/SES, Twilio, WhatsApp Business API",
+      "DocuSign / Clicksign / D4Sign",
+      "Stripe / Pagar.me / Asaas",
+      "Auth0 / Keycloak / Cognito (Identity)",
+      "Presidio ou serviço próprio de redação de PII",
+      "Log de auditoria append-only (tabela WORM, S3 Object Lock ou ledger)",
+      "Kafka / SQS / RabbitMQ (EventBus)",
+      "Adaptadores In-Memory/Fake/Stub de todas as portas para testes e demos",
+      "LaunchDarkly/Unleash e Redis (feature flags e medição de uso)"
+    ],
+    "isolation": "O core (domínio + casos de uso/application services) é uma biblioteca sem dependências de frameworks, SDKs, banco ou HTTP. Toda comunicação passa por portas definidas em termos da linguagem do domínio (ex.: LLMPort.draft(context, instruction) e não chamadas específicas de um provedor). A regra de dependência aponta sempre para dentro: adaptadores dependem do core, nunca o contrário. A injeção de dependências é feita na composition root, fora do core. DTOs e mapeadores ficam nos adaptadores; o core só trabalha com entidades e value objects. Prompts, políticas de redação de PII, verificação de citações e revisão humana obrigatória são regras do domínio, aplicadas antes e depois de qualquer chamada à IA, de modo que trocar o provedor de LLM não altera as garantias de sigilo. O mesmo tratamento simétrico vale para todos os sistemas externos (banco, tribunais, pagamentos, e-mail), cada um atrás de sua porta. Testes de contrato garantem que cada adaptador respeite a porta, e o core é testado com adaptadores in-memory sem infraestrutura. Regras de arquitetura automatizadas (ArchUnit/dependency-cruiser) quebram o build se houver violação da direção de dependências.",
+    "interfaces": [
+      "Web app responsivo (dashboard de casos, prazos, editor de minutas com sugestões da IA)",
+      "Aplicativo mobile/PWA",
+      "Chat assistente contextual por caso com citações clicáveis das fontes",
+      "API REST/GraphQL pública documentada (OpenAPI) com autenticação OAuth2 e chaves por tenant",
+      "Webhooks de saída (eventos de prazo, documento assinado, fatura)",
+      "Add-ins Word/Outlook",
+      "Portal do cliente (acompanhamento do caso, upload de documentos, assinatura, pagamento)",
+      "Painel administrativo (usuários, papéis, plano, consumo de IA, auditoria)",
+      "CLI para automação e importação de dados",
+      "Notificações por e-mail/WhatsApp/push"
+    ],
+    "escalabilidade": "Monólito modular hexagonal no início (bounded contexts: Casos, Documentos, Prazos, Pesquisa IA, Faturamento, Tenancy), com possibilidade de extrair contextos em serviços sem reescrever o core, já que a fronteira são as portas. Aplicação stateless com escala horizontal atrás de load balancer. Operações pesadas e lentas (OCR, embeddings, análise de contratos, chamadas a LLM, sincronização com tribunais) assíncronas via filas e workers com escala independente, retentativas idempotentes, circuit breakers e fallback entre provedores de LLM. Streaming de respostas para UX. Banco com read replicas, particionamento por tenant e índices vetoriais segmentados por tenant; migração de tenants grandes para bancos ou schemas dedicados. Cache (Redis) para consultas de legislação e resultados de pesquisa. Rate limiting e cotas por tenant para proteger o custo e a estabilidade. Observabilidade (OpenTelemetry, métricas de latência/custo por caso de uso) e implantação multi-região para residência de dados (LGPD/GDPR).",
+    "custos": "O maior custo variável é o consumo de tokens de LLM: mitigar com roteamento de modelos (modelo pequeno para classificação/extração, modelo grande para redação e raciocínio), prompt caching, resumos incrementais, RAG com chunks enxutos, cache semântico e limites/cotas por plano. Outros custos: OCR por página, armazenamento de documentos (camadas frias para casos arquivados), embeddings (gerar uma vez e reindexar só quando o conteúdo muda), acesso a bases jurídicas pagas e integrações com tribunais, mensageria (WhatsApp cobra por conversa), gateway de pagamento (% por transação), e-signature por envelope. Custos fixos: infraestrutura cloud gerenciada, observabilidade, segurança/compliance (auditorias, pentest, SOC 2/ISO 27001), seguro cibernético e suporte. Como a arquitetura é hexagonal, é possível trocar adaptadores por opções mais baratas ou self-hosted conforme o volume cresce. Medição de uso por tenant (UsageMeteringPort) permite calcular margem por cliente e evitar prejuízo em clientes de alto consumo.",
+    "monetizacao": "Assinatura SaaS por assento (advogado/mês) em planos escalonados: Essencial (gestão de casos, prazos e documentos, com IA limitada), Profissional (IA ampliada para redação, análise de contratos e pesquisa, integrações com tribunais e agenda) e Escritório+ (múltiplos usuários, portal do cliente, API, SSO, auditoria avançada, suporte prioritário). Cota mensal de créditos de IA incluída, com pacotes adicionais pay-as-you-go. Add-ons pagos: monitoramento de tribunais/intimações, assinatura eletrônica, portal do cliente com marca própria, armazenamento extra. Trial gratuito de 14 dias com limite de IA e desconto anual. Receita secundária com marketplace de modelos/minutas jurídicas, integrações premium e, opcionalmente, taxa sobre pagamentos de honorários processados pela plataforma. Parcerias com associações de advocacia (OAB e seccionais) e programas de indicação.",
+    "stack_sugerida": "Backend: TypeScript com NestJS (módulos organizados em domain/application/adapters) ou Kotlin/Spring Boot ou Java com ArchUnit; alternativa Python/FastAPI para workers de IA. Frontend: React + Next.js com TanStack Query, editor rico TipTap/ProseMirror para minutas, PWA. Dados: PostgreSQL com RLS e pgvector, Redis, S3 com KMS. Mensageria/jobs: SQS ou Kafka e BullMQ/Temporal para workflows duráveis (ex.: monitoramento de prazos). IA: camada de orquestração própria atrás de LLMPort (Claude, OpenAI, open-source via vLLM), RAG com reranking, avaliação contínua de qualidade (evals) e guardrails de citação. Identidade: Keycloak/Auth0 com MFA. Infra: AWS ou GCP com Terraform, contêineres em ECS/Kubernetes, CI/CD com GitHub Actions, testes de contrato e ArchUnit/dependency-cruiser. Observabilidade: OpenTelemetry, Grafana/Prometheus, Sentry. Segurança/compliance: criptografia em repouso e em trânsito, KMS por tenant, logs de auditoria imutáveis, LGPD/GDPR, política de retenção e confidencialidade advogado-cliente."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T02:31:31+00:00",
+    "runner": "runner.py"
+  }
+}

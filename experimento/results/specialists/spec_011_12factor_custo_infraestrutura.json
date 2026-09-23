@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 5,
+  "justificativa": "A proposta lista componentes de infraestrutura com escolhas técnicas claras (RDS, ElastiCache, SQS, S3, ECS Fargate, etc.), mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia explícita de otimização de custos (spot instances, scale-to-zero, reserved instances, tiers de armazenamento S3) e nenhuma projeção de como os custos escalam com o crescimento da base de usuários."
+}

@@ -1,0 +1,567 @@
+{
+  "ideia_idx": 16,
+  "ideia": "App de logística reversa para devoluções de e-commerce",
+  "abordagem": "clean_arch",
+  "response": {
+    "entities": {
+      "description": "Objetos de negócio com regras críticas e independentes de qualquer framework",
+      "list": [
+        {
+          "name": "ReturnRequest",
+          "attributes": [
+            "id",
+            "orderId",
+            "customerId",
+            "reason",
+            "status",
+            "createdAt",
+            "updatedAt"
+          ],
+          "business_rules": [
+            "Devolução só pode ser solicitada dentro do prazo",
+            "Status segue máquina de estados definida",
+            "Motivo deve ser categorizado"
+          ]
+        },
+        {
+          "name": "Order",
+          "attributes": [
+            "id",
+            "items",
+            "merchantId",
+            "purchaseDate",
+            "returnDeadline"
+          ],
+          "business_rules": [
+            "returnDeadline calculado com base na política do merchant",
+            "Apenas itens elegíveis podem ser devolvidos"
+          ]
+        },
+        {
+          "name": "ReturnItem",
+          "attributes": [
+            "id",
+            "productId",
+            "quantity",
+            "condition",
+            "returnRequestId"
+          ],
+          "business_rules": [
+            "Condição determina elegibilidade para reembolso",
+            "Quantidade não pode exceder a originalmente comprada"
+          ]
+        },
+        {
+          "name": "Customer",
+          "attributes": [
+            "id",
+            "name",
+            "email",
+            "address",
+            "returnHistory"
+          ],
+          "business_rules": [
+            "Histórico de devoluções pode afetar elegibilidade futura",
+            "Endereço de coleta pode diferir do endereço de entrega"
+          ]
+        },
+        {
+          "name": "Merchant",
+          "attributes": [
+            "id",
+            "name",
+            "returnPolicy",
+            "warehouseAddress",
+            "refundRules"
+          ],
+          "business_rules": [
+            "Política de devolução define prazos e condições",
+            "Regras de reembolso variam por merchant"
+          ]
+        },
+        {
+          "name": "Shipment",
+          "attributes": [
+            "id",
+            "returnRequestId",
+            "carrierId",
+            "trackingCode",
+            "status",
+            "scheduledDate"
+          ],
+          "business_rules": [
+            "Coleta só agendada após aprovação da devolução",
+            "Rastreamento atualizado por eventos externos"
+          ]
+        },
+        {
+          "name": "Refund",
+          "attributes": [
+            "id",
+            "returnRequestId",
+            "amount",
+            "method",
+            "status",
+            "processedAt"
+          ],
+          "business_rules": [
+            "Reembolso liberado apenas após inspeção do item",
+            "Valor pode ser parcial baseado na condição do item"
+          ]
+        },
+        {
+          "name": "ReturnPolicy",
+          "attributes": [
+            "id",
+            "merchantId",
+            "maxDaysToReturn",
+            "eligibleConditions",
+            "refundMethods"
+          ],
+          "business_rules": [
+            "Política por merchant é soberana sobre política padrão",
+            "Condições inelegíveis bloqueiam abertura de solicitação"
+          ]
+        }
+      ]
+    },
+    "use_cases": {
+      "description": "Regras de negócio específicas da aplicação — orquestram o fluxo entre entidades",
+      "list": [
+        {
+          "name": "RequestReturn",
+          "input": "customerId, orderId, items[], reason",
+          "output": "ReturnRequest criada ou erro de validação",
+          "steps": [
+            "Verificar elegibilidade do pedido",
+            "Validar política do merchant",
+            "Criar entidade ReturnRequest",
+            "Notificar merchant",
+            "Emitir evento ReturnRequested"
+          ]
+        },
+        {
+          "name": "ApproveReturn",
+          "input": "returnRequestId, merchantId",
+          "output": "ReturnRequest com status aprovado",
+          "steps": [
+            "Verificar autoridade do merchant",
+            "Validar estado atual da solicitação",
+            "Atualizar status para APPROVED",
+            "Acionar agendamento de coleta"
+          ]
+        },
+        {
+          "name": "RejectReturn",
+          "input": "returnRequestId, merchantId, rejectionReason",
+          "output": "ReturnRequest com status rejeitado",
+          "steps": [
+            "Verificar autoridade do merchant",
+            "Registrar motivo da rejeição",
+            "Notificar customer"
+          ]
+        },
+        {
+          "name": "SchedulePickup",
+          "input": "returnRequestId, preferredDate",
+          "output": "Shipment criado com código de rastreamento",
+          "steps": [
+            "Selecionar transportadora via política de menor custo",
+            "Criar Shipment",
+            "Gerar etiqueta de envio",
+            "Notificar customer com instruções"
+          ]
+        },
+        {
+          "name": "ReceiveItem",
+          "input": "shipmentId, receivedItems[], inspectionNotes",
+          "output": "ReturnRequest atualizada para RECEIVED",
+          "steps": [
+            "Confirmar recebimento no warehouse",
+            "Registrar condição real dos itens",
+            "Acionar processo de inspeção"
+          ]
+        },
+        {
+          "name": "InspectItem",
+          "input": "returnRequestId, inspectionResult",
+          "output": "Resultado da inspeção e elegibilidade de reembolso",
+          "steps": [
+            "Comparar condição declarada com condição recebida",
+            "Aplicar regras de reembolso do merchant",
+            "Determinar valor do reembolso"
+          ]
+        },
+        {
+          "name": "ProcessRefund",
+          "input": "returnRequestId, refundAmount, refundMethod",
+          "output": "Refund processado",
+          "steps": [
+            "Validar aprovação de inspeção",
+            "Criar entidade Refund",
+            "Enviar para gateway de pagamento via porta",
+            "Atualizar status do ReturnRequest para COMPLETED"
+          ]
+        },
+        {
+          "name": "TrackShipment",
+          "input": "trackingCode",
+          "output": "Status atual do envio",
+          "steps": [
+            "Consultar transportadora via porta",
+            "Atualizar status do Shipment",
+            "Emitir evento se status crítico"
+          ]
+        },
+        {
+          "name": "GenerateReturnLabel",
+          "input": "shipmentId",
+          "output": "URL ou binário da etiqueta",
+          "steps": [
+            "Buscar dados do Shipment",
+            "Solicitar geração de etiqueta via porta de transportadora"
+          ]
+        },
+        {
+          "name": "GetReturnDashboard",
+          "input": "merchantId, filters",
+          "output": "Métricas agregadas de devoluções",
+          "steps": [
+            "Buscar solicitações por merchant",
+            "Calcular KPIs: taxa de devolução, tempo médio, motivos frequentes"
+          ]
+        },
+        {
+          "name": "CancelReturn",
+          "input": "returnRequestId, requestedBy",
+          "output": "ReturnRequest cancelada",
+          "steps": [
+            "Verificar se cancelamento é permitido no estado atual",
+            "Cancelar Shipment se existir",
+            "Notificar partes envolvidas"
+          ]
+        }
+      ]
+    },
+    "interface_adapters": {
+      "description": "Convertem dados entre os formatos dos casos de uso e dos frameworks externos",
+      "controllers": [
+        {
+          "name": "ReturnRequestController",
+          "responsibility": "Recebe requisições HTTP REST/GraphQL e converte para input de use cases",
+          "routes": [
+            "POST /returns",
+            "GET /returns/:id",
+            "PATCH /returns/:id/approve",
+            "PATCH /returns/:id/reject",
+            "DELETE /returns/:id"
+          ]
+        },
+        {
+          "name": "ShipmentController",
+          "responsibility": "Gerencia endpoints de envio e rastreamento",
+          "routes": [
+            "POST /shipments/schedule",
+            "GET /shipments/:trackingCode",
+            "GET /shipments/:id/label"
+          ]
+        },
+        {
+          "name": "RefundController",
+          "responsibility": "Gerencia endpoints de reembolso",
+          "routes": [
+            "POST /refunds",
+            "GET /refunds/:id"
+          ]
+        },
+        {
+          "name": "WebhookController",
+          "responsibility": "Recebe eventos externos de transportadoras e gateways de pagamento",
+          "routes": [
+            "POST /webhooks/carrier",
+            "POST /webhooks/payment"
+          ]
+        },
+        {
+          "name": "MerchantDashboardController",
+          "responsibility": "Endpoints de analytics e configuração para merchants",
+          "routes": [
+            "GET /merchants/:id/dashboard",
+            "GET /merchants/:id/policies",
+            "PUT /merchants/:id/policies"
+          ]
+        }
+      ],
+      "presenters": [
+        {
+          "name": "ReturnRequestPresenter",
+          "responsibility": "Transforma entidades ReturnRequest em DTOs para resposta da API"
+        },
+        {
+          "name": "ShipmentPresenter",
+          "responsibility": "Formata dados de envio para consumo do frontend"
+        },
+        {
+          "name": "DashboardPresenter",
+          "responsibility": "Agrega e formata métricas para visualização"
+        }
+      ],
+      "gateways": [
+        {
+          "name": "ReturnRequestRepository",
+          "type": "interface",
+          "responsibility": "Porta para persistência — implementada na camada de frameworks"
+        },
+        {
+          "name": "ShipmentRepository",
+          "type": "interface",
+          "responsibility": "Porta para persistência de envios"
+        },
+        {
+          "name": "CarrierGateway",
+          "type": "interface",
+          "responsibility": "Porta para integração com transportadoras"
+        },
+        {
+          "name": "PaymentGateway",
+          "type": "interface",
+          "responsibility": "Porta para processamento de reembolsos"
+        },
+        {
+          "name": "NotificationGateway",
+          "type": "interface",
+          "responsibility": "Porta para envio de e-mails/SMS/push"
+        },
+        {
+          "name": "StorageGateway",
+          "type": "interface",
+          "responsibility": "Porta para armazenamento de etiquetas e fotos de inspeção"
+        }
+      ]
+    },
+    "frameworks_drivers": {
+      "description": "Camada mais externa — detalhes de implementação substituíveis sem afetar regras de negócio",
+      "web_framework": {
+        "name": "NestJS (Node.js)",
+        "justification": "Arquitetura modular, suporte nativo a DI, decorators para controllers — fácil mapeamento para Clean Architecture"
+      },
+      "databases": [
+        {
+          "name": "PostgreSQL",
+          "use": "Dados relacionais: pedidos, clientes, merchants, devoluções",
+          "orm": "Prisma ou TypeORM — implementam as interfaces Repository"
+        },
+        {
+          "name": "Redis",
+          "use": "Cache de sessões, rate limiting, filas de background jobs"
+        }
+      ],
+      "message_broker": {
+        "name": "RabbitMQ ou AWS SQS",
+        "use": "Processamento assíncrono: agendamento de coletas, notificações, webhooks de transportadoras"
+      },
+      "carrier_integrations": [
+        "Correios (API SIGEP)",
+        "Jadlog",
+        "Total Express",
+        "Melhor Envio (agregador)"
+      ],
+      "payment_integrations": [
+        "Stripe (reembolso internacional)",
+        "PagSeguro / Mercado Pago (Brasil)",
+        "Adyen (enterprise)"
+      ],
+      "notification_services": [
+        "SendGrid (e-mail)",
+        "Twilio (SMS)",
+        "Firebase Cloud Messaging (push)"
+      ],
+      "storage": {
+        "name": "AWS S3 ou Cloudflare R2",
+        "use": "Etiquetas PDF, fotos de inspeção, documentos de devolução"
+      },
+      "infrastructure": {
+        "container": "Docker + Kubernetes",
+        "cloud": "AWS (EKS, RDS, ElastiCache, SQS, S3)",
+        "ci_cd": "GitHub Actions",
+        "monitoring": "Datadog ou New Relic + Sentry"
+      }
+    },
+    "dependency_rule": {
+      "description": "Implementação estrita da Dependency Rule de Uncle Bob",
+      "rules": [
+        "Entities não importam nada — são POJOs/Value Objects puros em TypeScript",
+        "Use Cases importam apenas Entities e interfaces de ports — NUNCA classes concretas de infraestrutura",
+        "Interface Adapters importam Use Cases e Entities — nunca frameworks diretamente nos casos de uso",
+        "Frameworks & Drivers implementam as interfaces definidas nos Use Cases via Inversion of Control",
+        "Injeção de dependência (DI Container do NestJS) resolve as implementações concretas em runtime"
+      ],
+      "example": {
+        "use_case": "ProcessRefund usa interface PaymentGateway — não sabe se é Stripe, PagSeguro ou mock",
+        "adapter": "StripePaymentGatewayAdapter implementa PaymentGateway e conhece SDK do Stripe",
+        "binding": "NestJS DI injeta StripePaymentGatewayAdapter onde PaymentGateway é requisitado"
+      },
+      "forbidden": [
+        "Use Cases NÃO importam Express, Prisma, Stripe SDK diretamente",
+        "Entities NÃO contêm decorators de ORM (@Entity, @Column)",
+        "Controllers NÃO contêm lógica de negócio",
+        "Repositórios NÃO contêm regras de negócio"
+      ]
+    },
+    "testability": {
+      "description": "Cada camada é testável de forma completamente isolada",
+      "unit_tests": {
+        "scope": "Entities e Use Cases",
+        "approach": "Todas as dependências externas (banco, APIs) são substituídas por mocks/stubs das interfaces",
+        "example": "ProcessRefund testado com InMemoryRefundRepository e FakePaymentGateway — zero I/O",
+        "coverage_target": "100% nas Entities, >90% nos Use Cases"
+      },
+      "integration_tests": {
+        "scope": "Interface Adapters (repositories, gateways)",
+        "approach": "Testam implementações concretas contra serviços reais em containers Docker (Testcontainers)",
+        "example": "PostgresReturnRequestRepository testado contra instância real do PostgreSQL em container"
+      },
+      "e2e_tests": {
+        "scope": "Controllers HTTP + fluxo completo",
+        "approach": "Supertest + banco em memória (SQLite) ou environment de staging",
+        "example": "POST /returns → approve → schedule pickup → receive → refund — fluxo completo"
+      },
+      "contract_tests": {
+        "scope": "Integrações externas (transportadoras, pagamentos)",
+        "approach": "Pact.io para garantir contratos entre producer/consumer sem chamar APIs reais nos testes"
+      },
+      "test_doubles": {
+        "InMemoryReturnRequestRepository": "Implementa interface com Map em memória",
+        "FakeCarrierGateway": "Retorna dados estáticos de rastreamento",
+        "FakePaymentGateway": "Simula aprovação/rejeição de reembolso",
+        "FakeNotificationGateway": "Captura notificações para asserção nos testes"
+      }
+    },
+    "interfaces": [
+      "IReturnRequestRepository — CRUD de solicitações de devolução",
+      "IShipmentRepository — CRUD de envios",
+      "IOrderRepository — Consulta de pedidos (read-only na camada de devolução)",
+      "IMerchantRepository — Consulta e atualização de merchants e políticas",
+      "ICustomerRepository — Consulta de clientes",
+      "ICarrierGateway — agendarColeta(), gerarEtiqueta(), rastrear(), cancelarColeta()",
+      "IPaymentGateway — processarReembolso(), consultarStatus(), estornar()",
+      "INotificationGateway — enviarEmail(), enviarSMS(), enviarPush()",
+      "IStorageGateway — upload(), getSignedUrl(), delete()",
+      "IEventPublisher — publish(event: DomainEvent) para eventos de domínio",
+      "IReturnPolicyEvaluator — avaliarElegibilidade(order, policy): EligibilityResult",
+      "IRefundCalculator — calcularValor(items, condition, policy): Money"
+    ],
+    "escalabilidade": {
+      "horizontal": {
+        "strategy": "Stateless services escalam horizontalmente via Kubernetes HPA",
+        "session": "Estado de sessão externalizando em Redis — sem sticky sessions",
+        "database": "Read replicas no PostgreSQL para queries analíticas, write para transações"
+      },
+      "vertical": {
+        "strategy": "Separação por domínio permite extrair microserviços independentes",
+        "candidates": [
+          "ReturnService",
+          "ShipmentService",
+          "RefundService",
+          "NotificationService",
+          "AnalyticsService"
+        ]
+      },
+      "async": {
+        "strategy": "Operações pesadas (notificações, integrações com transportadoras) via filas assíncronas",
+        "pattern": "CQRS leve: commands via fila, queries direto no banco com cache Redis"
+      },
+      "multi_tenancy": {
+        "strategy": "Schema-per-tenant no PostgreSQL para isolamento de dados por merchant",
+        "alternative": "Row-level security com tenant_id para menor overhead operacional"
+      },
+      "cache": {
+        "strategy": "Cache de políticas de merchant e dados de transportadoras com TTL configurável",
+        "tool": "Redis com cache-aside pattern"
+      }
+    },
+    "custos": {
+      "infrastructure": {
+        "low_scale": "~$300-800/mês (EKS t3.medium x2, RDS db.t3.small, Redis t3.micro, S3)",
+        "medium_scale": "~$2.000-5.000/mês com auto-scaling e read replicas",
+        "high_scale": "Negociação de reserved instances pode reduzir 40-60% vs on-demand"
+      },
+      "integrations": {
+        "carrier_apis": "Geralmente gratuitas para integração; custo por envio pago pelo merchant",
+        "payment_gateway": "Stripe: 0,25% + $0,10 por reembolso; PagSeguro: taxas variáveis",
+        "notifications": "SendGrid: free até 100/dia, ~$20/mês para 50k emails; Twilio: ~$0,0075/SMS"
+      },
+      "optimization": [
+        "Uso de Spot Instances para workers de processamento assíncrono (70% de desconto)",
+        "Cloudflare R2 ao invés de S3 para evitar egress fees",
+        "Cache agressivo para reduzir consultas ao banco e chamadas a APIs externas",
+        "Compressão de logs e retenção por política para reduzir storage"
+      ],
+      "variable_costs": "Custo de transportadora e gateway de pagamento é repassado ao merchant — não impacta margem SaaS"
+    },
+    "monetizacao": {
+      "primary_model": "SaaS B2B com planos por volume de devoluções processadas",
+      "plans": [
+        {
+          "name": "Starter",
+          "price": "R$ 299/mês",
+          "limit": "até 100 devoluções/mês",
+          "target": "pequenos e-commerces"
+        },
+        {
+          "name": "Growth",
+          "price": "R$ 899/mês",
+          "limit": "até 500 devoluções/mês",
+          "target": "e-commerces médios"
+        },
+        {
+          "name": "Scale",
+          "price": "R$ 2.499/mês",
+          "limit": "até 2.000 devoluções/mês",
+          "target": "e-commerces grandes"
+        },
+        {
+          "name": "Enterprise",
+          "price": "Negociação customizada",
+          "limit": "volume ilimitado + SLA garantido",
+          "target": "grandes retailers e marketplaces"
+        }
+      ],
+      "secondary_revenue": [
+        "Taxa por devolução excedente (overage): R$ 2,50-4,00 por devolução acima do plano",
+        "Integração White-label para plataformas de e-commerce (VTEX, Shopify, LGPD compliance)",
+        "Revenue share com transportadoras parceiras por volume gerado",
+        "Add-on Analytics Premium: insights avançados de tendências de devolução (R$ 199/mês)"
+      ],
+      "unit_economics": {
+        "cac_target": "R$ 800-1.500 via inbound + parcerias com plataformas de e-commerce",
+        "ltv_target": "18-36 meses de retenção por alta integração operacional",
+        "gross_margin_target": "75-85% após custos de infraestrutura"
+      }
+    },
+    "stack_sugerida": {
+      "language": "TypeScript (Node.js 20 LTS)",
+      "backend_framework": "NestJS 10+",
+      "database_primary": "PostgreSQL 15 via Prisma ORM",
+      "database_cache": "Redis 7 (ioredis)",
+      "message_queue": "AWS SQS + BullMQ para jobs recorrentes",
+      "api_style": "REST principal + GraphQL para dashboard analytics",
+      "api_docs": "OpenAPI 3.1 via @nestjs/swagger",
+      "auth": "JWT + OAuth2 (Auth0 ou Keycloak para enterprise SSO)",
+      "frontend_merchant_portal": "Next.js 14 (App Router) + Tailwind CSS + shadcn/ui",
+      "frontend_customer_portal": "React 18 + Vite (widget embeddável no e-commerce do merchant)",
+      "mobile_optional": "React Native para app de coleta dos entregadores",
+      "testing": "Jest (unit/integration) + Supertest (e2e) + Testcontainers + Pact.io",
+      "observability": "OpenTelemetry + Datadog (traces, metrics, logs)",
+      "infrastructure": "Docker + Kubernetes (EKS) + Helm + ArgoCD",
+      "ci_cd": "GitHub Actions + SonarQube + Snyk (security scan)",
+      "storage": "Cloudflare R2 (S3-compatible, sem egress fees)",
+      "email": "SendGrid via @sendgrid/mail",
+      "sms": "Twilio via twilio SDK",
+      "carrier_aggregator": "Melhor Envio SDK + integrações diretas Correios/Jadlog",
+      "payment": "Stripe SDK + PagSeguro REST API",
+      "feature_flags": "LaunchDarkly ou OpenFeature para rollout gradual"
+    }
+  },
+  "raw": "```json\n{\n  \"entities\": {\n    \"description\": \"Objetos de negócio com regras críticas e independentes de qualquer framework\",\n    \"list\": [\n      {\n        \"name\": \"ReturnRequest\",\n        \"attributes\": [\"id\", \"orderId\", \"customerId\", \"reason\", \"status\", \"createdAt\", \"updatedAt\"],\n        \"business_rules\": [\"Devolução só pode ser solicitada dentro do prazo\", \"Status segue máquina de estados definida\", \"Motivo deve ser categorizado\"]\n      },\n      {\n        \"name\": \"Order\",\n        \"attributes\": [\"id\", \"items\", \"merchantId\", \"purchaseDate\", \"returnDeadline\"],\n        \"business_rules\": [\"returnDeadline calculado com base na política do merchant\", \"Apenas itens elegíveis podem ser devolvidos\"]\n      },\n      {\n        \"name\": \"ReturnItem\",\n        \"attributes\": [\"id\", \"productId\", \"quantity\", \"condition\", \"returnRequestId\"],\n        \"business_rules\": [\"Condição determina elegibilidade para reembolso\", \"Quantidade não pode exceder a originalmente comprada\"]\n      },\n      {\n        \"name\": \"Customer\",\n        \"attributes\": [\"id\", \"name\", \"email\", \"address\", \"returnHistory\"],\n        \"business_rules\": [\"Histórico de devoluções pode afetar elegibilidade futura\", \"Endereço de coleta pode diferir do endereço de entrega\"]\n      },\n      {\n        \"name\": \"Merchant\",\n        \"attributes\": [\"id\", \"name\", \"returnPolicy\", \"warehouseAddress\", \"refundRules\"],\n        \"business_rules\": [\"Política de devolução define prazos e condições\", \"Regras de reembolso variam por merchant\"]\n      },\n      {\n        \"name\": \"Shipment\",\n        \"attributes\": [\"id\", \"returnRequestId\", \"carrierId\", \"trackingCode\", \"status\", \"scheduledDate\"],\n        \"business_rules\": [\"Coleta só agendada após aprovação da devolução\", \"Rastreamento atualizado por eventos externos\"]\n      },\n      {\n        \"name\": \"Refund\",\n        \"attributes\": [\"id\", \"returnRequestId\", \"amount\", \"method\", \"status\", \"processedAt\"],\n        \"business_rules\": [\"Reembolso liberado apenas após inspeção do item\", \"Valor pode ser parcia"
+}

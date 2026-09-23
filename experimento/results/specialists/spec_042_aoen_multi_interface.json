@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 42,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto prevê cinco interfaces distintas (Dashboard Web, API REST/GraphQL, exportação PDF/XBRL/Excel, Portal do Auditor e notificações E-mail/Slack), cada uma justificada por um perfil de usuário e caso de uso real de mercado, com a lógica de negócio centralizada na ESGReportService e completamente desacoplada das camadas de interface, permitindo adição de novos canais sem reescrita do core."
+}

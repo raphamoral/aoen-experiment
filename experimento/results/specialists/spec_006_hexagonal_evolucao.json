@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "hexagonal",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 9,
+  "justificativa": "A arquitetura hexagonal (Ports & Adapters) está corretamente aplicada — o core de biomarcadores/nutrição não depende de nenhum framework externo, todas as dependências externas estão invertidas por interfaces (ILabResultParser, IAIAnalysisEngine, IPatientRepository etc.), a decisão de IA é explicitamente reversível com dois adapters intercambiáveis (OpenAIAdapter e AnthropicAdapter para o mesmo IAIAnalysisEngine), e componentes de infraestrutura podem ser trocados de forma independente (ex: substituir PostgreSQL, migrar de S3, trocar gateway de pagamento) sem tocar no domínio — a nota não chega a 10 porque a descrição de isolamento do core está truncada (impossibilitando avaliar a estratégia de versionamento dos ports) e a proliferação de 13 adapters secundários sem menção a estratégia de compatibilidade de contrato (contract testing, API versioning) representa um risco latente de acoplamento implícito à medida que o sistema escala."
+}

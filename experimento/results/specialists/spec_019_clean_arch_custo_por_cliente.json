@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "clean_arch",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A arquitetura não prevê nenhuma mensuração de custo por cliente/tenant — não há atributos de metering nas entidades, nenhum use case de rastreamento de consumo por clínica, nenhum cálculo de custo por operação (ex: envio de Reminder, análise de slot), e nenhuma conexão entre consumo de recursos e o modelo de precificação; os custos de infraestrutura simplesmente não são considerados na modelagem."
+}

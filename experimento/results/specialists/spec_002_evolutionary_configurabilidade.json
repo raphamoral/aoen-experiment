@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta menciona feature flags e adapter patterns (pagamentos, notificações), indicando alguma consciência de configurabilidade, mas não descreve nenhum mecanismo explícito de configuração por tenant — ausente um config store, rule engine ou modelo de dados que governe comportamento por cliente; a multi-tenancy é tratada apenas como decisão estrutural de schema, não como sistema de configuração capaz de onboarding zero-código, o que é crítico num domínio regulatório onde cada cliente pode ter jurisdições, perfis de compliance e fluxos de aprovação distintos."
+}

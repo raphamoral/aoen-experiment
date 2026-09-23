@@ -1,0 +1,61 @@
+{
+  "ideia_idx": 87,
+  "ideia": "App de gestão de quadras esportivas com reserva e pagamento integrado",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Evolvability (mudança incremental segura como característica primária)",
+      "Consistência transacional e integridade de reservas (zero double-booking)",
+      "Confiabilidade e idempotência de pagamentos (conciliação financeira auditável)",
+      "Disponibilidade em horários de pico (fins de semana, noites, feriados)",
+      "Multi-tenancy com isolamento de dados por arena/cliente",
+      "Testabilidade e deployability (CI/CD com deploy diário e rollback rápido)",
+      "Observabilidade (tracing, métricas de negócio, logs estruturados)",
+      "Segurança e conformidade (LGPD, PCI-DSS delegado ao gateway)",
+      "Usabilidade mobile-first e baixa latência na busca de disponibilidade",
+      "Modularidade com fronteiras claras (bounded contexts) para permitir extração futura"
+    ],
+    "fitness_functions": [
+      "Teste de concorrência automatizado: N requisições simultâneas para o mesmo slot resultam em exatamente 1 reserva confirmada (executa em todo CI)",
+      "ArchUnit/dependency-cruiser: módulos de domínio (Reservas, Pagamentos, Catálogo, Notificações) não podem importar internals uns dos outros, apenas contratos públicos (falha o build)",
+      "Contract tests (Pact/OpenAPI diff) bloqueiam breaking changes em APIs públicas e no adaptador do gateway de pagamento",
+      "Teste de idempotência: reenvio do mesmo webhook de pagamento 10x gera exatamente 1 efeito contábil",
+      "Job diário de conciliação: divergência entre pagamentos no gateway e no ledger interno > 0,01% dispara alerta e bloqueia release",
+      "SLO de latência: p95 da busca de disponibilidade < 300 ms e p95 de criação de reserva < 800 ms, validados em teste de carga (k6) no pipeline e em produção",
+      "Teste de isolamento de tenant: suíte automatizada garante que nenhuma query retorna dados de outro tenant (RLS verificado)",
+      "Métricas DORA como fitness function: lead time < 1 dia, change failure rate < 15%, MTTR < 1h",
+      "Chaos/resilience test: queda do gateway de pagamento não derruba a busca nem a visualização de reservas (circuit breaker + degradação graciosa)",
+      "Cobertura de mutation testing mínima nos módulos de reserva e pagamento (ex.: ≥ 70%)",
+      "Scan de segurança contínuo (SAST/dependency audit) e teste de que PII não aparece em logs",
+      "Budget de custo: custo de infra por reserva processada monitorado, alerta se crescer > 20% mês a mês sem aumento correspondente de volume",
+      "Tempo de restore de backup (RTO ≤ 1h, RPO ≤ 5 min) testado trimestralmente de forma automatizada"
+    ],
+    "incremental_change": "Começar com um monólito modular (um deployable, um banco PostgreSQL) organizado em bounded contexts: Catálogo (arenas/quadras), Disponibilidade, Reservas, Pagamentos, Usuários/Identidade, Notificações e Backoffice. Fase 1 (MVP): um esporte/tipo de quadra, reserva por slot, pagamento via Pix e cartão por gateway único, painel simples para o gestor. Fase 2: multi-arena, regras de preço dinâmico, cancelamento/reembolso, reservas recorrentes (mensalistas), notificações por WhatsApp/push. Fase 3: marketplace/split de pagamentos entre plataforma e arena, agenda de aulas/torneios, integrações (Google Calendar, catracas/controle de acesso). Fase 4: extrair via Strangler Fig apenas os módulos que a telemetria e as fitness functions mostrarem como gargalo ou com ciclo de mudança divergente (provável candidato: Pagamentos/Notificações), usando eventos de domínio já publicados internamente via outbox. Cada fase é liberada com feature flags, canary e dark launch; migrações de banco seguem o padrão expand/contract para nunca quebrar a versão anterior.",
+    "reversibility": "Reversíveis (two-way doors, decidir cedo): framework de UI, provedor de e-mail/SMS/push, provedor de mapas, ferramenta de observabilidade, cloud provider (se mantida a portabilidade via containers), estratégia de cache, layout interno dos módulos, ordem de lançamento de funcionalidades, precificação e planos. Parcialmente reversíveis (mitigar com anti-corruption layer): gateway de pagamento (isolado atrás de uma porta/adaptador PaymentProvider com ledger interno próprio), provedor de autenticação (OIDC padrão), fila/mensageria (abstração sobre outbox). Difíceis de reverter (adiar ao último momento responsável): decomposição em microsserviços, escolha de banco por serviço (poliglota), modelo de multi-tenancy físico (schema-por-tenant vs. banco-por-tenant) — começar com coluna tenant_id + Row Level Security, que permite migrar para isolamento maior depois; particionamento/sharding do banco; contratos públicos de API com parceiros externos (versionar desde o dia 1). Registrar cada decisão relevante em ADRs com gatilhos explícitos de revisão.",
+    "coupling": "Acoplamento baixo entre bounded contexts dentro do monólito: comunicação via interfaces públicas do módulo (síncrona, in-process) para consultas e via eventos de domínio (ReservaCriada, PagamentoConfirmado, ReservaCancelada) para efeitos colaterais, usando Transactional Outbox para garantir entrega. Cada módulo é dono do seu esquema de tabelas (sem joins entre schemas de módulos diferentes). Saga orquestrada simples para o fluxo reserva → pagamento: reserva entra em estado PENDENTE com hold temporário (TTL de 10 min), é confirmada por PagamentoConfirmado ou expira liberando o slot. Integrações externas (gateway, WhatsApp, calendários) ficam atrás de adaptadores/anti-corruption layers, de modo que o domínio nunca conhece o vocabulário do fornecedor. Acoplamento aceitável e intencional: monólito compartilha banco e deploy no início (simplicidade operacional), com as fronteiras impostas por fitness functions para que a extração futura seja mecânica. Contratos de eventos versionados (schema registry leve ou JSON Schema no repositório).",
+    "interfaces": [
+      "API REST/JSON pública versionada (OpenAPI) para app web/mobile: /v1/arenas, /v1/quadras, /v1/disponibilidade, /v1/reservas, /v1/pagamentos",
+      "App web responsivo (PWA) para jogadores: busca, reserva, pagamento Pix/cartão, histórico, reservas recorrentes",
+      "Painel web do gestor/arena: agenda, bloqueios de horário, preços, relatórios financeiros, repasses",
+      "App mobile (fase 2, React Native/Flutter ou PWA instalável) com push notifications",
+      "Interface de webhook de entrada: eventos do gateway de pagamento (assinatura verificada, idempotente)",
+      "Interface de webhooks de saída para parceiros/integradores (reserva criada/cancelada)",
+      "Porta interna PaymentProvider (criarCobranca, consultar, reembolsar, split) com adaptadores por gateway",
+      "Porta interna NotificationChannel (e-mail, WhatsApp, push, SMS)",
+      "Porta interna CalendarSync (Google/Outlook, iCal)",
+      "Eventos de domínio internos (outbox → broker) com contratos versionados",
+      "API administrativa/backoffice interna da plataforma (gestão de tenants, planos, suporte)",
+      "Endpoint de health/readiness e /metrics para observabilidade e orquestração"
+    ],
+    "escalabilidade": "Escala vertical e horizontal do monólito modular stateless atrás de load balancer (múltiplas réplicas idênticas), com sessão em token JWT/cookie assinado. Banco PostgreSQL gerenciado com réplicas de leitura para busca de disponibilidade e relatórios; escrita de reservas protegida por constraint de exclusão (EXCLUDE USING gist em intervalo de tempo por quadra) ou lock otimista para garantir integridade sem lock global. Cache (Redis) para catálogo e disponibilidade calculada, com invalidação por evento; CDN para estáticos e imagens das quadras. Picos previsíveis (fim de tarde/fim de semana) tratados com autoscaling por horário + métricas; filas assíncronas (workers separados do mesmo código) para notificações, conciliação e relatórios, isolando cargas pesadas do caminho crítico. Escala organizacional e de dados por evolução gradual: particionamento de tabelas de reservas por data/tenant, arquivamento de reservas antigas, depois extração de módulos (Pagamentos, Notificações, Busca) como serviços independentes quando fitness functions de latência, custo ou cadência de deploy indicarem. Sharding por região/tenant só se houver evidência de necessidade (last responsible moment).",
+    "custos": "Baixo custo inicial: um deployable único, um PostgreSQL gerenciado, Redis pequeno, CDN e observabilidade em tier gratuito/barato, evitando Kubernetes e microsserviços no início (PaaS como Fly.io/Render/Railway ou ECS Fargate/Cloud Run). Principais custos variáveis: taxas do gateway de pagamento (Pix ~0,5–1% e cartão ~2,5–4%, repassar ou embutir no preço), mensagens de WhatsApp/SMS (custo por conversa, priorizar push/e-mail e cobrar por volume acima da franquia), armazenamento de mídia e logs (retenção escalonada), e suporte ao cliente. Custo de infra por reserva monitorado como fitness function; reserved instances/savings plans só após padrão de uso estabilizar. Custos de conformidade: LGPD, contratos com gateway, eventual antifraude e chargebacks (provisionar reserva de risco). Evitar lock-in caro com abstrações nos pontos de maior gasto. Estimativa de estágio inicial: ~US$ 100–300/mês de infra até dezenas de arenas, crescendo aproximadamente de forma linear com volume de reservas.",
+    "monetizacao": "Modelo híbrido B2B2C: (1) assinatura SaaS mensal para arenas/gestores por faixas (Starter/Pro/Enterprise) conforme número de quadras, usuários do painel e recursos (preço dinâmico, mensalistas, relatórios, integrações); (2) take rate / taxa de serviço por reserva paga pela plataforma (ex.: 2–5% via split de pagamento), cobrada da arena ou do jogador como taxa de conveniência; (3) add-ons: notificações por WhatsApp, white-label com domínio e app próprios, gestão de torneios e aulas, controle de acesso/IoT, programa de fidelidade e cupons; (4) receita de marketplace: destaque pago de arenas na busca, publicidade/parcerias com marcas esportivas, venda de produtos e aluguel de equipamentos; (5) serviços financeiros futuros (antecipação de recebíveis, repasse D+0). Trial gratuito de 30 dias e plano gratuito limitado para captar arenas pequenas, com métricas de ativação (primeira reserva paga) e churn como guias de evolução do pricing.",
+    "stack_sugerida": "Backend: monólito modular em TypeScript (NestJS) ou Kotlin/Spring Boot ou Go — escolher a linguagem que o time domina, com módulos por bounded context e regras de dependência verificadas (dependency-cruiser/ArchUnit). Banco: PostgreSQL (com RLS, constraints de exclusão para slots, JSONB para configs) + Redis (cache, locks leves, rate limit). Mensageria: Transactional Outbox + fila simples (SQS/pg-boss/BullMQ), evoluindo para Kafka/NATS apenas se necessário. Frontend: Next.js/React (PWA) para jogador e painel do gestor, com design system compartilhado; mobile via PWA e depois React Native/Flutter. Pagamentos: Pix + cartão via Stripe, Mercado Pago, Pagar.me ou Asaas (com Stripe Connect / split nativo para marketplace), sempre atrás da porta PaymentProvider e ledger interno. Identidade: OIDC (Auth0/Clerk/Keycloak/Cognito). Infra: Docker, IaC (Terraform/Pulumi), PaaS ou ECS/Cloud Run, CDN (Cloudflare), CI/CD (GitHub Actions) com feature flags (Unleash/OpenFeature), canary e migrações expand/contract. Observabilidade: OpenTelemetry + Grafana/Prometheus/Loki ou Datadog, Sentry, alertas por SLO. Testes: Vitest/JUnit, Testcontainers, Pact, k6, Stryker. Notificações: Resend/SES (e-mail), Twilio/Z-API/WhatsApp Cloud API, FCM (push). Documentação: ADRs versionados no repositório, OpenAPI, diagramas C4."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "a9569a5c8012",
+    "gerado_em": "2026-09-21T05:42:05+00:00",
+    "runner": "runner.py"
+  }
+}

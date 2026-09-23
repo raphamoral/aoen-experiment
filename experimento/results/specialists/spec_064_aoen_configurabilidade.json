@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 64,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 6,
+  "justificativa": "A proposta demonstra pensamento de configuração correto ao representar regras jurídicas como JSON/YAML versionados e desacoplar o motor de conformidade, mas a configurabilidade descrita é sobre versionamento da lei (atualizações normativas), não sobre comportamento por tenant — o documento não endereça como um novo município é onboardado (row no banco vs. deploy), não define um schema de configuração por cliente, e não separa explicitamente o que varia entre prefeituras do que é fixo no código, indicando uma arquitetura parcialmente configurável que ainda exigiria esforço técnico para clientes com necessidades diferentes."
+}

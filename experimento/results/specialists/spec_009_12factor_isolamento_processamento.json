@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 9,
+  "justificativa": "Processamento pesado (certificação de documentos, notificações, tarefas periódicas) está isolado em workers físicos separados (certification-worker, notification-worker, cron-runner) consumindo filas SQS de forma assíncrona, com escalonamento independente por profundidade de fila, garantindo que falhas nesses processos não afetem a API principal — perde um ponto pela ausência explícita de dead-letter queues, circuit breakers ou fallback documentado para falhas nos workers."
+}

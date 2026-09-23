@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "evolutionary",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra forte intenção evolutiva — decisões diferidas explícitas (streaming só quando validado), fases incrementais com walking skeleton, A/B testing de modelos e fitness functions de contrato (Pact) que protegem fronteiras de serviço — mas não evidencia mecanismos arquiteturais que garantam a direção das dependências (ex: hexagonal/clean architecture, anti-corruption layers para integrações BSS/OSS), e a feature store compartilhada pode se tornar um ponto de acoplamento estrutural que limita a substituição independente de componentes de ML; a multi-tenancy por schema também acopla a solução a bancos relacionais com suporte a schemas, reduzindo a portabilidade declarada."
+}

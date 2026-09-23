@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 20,
+  "abordagem": "sem_framework",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta lista componentes de infraestrutura (PostgreSQL, Redis, S3, filas Bull) como custos totais de operação, mas não há nenhuma mensuração de custo por cliente/tenant — não existe cálculo de quanto custa processar cada bug submetido, quanto cada campanha consome de storage ou processamento, nem rastreamento de margem por empresa contratante; o 'controla orçamento da campanha' mencionado refere-se ao budget do cliente, não ao custo da plataforma por tenant."
+}

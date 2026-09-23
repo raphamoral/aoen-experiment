@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "arch_flow",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 4,
+  "justificativa": "A proposta define bounded contexts genéricos que suportam onboarding de novos clientes via cadastro (zero código para uso padrão do marketplace), mas não descreve nenhuma camada explícita de configuração por tenant — ausência de feature flags, tabelas de configuração por cliente, workflows parametrizáveis ou regras de pricing por tenant — o que significa que qualquer cliente enterprise com necessidades diferenciadas (workflow customizado por área regulatória, integrações específicas, fee tiers distintos) ainda exigiria desenvolvimento."
+}

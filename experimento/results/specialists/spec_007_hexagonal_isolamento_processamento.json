@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "hexagonal",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 5,
+  "justificativa": "A proposta indica processamento assíncrono via IEventPublisher e Redis gerenciando filas de eventos, e a presença de microsserviços com gRPC sugere alguma separação física, mas não há isolamento explícito dos processos computacionalmente pesados (geração de AI via IAIContentPort, geração de relatórios via IReportingUseCase, processamento de mídia via IMediaStorage, cálculo de rankings em tempo real) em workers ou processos dedicados, tampouco são mencionados circuit breakers, fallbacks ou estratégias de resiliência para quando esses processos falham."
+}

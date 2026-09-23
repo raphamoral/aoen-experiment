@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 4,
+  "justificativa": "O projeto menciona um custo inicial de $50-100/mês para VPS e identifica o vídeo como principal custo variável, mas faltam estimativas concretas por componente (Redis, PostgreSQL, CDN, Mux/Cloudflare Stream, SendGrid além do free tier), ausência de projeção de crescimento de custos por faixa de usuários e nenhuma estratégia explícita de otimização como scale-to-zero, instâncias spot ou tiering de armazenamento."
+}

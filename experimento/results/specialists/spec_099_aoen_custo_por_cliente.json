@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 99,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona custo por cliente, por operação ou por tenant em nenhum momento — não há cálculo de quanto custa cada análise de sentimento (ex: custo por chamada de API de IA), nenhuma abstração de rastreamento de consumo por tenant, e nenhuma conexão entre custo operacional e modelo de precificação; a proposta é puramente arquitetural/mercadológica, sem qualquer dimensão de unit economics."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "arch_flow",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 4,
+  "justificativa": "A arquitetura sugere isolamento físico implícito via bounded contexts em Kubernetes (EKS), o que viabiliza escalonamento independente, mas não explicita filas/workers assíncronos para os processos pesados de Genesis (visão computacional, precificação dinâmica, predição de lifecycle), nem menciona fallback para quando esses componentes falharem — ficando no limiar entre isolamento lógico e físico sem resiliência declarada."
+}

@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 30,
+  "ideia": "App de controle de estoque com visão computacional para varejo",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de reconhecimento visual de produtos em prateleiras: transforma imagens capturadas no ponto de venda em dados estruturados de estoque (produto identificado, quantidade, posição, ausência), sem necessidade de leitura manual de código de barras ou contagem humana.",
+    "fase1_mercado": "Pequeno e médio varejo físico: mercearias, farmácias, papelarias, lojas de conveniência e supermercados regionais com 1 a 20 pontos de venda — segmento que não tem equipe de TI interna, sofre com ruptura de gôndola e perde receita por falta de visibilidade em tempo real do estoque.",
+    "fase1_extensivel": "Sim. O core é abstraído atrás de uma interface 'VisionProvider' com métodos detect(image) → [{ sku, confidence, bbox, quantity }]. Implementações intercambiáveis: Google Vision AI, AWS Rekognition, Azure Custom Vision, modelo YOLO próprio rodando on-premise ou via Roboflow. Trocar o provedor não altera nenhuma camada superior do sistema.",
+    "fase2_interfaces": [
+      "Mobile App (iOS/Android) — para repositores e gerentes de loja capturarem prateleiras com câmera do celular",
+      "Web Dashboard — para donos e gestores visualizarem relatórios, histórico, alertas de ruptura e curva ABC de produtos",
+      "API REST — para integração com ERPs (TOTVS, SAP Business One, Bling, Omie) e sistemas de PDV existentes",
+      "WhatsApp Bot — para alertas de ruptura automáticos e consulta rápida de estoque via mensagem",
+      "Câmera IP integrada — captura automática periódica via câmeras já instaladas na loja, sem ação humana"
+    ],
+    "fase2_justificativa_mercado": "Mobile App abre o mercado de micro e pequeno varejo: o repositor já tem celular, zero hardware adicional. Web Dashboard é obrigatório para o tomador de decisão que não está na loja — abre o mercado de redes com múltiplas filiais. API REST abre enterprise e varejos já digitalizados que querem apenas enriquecer o ERP atual. WhatsApp Bot abre varejos informais e donos que operam via celular sem interesse em dashboard. Câmera IP abre varejos maiores dispostos a investir em automação total, aumentando o ticket médio do contrato.",
+    "fase2_service_layer": "Uma StockService centralizada expõe métodos como: submitScan(clientId, imagePayload, sourceType), getStockStatus(clientId, filters), getAlerts(clientId), updateProductCatalog(clientId, products). Todas as interfaces (mobile, web, API, WhatsApp, câmera) chamam exclusivamente a StockService — nenhuma interface contém lógica de negócio. A StockService por sua vez chama a VisionProvider e o repositório de dados. Trocar a interface não afeta o processamento; trocar o modelo de visão não afeta as interfaces.",
+    "fase3_fluxo_fixo": "1. Recebimento da imagem (qualquer fonte) → 2. Pré-processamento (normalização, recorte, ajuste de iluminação) → 3. Chamada ao VisionProvider → 4. Mapeamento de detecções para SKUs do catálogo do cliente → 5. Comparação com estoque mínimo configurado → 6. Geração de eventos de alerta ou atualização de posição → 7. Persistência do registro histórico → 8. Disparo de notificações se threshold atingido.",
+    "fase3_parametros_configuraveis": [
+      "Catálogo de produtos por cliente (SKU, nome, imagem de referência, planograma)",
+      "Estoque mínimo por SKU (threshold de alerta de ruptura)",
+      "Frequência de captura automática (câmeras IP)",
+      "Canais de notificação ativos (e-mail, WhatsApp, webhook, push)",
+      "Nível de confiança mínimo da detecção aceito (ex: 0.75)",
+      "Layouts de prateleira por seção/corredor",
+      "Fuso horário e horário de funcionamento da loja",
+      "Integrações ativas (qual ERP e mapeamento de campos)",
+      "Plano de retenção de imagens (30, 60, 90 dias)",
+      "Permissões de usuários por perfil (repositor, gerente, dono)"
+    ],
+    "fase3_novo_cliente": "Onboarding via painel administrativo interno: 1. Criar tenant com clientId; 2. Importar catálogo via CSV ou integração com ERP; 3. Configurar thresholds e canais de alerta via formulário; 4. Enviar link de convite para usuários da loja. Nenhum deploy, nenhuma linha de código. O cliente começa a escanear prateleiras no mesmo dia.",
+    "fase4_core_isolado": "O pipeline de visão computacional (passos 2 a 4 do fluxo fixo) roda em workers assíncronos isolados: filas de mensagens (ex: BullMQ/Redis ou SQS) recebem jobs de processamento de imagem. Workers são pods independentes, auto-escaláveis horizontalmente. A API de entrada apenas enfileira o job e retorna 202 Accepted imediatamente. O resultado é persistido e o cliente é notificado via webhook/push quando pronto.",
+    "fase4_custo_total_cliente": "Custo do core por scan: ~$0.0015 (Google Vision) ou ~$0.002 (AWS Rekognition) por imagem. Assumindo 50 scans/dia por loja: ~$2.25–$3.00/mês em visão. Infra proporcional: banco de dados $0.50/cliente/mês (storage de metadados), armazenamento de imagens S3/GCS ~$0.50–$1.50/cliente/mês (com retenção de 60 dias e compressão), CDN $0.10/cliente/mês, worker CPU proporcional ~$1.00/cliente/mês. Custo operacional total estimado: $5–$7/loja/mês. Margem saudável com plano a partir de R$149/loja/mês (~$30).",
+    "fase4_continuidade": "O worker de visão falha silenciosamente: a imagem permanece na fila com retry automático (3 tentativas com backoff exponencial). O restante do sistema (dashboard, histórico, alertas anteriores, API de consulta) continua operando normalmente pois lê apenas do banco de dados, não do worker. Dead-letter queue captura falhas persistentes para investigação. SLA do produto não é afetado por instabilidade pontual do modelo.",
+    "fase4_manutencao": "A interface VisionProvider permite hot-swap de provedor sem downtime: novo provedor implementa a interface, é configurado no tenant de teste, validado com métricas de acurácia (precision/recall por SKU), depois promovido via feature flag por cliente. É possível rodar dois provedores em paralelo com traffic splitting para comparação A/B antes de migração completa.",
+    "monetizacao": "SaaS por loja/mês com 3 planos: Starter R$149 (1 loja, mobile only, 500 scans/mês), Pro R$349 (até 5 lojas, câmera IP, API, integrações ERP), Enterprise sob contrato (redes com 10+ lojas, SLA, onboarding dedicado, modelo customizado). Upsell em volume de scans adicionais e retenção estendida de imagens. LTV alto por dependência operacional — o cliente não troca facilmente após integrar ao seu fluxo de reposição.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) + Fastify para API. Filas: BullMQ + Redis. Workers de visão: Python (compatibilidade com YOLO/OpenCV) ou Node.js chamando SDK do provedor. Banco: PostgreSQL (metadados e estoque) + S3-compatible (imagens). Cache: Redis. Frontend Web: Next.js + TailwindCSS. Mobile: React Native (iOS + Android com câmera nativa). Infra: Docker + Kubernetes (GKE ou EKS) com HPA nos workers. Observabilidade: OpenTelemetry + Grafana. Autenticação: Auth0 ou Clerk com suporte a multi-tenant. CI/CD: GitHub Actions."
+  }
+}

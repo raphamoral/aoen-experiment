@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 34,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 4,
+  "justificativa": "A proposta reconhece segmentos com tickets diferenciados (B2C menor ticket, API B2B maior ticket, white-label recorrente por seat/uso) e identifica disposição a pagar do segmento premium de assessores, mas não apresenta tiers explícitos com valores, nenhuma análise de sustentabilidade custo-receita, e não há qualquer menção a métricas de negócio como MRR, LTV, CAC ou churn — o modelo de monetização está implícito na segmentação de mercado, não estruturado como modelo de receita."
+}

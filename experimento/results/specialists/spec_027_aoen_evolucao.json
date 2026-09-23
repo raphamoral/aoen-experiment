@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 27,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra boas práticas evolutivas com ports substituíveis (streaming, notificações, pagamentos), EventService Layer isolando regras de negócio das interfaces, e DTOs como contratos — características de hexagonal architecture — mas o ciclo de vida do evento explicitamente declarado como 'imutável no código' é uma decisão irreversível que pode exigir reescrita se o modelo de negócio evoluir, e a proposta omite abstração de banco de dados e estratégia de escala horizontal, deixando incerteza sobre crescimento para 10k+ usuários simultâneos sem mudança arquitetural."
+}

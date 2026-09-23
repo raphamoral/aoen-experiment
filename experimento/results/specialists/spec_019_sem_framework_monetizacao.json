@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "sem_framework",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 7,
+  "justificativa": "O modelo prevê assinatura mensal com tiers baseados em número de dentistas (solo/clínica/rede), conecta o preço à unidade de valor central do produto, e demonstra consciência de custos operacionais reais (R$800/mês em mensagens + R$200/mês em servidor para 100 clínicas), mas falta definição explícita dos valores de cada plano, cálculo de LTV/CAC, meta de MRR, e estratégia de churn — elementos que elevariam a nota para 9-10."
+}

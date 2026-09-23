@@ -1,0 +1,91 @@
+{
+  "ideia_idx": 56,
+  "ideia": "Marketplace de peças industriais com entrega expressa regional",
+  "abordagem": "hexagonal",
+  "response": {
+    "core_domain": "Intermediação de compra e venda de peças industriais com promessa de entrega expressa regional. O core contém os agregados Catálogo de Peças (SKU, especificações técnicas, compatibilidade, normas), Fornecedor, Cotação/RFQ, Pedido, Estoque/Disponibilidade Regional, Promessa de Entrega (SLA por região, janela e custo de frete), Pagamento/Split e Disputa/Garantia. As regras centrais são: só prometer entrega expressa se houver estoque no hub regional e capacidade logística, calcular comissão e split, e conduzir a máquina de estados do pedido.",
+    "primary_ports": [
+      "CatalogManagementPort (cadastrar, atualizar e publicar peças e estoque por fornecedor)",
+      "PartSearchPort (busca por SKU, código de fabricante, especificação técnica e equivalência)",
+      "QuotationPort (abrir RFQ, responder cotação, aceitar proposta)",
+      "OrderPlacementPort (criar carrinho, confirmar pedido, cancelar)",
+      "DeliveryPromisePort (consultar prazo e frete expresso por CEP ou região)",
+      "FulfillmentPort (separar, despachar, confirmar entrega, registrar prova de entrega)",
+      "PaymentSettlementPort (iniciar pagamento, conciliar, repassar ao fornecedor)",
+      "DisputeResolutionPort (abrir devolução, garantia ou disputa)",
+      "SellerOnboardingPort (cadastro e KYC/KYB de fornecedores e compradores B2B)",
+      "AnalyticsReportingPort (relatórios de vendas, SLA e comissões)"
+    ],
+    "secondary_ports": [
+      "PartRepositoryPort / OrderRepositoryPort / SellerRepositoryPort (persistência)",
+      "SearchIndexPort (indexação e busca full-text e facetada)",
+      "InventoryReservationPort (reserva atômica de estoque por hub)",
+      "PaymentGatewayPort (cobrança, split, estorno)",
+      "CarrierRoutingPort (cotação de frete, despacho, rastreio)",
+      "GeocodingPort / RegionCoveragePort (CEP, geolocalização, malhas regionais)",
+      "TaxCalculationPort / InvoiceIssuerPort (impostos e emissão de NF-e)",
+      "KycProviderPort (validação de CNPJ e crédito B2B)",
+      "NotificationPort (e-mail, SMS, WhatsApp, push)",
+      "FileStoragePort (fichas técnicas, desenhos CAD, fotos, comprovantes)",
+      "EventPublisherPort (eventos de domínio)",
+      "ERPIntegrationPort (sincronização com ERP e estoque do fornecedor)",
+      "IdentityProviderPort (autenticação e autorização)",
+      "ClockPort / IdGeneratorPort (determinismo em testes)"
+    ],
+    "primary_adapters": [
+      "REST API (HTTP/JSON) para web e mobile",
+      "GraphQL BFF para o storefront",
+      "Web app do comprador (SPA/SSR)",
+      "Portal do fornecedor",
+      "Backoffice administrativo",
+      "App móvel do entregador/hub",
+      "Webhooks de entrada (gateway de pagamento, transportadoras)",
+      "Adaptador EDI/API B2B para grandes compradores (punchout, cXML)",
+      "Consumidores de fila/eventos",
+      "Scheduler/cron (expiração de RFQs, reconciliação)",
+      "CLI e scripts operacionais",
+      "Test drivers (testes de aceitação BDD que dirigem o core sem UI)"
+    ],
+    "secondary_adapters": [
+      "PostgreSQL (com PostGIS) via repositórios",
+      "Redis (reserva de estoque, cache, locks)",
+      "OpenSearch/Elasticsearch",
+      "Stripe Connect, Pagar.me, Mercado Pago ou Adyen (split)",
+      "PIX/boleto B2B via PSP local",
+      "APIs de transportadoras e last-mile regionais (Loggi, Lalamove, frota própria)",
+      "Google Maps/Mapbox/HERE",
+      "Focus NFe ou Nuvem Fiscal (NF-e)",
+      "Serasa/Receita/BigDataCorp (KYB)",
+      "SES/SendGrid, Twilio ou Zenvia, WhatsApp Business API",
+      "S3 ou MinIO",
+      "Kafka, SNS/SQS ou RabbitMQ",
+      "Conectores de ERP (SAP, TOTVS, Bling)",
+      "Keycloak, Auth0 ou Cognito",
+      "Adapters in-memory e fakes para testes",
+      "Anti-corruption layers para cada sistema externo"
+    ],
+    "isolation": "O core (domínio e casos de uso) não importa nenhum framework, ORM, SDK ou cliente HTTP. Ele só conhece interfaces (ports) declaradas por ele mesmo, e a dependência aponta sempre de fora para dentro. Os adapters primários traduzem protocolos externos (HTTP, filas, CLI) em comandos e queries dos casos de uso. Os adapters secundários implementam as portas de saída e traduzem o modelo do domínio para o modelo do sistema externo, por meio de anti-corruption layers. A composição fica numa camada de bootstrap com injeção de dependência, e a fronteira é imposta por módulos separados e testes de arquitetura (ArchUnit ou dependency-cruiser). Os value objects, as entidades e os eventos de domínio são puros e sem I/O. Todos os sistemas externos recebem o mesmo tratamento: banco, gateway, transportadora e ERP são portas substituíveis. Os testes rodam o core com adapters in-memory, sem infraestrutura.",
+    "interfaces": [
+      "Marketplace web para compradores (busca, comparação, checkout expresso)",
+      "Portal do fornecedor (catálogo, estoque, pedidos, repasses)",
+      "Backoffice de operações (hubs, SLA, disputas, antifraude)",
+      "App do entregador e do operador de hub",
+      "API pública REST/OpenAPI para integração B2B e ERPs",
+      "Webhooks de saída (status do pedido, estoque)",
+      "EDI/punchout para procurement corporativo",
+      "Eventos de domínio assíncronos",
+      "CLI/scripts de operação e migração de catálogo",
+      "Suíte de testes de aceitação"
+    ],
+    "escalabilidade": "Monólito modular hexagonal no início, com bounded contexts (Catálogo, Pedidos, Logística, Pagamentos) que podem ser extraídos em serviços sem reescrever o core, porque as portas já são as fronteiras. O sistema é stateless e escala horizontalmente atrás de balanceador, em Kubernetes ou ECS com autoscaling. Leitura e busca ficam no OpenSearch com CQRS e read models; escrita usa PostgreSQL com réplicas de leitura e particionamento por região. A reserva de estoque usa Redis com locks e idempotência. Os fluxos assíncronos (notificação, NF-e, conciliação) passam por eventos e filas com o padrão outbox. A expansão regional é feita por células: cada região tem hubs, cobertura e regras de SLA configuráveis, e novos adapters de transportadora entram sem tocar o core. CDN para catálogo e imagens, com cache agressivo em consultas de peças.",
+    "custos": "Os maiores custos operacionais são logística expressa (frota, last-mile, hubs regionais e estoque avançado), taxas de PSP e split, e aquisição de fornecedores. Na infraestrutura, começar enxuto com monólito modular e um único banco gerenciado reduz custo e complexidade. Já a busca (OpenSearch) e o tráfego de mídia devem ser dimensionados com cuidado. Recomenda-se pagar por uso, com serverless para picos e instâncias reservadas para a carga base. Os custos variáveis incluem chamadas a APIs de frete, NF-e, KYB e mapas, que podem ser reduzidos com cache e negociação de volume. Também entram compliance fiscal, suporte técnico especializado e seguro de carga. Convém monitorar o custo por pedido expresso e ativar a entrega expressa só onde a densidade de pedidos a viabilize. A hexagonal reduz o custo de troca de fornecedores: trocar de PSP ou de transportadora é só trocar um adapter.",
+    "monetizacao": "1) Comissão por transação (take rate de 5% a 15%, variável por categoria). 2) Taxa de entrega expressa, cobrada do comprador ou embutida no preço. 3) Assinatura SaaS para fornecedores (planos com catálogo ilimitado, integração ERP e analytics). 4) Anúncios e destaque patrocinado nas buscas. 5) Fulfillment como serviço, com armazenagem em hubs regionais cobrada por posição e por pedido. 6) Financiamento e antecipação de recebíveis e crédito B2B (prazo de pagamento para compradores). 7) Assinatura premium para compradores (SLA garantido, gestão de contas e compras recorrentes). 8) Dados e inteligência de mercado (benchmark de preços, previsão de demanda).",
+    "stack_sugerida": "Backend: Java 21 + Spring Boot ou Kotlin (alternativa: TypeScript/NestJS ou Go), com o core em módulo puro sem dependências de framework; ArchUnit para impor as fronteiras. Dados: PostgreSQL + PostGIS, Redis, OpenSearch, S3. Mensageria: Kafka ou SQS/SNS com outbox. Frontend: Next.js/React + TypeScript para o marketplace e os portais; React Native ou Flutter para o app de entrega. API: REST/OpenAPI e GraphQL BFF. Identidade: Keycloak ou Auth0. Pagamentos: Stripe Connect ou Pagar.me com split. Logística: APIs de transportadoras, Google Maps ou HERE para roteirização. Infra: AWS ou GCP, Kubernetes ou ECS, Terraform, GitHub Actions para CI/CD. Observabilidade: OpenTelemetry, Grafana, Prometheus, Sentry. Testes: JUnit ou Vitest, Cucumber/BDD para aceitação do core, Testcontainers para os adapters e Pact para contratos."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "323c48575668",
+    "gerado_em": "2026-09-21T03:35:30+00:00",
+    "runner": "runner.py"
+  }
+}

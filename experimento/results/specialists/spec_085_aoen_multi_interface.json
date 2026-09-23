@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 85,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "A proposta apresenta seis interfaces distintas (portal web, mobile, dashboard administrativo, API REST/webhook, canal conversacional WhatsApp e widget embarcável), cada uma explicitamente justificada por um perfil de usuário ou segmento de mercado real (consumidores smartphone, gestores de marca com autonomia operacional, redes com PDV legado, consumidores 50+/baixa renda digital e e-commerces que não querem perder o usuário), com lógica de negócio inteiramente centralizada no LoyaltyService via contratos tipados, garantindo que qualquer interface possa ser adicionada ou substituída sem reescrita de regras de negócio."
+}

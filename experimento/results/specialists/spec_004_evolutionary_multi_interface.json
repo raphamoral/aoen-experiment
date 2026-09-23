@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 4,
+  "abordagem": "evolutionary",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 0,
+  "justificativa": "A proposta não menciona nenhuma interface de usuário — nem web, mobile, CLI nem API gateway — tampouco perfis de usuário distintos, canais de mercado ou desacoplamento entre lógica de negócio e camada de apresentação; o documento é inteiramente focado em características arquiteturais de backend e fitness functions, ignorando completamente a dimensão multi-canal."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 40,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 2,
+  "justificativa": "A proposta apresenta isolamento apenas lógico via abstração de interface (TriageEngine), mas o fluxo descrito é síncrono e monolítico — a TriageService invoca o engine diretamente sem filas, workers separados, circuit breakers ou fallback; uma falha ou lentidão no modelo de IA (custo computacional elevado, timeout de API externa) bloqueia toda a cadeia de atendimento e não há menção a escalonamento independente do componente pesado."
+}

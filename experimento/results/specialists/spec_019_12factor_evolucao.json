@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte separação de responsabilidades (monorepo com serviços isolados, backing services tratados como recursos anexáveis e substituíveis por URL/credenciais), pipelines imutáveis e statelessness que permitem escalar sem reescrita, mas perde pontos por não evidenciar camada de domínio desacoplada de frameworks externos (anti-corruption layer, ports & adapters) nem estratégia explícita de versionamento de API para evolução sem breaking changes."
+}

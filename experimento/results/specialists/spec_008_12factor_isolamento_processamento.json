@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 7,
+  "justificativa": "A proposta apresenta isolamento físico real via serviços separados com Dockerfiles individuais (blockchain-service, reporting-service, notification-service) e processamento assíncrono explícito via Kafka/RabbitMQ para integração com blockchain e alertas, permitindo escalonamento independente no Kubernetes; porém, não há menção a circuit breakers, fallback quando o worker de blockchain falha, nem a políticas de backpressure ou dead-letter queues para os processos mais pesados."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "arch_flow",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado no bounded context 'Predictive Maintenance' (detecção de anomalias, scoring de risco, feedback loop ao modelo) e é tecnicamente isolado dos demais contextos; a extensibilidade é garantida pela separação do motor preditivo do broker e do armazenamento (commodities intercambiáveis), mas a nota não atinge 10 porque o digital twin ainda está em 'genesis' sem evidência de que resolve algo que alternativas como IBM Maximo ou UpKeep genuinamente não resolvem — a proposta de valor insubstituível carece de especificidade sobre o que torna a predição de falha predial diferente de soluções industriais já maduras."
+}

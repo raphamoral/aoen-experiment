@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "sem_framework",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões formam um sistema coeso e bem articulado: Node.js assíncrono justifica o WebSocket, Redis faz triplo serviço consistente (buffer de baixa latência, pub/sub entre servidores e fila BullMQ evitando infraestrutura extra), o gargalo identificado corretamente (latência de áudio) diretamente motiva o isolamento por reunião e o auto-scaling de workers, e a validação via protótipo é coerente com o risco técnico central (qualidade da tradução em tempo real) — a única tensão não resolvida é que os plugins para Zoom e Teams operam sobre o pipeline de áudio proprietário dessas plataformas, potencialmente conflitando com a captura via WebRTC descrita como base da arquitetura, o que é uma lacuna de coerência real entre a camada de integração e o modelo de captura escolhido."
+}

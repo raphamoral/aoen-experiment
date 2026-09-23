@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 35,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 7,
+  "justificativa": "A arquitetura demonstra princípios sólidos de evolução: a abstração 'Risk Scorer' com interface estável permite trocar backends de scoring sem afetar clientes, e a FraudService como camada de domínio isolada de frameworks externos segue inversão de dependência corretamente — porém o 'fluxo fixo' da fase 3 engessa a pipeline de enriquecimento/scoring em etapas sequenciais hard-coded, não há menção de abstração da camada de dados (repository pattern) que tornaria a troca de banco reversível, e a escala de 10 para 10.000 usuários não é endereçada arquiteturalmente (ausência de estratégia para filas, cache de contexto histórico, ou particionamento por tenant), o que pode forçar mudanças estruturais não planejadas sob carga real."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 44,
+  "abordagem": "aoen",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural não contém nenhuma menção a modelo de receita, tiers de preço, estratégia de cobrança ou métricas de negócio — o documento foca exclusivamente em arquitetura técnica e interfaces do produto."
+}

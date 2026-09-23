@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: cada característica arquitetural (Evolvability, Elasticidade, Desempenho, Conformidade) tem pelo menos uma fitness function correspondente que a operacionaliza diretamente; a progressão Monólito Modular → Strangler Fig → microserviços por evidência é filosoficamente consistente com a premissa de 'extrair só quando as métricas indicarem necessidade'; os bounded contexts (Identity, Content, Gamification, Analytics, Billing) se alinham tanto ao domínio de negócio quanto aos módulos de fitness functions — com único ponto de tensão reconhecida e planejada: a característica 'Deployabilidade independente por domínio' declara algo que a Fase 1 (deploy único) ainda não realiza, mas o roteiro de evolução torna essa contradição temporária e controlada, não estrutural."
+}

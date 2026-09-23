@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 48,
+  "ideia": "SaaS de previsão de demanda para supermercados regionais",
+  "abordagem": "aoen_v2",
+  "response": {
+    "fase1_core": "Motor de previsão de demanda que combina histórico de vendas, sazonalidade local, calendário de eventos regionais e ruptura de estoque para gerar previsões de reposição por SKU por loja — sem ele, o produto não existe.",
+    "fase1_mercado": "Supermercados regionais com 2 a 50 lojas, sem equipe de dados interna, que perdem margem por excesso de estoque perecível ou ruptura de gôndola. Mercado negligenciado pelas grandes ERPs (caras demais) e ignorado pelas planilhas (imprecisas demais).",
+    "fase1_extensivel": "Sim. O core é abstraído por uma interface ModelProvider com método predict(input: DemandInput): Forecast[]. Implementações intercambiáveis: Prophet (sazonalidade), LightGBM (volume alto de SKUs), ARIMA (baseline), ou chamada a API externa (OpenAI, Vertex AI). Trocar o modelo não altera nenhuma camada acima.",
+    "fase2_interfaces": [
+      "Dashboard Web (gerentes de compras e diretores)",
+      "API REST/Webhook (integração com ERP, WMS, PDV)",
+      "Relatório PDF/Excel agendado por e-mail (compradores tradicionais)",
+      "Bot WhatsApp (gestores de loja sem acesso a computador)",
+      "Painel embarcado via iFrame (parceiros de ERP regional que revendem o produto)"
+    ],
+    "fase2_justificativa_mercado": "Dashboard Web abre o mercado de redes regionais com analistas dedicados. A API abre o mercado de supermercados que já têm ERP e querem integração silenciosa. O relatório PDF/Excel abre o mercado de compradores avessos à tecnologia — elimina barreira de adoção. O bot WhatsApp abre o mercado de gestores de loja em operação contínua (frios, hortifrúti) que precisam de resposta rápida sem abrir sistema. O iFrame abre o canal de revenda via parceiros de software regional, multiplicando distribuição sem custo de aquisição.",
+    "fase2_service_layer": "Uma CamadaDeServiço (ForecastService, AlertService, ReportService) expõe métodos agnósticos de interface: getForecast(storeId, skuId, horizon), getReplenishmentAlerts(storeId), exportReport(format, filters). Cada interface consome esses métodos. Nenhuma interface contém lógica de negócio — apenas apresentação e transporte.",
+    "fase3_fluxo_fixo": "Ingestão de dados de vendas → limpeza e normalização → enriquecimento com calendário e eventos → treinamento/atualização do modelo → geração de previsões por SKU/loja → cálculo de ponto de reposição → geração de alertas → entrega via interface configurada. Este pipeline é fixo no código e executa para todos os clientes.",
+    "fase3_parametros_configuraveis": [
+      "Horizonte de previsão (dias: 7, 14, 30)",
+      "Categorias de produtos ativas (hortifrúti, bebidas, limpeza...)",
+      "Calendário de feriados e eventos locais (festa junina, carnaval regional)",
+      "Lead time de reposição por fornecedor",
+      "Ponto de reposição mínimo por SKU ou categoria",
+      "Frequência de atualização do modelo (diária, semanal)",
+      "Formato e destinatários dos relatórios automáticos",
+      "Integrações ativas (ERP, PDV, planilha)",
+      "Idioma e fuso horário",
+      "Limiar de alerta de ruptura (% abaixo do estoque seguro)",
+      "Modelo de ML preferido (Prophet, LightGBM, fallback ARIMA)"
+    ],
+    "fase3_novo_cliente": "Novo cliente = novo registro em client_config com seus parâmetros, credenciais de integração PDV/ERP e calendário regional. O pipeline executa automaticamente para ele no próximo ciclo. Zero código, zero deploy. Onboarding via formulário de configuração no painel admin ou API de provisionamento.",
+    "fase4_core_isolado": "O worker de treinamento e inferência de modelos ML roda em processo assíncrono isolado (fila de jobs: BullMQ ou Celery). Recebe jobs via fila, executa, persiste resultado em cache (Redis) e banco (PostgreSQL). O restante do sistema lê apenas o cache — nunca chama o modelo ML em tempo real na requisição do usuário.",
+    "fase4_custo_total_cliente": "Custo core: treinamento mensal ~$0.80/cliente (GPU spot 2h/mês em instância g4dn.xlarge AWS) + inferência diária ~$0.15/mês (CPU). Custo infra proporcional: banco de dados ~$1.50/cliente/mês (particionamento por tenant), armazenamento S3 histórico de vendas ~$0.30/cliente/mês (média 5GB/ano), banda de saída ~$0.10/cliente/mês. Custo operacional rateado: servidor de aplicação, fila, Redis ~$1.20/cliente/mês (base 50 clientes). Total estimado: ~$4.05/cliente/mês. Margem saudável com plano mínimo a $149/mês.",
+    "fase4_continuidade": "Se o worker ML falhar, o sistema continua servindo a última previsão em cache (TTL configurável: 24-72h dependendo do plano). Alertas e relatórios seguem funcionando com dados em cache. Dead letter queue captura jobs falhos para reprocessamento automático. Healthcheck do worker separado do healthcheck da API — falha no core não derruba endpoints.",
+    "fase4_manutencao": "O ModelProvider é uma interface. Trocar Prophet por LightGBM = nova implementação da interface + feature flag por cliente. Deploy do novo provider em paralelo, validação com shadow mode (executa ambos, compara resultado), migração gradual por cliente sem downtime. Rollback instantâneo via feature flag.",
+    "monetizacao": "SaaS com planos por número de lojas e SKUs: Starter ($149/mês: 1 loja, até 5.000 SKUs), Growth ($399/mês: até 10 lojas, SKUs ilimitados, API inclusa), Regional ($899/mês: até 50 lojas, bot WhatsApp, SLA, integração ERP dedicada). Receita adicional: setup fee de onboarding ($500 único) e revenda via parceiros ERP regionais (comissão 20%). Upsell: relatórios de inteligência de mercado cruzando dados anonimizados entre clientes da mesma região.",
+    "stack_sugerida": "Backend: Node.js (TypeScript) + FastAPI (Python para workers ML). Modelos ML: Prophet + LightGBM via scikit-learn. Fila de jobs: BullMQ (Node) + Celery (Python). Banco: PostgreSQL com particionamento por tenant + TimescaleDB para séries temporais. Cache: Redis. Armazenamento: AWS S3. Infra: Docker + Kubernetes (EKS) com autoscaling de workers. Frontend: Next.js + TailwindCSS. Bot WhatsApp: Evolution API (self-hosted) ou Twilio. CI/CD: GitHub Actions. Observabilidade: Grafana + Prometheus + Sentry."
+  }
+}

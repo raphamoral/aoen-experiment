@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 7,
+  "justificativa": "O projeto prevê cinco interfaces bem justificadas por perfis reais de usuário (funcionário sem conta, gestor/RH, admin, e-mail), mas a arquitetura Next.js monolítica inicial com rotas de API no mesmo repositório indica que a lógica de negócio não está formalmente desacoplada das interfaces — adicionar um canal novo (ex: Slack bot, API pública) exigiria refatoração relevante, não apenas uma nova camada de apresentação."
+}

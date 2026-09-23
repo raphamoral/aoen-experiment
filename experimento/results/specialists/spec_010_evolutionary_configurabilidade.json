@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 5,
+  "justificativa": "A proposta demonstra intenção explícita de configurabilidade ('Fase 2: expansão de municípios via configuração, não código') e padrões que a viabilizam (ACL por provedor de NF, adapter para pagamentos), mas não descreve um modelo de configuração por tenant — não há menção a feature flags por cliente, schema de configuração por tenant, regras de negócio dirigidas por dados, nem como um novo MEI com necessidades distintas seria onboardado sem código; a Fase 1 ainda exige um adapter codificado por município, evidenciando que a configurabilidade plena é futura e parcialmente planejada, não implementada desde o início."
+}

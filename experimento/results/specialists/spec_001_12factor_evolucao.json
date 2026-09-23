@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "12factor",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 6,
+  "justificativa": "A arquitetura demonstra boa separação operacional (containers independentes, stateless, monorepo segmentado) e escala horizontal bem endereçada, mas carece de inversão explícita de dependências — lógica de negócio provavelmente acopla diretamente a FastAPI/Node.js, Stripe, Twilio e Mapbox sem camadas anti-corrupção ou portas/adaptadores, o /shared pode tornar-se ponto de acoplamento oculto entre todos os módulos, e a dependência de serviços AWS específicos (ECR, ECS, ALB, Secrets Manager) introduz lock-in que dificulta decisões reversíveis no longo prazo."
+}

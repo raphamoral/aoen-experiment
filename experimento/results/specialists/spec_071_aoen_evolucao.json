@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 71,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra forte maturidade evolutiva: os três contratos abstratos (DataCollector, AnchorProvider, CertificateIssuer) funcionam como portas hexagonais que isolam a lógica de negócio de implementações concretas, a camada de serviços é explicitamente livre de acoplamento com frameworks de interface, e a substituição de âncora criptográfica ou formato de certificado é tratada como decisão reversível de design — o que eleva substancialmente a nota; perde dois pontos porque a proposta não aborda estratégia de escalabilidade horizontal (de 10 para 10.000 usuários) nem detalha como os próprios services se comunicam entre si, deixando aberta a possibilidade de acoplamento oculto no núcleo."
+}

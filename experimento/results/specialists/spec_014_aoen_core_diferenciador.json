@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 8,
+  "justificativa": "O núcleo diferenciador está claramente identificado (o orquestrador do pipeline de baixa latência, não o motor de tradução), arquiteturalmente isolado da camada de interfaces e dos provedores externos, e explicitamente extensível via padrão de adaptadores — o que é um insight sofisticado e correto; a nota não chega a 10 porque a proposta não demonstra explicitamente por que soluções concorrentes (Interprefy, KUDO, Zoom Live Translation) falham em resolver o mesmo problema, deixando o argumento de insubstituibilidade implícito em vez de provado."
+}

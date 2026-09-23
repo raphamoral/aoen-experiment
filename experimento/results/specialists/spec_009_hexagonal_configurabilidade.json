@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "hexagonal",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A única menção explícita a multi-tenancy está no PostgreSQL UserRepositoryAdapter ('suporte a multi-tenant'), mas a proposta não define nenhum mecanismo de configurabilidade: ausência de um port de configuração por tenant (ITenantConfigService), sem feature flags, sem motor de regras configurável para fluxos como certificação (que varia por regulatório ANVISA vs. FDA), sem esquema de onboarding baseado em dados — um novo cliente com requisitos regulatórios distintos exigiria desenvolvimento, não apenas configuração."
+}

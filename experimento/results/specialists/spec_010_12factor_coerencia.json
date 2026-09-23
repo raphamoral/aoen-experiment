@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma narrativa arquitetural excepcionalmente coesa: o monorepo com tags semver alimenta o pipeline build/release/run imutável; a config via env vars viabiliza o mesmo artefato em todos os ambientes; os processos stateless justificam o Redis para sessões e habilitam o auto-scaling; a natureza lenta e não-confiável da SEFAZ motiva diretamente a fila assíncrona e o worker-nfe; o migration-runner como processo avulso é a consequência natural da separação build/release/run — cada decisão existe porque as outras existem, com o único ponto de atenção sendo a seção de concorrência truncada, que impede validação completa do último pilar."
+}

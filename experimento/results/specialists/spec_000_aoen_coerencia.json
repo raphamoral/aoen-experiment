@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 0,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam uma narrativa arquitetural fechada e autoexplicativa: a abstração sobre provedores de inferência (Fase 1) justifica a ClinicalService centralizada (Fase 2), que justifica o pipeline invariante (Fase 3); a segmentação de mercado em três tiers mapeia diretamente para as cinco interfaces, cada uma com justificativa de canal de aquisição explícita; os parâmetros configuráveis (espécies, modalidades) estendem a mesma lógica de extensibilidade da Fase 1 sem contradizê-la — a única tensão menor é o enquadramento 'substituindo ou acelerando especialistas' que o Portal de Telemedicina resolve ao usar o laudo de IA como pré-análise humana, mas essa resolução não está explicitada como decisão arquitetural deliberada."
+}

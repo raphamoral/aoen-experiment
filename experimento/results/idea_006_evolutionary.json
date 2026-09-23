@@ -1,0 +1,100 @@
+{
+  "ideia_idx": 6,
+  "ideia": "App de nutrição personalizada com IA baseada em exames laboratoriais",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Segurança e Privacidade (LGPD/HIPAA) — dados de saúde são sensíveis por definição",
+      "Evolvabilidade — modelo de IA e protocolos nutricionais mudam frequentemente",
+      "Confiabilidade — recomendações de saúde exigem consistência e rastreabilidade",
+      "Interoperabilidade — integração com laboratórios, wearables e prontuários eletrônicos",
+      "Observabilidade — monitorar drift de modelo, qualidade de dados e comportamento clínico",
+      "Escalabilidade elástica — inferência de IA tem picos imprevisíveis",
+      "Auditabilidade — cada recomendação deve ser rastreável até os dados de origem"
+    ],
+    "fitness_functions": [
+      "Automated: LGPD compliance scan em cada PR (dados PII nunca em logs, criptografia em repouso verificada)",
+      "Automated: Latência P99 de inferência IA < 3s medida em pipeline CI com carga sintética",
+      "Automated: Cobertura de testes de mutação > 85% nos módulos de parsing de exames laboratoriais",
+      "Automated: Chaos engineering semanal — injeção de falha no provider de IA valida fallback para modelo local",
+      "Automated: Contract tests (Pact) entre serviço de exames e serviço de recomendações a cada deploy",
+      "Manual/periódica: Revisão clínica trimestral das recomendações geradas — nutricionistas validam sample de 100 casos",
+      "Automated: Detecção de data drift no pipeline MLOps — alerta se distribuição de exames desvia > 2σ do baseline",
+      "Automated: Dependency vulnerability scan (SBOM) bloqueante no merge para dependências críticas de saúde",
+      "Automated: Acoplamento aferente/eferente por módulo — alerta se instabilidade > 0.7 em módulos de domínio",
+      "Automated: SLA de disponibilidade 99.9% monitorada por synthetic monitoring externo"
+    ],
+    "incremental_change": {
+      "fase_1_mvp": "Modular Monolith com três módulos explicitamente isolados: [1] Ingestão e parsing de PDFs de exames (OCR + LLM extrator), [2] Motor de recomendações (regras clínicas + LLM), [3] Perfil e histórico do usuário. Banco único PostgreSQL com schemas separados por módulo. Deploy em container único. Permite iteração rápida sem overhead de rede entre serviços.",
+      "fase_2_escala_seletiva": "Extrair módulo de inferência de IA para serviço independente quando latência ou custo de compute justificar isolamento. Trigger: > 500 usuários ativos simultâneos ou custo de GPU > 30% da infra total. Introduzir fila assíncrona (análise de exame não precisa ser síncrona).",
+      "fase_3_ecossistema": "API pública para integração com clínicas e laboratórios. Introduzir event sourcing no histórico de recomendações para auditabilidade e replay. Extrair serviço de notificações/engajamento. Decisão de microsserviços completos apenas se equipes distintas precisarem de autonomia de deploy independente.",
+      "principio_guia": "Strangler Fig para qualquer migração de módulo para serviço. Nunca big-bang. Cada extração validada por fitness function de performance e contrato antes de remover o código original."
+    },
+    "reversibility": {
+      "reversiveis": [
+        "Provedor de LLM (OpenAI, Anthropic, Gemini) — abstraído atrás de interface AIRecommendationPort, troca sem impacto no domínio",
+        "Provedor de OCR para parsing de exames — mesmo padrão de porta/adaptador",
+        "Framework de frontend — UI desacoplada via API REST/GraphQL",
+        "Serviço de envio de emails/push notifications — substituível via interface NotificationPort",
+        "Provedor de autenticação — Clerk, Auth0, Cognito são intercambiáveis com adapter pattern",
+        "Estratégia de cache — Redis, Memcached ou in-process substituíveis sem mudança de domínio"
+      ],
+      "dificeis_de_reverter": [
+        "Modelo de dados central do usuário e histórico de exames — migração custosa, exige planejamento cuidadoso desde o início",
+        "Escolha de banco de dados principal — PostgreSQL recomendado pelo ecossistema e suporte a JSONB para dados semi-estruturados de exames",
+        "Formato de armazenamento de exames brutos — definir schema versionado desde o MVP",
+        "Estrutura de IDs e tenant isolation para multi-tenancy — decisão de last responsible moment, mas antes de onboarding de clínicas"
+      ],
+      "last_responsible_moment": "Decisão de multi-tenancy (schema-per-tenant vs row-level-security) deve ser tomada antes de onboarding do primeiro cliente B2B clínica, não antes."
+    },
+    "coupling": {
+      "estrategia": "Acoplamento por domínio, não por camada técnica. Cada módulo/serviço possui seu próprio modelo de dados, sem joins cross-módulo no banco.",
+      "entre_modulos": "Comunicação via eventos de domínio (ExamProcessed, RecommendationGenerated) com schema registry versionado. Módulos não compartilham classes de domínio — apenas DTOs de evento.",
+      "com_ia_externa": "Anti-Corruption Layer obrigatório entre domínio de nutrição e APIs de LLM. Prompts são artefatos versionados no repositório, não strings inline no código.",
+      "com_laboratorios": "Adapter dedicado por laboratório (Fleury, DASA, etc.) atrás de interface LabResultPort. Mapeamento de referências laboratoriais para ontologia interna (LOINC) feito no adapter.",
+      "frontend_backend": "API-first com OpenAPI spec como contrato. Frontend nunca acessa banco diretamente. BFF (Backend for Frontend) opcional na fase 3."
+    },
+    "interfaces": [
+      "REST API pública versionada (/v1, /v2) para app mobile e web",
+      "Webhook inbound para receber resultados de laboratórios parceiros",
+      "WebSocket para atualizações em tempo real de status de análise de exame",
+      "API GraphQL para dashboard de nutricionistas (consultas flexíveis de histórico)",
+      "Event stream interno (Kafka ou Postgres LISTEN/NOTIFY no MVP) entre módulos",
+      "Admin API interna para operações de backoffice e suporte",
+      "MLOps API para pipeline de retreino e versionamento de modelos",
+      "Webhook outbound para integrações com apps de terceiros (MyFitnessPal, Garmin)"
+    ],
+    "escalabilidade": {
+      "modelo": "Scale-out horizontal stateless nos serviços de API e inferência. Estado persiste apenas em banco de dados e filas.",
+      "gargalos_conhecidos": "Inferência de IA é CPU/GPU intensiva e cara — escalar com auto-scaling baseado em tamanho da fila, não em CPU do serviço web. Processar análise de exame de forma assíncrona evita timeout na requisição HTTP.",
+      "multi_tenancy": "Row-level security no PostgreSQL para isolamento de dados entre usuários B2C. Schema-per-tenant para clientes B2B (clínicas) que exigem isolamento mais forte.",
+      "caching": "Cache de resultados de LLM para prompts idênticos (mesmo exame, mesmo perfil) — reduz custo de tokens em 40-60% estimado. Cache invalidado ao atualizar protocolo nutricional.",
+      "cdn": "Assets estáticos e PDFs de planos alimentares servidos via CDN. Relatórios gerados sob demanda com URL assinada de curta duração."
+    },
+    "custos": {
+      "maior_custo_variavel": "Tokens de LLM por análise de exame. Estratégia: prompt engineering agressivo para minimizar tokens, caching de respostas, considerar fine-tuned model próprio em escala (> 10k análises/mês).",
+      "infra_base": "Containerizado em cloud (Railway/Render no MVP, migrar para ECS/GKE quando custo de PaaS superar engenharia de infra). PostgreSQL managed (Supabase ou RDS). Objeto storage para PDFs (S3).",
+      "otimizacao_incremental": "Monitorar custo por análise de exame como fitness function financeira. Threshold: > R$0,50/análise dispara investigação de otimização de prompt ou modelo mais barato.",
+      "modelo_financeiro": "CapEx próximo de zero, OpEx variável com volume. Favorece bootstrap e validação de PMF antes de investimento em infra própria."
+    },
+    "monetizacao": {
+      "b2c": "Freemium com limite de análises/mês (1 análise gratuita, plano pago para análises recorrentes e histórico). Subscription mensal/anual.",
+      "b2b": "Licença por assento para nutricionistas e clínicas. White-label para laboratórios (laboratório oferece análise de IA junto com o resultado do exame). Revenue share com labs parceiros.",
+      "expansao": "Marketplace de protocolos nutricionais criados por especialistas. API paga para desenvolvedores de apps de saúde.",
+      "metricas_chave": "MRR, churn por cohort, custo de análise vs receita por análise, NPS de nutricionistas (validadores de qualidade clínica)"
+    },
+    "stack_sugerida": {
+      "backend": "Node.js com TypeScript (NestJS) ou Python (FastAPI) — ambos têm ecossistema forte para IA e processamento assíncrono. Python preferível se equipe tiver background em ML.",
+      "banco_de_dados": "PostgreSQL com pgvector (embeddings para busca semântica de alimentos e histórico). Redis para cache e filas simples no MVP.",
+      "ia_llm": "Anthropic Claude API (claude-haiku-4-5 para extração de dados de exames, claude-sonnet-4-6 para recomendações complexas). Abstração via LangChain ou LiteLLM para portabilidade.",
+      "ocr_exames": "AWS Textract ou Google Document AI para parsing de PDFs de laboratórios. Fallback manual para formatos não reconhecidos.",
+      "mlops": "MLflow para rastreamento de experimentos e versionamento de prompts. Evidently AI para monitoramento de drift.",
+      "frontend": "Next.js (React) para web app. React Native ou Flutter para mobile.",
+      "infra_mvp": "Railway ou Render para simplicidade operacional. Docker Compose para desenvolvimento local.",
+      "infra_escala": "AWS ECS Fargate ou GKE Autopilot. Terraform para infra como código.",
+      "observabilidade": "OpenTelemetry como padrão de instrumentação. Grafana + Tempo + Loki para visualização. Sentry para erros de aplicação.",
+      "seguranca": "Vault ou AWS Secrets Manager para credenciais. Snyk no pipeline CI. Criptografia AES-256 em repouso para dados de exames."
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Segurança e Privacidade (LGPD/HIPAA) — dados de saúde são sensíveis por definição\",\n    \"Evolvabilidade — modelo de IA e protocolos nutricionais mudam frequentemente\",\n    \"Confiabilidade — recomendações de saúde exigem consistência e rastreabilidade\",\n    \"Interoperabilidade — integração com laboratórios, wearables e prontuários eletrônicos\",\n    \"Observabilidade — monitorar drift de modelo, qualidade de dados e comportamento clínico\",\n    \"Escalabilidade elástica — inferência de IA tem picos imprevisíveis\",\n    \"Auditabilidade — cada recomendação deve ser rastreável até os dados de origem\"\n  ],\n  \"fitness_functions\": [\n    \"Automated: LGPD compliance scan em cada PR (dados PII nunca em logs, criptografia em repouso verificada)\",\n    \"Automated: Latência P99 de inferência IA < 3s medida em pipeline CI com carga sintética\",\n    \"Automated: Cobertura de testes de mutação > 85% nos módulos de parsing de exames laboratoriais\",\n    \"Automated: Chaos engineering semanal — injeção de falha no provider de IA valida fallback para modelo local\",\n    \"Automated: Contract tests (Pact) entre serviço de exames e serviço de recomendações a cada deploy\",\n    \"Manual/periódica: Revisão clínica trimestral das recomendações geradas — nutricionistas validam sample de 100 casos\",\n    \"Automated: Detecção de data drift no pipeline MLOps — alerta se distribuição de exames desvia > 2σ do baseline\",\n    \"Automated: Dependency vulnerability scan (SBOM) bloqueante no merge para dependências críticas de saúde\",\n    \"Automated: Acoplamento aferente/eferente por módulo — alerta se instabilidade > 0.7 em módulos de domínio\",\n    \"Automated: SLA de disponibilidade 99.9% monitorada por synthetic monitoring externo\"\n  ],\n  \"incremental_change\": {\n    \"fase_1_mvp\": \"Modular Monolith com três módulos explicitamente isolados: [1] Ingestão e parsing de PDFs de exames (OCR + LLM extrator), [2] Motor de recomendações (regras clínicas + LLM), [3] Perfil e"
+}

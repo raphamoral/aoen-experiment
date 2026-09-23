@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "sem_framework",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 6,
+  "justificativa": "A separação do serviço de processamento de exames em worker assíncrono e o isolamento do Next.js do Python demonstram intenção modular sólida, mas o acoplamento direto ao GPT-4o/Claude na lógica de negócio, ao Supabase como plataforma (não apenas PostgreSQL) e a ausência de uma camada anti-corrupção entre o domínio e os provedores externos torna a substituição de componentes-chave cara, não trivial."
+}

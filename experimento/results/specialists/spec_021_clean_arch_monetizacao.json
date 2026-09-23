@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 21,
+  "abordagem": "clean_arch",
+  "criterio": "monetizacao",
+  "especialista": "Especialista em Modelos de Negócio e Monetização SaaS",
+  "nota": 2,
+  "justificativa": "A proposta arquitetural evidencia a entidade 'Tenant' com atributos 'plano', 'limiteAssets' e 'limiteDevices', sugerindo uma intenção de modelo freemium/tiered baseado em limites de uso, mas não há definição de tiers, valores, métricas de negócio (MRR, LTV, CAC, churn) nem análise de sustentabilidade receita vs. custo por cliente."
+}

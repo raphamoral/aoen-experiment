@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma mensuração de custo por cliente: a única referência a custo é 'custo previsível' do Hyperledger Fabric versus redes públicas, que é raciocínio de FinOps (custo total de infra), não unit economics — não há cálculo de custo por operação/transação, nenhum mecanismo de rastreamento de consumo por tenant, e nenhuma conexão entre estrutura de custos e modelo de precificação."
+}

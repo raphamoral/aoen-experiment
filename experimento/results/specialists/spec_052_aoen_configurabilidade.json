@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 52,
+  "abordagem": "aoen",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 8,
+  "justificativa": "O fluxo principal é explicitamente declarado como invariável no código e os parâmetros por cliente (plano APPCC, PCCs, limites críticos, frequências) são tratados como dados configuráveis — o motor de conformidade avalia regras configuráveis por PCC sem lógica hardcoded, o que viabiliza onboarding por configuração pura; a nota não é 10 porque a lista de parâmetros configuráveis aparece truncada na proposta e aspectos como permissões por papel, templates de relatório, fluxos de notificação e escalonamento de não-conformidades não são endereçados explicitamente como configuração por tenant."
+}

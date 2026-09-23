@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta lista os componentes de infraestrutura (PostgreSQL, Redis, S3/R2, SQS, Stripe, Datadog, etc.) e menciona práticas como escala horizontal e processos stateless, mas não apresenta nenhuma estimativa concreta de custo em dólares/reais, nenhuma estratégia explícita de otimização de custos (como instâncias spot, scale-to-zero, Reserved Instances, tiers de armazenamento frio) e nenhuma projeção de como os custos evoluem com o crescimento da base de usuários."
+}

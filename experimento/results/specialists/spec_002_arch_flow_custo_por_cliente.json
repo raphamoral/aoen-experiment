@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "arch_flow",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 2,
+  "justificativa": "A arquitetura menciona 'split de taxa' no Escrow e 'algoritmo de precificação dinâmica por complexidade regulatória', o que indica consciência de custo variável por transação, mas ambos tratam do que cobrar do cliente — não do custo interno por operação ou por tenant; não há rastreamento de consumo por cliente, nenhuma decomposição tipo 'cada verificação de credencial custa R$X de API + R$Y de storage', e o Analytics está focado em métricas de conversão do marketplace, não em unit economics por cliente."
+}

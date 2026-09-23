@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 12,
+  "abordagem": "sem_framework",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 2,
+  "justificativa": "A proposta menciona provedores cloud (AWS/GCP) e alguns componentes de infraestrutura (fila, banco de séries temporais, particionamento), mas não apresenta nenhuma estimativa concreta de custo em valores monetários, nenhuma estratégia de otimização financeira (spot instances, scale-to-zero, storage tiers) e nenhuma projeção de como os custos evoluem com o crescimento de clientes ou volume de dados de sensores."
+}

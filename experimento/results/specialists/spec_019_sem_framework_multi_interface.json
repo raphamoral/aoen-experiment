@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 19,
+  "abordagem": "sem_framework",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 7,
+  "justificativa": "O projeto prevê cinco interfaces bem justificadas por perfis reais de usuário (recepcionista, dentista, gestor, paciente, notificações), com contextos de uso distintos e coerentes, mas não há menção explícita ao desacoplamento da lógica de negócio das interfaces nem evidência de uma camada de API que permitiria adicionar novos canais sem reescrita."
+}

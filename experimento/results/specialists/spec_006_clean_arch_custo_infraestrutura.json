@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 6,
+  "abordagem": "clean_arch",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta arquitetural descreve apenas entidades de domínio e regras de negócio, sem qualquer menção a componentes de infraestrutura cloud, estimativas de custo, estratégias de otimização ou projeção de crescimento com a base de usuários."
+}

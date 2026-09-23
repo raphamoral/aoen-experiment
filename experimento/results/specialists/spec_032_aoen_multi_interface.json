@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 32,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces distintas (Dashboard Web, REST API, e-mail, webhook e white-label embed), cada uma justificada por um perfil real de usuário e caso de uso de mercado específico, com a lógica de negócio inteiramente centralizada no ReviewInsightService e as interfaces atuando apenas como adaptadores de apresentação, garantindo total desacoplamento e capacidade de expansão sem reescrita."
+}

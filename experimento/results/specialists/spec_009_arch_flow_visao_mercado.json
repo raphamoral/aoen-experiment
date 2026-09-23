@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 9,
+  "abordagem": "arch_flow",
+  "criterio": "visao_mercado",
+  "especialista": "Especialista em Estratégia de Mercado e Go-to-Market",
+  "nota": 3,
+  "justificativa": "O documento é essencialmente uma proposta arquitetural técnica: o público-alvo (compradores e vendedores de equipamentos médicos) é inferível pelos bounded contexts, mas nunca declarado explicitamente; não há articulação das dores do cliente, estimativa de tamanho de mercado (TAM/SAM/SOM), análise de concorrentes nem posicionamento competitivo — a certificação aparece como feature técnica, não como proposta de valor diferenciadora comunicada ao mercado."
+}

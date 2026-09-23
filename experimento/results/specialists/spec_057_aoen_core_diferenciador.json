@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 57,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O motor de análise comportamental via LLM é claramente identificado como núcleo, está abstraído por interface extensível (AnalysisEngine agnóstica de fornecedor), e resolve algo que bloqueadores tradicionais não resolvem — interpretar padrões e gerar insights de bem-estar; perde um ponto por não demonstrar evidência de que a camada de interpretação comportamental é proprietária o suficiente para criar lock-in real, dado que qualquer concorrente pode replicar a mesma arquitetura de interface + LLM."
+}

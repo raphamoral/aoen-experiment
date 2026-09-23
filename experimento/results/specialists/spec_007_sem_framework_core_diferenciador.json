@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "sem_framework",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 3,
+  "justificativa": "O produto lista funcionalidades de gamificação (pontos, rankings, medalhas) e trilhas de microlearning, mas não identifica nem isola um componente tecnológico central que o diferencie — a proposta é uma combinação conhecida de LMS + mecânicas de jogo, sem explicar por que o motor de progressão, os algoritmos de recomendação de conteúdo ou qualquer outro elemento seria insubstituível frente a Duolingo for Business, TalentLMS ou Axonify."
+}

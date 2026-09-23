@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 90,
+  "abordagem": "aoen",
+  "criterio": "core_diferenciador",
+  "especialista": "Especialista em Produto e Inovação",
+  "nota": 9,
+  "justificativa": "O núcleo diferenciador está claramente identificado ('sem isso é só agenda; com isso é prontuário clínico'), explicitamente isolado do mecanismo de captura (o modelo de dados da evolução permanece estável independentemente de como é preenchido), e genuinamente extensível (formulário manual, voz, IA, equipamentos) — falta apenas uma articulação mais direta de por que soluções existentes de prontuário eletrônico genérico falham especificamente nesse recorte, o que impede o 10."
+}

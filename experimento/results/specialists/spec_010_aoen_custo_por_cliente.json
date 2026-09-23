@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma mensuração de custo por cliente ou por operação — descreve exclusivamente arquitetura técnica e mercado, sem calcular quanto cada NFS-e emitida custa via provedor fiscal (eNotas, NFe.io), quanto cada sincronização bancária consome via Open Finance, ou como o custo por tenant seria rastreado e conectado ao modelo de precificação."
+}

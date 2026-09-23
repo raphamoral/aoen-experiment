@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 2,
+  "abordagem": "aoen",
+  "criterio": "custo_por_cliente",
+  "especialista": "Especialista em Precificação e Unit Economics de SaaS",
+  "nota": 0,
+  "justificativa": "A proposta não menciona custo por cliente em nenhum momento — não há cálculo de custo por operação de matching, por chamada de IA de validação de credenciais, por tenant ativo, nem qualquer rastreamento de consumo de recursos por empresa ou freelancer; toda a descrição é funcional/arquitetural, sem unidade econômica alguma."
+}

@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 60,
+  "abordagem": "aoen",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 10,
+  "justificativa": "O projeto define cinco interfaces (mobile nativo, web dashboard, API REST, PWA e portal white-label), cada uma justificada por um perfil de usuário e vetor de mercado distintos, com lógica de negócio inteiramente isolada em uma InspectionService layer que expõe use cases via DTOs — permitindo adicionar novas interfaces sem tocar no domínio."
+}

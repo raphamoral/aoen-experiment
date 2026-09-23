@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 11,
+  "abordagem": "clean_arch",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 7,
+  "justificativa": "As decisões visíveis formam uma narrativa coerente — entidades puras em Clean Architecture, fluxo lógico Startup→Match→Proposta→Reunião refletindo o ciclo real de investimento, e o foco regional declarado no produto está consistentemente representado nos atributos de Investidor e Match — porém há lacunas que quebram a coesão: a entidade Perfil referencia um 'usuarioId' sem que exista uma entidade User no domínio, criando uma dependência fantasma; a proposta está truncada impedindo avaliação dos casos de uso restantes; e a separação entre Perfil e Startup/Investidor não está justificada arquiteturalmente, gerando sobreposição de responsabilidade de reputação."
+}

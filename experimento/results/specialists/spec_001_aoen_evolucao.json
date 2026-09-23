@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 1,
+  "abordagem": "aoen",
+  "criterio": "evolucao",
+  "especialista": "Especialista em Arquitetura Evolutiva e Manutenibilidade",
+  "nota": 8,
+  "justificativa": "A arquitetura demonstra pensamento evolutivo sólido: o padrão de adaptadores nas três interfaces internas (LocationProvider, RoutingEngine, NotificationBus) protege o núcleo de dependências externas, a camada de serviços sem lógica nas interfaces permite adicionar canais sem duplicação, e a máquina de estados fixa com parâmetros configuráveis equilibra rigidez necessária com flexibilidade operacional — perde dois pontos por ausência de abstração explícita de banco de dados (trocar Postgres por Cassandra exigiria mudanças não mapeadas), por não endereçar estratégia de escala de infraestrutura (particionamento, filas, cache) que pode forçar revisão arquitetural ao cruzar certos limiares de volume, e porque o estado de entrega declarado 'imutável no código' cria dívida de evolução caso o modelo de negócio exija novos estados intermediários."
+}

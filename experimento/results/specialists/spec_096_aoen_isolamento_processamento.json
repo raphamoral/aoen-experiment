@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 96,
+  "abordagem": "aoen",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 3,
+  "justificativa": "A proposta demonstra desacoplamento lógico via Service Layer e abstração do motor de IA por interface intercambiável, mas é completamente silente sobre isolamento físico de processos pesados (validação de conformidade, geração de documentos, chamadas ao LLM), ausência de filas/workers assíncronos, sem menção a fallback em caso de falha do motor de IA, e sem estratégia de escalonamento independente para cargas computacionais intensas — o que sugere que tudo ainda roda no mesmo processo de aplicação."
+}

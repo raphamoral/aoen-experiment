@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 7,
+  "abordagem": "evolutionary",
+  "criterio": "configurabilidade",
+  "especialista": "Especialista em Arquitetura SaaS Multi-tenant",
+  "nota": 3,
+  "justificativa": "A proposta menciona multi-tenancy e isolamento por tier como característica arquitetural, mas não descreve nenhum mecanismo concreto de configurabilidade por tenant — ausência total de referências a feature flags, tabelas de configuração por cliente, engine de regras parametrizável ou processo de onboarding sem deploy, sugerindo que o isolamento cogitado é estrutural (schema/infra), não comportamental."
+}

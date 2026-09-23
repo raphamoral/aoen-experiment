@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 18,
+  "abordagem": "aoen",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "A arquitetura conta uma história única e contínua — do problema (churn custa receita) à abstração (PredictionEngine substituível) ao isolamento de lógica (ChurnService como único detentor das regras) às interfaces como meros adaptadores, e o mercado-alvo de cada interface justifica exatamente a decisão técnica que a suporta; a única tensão latente é entre o portal self-service prometido a analistas e o pipeline declarado como imutável, o que poderia gerar pressão real de clientes enterprise por customização de fluxo além dos parâmetros configuráveis — tensão não resolvida explicitamente na proposta."
+}

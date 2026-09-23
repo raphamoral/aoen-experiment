@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 14,
+  "abordagem": "12factor",
+  "criterio": "multi_interface",
+  "especialista": "Especialista em UX e Plataformas Multi-canal",
+  "nota": 3,
+  "justificativa": "A proposta menciona apenas uma interface (frontend-web) sem estratégia explícita de múltiplas interfaces por perfil de usuário ou mercado; o api-gateway e a arquitetura stateless/desacoplada criam base técnica favorável à expansão, mas não há menção de app mobile, SDK para integradores, interface administrativa ou CLI, nem justificativa de alcance de mercado para as escolhas feitas."
+}

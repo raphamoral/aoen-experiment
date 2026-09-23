@@ -1,0 +1,74 @@
+{
+  "ideia_idx": 2,
+  "ideia": "Marketplace de freelancers especializados em compliance regulatório",
+  "abordagem": "evolutionary",
+  "response": {
+    "architecture_characteristics": [
+      "Segurança e conformidade (LGPD, SOC 2, ISO 27001) — crítica para mercado regulatório",
+      "Disponibilidade alta (99,9%) — transações financeiras e contratos ativos",
+      "Auditabilidade — rastreabilidade completa de ações e decisões",
+      "Escalabilidade elástica — picos sazonais em períodos de mudança regulatória",
+      "Testabilidade — fitness functions automatizadas viáveis",
+      "Observabilidade — métricas de negócio e técnicas em tempo real",
+      "Evolvability — domínio regulatório muda constantemente, arquitetura deve acompanhar"
+    ],
+    "fitness_functions": [
+      "Automated: tempo de resposta P95 < 300ms em endpoints de busca de freelancers",
+      "Automated: cobertura de testes >= 80% em módulos de pagamento e contratos",
+      "Automated: scan de dependências (OWASP) no CI — zero vulnerabilidades críticas para merge",
+      "Automated: drift de schema de banco detectado antes de deploy (schema registry)",
+      "Automated: tamanho de serviço — nenhum módulo excede 10k LOC sem review arquitetural",
+      "Holistic: compliance check trimestral via auditoria externa (SOC 2 Type II)",
+      "Holistic: NPS de freelancers e contratantes >= 40 aferido mensalmente",
+      "Holistic: tempo médio de onboarding de freelancer < 48h medido no produto",
+      "Automated: latência de filas de pagamento < 5s em P99",
+      "Automated: zero downtime deploys validados via smoke tests pós-deploy"
+    ],
+    "incremental_change": "Iniciar como modular monolith (single deployable unit com módulos bem delimitados): Core-Identity, Marketplace, Contracts, Payments, Compliance-Profiles, Notifications. Fronteiras de domínio definidas via DDD desde o início para permitir extração futura. Migração para serviços independentes guiada por fitness functions de acoplamento e carga — apenas quando um módulo demonstrar necessidade real de escala ou deployment independente. Strangler Fig pattern para evoluções de funcionalidade existente. Feature flags para rollout gradual sem branching de longa duração.",
+    "reversibility": {
+      "reversiveis": [
+        "Escolha de banco de dados dentro do mesmo paradigma (PostgreSQL → Aurora PG)",
+        "Provedor de pagamentos (Stripe → Adyen via adapter pattern)",
+        "Provedor de email/notificação (SendGrid → AWS SES)",
+        "Infraestrutura de deploy (ECS → EKS — mesmos containers)",
+        "Frontend framework (mantendo API contract estável)",
+        "Extração de módulo do monolith para microserviço"
+      ],
+      "irreversiveis_ou_caras": [
+        "Modelo de dados central de identidade e contratos — decisão Last Responsible Moment com máximo cuidado",
+        "Estrutura de multi-tenancy (shared schema vs. schema-per-tenant) — definir antes de ter clientes enterprise",
+        "Modelo de precificação e comissionamento — impacta contratos ativos",
+        "Escolha de jurisdição de dados (região AWS/Azure) — compliance e LGPD",
+        "Protocolo de integração com sistemas externos de compliance (ex: Receita Federal, CVM)"
+      ]
+    },
+    "coupling": "Acoplamento temporal evitado via mensageria assíncrona (eventos de domínio) para fluxos não críticos (notificações, atualizações de perfil, analytics). Acoplamento síncrono (REST/gRPC) apenas onde consistência imediata é necessária (checkout, autenticação). Anti-corruption layers em todas as integrações externas. Contratos de API versionados semanticamente. Shared kernel mínimo: apenas tipos de identidade e moeda compartilhados entre módulos. Banco de dados por módulo lógico desde o início — sem joins cross-domínio.",
+    "interfaces": [
+      "REST API pública versionada (v1, v2) para clientes web e mobile",
+      "GraphQL gateway para frontend — reduz overfetching em listagens complexas de freelancers",
+      "Webhooks para integrações de clientes corporativos (eventos: contrato assinado, pagamento liberado)",
+      "Event bus interno (domínio) — tópicos: user.registered, contract.signed, payment.released, review.submitted",
+      "Admin API interna (autenticada por mTLS) para operações de suporte e compliance",
+      "SDK JavaScript/TypeScript para embed de widget de contratação em sites de parceiros",
+      "API de relatórios/exportação (CSV, PDF) para auditoria regulatória dos contratantes"
+    ],
+    "escalabilidade": "Escala horizontal stateless nos módulos de Marketplace e busca (cacheados via Redis). Busca de freelancers via Elasticsearch para queries complexas com filtros regulatórios (CVM, BACEN, LGPD, GDPR). Read replicas para relatórios pesados sem impactar transações. Filas de pagamento com workers escaláveis independentemente. CDN para assets estáticos e documentos de perfil. Auto-scaling baseado em métricas de negócio (contratos abertos, buscas por segundo) não apenas CPU. Multi-região apenas quando fitness function de latência geográfica justificar o custo.",
+    "custos": "Fase inicial (modular monolith): custo operacional baixo — 1-2 instâncias com RDS PostgreSQL e Redis. Evitar over-engineering prematuro em microserviços que triplicaria custo de infra e operação sem ganho real. Usar serverless (Lambda/Cloud Functions) apenas para workloads esporádicos (geração de PDF, envio de relatórios). Monitorar Unit Economics por módulo via tags de custo na nuvem desde o dia 1. Revisar fitness function de custo mensal: custo por transação processada não deve exceder 2% da comissão gerada.",
+    "monetizacao": "Comissão por transação (principal): 10-15% sobre valor do contrato — estrutura de taxa escalonada por volume para reter clientes enterprise. Assinatura Premium para freelancers (destaque em busca, badge de verificação avançada, acesso antecipado a contratos). Assinatura Enterprise para contratantes (SLA garantido, relatórios de compliance, API de integração). Verificação e certificação de freelancers (parceria com certificadoras regulatórias — receita de split). Dados agregados e insights de mercado regulatório (B2B, opt-in explícito dos usuários — LGPD compliant).",
+    "stack_sugerida": {
+      "backend": "Node.js (TypeScript) com NestJS — modularidade nativa alinha com modular monolith strategy. Alternativa: Go para módulos de alta performance (busca, pagamentos) quando fitness function de latência exigir.",
+      "frontend": "Next.js (React) — SSR para SEO de perfis de freelancers, App Router para performance",
+      "banco_primario": "PostgreSQL (AWS Aurora Serverless v2) — ACID para contratos e pagamentos, escala automática",
+      "busca": "Elasticsearch ou OpenSearch — filtros complexos por especialização regulatória, localização, certificações",
+      "cache": "Redis (ElastiCache) — sessões, rate limiting, cache de busca",
+      "mensageria": "AWS SQS + SNS ou RabbitMQ — event bus interno, filas de pagamento",
+      "pagamentos": "Stripe Connect — marketplace-native, split de pagamentos, compliance financeiro embutido",
+      "infra": "AWS com Terraform — ECS Fargate para containers, sem overhead de Kubernetes no início",
+      "ci_cd": "GitHub Actions + deploy canário via AWS CodeDeploy — fitness functions executadas no pipeline",
+      "observabilidade": "OpenTelemetry + Datadog ou Grafana Stack (Loki, Tempo, Prometheus) — traces, logs, métricas correlacionados",
+      "autenticacao": "Auth0 ou AWS Cognito — identity federada, MFA obrigatório para ações financeiras",
+      "documentos_contratos": "AWS S3 + KMS encryption + DocuSign API para assinatura digital juridicamente válida"
+    }
+  },
+  "raw": "```json\n{\n  \"architecture_characteristics\": [\n    \"Segurança e conformidade (LGPD, SOC 2, ISO 27001) — crítica para mercado regulatório\",\n    \"Disponibilidade alta (99,9%) — transações financeiras e contratos ativos\",\n    \"Auditabilidade — rastreabilidade completa de ações e decisões\",\n    \"Escalabilidade elástica — picos sazonais em períodos de mudança regulatória\",\n    \"Testabilidade — fitness functions automatizadas viáveis\",\n    \"Observabilidade — métricas de negócio e técnicas em tempo real\",\n    \"Evolvability — domínio regulatório muda constantemente, arquitetura deve acompanhar\"\n  ],\n  \"fitness_functions\": [\n    \"Automated: tempo de resposta P95 < 300ms em endpoints de busca de freelancers\",\n    \"Automated: cobertura de testes >= 80% em módulos de pagamento e contratos\",\n    \"Automated: scan de dependências (OWASP) no CI — zero vulnerabilidades críticas para merge\",\n    \"Automated: drift de schema de banco detectado antes de deploy (schema registry)\",\n    \"Automated: tamanho de serviço — nenhum módulo excede 10k LOC sem review arquitetural\",\n    \"Holistic: compliance check trimestral via auditoria externa (SOC 2 Type II)\",\n    \"Holistic: NPS de freelancers e contratantes >= 40 aferido mensalmente\",\n    \"Holistic: tempo médio de onboarding de freelancer < 48h medido no produto\",\n    \"Automated: latência de filas de pagamento < 5s em P99\",\n    \"Automated: zero downtime deploys validados via smoke tests pós-deploy\"\n  ],\n  \"incremental_change\": \"Iniciar como modular monolith (single deployable unit com módulos bem delimitados): Core-Identity, Marketplace, Contracts, Payments, Compliance-Profiles, Notifications. Fronteiras de domínio definidas via DDD desde o início para permitir extração futura. Migração para serviços independentes guiada por fitness functions de acoplamento e carga — apenas quando um módulo demonstrar necessidade real de escala ou deployment independente. Strangler Fig pattern para evoluções de funcionalidade existente. Feature flags para rollou"
+}

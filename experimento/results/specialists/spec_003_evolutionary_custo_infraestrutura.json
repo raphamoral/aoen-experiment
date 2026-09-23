@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 3,
+  "abordagem": "evolutionary",
+  "criterio": "custo_infraestrutura",
+  "especialista": "Especialista em FinOps e Infraestrutura Cloud",
+  "nota": 0,
+  "justificativa": "A proposta não contém nenhuma menção a custos de infraestrutura — sem estimativas de valores, sem nomeação de componentes com implicação financeira (além de uma referência incidental à região AWS sa-east-1 para compliance), sem estratégia de otimização de custo (scale-to-zero, spot, tiers de storage) e sem projeção de crescimento de custo com a base de clientes B2B."
+}

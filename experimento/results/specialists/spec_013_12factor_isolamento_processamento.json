@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 13,
+  "abordagem": "12factor",
+  "criterio": "isolamento_processamento",
+  "especialista": "Especialista em Engenharia de Resiliência e Sistemas Distribuídos",
+  "nota": 8,
+  "justificativa": "A proposta define explicitamente tipos de processo distintos (web workers separados de worker processes para filas assíncronas) com isolamento físico via containers/Kubernetes e escalonamento independente, além de uso de RabbitMQ/SQS para processamento assíncrono; perde pontos por não detalhar mecanismos de fallback explícitos (circuit breaker, dead-letter queues, degradação graciosa) quando os worker processes falham."
+}

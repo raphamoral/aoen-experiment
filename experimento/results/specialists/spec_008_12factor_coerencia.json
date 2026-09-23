@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 8,
+  "abordagem": "12factor",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 8,
+  "justificativa": "As decisões se reforçam de forma consistente — monorepo + microserviços + CI/CD imutável + config via Vault formam um eixo 12-factor coeso, e cada backing service tem papel não-sobreposto justificado pelo domínio (PostgreSQL para dados mestres regulatórios, MongoDB para manifests flexíveis, Kafka/RabbitMQ para integração assíncrona com blockchain, Redis para tempo real) — mas a recorrência de bifurcações críticas não resolvidas (Hyperledger Fabric vs. Polygon, Kafka vs. RabbitMQ, Keycloak vs. Auth0, S3 vs. MinIO) fragmenta a narrativa arquitetural: essas escolhas têm implicações operacionais, de SDK e de modelo de confiança radicalmente distintas, e deixá-las em aberto impede que o sistema 'conte uma história única' da rastreabilidade ao deployment."
+}

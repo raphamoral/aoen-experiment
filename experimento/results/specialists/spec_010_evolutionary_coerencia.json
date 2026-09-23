@@ -1,0 +1,8 @@
+{
+  "ideia_idx": 10,
+  "abordagem": "evolutionary",
+  "criterio": "coerencia",
+  "especialista": "Especialista em Arquitetura de Sistemas e Design Sistêmico",
+  "nota": 9,
+  "justificativa": "As decisões formam um sistema altamente coeso: as características arquiteturais (instabilidade das APIs externas, evoluibilidade legislativa, multi-tenancy) geram diretamente as fitness functions correspondentes (simulação trimestral do SEFAZ, gate de cobertura no módulo fiscal, auditoria mensal de isolamento), que por sua vez validam as escolhas de reversibilidade (ACL por provedor, adapter de pagamento); o Strangler Fig respeita explicitamente o que *não pode* ser adiado (modelo de domínio fiscal, estratégia de multi-tenancy) enquanto posterga o que pode, criando uma narrativa sem contradições entre 'escalar via configuração' e 'decisões no último momento responsável' — perde apenas um ponto pela incompletude do texto em 'difíceis de reverter' e pela ausência de indicação arquitetural de onde reside o cálculo fiscal validado pela fitness function de zero-divergência."
+}

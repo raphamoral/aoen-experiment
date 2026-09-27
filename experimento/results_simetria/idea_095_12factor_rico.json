@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 95,
+  "ideia": "Plataforma de telemedicina especializada em dermatologia com análise de imagem",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) sob Git contendo API backend, frontend web/mobile e workers de análise de imagem, com múltiplas implantações (dev, staging, produção) a partir da mesma base versionada. Módulos de análise de IA e telemedicina compartilham bibliotecas comuns via packages internos, nunca por cópia de código.",
+    "dependencies": "Dependências declaradas explicitamente (package.json/requirements.txt/go.mod) e isoladas via containers Docker; nenhuma dependência implícita do sistema operacional host (ex: bibliotecas de processamento de imagem como OpenCV/Pillow são fixadas em versão e empacotadas na imagem). Cada serviço (API, worker de IA, agendador) tem seu próprio manifesto de dependências.",
+    "config": "Toda configuração (URLs de banco, chaves de API de gateway de pagamento, credenciais de storage de imagens médicas, chaves do modelo de IA, segredos HIPAA/LGPD) fica em variáveis de ambiente, nunca no código. Varia entre implantações: endpoint do banco, bucket de storage, chave do provedor de IA, domínio, flags de feature (ex: habilitar novo modelo de detecção de melanoma), níveis de log.",
+    "backing_services": "Banco de dados (PostgreSQL), fila de mensagens (Redis/SQS) para processamento assíncrono de imagens, storage de objetos (S3-compatível) para imagens dermatológicas, serviço de e-mail/SMS para notificações, gateway de pagamento (Stripe) e serviço de videochamada (WebRTC/Twilio) são todos tratados como recursos anexáveis via URL/credencial, intercambiáveis sem alteração de código.",
+    "build_release_run": "Pipeline CI/CD gera um build imutável (imagem Docker versionada) a partir do código; o build é combinado com config do ambiente para formar uma release única e rastreável (tag/hash); a execução apenas roda essa release nos processos, sem alterações em tempo real. Rollback é feito revertendo para release anterior.",
+    "processes": "Processos da API e dos workers de análise de imagem são stateless; sessões de usuário e tokens JWT não ficam em memória local. Estado persistente (prontuários, imagens, laudos, histórico de consultas) reside exclusivamente no PostgreSQL e no storage de objetos, nunca no disco local do processo ou em memória de sessão.",
+    "port_binding": "Cada serviço (API REST, serviço de sinalização WebRTC, worker de inferência de IA exposto internamente) é autocontido e expõe sua funcionalidade via bind de porta HTTP/gRPC, atuando como backing service para outros serviços sem depender de um servidor web externo injetado em runtime.",
+    "concurrency": "Escala horizontalmente por tipo de processo: processos web (API/dashboard) escalam por número de requisições concorrentes; processos worker (análise de imagem via modelo de IA, geração de laudos) escalam por tamanho da fila; processos de agendamento (lembretes de consulta, expiração de sessões) rodam como processos periódicos leves e isolados.",
+    "disposability": "Processos iniciam em segundos (containers leves, sem estado a recarregar) e encerram graciosamente terminando consultas em andamento e devolvendo mensagens não processadas da fila (ex: análise de imagem interrompida) de volta para reprocessamento, evitando perda de laudos.",
+    "dev_prod_parity": "Uso de Docker Compose local com os mesmos backing services (Postgres, Redis, S3 via MinIO) usados em produção, eliminando divergência de ferramentas; deploys contínuos (múltiplos por dia) reduzem divergência de tempo; mesma equipe (dev = deploy) reduz divergência de pessoal.",
+    "logs_admin": "Logs (consultas, laudos gerados, chamadas de IA, erros de upload de imagem) são tratados como fluxo de eventos (stdout) agregados por ferramenta externa (ex: ELK/Datadog), nunca gravados em arquivo local. Tarefas administrativas (migração de banco, reprocessamento de laudos, exportação de dados para auditoria LGPD) são scripts pontuais executados no mesmo ambiente/release da aplicação.",
+    "interfaces": [
+      "API REST/GraphQL para consultas médicas e agendamento",
+      "Interface de upload e análise de imagens dermatológicas",
+      "Interface de videoconsulta médico-paciente (WebRTC)",
+      "Painel administrativo para médicos e gestão clínica",
+      "Webhook de integração com gateway de pagamento",
+      "API de integração com prontuário eletrônico (EHR) de terceiros",
+      "Interface de notificações (e-mail/SMS/push)"
+    ],
+    "escalabilidade": "Escala horizontalmente adicionando instâncias de workers de IA e API conforme aumento de usuários/consultas, com autoscaling baseado em fila de processamento de imagens e número de sessões simultâneas; banco de dados escala verticalmente e com read replicas; storage de imagens escala nativamente via object storage; arquitetura orientada a eventos evita necessidade de reescrita ao crescer.",
+    "custo_infra_estimado": "Servidor (API + workers, ex: AWS ECS/Fargate): $150/mês; RDS PostgreSQL: $80/mês; Redis/fila: $30/mês; S3 (armazenamento de imagens médicas): $40/mês; CDN (entrega de imagens/vídeo): $25/mês; Banda (WebRTC/videochamadas): $60/mês; Modelo de IA (inferência via API ou GPU dedicada): $100/mês. Total estimado: ~$485/mês para carga inicial (até ~2.000 usuários ativos).",
+    "custo_por_cliente": "Cada análise de imagem = $0.04 (inferência do modelo de IA) + $0.01 (storage da imagem em S3) + $0.005 (banda/CDN) + $0.002 (processamento/CPU do worker) = $0.057/análise. Uma consulta completa (análise + videochamada de 15min) soma ~$0.15 (Twilio/WebRTC) + $0.057 = $0.207/consulta. Cliente com 2 consultas/mês custa ~$0.41/mês em infraestrutura direta.",
+    "monetizacao": "Modelo SaaS híbrido B2C/B2B: Plano Básico (paciente) $19/mês — 1 consulta + análise de imagem; Plano Premium $49/mês — consultas ilimitadas + histórico de acompanhamento de lesões; Plano Clínica (B2B) $299/mês por até 10 médicos com dashboard multiusuário e API de integração com EHR. Comissão de 15% sobre consultas pontuares (pay-per-use, $35/consulta). Métricas-alvo: MRR inicial $15.000 (300 assinantes Premium equivalentes), LTV estimado $350 (churn ~12 meses médios), CAC alvo $60 via marketing digital em dermatologia, payback de CAC em ~2 meses.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Node.js (NestJS) para API REST; workers de IA em Python com PyTorch/TensorFlow (modelo de classificação de lesões de pele, ex: fine-tuning sobre ResNet/EfficientNet); Frontend: React/Next.js (web) e React Native (mobile); Banco: PostgreSQL; Cache/fila: Redis + Celery/BullMQ; Storage: S3 (ou compatível) com criptografia at-rest para dados de saúde; Videochamada: Twilio Video ou WebRTC próprio; Infra: Docker + Kubernetes ou AWS ECS/Fargate; CI/CD: GitHub Actions; Observabilidade: Prometheus/Grafana + Datadog; Pagamentos: Stripe; Conformidade: criptografia end-to-end e auditoria para LGPD/HIPAA."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T21:07:40+00:00",
+    "runner": "runner.py"
+  }
+}

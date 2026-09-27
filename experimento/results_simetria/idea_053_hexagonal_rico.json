@@ -1,0 +1,87 @@
+{
+  "ideia_idx": 53,
+  "ideia": "App de rastreamento de hábitos sustentáveis com gamificação corporativa",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Regras de negócio puras sobre: Hábito (definição, categoria sustentável, unidade de medida, meta), RegistroDeHabito (evento de execução com data, quantidade, evidência opcional), Usuario (colaborador vinculado a uma Organização), Organizacao (empresa cliente com times/departamentos), SistemaDePontuacao (cálculo de pontos por streak, consistência e impacto ambiental estimado), Conquista/Badge (regras de desbloqueio), Ranking (agregação e ordenação de pontuação por período/time), ImpactoAmbiental (conversão de ações em métricas como CO2 evitado, água economizada). Contém invariantes como: um registro não pode ser duplicado no mesmo dia para o mesmo hábito, streaks quebram após N dias sem registro, pontos são recalculados de forma determinística a partir do histórico. Nenhuma classe do domínio conhece HTTP, SQL, filas ou qualquer biblioteca externa.",
+    "driving_ports": {
+      "RegistrarHabitoPort": "Contrato para registrar execução de um hábito sustentável",
+      "ConsultarProgressoPort": "Contrato para consultar streaks, pontos e histórico de um usuário",
+      "GerenciarHabitosPort": "Contrato para criar/editar/arquivar hábitos e metas",
+      "ConsultarRankingPort": "Contrato para obter rankings por time, departamento ou organização",
+      "GerenciarDesafiosCorporativosPort": "Contrato para criar e administrar campanhas/desafios entre times",
+      "AdministrarOrganizacaoPort": "Contrato para onboarding de empresa, gestão de colaboradores e planos"
+    },
+    "driven_ports": {
+      "RepositorioUsuarioPort": "Persistir e recuperar usuários e organizações",
+      "RepositorioHabitoPort": "Persistir hábitos, registros e streaks",
+      "RepositorioRankingPort": "Persistir/consultar agregados de pontuação",
+      "NotificacaoPort": "Enviar lembretes e alertas (push, email, Slack/Teams)",
+      "CalculadoraImpactoAmbientalPort": "Obter fatores de conversão de ação em impacto ambiental (ex: API externa de fatores de emissão)",
+      "EventoDominioPort": "Publicar eventos de domínio (hábito registrado, badge desbloqueado) para mensageria",
+      "PagamentoPort": "Processar cobrança de assinatura da organização",
+      "RelogioPort": "Obter data/hora atual de forma abstrata para testes determinísticos",
+      "ArmazenamentoEvidenciaPort": "Guardar anexos/fotos de comprovação de hábito"
+    },
+    "driving_adapters": {
+      "REST_API_Adapter": "Expõe endpoints HTTP/JSON para app web e mobile (registro de hábito, consulta de progresso, ranking)",
+      "Mobile_GraphQL_Adapter": "Expõe schema GraphQL otimizado para o app mobile com queries agregadas",
+      "Slack_Teams_Bot_Adapter": "Permite registrar hábitos e ver ranking via comandos de chat corporativo",
+      "Admin_Dashboard_Adapter": "Interface web para RH/gestores administrarem desafios e planos",
+      "Scheduler_CLI_Adapter": "Job agendado que aciona recálculo de rankings periódicos e envio de lembretes",
+      "Webhook_Adapter": "Recebe eventos de HRIS externos (ex: novo colaborador) para onboarding automático"
+    },
+    "driven_adapters": {
+      "PostgreSQL_Adapter": "Implementa RepositorioUsuarioPort, RepositorioHabitoPort, RepositorioRankingPort",
+      "Redis_Adapter": "Cache de rankings e leaderboards em tempo real",
+      "S3_Adapter": "Implementa ArmazenamentoEvidenciaPort para fotos de comprovação",
+      "SQS_SNS_Adapter": "Implementa EventoDominioPort para mensageria assíncrona (badges, notificações)",
+      "FCM_APNs_Adapter": "Implementa NotificacaoPort para push mobile",
+      "SendGrid_Adapter": "Implementa NotificacaoPort para email",
+      "Slack_Teams_API_Adapter": "Implementa NotificacaoPort para notificações corporativas",
+      "Stripe_Adapter": "Implementa PagamentoPort para cobrança B2B recorrente",
+      "Carbon_Interface_API_Adapter": "Implementa CalculadoraImpactoAmbientalPort consumindo API externa de fatores de emissão",
+      "SystemClock_Adapter": "Implementa RelogioPort usando relógio do sistema"
+    },
+    "application_services": {
+      "RegistrarHabitoService": "Orquestra validação de duplicidade, chama domínio para calcular streak/pontos, persiste via porta, publica evento",
+      "CalcularRankingService": "Orquestra leitura de registros, delega cálculo agregado ao domínio, persiste resultado em cache",
+      "OnboardingOrganizacaoService": "Orquestra criação de organização, usuários iniciais e plano de assinatura",
+      "DispararNotificacoesService": "Orquestra verificação de streaks em risco e aciona porta de notificação",
+      "GerenciarDesafioService": "Orquestra criação/encerramento de desafios corporativos e apuração de vencedores"
+    },
+    "domain_isolation": "O domínio é implementado em módulo isolado (ex: pacote 'core' ou 'domain') sem nenhuma dependência de frameworks web, ORMs ou SDKs de nuvem. Todas as comunicações com o exterior passam por interfaces (ports) definidas dentro do próprio domínio/aplicação; adaptadores implementam essas interfaces e são injetados via inversão de dependência. Entidades e serviços de domínio recebem apenas tipos primitivos ou Value Objects próprios, nunca DTOs de infraestrutura (ex: Request HTTP, Row de banco).",
+    "test_doubles": "Cada driven port possui um fake/in-memory (ex: RepositorioHabitoFake usando um Map em memória, RelogioFake retornando data fixa, NotificacaoPortSpy que apenas registra chamadas) usados em testes de unidade e de aplicação. Cada driving port é exercitado diretamente nos testes chamando os application services, sem subir servidor HTTP. Testes de contrato (contract tests) validam que cada adaptador real (PostgreSQL_Adapter, S3_Adapter etc.) obedece ao mesmo comportamento esperado pelos fakes, rodando a mesma suíte contra fake e real.",
+    "configuration_wiring": "Um módulo de composição (composition root, ex: main.ts ou container de DI) instância os adaptadores concretos (PostgreSQL_Adapter, Stripe_Adapter etc.) e os injeta nos application services via construtor, respeitando as interfaces das driven ports. Os driving adapters (REST, Slack Bot) recebem os application services já montados. Variáveis de ambiente controlam qual implementação usar por ambiente (ex: RepositorioHabitoFake em teste, PostgreSQL_Adapter em produção), sem alterar código do domínio ou dos serviços de aplicação.",
+    "technology_substitution": "PostgreSQL poderia ser trocado por DynamoDB reimplementando apenas os adaptadores de repositório, com custo médio (reescrever queries e migrations, sem tocar domínio). Stripe poderia ser trocado por outro gateway de pagamento (ex: Paddle) implementando novo PagamentoPort_Adapter, custo baixo pois a porta já isola a lógica de cobrança. Slack/Teams Bot poderia ser substituído por um app dedicado sem custo ao domínio. A troca de Carbon Interface API por outra fonte de fatores de emissão exige apenas novo CalculadoraImpactoAmbientalPort_Adapter, custo baixo. Trocar REST por GraphQL como adapter principal tem custo baixo pois ambos já coexistem chamando os mesmos application services.",
+    "symmetry": "Tanto driving quanto driven ports são interfaces definidas na camada de aplicação/domínio, nunca na infraestrutura. Um driving adapter (ex: REST_API_Adapter) traduz uma requisição externa em uma chamada a uma driving port; um driven adapter (ex: PostgreSQL_Adapter) implementa uma driven port para satisfazer uma chamada originada no domínio. Em ambos os lados, a direção de dependência aponta sempre para dentro (em direção às portas), garantindo que a aplicação nunca conheça REST_API_Adapter nem PostgreSQL_Adapter diretamente — apenas suas interfaces.",
+    "interfaces": [
+      "RegistrarHabitoPort",
+      "ConsultarProgressoPort",
+      "GerenciarHabitosPort",
+      "ConsultarRankingPort",
+      "GerenciarDesafiosCorporativosPort",
+      "AdministrarOrganizacaoPort",
+      "RepositorioUsuarioPort",
+      "RepositorioHabitoPort",
+      "RepositorioRankingPort",
+      "NotificacaoPort",
+      "CalculadoraImpactoAmbientalPort",
+      "EventoDominioPort",
+      "PagamentoPort",
+      "RelogioPort",
+      "ArmazenamentoEvidenciaPort"
+    ],
+    "escalabilidade": "Horizontalmente via stateless application services atrás de load balancer, com PostgreSQL particionado por organização (multi-tenant com schema ou row-level security) e leitura de ranking servida via Redis para absorver picos de leitura. Mensageria assíncrona (SQS/SNS) desacopla cálculo de badges e notificações do caminho crítico de registro de hábito. Cache de leaderboard com invalidação por evento evita recomputar rankings a cada requisição. Para grandes organizações, sharding por tenant_id e read replicas de PostgreSQL sustentam crescimento sem reescrever domínio.",
+    "custo_infra_estimado": "Servidor (ECS/Fargate ou EC2 t3.medium x2): $60/mês; RDS PostgreSQL (db.t3.medium, Multi-AZ): $140/mês; Redis (ElastiCache cache.t3.micro): $25/mês; S3 (evidências, ~50GB): $5/mês; CDN (CloudFront para assets do dashboard): $10/mês; SQS/SNS (mensageria): $5/mês; Banda estimada: $15/mês; Total aproximado: $260/mês para uma base inicial de até ~50 organizações clientes.",
+    "custo_por_cliente": "Cada registro de hábito custa: $0.0004 (escrita RDS) + $0.0001 (evento SQS) + $0.0002 (cache update Redis) = $0.0007/registro. Um colaborador ativo com 30 registros/mês custa ~$0.021/mês em processamento. Notificação push/email: $0.0005/envio, com ~10 envios/mês por usuário = $0.005/mês. Custo total por colaborador ativo ≈ $0.026/mês; uma organização com 200 colaboradores ativos custa ≈ $5.20/mês em infraestrutura variável, muito abaixo do ticket médio de assinatura B2B.",
+    "monetizacao": "Modelo B2B SaaS por assinatura, cobrado por colaborador ativo/mês, com tiers: Starter (até 50 colaboradores, $2/colaborador/mês, dashboard básico e ranking simples); Business (até 500 colaboradores, $3.50/colaborador/mês, desafios corporativos, integração Slack/Teams, relatórios de impacto ESG); Enterprise (ilimitado, $5/colaborador/mês negociável, SSO, API própria, relatórios customizados para compliance ESG e white-label). Métricas-chave: MRR alvo de $50k em 12 meses assumindo 100 clientes Business médios (200 colaboradores cada); LTV estimado em $2.500 por organização (24 meses de retenção média x ticket médio $105/mês); CAC alvo abaixo de $800 via vendas outbound B2B e parcerias com consultorias de ESG, mantendo LTV:CAC acima de 3:1.",
+    "stack_sugerida": "Backend: Node.js/TypeScript ou Kotlin com arquitetura hexagonal explícita (pastas domain/application/adapters); Framework web: Fastify ou Express apenas na camada de adapter; Banco: PostgreSQL (dados transacionais) + Redis (cache/leaderboard); Mensageria: AWS SQS/SNS ou RabbitMQ; Armazenamento: S3; Frontend web: React com TypeScript; Mobile: React Native; Infra: AWS ECS Fargate ou Kubernetes, Terraform para IaC; Observabilidade: OpenTelemetry + Grafana/Prometheus; Pagamentos: Stripe Billing; CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:58:22+00:00",
+    "runner": "runner.py"
+  }
+}

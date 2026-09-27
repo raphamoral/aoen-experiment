@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 14,
+  "ideia": "Plataforma de tradução simultânea para reuniões corporativas multilíngues",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único versionado no Git (monorepo) contendo os serviços de sinalização, tradução em tempo real e gestão de reuniões, com múltiplas implantações (dev, staging, produção, e por região: US, EU, APAC) geradas a partir do mesmo código-fonte via pipelines de CI/CD.",
+    "dependencies": "Todas as dependências (SDKs de WebRTC, bibliotecas de ASR/NMT, filas de mensagens) declaradas explicitamente em manifestos (package.json, requirements.txt, go.mod) e isoladas via containers Docker, sem confiança em pacotes globais do SO; builds reproduzíveis com lockfiles versionados.",
+    "config": "Tudo que varia entre implantações fica em variáveis de ambiente: credenciais dos provedores de ASR/NMT/TTS (ex.: Google Speech, Azure Translator, ElevenLabs), URLs de banco de dados e Redis, chaves de TURN/STUN servers, feature flags por região, limites de concorrência por tier de cliente e segredos de webhook do Stripe. Nenhuma config é hardcoded no código.",
+    "backing_services": "Banco de dados (Postgres gerenciado), cache/pubsub (Redis), fila de eventos (Kafka/SQS), armazenamento de gravações e transcrições (S3), serviços de ASR/tradução/TTS de terceiros e servidores TURN/STUN — todos tratados como recursos anexáveis via URL/config, permitindo trocar provedor de tradução (ex. Azure por DeepL) sem alterar código.",
+    "build_release_run": "Build gera artefato imutável (imagem de container) a partir do código+dependências; Release combina o build com a config específica do ambiente (staging/produção) recebendo um ID único e versionado; Run executa esse release em containers orquestrados (Kubernetes), sem alterações no código em tempo de execução; rollback é trocar para release anterior.",
+    "processes": "Processos de tradução/sinalização são stateless e sem afinidade de sessão (share-nothing); o estado persistente (transcrições, histórico de reuniões, perfis de usuário, glossários customizados) reside no Postgres, e o estado efêmero de sessão ativa (participantes conectados, buffers de áudio em tradução) fica no Redis, nunca na memória local do processo, permitindo reinício/escala horizontal sem perda de sessão.",
+    "port_binding": "Cada serviço (API REST, WebSocket de sinalização, gateway de mídia WebRTC) é autocontido e exporta funcionalidade via bind em porta HTTP/WSS própria, sem depender de um servidor de aplicação externo injetado em tempo de execução; roteamento externo feito por load balancer/API gateway.",
+    "concurrency": "Escala horizontal por tipos de processo distintos: 'web' (API/dashboard), 'signaling' (WebSocket para coordenação de sala), 'media-worker' (processamento de áudio/tradução em tempo real, escalado por número de reuniões simultâneas), 'worker' (jobs assíncronos como geração de transcrição pós-reunião e faturamento); cada tipo escala independentemente via número de réplicas conforme carga.",
+    "disposability": "Processos iniciam em segundos (containers leves, sem estado local a carregar) e tratam SIGTERM de forma graciosa, finalizando a tradução da frase em andamento, persistindo buffers pendentes no Redis/S3 e sinalizando saída limpa da sala antes de encerrar, permitindo deploys e autoscaling sem interromper reuniões em curso.",
+    "dev_prod_parity": "Uso de Docker Compose localmente com os mesmos backing services (Postgres, Redis, Kafka) usados em produção (via containers ou sandboxes gerenciados), deploys contínuos (múltiplos por dia) para minimizar divergência de tempo, mesma equipe dev/ops (DevOps compartilhado) para reduzir divergência de pessoal, e mesmas ferramentas/versões entre ambientes para reduzir divergência de ferramentas.",
+    "logs_admin": "Logs tratados como fluxo de eventos (stdout/stderr) coletados por agente (Fluentd/Vector) e agregados em plataforma centralizada (ELK/Datadog) sem gestão de arquivos de log pela aplicação; tarefas administrativas (migrações de schema, reprocessamento de transcrições, expurgo de gravações antigas) executadas como processos pontuais (one-off) no mesmo ambiente de release via console/CLI, nunca manualmente em produção.",
+    "interfaces": [
+      "API REST (gestão de contas, reuniões, faturamento)",
+      "WebSocket de sinalização (coordenação de sala e presença)",
+      "WebRTC media gateway (áudio/vídeo em tempo real)",
+      "API de tradução em tempo real (streaming de legendas e áudio traduzido)",
+      "Webhooks (Stripe, integrações com Zoom/Teams/Google Meet)",
+      "SDK/Widget embutível para terceiros",
+      "Dashboard administrativo web",
+      "Exportação de transcrições e relatórios (API/CSV/PDF)"
+    ],
+    "escalabilidade": "O sistema escala horizontalmente adicionando réplicas de 'media-workers' e 'signaling' conforme o número de reuniões e idiomas simultâneos cresce, com particionamento geográfico (edge regions próximas aos usuários para reduzir latência de tradução) e uso de filas para desacoplar processamento pesado (transcrição pós-reunião, analytics) do caminho crítico em tempo real; bancos de dados escalam via read replicas e sharding por tenant quando necessário.",
+    "custo_infra_estimado": "Servidores/K8s (media workers + signaling): $800/mês, RDS Postgres: $150/mês, Redis gerenciado: $80/mês, Kafka/SQS: $60/mês, S3 (gravações/transcrições): $40/mês, CDN/TURN relay (bandwidth): $300/mês, APIs de ASR/NMT/TTS (uso variável): $500/mês base, monitoramento (Datadog): $70/mês — total estimado ~$2.000/mês para carga inicial (baixa escala).",
+    "custo_por_cliente": "Cada minuto de reunião traduzida = $0.006 (ASR) + $0.004 (NMT) + $0.008 (TTS opcional) + $0.001 (infra/streaming) + $0.0005 (storage transcrição) = ~$0.0195/minuto por idioma-alvo. Um cliente corporativo com 20 reuniões/mês de 45 min, 2 idiomas-alvo = 1.800 minutos-idioma/mês × $0.0195 = ~$35,10/mês em custo variável por cliente.",
+    "monetizacao": "Modelo de assinatura em camadas (SaaS B2B) por número de participantes/minutos: Starter $49/mês (500 minutos-idioma incluídos, até 10 usuários), Business $199/mês (3.000 minutos-idioma, integrações com Zoom/Teams, até 50 usuários), Enterprise $799+/mês (minutos ilimitados sob contrato, SLA, SSO, glossário customizado, suporte dedicado); cobrança adicional de $0.03/minuto-idioma excedente. Métricas-alvo: CAC ~$400 (vendas outbound B2B), LTV médio ~$4.800 (churn mensal 2%, ticket médio $200/mês, retenção 24 meses), MRR crescendo via expansão (upsell de idiomas/usuários), payback de CAC em ~2 meses.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (API e sinalização) ou Go (media workers de baixa latência); WebRTC via mediasoup ou LiveKit; ASR/NMT/TTS via APIs gerenciadas (Google Cloud Speech-to-Text, DeepL/Azure Translator, ElevenLabs ou Amazon Polly) com opção de modelos on-prem (Whisper) para redução de custo em escala; Postgres (dados relacionais), Redis (estado de sessão/pubsub), Kafka ou SQS (filas assíncronas); infraestrutura em Kubernetes (EKS/GKE) com Terraform para IaC; CDN/edge via Cloudflare; observabilidade com Datadog/Grafana+Prometheus; pagamentos via Stripe Billing; CI/CD com GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:52:52+00:00",
+    "runner": "runner.py"
+  }
+}

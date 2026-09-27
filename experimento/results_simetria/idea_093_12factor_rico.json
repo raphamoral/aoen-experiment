@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 93,
+  "ideia": "Marketplace de serviços de cibersegurança para PMEs",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git, contendo API core, frontend do marketplace, painel de prestadores e workers assíncronos. Múltiplos deploys (dev, staging, produção) derivam exatamente da mesma base de código, sem forks por ambiente. Serviços auxiliares (ex.: motor de scoring de risco, gerador de relatórios de pentest) vivem em repositórios próprios versionados independentemente, comunicando-se via API.",
+    "dependencies": "Todas as dependências declaradas explicitamente em manifests (package.json/poetry.lock/go.mod) e isoladas via containers Docker, sem depender de pacotes do sistema operacional hospedeiro. Nenhuma ferramenta é assumida como 'instalada globalmente' (ex.: scanners de vulnerabilidade como Nmap/OpenVAS são empacotados como imagens sidecar ou dependências explícitas, nunca presumidas no host).",
+    "config": "Tudo que varia entre implantações fica em variáveis de ambiente: credenciais de banco de dados, chaves de API de gateways de pagamento (Stripe Connect), chaves de integração com scanners de segurança terceirizados, URLs de serviços de e-mail/SMS, feature flags de planos, e segredos de assinatura de webhooks. Nada de configuração hardcoded ou arquivos de config versionados com segredos.",
+    "backing_services": "Banco de dados relacional (PostgreSQL), cache/fila (Redis), fila de mensagens (SQS/RabbitMQ) para orquestrar auditorias, serviço de e-mail transacional (SES/SendGrid), gateway de pagamentos com split (Stripe Connect), armazenamento de objetos (S3) para relatórios de pentest/evidências, e serviços de terceiros de threat intelligence — todos tratados como recursos anexáveis via URL/credencial, substituíveis sem alterar código.",
+    "build_release_run": "Pipeline CI/CD compila a imagem (build), combina com config do ambiente gerando uma release imutável versionada (ex.: git SHA + tag), e a orquestração (Kubernetes/ECS) apenas executa essa release — sem alterações manuais em produção. Rollback é apenas apontar para a release anterior.",
+    "processes": "Processos da API e dos workers são stateless; nenhum estado de sessão do usuário ou do provedor fica em memória local ou disco do processo. Estado persistente (contas de PME, perfis de prestadores, contratos, resultados de auditorias, mensagens do chat) reside no PostgreSQL; arquivos de evidência/relatórios ficam no S3; sessões e filas de trabalho ficam no Redis/fila de mensagens.",
+    "port_binding": "A API é totalmente self-contained e exporta seu serviço HTTP via bind em uma porta (ex.: 8080), sem depender de um servidor de aplicação externo injetado em runtime. O mesmo binário/imagem pode se tornar o backing service de outro app apenas expondo a porta.",
+    "concurrency": "Escala horizontalmente por tipos de processo dedicados: 'web' (API/HTTP, requisições do marketplace), 'worker' (execução assíncrona de varreduras/scans de segurança e geração de relatórios), 'scheduler' (cron de renovação de assinaturas, verificação de SLA de prestadores) e 'notifier' (envio de e-mails/alertas). Cada tipo escala independentemente via número de instâncias, não por threads/multiplicação dentro do processo.",
+    "disposability": "Processos web iniciam em segundos (sem estado local a carregar) e workers de scan tratam SIGTERM implementando checkpoint do progresso da varredura na fila, permitindo reinício sem perda de trabalho. Timeouts agressivos evitam scans 'travados' consumindo recursos indefinidamente.",
+    "dev_prod_parity": "Docker Compose replica localmente os mesmos backing services (Postgres, Redis, S3 via Minio, Stripe em modo sandbox) usados em produção, eliminando divergência de ferramentas. Deploys contínuos (múltiplos por dia) reduzem o gap de tempo entre dev e prod, e os mesmos times de dev operam o que constroem, reduzindo o gap de pessoal.",
+    "logs_admin": "Logs tratados como stream de eventos não bufferizados (stdout/stderr), agregados por um coletor (ex.: Fluentbit → CloudWatch/Datadog), nunca escritos em arquivo local pela aplicação. Tarefas administrativas (migrações de schema, reprocessar auditorias travadas, expurgo de contas encerradas) executam como processos pontuais isolados usando o mesmo codebase/config da aplicação, via REPL ou script one-off no mesmo ambiente de produção.",
+    "interfaces": [
+      "API REST/GraphQL para PMEs (busca e contratação de serviços)",
+      "API REST para prestadores de cibersegurança (cadastro, propostas, entrega de relatórios)",
+      "Webhooks de pagamento (Stripe Connect)",
+      "Painel web administrativo (moderação, disputas, compliance)",
+      "Integração com scanners/ferramentas de terceiros (via API ou CLI containerizada)",
+      "API de notificações (e-mail/SMS/push)",
+      "Portal de avaliações e SLA entre PME e prestador"
+    ],
+    "escalabilidade": "Escala horizontalmente adicionando instâncias dos tipos de processo web/worker conforme cresce o volume de PMEs e prestadores; picos de demanda por auditorias são absorvidos pela fila assíncrona sem impactar a API principal. Sharding do banco por região/tenant e cache agressivo de catálogo de serviços sustentam crescimento sem reescrever a arquitetura.",
+    "custo_infra_estimado": "Servidores (API + workers, ECS/Fargate ou k8s): $150/mês; RDS PostgreSQL (multi-AZ): $80/mês; Redis (ElastiCache): $40/mês; S3 (armazenamento de relatórios/evidências): $20/mês; CDN (CloudFront): $15/mês; banda/egress: $25/mês; fila SQS: $10/mês; observabilidade (logs/monitoramento): $30/mês. Total aproximado: $370/mês para operação inicial.",
+    "custo_por_cliente": "Cada contratação de serviço processada = $0.02 (processamento de pagamento/Stripe fee variável não incluso) + $0.01 (armazenamento de relatório no S3) + $0.005 (fila/worker de matching) + $0.003 (notificações e-mail/SMS) = ~$0.038/operação de contratação. PME com 5 contratações/mês custa ~$0.19/mês em infra direta; custo médio por PME ativa considerando overhead de plataforma (banco, cache, suporte) ≈ $1.50/mês.",
+    "monetizacao": "Modelo híbrido de marketplace: (1) Comissão de 12-18% sobre cada serviço fechado entre PME e prestador; (2) Planos de assinatura para prestadores — Starter (grátis, comissão maior 18%), Pro ($49/mês, comissão 14%, destaque na busca), Enterprise ($199/mês, comissão 10%, leads prioritários e selo verificado); (3) Add-ons pagos por PMEs (auditoria expressa, certificação de compliance). Métricas-alvo: MRR projetado de $25k no mês 12 com 300 prestadores pagantes; LTV médio de prestador Pro ≈ $49 × 18 meses retenção = $882; CAC estimado via marketing de conteúdo/SEO e parcerias com associações de PMEs ≈ $120/prestador, resultando em LTV:CAC de ~7:1.",
+    "stack_sugerida": "Backend: Node.js (NestJS) ou Python (FastAPI) para a API; PostgreSQL como banco primário; Redis para cache/filas; SQS ou RabbitMQ para processamento assíncrono de auditorias; Frontend: Next.js/React; Infraestrutura: Docker + Kubernetes (ou AWS ECS Fargate) com Terraform para IaC; Armazenamento: S3; Pagamentos: Stripe Connect (split payments); Observabilidade: Datadog ou Grafana+Prometheus+Loki; CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T21:06:21+00:00",
+    "runner": "runner.py"
+  }
+}

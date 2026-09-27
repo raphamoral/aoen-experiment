@@ -1,0 +1,29 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS onde instituições de ensino e criadores de cursos livres emitem certificados digitais com hash único e URL pública de verificação, permitindo que qualquer pessoa (empregador, universidade, etc.) confirme a autenticidade do certificado sem precisar de login.",
+    "como_comecar": "MVP focado em três fluxos: (1) emissor cria conta e configura um template de certificado, (2) emissor emite certificados em lote via CSV ou API, (3) página pública de verificação por código/QR. Validar com 2-3 escolas parceiras antes de construir recursos avançados (LMS integrations, selos, gamificação).",
+    "tecnologias": "Backend em Node.js (NestJS) ou Python (FastAPI/Django) para APIs REST; geração de PDF com templates (Puppeteer/WeasyPrint); geração de QR Code; assinatura criptográfica dos certificados (hash SHA-256 + assinatura digital opcional em blockchain leve ou registro imutável); fila assíncrona (BullMQ/Redis ou Celery) para emissão em lote; frontend em React/Next.js.",
+    "banco_dados": "PostgreSQL como banco relacional principal (organizações, usuários, cursos, certificados, logs de verificação); Redis para cache e filas; armazenamento de objetos (S3/Cloudflare R2) para os PDFs e assets de template. Tabela de certificados com hash único indexado para verificação rápida e imutabilidade (append-only, sem UPDATE em certificados emitidos).",
+    "interfaces": [
+      "Dashboard do emissor (criar cursos, templates, emitir e revogar certificados)",
+      "Portal público de verificação (buscar por código/QR, sem login)",
+      "Painel do aluno/concluinte (listar e baixar seus certificados, compartilhar link)",
+      "API REST/Webhooks para integração com LMS de terceiros (Moodle, Hotmart, etc.)",
+      "Painel administrativo interno (billing, moderação de emissores, suporte)"
+    ],
+    "usuarios": "Instituições de ensino, escolas de cursos livres, criadores de conteúdo independentes e bootcamps (emissores); alunos que concluem cursos (recebedores); recrutadores, RH e outras instituições que verificam certificados (verificadores públicos, sem cadastro).",
+    "escalabilidade": "Emissão em lote via filas assíncronas para não travar a API; CDN para servir PDFs e página de verificação (tráfego público imprevisível); cache agressivo (Redis/CDN) para consultas de verificação, que são majoritariamente leitura; particionamento/sharding do banco por organização se o volume crescer muito; arquitetura multi-tenant desde o início para isolar dados dos emissores.",
+    "custos": "Principais custos: armazenamento de PDFs/imagens (S3), banda de CDN para verificações públicas de alto tráfego, processamento de e-mails transacionais (envio de certificados), infraestrutura de filas/workers, e opcionalmente taxas de blockchain se usar ancoragem on-chain para prova de imutabilidade. Modelo self-hosted com Postgres gerenciado (RDS/Supabase) reduz custo operacional inicial.",
+    "monetizacao": "Modelo SaaS por assinatura em camadas baseado em volume de certificados emitidos por mês (ex: Free até 50 certificados, Pro com custom branding e domínio próprio, Enterprise com API, SSO e SLA); cobrança recorrente via Stripe Billing; add-ons pagos como verificação em blockchain, certificados com selo de instituição parceira, ou White-label completo para grandes instituições.",
+    "stack_sugerida": "Next.js (frontend + páginas públicas de verificação com SSR para SEO) + NestJS/FastAPI (backend) + PostgreSQL + Redis + BullMQ/Celery + S3/R2 para armazenamento + Cloudflare para CDN/DNS + Stripe para billing + Docker/Kubernetes ou Fly.io/Render para deploy inicial simplificado."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:53:29+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "ideia_idx": 71,
+  "ideia": "Plataforma de certificação de origem para cadeias de café especial",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do usuário final (comprovar que o café é rastreável, ético e de origem verificada) → produtor/cooperativa registra dados do lote (fazenda, altitude, variedade, safra) → captura de eventos de custódia (colheita, beneficiamento, armazém, exportação, torrefação) → avaliação de qualidade (cupping/SCA) → auditoria e emissão de certificado → publicação de certificado verificável (QR code/página pública) → comprador/torrefador/consumidor final valida a origem → dados agregados alimentam compliance regulatório (ex: EUDR) e marketing de marca.",
+    "wardley_map": {
+      "genese": [
+        "Verificação de origem via imagem de satélite/anti-desmatamento",
+        "Modelos de detecção de fraude em cadeia de custódia"
+      ],
+      "sob_medida": [
+        "Motor de cadeia de custódia (chain-of-custody)",
+        "Workflow de certificação e auditoria",
+        "Modelo de domínio de rastreabilidade de lotes",
+        "App mobile offline-first para captura em campo"
+      ],
+      "produto": [
+        "Dashboard de analytics para cooperativas/exportadores",
+        "Motor de avaliação sensorial (cupping score)",
+        "Marketplace de compra/venda de lotes certificados"
+      ],
+      "commodity": [
+        "Autenticação/identidade",
+        "Pagamentos e billing",
+        "Geração/leitura de QR code",
+        "Notificações (email/SMS)",
+        "Hospedagem em nuvem, storage, CDN",
+        "Mapas/geolocalização"
+      ]
+    },
+    "build_buy_decisions": {
+      "construir": "Motor de cadeia de custódia, workflow de certificação/auditoria e modelo de rastreabilidade — é o diferencial competitivo e não existe produto de mercado que capture a semântica específica de café especial (lote, talhão, variedade, processo).",
+      "comprar": "Auth (Auth0/Clerk), pagamentos (Stripe), mapas (Mapbox/Google Maps), notificações (Twilio/SendGrid), observabilidade (Datadog) — commodities maduras onde construir não gera vantagem competitiva.",
+      "commodity_usar_como_esta": "Infraestrutura cloud (AWS/GCP), banco relacional gerenciado, CDN, storage de objetos — sem necessidade de customização."
+    },
+    "core_domain": "Certificação de origem e cadeia de custódia (chain-of-custody + verificação de proveniência) — é o núcleo que justifica investimento sob medida, pois modela a semântica única de rastrear um lote de café especial através de múltiplos elos (produtor, cooperativa, beneficiamento, exportador, torrefador) com integridade e auditabilidade.",
+    "bounded_contexts": [
+      {
+        "contexto": "Cadastro de Origem",
+        "linguagem": "fazenda, talhão, safra, altitude, variedade, produtor, cooperativa"
+      },
+      {
+        "contexto": "Cadeia de Custódia",
+        "linguagem": "lote, elo, transferência de custódia, movimentação, armazém, embarque"
+      },
+      {
+        "contexto": "Certificação e Auditoria",
+        "linguagem": "certificado, auditor, checklist, não-conformidade, selo, validade"
+      },
+      {
+        "contexto": "Qualidade e Cupping",
+        "linguagem": "nota SCA, cupping score, defeito, xícara, perfil sensorial"
+      },
+      {
+        "contexto": "Marketplace",
+        "linguagem": "pedido, comprador, contrato, preço por saca, disponibilidade"
+      },
+      {
+        "contexto": "Verificação Pública do Consumidor",
+        "linguagem": "certificado público, QR code, história do lote"
+      },
+      {
+        "contexto": "Pagamentos e Billing",
+        "linguagem": "assinatura, fatura, plano, cobrança por certificado"
+      },
+      {
+        "contexto": "Identidade e Acesso",
+        "linguagem": "usuário, papel, organização, permissão"
+      }
+    ],
+    "context_mapping": [
+      "Cadastro de Origem ↔ Cadeia de Custódia: parceria (evoluem juntos, mesmo fluxo de dados de lote)",
+      "Cadeia de Custódia → Certificação: cliente-fornecedor (certificação consome eventos de custódia)",
+      "Certificação → Verificação Pública: cliente-fornecedor com camada anticorrupção (visão pública simplificada e imutável)",
+      "Qualidade/Cupping ↔ Cadeia de Custódia: parceria (nota de qualidade é atributo do lote)",
+      "Marketplace → Pagamentos: camada anticorrupção isolando o modelo do Stripe do domínio de negócio",
+      "Identidade e Acesso: kernel compartilhado consumido por todos os contextos como serviço de plataforma"
+    ],
+    "team_topologies": {
+      "fluxo": [
+        "Time de Origem e Rastreabilidade",
+        "Time de Certificação e Auditoria",
+        "Time de Marketplace",
+        "Time de Experiência do Consumidor/Verificação Pública"
+      ],
+      "plataforma": [
+        "Time de Plataforma (identidade, pagamentos, infraestrutura, pipeline de dados/eventos)"
+      ],
+      "subsistema_complicado": [
+        "Time de Verificação Anti-fraude e Geo-inteligência (satélite, detecção de desmatamento, ledger íntegro/hash-chain)"
+      ],
+      "habilitacao": [
+        "Time de Habilitação em DDD/Compliance Regulatório (ex: EUDR, normas de exportação)"
+      ]
+    },
+    "cognitive_load": "Cada time de fluxo é dono de um único bounded context, evitando conhecimento cruzado excessivo. O time de plataforma abstrai identidade, pagamentos e infraestrutura via APIs self-service, removendo essa complexidade dos times de fluxo. O time de subsistema complicado isola a complexidade de geo-verificação/anti-fraude atrás de uma API simples de consulta. O time de habilitação reduz a carga ao ensinar padrões em vez de participar da entrega recorrente.",
+    "interaction_modes": [
+      "Colaboração: time de Origem + time de Qualidade durante desenho do modelo de domínio do lote",
+      "X-as-a-Service: Plataforma oferece auth/pagamentos/infra como serviço autoatendido; subsistema complicado oferece verificação geo/anti-fraude como serviço consultável",
+      "Facilitação: time de habilitação orienta times de fluxo em DDD e compliance regulatório sem assumir entrega"
+    ],
+    "flow_optimization": "Fluxo otimizado alinhando times a bounded contexts para eliminar handoffs, com integração assíncrona via eventos de domínio (ex: LoteRegistrado, CustodiaTransferida, CertificadoEmitido) para desacoplar deploys. Gargalos: etapa manual de auditoria humana (não escalável linearmente), conectividade rural limitada para captura de dados em campo, e tempo de validação regulatória para compliance de exportação.",
+    "independent_streams": "Contextos se comunicam via eventos de domínio publicados em um barramento assíncrono e contratos de API versionados, permitindo que cada time evolua e faça deploy de seu serviço sem coordenação síncrona com os demais; a camada anticorrupção entre Certificação e Verificação Pública garante que mudanças internas não quebrem o contrato público.",
+    "interfaces": [
+      "Origin Registry API",
+      "Chain of Custody API",
+      "Certification & Audit API",
+      "Public Verification API (QR/certificado público)",
+      "Cupping/Quality API",
+      "Marketplace API",
+      "Payments & Billing API",
+      "Identity/Auth API",
+      "Geo-verification & Anti-fraud API",
+      "Notification API"
+    ],
+    "escalabilidade": "Serviços stateless escaláveis horizontalmente atrás de load balancer; arquitetura orientada a eventos (fila/broker) para absorver picos de escrita de custódia sem acoplamento síncrono; réplicas de leitura para a página pública de verificação (alto volume de leitura, baixo volume de escrita); CDN para páginas de certificado público; app mobile offline-first com sincronização em lote para regiões rurais de baixa conectividade; particionamento por região/cooperativa conforme a base cresce.",
+    "custo_infra_estimado": "Servidor/compute (ECS/Fargate): $150/mês, RDS Postgres: $80/mês, S3 (armazenamento de fotos/documentos): $25/mês, CDN (CloudFront): $20/mês, Fila de eventos (SQS/SNS): $10/mês, Auth0/Clerk: $35/mês, Observabilidade: $30/mês — total estimado inicial: ~$350/mês para carga inicial (até ~5 mil lotes/mês).",
+    "custo_por_cliente": "Cada emissão de certificado = $0.02 (compute de validação) + $0.01 (storage de evidências/fotos) + $0.005 (evento assíncrono) + $0.008 (chamada de geo-verificação) = ~$0.043/certificado. Uma cooperativa emitindo 200 certificados/mês custa ~$8.60/mês em infraestrutura variável, cobrindo folgadamente uma mensalidade de plano.",
+    "monetizacao": "Modelo SaaS em camadas: Starter ($49/mês, até 50 certificados, para cooperativas pequenas), Pro ($199/mês, até 500 certificados + analytics, para exportadores médios), Enterprise (a partir de $999/mês, certificados ilimitados, API dedicada, compliance EUDR, para grandes torrefadoras/traders) + taxa adicional de $0.50 por certificado público extra. Métricas-alvo: MRR crescendo via upsell de Starter→Pro, LTV estimado em $2.400 (24 meses de retenção média no plano Pro), CAC objetivo abaixo de $400 via parcerias com cooperativas e associações de cafeicultores, mantendo LTV:CAC acima de 5:1.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Go, organizado por bounded context (módulos DDD); Postgres como banco principal com hash-chain para integridade de custódia (sem necessidade de blockchain completo no MVP); barramento de eventos via SNS/SQS ou Kafka; Mobile: React Native/Flutter com sincronização offline-first; Frontend web: Next.js/React; Auth: Auth0 ou Clerk; Pagamentos: Stripe Billing; Mapas/Geo: Mapbox; Infra: AWS (Fargate, RDS, S3, CloudFront); Observabilidade: Grafana/Datadog; CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T21:01:59+00:00",
+    "runner": "runner.py"
+  }
+}

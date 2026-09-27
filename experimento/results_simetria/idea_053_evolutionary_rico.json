@@ -1,0 +1,57 @@
+{
+  "ideia_idx": 53,
+  "ideia": "App de rastreamento de hábitos sustentáveis com gamificação corporativa",
+  "abordagem": "evolutionary_rico",
+  "response": {
+    "architectural_quantum": "O quantum arquitetural é o 'Habit Tracking Service' — um microsserviço implantável de forma independente que inclui: API de registro de hábitos, banco de dados próprio (bounded context de hábitos + streaks), fila de eventos de domínio (HabitCompleted, StreakBroken) e seu próprio pipeline de deploy. Ele é acoplado de forma altamente coesa (alta coesão funcional) e possui todas as dependências estruturais necessárias para operar e ser testado isoladamente, incluindo seu contrato de eventos publicado para o módulo de Gamificação.",
+    "fitness_functions": {
+      "atomic": [
+        "Contract test: eventos publicados no schema registry (Avro/JSON Schema) mantêm compatibilidade backward — falha o build se quebrar consumidores (Gamification, Corporate Dashboard)",
+        "Performance: p95 de latência do endpoint POST /habit-checkin < 200ms sob carga de 500 rps (verificado via k6 no pipeline)",
+        "Segurança: scan SAST/DAST (Semgrep + OWASP ZAP) sem vulnerabilidades críticas/altas antes do merge",
+        "Cobertura de testes de domínio >= 85% no núcleo de cálculo de streaks e pontos",
+        "Acoplamento: análise estática (ArchUnit/dependency-cruiser) garante que módulos de domínio não importam diretamente infraestrutura de outros bounded contexts"
+      ],
+      "holistic": [
+        "Chaos test mensal: simular queda do serviço de Gamificação e validar que o Habit Tracking continua funcional (degradação graciosa)",
+        "Teste de carga end-to-end simulando pico de check-ins às 9h (horário corporativo) validando SLA de 99.5%",
+        "Auditoria trimestral de custo por cliente vs. orçamento definido (fitness function de custo)",
+        "Teste de privacidade: dados de hábitos pessoais não vazam para dashboards corporativos agregados sem anonimização (LGPD/GDPR)"
+      ]
+    },
+    "evolvable_dimensions": {
+      "tecnica": "Migração gradual de monolito modular (fase inicial) para microsserviços conforme volume de clientes corporativos cresce; troca de mensageria de filas simples (SQS) para streaming (Kafka) quando eventos de gamificação em tempo real forem necessários",
+      "dados": "Esquema de hábitos evolui de modelo relacional simples para um modelo híbrido (Postgres para transacional + time-series DB para métricas de sustentabilidade, ex: TimescaleDB)",
+      "seguranca": "Evolução de autenticação básica (JWT) para SSO/SAML corporativo (Okta, Azure AD) conforme clientes enterprise exigem; criptografia de dados sensíveis de saúde/hábito em repouso",
+      "operacional": "Evolução de deploy manual para CI/CD completo com feature flags, depois para deploy canário/blue-green conforme criticidade do SLA aumenta com clientes enterprise"
+    },
+    "incremental_change": "Mudanças são guiadas por funções de aptidão executadas continuamente no pipeline (CI). Cada PR dispara testes atômicos automaticamente; mudanças arquiteturais maiores (ex: troca de banco, nova integração) usam feature flags e Parallel Change (expand-migrate-contract) para permitir rollback seguro. Squads trabalham em fatias verticais finas (thin slicing) entregando incrementos testáveis a cada 1-2 semanas, validados por métricas de produto (ex: adoção de novo desafio de gamificação) antes de escalar.",
+    "coupling_management": "Acoplamento aferente (Ca) alto é aceito no módulo 'Core Habit Domain' pois é o núcleo estável do sistema; acoplamento eferente (Ce) é mantido baixo nesse módulo — ele não depende de módulos de gamificação ou billing. O módulo de Gamificação Corporativa tem acoplamento eferente deliberado com o Core via eventos assíncronos (não chamadas síncronas), reduzindo acoplamento temporal. Acoplamento contratual entre times é gerenciado via schemas versionados publicados em um registry, e a comunicação entre quanta é sempre assíncrona (orientada a eventos) exceto para leituras críticas via API Gateway com circuit breaker.",
+    "deployment_pipeline": "Pipeline CI/CD (ex: GitHub Actions/GitLab CI) com estágios: (1) build + testes unitários, (2) fitness functions atômicas (contract tests, ArchUnit, SAST), (3) deploy em ambiente de staging, (4) fitness functions holísticas (chaos test leve, load test), (5) deploy canário em produção com 5% do tráfego monitorado por métricas de negócio e técnicas, (6) rollout completo automático se métricas dentro do threshold, senão rollback automático.",
+    "data_evolution": "Uso do padrão Expand-Contract: novas colunas/tabelas são adicionadas sem remover as antigas (expand), código é migrado para usar o novo esquema com dual-write/dual-read temporário, e somente após validação completa as estruturas antigas são removidas (contract). Migrations versionadas (ex: Flyway/Liquibase) rodam automaticamente no pipeline. Eventos de domínio são versionados (v1, v2) permitindo consumidores migrarem em seu próprio ritmo.",
+    "experimentation": "Hipóteses de produto (ex: 'gamificação com badges aumenta retenção em 15%') são testadas via feature flags (LaunchDarkly/Unleash) com rollout progressivo e A/B testing. A arquitetura orientada a eventos permite instrumentar novos experimentos como consumidores adicionais de eventos existentes, sem modificar o core, reduzindo risco e custo de experimentação.",
+    "sacrificial_parts": "O MVP de gamificação (sistema de pontos e badges simples, hardcoded) é deliberadamente descartável e será substituído por um 'Rules Engine' configurável (ex: baseado em Drools ou serviço próprio) quando o número de regras de negócio corporativas ultrapassar ~20 variações por cliente, estimado entre 6-12 meses após o lançamento. O dashboard inicial de relatórios (queries diretas no banco transacional) será substituído por uma camada de analytics dedicada (data warehouse) quando o volume de leituras impactar a performance transacional.",
+    "guardrails": "Testes de arquitetura automatizados (ArchUnit/dependency-cruiser) bloqueiam PRs que violem limites de bounded context; política de 'no shared database' entre quanta; revisões arquiteturais trimestrais (ADR reviews); métricas de acoplamento e complexidade ciclomática monitoradas via SonarQube com quality gates; documentação viva de ADRs (Architecture Decision Records) versionada no repositório.",
+    "tradeoffs": "Prioriza-se evolvabilidade e velocidade de experimentação sobre performance máxima inicial (ex: eventos assíncronos introduzem latência eventual em troca de desacoplamento). Sacrifica-se consistência forte entre módulos (opta-se por consistência eventual) para permitir escalabilidade independente. Segurança corporativa (SSO, auditoria) é priorizada sobre simplicidade de onboarding self-service inicial, dado o foco em clientes enterprise.",
+    "interfaces": [
+      "REST API pública (Habit Tracking API) - CRUD de hábitos e check-ins",
+      "Event Bus / Message Broker (eventos de domínio: HabitCompleted, StreakBroken, PointsAwarded, ChallengeCompleted)",
+      "Webhook de integração corporativa (para sistemas de RH/benefícios)",
+      "SSO/SAML endpoint para autenticação corporativa",
+      "Admin API para gestão de desafios e ranking corporativo",
+      "API de relatórios/analytics (agregados de sustentabilidade por equipe/empresa)",
+      "SDK Mobile (iOS/Android) para tracking de hábitos"
+    ],
+    "escalabilidade": "Escala horizontalmente via containers orquestrados (Kubernetes/ECS) com autoscaling baseado em CPU/fila de mensagens. O banco transacional escala via read replicas para leituras de dashboard; dados de séries temporais (streaks, métricas de sustentabilidade) são particionados por tenant (empresa) permitindo sharding conforme a base cresce. Cache (Redis) para rankings e leaderboards corporativos de alta leitura. Multi-tenancy lógica inicialmente (schema compartilhado com tenant_id), evoluindo para isolamento físico por tenant apenas para clientes enterprise com requisitos de compliance.",
+    "custo_infra_estimado": "Servidor (ECS Fargate/K8s, 3 serviços): $150/mês; RDS Postgres (multi-AZ, db.t3.medium): $120/mês; TimescaleDB/InfluxDB para métricas: $60/mês; Redis (cache/leaderboard): $40/mês; SQS/EventBridge: $15/mês; S3 (assets, avatares, exports): $10/mês; CDN (CloudFront): $20/mês; Observabilidade (Datadog/Grafana Cloud básico): $50/mês; Total estimado inicial: ~$465/mês para até ~5.000 usuários ativos.",
+    "custo_por_cliente": "Custo por usuário ativo/mês: compute ($150/5000 usuários) = $0.03 + banco de dados ($180/5000) = $0.036 + cache/mensageria ($55/5000) = $0.011 + storage/CDN ($30/5000) = $0.006 + observabilidade ($50/5000) = $0.01. Total ≈ $0.093/usuário/mês em infraestrutura pura. Para uma empresa-cliente com 200 funcionários ativos: custo de infra ≈ $18.60/mês, permitindo margem saudável frente a um plano corporativo de $3-8/usuário/mês.",
+    "monetizacao": "Modelo B2B SaaS por assentos (per-seat), vendido a empresas para benefício de funcionários: (1) Starter: $2/usuário/mês (até 100 usuários) - tracking básico + gamificação simples; (2) Business: $5/usuário/mês (101-1000 usuários) - dashboards de equipe, desafios customizados, relatórios ESG; (3) Enterprise: $8-12/usuário/mês (1000+ usuários) - SSO, API dedicada, relatórios de compliance ESG/CSRD, customização de badges. Métricas-chave: MRR alvo de $50k em 12 meses; LTV estimado em $2.400 por empresa-cliente (assumindo ticket médio de $400/mês e churn anual de 15%, LTV ≈ ticket médio / churn mensal); CAC alvo de $800 por empresa (vendas outbound + parcerias com consultorias de RH/ESG), payback period de ~2 meses.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Kotlin/Spring Boot para os serviços core; Banco transacional: PostgreSQL (RDS); Séries temporais: TimescaleDB; Cache/Leaderboard: Redis; Mensageria: Amazon SQS/SNS ou Kafka (quando escalar); Frontend web: React + TypeScript; Mobile: React Native ou Flutter; Infraestrutura: AWS (ECS Fargate ou EKS), Terraform para IaC; CI/CD: GitHub Actions; Observabilidade: Datadog ou Grafana + Prometheus; Autenticação: Auth0/Okta para SSO corporativo; Feature flags: LaunchDarkly ou Unleash; Pagamentos/billing: Stripe Billing para assinaturas por assento."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "25a60daee261",
+    "gerado_em": "2026-09-27T20:58:34+00:00",
+    "runner": "runner.py"
+  }
+}

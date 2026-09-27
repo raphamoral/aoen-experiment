@@ -1,0 +1,28 @@
+{
+  "ideia_idx": 84,
+  "ideia": "App de diagnóstico automotivo por OBD com recomendação de oficinas",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Um SaaS que conecta ao adaptador OBD-II (via Bluetooth/Wi-Fi) do veículo do usuário, lê códigos de falha (DTCs) e parâmetros em tempo real (RPM, temperatura, voltagem da bateria, etc.), traduz isso em diagnósticos compreensíveis, estima severidade/urgência do problema e recomenda oficinas parceiras próximas com base no tipo de reparo necessário, avaliações e disponibilidade.",
+    "como_comecar": "Começar com um MVP focado em: (1) app mobile que lê DTCs via Bluetooth de um adaptador OBD-II genérico (ELM327), (2) banco de dados de códigos DTC com explicações em linguagem simples, (3) cadastro básico de oficinas parceiras com geolocalização. Validar com um grupo pequeno de usuários e oficinas em uma única cidade antes de escalar, priorizando o fluxo 'leu erro -> entendeu problema -> encontrou oficina confiável'.",
+    "tecnologias": "Mobile: React Native ou Flutter (para Bluetooth Low Energy nativo). Backend: Node.js (NestJS) ou Python (FastAPI). Comunicação com OBD: bibliotecas ELM327/BLE. Filas/eventos: para processar leituras assíncronas. Geolocalização: PostGIS ou Google Maps Platform. Notificações push: Firebase Cloud Messaging. Autenticação: OAuth2/JWT.",
+    "banco_dados": "PostgreSQL como banco relacional principal (usuários, veículos, oficinas, agendamentos, avaliações) com extensão PostGIS para buscas geoespaciais de oficinas. Redis para cache e sessões. Um data warehouse (BigQuery ou Redshift) futuramente para analytics de falhas e telemetria agregada. Armazenamento de logs brutos de OBD em formato time-series (TimescaleDB ou InfluxDB) se houver monitoramento contínuo.",
+    "interfaces": [
+      "App mobile (iOS/Android) para o motorista conectar o OBD e visualizar diagnósticos",
+      "Painel web para oficinas gerenciarem solicitações, orçamentos e agenda",
+      "Painel administrativo interno para gestão de oficinas parceiras e curadoria de dados DTC",
+      "API pública/parceiros para integração com fabricantes de adaptadores OBD ou seguradoras"
+    ],
+    "usuarios": "Motoristas/proprietários de veículos que querem entender problemas do carro sem depender cegamente de mecânicos; oficinas mecânicas que buscam leads qualificados de clientes com diagnóstico pré-identificado; futuramente frotistas e seguradoras interessados em manutenção preditiva.",
+    "escalabilidade": "Sim: arquitetura em microsserviços ou modular monolith desacoplando ingestão de dados OBD, motor de diagnóstico e marketplace de oficinas. Uso de filas (Kafka/SQS) para processar picos de leituras de telemetria. Cache agressivo para buscas de oficinas por região. Escalar por região/cidade de forma independente, já que a densidade de oficinas parceiras varia geograficamente.",
+    "custos": "Principais custos: infraestrutura cloud (compute, banco de dados, storage de telemetria), custo de aquisição/subsídio de adaptadores OBD para novos usuários, comissões de geolocalização/mapas (Google Maps API tem custo por chamada), suporte ao cliente, e onboarding/curadoria manual de oficinas parceiras no início. Considerar custos de compliance (LGPD) para dados de localização e veículo.",
+    "monetizacao": "Modelo híbrido: (1) assinatura mensal/anual para funcionalidades premium (diagnóstico avançado, histórico de manutenção, alertas preditivos), (2) comissão por indicação/agendamento confirmado nas oficinas parceiras (marketplace fee), (3) plano B2B para oficinas destacarem seu perfil ou aparecerem em posição privilegiada, (4) parcerias com seguradoras/fabricantes de adaptadores para dados agregados anonimizados.",
+    "stack_sugerida": "Mobile: React Native + módulo nativo BLE. Backend: Node.js/NestJS (ou Python/FastAPI) em containers (Docker) orquestrados via Kubernetes ou serviço gerenciado (ECS/Cloud Run). Banco: PostgreSQL + PostGIS, Redis para cache, TimescaleDB para telemetria. Infra: AWS ou GCP. CI/CD: GitHub Actions. Pagamentos/assinaturas: Stripe. Observabilidade: Datadog ou Grafana + Prometheus."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T21:03:54+00:00",
+    "runner": "runner.py"
+  }
+}

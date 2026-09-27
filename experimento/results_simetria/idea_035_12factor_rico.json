@@ -1,0 +1,37 @@
+{
+  "ideia_idx": 35,
+  "ideia": "SaaS de detecção de fraudes em transações de marketplace",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git, com múltiplas implantações (dev, staging, produção) geradas a partir do mesmo código via branches/tags. Serviços logicamente distintos (API de scoring, ingestão de eventos, dashboard, workers de ML) vivem no mesmo repo ou em repos irmãos com versionamento semântico compartilhado, nunca copiados/forkados por cliente.",
+    "dependencies": "Todas as dependências (Python: requirements.txt/poetry.lock; Node: package-lock.json) declaradas explicitamente, sem confiar em pacotes globais do SO. Isolamento via containers Docker multi-stage; bibliotecas de ML (scikit-learn, XGBoost, LightGBM) e drivers de banco fixados por versão exata para reprodutibilidade dos modelos de fraude.",
+    "config": "Tudo que varia entre implantações fica em variáveis de ambiente: connection strings (Postgres, Redis, Kafka), chaves de API (Stripe, Sift, serviços de KYC), thresholds de score de risco por ambiente, feature flags de modelos (v1 vs v2), segredos de assinatura de webhook. Nada de config hardcoded no código; mesmo build roda em qualquer ambiente só trocando env vars.",
+    "backing_services": "Banco de dados transacional (Postgres/RDS), cache (Redis), fila de eventos (Kafka/SQS) para ingestão de transações em tempo real, serviço de feature store (Redis/Feast), provedor de e-mail/SMS para alertas, e serviços externos de dados (bureaus de crédito, listas de sanções, geolocalização de IP) — todos anexados via URL/config e substituíveis sem alterar código, ex.: trocar SQS por Kafka sem tocar na lógica de consumo.",
+    "build_release_run": "Pipeline CI/CD com 3 estágios distintos: build (compila artefato/imagem Docker imutável a partir do commit), release (combina build + config do ambiente, gera release versionada e imutável, ex. via tags), run (executa a release em containers/K8s). Rollback é trocar a release ativa, nunca hot-fix em produção.",
+    "processes": "Processos stateless e sem afinidade (share-nothing): API de scoring, workers de detecção e consumidores de fila não guardam estado local. Estado persistente reside exclusivamente no Postgres (transações, casos de fraude, histórico de decisões), Redis (cache de features e sessões) e feature store; nenhum dado de sessão ou modelo fica em memória local do processo entre requisições.",
+    "port_binding": "Cada serviço é autocontido e exporta sua funcionalidade via bind de porta HTTP/gRPC (ex. API REST de scoring em :8080, webhook receiver em :8081), sem depender de um servidor de aplicação externo injetado em runtime; um app server embutido (uvicorn/gunicorn) roda dentro do próprio processo.",
+    "concurrency": "Escala horizontal por tipo de processo: web (API de scoring síncrona, escala por requisição/latência), worker (processamento assíncrono de regras/ML em lote, escala por profundidade de fila), scheduler (jobs de retraining de modelo e reconciliação). Cada tipo escala independentemente via réplicas (K8s HPA) conforme volume de transações do marketplace.",
+    "disposability": "Startup em segundos (containers leves, sem estado a carregar além de config), graceful shutdown com drenagem de requisições em andamento e commit/ack de mensagens de fila antes de encerrar (SIGTERM handling), garantindo que nenhuma transação analisada seja perdida em deploys ou autoscaling.",
+    "dev_prod_parity": "Docker Compose replica localmente os mesmos backing services de produção (Postgres, Redis, Kafka) evitando divergência de ferramentas; deploys contínuos (múltiplos por dia) reduzem gap de tempo; times de dev, staging e ops usam o mesmo pipeline e artefatos, eliminando divergência de pessoal e ambiente.",
+    "logs_admin": "Logs tratados como stream de eventos não bufferizados, escritos em stdout/stderr e coletados por agregador (ELK/Datadog/CloudWatch) para auditoria de decisões de fraude (rastreabilidade regulatória). Tarefas administrativas (retraining manual de modelo, reprocessamento de casos, migrations) rodam como processos pontuais (one-off) no mesmo ambiente e release da aplicação, nunca via scripts ad-hoc em produção.",
+    "interfaces": [
+      "API REST/GraphQL para consulta e submissão de transações em tempo real",
+      "Webhooks de notificação de score de risco e decisão (aprovar/bloquear/revisar)",
+      "Dashboard web para analistas de fraude revisarem casos",
+      "SDK/biblioteca cliente para integração com marketplaces (JS/Python)",
+      "API de administração para configuração de regras e thresholds",
+      "Interface de exportação de relatórios/compliance (CSV, PDF)"
+    ],
+    "escalabilidade": "Arquitetura orientada a eventos permite escalar ingestão (Kafka/SQS) e scoring independentemente do volume de vendedores/marketplaces conectados; modelos de ML servidos via microsserviço próprio escalável horizontalmente; sharding de dados por tenant/marketplace conforme cresce a base; cache agressivo de features reduz latência de scoring em tempo real mesmo com milhões de transações/dia.",
+    "custo_infra_estimado": "Servidores (K8s/EKS, API + workers): $300/mês; RDS Postgres (multi-AZ): $150/mês; Redis (ElastiCache): $80/mês; Kafka/MSK ou SQS: $100/mês; CDN (dashboard estático): $20/mês; Armazenamento S3 (logs, modelos, auditoria): $40/mês; banda/transferência: $60/mês; monitoramento (Datadog): $100/mês. Total estimado: ~$850/mês na base inicial.",
+    "custo_por_cliente": "Cada análise de transação = $0.002 (compute de inferência ML) + $0.001 (chamadas a serviços externos como IP/geolocalização, rateado) + $0.0005 (storage/log de auditoria) + $0.0003 (mensageria/fila) = ~$0.0038/transação analisada. Cliente médio com 50.000 transações/mês = ~$190/mês em custo variável de infraestrutura.",
+    "monetizacao": "Modelo SaaS por assinatura + uso: Starter ($299/mês, até 10k transações, regras básicas), Growth ($999/mês, até 100k transações, ML avançado + suporte prioritário), Enterprise (a partir de $5.000/mês, volume ilimitado, SLA, modelos customizados, integração dedicada). Cobrança adicional de $0.02 por transação excedente ao plano. Métricas-alvo: MRR crescendo 15%/mês, LTV médio de $18.000 (36 meses de retenção média), CAC de $1.200 via vendas outbound para marketplaces de médio porte, payback em ~4 meses.",
+    "stack_sugerida": "Backend: Python (FastAPI) para API de scoring + serviços de ML; Node.js/TypeScript para dashboard e webhooks. ML: scikit-learn/XGBoost/LightGBM com feature store (Feast) e MLflow para versionamento de modelos. Dados: PostgreSQL (transacional), Redis (cache/features), Kafka ou Amazon SQS (ingestão de eventos). Infra: Docker + Kubernetes (EKS/GKE), Terraform para IaC, GitHub Actions para CI/CD. Observabilidade: Datadog/Prometheus + Grafana, ELK para logs. Pagamentos/marketplace: Stripe Connect para referência de fluxos financeiros monitorados. Frontend: React + TypeScript."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:57:39+00:00",
+    "runner": "runner.py"
+  }
+}

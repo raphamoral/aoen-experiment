@@ -1,0 +1,29 @@
+{
+  "ideia_idx": 94,
+  "ideia": "App de gestão de obras com timeline visual e controle de custos em tempo real",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Um SaaS de gestão de obras que permite a construtoras e engenheiros civis acompanhar o cronograma físico da obra em uma timeline visual (tipo Gantt/Kanban por etapas) integrado a um módulo de controle de custos em tempo real, comparando orçado vs. realizado, com alertas de desvio e relatórios para stakeholders (cliente, engenheiro, financeiro).",
+    "como_comecar": "MVP focado em uma única obra por conta: (1) cadastro de projeto/obra com etapas e marcos, (2) timeline visual arrastável com dependências entre etapas, (3) lançamento manual de custos (mão de obra, material, terceiros) vinculado a cada etapa, (4) dashboard simples de orçado vs. gasto. Validar com 3-5 construtoras pequenas/médias antes de expandir para multi-obra, permissões de equipe e integrações contábeis.",
+    "tecnologias": "Frontend: React/Next.js com biblioteca de timeline (ex: vis-timeline, dhtmlx-gantt ou construção própria com dnd-kit) e Tailwind. Backend: Node.js (NestJS) ou Python (FastAPI/Django) expondo API REST/GraphQL. Real-time: WebSockets (Socket.io) ou Server-Sent Events para atualização de custos ao vivo. Mobile: React Native (para apontamento de custos em campo, offline-first).",
+    "banco_dados": "PostgreSQL como banco principal (dados relacionais: obras, etapas, orçamentos, lançamentos financeiros). Redis para cache e pub/sub das atualizações em tempo real. Object storage (S3/Cloudflare R2) para anexos (fotos da obra, notas fiscais, plantas). Auditoria de lançamentos financeiros em tabela append-only para rastreabilidade.",
+    "interfaces": [
+      "Web app (dashboard principal para gestores/engenheiros)",
+      "App mobile (apontamento de custos e fotos em campo, offline-first)",
+      "Painel do cliente/investidor (visão read-only da timeline e progresso)",
+      "API pública/webhooks para integração com ERPs e contabilidade",
+      "Exportação de relatórios (PDF/Excel)"
+    ],
+    "usuarios": "Construtoras pequenas e médias, engenheiros civis e arquitetos autônomos, mestres de obra, gestores de projeto, e secundariamente investidores/clientes finais que acompanham o progresso da obra.",
+    "escalabilidade": "Arquitetura multi-tenant desde o início (isolamento lógico por tenant_id). Separar serviço de real-time (custos/notificações) do CRUD principal para escalar independentemente. Filas (BullMQ/RabbitMQ) para processamento assíncrono de uploads e geração de relatórios. Cache de agregações de custo (materialized views) para evitar recálculo pesado a cada consulta.",
+    "custos": "Sim: infraestrutura cloud (compute + storage de fotos/documentos cresce rápido), custos de banda para apps móveis em obras com internet ruim (necessita sync offline eficiente), custos de WebSocket/real-time em escala, e custos de suporte/onboarding dado o perfil de usuário menos técnico do setor de construção.",
+    "monetizacao": "Modelo SaaS por assinatura (via Stripe Billing) com planos por número de obras ativas simultâneas e número de usuários/equipe. Tier gratuito limitado (1 obra) para aquisição, planos pagos mensais/anuais com add-ons (armazenamento extra de fotos, relatórios avançados, integrações contábeis). Possível módulo de comissão futura se conectar fornecedores/marketplace de materiais.",
+    "stack_sugerida": "Next.js + TypeScript + Tailwind (frontend web), React Native (mobile), NestJS + TypeScript (backend), PostgreSQL + Prisma (dados), Redis (cache/real-time), Socket.io (atualizações ao vivo), S3-compatible storage (arquivos), Stripe (billing), deploy em AWS/GCP com containers (Docker + ECS/Cloud Run)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T21:07:04+00:00",
+    "runner": "runner.py"
+  }
+}

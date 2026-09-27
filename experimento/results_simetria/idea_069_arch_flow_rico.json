@@ -1,0 +1,97 @@
+{
+  "ideia_idx": 69,
+  "ideia": "SaaS de automação de testes de acessibilidade web com relatórios WCAG",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do usuário (garantir conformidade WCAG e evitar processos/multas por acessibilidade) → Cadastro do site/app → Configuração de regras de varredura (crawling) → Execução de testes automatizados (axe-core/Lighthouse) → Detecção de violações WCAG → Geração de relatório de conformidade → Priorização e triagem de issues → Integração com fluxo de dev (CI/CD, tickets) → Reteste e acompanhamento de correções → Certificação/exportação de relatório para stakeholders/auditoria",
+    "wardley_map": {
+      "genesis": "Motor de IA para sugestão automática de correção de código (remediation assistant) e detecção heurística de problemas não cobertos por regras WCAG estáticas (ex: contraste dinâmico, foco em SPAs complexas)",
+      "custom_built": "Motor de orquestração de varredura multi-página/multi-estado (crawler com autenticação, SPA rendering), engine de priorização de issues por severidade/impacto, geração de relatórios WCAG customizados por indústria",
+      "product": "Regras de teste de acessibilidade (axe-core, Pa11y), dashboard de relatórios, integrações com Jira/Slack/GitHub, billing/subscription management",
+      "commodity": "Headless browser rendering (Playwright/Puppeteer), hospedagem cloud (AWS/GCP), autenticação (Auth0/Clerk), envio de e-mail, armazenamento de arquivos (S3), CDN, processamento de pagamentos (Stripe)"
+    },
+    "build_buy_decisions": {
+      "construir": "Motor de orquestração de varreduras (scheduling, multi-state crawling, SPA handling), engine de priorização e scoring de issues, geração de relatórios WCAG customizados, assistente de remediation com IA — porque são a fonte de diferenciação e vantagem competitiva",
+      "comprar": "Engine de regras de acessibilidade (axe-core open source como base, evitar reescrever), Stripe para billing, Auth0/Clerk para auth, SendGrid/Postmark para e-mail — porque já são soluções maduras e não geram vantagem competitiva",
+      "commodity": "Infraestrutura cloud (AWS/GCP), CDN (Cloudflare), banco de dados gerenciado (RDS/Postgres), object storage (S3) — porque são componentes padronizados sem valor estratégico para reinventar"
+    },
+    "core_domain": "Motor de análise e priorização de conformidade WCAG (Accessibility Testing & Compliance Scoring Engine) — é o domínio que justifica investimento sob medida porque a precisão da detecção, a baixa taxa de falsos positivos e a qualidade da priorização de issues são o diferencial competitivo direto que gera confiança e retenção do cliente",
+    "bounded_contexts": {
+      "site_management": "Contexto de cadastro e configuração de sites/apps a serem testados. Linguagem ubíqua: Site, Página, Estado de Autenticação, Escopo de Varredura, Ambiente (staging/prod)",
+      "scan_orchestration": "Contexto de execução e agendamento de varreduras. Linguagem ubíqua: Scan, Job, Crawler, Estado de Renderização, Fila de Execução, Snapshot de Página",
+      "accessibility_analysis": "Contexto núcleo de detecção de violações. Linguagem ubíqua: Violação, Critério de Sucesso WCAG, Nível de Conformidade (A/AA/AAA), Severidade, Regra, Falso Positivo",
+      "reporting_compliance": "Contexto de geração de relatórios e certificação. Linguagem ubíqua: Relatório, Score de Conformidade, Trend, Certificado, Exportação (PDF/CSV), Auditoria",
+      "remediation_tracking": "Contexto de acompanhamento de correções. Linguagem ubíqua: Ticket, Status de Correção, Atribuição, SLA, Reteste",
+      "billing_subscription": "Contexto de monetização. Linguagem ubíqua: Plano, Assinatura, Uso (páginas/scans), Invoice, Trial",
+      "identity_access": "Contexto de autenticação e permissões. Linguagem ubíqua: Usuário, Organização, Papel (Role), Convite, Token"
+    },
+    "context_mapping": {
+      "site_management_to_scan_orchestration": "Cliente-Fornecedor: site_management fornece a configuração que scan_orchestration consome para agendar jobs",
+      "scan_orchestration_to_accessibility_analysis": "Parceria: evoluem juntos pois a forma de captura de página (DOM/screenshot) impacta diretamente a análise",
+      "accessibility_analysis_to_reporting_compliance": "Cliente-Fornecedor: accessibility_analysis é upstream, reporting_compliance consome violações para compor relatórios",
+      "reporting_compliance_to_remediation_tracking": "Camada Anticorrupção: remediation_tracking traduz o modelo de violação WCAG para o modelo de ticket (ex: ao integrar com Jira/GitHub Issues), evitando vazamento do modelo externo",
+      "billing_subscription_to_scan_orchestration": "Cliente-Fornecedor com Conformista: scan_orchestration consulta billing para checar limites de uso antes de agendar scans",
+      "identity_access_to_todos_contextos": "Open Host Service: identity_access expõe uma API/SDK de autenticação e autorização consumida por todos os demais contextos"
+    },
+    "team_topologies": {
+      "stream_aligned": [
+        "Time de Onboarding & Configuração (site_management)",
+        "Time de Análise de Acessibilidade (accessibility_analysis + scan_orchestration) — dono do core domain",
+        "Time de Relatórios & Remediation (reporting_compliance + remediation_tracking)"
+      ],
+      "platform": "Time de Plataforma fornecendo infraestrutura self-service (deploy, observabilidade, filas de jobs, autenticação, billing como serviço interno)",
+      "subsistema_complicado": "Time especialista em Engine de Regras WCAG/Renderização de Browser (headless rendering, cross-browser accessibility tree parsing) — requer expertise profunda e isolada dos demais times",
+      "habilitacao": "Time de Enablement em Acessibilidade/UX que ajuda os stream-aligned teams e também clientes a interpretar critérios WCAG complexos e boas práticas de remediation"
+    },
+    "cognitive_load": "Cada stream-aligned team possui no máximo 1-2 bounded contexts, mantendo escopo restrito ao seu domínio de negócio. O subsistema complicado (engine de regras/rendering) é isolado em time próprio para não sobrecarregar os times de fluxo com complexidade de parsing de DOM e regras WCAG. O time de plataforma abstrai infraestrutura via APIs self-service (ex: 'criar fila de scan' como serviço), removendo carga operacional dos times de fluxo. O time de enablement reduz carga cognitiva relacionada a conhecimento regulatório (WCAG 2.2, ADA, EN 301 549) que mudaria constantemente se distribuída em todos os times",
+    "interaction_modes": {
+      "colaboracao": "Time de Análise de Acessibilidade colabora ativamente com o Subsistema Complicado (engine de regras) durante evolução de novos critérios WCAG",
+      "x_as_a_service": "Time de Plataforma oferece infraestrutura (filas, deploy, billing interno) como serviço self-service para os stream-aligned teams; Subsistema Complicado oferece o motor de análise como serviço via API interna",
+      "facilitacao": "Time de Enablement facilita temporariamente os stream-aligned teams e clientes na interpretação de novos critérios regulatórios (ex: atualização para WCAG 3.0)"
+    },
+    "flow_optimization": "O fluxo de valor é otimizado desacoplando onboarding (rápido, self-service) da execução de scans (assíncrona, via filas) e da geração de relatórios (idempotente, cacheable). Gargalos potenciais: (1) rendering de SPAs complexas com autenticação pode gerar filas longas — mitigado com auto-scaling de workers headless; (2) falsos positivos no engine de regras geram retrabalho manual de triagem — mitigado com o motor de priorização por IA; (3) acoplamento entre relatórios e remediation tracking pode travar releases — mitigado pela camada anticorrupção que isola integrações externas (Jira/GitHub)",
+    "independent_streams": "Cada bounded context expõe contratos estáveis (APIs assíncronas orientadas a eventos, ex: 'ScanCompleted', 'ViolationDetected', 'ReportGenerated') permitindo que times evoluam internamente sem quebrar consumidores. Site_management, scan_orchestration e reporting_compliance podem fazer deploy independente pois se comunicam via mensageria (fila/eventos) e não por chamadas síncronas diretas, evitando que uma mudança no engine de análise bloqueie o time de relatórios",
+    "interfaces": [
+      "REST/GraphQL API pública para clientes (CI/CD integration)",
+      "Webhook para notificação de scan concluído",
+      "SDK/CLI para rodar scans localmente ou em pipelines",
+      "Integração com Jira/GitHub Issues/Slack",
+      "Dashboard web (SPA) para configuração e visualização",
+      "API interna de Autenticação/Autorização (Open Host Service)",
+      "Fila de mensagens (eventos: ScanRequested, ScanCompleted, ViolationDetected)",
+      "Exportação de relatórios PDF/CSV/JSON",
+      "Widget embutido para relatório público de conformidade (badge de selo WCAG)"
+    ],
+    "escalabilidade": "Escala horizontalmente via workers de scan headless em containers (Kubernetes/ECS) com auto-scaling baseado em fila de jobs (SQS/RabbitMQ). Separação entre plano de controle (API, dashboard) e plano de execução (workers de crawling) permite escalar scans independentemente do tráfego web. Banco de dados particionado por tenant (multi-tenancy com schema por organização ou row-level security) para isolar carga de clientes grandes. Cache de relatórios e resultados de regras estáveis (CDN + Redis) reduz recomputação. Motor de análise pode ser escalado com filas priorizadas por plano (enterprise = prioridade alta)",
+    "custo_infra_estimado": "Servidor de API (ECS/Fargate, 2-4 instâncias): $80/mês. Workers de scan headless (auto-scaling, spot instances): $150/mês. Banco de dados (RDS Postgres, db.t3.medium multi-AZ): $120/mês. Redis/cache (ElastiCache): $40/mês. Fila de mensagens (SQS): $10/mês. Armazenamento de snapshots/relatórios (S3): $25/mês. CDN (Cloudflare): $20/mês. Observabilidade (Datadog/Sentry): $50/mês. Total estimado inicial: ~$495/mês para carga de até 500 clientes ativos",
+    "custo_por_cliente": "Cada scan de página = $0.02 (browser headless compute) + $0.005 (armazenamento snapshot S3) + $0.003 (processamento de regras/CPU) + $0.002 (banda) = $0.03/página escaneada. Cliente Starter com 50 páginas/mês, 4 scans/mês = 200 páginas escaneadas = $6.00/mês de custo direto. Cliente Enterprise com 1000 páginas/mês, 8 scans/mês = 8000 páginas = $240/mês de custo direto (compensado por plano de $999+/mês)",
+    "monetizacao": {
+      "modelo": "SaaS por assinatura em camadas (tiered subscription) com limite de páginas/scans mensais, cobrança adicional por overage",
+      "tiers": {
+        "starter": "$49/mês — até 5 sites, 200 páginas escaneadas/mês, relatórios básicos WCAG AA",
+        "professional": "$199/mês — até 25 sites, 2.000 páginas/mês, integrações CI/CD, relatórios customizados, alertas Slack",
+        "business": "$599/mês — até 100 sites, 10.000 páginas/mês, API completa, remediation tracking, SLA de suporte",
+        "enterprise": "$999+/mês customizado — páginas ilimitadas, multi-marca, SSO, auditoria dedicada, gerente de conta"
+      },
+      "metricas": "MRR alvo de $50k em 12 meses com mix de 60% Starter/Professional, 30% Business, 10% Enterprise. LTV estimado: ticket médio $250/mês x churn mensal 3% = LTV ~$8.300. CAC alvo via inbound/content marketing e parcerias com agências de acessibilidade: ~$800-1.200, resultando em relação LTV:CAC de aproximadamente 7:1. Add-on de remediation com IA cobrado à parte ($0.50/sugestão gerada) como fonte de receita incremental"
+    },
+    "stack_sugerida": {
+      "frontend": "React/Next.js + TypeScript, TailwindCSS, para dashboard e relatórios",
+      "backend": "Node.js (NestJS) ou Python (FastAPI) para APIs de domínio, arquitetura orientada a eventos",
+      "scan_engine": "Playwright + axe-core como base do motor de varredura, workers em containers Docker orquestrados por Kubernetes/ECS",
+      "mensageria": "AWS SQS ou RabbitMQ para orquestração assíncrona de scans",
+      "banco_de_dados": "PostgreSQL (RDS) como banco principal, Redis para cache e filas de prioridade",
+      "armazenamento": "S3 para snapshots de páginas, relatórios PDF e artefatos de scan",
+      "auth_billing": "Clerk/Auth0 para autenticação, Stripe para billing e assinaturas",
+      "observabilidade": "Datadog ou Grafana + Prometheus para métricas, Sentry para error tracking",
+      "ia_remediation": "Integração com Claude API para geração de sugestões de correção de código acessível",
+      "infra": "AWS ou GCP com Terraform para IaC, CI/CD via GitHub Actions"
+    }
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T21:01:15+00:00",
+    "runner": "runner.py"
+  }
+}

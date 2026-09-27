@@ -1,0 +1,30 @@
+{
+  "ideia_idx": 28,
+  "ideia": "SaaS de compliance LGPD automatizado para PMEs",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Plataforma SaaS que automatiza o ciclo de conformidade com a LGPD para PMEs: mapeamento de dados pessoais (inventário de tratamento/RIPD), gestão de bases legais, gestão de consentimento, atendimento a titulares (DSAR - acesso, correção, exclusão, portabilidade), gestão de incidentes de segurança e notificação à ANPD, gestão de contratos com operadores/terceiros, políticas de privacidade geradas dinamicamente, e um dashboard de score de conformidade com alertas e trilhas de auditoria.",
+    "como_comecar": "MVP focado em 3 módulos: (1) questionário guiado de mapeamento de dados pessoais (RoPA - Registro de Operações de Tratamento) com templates por setor, (2) gerador de política de privacidade e termos de consentimento, (3) portal de atendimento a solicitações de titulares com SLA automático. Validar com 5-10 PMEs em setores de alto risco (saúde, fintech, e-commerce) antes de construir módulos avançados como gestão de incidentes e DPIA.",
+    "tecnologias": "Backend em Node.js (NestJS) ou Python (Django/FastAPI) para regras de negócio e workflows; motor de regras/formulários dinâmicos (JSON Schema) para os questionários de conformidade que mudam com frequência; fila de mensageria (SQS/RabbitMQ) para notificações e SLAs de DSAR; geração de documentos (PDF) com templates versionados; OCR/NLP leve (opcional) para escanear bases de dados de clientes e sugerir classificação de dados pessoais/sensíveis.",
+    "banco_dados": "PostgreSQL como banco relacional principal (multi-tenant com schema-per-tenant ou row-level security por tenant_id) para dados estruturados de conformidade, workflows e auditoria; armazenamento de objetos (S3-compatible) para documentos e evidências, com criptografia em repouso e retenção configurável; tabela de audit log append-only (ou serviço dedicado tipo event store) para rastreabilidade imutável exigida em fiscalizações; cache (Redis) para sessões e filas de SLA.",
+    "interfaces": [
+      "Dashboard web (SPA) para o responsável de privacidade/DPO da PME",
+      "Portal público para titulares de dados exercerem direitos (DSAR)",
+      "Widget/SDK embutível de gestão de cookies e consentimento para o site do cliente",
+      "API REST/webhooks para integração com CRMs, ERPs e e-commerce",
+      "App mobile ou versão responsiva para aprovações rápidas",
+      "Central de notificações por e-mail para alertas de prazos e incidentes"
+    ],
+    "usuarios": "Donos de PMEs e gestores administrativos sem conhecimento jurídico aprofundado, DPOs internos ou terceirizados, equipes de TI/dev responsáveis por implementar controles técnicos, consultores/escritórios de compliance que atendem múltiplos clientes (uso white-label), e titulares de dados finais que interagem apenas com o portal de solicitações.",
+    "escalabilidade": "Arquitetura multi-tenant desde o início (isolamento lógico por tenant_id + RLS no Postgres), com possibilidade de migrar tenants grandes para schema dedicado; separação de serviços por domínio (mapeamento, DSAR, incidentes, documentos) para escalar independentemente; filas assíncronas para geração de relatórios e PDFs pesados; CDN para o widget de consentimento, que precisa responder em poucos ms em qualquer site cliente; cache agressivo de políticas/templates estáticos.",
+    "custos": "Infraestrutura cloud (AWS/GCP) com custo variável por tenant (armazenamento de evidências, filas, e-mails transacionais); uso de serviços gerenciados (RDS, S3, SQS) para reduzir custo de DevOps em estágio inicial; custo de compliance própria da empresa (auditoria de segurança, certificações, seguro de responsabilidade civil, já que lida com dados sensíveis de terceiros); custo de suporte humano para dúvidas jurídicas que a automação não resolve sozinha.",
+    "monetizacao": "Modelo de assinatura SaaS em camadas (Starter, Growth, Enterprise) por número de titulares/registros de dados geridos e módulos ativos (ex.: gestão de incidentes e DPIA só nos planos superiores); cobrança adicional por add-ons (consultoria jurídica sob demanda, auditoria externa, treinamento de equipe); modelo white-label para escritórios de advocacia/consultoria revenderem a plataforma para seus próprios clientes PMEs, com comissão ou licença por sub-conta.",
+    "stack_sugerida": "Frontend: React/Next.js + TypeScript, TailwindCSS; Backend: NestJS (Node/TypeScript) com arquitetura modular por domínio; Banco: PostgreSQL (multi-tenant com RLS) + Redis (cache/filas); Mensageria: AWS SQS ou RabbitMQ; Armazenamento: S3 com criptografia SSE-KMS; Autenticação: Auth0/Cognito com SSO e MFA; Infra: AWS (ECS/Fargate ou EKS) com IaC via Terraform; Observabilidade: Datadog ou Grafana+Prometheus; Pagamentos/assinatura: Stripe Billing."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:55:31+00:00",
+    "runner": "runner.py"
+  }
+}

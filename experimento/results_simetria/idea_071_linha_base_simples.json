@@ -1,0 +1,30 @@
+{
+  "ideia_idx": 71,
+  "ideia": "Plataforma de certificação de origem para cadeias de café especial",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS de certificação de origem para cadeias de café especial, permitindo rastrear o café desde a fazenda até o consumidor final, com registro imutável de eventos (colheita, processamento, transporte, torra, venda), emissão de certificados digitais verificáveis (QR code/NFC) e dashboards para produtores, cooperativas, torrefadoras, certificadoras e consumidores finais.",
+    "como_comecar": "MVP focado em um único elo crítico: cadastro de lotes por produtores/cooperativas + geração de certificado com QR code rastreável publicamente. Validar com 1-2 cooperativas parceiras e algumas torrefadoras antes de expandir para módulos de auditoria, integração com certificadoras (Rainforest Alliance, Fair Trade) e blockchain.",
+    "tecnologias": "Backend em Node.js (NestJS) ou Python (FastAPI/Django) para APIs REST/GraphQL; frontend em React/Next.js para dashboards web; app mobile (React Native ou Flutter) para coleta de dados em campo (offline-first, já que produtores muitas vezes têm conectividade limitada); geração de QR codes; assinatura digital de certificados (chaves criptográficas ou blockchain leve como Polygon/Hyperledger para imutabilidade de eventos críticos).",
+    "banco_dados": "PostgreSQL como banco relacional principal (produtores, lotes, certificações, transações); trilha de auditoria de eventos em modelo append-only (event sourcing) para garantir rastreabilidade imutável; opcionalmente um ledger blockchain (ou hash anchoring em blockchain pública) para certificados críticos que precisam de prova de integridade; S3/object storage para documentos, fotos e laudos de certificação; Redis para cache e filas.",
+    "interfaces": [
+      "Portal web para produtores/cooperativas (cadastro de lotes e eventos)",
+      "App mobile offline-first para coleta de dados em campo",
+      "Dashboard para torrefadoras/compradores (rastreabilidade e compliance)",
+      "Portal para certificadoras/auditores (aprovação e emissão de selos)",
+      "Página pública de verificação de certificado via QR code para consumidor final",
+      "API pública/parceiros para integração com ERPs e marketplaces"
+    ],
+    "usuarios": "Produtores e cooperativas de café especial, torrefadoras e compradores B2B, organismos certificadores/auditores independentes, distribuidores/exportadores e consumidores finais que verificam a origem do produto.",
+    "escalabilidade": "Arquitetura em microsserviços ou modular monolith desacoplado por domínio (identidade, rastreabilidade, certificação, notificações); filas assíncronas (RabbitMQ/SQS) para processamento de eventos e geração de certificados; CDN para páginas públicas de verificação (alto tráfego, baixa escrita); particionamento de dados por safra/região; estratégia multi-tenant para suportar múltiplas cooperativas/regiões cafeeiras isoladamente.",
+    "custos": "Sim — principais custos: infraestrutura cloud (compute, storage de imagens/documentos), custos de transação blockchain (se usado, preferir anchoring pontual em vez de todo evento on-chain para reduzir gas fees), custos de SMS/notificações para produtores em áreas rurais, suporte a conectividade offline (sincronização), e custos de integração com certificadoras terceirizadas (APIs ou taxas de parceria).",
+    "monetizacao": "Modelo de assinatura SaaS em camadas (por cooperativa/torrefadora, baseado em número de lotes/certificados emitidos por mês); taxa por certificado emitido/verificado; planos premium com analytics avançado e integração com marketplaces internacionais; possível comissão em transações B2B facilitadas na plataforma; parcerias pagas com certificadoras para selo verificado.",
+    "stack_sugerida": "Frontend: Next.js + TypeScript + TailwindCSS; Mobile: React Native (offline-first com SQLite/WatermelonDB); Backend: NestJS (Node.js) com GraphQL/REST; Banco: PostgreSQL + Redis; Storage: S3-compatible; Mensageria: RabbitMQ ou AWS SQS; Blockchain (opcional): Polygon para anchoring de hashes; Infra: Docker + Kubernetes na AWS/GCP; Autenticação: Auth0 ou Keycloak; Pagamentos: Stripe para cobrança de assinaturas."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T21:01:32+00:00",
+    "runner": "runner.py"
+  }
+}

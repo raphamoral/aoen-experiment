@@ -1,0 +1,50 @@
+{
+  "ideia_idx": 64,
+  "ideia": "Plataforma de licitação eletrônica simplificada para prefeituras",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Licitacao (com estados: Rascunho, Publicada, EmDisputa, Julgamento, Homologada, Encerrada, Cancelada), Lote, Item, Proposta, Fornecedor, Prefeitura, Impugnacao, Recurso. Regras: transicoes de estado da licitacao seguem a Lei 14.133/2021 (sequenciamento de fases obrigatorio), calculo de menor preco e melhor tecnica, validacao de prazos minimos entre publicacao e abertura, desempate (ex: microempresa tem preferencia conforme LC 123/2006), verificacao de habilitacao documental antes da homologacao, bloqueio de alteracao apos publicacao, calculo de economia gerada (valor estimado - valor homologado). Nenhuma regra conhece HTTP, banco, fila ou UI.",
+    "driving_ports": "PublicarLicitacaoPort, EnviarPropostaPort, ConduzirSessaoDisputaPort (lances), JulgarPropostaPort, ProcessarImpugnacaoPort, ProcessarRecursoPort, HomologarLicitacaoPort, ConsultarLicitacaoPort, GerarRelatorioTransparenciaPort",
+    "driven_ports": "LicitacaoRepositoryPort, FornecedorRepositoryPort, NotificacaoPort (aviso de eventos), PublicacaoDiarioOficialPort, AssinaturaDigitalPort (validacao de certificado ICP-Brasil), ArmazenamentoDocumentosPort, RelogioPort (para prazos legais, testavel), IdGeneratorPort, AuditoriaEventPublisherPort, PagamentoPort (cobranca da prefeitura pela plataforma)",
+    "driving_adapters": "REST API (controllers para fornecedores enviarem propostas e prefeituras publicarem editais), Portal Web SSR (sessao publica de disputa em tempo real via WebSocket adapter), CLI administrativa (operacoes de suporte/migrações), Worker de Cron (dispara fechamento automatico de fases por prazo), Adapter de integracao com Portal Nacional de Contratacoes Publicas (PNCP) recebendo webhooks",
+    "driven_adapters": "PostgreSQLLicitacaoRepository (persistencia relacional com transacoes ACID para lances), S3/MinioDocumentoAdapter (armazenamento de editais e documentos), SendgridNotificacaoAdapter e/ou WhatsAppBusinessAdapter, ICPBrasilAssinaturaAdapter (validacao de certificado via biblioteca de assinatura), PNCPPublicacaoAdapter (publicacao obrigatoria no portal nacional), StripeOuPagarmePagamentoAdapter (cobranca SaaS das prefeituras), RedisEventBusAdapter (pub/sub para sessao de disputa em tempo real), CloudWatchAuditoriaAdapter",
+    "application_services": "PublicarLicitacaoService (orquestra: valida dados minimos, chama repository para salvar, chama PublicacaoDiarioOficialPort, chama PNCPPort, dispara evento), ConduzirSessaoDisputaService (recebe lances, delega calculo de menor preco ao dominio, persiste, notifica participantes via NotificacaoPort), HomologacaoService (invoca regras de julgamento do dominio, persiste resultado, dispara notificacao e publicacao). Nenhum desses servicos contem regra de negocio, apenas orquestracao e chamada de portas.",
+    "domain_isolation": "O dominio e escrito em modulo/pacote proprio (ex: core/) sem imports de frameworks web, ORM ou SDK de nuvem. Todas as dependencias de infraestrutura sao expressas como interfaces (ports) definidas dentro do dominio/aplicacao; adaptadores implementam essas interfaces em modulos externos e sao injetados via construtor. O dominio nao conhece DTOs de API nem schemas de banco; conversao ocorre nos adaptadores.",
+    "test_doubles": "LicitacaoRepositoryPort -> InMemoryLicitacaoRepository para testes de unidade do dominio; RelogioPort -> FixedClockStub para testar prazos legais deterministicamente; PublicacaoDiarioOficialPort e PNCPPublicacaoAdapter -> FakePublicador que apenas registra chamadas; NotificacaoPort -> SpyNotificador para verificar quais eventos foram disparados; AssinaturaDigitalPort -> StubAssinaturaSempreValida/Invalida para testar fluxos de habilitacao sem certificado real. Testes de aplicacao usam esses dublês; testes de adaptador usam containers reais (Testcontainers para Postgres) apenas na camada de integracao.",
+    "configuration_wiring": "Um Composition Root (main.ts ou modulo de bootstrap) instancia os adaptadores concretos e os injeta nos application services via construtor, usando um container de DI (ex: InversifyJS, NestJS modules ou wiring manual em Node/Go). A escolha do adaptador (ex: S3 vs Minio) e definida por variavel de ambiente lida somente no bootstrap, nunca dentro do dominio ou dos services.",
+    "technology_substitution": "Trocar PostgreSQL por outro banco relacional: custo baixo, pois o contrato do repository ja abstrai queries especificas. Trocar SendgridAdapter por outro provedor de e-mail/SMS: custo baixo, adaptador isolado. Trocar REST por GraphQL como driving adapter: custo medio, exige novo mapeamento de resolvers mas o dominio nao muda. Trocar o adaptador de assinatura ICP-Brasil por outro provedor de certificacao: custo alto, pois envolve requisitos legais e homologacao juridica, mas a porta permanece estavel. Migrar de Redis pub/sub para Kafka na sessao de disputa: custo medio-alto por causa de garantias de ordenacao de lances.",
+    "symmetry": "Driving adapters (REST, WebSocket, CLI, Cron) e driven adapters (Postgres, S3, PNCP, Sendgrid) sao simetricos porque ambos dependem de interfaces definidas pelo nucleo, nunca o contrario: um driving adapter chama uma porta de entrada implementada pelo application service; um driven adapter implementa uma porta de saida definida pelo application service. O dominio nunca importa nenhum adaptador dos dois lados, preservando a inversao de dependencia em ambas as direcoes.",
+    "interfaces": [
+      "PublicarLicitacaoPort",
+      "EnviarPropostaPort",
+      "ConduzirSessaoDisputaPort",
+      "JulgarPropostaPort",
+      "ProcessarImpugnacaoPort",
+      "ProcessarRecursoPort",
+      "HomologarLicitacaoPort",
+      "ConsultarLicitacaoPort",
+      "GerarRelatorioTransparenciaPort",
+      "LicitacaoRepositoryPort",
+      "FornecedorRepositoryPort",
+      "NotificacaoPort",
+      "PublicacaoDiarioOficialPort",
+      "AssinaturaDigitalPort",
+      "ArmazenamentoDocumentosPort",
+      "RelogioPort",
+      "IdGeneratorPort",
+      "AuditoriaEventPublisherPort",
+      "PagamentoPort"
+    ],
+    "escalabilidade": "Arquitetura permite escalar horizontalmente os driving adapters (REST/WebSocket) atras de load balancer, pois o estado de sessao de disputa fica no RedisEventBusAdapter e no Postgres, nao em memoria do processo. Para picos de disputa simultanea (varias prefeituras abrindo sessao ao mesmo tempo), separar o Worker de sessao de disputa em servico dedicado com autoscaling baseado em numero de sessoes ativas. Read replicas de Postgres para ConsultarLicitacaoPort (leitura pesada de transparencia publica) separadas do path de escrita transacional dos lances. Cache CDN para editais e documentos publicos ja homologados.",
+    "custo_infra_estimado": "Servidor (2x instancias autoscaling, ex: AWS Fargate/ECS): $80/mes. RDS Postgres (db.t3.medium multi-AZ): $140/mes. Redis (ElastiCache pequeno, para sessoes de disputa): $40/mes. S3 (documentos e editais): $15/mes. CDN (CloudFront para editais publicos): $10/mes. Banda/transferencia: $20/mes. Assinatura digital/validacao ICP-Brasil (custo por chamada de API de terceiro): $30/mes base. Total estimado: aproximadamente $335/mes para uma base inicial de ate ~50 prefeituras.",
+    "custo_por_cliente": "Cada licitacao publicada = $0.02 (publicacao no PNCP via API) + $0.01 (armazenamento S3 de editais e anexos) + $0.005 (notificacoes por e-mail/SMS aos fornecedores) + $0.003 (CPU/processamento da sessao de disputa) = aproximadamente $0.038/licitacao. Uma prefeitura media com 20 licitacoes/mes gera custo de infraestrutura de aproximadamente $0.76/mes, alem de custo fixo de assinatura digital de cerca de $0.60/mes por certificado verificado. Custo total variavel estimado por prefeitura: ~$1.50-2.00/mes.",
+    "monetizacao": "Modelo SaaS B2G por assinatura escalonada: Plano Basico (municipios pequenos, ate 10 licitacoes/mes) R$ 490/mes; Plano Intermediario (ate 50 licitacoes/mes, com relatorios de transparencia e integracao PNCP automatica) R$ 1.290/mes; Plano Enterprise (licitacoes ilimitadas, suporte dedicado, SLA e assinatura digital em lote) R$ 3.500/mes ou sob consulta para consorcios intermunicipais. Metricas: MRR alvo de R$ 150k em 12 meses (assumindo ~80 prefeituras no plano intermediario); CAC estimado em R$ 4.000 por prefeitura (venda consultiva a orgao publico, ciclo de licitacao/pregao para contratacao do proprio software); LTV estimado em R$ 46.000 considerando retencao media de 36 meses no plano intermediario (churn baixo por ser sistema critico e por exigencias de continuidade do servico publico). Modelo adicional de setup fee (R$ 5.000 unico) para migracao de dados e treinamento inicial.",
+    "stack_sugerida": "Backend: Node.js com TypeScript (ou Go para maior performance na sessao de disputa em tempo real), estruturado em camadas hexagonais explicitas (core/, application/, adapters/). Banco: PostgreSQL. Cache/eventos em tempo real: Redis. Fila assincrona: RabbitMQ ou SQS para publicacao no PNCP e notificacoes. Frontend: React/Next.js para portal publico e painel da prefeitura. Infra: AWS (ECS Fargate, RDS, ElastiCache, S3, CloudFront) ou equivalente em nuvem nacional para atender exigencias de soberania de dados do setor publico. Assinatura digital: integracao com provedor homologado ICP-Brasil (ex: Serpro, Certisign). Observabilidade: Grafana + Prometheus, logs centralizados em CloudWatch/ELK."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T21:00:13+00:00",
+    "runner": "runner.py"
+  }
+}

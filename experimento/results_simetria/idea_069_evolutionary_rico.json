@@ -1,0 +1,63 @@
+{
+  "ideia_idx": 69,
+  "ideia": "SaaS de automação de testes de acessibilidade web com relatórios WCAG",
+  "abordagem": "evolutionary_rico",
+  "response": {
+    "architectural_quantum": "O 'Serviço de Varredura de Acessibilidade' (Scan Service): inclui o orquestrador de scan, os workers de navegador headless (Puppeteer/Playwright), o motor de regras WCAG e seu próprio armazenamento de resultados brutos (violation store). É implantável de forma independente porque contém tudo que precisa para funcionar sem sincronização de release com Relatórios, Billing ou Notificações — comunica-se com eles apenas via eventos assíncronos (scan.completed, scan.failed). Relatórios (Report Service) e Billing são quanta separados, cada um com seu próprio dado e pipeline de deploy.",
+    "fitness_functions": {
+      "acuracia_regras": "Suite de regressão que roda o motor de regras contra corpus de casos WAI-ARIA/ACT rules e compara com baseline axe-core; falha o pipeline se precisão/recall cair abaixo de 98%.",
+      "desempenho_scan": "Teste de carga: scan de site com 200 páginas deve completar em p95 < 8 min; bloqueia deploy se regressão > 15%.",
+      "seguranca_dependencias": "SCA (Snyk/Dependabot) rodando a cada PR; zero vulnerabilidades críticas ou altas permitidas em produção.",
+      "isolamento_multi_tenant": "Teste automatizado que tenta acessar dados de tenant B usando credenciais de tenant A; deve retornar 403 em 100% dos casos.",
+      "contrato_api": "Testes de contrato (Pact) entre Scan Service, Report Service e clientes de API/CI-plugin; quebra de contrato bloqueia merge.",
+      "escalabilidade_workers": "Teste de autoscaling: cluster deve escalar de 5 para 50 workers em < 3 min sob 10x de carga simultânea de scans.",
+      "dogfooding_wcag": "A própria UI do SaaS é escaneada pelo próprio produto a cada build; deve manter conformidade WCAG 2.1 AA.",
+      "custo_por_scan": "Métrica contínua no pipeline de observabilidade: custo médio por scan não pode exceder $0.08; alerta se ultrapassar.",
+      "residencia_dados": "Fitness function de compliance: dados de tenants EU nunca saem de região eu-west, verificado via política automatizada (OPA) em cada deploy."
+    },
+    "evolvable_dimensions": {
+      "tecnica": "Motor de regras WCAG evolui de 2.1 -> 2.2 -> 3.0 sem quebrar clientes; migração de crawler síncrono para distribuído baseado em filas.",
+      "dados": "Esquema de violações e taxonomia de regras evolui via expand-contract; histórico de scans migra para armazenamento colunar conforme volume cresce.",
+      "seguranca": "Autenticação evolui de API key simples para OAuth2/SSO/SAML conforme entram clientes enterprise; isolamento de tenant evolui de schema compartilhado para sharding.",
+      "operacional": "Observabilidade evolui de logs simples para tracing distribuído (OpenTelemetry) conforme número de microsserviços cresce; deploy evolui de single-region para multi-region."
+    },
+    "incremental_change": "Mudanças no motor de regras usam feature flags por tenant (rollout canário), permitindo comparar resultados do motor antigo e novo em paralelo antes do cutover. Migrações de schema seguem padrão expand-contract (adicionar coluna/campo, migrar leitura, depois remover o antigo). APIs públicas são versionadas (v1, v2) com deprecation window de 6 meses, e cada mudança arquitetural relevante é registrada em ADRs (Architecture Decision Records) revisados no pipeline.",
+    "coupling_management": "Acoplamento aferente alto é aceito apenas no API Gateway (ponto único de entrada, deliberado). Entre Scan Service, Report Service, Billing e Notification, o acoplamento é deliberadamente baixo e assíncrono via barramento de eventos (Kafka/SQS) — nenhum serviço chama outro de forma síncrona-bloqueante. Acoplamento eferente do Scan Service com bibliotecas de regras WCAG open-source (axe-core) é isolado atrás de um adapter interno, permitindo troca futura sem propagar mudanças. Testes de contrato tornam o acoplamento implícito visível e mensurável.",
+    "deployment_pipeline": "Pipeline CI/CD com estágios: build -> testes unitários -> testes de contrato -> fitness functions estáticas (lint arquitetural, SCA, políticas OPA) -> deploy em staging -> fitness functions dinâmicas (carga, isolamento multi-tenant, acurácia de regras) -> canary release (5% do tráfego) com monitoramento automático de fitness functions operacionais (custo, latência) -> rollout completo ou rollback automático se qualquer função de aptidão falhar.",
+    "data_evolution": "Schema de violações WCAG evolui via expand-contract: novos campos são adicionados como opcionais, código passa a escrever em ambos os formatos, leitura migra gradualmente, e o campo antigo só é removido após confirmação de que nenhum consumidor depende dele. Resultados de scan são armazenados como eventos imutáveis (event sourcing parcial), permitindo reprocessar relatórios com novas versões do motor de regras sem afetar o histórico original. Migrações usam ferramentas como Flyway/Liquibase com testes automatizados de compatibilidade retroativa.",
+    "experimentation": "Hipóteses de produto (ex: 'relatórios com sugestão de correção via IA aumentam retenção') são testadas com feature flags e cohorts de tenants em canary, medindo métricas de negócio (ativação, tempo até primeira correção) antes de rollout total. A arquitetura orientada a eventos permite rodar múltiplas versões do motor de regras em paralelo (shadow mode) para comparar resultados sem impactar o cliente.",
+    "sacrificial_parts": "O motor de regras inicial baseado em axe-core é deliberadamente descartável e será substituído por um motor proprietário com ML para detecção de problemas visuais/contraste dinâmico assim que houver volume de dados suficiente (~18-24 meses). O gerador de relatórios em PDF via biblioteca simples (ex: Puppeteer print) é temporário e será substituído por um serviço de templating dedicado quando a customização por cliente enterprise for exigida. Fluxos de onboarding manual/scripts internos serão descartados quando o self-service atingir escala.",
+    "guardrails": "ADRs obrigatórios para qualquer mudança de fronteira de serviço; políticas como código (OPA/Conftest) que bloqueiam PRs violando regras de isolamento de tenant ou comunicação síncrona entre bounded contexts; linting arquitetural (ArchUnit/dependency-cruiser) validando que camadas não vazam abstrações; revisão obrigatória de fitness functions antes de merge em serviços core; budget de custo por scan monitorado com alerta automático.",
+    "tradeoffs": "Velocidade de entrega vs. precisão: usar axe-core (rápido, confiável, mas genérico) em vez de motor proprietário no MVP sacrifica diferenciação por velocidade de mercado. Multi-tenancy compartilhado (mais barato, mais rápido de escalar) vs. isolamento total por tenant (mais seguro, mais caro) — optou-se por schema compartilhado com isolamento lógico forte no MVP, migrando para isolamento físico apenas para tenants enterprise. Acoplamento assíncrono (mais resiliente, mais complexo de depurar) vs. síncrono (mais simples, menos escalável) — optou-se por assíncrono para suportar picos de scans simultâneos.",
+    "interfaces": [
+      "REST/GraphQL API pública para disparar scans e consultar resultados",
+      "Webhook de notificação de scan concluído/falho",
+      "Plugin de CI/CD (GitHub Action, GitLab CI, Jenkins) para gates de acessibilidade em pipelines",
+      "API de exportação de relatórios (PDF, CSV, JSON, SARIF)",
+      "SSO/SAML e OAuth2 para autenticação enterprise",
+      "API de billing/assinatura integrada ao Stripe",
+      "Extensão de navegador para scan ad-hoc em desenvolvimento",
+      "SDK JS/Python para integração em testes automatizados (Jest/Cypress/Playwright)"
+    ],
+    "escalabilidade": "Workers de scan (navegadores headless) escalam horizontalmente via Kubernetes HPA baseado em profundidade da fila de scans pendentes. Fila de mensagens (SQS/Kafka) desacopla ingestão de processamento, absorvendo picos. Banco de dados de resultados usa particionamento por tenant_id e read replicas para consultas de relatório. CDN (CloudFront/Cloudflare) serve assets estáticos e relatórios em cache. Camada de billing e autenticação escala independentemente por serem stateless. Tenants enterprise de alto volume podem ser migrados para clusters de workers dedicados.",
+    "custo_infra_estimado": "Compute (workers de scan em ECS Fargate/K8s, autoscaling): $300-800/mês para carga inicial (até ~5.000 scans/mês); Banco de dados (RDS Postgres multi-AZ): $120/mês; Fila de mensagens (SQS): $20/mês; Armazenamento de relatórios (S3): $25/mês; CDN (CloudFront): $15/mês; Observabilidade (Datadog/Grafana Cloud): $100/mês; Total estimado inicial: ~$580-1.080/mês, escalando linearmente com volume de scans e número de tenants.",
+    "custo_por_cliente": "Cada scan completo (site com ~20 páginas) = $0.015 (compute headless browser, ~30s CPU) + $0.005 (armazenamento de resultados e relatório em S3) + $0.003 (processamento de fila/orquestração) + $0.002 (bandwidth) = ~$0.025/scan. Cliente médio no plano Pro com 200 scans/mês = $5.00/mês de custo direto de infraestrutura, permitindo margem saudável frente a um preço de $49-99/mês.",
+    "monetizacao": {
+      "modelo": "SaaS por assinatura com tiers baseados em volume de scans e páginas monitoradas, complementado por add-ons enterprise",
+      "tiers": {
+        "starter": "$29/mês - até 50 scans/mês, 1 usuário, relatórios básicos WCAG AA",
+        "pro": "$99/mês - até 500 scans/mês, 5 usuários, integração CI/CD, exportação PDF/CSV",
+        "business": "$299/mês - até 2.000 scans/mês, SSO, API completa, suporte prioritário",
+        "enterprise": "sob consulta - scans ilimitados, isolamento dedicado, SLA, contrato anual"
+      },
+      "metricas": "MRR alvo de $50k em 12 meses (≈500 clientes Pro equivalentes); CAC estimado em $250 via marketing de conteúdo/SEO técnico e parcerias com agências; LTV estimado em $1.800 (assumindo churn mensal de 3% e ticket médio de $80/mês), resultando em razão LTV:CAC de 7:1, saudável para SaaS B2B técnico."
+    },
+    "stack_sugerida": "Backend: Node.js/TypeScript ou Go para serviços core; Playwright/Puppeteer para crawling e renderização headless; axe-core como motor de regras WCAG inicial. Mensageria: Kafka ou AWS SQS/SNS. Banco de dados: PostgreSQL (dados transacionais/tenant) + S3 (relatórios e artefatos) + Redis (cache/filas de curto prazo). Infraestrutura: Kubernetes (EKS/GKE) com autoscaling, Terraform para IaC. Observabilidade: OpenTelemetry + Grafana/Datadog. Frontend: React/Next.js. Autenticação: Auth0 ou Clerk com suporte SSO/SAML. Billing: Stripe Billing. CI/CD: GitHub Actions com gates de fitness functions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "25a60daee261",
+    "gerado_em": "2026-09-27T21:01:15+00:00",
+    "runner": "runner.py"
+  }
+}

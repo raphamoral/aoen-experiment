@@ -1,0 +1,84 @@
+{
+  "ideia_idx": 0,
+  "ideia": "Plataforma de telemedicina veterinária com IA para diagnóstico por imagem",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Tutor de pet com sintoma/dúvida → busca por atendimento veterinário rápido e acessível → agendamento de teleconsulta → veterinário coleta anamnese e solicita imagem (foto/vídeo de pele, olho, radiografia, etc.) → upload da imagem → IA gera pré-análise e destaca achados → veterinário revisa, valida e emite diagnóstico/prescrição → prontuário e receita são entregues ao tutor → acompanhamento e histórico clínico do pet → renovação de assinatura/recorrência",
+    "wardley_map": {
+      "necessidade_do_tutor_por_cuidado_acessivel": "gênese (mercado ainda educando-se sobre telemedicina veterinária)",
+      "modelo_de_ia_diagnostico_por_imagem_veterinaria": "sob medida (poucos modelos veterinários maduros, exige dataset proprietário e validação clínica)",
+      "orquestracao_de_teleconsulta_e_fluxo_clinico": "sob medida (regras de negócio e compliance veterinário específicas)",
+      "gestao_de_prontuario_e_historico_do_pet": "produto (poderia ser adaptado de EHR/PMS veterinário existente, mas com customização)",
+      "videochamada_chat": "commodity (Twilio, Agora, Daily)",
+      "agendamento_calendario": "commodity/produto (Cal.com, Calendly API)",
+      "pagamentos_assinatura": "commodity (Stripe)",
+      "armazenamento_de_imagens": "commodity (S3/GCS)",
+      "autenticacao_identidade": "commodity (Auth0/Clerk/Cognito)",
+      "notificacoes_email_sms": "commodity (Twilio, SendGrid)",
+      "infra_compute_gpu_para_inferencia": "produto (provedores de GPU cloud: AWS/GCP/RunPod)",
+      "modelos_base_de_visao_computacional": "produto (fine-tuning sobre modelos pré-treinados como ResNet/ViT/Segment Anything)"
+    },
+    "build_buy_decisions": {
+      "construir": "Modelo de IA de diagnóstico por imagem veterinária (core domain), motor de orquestração da teleconsulta clínica, prontuário eletrônico veterinário com trilha de auditoria — porque são a fonte de vantagem competitiva e diferenciação regulatória/clínica",
+      "comprar": "Videochamada (Twilio/Daily), pagamentos (Stripe), autenticação (Clerk/Auth0), notificações (Twilio/SendGrid), infraestrutura de e-mail transacional — porque são capacidades genéricas e maduras, reconstruir destrói foco",
+      "usar_como_commodity": "Armazenamento de objetos (S3), CDN (CloudFront), banco relacional gerenciado (RDS/Postgres), filas (SQS) — porque não geram diferenciação e têm SLAs prontos"
+    },
+    "core_domain": "Diagnóstico assistido por IA para imagens veterinárias, incluindo o pipeline de anotação clínica, o fine-tuning contínuo do modelo com feedback veterinário (human-in-the-loop) e a explicabilidade do resultado — é o único componente que justifica investimento sob medida porque é a fonte da confiança clínica e do lock-in de dados proprietários",
+    "bounded_contexts": {
+      "Consulta Clinica": "Linguagem: consulta, anamnese, sintoma, triagem, prescrição, veterinário responsável, CRMV",
+      "Diagnostico por Imagem (IA)": "Linguagem: imagem, achado, confiança do modelo, região de interesse (ROI), anotação, laudo assistido, versão do modelo",
+      "Prontuario e Historico do Pet": "Linguagem: paciente (pet), tutor, espécie, raça, histórico clínico, receituário, vacinação",
+      "Agendamento e Disponibilidade": "Linguagem: slot, disponibilidade, especialidade, fila de espera, reagendamento",
+      "Cobranca e Assinatura": "Linguagem: plano, ciclo de cobrança, fatura, upgrade/downgrade, inadimplência",
+      "Identidade e Acesso": "Linguagem: tutor, veterinário, clínica parceira, papel (role), permissão, credencial CRMV",
+      "Comunicacao e Notificacoes": "Linguagem: lembrete, canal, template, opt-in/opt-out"
+    },
+    "context_mapping": {
+      "Consulta Clinica <-> Diagnostico por Imagem": "cliente-fornecedor (Consulta Clínica consome resultados da IA como um serviço interno; contrato de dados versionado)",
+      "Diagnostico por Imagem <-> Prontuario": "camada anticorrupção (tradução do modelo de achados de IA para o vocabulário clínico do prontuário, evitando vazamento de conceitos de ML)",
+      "Consulta Clinica <-> Agendamento": "parceria (evoluem juntos no fluxo de atendimento, alta interdependência temporal)",
+      "Consulta Clinica <-> Cobranca": "cliente-fornecedor (consulta finalizada dispara cobrança via evento)",
+      "Identidade e Acesso <-> demais contextos": "X-as-a-Service (fornecido como serviço compartilhado de autenticação/autorização)",
+      "Comunicacao e Notificacoes <-> demais contextos": "X-as-a-Service (subscribe em eventos de domínio, sem acoplamento direto)"
+    },
+    "team_topologies": {
+      "time_fluxo_consulta_clinica": "stream-aligned, dono do fluxo de teleconsulta e agendamento (foco no valor de ponta a ponta para tutor e veterinário)",
+      "time_fluxo_prontuario_billing": "stream-aligned, dono de prontuário, cobrança e assinatura",
+      "time_subsistema_complicado_ia_diagnostico": "complicated-subsystem team, especialistas em visão computacional e veterinária para o modelo de diagnóstico",
+      "time_plataforma": "platform team, provê identidade, notificações, observabilidade e infraestrutura self-service (CI/CD, deploy de modelos)",
+      "time_habilitacao": "enabling team temporário, apoia os times de fluxo na adoção de MLOps e boas práticas de compliance/regulatório (ex: LGPD, normas de exercício profissional veterinário)"
+    },
+    "cognitive_load": "Cada time de fluxo é dono de no máximo 2 bounded contexts fortemente relacionados (ex: Consulta+Agendamento), evitando que precisem entender o funcionamento interno do modelo de IA ou da infraestrutura; o time de subsistema complicado isola toda a complexidade de ML/dados de treino; o time de plataforma expõe APIs simples e documentadas (self-service) para autenticação, storage e notificações, reduzindo carga extrínseca; o time de habilitação atua por tempo limitado para não virar dependência permanente",
+    "interaction_modes": "Colaboração intensa e temporária entre o time de fluxo de Consulta Clínica e o time de subsistema complicado de IA durante a definição do contrato de resultados do diagnóstico; X-as-a-Service do time de plataforma para identidade, notificações e storage; X-as-a-Service do time de IA para os demais times de fluxo (consomem inferência via API estável); facilitação do time de habilitação junto aos times de fluxo durante a adoção inicial de práticas de MLOps e compliance regulatório veterinário",
+    "flow_optimization": "Fluxo otimizado via eventos assíncronos entre Consulta Clínica e Diagnóstico por IA (a imagem é processada em paralelo enquanto o veterinário completa a anamnese), reduzindo tempo de espera; principais gargalos esperados: (1) latência de inferência do modelo em picos de uso, mitigado com fila e autoscaling de GPU; (2) validação humana obrigatória do veterinário antes de liberar laudo, que é um gargalo intencional por segurança clínica e não deve ser removido; (3) acoplamento entre Cobrança e Consulta se não for orientado a eventos, resolvido com arquitetura orientada a eventos (event-driven) e contratos assíncronos",
+    "independent_streams": "Consulta Clínica e Prontuário/Billing evoluem como fluxos de valor separados, comunicando-se apenas por eventos de domínio (ex: ConsultaFinalizada, LaudoEmitido) e não por chamadas síncronas diretas a bancos de dados compartilhados; cada bounded context possui seu próprio modelo de dados e pode fazer deploy independente; o time de IA versiona e publica novos modelos sem exigir deploy coordenado dos times de fluxo, graças ao contrato estável de API de inferência",
+    "interfaces": [
+      "API REST/GraphQL de Teleconsulta (agendamento, videochamada, chat)",
+      "API de Inferência de Diagnóstico por Imagem (upload de imagem, retorno de achados e confiança)",
+      "API de Prontuário Eletrônico Veterinário",
+      "API de Cobrança e Assinatura (webhooks Stripe)",
+      "API de Identidade e Autorização (SSO tutor/veterinário/clínica)",
+      "Webhooks de eventos de domínio (ConsultaFinalizada, LaudoEmitido, PagamentoConfirmado)",
+      "SDK/App mobile para tutores (captura de imagem, upload)",
+      "Painel web para veterinários (revisão de laudos de IA)"
+    ],
+    "escalabilidade": "Escala horizontal dos serviços stateless de Consulta e Prontuário via containers (Kubernetes/ECS) atrás de load balancer; o serviço de inferência de IA escala separadamente com autoscaling de GPU sob demanda (spot + reserved) e fila (SQS/Kafka) para absorver picos sem degradar a experiência de teleconsulta; banco de dados relacional com read replicas para consultas de histórico; armazenamento de imagens em S3 com lifecycle policies (mover para tier frio após X meses); CDN para distribuição de assets estáticos e imagens de baixa latência; cache (Redis) para disponibilidade de agenda e sessões; arquitetura orientada a eventos permite que cada bounded context escale de forma independente conforme o gargalo real (ex: IA cresce mais rápido que billing)",
+    "custo_infra_estimado": "Servidores de aplicação (containers, 3-5 serviços): $150/mês; Banco de dados gerenciado (RDS Postgres, com replica): $120/mês; GPU para inferência de IA (instância sob demanda + spot, uso moderado): $400/mês; S3 (armazenamento de imagens/vídeos): $40/mês; CDN (CloudFront): $30/mês; Banda/transferência de dados: $50/mês; Videochamada (Twilio/Daily, uso variável): $200/mês; Redis/cache: $25/mês; Observabilidade (logs, métricas, APM): $60/mês; Total estimado inicial: ~$1.075/mês para escala inicial (até ~2 mil consultas/mês)",
+    "custo_por_cliente": "Cada análise de IA = $0,08 (compute GPU por inferência) + $0,02 (storage da imagem) + $0,01 (banda/CDN) + $0,015 (overhead de orquestração/API) = $0,125/operação. Cada teleconsulta em vídeo = $0,15 (Twilio/Daily por minuto médio de 15min) + $0,03 (notificações/lembretes) = $0,18/consulta. Cliente típico (clínica parceira) com 50 consultas/mês e 50 análises de IA = 50×$0,18 + 50×$0,125 = $9 + $6,25 = $15,25/mês de custo variável por cliente",
+    "monetizacao": {
+      "modelo": "SaaS B2B2C multi-tier por assinatura, cobrando de clínicas veterinárias e veterinários autônomos, com add-on de uso para tutores diretos",
+      "tier_basico": "$49/mês por veterinário — até 30 teleconsultas/mês com IA incluída, 1 usuário",
+      "tier_profissional": "$149/mês por clínica (até 5 veterinários) — até 150 consultas/mês, prioridade de fila de IA, relatórios",
+      "tier_enterprise": "Customizado a partir de $499/mês — consultas ilimitadas, SLA dedicado, API própria, white-label",
+      "cobranca_adicional": "$1,50 por análise de IA excedente ao pacote contratado",
+      "metricas_chave": "MRR alvo de $50k em 12 meses; CAC estimado em $180 por clínica (via marketing digital + parcerias com distribuidoras veterinárias); LTV estimado em $2.400 (tier profissional, retenção média de 16 meses); relação LTV:CAC alvo de 13:1; churn mensal alvo abaixo de 4%"
+    },
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Python (FastAPI) para serviços de domínio; Python (PyTorch/TensorFlow, FastAPI) para o serviço de inferência de IA; Banco de dados: PostgreSQL (dados transacionais) + Redis (cache/sessão); Mensageria: Kafka ou SQS/SNS para eventos de domínio; Armazenamento: S3/GCS para imagens; CDN: CloudFront; Videochamada: Twilio Video ou Daily.co; Autenticação: Clerk ou Auth0; Pagamentos: Stripe Billing; Infraestrutura: Kubernetes (EKS/GKE) ou ECS Fargate, com GPU node pool (g4dn/g5) para inferência; Observabilidade: Datadog ou Grafana+Prometheus; Frontend: React/Next.js (web) e React Native ou Flutter (app mobile para tutores); MLOps: MLflow ou SageMaker para versionamento e monitoramento de modelo"
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T20:50:14+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "ideia_idx": 31,
+  "ideia": "Plataforma de mentoria online pareada por IA",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Mentor, Mentorando, PerfilDeCompetencias, SessaoDeMentoria, ParDeMentoria, CicloDeFeedback, Avaliacao. Regras de negócio: um Pareamento só é válido se as competências ofertadas pelo Mentor cobrirem ao menos um objetivo declarado pelo Mentorando; um Mentor tem capacidade máxima simultânea de pares ativos; uma SessaoDeMentoria só pode ser agendada dentro da disponibilidade declarada de ambas as partes e respeita antecedência mínima de cancelamento; um ParDeMentoria entra em estado de 'risco de churn' se não houver sessão concluída em N dias; feedback mútuo é obrigatório para encerrar um ciclo e liberar novo pareamento. O domínio não conhece IA, filas, banco ou HTTP — apenas value objects e regras de elegibilidade, capacidade, agenda e ciclo de vida do pareamento.",
+    "driving_ports": "IniciarPareamentoPort (solicita um par dado o perfil do mentorando), RegistrarDisponibilidadePort (mentor/mentorando declaram janelas de tempo e competências), AgendarSessaoPort, RegistrarFeedbackPort, ConsultarStatusDoParPort, CancelarSessaoPort, EncerrarCicloDeMentoriaPort.",
+    "driven_ports": "RepositorioDeMentoresPort, RepositorioDeMentorandosPort, RepositorioDeParesPort, RepositorioDeSessoesPort, MotorDeSugestaoDeParesPort (abstrai o algoritmo/IA de matching), NotificadorPort (avisos de agendamento/cancelamento), CalendarioExternoPort (sincronização de agenda), VideoconferenciaPort (criação de sala de reunião), RelogioPort (clock abstrato para testabilidade), GeradorDeEventosPort (publicação de eventos de domínio), CobrancaPort (abstrai gateway de pagamento).",
+    "driving_adapters": "API REST/GraphQL (expõe endpoints para app web e mobile), Webhook Handler (recebe callbacks de vídeo/calendário/pagamento e traduz para chamadas às driving ports), Worker de Fila (consome comandos assíncronos, ex: reprocessar pareamento), CLI administrativa (operações internas de suporte), Job Agendado (dispara verificação de risco de churn e lembretes de sessão).",
+    "driven_adapters": "PostgresRepositorioDeMentores/Mentorandos/Pares/Sessoes (persistência via ORM), AdaptadorMotorDeSugestaoIA (chama serviço de ML/LLM externo ou modelo interno para matching), AdaptadorEmailSMS (ex: SendGrid/Twilio implementando NotificadorPort), AdaptadorGoogleCalendarOutlook (implementa CalendarioExternoPort), AdaptadorZoomDaily (implementa VideoconferenciaPort), AdaptadorStripe (implementa CobrancaPort), AdaptadorKafkaSQS (implementa GeradorDeEventosPort), RelogioSistema (implementa RelogioPort com data/hora real).",
+    "application_services": "PareamentoAppService (coordena RepositorioDeMentores + MotorDeSugestaoPort + RepositorioDePares, delegando toda decisão de elegibilidade ao domínio), AgendamentoAppService (orquestra RepositorioDeSessoes + CalendarioExternoPort + VideoconferenciaPort + NotificadorPort), CicloDeFeedbackAppService (orquestra encerramento de ciclo e disparo de novo pareamento), ChurnWatcherAppService (varre pares e aciona regra de risco do domínio, delegando notificação). Nenhum destes contém regra de negócio nova, apenas transação, ordenação de chamadas e tratamento de falha de infraestrutura.",
+    "domain_isolation": "O domínio depende apenas de interfaces (ports) definidas dentro do próprio módulo de domínio, usando tipos primitivos e value objects próprios (nunca DTOs de framework, nunca modelos de ORM, nunca payloads de HTTP/IA). A inversão de dependência garante que adaptadores dependam do domínio, nunca o contrário. O algoritmo de IA de matching é tratado como detalhe de infraestrutura por trás de MotorDeSugestaoDeParesPort — o domínio só recebe uma lista ordenada de candidatos e aplica suas próprias regras de elegibilidade sobre ela.",
+    "test_doubles": "IniciarPareamentoPort testado com InMemoryRepositorioDeMentores/Mentorandos; MotorDeSugestaoDeParesPort substituído por FakeMotorDeSugestao que retorna candidatos determinísticos para testar regras de elegibilidade sem custo de IA real; CalendarioExternoPort e VideoconferenciaPort substituídos por stubs que registram chamadas sem side-effect externo; NotificadorPort por SpyNotificador para assertar disparo de mensagens; RelogioPort por RelogioFixo para testar regras de churn e antecedência de cancelamento de forma determinística; CobrancaPort por FakeCobranca simulando sucesso/falha.",
+    "configuration_wiring": "Composition root (ex.: main.ts/Application.java/bootstrap.py) instancia os adaptadores concretos e os injeta nos application services via construtor, resolvendo as driven ports em tempo de inicialização a partir de configuração (env vars: DB_URL, IA_PROVIDER, VIDEO_PROVIDER, etc). Um container de DI (ou factory manual) mapeia cada Port para o Adapter escolhido, permitindo trocar implementação apenas mudando configuração, sem tocar no domínio ou nos application services.",
+    "technology_substitution": "MotorDeSugestaoDeParesPort pode trocar de um modelo interno heurístico para um LLM de terceiros (ex.: Claude) ou para um serviço de embeddings próprio, custo: reindexação de perfis e recalibração de thresholds de similaridade. VideoconferenciaPort pode migrar de Zoom para Daily.co ou WebRTC próprio, custo: reimplementar criação/gestão de salas e migrar links já agendados. RepositorioDeMentores pode migrar de Postgres para um banco de grafos (para melhorar matching), custo: migração de dados e reescrita do adapter, domínio permanece intocado. CobrancaPort pode trocar de Stripe para outro gateway, custo: remapear webhooks e estados de assinatura.",
+    "symmetry": "Do lado esquerdo (driving), atores externos (usuário via API, agendador via Job, operador via CLI) acionam a aplicação através de portas primárias com a mesma assinatura independente do adaptador de entrada. Do lado direito (driven), a aplicação aciona o mundo externo através de portas secundárias com a mesma assinatura independente do adaptador de saída. Ambos os lados são apenas interfaces definidas pela aplicação/domínio — o mundo externo se adapta ao domínio, e não o contrário — preservando a simetria de que 'quem chama' e 'quem é chamado' seguem o mesmo padrão de contrato + adaptador plugável.",
+    "interfaces": [
+      "IniciarPareamentoPort",
+      "RegistrarDisponibilidadePort",
+      "AgendarSessaoPort",
+      "RegistrarFeedbackPort",
+      "ConsultarStatusDoParPort",
+      "CancelarSessaoPort",
+      "EncerrarCicloDeMentoriaPort",
+      "RepositorioDeMentoresPort",
+      "RepositorioDeMentorandosPort",
+      "RepositorioDeParesPort",
+      "RepositorioDeSessoesPort",
+      "MotorDeSugestaoDeParesPort",
+      "NotificadorPort",
+      "CalendarioExternoPort",
+      "VideoconferenciaPort",
+      "RelogioPort",
+      "GeradorDeEventosPort",
+      "CobrancaPort"
+    ],
+    "escalabilidade": "Horizontal scaling dos adaptadores driving (API stateless atrás de load balancer), fila assíncrona (SQS/Kafka) para desacoplar o matching por IA (que é a operação mais custosa em CPU/latência) do fluxo síncrono de request, cache de perfis e disponibilidade (Redis) para reduzir carga no Postgres, read replicas para consultas de status/histórico, particionamento de RepositorioDeSessoes por tenant/região à medida que a base cresce, e circuit breaker em torno de VideoconferenciaPort/CalendarioExternoPort para isolar falhas de terceiros.",
+    "custo_infra_estimado": "Servidor (API + workers, 2-3 instâncias small): $60/mês, Banco (RDS Postgres db.t3.medium multi-AZ): $120/mês, Redis cache (ElastiCache small): $25/mês, Fila (SQS): $5/mês, S3 (armazenamento de gravações/anexos): $15/mês, CDN (CloudFront para assets do app): $10/mês, Banda/egress estimado: $20/mês. Total infraestrutura base: aproximadamente $255/mês para até ~5 mil usuários ativos.",
+    "custo_por_cliente": "Cada pareamento via IA = $0.02 (chamada a modelo de embeddings/LLM) + $0.002 (CPU de scoring) + $0.001 (storage do resultado) = $0.023/pareamento. Cada sessão agendada = $0.01 (sincronização de calendário) + $0.03 (criação de sala de vídeo, se via API paga) + $0.005 (notificação email/SMS) = $0.045/sessão. Cliente médio com 1 pareamento e 4 sessões/mês = $0.023 + (4 x $0.045) = $0.203/mês em custo variável direto.",
+    "monetizacao": "Modelo SaaS em camadas: Starter (gratuito, 1 pareamento ativo, sem prioridade de matching) para aquisição; Pro ($29/mês por mentorando, pareamentos ilimitados, prioridade no matching por IA, até 4 sessões/mês); Business ($199/mês por empresa, pool de mentores internos, dashboard de RH, até 50 mentorados); Enterprise (contrato customizado, SSO, SLA, matching dedicado). Métricas-alvo: CAC estimado $80 via marketing de conteúdo/parcerias com empresas, LTV estimado $350 (assumindo churn mensal de 5% e ticket médio Pro), MRR inicial projetado com 200 clientes Pro + 5 contas Business = ($29 x 200) + ($199 x 5) = $5,800 + $995 = $6,795/mês, payback de CAC em aproximadamente 3 meses.",
+    "stack_sugerida": "Backend: Node.js/TypeScript ou Kotlin com arquitetura hexagonal explícita (pastas domain/application/ports/adapters); Banco: PostgreSQL (dados relacionais de pareamento/sessões) + Redis (cache/sessão); Fila: AWS SQS ou Kafka para processamento assíncrono de matching; IA de matching: serviço próprio de embeddings (ex. via API Anthropic/OpenAI para scoring semântico de perfis) encapsulado atrás de MotorDeSugestaoDeParesPort; Vídeo: Daily.co ou Zoom SDK; Notificações: SendGrid + Twilio; Pagamentos: Stripe (Billing/Subscriptions); Infra: containers em ECS/Fargate ou Kubernetes, Terraform para IaC, CloudFront + S3 para assets estáticos; Observabilidade: OpenTelemetry + Grafana/Datadog."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:57:02+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "ideia_idx": 71,
+  "ideia": "Plataforma de certificação de origem para cadeias de café especial",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Lote (batch de café rastreável desde a colheita), Produtor, Fazenda/Talhão, Processo de Beneficiamento, Certificado de Origem, Cadeia de Custódia (chain of custody), Avaliação Sensorial (cupping score). Regras: um Lote só pode ser certificado se todas as etapas da cadeia de custódia estiverem registradas e assinadas por um ator autorizado; a pontuação de certificação (ex. SCA >=80) determina a elegibilidade para selo 'especialidade'; um Certificado é imutável após emissão e só pode ser revogado, nunca editado; a rastreabilidade exige encadeamento contínuo sem lacunas de custódia (cada transferência de posse deve referenciar o elo anterior); regras de expiração e renovação de certificados por safra. Nenhuma regra depende de blockchain, banco de dados, formato de QR code ou protocolo de notificação — essas são decisões de borda.",
+    "driving_ports": {
+      "RegistrarLotePort": "Registrar um novo lote com dados de origem (produtor, talhão, data de colheita)",
+      "RegistrarEtapaCadeiaCustodiaPort": "Adicionar uma etapa de custódia (transporte, beneficiamento, armazenagem)",
+      "SolicitarCertificacaoPort": "Submeter um lote para avaliação e emissão de certificado",
+      "ConsultarRastreabilidadePort": "Consultar histórico completo de um lote/certificado",
+      "RevogarCertificadoPort": "Revogar um certificado emitido por não conformidade",
+      "GerarRelatorioAuditoriaPort": "Gerar relatório de auditoria de uma cadeia de custódia"
+    },
+    "driven_ports": {
+      "RepositorioLotePort": "Persistir e recuperar Lotes e seu estado",
+      "RepositorioCertificadoPort": "Persistir e recuperar Certificados",
+      "AncoragemImutavelPort": "Ancorar hash da cadeia de custódia em registro à prova de adulteração (ex. blockchain/ledger)",
+      "NotificacaoPort": "Notificar stakeholders sobre emissão/revogação de certificado",
+      "GeracaoDocumentoPort": "Gerar PDF/QR code do certificado",
+      "PagamentoPort": "Processar cobrança de assinatura/uso via provedor de pagamento",
+      "RelogioPort": "Obter data/hora corrente para expiração e timestamps",
+      "IdentidadeExternaPort": "Verificar identidade/assinatura digital de produtores e auditores"
+    },
+    "driving_adapters": {
+      "REST_API_Adapter": "Expõe endpoints HTTP para produtores, cooperativas e torrefadoras registrarem lotes e consultarem certificados",
+      "WebApp_Adapter": "Painel web para auditores e certificadoras revisarem e aprovarem lotes",
+      "Mobile_App_Adapter": "App de campo para produtores registrarem colheita via QR/GPS offline-first",
+      "CLI_Adapter": "Ferramenta de linha de comando para integrações em lote (bulk import) por parceiros ERP",
+      "Webhook_Consumer_Adapter": "Recebe eventos de sistemas de logística/exportação para atualizar cadeia de custódia automaticamente"
+    },
+    "driven_adapters": {
+      "PostgreSQL_Adapter": "Implementa RepositorioLotePort e RepositorioCertificadoPort via ORM/SQL",
+      "Blockchain_Adapter": "Implementa AncoragemImutavelPort (ex. Polygon, Hyperledger) ancorando hash Merkle da cadeia de custódia",
+      "S3_Adapter": "Armazena documentos, fotos de colheita e certificados PDF",
+      "SendGrid_WhatsApp_Adapter": "Implementa NotificacaoPort para e-mail/WhatsApp",
+      "PDF_QR_Generator_Adapter": "Implementa GeracaoDocumentoPort usando biblioteca de geração de PDF/QR",
+      "Stripe_Adapter": "Implementa PagamentoPort para cobrança de assinaturas (Stripe Billing)",
+      "SystemClock_Adapter": "Implementa RelogioPort com relógio do sistema operacional",
+      "DocuSign_OAuth_Adapter": "Implementa IdentidadeExternaPort validando assinaturas digitais de auditores"
+    },
+    "application_services": "CertificacaoAppService orquestra: valida pré-condições via chamadas ao domínio (Lote.podeSerCertificado()), invoca RepositorioLotePort para carregar estado, delega decisão de certificação inteiramente às regras do domínio, persiste resultado via RepositorioCertificadoPort, ancora hash via AncoragemImutavelPort e dispara NotificacaoPort — o serviço não decide QUANDO um lote é elegível, apenas coordena a sequência de chamadas às portas, mantendo a regra de negócio dentro das entidades do domínio.",
+    "domain_isolation": "O domínio é escrito em módulos/pacotes puros (sem imports de frameworks HTTP, ORM, SDKs de blockchain ou de pagamento). Toda comunicação com o exterior passa por interfaces (ports) definidas dentro do domínio/aplicação; os adaptadores implementam essas interfaces e são injetados na inicialização. Entidades como Lote e Certificado não conhecem SQL, JSON ou HTTP — apenas tipos de valor e regras. Testes de unidade do domínio rodam sem I/O algum.",
+    "test_doubles": "RepositorioLotePort -> InMemoryLoteRepository (fake com estruturas em memória) para testes de aplicação; AncoragemImutavelPort -> FakeAncoragem que apenas registra hashes em lista, sem custo de rede; NotificacaoPort -> SpyNotificacao que captura chamadas para asserção; PagamentoPort -> StripeMockAdapter usando modo sandbox/test clocks do Stripe; RelogioPort -> ClockFixo retornando data controlada para testar expiração de certificados; IdentidadeExternaPort -> StubIdentidade sempre retornando assinatura válida/inválida conforme cenário. Cada dublê implementa a mesma interface do adaptador real, garantindo que os testes de aplicação e domínio independam de infraestrutura.",
+    "configuration_wiring": "Em um Composition Root (ex. main.ts/bootstrap.py) na camada mais externa: lê variáveis de ambiente/config, instancia adaptadores concretos (PostgreSQL_Adapter, Stripe_Adapter, Blockchain_Adapter etc.), injeta-os nos serviços de aplicação via construtor (Dependency Injection), e por fim registra os adaptadores primários (rotas REST, handlers de webhook) apontando para os serviços de aplicação já montados. Nenhuma camada de domínio ou aplicação instancia adaptadores diretamente — apenas recebe interfaces já resolvidas.",
+    "technology_substitution": "PostgreSQL_Adapter pode ser trocado por MongoDB ou DynamoDB a custo baixo (apenas reimplementar a porta de repositório, sem tocar domínio); Blockchain_Adapter pode ser trocado entre Polygon/Hyperledger/Algorand a custo médio (contratos de hash/assinatura variam, mas a porta AncoragemImutavelPort abstrai isso); Stripe_Adapter pode ser trocado por outro PSP a custo médio-alto (modelos de assinatura e webhooks diferem, exigindo reconciliação cuidadosa); REST_API_Adapter poderia ser substituído por GraphQL a custo baixo-médio, pois a porta de aplicação já define os casos de uso independentemente do protocolo de transporte.",
+    "symmetry": "O domínio nunca conhece se está sendo chamado por um humano via API REST ou por um sistema automatizado via webhook (lado esquerdo/driving) — ambos atravessam a mesma DrivingPort. Da mesma forma, o domínio nunca sabe se está persistindo em PostgreSQL ou notificando via WhatsApp ou e-mail (lado direito/driven) — ambos atravessam a mesma DrivenPort. Essa simetria garante que o núcleo hexagonal trata ambos os lados como contratos abstratos equivalentes, apenas com direção de dependência invertida (driving chama a aplicação; a aplicação chama driven).",
+    "interfaces": [
+      "RegistrarLotePort",
+      "RegistrarEtapaCadeiaCustodiaPort",
+      "SolicitarCertificacaoPort",
+      "ConsultarRastreabilidadePort",
+      "RevogarCertificadoPort",
+      "GerarRelatorioAuditoriaPort",
+      "RepositorioLotePort",
+      "RepositorioCertificadoPort",
+      "AncoragemImutavelPort",
+      "NotificacaoPort",
+      "GeracaoDocumentoPort",
+      "PagamentoPort",
+      "RelogioPort",
+      "IdentidadeExternaPort"
+    ],
+    "escalabilidade": "Horizontal via stateless application services atrás de load balancer; RepositorioLotePort permite sharding por região/cooperativa sem alterar domínio; fila assíncrona (ex. SQS/RabbitMQ) entre RegistrarEtapaCadeiaCustodiaPort e AncoragemImutavelPort para desacoplar picos de escrita da latência de blockchain; cache de leitura (Redis) para ConsultarRastreabilidadePort, que é o endpoint de maior volume (consumidores finais escaneando QR codes); read replicas de PostgreSQL para consultas públicas de certificado.",
+    "custo_infra_estimado": "Servidor (App, 2x t3.medium com autoscaling): $60/mês. RDS PostgreSQL (db.t3.medium, Multi-AZ): $120/mês. S3 (documentos/fotos, ~200GB): $10/mês. CDN (CloudFront para páginas públicas de certificado): $15/mês. Redis cache (ElastiCache t3.micro): $25/mês. Fila SQS: $5/mês. Blockchain (gas fees ancoragem, rede low-cost tipo Polygon): $40/mês. Total estimado: ~$275/mês para até ~5.000 lotes certificados/mês.",
+    "custo_por_cliente": "Por operação de certificação de um lote: ancoragem blockchain $0.02 (gas) + geração de PDF/QR $0.005 (CPU+storage) + storage de fotos/documentos $0.01 (S3) + notificação $0.003 (e-mail/WhatsApp API) + processamento de banco $0.002 (RDS I/O) = ~$0.04/certificação. Uma cooperativa média com 50 lotes certificados/mês custa ~$2.00/mês em infraestrutura variável, bem abaixo do valor cobrado na assinatura.",
+    "monetizacao": "Modelo SaaS B2B por assinatura em camadas conforme volume de lotes/mês: Starter (até 20 lotes/mês, 1 fazenda) = $49/mês; Growth (até 150 lotes/mês, multi-fazenda, relatórios de auditoria) = $199/mês; Enterprise (lotes ilimitados, API dedicada, SLA, white-label do certificado) = a partir de $799/mês + taxa por certificado adicional acima do limite ($0.50/certificado extra). Receita complementar via taxa de emissão de certificado premium (selo QR verificável publicamente) e módulo de marketplace para conectar torrefadoras compradoras. Métricas-alvo: CAC estimado $600 (vendas B2B consultivas para cooperativas), LTV estimado $4.800 (retenção média 24 meses em plano Growth), ratio LTV:CAC ~8:1; MRR projetado com 100 clientes em Growth = $19.900/mês.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Python (FastAPI) para os adaptadores primários REST, com domínio isolado em módulo puro (hexagonal via injeção de dependência nativa ou InversifyJS/dependency-injector). Banco: PostgreSQL (RDS) para estado transacional. Blockchain: Polygon (baixo custo de gas) via adaptador dedicado, apenas ancorando hashes, não dados sensíveis. Storage: S3/Cloudflare R2. Cache/fila: Redis + SQS/RabbitMQ. Mobile: React Native (app de campo offline-first com sync). Pagamentos: Stripe Billing (assinaturas + uso). Infra: AWS ou Fly.io com Terraform para IaC. CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T21:01:32+00:00",
+    "runner": "runner.py"
+  }
+}

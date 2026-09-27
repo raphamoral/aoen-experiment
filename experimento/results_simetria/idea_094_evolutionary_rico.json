@@ -1,0 +1,72 @@
+{
+  "ideia_idx": 94,
+  "ideia": "App de gestão de obras com timeline visual e controle de custos em tempo real",
+  "abordagem": "evolutionary_rico",
+  "response": {
+    "architectural_quantum": "O 'Módulo de Obra' (Project Bounded Context): inclui timeline visual, controle de custos, API própria, banco de dados dedicado (ou schema isolado) e testes de contrato. É implantável de forma independente porque contém tudo que precisa para operar sem depender de deploy simultâneo de outros módulos (usuários, notificações, faturamento). Comunicação com outros quanta ocorre via eventos assíncronos (ex: ObraCustoAtualizado) ou APIs versionadas, nunca via banco compartilhado.",
+    "fitness_functions": {
+      "atomicas": [
+        "Latência de leitura da timeline <= 200ms p95 (verificada em CI via testes de carga sintéticos)",
+        "Cobertura de contrato de API >= 95% entre módulo de custos e módulo de timeline (Pact/contract testing)",
+        "Nenhuma query cross-schema direta entre bounded contexts (lint estático em SQL/ORM)",
+        "Zero downtime em migrações de schema (verificado via teste de compatibilidade N-1/N+1)"
+      ],
+      "holisticas": [
+        "Custo de infraestrutura por cliente ativo não pode crescer >5% mês a mês sem aprovação (dashboard de custo automatizado)",
+        "Todo evento de domínio publicado deve ter schema registrado e validado contra versão anterior (schema registry + CI gate)"
+      ],
+      "continuas_vs_disparadas": "A maioria roda continuamente no pipeline (a cada PR); a de custo por cliente é disparada mensalmente via job agendado."
+    },
+    "evolvable_dimensions": {
+      "tecnica": "Migração gradual de monólito modular (MVP) para serviços separados (Custos, Timeline, Auditoria) conforme escala de obras simultâneas cresce",
+      "dados": "Esquema de custos evolui de tabelas relacionais simples para modelo de séries temporais (para real-time) sem quebrar consumidores existentes",
+      "seguranca": "De autenticação simples (MVP) para RBAC granular por obra/empresa e depois multi-tenant com isolamento por schema conforme entram clientes enterprise",
+      "operacional": "De deploy manual único para pipeline com feature flags e rollout canário por região/cliente"
+    },
+    "incremental_change": "Cada mudança arquitetural (ex: extrair módulo de Custos do monólito) é feita via 'strangler fig': nova rota implantada em paralelo, tráfego migrado por feature flag e percentual crescente, funções de aptidão monitoram latência/erro durante a transição, rollback automático se threshold for violado. Nenhuma 'big bang rewrite' é permitida.",
+    "coupling_management": {
+      "acoplamento_aferente": "Módulo de Custos é consumido por Timeline, Relatórios e Faturamento — alto acoplamento aferente, portanto suas interfaces são versionadas (v1, v2) e mudanças breaking exigem depreciação de 90 dias",
+      "acoplamento_eferente": "Timeline depende de Custos e de Upload de Mídia (fotos de progresso) — acoplamento eferente moderado, mitigado com circuit breaker e cache local",
+      "deliberado": "O acoplamento entre Timeline e Custos é deliberado (mesma transação de negócio: atualizar progresso frequentemente implica atualizar custo), mas é feito via eventos assíncronos e não chamada síncrona bloqueante, para preservar independência de deploy"
+    },
+    "deployment_pipeline": "Pipeline CI/CD com estágios: (1) build + testes unitários, (2) testes de contrato entre módulos, (3) fitness functions de arquitetura (lint de acoplamento, schema registry check), (4) deploy em staging com testes de carga automatizados validando latência da timeline e consistência de custos, (5) canary release em produção (5% de clientes) com monitoramento automático das fitness functions holísticas, (6) rollout completo ou rollback automático.",
+    "data_evolution": "Uso de padrão expand-contract: novas colunas/tabelas são adicionadas sem remover as antigas (expand), código é migrado para usar o novo esquema com feature flag, dados são migrados em background (backfill), e somente após validação completa o esquema antigo é removido (contract). Eventos de domínio usam versionamento de schema (schema registry) para permitir consumidores em versões diferentes durante a transição.",
+    "experimentation": "Hipóteses de produto (ex: 'timeline com IA de previsão de atraso aumenta retenção') são testadas via feature flags + A/B testing na camada de módulo, isolando o experimento no quantum correspondente. Métricas de negócio (retenção, tempo de uso) são coletadas como fitness functions de produto, complementando as fitness functions técnicas.",
+    "sacrificial_parts": "O motor de relatórios PDF do MVP e o dashboard de custos simples (agregação batch) são deliberadamente descartáveis — servem para validar demanda rapidamente e serão substituídos por um motor de BI real-time (ex: baseado em event streaming) quando o volume de obras simultâneas por cliente exceder ~50, ou quando clientes enterprise exigirem relatórios customizados.",
+    "guardrails": "Testes de arquitetura automatizados (ArchUnit-like) que bloqueiam imports cross-module indevidos; revisão obrigatória de RFC para qualquer mudança que aumente acoplamento aferente de um módulo; budget de complexidade ciclomática e de dependências por serviço monitorado no CI; política de 'no shared database' entre bounded contexts aplicada via CI.",
+    "tradeoffs": "Prioriza-se consistência eventual (custos podem levar segundos para refletir na timeline) em troca de disponibilidade e desacoplamento de deploy; sacrifica-se simplicidade inicial (monólito modular) em favor de evolutibilidade futura (extração de serviços); aceita-se maior custo operacional de observabilidade (tracing distribuído) para ganhar velocidade de mudança guiada por fitness functions.",
+    "interfaces": [
+      "REST API /obras (CRUD de obras e timeline)",
+      "REST API /custos (lançamentos, orçado vs realizado)",
+      "WebSocket /obras/{id}/timeline (atualizações em tempo real)",
+      "Event Bus: ObraCustoAtualizado, ObraProgressoAtualizado, ObraCriada",
+      "API de Upload de Mídia (fotos/documentos de obra)",
+      "Webhook de integração com ERPs de construção (SAP, Sienge)",
+      "API de Faturamento/Assinatura (Stripe)"
+    ],
+    "escalabilidade": "Escala horizontalmente por bounded context: módulo de Custos e Timeline escalam independentemente via réplicas stateless atrás de load balancer; banco de dados usa read replicas para leitura da timeline (alto volume de leitura) e write-optimized store para lançamentos de custo; cache (Redis) para agregações de custo em tempo real; sharding por tenant/empresa quando a base de clientes ultrapassar limites de instância única; uso de CDN para assets de mídia (fotos de obra) e fila assíncrona (SQS/RabbitMQ) para processamento de eventos de custo evitando picos de carga síncrona.",
+    "custo_infra_estimado": "Servidor (App, 2x containers ECS/Fargate): $80/mês; Banco de dados (RDS PostgreSQL, db.t3.medium multi-AZ): $120/mês; Cache (Redis ElastiCache): $30/mês; CDN (CloudFront) para fotos/mídia: $20/mês; Armazenamento (S3, fotos de obra): $15/mês; Fila de eventos (SQS): $5/mês; Observabilidade (logs/metrics): $25/mês. Total infraestrutura base: ~$295/mês para até ~200 obras ativas simultâneas.",
+    "custo_por_cliente": "Cada obra ativa gera: armazenamento de mídia (~500MB fotos/mês) = $0.01 (S3) + processamento de eventos de custo (~1000 eventos/mês) = $0.002 (SQS+Lambda) + queries de timeline em tempo real (~10k requisições/mês) = $0.015 (compute/DB) + cache de agregação = $0.003. Total por obra ativa = ~$0.03/mês. Cliente médio com 10 obras simultâneas = $0.30/mês em custo variável de infra, dentro de uma margem confortável frente ao ticket de assinatura.",
+    "monetizacao": {
+      "modelo": "SaaS B2B por assinatura com tiers baseados em número de obras simultâneas e usuários",
+      "tiers": [
+        "Starter: R$149/mês (até 3 obras simultâneas, 5 usuários)",
+        "Professional: R$399/mês (até 15 obras simultâneas, 20 usuários, relatórios avançados)",
+        "Enterprise: a partir de R$1.200/mês (obras ilimitadas, integração ERP, SSO, suporte dedicado)"
+      ],
+      "metricas": {
+        "MRR_alvo_ano1": "R$50.000 (aprox. 150 clientes Professional equivalentes)",
+        "CAC_estimado": "R$800 por cliente (vendas outbound + marketing digital para construtoras)",
+        "LTV_estimado": "R$14.400 (ticket médio R$400/mês x retenção média de 36 meses)",
+        "LTV_CAC_ratio": "18:1, considerado saudável para SaaS vertical B2B"
+      }
+    },
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Go para módulos de alta performance (custos em tempo real); Frontend: React + TypeScript com biblioteca de visualização (D3.js/Recharts) para timeline; Banco: PostgreSQL (dados transacionais) + TimescaleDB (séries temporais de custo); Mensageria: AWS SQS/EventBridge ou Kafka para eventos de domínio; Cache: Redis; Armazenamento: S3 + CloudFront; Infraestrutura: AWS ECS Fargate ou Kubernetes (EKS) para escalabilidade dos módulos; Observabilidade: Datadog ou OpenTelemetry + Grafana; CI/CD: GitHub Actions com gates de fitness functions; Pagamentos/Assinatura: Stripe Billing."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "25a60daee261",
+    "gerado_em": "2026-09-27T21:07:11+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "ideia_idx": 86,
+  "ideia": "SaaS de análise de risco para seguradoras de nicho",
+  "abordagem": "evolutionary_rico",
+  "response": {
+    "architectural_quantum": "Serviço de 'Avaliação de Risco por Linha de Negócio' (ex.: risco agrícola, risco cyber para PMEs, risco de frota) — inclui API de scoring, modelo de ML versionado, schema de dados próprio e testes de contrato. É implantável de forma independente porque cada seguradora de nicho opera com modelos de risco e regulação distintos; agrupar UI, motor de regras, modelo preditivo e persistência dentro do quantum evita que uma mudança de modelo atuarial exija deploy coordenado com outras linhas de negócio.",
+    "fitness_functions": {
+      "atomicas_automatizadas": "Latência de scoring p95 < 300ms (testado em CI a cada PR via k6); Cobertura de testes de regras atuariais >= 90%; Ausência de PII não criptografada em logs (varredura estática com regex/DLP a cada build); Model drift < 5% em KS-test comparado ao baseline mensal",
+      "holisticas_continuas": "Explicabilidade do modelo (SHAP score disponível para 100% das decisões automatizadas) rodando em pipeline diário; Paridade demográfica em decisões de underwriting (fairness audit trimestral) para evitar discriminação ilegal",
+      "temporais": "Auditoria de conformidade com SUSEP/LGPD (ou regulador local) executada release a release; Revisão de custo de infraestrutura por cliente executada mensalmente para evitar erosão de margem",
+      "objetivo": "Cada função de aptidão retorna PASS/FAIL binário ou score numérico com threshold, integrada ao pipeline de CI/CD — nenhuma é subjetiva"
+    },
+    "evolvable_dimensions": {
+      "tecnica": "Migração gradual de regras hardcoded para motor de regras configurável (Drools/OPA) e depois para modelos de ML; troca de linguagem de scoring sem afetar consumidores via contrato estável",
+      "dados": "Schema de apólices e sinistros evolui de relacional rígido para event-sourced conforme novas linhas de negócio de nicho são adicionadas",
+      "seguranca": "De autenticação básica para OAuth2/mTLS entre serviços conforme número de seguradoras-clientes cresce e exige isolamento multi-tenant mais forte",
+      "operacional": "De deploy manual para GitOps com canary releases conforme volume de mudanças de modelo aumenta"
+    },
+    "incremental_change": "Cada mudança (novo modelo de risco, novo campo de apólice, nova integração regulatória) é implantada via feature flags e canary release restrito a um subconjunto de seguradoras-piloto; as funções de aptidão rodam automaticamente antes da promoção total, e o rollback é automático se qualquer fitness function falhar. Mudanças de schema usam expand-contract (nunca big-bang).",
+    "coupling_management": {
+      "acoplamento_aferente": "O serviço de Scoring de Risco é consumido por Underwriting, Precificação e Relatórios Regulatórios — alto Ca, por isso sua API é versionada semanticamente e tratada como contrato público estável",
+      "acoplamento_eferente": "Scoring depende de fontes externas (bureaus de crédito, dados climáticos, telemetria IoT) — esse acoplamento é isolado via anti-corruption layer/adapter para não vazar formatos externos ao domínio",
+      "deliberado": "Acoplamento forte e intencional apenas entre Scoring e o Feature Store interno (baixa variabilidade); todo o restante é fracamente acoplado via eventos assíncronos (Kafka/EventBridge) para permitir substituição independente de módulos de nicho"
+    },
+    "deployment_pipeline": "Pipeline CI/CD com estágios: (1) build + testes unitários, (2) testes de contrato entre quantums, (3) fitness functions atômicas (latência, cobertura, segurança), (4) deploy canary 5% do tráfego, (5) fitness functions holísticas (drift, fairness) monitoradas por 24-48h, (6) promoção automática ou rollback. Ferramentas: GitHub Actions/GitLab CI + Argo Rollouts + Prometheus/Grafana para métricas de fitness contínuas.",
+    "data_evolution": "Padrão expand-contract: novos campos são adicionados como opcionais (expand), consumidores migram gradualmente, campos antigos são depreciados e só removidos (contract) após todos os consumidores migrarem — validado por fitness function que rastreia uso de campos legados. Mudanças estruturais maiores usam event sourcing com versionamento de schema (Avro/Protobuf) e migrações via CDC (Debezium) sem downtime.",
+    "experimentation": "Hipóteses de produto (ex.: 'novo fator de risco X reduz sinistralidade') são testadas via A/B testing controlado por feature flags (LaunchDarkly/Unleash), com um grupo de seguradoras-piloto isoladas por tenant; resultados são medidos por métricas de negócio (loss ratio, taxa de conversão de cotação) antes do rollout geral. Shadow deployment é usado para novos modelos de ML rodarem em paralelo sem afetar decisões reais.",
+    "sacrificial_parts": "O motor de regras inicial baseado em planilhas/regras hardcoded é deliberadamente descartável e será substituído por um motor de regras configurável assim que houver 3+ linhas de negócio de nicho ativas; o MVP de relatórios regulatórios em CSV manual será substituído por pipeline automatizado quando o número de seguradoras-clientes ultrapassar 10 (custo de manutenção manual supera o de automação).",
+    "guardrails": "Contratos de API versionados com testes de contrato obrigatórios (Pact); linter arquitetural (ArchUnit/Deptrac) bloqueando dependências circulares entre quantums; revisão obrigatória de qualquer PR que reduza cobertura de fitness functions; orçamento de complexidade ciclomática monitorado; política de 'nenhum dado sensível sai do domínio sem passar pelo anti-corruption layer'.",
+    "tradeoffs": "Isolamento multi-tenant forte (segurança/dados) aumenta custo operacional e reduz velocidade de deploy cross-tenant; flexibilidade para modelos de nicho customizados (dimensão técnica) aumenta complexidade operacional de versionamento de modelos; auditabilidade regulatória completa (compliance) impõe latência extra em decisões automatizadas, sacrificando parte da performance em favor de conformidade.",
+    "interfaces": [
+      "REST/GraphQL API de Risk Scoring (síncrona, para underwriting em tempo real)",
+      "Event Stream de Apólices e Sinistros (Kafka, assíncrono)",
+      "API de Ingestão de Dados Externos (bureaus, clima, IoT) via anti-corruption layer",
+      "API de Relatórios Regulatórios (batch, exportação para reguladores)",
+      "Webhook de Notificação de Mudança de Score de Risco",
+      "API de Administração de Modelos (versionamento, rollback de modelos de ML)",
+      "SDK/API multi-tenant para onboarding de novas seguradoras-clientes"
+    ],
+    "escalabilidade": "Escala horizontalmente por tenant (seguradora) usando arquitetura multi-tenant com isolamento lógico (schema-per-tenant ou row-level security) migrando para isolamento físico para clientes enterprise; scoring é stateless e escala via auto-scaling de containers (Kubernetes HPA); picos sazonais (renovação de apólices) são absorvidos por filas assíncronas (SQS/Kafka) com processamento em lote para não sobrecarregar scoring síncrono; cache de features (Redis) reduz carga no feature store conforme volume de consultas cresce.",
+    "custo_infra_estimado": "Servidor (K8s, 3 nós t3.large): $220/mês; Banco de dados (RDS PostgreSQL Multi-AZ): $180/mês; Feature Store/Cache (Redis ElastiCache): $60/mês; Mensageria (Kafka gerenciado/MSK): $150/mês; Armazenamento (S3 para modelos e logs): $25/mês; CDN (CloudFront para dashboard): $15/mês; Observabilidade (Grafana Cloud/Datadog): $80/mês; Total estimado inicial: ~$730/mês para até 20 seguradoras-clientes",
+    "custo_por_cliente": "Cada análise de risco = $0.02 (chamada a bureau externo) + $0.008 (inferência de modelo ML em GPU/CPU compartilhada) + $0.002 (storage de log e auditoria) + $0.001 (mensageria) = $0.031/operação. Uma seguradora de nicho com 5.000 análises/mês = $155/mês em custo variável direto; somando rateio de infraestrutura fixa ($730/20 clientes = $36,50/mês), custo total por cliente médio ≈ $191,50/mês",
+    "monetizacao": "Modelo SaaS B2B por assinatura + uso: Tier Starter ($499/mês, até 2.000 análises/mês, 1 linha de negócio); Tier Growth ($1.499/mês, até 10.000 análises/mês, até 3 linhas de negócio, relatórios regulatórios inclusos); Tier Enterprise (a partir de $4.000/mês, análises ilimitadas com overage de $0.15/análise excedente, SLA dedicado, modelos customizados). Métricas-alvo: MRR inicial de $15k com 15 clientes Starter/Growth; CAC estimado em $2.500 (venda B2B consultiva); LTV estimado em $27.000 (churn anual de 15%, ticket médio $1.125/mês, retenção 24 meses) — LTV:CAC de ~11:1, saudável para SaaS vertical B2B.",
+    "stack_sugerida": "Backend: Python (FastAPI) para serviços de scoring e ML, Go para serviços de alta performance (ingestão de eventos); Dados: PostgreSQL (transacional) + TimescaleDB (séries temporais de sinistros) + S3/Parquet (data lake para treino de modelos); Mensageria: Kafka (MSK/Confluent); ML: scikit-learn/XGBoost + MLflow para versionamento de modelos + SHAP para explicabilidade; Orquestração: Kubernetes (EKS) + Argo Rollouts para canary; CI/CD: GitHub Actions; Observabilidade: Prometheus + Grafana + OpenTelemetry; Feature Store: Feast + Redis; Segurança: Vault (secrets) + OAuth2/OIDC (Auth0/Keycloak) para multi-tenant."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "25a60daee261",
+    "gerado_em": "2026-09-27T21:04:39+00:00",
+    "runner": "runner.py"
+  }
+}

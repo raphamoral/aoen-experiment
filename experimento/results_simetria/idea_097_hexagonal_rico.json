@@ -1,0 +1,85 @@
+{
+  "ideia_idx": 97,
+  "ideia": "App de matchmaking de caronas corporativas com roteirização inteligente",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Passageiro, Motorista, Empresa, Carona (trecho oferecido), SolicitacaoDeCarona, Match, Rota, PoliticaCorporativa. Regras de negócio: (1) compatibilidade de trajeto — dois trechos só formam match se a sobreposição espacial e temporal ultrapassar um limiar configurável; (2) elegibilidade corporativa — passageiro e motorista devem pertencer à mesma empresa ou a empresas parceiras autorizadas por acordo; (3) rateio de custo — divisão proporcional à distância compartilhada, nunca fins lucrativos entre pares (regra fiscal de carona solidária); (4) política de cancelamento com janela de tolerância e penalidade de reputação; (5) score de confiança do motorista/passageiro baseado em histórico; (6) priorização de matches por ganho agregado de rota (menor desvio total da rede). Nenhuma regra referencia API de mapas, banco de dados ou fila de mensagens — tudo expresso em Value Objects como Coordenada, JanelaDeTempo e TrechoDeRota.",
+    "driving_ports": {
+      "SolicitarCaronaPort": "passageiro pede um trecho, retorna candidatos a match",
+      "OferecerCaronaPort": "motorista publica um trecho disponível",
+      "BuscarMatchesPort": "consulta matches compatíveis para um trecho existente",
+      "ConfirmarMatchPort": "aceita e trava um match, iniciando o compromisso de carona",
+      "CancelarCaronaPort": "cancela oferta/solicitação aplicando política de cancelamento",
+      "AdministrarPoliticaCorporativaPort": "RH/admin configura regras de elegibilidade e limites de rateio",
+      "ConsultarHistoricoEReputacaoPort": "consulta histórico de caronas e score de um usuário"
+    },
+    "driven_ports": {
+      "GeocodificacaoPort": "traduz endereço em coordenada",
+      "RoteirizacaoPort": "calcula rota, distância, ETA e desvio de trajeto",
+      "RepositorioCaronaPort": "persiste e recupera Carona/Match/SolicitacaoDeCarona",
+      "RepositorioUsuarioEEmpresaPort": "persiste Passageiro/Motorista/Empresa/PoliticaCorporativa",
+      "NotificacaoPort": "envia push/e-mail/SMS de eventos de match",
+      "RateioDeCustoPort": "calcula e processa cobrança/repasse entre pares",
+      "IdentidadeCorporativaPort": "valida vínculo empregatício via SSO/HRIS",
+      "PublicacaoDeEventosPort": "publica eventos de domínio (MatchConfirmado, CaronaCancelada) para consumidores externos",
+      "RastreamentoEmTempoRealPort": "atualiza e consulta posição ao vivo durante a carona"
+    },
+    "driving_adapters": {
+      "API_REST_Mobile": "expõe endpoints para os apps de passageiro e motorista (solicitar, ofertar, confirmar)",
+      "API_Admin_Web": "painel para RH configurar PoliticaCorporativa e ver métricas de adoção",
+      "Webhook_HRIS_Inbound": "recebe eventos de admissão/desligamento de funcionários da empresa cliente",
+      "Job_Scheduler_Batch": "dispara ciclo de matchmaking em lote fora do horário de pico (ex.: matches noturnos para o dia seguinte)",
+      "CLI_Operacional": "ferramentas internas de suporte e auditoria"
+    },
+    "driven_adapters": {
+      "PostgreSQL_PostGIS_Adapter": "implementa RepositorioCaronaPort e RepositorioUsuarioEEmpresaPort com índices geoespaciais",
+      "Redis_Adapter": "cache de rotas frequentes e geofences quentes",
+      "Mapbox_ou_GoogleRoutes_Adapter": "implementa RoteirizacaoPort e GeocodificacaoPort",
+      "Twilio_SendGrid_Adapter": "implementa NotificacaoPort",
+      "Stripe_Connect_Adapter": "implementa RateioDeCustoPort para repasses entre motorista e passageiro",
+      "OktaAzureAD_Adapter": "implementa IdentidadeCorporativaPort via SSO/SCIM",
+      "Kafka_ou_SQS_Adapter": "implementa PublicacaoDeEventosPort",
+      "WebSocket_ou_MQTT_Adapter": "implementa RastreamentoEmTempoRealPort"
+    },
+    "application_services": {
+      "MatchmakingService": "orquestra busca de candidatos via port de roteirização e aplica as regras de compatibilidade do domínio, sem decidir a regra em si",
+      "RideLifecycleService": "coordena solicitar->confirmar->executar->encerrar, delegando validações às entidades",
+      "PolicyEnforcementService": "consulta PoliticaCorporativa antes de autorizar operações, delegando o julgamento de elegibilidade ao domínio",
+      "NotificationOrchestrator": "traduz eventos de domínio em chamadas ao NotificacaoPort"
+    },
+    "domain_isolation": "O domínio só conhece tipos próprios (Coordenada, JanelaDeTempo, TrechoDeRota, ScoreDeReputacao) e interfaces (ports) definidas dentro do próprio módulo de aplicação. Nenhuma classe de domínio importa SDK de mapas, driver de banco, cliente HTTP ou biblioteca de fila. Toda tradução tecnológica (lat/long de um provedor, DTO de banco, payload de webhook) ocorre nos adaptadores, que convertem para os Value Objects do domínio antes de cruzar a fronteira.",
+    "test_doubles": "SolicitarCaronaPort e OferecerCaronaPort são testados chamando os serviços de aplicação diretamente (sem HTTP). RoteirizacaoPort é substituído por um FakeRoteirizador determinístico que retorna distâncias fixas para cenários de teste. RepositorioCaronaPort vira um repositório em memória (Map/List). NotificacaoPort vira um Spy que apenas registra chamadas para asserção. RateioDeCustoPort e IdentidadeCorporativaPort viram stubs que retornam respostas configuráveis (sucesso/falha) para testar caminhos de erro sem tocar Stripe ou o SSO real.",
+    "configuration_wiring": "Um composition root único na inicialização (ex.: módulo de bootstrap) lê variáveis de ambiente/config e instancia os adaptadores concretos, injetando-os nos serviços de aplicação via construtor (Dependency Injection manual ou container tipo NestJS/Spring). Em teste, o mesmo composition root troca os bindings para os dublês. Nenhuma classe de domínio ou de serviço de aplicação faz `new` de um adaptador diretamente.",
+    "technology_substitution": "Trocar Mapbox por OSRM self-hosted: custo baixo, apenas reescrever o RoteirizacaoAdapter mantendo o contrato RoteirizacaoPort — domínio e serviços de aplicação inalterados. Trocar PostgreSQL por DynamoDB: custo médio/alto, pois exige reprojetar consultas geoespaciais dentro do novo adapter, mas ainda sem tocar regras de negócio. Trocar Stripe por outro PSP: custo médio, adapter reescrito, porém a regra de rateio permanece no domínio. Trocar Kafka por SQS: custo baixo a médio, adapter de publicação reescrito, contratos de evento preservados.",
+    "symmetry": "Em ambos os lados o núcleo é quem define o contrato: do lado primário, a aplicação expõe a interface (ex.: SolicitarCaronaPort) e um adaptador primário (REST, webhook, job) a invoca de fora para dentro; do lado secundário, a aplicação também define a interface (ex.: RoteirizacaoPort) mas quem a implementa é um adaptador secundário, invocado de dentro para fora. Em nenhum dos dois casos o domínio depende da direção da chamada nem do adaptador concreto — a única diferença é quem chama quem, e isso preserva a simetria hexagonal de Cockburn.",
+    "interfaces": [
+      "SolicitarCaronaPort",
+      "OferecerCaronaPort",
+      "BuscarMatchesPort",
+      "ConfirmarMatchPort",
+      "CancelarCaronaPort",
+      "AdministrarPoliticaCorporativaPort",
+      "ConsultarHistoricoEReputacaoPort",
+      "GeocodificacaoPort",
+      "RoteirizacaoPort",
+      "RepositorioCaronaPort",
+      "RepositorioUsuarioEEmpresaPort",
+      "NotificacaoPort",
+      "RateioDeCustoPort",
+      "IdentidadeCorporativaPort",
+      "PublicacaoDeEventosPort",
+      "RastreamentoEmTempoRealPort"
+    ],
+    "escalabilidade": "Matchmaking assíncrono via fila (Kafka/SQS) permite processar picos de solicitação sem bloquear a API síncrona; sharding do banco geoespacial por região metropolitana ou por empresa-cliente; cache Redis para rotas e geofences recorrentes reduz chamadas custosas ao provedor de mapas; leitura escalada com réplicas Postgres/PostGIS; serviço de matchmaking stateless replicável horizontalmente atrás de load balancer; batch noturno para pré-computar matches de rotas fixas (commute diário), reduzindo carga em tempo real.",
+    "custo_infra_estimado": "Servidores (ECS/Fargate, 3 instâncias): $150/mês. RDS PostgreSQL + PostGIS (db.t3.medium, multi-AZ): $180/mês. Redis (ElastiCache, cache.t3.small): $50/mês. Fila (SQS/MSK gerenciado): $60/mês. CDN (CloudFront para assets do app): $20/mês. Armazenamento S3 (logs, comprovantes de trajeto): $15/mês. Banda de saída estimada: $40/mês. API de roteirização (Mapbox, ~50k requisições/mês): $200/mês. Total aproximado: ~$715/mês para uma base inicial (até ~5.000 usuários ativos).",
+    "custo_por_cliente": "Cada match processado = $0.02 (chamada de roteirização) + $0.002 (leitura/escrita no banco) + $0.001 (mensageria) + $0.001 (notificação push) = $0.024/match. Um funcionário médio gera ~40 matches/mês (commute ida e volta, 20 dias úteis) = 40 × $0.024 = $0.96/usuário/mês em custo variável de infraestrutura. Empresa-cliente com 200 funcionários ativos = 200 × $0.96 = $192/mês em custo direto de operação, antes de custos fixos de plataforma.",
+    "monetizacao": "Modelo B2B2C por assinatura corporativa (SaaS) com componente de uso: Tier Starter — até 100 funcionários, $3/funcionário/mês (mínimo $299/mês), inclui matchmaking básico e relatório mensal de ESG/redução de carbono. Tier Growth — até 1.000 funcionários, $2,20/funcionário/mês, inclui roteirização avançada e SSO. Tier Enterprise — negociado, $1,50/funcionário/mês+, inclui SLA, API dedicada e integração HRIS customizada. Receita adicional: taxa de $0,10 por match confirmado processado via RateioDeCustoPort (fee sobre transação de rateio). Métricas-alvo: MRR inicial de $15.000 com 50 empresas no Tier Starter; CAC estimado em $1.200 por empresa-cliente (vendas B2B outbound); LTV projetado em $10.800 considerando ticket médio de $600/mês e churn anual de 15% (LTV = ticket / churn ≈ $600 / 0,15 × 12/12... ver detalhe: payback de CAC em ~2 meses de MRR agregado por cliente).",
+    "stack_sugerida": "Backend: Kotlin + Spring Boot ou Node.js + NestJS (módulos como composition root de DI). Banco: PostgreSQL com extensão PostGIS para consultas geoespaciais. Cache: Redis. Mensageria: Apache Kafka (ou Amazon SQS/SNS para menor overhead operacional). Roteirização: Mapbox Directions API ou Google Routes API (adapter isolado para permitir troca por OSRM self-hosted). Pagamentos/rateio: Stripe Connect. Identidade corporativa: Okta ou Azure AD via SAML/SCIM. Mobile: React Native (apps de passageiro e motorista). Infra: AWS (ECS Fargate, RDS, ElastiCache, S3, CloudFront), Terraform para IaC. Observabilidade: Datadog ou Grafana + Prometheus."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T21:08:50+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "ideia_idx": 77,
+  "ideia": "App de gestão de fazendas solares com monitoramento IoT",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do usuário (operador de fazenda solar quer maximizar geração e reduzir downtime) → Coleta de dados IoT (sensores de painéis, inversores, estações climáticas) → Ingestão e telemetria em tempo real → Processamento e normalização de dados → Detecção de anomalias e predição de falhas → Dashboards e relatórios de performance → Alertas e ordens de manutenção → Integração com faturamento/energia gerada → Valor entregue: maior yield energético, menor MTTR, compliance regulatório.",
+    "wardley_map": {
+      "genese": "Modelos de ML para predição de falhas específicas de painéis/inversores por fabricante; otimização de dispatch energético",
+      "sob_medida": "Motor de detecção de anomalias específico do domínio solar; motor de regras de manutenção preditiva; modelagem de performance por topologia de fazenda",
+      "produto": "Dashboard de monitoramento; gestão de ativos; portal de relatórios; app mobile para técnicos de campo",
+      "commodity": "Ingestão de telemetria (MQTT broker), autenticação/identidade, armazenamento de série temporal, envio de notificações (SMS/e-mail/push), hospedagem cloud, CDN"
+    },
+    "build_buy_decisions": {
+      "construir": "Motor de detecção de anomalias e predição de falhas (diferencial competitivo, conhecimento de domínio único), modelo de dados de ativos físicos (painéis, strings, inversores, trackers), regras de manutenção preditiva",
+      "comprar": "Plataforma IoT gerenciada (AWS IoT Core / Azure IoT Hub) para device management e OTA, serviço de notificações (Twilio/SendGrid), autenticação (Auth0/Cognito) — reduzem time-to-market e risco operacional",
+      "commodity": "Banco de série temporal (TimescaleDB/InfluxDB Cloud), object storage (S3), CDN (CloudFront), observabilidade (Datadog) — não geram vantagem competitiva, usar oferta padrão de mercado"
+    },
+    "core_domain": "Detecção de anomalias e predição de falhas em ativos solares com base em telemetria IoT — é o que diferencia o produto de um simples dashboard de monitoramento e justifica investimento sob medida, pois modelos genéricos de mercado não capturam a especificidade de degradação de painéis, sombreamento, hot-spots e falhas de inversores por fabricante.",
+    "bounded_contexts": [
+      {
+        "contexto": "Gestão de Ativos",
+        "linguagem": "fazenda, string, painel, inversor, tracker, capacidade instalada, topologia"
+      },
+      {
+        "contexto": "Telemetria IoT",
+        "linguagem": "device, sensor, leitura, timestamp, payload, gateway, heartbeat"
+      },
+      {
+        "contexto": "Análise Preditiva",
+        "linguagem": "anomalia, score de risco, degradação, MTBF, modelo, predição, threshold"
+      },
+      {
+        "contexto": "Manutenção",
+        "linguagem": "ordem de serviço, técnico, SLA, ticket, peça, checklist de campo"
+      },
+      {
+        "contexto": "Faturamento e Performance Energética",
+        "linguagem": "kWh gerado, PR (performance ratio), tarifa, contrato, relatório de yield"
+      },
+      {
+        "contexto": "Identidade e Acesso",
+        "linguagem": "tenant, usuário, papel, permissão, organização"
+      }
+    ],
+    "context_mapping": [
+      "Telemetria IoT → Análise Preditiva: relação cliente-fornecedor (Análise consome eventos normalizados de Telemetria)",
+      "Análise Preditiva → Manutenção: cliente-fornecedor (anomalias geram ordens de serviço via evento de domínio)",
+      "Gestão de Ativos ↔ Telemetria IoT: parceria (modelos compartilhados de identificação de dispositivo/ativo)",
+      "Faturamento e Performance Energética → Gestão de Ativos: camada anticorrupção (traduz dados de geração para modelo de contrato, isolando regras comerciais)",
+      "Identidade e Acesso: fornecido como serviço (X-as-a-Service) para todos os demais contextos via SDK/API compartilhada"
+    ],
+    "team_topologies": {
+      "fluxo": [
+        "Time de Gestão de Ativos e Manutenção (stream principal, dono da jornada do cliente)",
+        "Time de Análise Preditiva (stream de valor em ML)"
+      ],
+      "plataforma": [
+        "Plataforma de Ingestão IoT (device management, telemetria, escalabilidade)",
+        "Plataforma de Dados (armazenamento, pipelines, observabilidade)"
+      ],
+      "subsistema_complicado": [
+        "Time de Modelagem de ML/Ciência de Dados (expertise estatística especializada, poucos especialistas)"
+      ],
+      "habilitacao": [
+        "Time de Habilitação em Confiabilidade IoT (ajuda times de fluxo a adotar práticas de edge computing e resiliência de conectividade)"
+      ]
+    },
+    "cognitive_load": "Cada time de fluxo é dono de no máximo um bounded context, com plataformas absorvendo complexidade de infraestrutura (ingestão IoT, storage de série temporal) via APIs self-service, reduzindo carga extrínseca; o subsistema complicado de ML isola a complexidade matemática/estatística para não sobrecarregar times de fluxo; o time de habilitação atua por tempo limitado para transferir conhecimento sem criar dependência permanente.",
+    "interaction_modes": {
+      "colaboracao": "Time de Análise Preditiva colabora temporariamente com Gestão de Ativos/Manutenção durante descoberta de novos tipos de falha",
+      "x_as_a_service": "Plataforma de Ingestão IoT e Identidade/Acesso oferecidas como serviço via API bem documentada para todos os times de fluxo",
+      "facilitacao": "Time de Habilitação em Confiabilidade IoT facilita adoção de padrões de resiliência de borda (edge) pelos times de fluxo"
+    },
+    "flow_optimization": "Fluxo otimizado via eventos assíncronos entre Telemetria → Análise Preditiva → Manutenção, evitando acoplamento síncrono; gargalo potencial no volume de ingestão de dados de sensores em picos (necessita backpressure e buffering via message broker); outro gargalo é a validação/rotulagem de dados para treinar modelos de ML, mitigado com pipeline de active learning e feedback de técnicos de campo.",
+    "independent_streams": "Cada bounded context publica e consome eventos de domínio via barramento de eventos (ex: Kafka), permitindo que Gestão de Ativos, Análise Preditiva e Manutenção evoluam e façam deploy independentemente; contratos de eventos versionados garantem que mudanças em um contexto não quebrem os demais.",
+    "interfaces": [
+      "API REST/GraphQL para dashboards e app mobile",
+      "MQTT/CoAP para ingestão de dados de sensores IoT",
+      "Webhooks para integração com sistemas de ERP/faturamento externos",
+      "Barramento de eventos (Kafka) para comunicação assíncrona entre bounded contexts",
+      "API de notificações (SMS/e-mail/push) para alertas de manutenção",
+      "SDK de autenticação/identidade multi-tenant"
+    ],
+    "escalabilidade": "Escala horizontalmente por tenant (fazenda solar) usando particionamento por organização no banco de série temporal e broker de mensagens; ingestão IoT escala via auto-scaling de consumers Kafka; modelos de ML são servidos via inferência em batch para reduzir custo, com scoring em tempo real reservado a anomalias críticas; arquitetura multi-tenant com isolamento lógico permite onboarding de novos clientes sem redesenho.",
+    "custo_infra_estimado": "Servidor/Compute (Kubernetes, 3 nós): $150/mês, Banco de série temporal (TimescaleDB gerenciado): $80/mês, Message broker (Kafka gerenciado/Confluent Cloud, tier básico): $100/mês, Object storage (S3, logs e backups): $15/mês, CDN (CloudFront): $10/mês, IoT Core (device management, 1000 dispositivos): $50/mês, Observabilidade (Datadog básico): $40/mês. Total estimado: ~$445/mês para operação inicial (até ~20 fazendas).",
+    "custo_por_cliente": "Cada fazenda monitorada gera ~500 leituras de sensor/hora (50 dispositivos x 10 leituras/hora) = 360.000 leituras/mês. Ingestão IoT: 360.000 x $0.00005 = $18/mês. Storage de série temporal: ~2GB/mês x $0.05/GB = $0.10/mês. Processamento de anomalias (inferência batch, 1x/hora): 720 execuções x $0.01 = $7.20/mês. Notificações (alertas, ~50/mês): 50 x $0.01 = $0.50/mês. Total por fazenda: ~$25.80/mês em custo variável de infraestrutura.",
+    "monetizacao": "Modelo SaaS por assinatura com tiers baseados em capacidade monitorada (kWp instalado) e número de dispositivos: Starter ($299/mês, até 500kWp, 50 dispositivos, alertas básicos), Professional ($799/mês, até 2MWp, 200 dispositivos, predição de falhas e relatórios avançados), Enterprise (customizado a partir de $2.500/mês, multi-fazenda, API dedicada, SLA de suporte). Métricas-chave: MRR alvo de $50k em 12 meses (assumindo ~80 clientes Professional), CAC estimado em $1.200 (vendas B2B consultivas), LTV estimado em $28.800 (24 meses de retenção média x $799 x margem 60%), payback de CAC em ~2 meses. Add-on: cobrança por relatório de compliance regulatório sob demanda ($50/relatório).",
+    "stack_sugerida": "Ingestão IoT: AWS IoT Core ou EMQX + MQTT; Streaming/eventos: Apache Kafka (Confluent Cloud); Processamento: Apache Flink ou serviços serverless (AWS Lambda) para transformação em tempo real; Armazenamento de série temporal: TimescaleDB; Armazenamento relacional (ativos, tenants, ordens de serviço): PostgreSQL; ML/Predição: Python (scikit-learn/PyTorch) servido via FastAPI ou AWS SageMaker; Backend de domínio: Node.js/TypeScript ou Go com arquitetura hexagonal por bounded context; Frontend: React + TypeScript; Mobile (técnicos de campo): React Native; Infraestrutura: Kubernetes (EKS/GKE) + Terraform; Observabilidade: Datadog ou Grafana/Prometheus; Autenticação: Auth0 ou AWS Cognito."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T21:02:49+00:00",
+    "runner": "runner.py"
+  }
+}

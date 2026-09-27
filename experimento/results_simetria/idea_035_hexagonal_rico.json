@@ -1,0 +1,71 @@
+{
+  "ideia_idx": 35,
+  "ideia": "SaaS de detecção de fraudes em transações de marketplace",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Núcleo de domínio contém: Transaction (Value Object imutável com valor, moeda, timestamp, partes envolvidas), Merchant, Buyer, RiskScore (Value Object 0-100), FraudRule (regra declarativa com condição e peso), RuleSet (agregado que agrupa regras ativas), FraudAssessment (Entidade/Aggregate Root que representa o resultado da análise: score final, regras disparadas, decisão APPROVE/REVIEW/BLOCK), Alert (gerado quando assessment ultrapassa threshold), CaseReview (decisão humana sobre um alerta). Regras de negócio puras: cálculo de score combinando pesos de regras, política de decisão por threshold, detecção de padrões (velocity check, device reuse, geolocalização divergente, valor atípico), reavaliação de score após feedback humano (aprendizado de regras). Nenhuma dessas classes conhece HTTP, banco de dados, fila ou API de ML externa.",
+    "driving_ports": {
+      "AnalyzeTransactionPort": "Recebe uma transação e retorna um FraudAssessment (síncrono ou solicita análise assíncrona)",
+      "ManageFraudRulesPort": "Cria, atualiza, ativa/desativa e versiona FraudRules",
+      "ReviewAlertPort": "Permite a um analista confirmar, descartar ou escalar um Alert, retroalimentando o domínio",
+      "QueryFraudHistoryPort": "Consulta histórico de assessments e métricas agregadas por merchant/buyer",
+      "IngestFeedbackPort": "Recebe chargeback/confirmação de fraude posterior para recalibrar regras"
+    },
+    "driven_ports": {
+      "TransactionRepositoryPort": "Persistência de transações e assessments",
+      "FraudRuleRepositoryPort": "Persistência e versionamento de regras",
+      "RiskSignalProviderPort": "Obtenção de sinais externos (geolocalização, device fingerprint, blacklists, reputação de IP)",
+      "MLScoringPort": "Solicita score complementar a um modelo de ML externo/interno",
+      "AlertNotificationPort": "Envia alertas a sistemas externos (e-mail, Slack, webhook do marketplace)",
+      "EventPublisherPort": "Publica eventos de domínio (TransactionAnalyzed, AlertRaised) para consumidores externos",
+      "AuditLogPort": "Registra trilha de auditoria imutável de decisões"
+    },
+    "driving_adapters": {
+      "REST_API_Adapter": "Expõe POST /transactions/analyze, GET /assessments/{id}, endpoints de gestão de regras via HTTP/JSON",
+      "Webhook_Receiver_Adapter": "Recebe eventos de transação empurrados pelo marketplace cliente (ex.: Shopify/Mercado Livre webhook)",
+      "Queue_Consumer_Adapter": "Consome mensagens de fila (Kafka/SQS) para análise assíncrona em alto volume",
+      "Admin_Dashboard_Adapter": "UI interna para analistas revisarem alertas e ajustarem regras",
+      "GraphQL_Adapter": "Alternativa de consulta flexível para parceiros que consomem histórico de fraude"
+    },
+    "driven_adapters": {
+      "PostgreSQL_Adapter": "Implementa TransactionRepositoryPort e FraudRuleRepositoryPort via ORM/queries",
+      "Redis_Cache_Adapter": "Cache de scores recentes e rate-limit de velocity checks",
+      "MaxMind_Sift_Adapter": "Implementa RiskSignalProviderPort consultando provedores externos de risco",
+      "SageMaker_OpenAI_Adapter": "Implementa MLScoringPort chamando modelo de ML hospedado",
+      "Kafka_SNS_Adapter": "Implementa EventPublisherPort publicando eventos de domínio",
+      "SendGrid_Twilio_Slack_Adapter": "Implementa AlertNotificationPort para notificações multicanal",
+      "S3_Glacier_Adapter": "Implementa AuditLogPort para armazenamento de longo prazo imutável"
+    },
+    "application_services": "TransactionAnalysisService orquestra: buscar regras ativas via FraudRuleRepositoryPort, obter sinais externos via RiskSignalProviderPort, solicitar score de ML via MLScoringPort, invocar o domínio para computar o FraudAssessment, persistir via TransactionRepositoryPort, publicar evento via EventPublisherPort e disparar AlertNotificationPort se necessário. AlertReviewService orquestra a leitura do Alert, aplica a decisão do analista ao CaseReview do domínio e persiste. Nenhum desses serviços contém regra de decisão de fraude — apenas coordenam chamadas às portas e delegam a lógica ao domínio.",
+    "domain_isolation": "Entidades e Value Objects do domínio não possuem anotações de ORM, HTTP ou serialização; usam apenas tipos primitivos e construtores validados. Toda comunicação com o exterior passa por interfaces (ports) definidas dentro do módulo de domínio/aplicação, nunca importadas de bibliotecas de infraestrutura. Mapeamento objeto-relacional, DTOs de API e schemas de mensageria vivem exclusivamente nos adaptadores, que traduzem entre o modelo externo e o modelo de domínio. O domínio pode ser compilado e testado sem nenhuma dependência de framework web, banco ou SDK de ML.",
+    "test_doubles": "InMemoryTransactionRepository e InMemoryFraudRuleRepository substituem os repositórios reais em testes de unidade e de aplicação. FakeMLScoringPort retorna scores determinísticos configuráveis para testar cenários de borda. StubRiskSignalProviderPort simula respostas de geolocalização/blacklist sem chamada de rede. SpyAlertNotificationPort captura chamadas para verificar que alertas foram disparados corretamente. Testes de contrato (contract tests) garantem que os adaptadores reais respeitam a mesma interface exercitada pelos dublês.",
+    "configuration_wiring": "Um composition root (bootstrap da aplicação) instancia os adaptadores concretos conforme variáveis de ambiente/config (ex.: PROVIDER=maxmind, ML_PROVIDER=sagemaker) e os injeta nos serviços de aplicação via construtor, respeitando apenas as interfaces de porta. Um container de DI (NestJS providers, Spring beans, ou wiring manual em Go/TypeScript) resolve essas dependências na inicialização, permitindo trocar adaptadores sem recompilar o núcleo de domínio.",
+    "technology_substitution": "Trocar PostgreSQL por outro banco (ex.: DynamoDB) custa reimplementar o adaptador de repositório e migrar dados, sem tocar no domínio — custo médio. Trocar o provedor de ML (SageMaker → modelo interno) custa apenas reimplementar MLScoringPort — baixo custo, alto valor pois permite comparar modelos via feature flag. Trocar mensageria (Kafka → SQS) exige atualizar o adaptador EventPublisher e os consumidores externos — custo médio-alto se houver contratos de schema divergentes. Trocar o canal de entrada (REST → GraphQL) tem custo baixo pois ambos são adaptadores primários que apenas traduzem chamadas para o mesmo AnalyzeTransactionPort.",
+    "symmetry": "Tanto os adaptadores primários (que acionam a aplicação) quanto os secundários (acionados pela aplicação) dependem exclusivamente de interfaces definidas pelo núcleo — nunca o inverso. Um adaptador REST implementa uma chamada *para* um driving port; um adaptador PostgreSQL implementa a *interface* de um driven port que o núcleo declara e consome. Em ambos os lados a direção da dependência aponta para dentro (Dependency Inversion Principle), garantindo que o hexágono central permaneça o único ponto estável, enquanto adaptadores em qualquer lado podem ser adicionados, removidos ou trocados de forma simétrica.",
+    "interfaces": [
+      "AnalyzeTransactionPort",
+      "ManageFraudRulesPort",
+      "ReviewAlertPort",
+      "QueryFraudHistoryPort",
+      "IngestFeedbackPort",
+      "TransactionRepositoryPort",
+      "FraudRuleRepositoryPort",
+      "RiskSignalProviderPort",
+      "MLScoringPort",
+      "AlertNotificationPort",
+      "EventPublisherPort",
+      "AuditLogPort"
+    ],
+    "escalabilidade": "Serviços de aplicação stateless permitem escalonamento horizontal atrás de um load balancer. Análise de alto volume é desacoplada via fila (Queue_Consumer_Adapter), absorvendo picos sem bloquear o marketplace cliente. Leitura de histórico escala com réplicas de leitura do PostgreSQL e cache Redis para scores recentes. Multi-tenancy por sharding lógico (schema por cliente ou partição por merchant_id) evita contenção entre grandes clientes. O RuleSet e cache de sinais externos reduzem chamadas repetidas a provedores pagos conforme a base cresce.",
+    "custo_infra_estimado": "Servidores de aplicação (2-4 instâncias, Kubernetes/ECS): $150/mês. PostgreSQL gerenciado (RDS, réplica de leitura): $120/mês. Redis (ElastiCache): $40/mês. Fila (SQS/Kafka gerenciado MSK): $80/mês. Armazenamento S3 (auditoria/logs): $20/mês. CDN/API Gateway: $30/mês. Monitoramento (Datadog/CloudWatch): $50/mês. Total estimado inicial: aproximadamente $490/mês para carga de até ~500k transações/mês.",
+    "custo_por_cliente": "Cada análise de transação = $0.02 (chamada ao modelo de ML) + $0.005 (consulta a provedor externo de risco tipo MaxMind) + $0.002 (armazenamento/log) + $0.001 (CPU/orquestração) = $0.028/operação. Cliente com 10.000 transações analisadas/mês = $280/mês em custo direto de infraestrutura, antes da margem comercial.",
+    "monetizacao": "Modelo SaaS em camadas por volume de transações analisadas: Starter (até 5.000 transações/mês) = $199/mês; Growth (até 50.000 transações/mês) = $999/mês; Scale (até 500.000 transações/mês) = $4.999/mês; Enterprise (volume customizado + SLA + modelo de ML dedicado) = contrato anual sob consulta. Cobrança adicional de $0.05 por transação excedente ao limite do plano. Métricas-chave: MRR alvo de $50k em 12 meses; CAC estimado em $800 por cliente médio (venda B2B consultiva); LTV estimado em $12.000 (retenção média de 24 meses, plano Growth), resultando em LTV:CAC de 15:1, saudável para SaaS B2B.",
+    "stack_sugerida": "Domínio e aplicação em TypeScript (NestJS) ou Go, isolados em módulos sem dependência de framework. Adaptador REST: NestJS Controllers / Express. Persistência: PostgreSQL + Prisma/TypeORM (apenas na camada de adaptador). Cache: Redis. Mensageria: Kafka (MSK) ou SQS/SNS para eventos assíncronos. ML: modelo próprio em Python servido via SageMaker/FastAPI, consumido pelo core via MLScoringPort HTTP/gRPC. Provedores de risco externo: MaxMind GeoIP2, Sift Science. Observabilidade: Datadog ou Grafana+Prometheus. Infraestrutura: Kubernetes (EKS) ou ECS Fargate, Terraform para IaC. CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:57:43+00:00",
+    "runner": "runner.py"
+  }
+}

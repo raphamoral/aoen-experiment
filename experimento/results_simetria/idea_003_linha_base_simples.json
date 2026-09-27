@@ -1,0 +1,28 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS multi-tenant de monitoramento de bem-estar mental para empresas, onde colaboradores respondem check-ins periódicos (humor, estresse, burnout) de forma anônima e o RH/gestores recebem dashboards agregados e relatórios estatísticos sem identificar indivíduos, com alertas de tendências negativas por equipe/departamento.",
+    "como_comecar": "Começar por um MVP focado em: (1) modelo de dados que separe identidade de resposta desde o desenho (anonimização por design, não por filtro depois), (2) fluxo de check-in simples (ex: escala de humor + PHQ-9/GAD-7 opcional), (3) dashboard agregado com limiar mínimo de respostas (k-anonimato, ex: só exibe dados se >= 5 respostas no grupo) para evitar reidentificação. Validar com 1-2 empresas piloto antes de construir features avançadas.",
+    "tecnologias": "Backend em Node.js (NestJS) ou Python (FastAPI/Django); frontend em React/Next.js; autenticação via OAuth/SSO corporativo (Google Workspace, Microsoft Entra ID); filas assíncronas (SQS/BullMQ) para processamento de relatórios e envio de lembretes; criptografia em repouso e em trânsito; infraestrutura em containers (Docker/Kubernetes ou serverless).",
+    "banco_dados": "Banco relacional (PostgreSQL) para dados estruturados de empresas, usuários e metadados, com separação lógica entre tabela de 'identidade' (pseudonimizada, com token rotativo) e tabela de 'respostas' (sem FK direta para identidade, apenas para grupo/departamento/coorte). Dados sensíveis de saúde criptografados em nível de coluna. Uso de agregações pré-computadas (materialized views) para relatórios, evitando queries diretas sobre dados individuais. Retenção e anonimização automática após período definido (compliance com LGPD/GDPR).",
+    "interfaces": [
+      "App/web para colaboradores (check-in rápido, histórico pessoal privado, recursos de autoajuda)",
+      "Dashboard web para RH/gestores (relatórios agregados, tendências, alertas)",
+      "Painel administrativo para configuração da empresa (departamentos, frequência de pesquisas, políticas de anonimato)",
+      "API pública/webhooks para integração com HRIS (Workday, Gupy, SAP SuccessFactors)"
+    ],
+    "usuarios": "Colaboradores de empresas-cliente (respondentes anônimos), equipes de RH e gestores de pessoas (consumidores de relatórios agregados), administradores de sistema da empresa-cliente, e psicólogos/consultores de bem-estar organizacional que podem receber alertas agregados.",
+    "escalabilidade": "Arquitetura multi-tenant com isolamento de dados por empresa (schema-per-tenant ou row-level security no Postgres); cache (Redis) para dashboards agregados; processamento assíncrono de relatórios pesados via filas; CDN para frontend; escalonamento horizontal de serviços stateless; particionamento de dados por empresa/data para grandes volumes de respostas históricas.",
+    "custos": "Principais custos: hospedagem cloud (compute, banco de dados, storage), envio de notificações (email/push/SMS), certificações de segurança e auditorias de compliance (LGPD/GDPR/SOC2), suporte a integrações HRIS, e possivelmente consultoria jurídica para conformidade em saúde mental/dados sensíveis. Custos crescem principalmente com número de tenants e volume de dados retidos.",
+    "monetizacao": "Modelo SaaS B2B por assinatura, cobrança recorrente via Stripe Billing baseada em número de colaboradores ativos (per-seat) ou faixas de tamanho de empresa (tiered pricing), com planos que variam por profundidade de analytics, frequência de pesquisas, integrações HRIS e suporte dedicado; possível add-on para módulos de intervenção (ex: acesso a terapia/EAP) via parceria.",
+    "stack_sugerida": "Frontend: React/Next.js + TypeScript + TailwindCSS. Backend: NestJS ou FastAPI + PostgreSQL + Redis. Infra: AWS ou GCP com Kubernetes/serverless (ECS Fargate ou Cloud Run), filas via SQS/PubSub, autenticação via Auth0/Clerk com suporte a SSO corporativo. Pagamentos: Stripe Billing para assinaturas recorrentes. Observabilidade: Datadog ou Grafana/Prometheus. Compliance: criptografia via KMS, auditoria de acesso, e revisão de conformidade LGPD/GDPR desde o design."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:50:27+00:00",
+    "runner": "runner.py"
+  }
+}

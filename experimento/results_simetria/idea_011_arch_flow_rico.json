@@ -1,0 +1,85 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do usuário (startup busca capital e mentoria; investidor-anjo busca deal flow qualificado regional) → Aquisição e onboarding de perfis → Verificação/KYC de identidade e capacidade de investimento → Modelagem de perfil (tese de investimento, estágio, setor, tamanho de cheque) → Motor de matching e descoberta → Comunicação e negociação inicial → Data room e due diligence → Formalização de intenção de investimento (term sheet) → Acompanhamento pós-match (CRM de relacionamento, atualizações de cap table) → Analytics de sucesso de matches para realimentar o motor de recomendação",
+    "wardley_map": {
+      "identidade_kyc_aml": "commodity (usar provedor terceirizado, ex. Stripe Identity/Sumsub)",
+      "pagamentos_assinaturas": "commodity (Stripe Billing)",
+      "hospedagem_infra_cloud": "commodity (AWS/GCP)",
+      "autenticacao_login": "commodity (Auth0/Clerk)",
+      "notificacoes_email_sms": "commodity (SendGrid/Twilio)",
+      "crm_pos_match": "produto (comprar solução tipo Affinity/Copper e integrar via API)",
+      "data_room_documentos": "produto (comprar DocSend/Notarize ou similar, com integração leve)",
+      "motor_de_matching": "sob medida (core proprietário, único diferencial competitivo)",
+      "score_de_compatibilidade_regional": "sob medida (algoritmo próprio combinando tese de investimento, geografia, tração)",
+      "curadoria_e_verificacao_de_qualidade_de_deal": "sob medida / gênese (processo ainda em evolução, requer experimentação)",
+      "rede_de_confianca_e_reputacao_entre_investidores": "gênese (conceito novo, incerto, precisa de descoberta constante)"
+    },
+    "build_buy_decisions": {
+      "construir": "Motor de matching e score de compatibilidade regional (core domain, vantagem competitiva), módulo de reputação/confiança entre investidores (diferenciação), lógica de curadoria de deal flow.",
+      "comprar": "KYC/AML (Sumsub/Stripe Identity — reduz risco regulatório e tempo de mercado), pagamentos e assinaturas (Stripe Billing), autenticação (Clerk/Auth0), data room (DocSend), CRM pós-match (Affinity via API).",
+      "usar_como_commodity": "Infraestrutura cloud (AWS/GCP), armazenamento de arquivos (S3), CDN (CloudFront), e-mail/SMS transacional (SendGrid/Twilio), observabilidade (Datadog).",
+      "razao": "Componentes em estágio commodity/produto não geram vantagem competitiva e têm alto custo de manutenção se construídos internamente; investir engenharia apenas onde há diferenciação (matching e confiança regional)."
+    },
+    "core_domain": "Motor de Matchmaking e Score de Compatibilidade Regional — é o que justifica a existência do produto: combina tese de investimento do anjo, estágio/setor/tração da startup e proximidade geográfica/rede regional para gerar recomendações de alta precisão. É o único componente que não pode ser comprado, pois encapsula o conhecimento de domínio e a vantagem competitiva sustentável.",
+    "bounded_contexts": {
+      "Identity_Onboarding": "Linguagem: perfil, verificação, credenciamento, KYC, papel (startup/investidor)",
+      "Matching_Discovery": "Linguagem: tese de investimento, score de compatibilidade, deal flow, recomendação, filtro regional",
+      "Deal_Room": "Linguagem: data room, due diligence, documento confidencial, NDA, term sheet",
+      "Relationship_CRM": "Linguagem: pipeline de relacionamento, estágio de negociação, follow-up, nota de reunião",
+      "Reputation_Trust": "Linguagem: avaliação, endosso, histórico de investimento, sinal de confiança",
+      "Billing_Subscription": "Linguagem: plano, assinatura, cobrança, upgrade/downgrade, fatura",
+      "Notifications_Engagement": "Linguagem: alerta, digest, preferência de notificação, canal"
+    },
+    "context_mapping": {
+      "Identity_Onboarding_para_Matching_Discovery": "Cliente-Fornecedor: Matching consome perfis verificados; Identity define contrato de dados",
+      "Matching_Discovery_para_Deal_Room": "Cliente-Fornecedor: match aprovado dispara criação de data room",
+      "Matching_Discovery_para_Reputation_Trust": "Parceria: ambos evoluem juntos pois o score de compatibilidade usa sinais de reputação",
+      "Billing_Subscription": "Camada Anticorrupção: isola o modelo de domínio interno do modelo de dados do Stripe",
+      "Deal_Room_com_provedor_externo_DocSend": "Camada Anticorrupção: traduz eventos do DocSend para o modelo de domínio interno",
+      "Relationship_CRM_com_Affinity": "Conformista/Camada Anticorrupção leve: adapta-se ao modelo do CRM externo com uma fina camada de tradução",
+      "Notifications_Engagement": "X-as-a-Service para todos os demais contextos: fornece disparo de notificações sem acoplamento de domínio"
+    },
+    "team_topologies": {
+      "time_de_fluxo_matching": "Stream-aligned: dono do Motor de Matchmaking e Score de Compatibilidade (core domain), entrega ponta a ponta",
+      "time_de_fluxo_deal_lifecycle": "Stream-aligned: dono de Deal Room, negociação e CRM de relacionamento",
+      "time_de_plataforma": "Platform team: fornece identidade/auth, billing, notificações e infraestrutura como self-service para os times de fluxo",
+      "time_de_subsistema_complicado": "Complicated-subsystem: dono do algoritmo de scoring/ML de compatibilidade regional, exige expertise em dados e modelagem",
+      "time_de_habilitacao": "Enabling team: apoia os times de fluxo em práticas de compliance/regulatório (KYC, LGPD/GDPR para dados financeiros) e em adoção de novas tecnologias de ML"
+    },
+    "cognitive_load": "Cada time de fluxo é limitado a um único bounded context de negócio (matching OU deal lifecycle), evitando sobreposição de responsabilidades. O time de plataforma absorve toda a complexidade de infraestrutura, auth e billing como serviços self-service com APIs simples e documentação clara (X-as-a-Service), removendo essa carga dos times de fluxo. O subsistema complicado de scoring é isolado em uma API bem definida (score-as-a-service), permitindo que os times de fluxo consumam sem entender o modelo de ML internamente. O time de habilitação atua por tempo limitado (semanas, não permanente) para transferir conhecimento sobre compliance, evitando que se torne dependência crônica.",
+    "interaction_modes": {
+      "Time_Matching_com_Time_Plataforma": "X-as-a-Service (consome auth, billing, notificações via API)",
+      "Time_Matching_com_Subsistema_Scoring": "X-as-a-Service (chama API de score) com períodos de Colaboração durante evolução do algoritmo",
+      "Time_Deal_Lifecycle_com_Time_Plataforma": "X-as-a-Service",
+      "Time_Habilitacao_com_Times_de_Fluxo": "Facilitação (temporária, para elevar capacidade em compliance e ML)",
+      "Time_Matching_com_Time_Deal_Lifecycle": "Colaboração pontual na definição do contrato de evento 'match aprovado'"
+    },
+    "flow_optimization": "O fluxo de valor é otimizado eliminando handoffs manuais entre verificação de identidade, matching e formalização de negócio — cada etapa dispara a próxima via eventos assíncronos (ex. 'perfil_verificado' → habilita matching; 'match_aceito' → cria data room). Gargalos identificados: (1) verificação de KYC pode atrasar o funil se feita manualmente — mitigado com automação via provedor terceirizado; (2) curadoria de qualidade de deal flow é o gargalo mais crítico no início, pois depende de julgamento humano — mitigado com um time de curadoria dedicado e depois substituído por sinais de reputação automatizados; (3) o algoritmo de scoring pode se tornar gargalo técnico se não escalar — mitigado isolando-o como subsistema complicado com equipe especializada.",
+    "independent_streams": "O fluxo de Matching e o fluxo de Deal Lifecycle são desacoplados por contratos de eventos assíncronos (ex. Kafka/EventBridge) em vez de chamadas síncronas diretas, permitindo que cada time evolua seu modelo de dados e cadência de deploy independentemente. Ambos dependem apenas de APIs estáveis versionadas do time de plataforma (identidade, billing, notificação), nunca do código interno um do outro. Mudanças no algoritmo de scoring não exigem deploy coordenado com o time de Deal Lifecycle, pois a interface de score é um contrato estável.",
+    "interfaces": [
+      "API REST/GraphQL de Perfis (Identity_Onboarding)",
+      "API de Matching e Score de Compatibilidade",
+      "Webhook de eventos de domínio (match_criado, match_aceito, documento_assinado)",
+      "API de Data Room (integração com DocSend)",
+      "API de Billing (integração com Stripe)",
+      "API de Notificações (integração com SendGrid/Twilio)",
+      "Dashboard web para startups",
+      "Dashboard web para investidores-anjo",
+      "API de Reputação/Endosso"
+    ],
+    "escalabilidade": "Arquitetura orientada a eventos com serviços desacoplados permite escalar horizontalmente cada bounded context de forma independente (ex. escalar o motor de matching em picos de novos cadastros sem afetar o Deal Room). Uso de filas (SQS/Kafka) absorve picos de onboarding regional. Banco de dados particionado por região geográfica facilita expansão para novos mercados regionais sem reescrever o core. Cache (Redis) para resultados de matching frequentes. O algoritmo de scoring é servido via microsserviço stateless com autoscaling baseado em carga de requisições.",
+    "custo_infra_estimado": "Servidor/Compute (ECS/Fargate): $150/mês, Banco de dados (RDS Postgres multi-AZ): $120/mês, Redis Cache: $40/mês, S3 (documentos/data room): $25/mês, CDN (CloudFront): $20/mês, Fila de eventos (SQS/EventBridge): $15/mês, Observabilidade (Datadog): $50/mês, KYC provider (Sumsub, por verificação): variável — Total fixo aproximado: $420/mês para os primeiros ~500 usuários ativos",
+    "custo_por_cliente": "Verificação KYC = $1,50/verificação (Sumsub) + envio de notificações = $0,02/usuário/mês (SendGrid/Twilio) + armazenamento de documentos = $0,01/GB/mês (S3, ~0,5GB por startup = $0,005) + processamento de matching = $0,003/execução de score (CPU) × ~10 execuções/mês = $0,03. Custo total por cliente ativo ≈ $1,50 (KYC, único) + $0,055/mês recorrente. Para 1.000 clientes ativos/mês: ~$55/mês recorrente + custos pontuais de KYC para novos cadastros.",
+    "monetizacao": "Modelo freemium com assinatura em camadas: (1) Startup Free — perfil básico e até 3 matches/mês, gratuito, para gerar volume de oferta; (2) Startup Pro — $49/mês, matches ilimitados, destaque no ranking, acesso a analytics de investidores; (3) Investidor Standard — $99/mês, acesso a deal flow filtrado e alertas regionais; (4) Investidor Premium — $299/mês, acesso antecipado, curadoria personalizada e dados de due diligence agregados; (5) Taxa de sucesso opcional de 1% sobre rodadas fechadas via a plataforma (success fee), cobrada da startup. Métricas-alvo: MRR inicial de $15.000 nos primeiros 6 meses (ex. 100 investidores Standard + 20 Premium + 50 startups Pro), CAC estimado em $180/cliente pago (marketing regional direcionado), LTV estimado em $1.800 (assumindo churn de 5%/mês e ticket médio de $150/mês), payback de CAC em ~3 meses.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Python (FastAPI) para os serviços de domínio; PostgreSQL como banco principal com extensão PostGIS para matching geográfico regional; Redis para cache e filas leves; Kafka ou AWS EventBridge para arquitetura orientada a eventos entre bounded contexts; Frontend: Next.js/React com TypeScript; Infraestrutura: AWS (ECS Fargate, RDS, S3, CloudFront) ou GCP equivalente, provisionado via Terraform; Autenticação: Clerk ou Auth0; Pagamentos: Stripe Billing; KYC: Sumsub ou Stripe Identity; Observabilidade: Datadog ou Grafana+Prometheus; CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T20:52:11+00:00",
+    "runner": "runner.py"
+  }
+}

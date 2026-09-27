@@ -1,0 +1,40 @@
+{
+  "ideia_idx": 0,
+  "ideia": "Plataforma de telemedicina veterinária com IA para diagnóstico por imagem",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git, com múltiplas implantações a partir da mesma base: development, staging, produção (multi-região). Módulos separados por domínio (auth, teleconsulta, IA-diagnóstico, faturamento) dentro do mesmo repo, evitando repositórios divergentes por cliente/tenant.",
+    "dependencies": "Todas as dependências declaradas explicitamente em manifests (package.json/poetry.lock/requirements.txt) e isoladas via containers Docker; nenhuma dependência implícita do SO. Modelos de IA (ex: pesos de visão computacional) versionados como artefatos declarados (DVC ou registry de modelos), nunca assumidos como presentes no ambiente.",
+    "config": "Toda configuração (URLs de banco, chaves de API de IA, credenciais de storage de imagens DICOM, feature flags, limites de taxa) armazenada em variáveis de ambiente/secret manager (ex: AWS Secrets Manager, Vault). Varia entre implantações: endpoints de banco de dados, chaves de terceiros (Stripe, provedor de IA), domínios, limites de concorrência e flags de recursos por região (compliance veterinário local).",
+    "backing_services": "Banco de dados (Postgres), fila de mensagens (SQS/RabbitMQ) para processamento assíncrono de imagens, storage de objetos (S3-compatible) para imagens de exames, serviço de inferência de IA, gateway de vídeo (WebRTC/Twilio), e serviço de pagamentos (Stripe) — todos tratados como recursos anexáveis via URL/config, substituíveis sem alterar código.",
+    "build_release_run": "Pipeline CI/CD com estágio de build (imagem Docker imutável com tag de commit), estágio de release (build + config específica do ambiente, versionado e reversível) e estágio de run (execução da release em containers orquestrados, sem alterações ad-hoc em produção).",
+    "processes": "Processos de API e workers de IA são stateless; estado persistente (prontuários, imagens, resultados de diagnóstico, sessões de vídeo) reside exclusivamente em Postgres, storage de objetos e cache Redis (sessão/token), nunca em memória local ou disco do processo.",
+    "port_binding": "Cada serviço (API REST, serviço de inferência de IA, gateway WebRTC) expõe-se via bind de porta HTTP/gRPC própria, autocontido, sem depender de injeção de runtime de servidor web externo (ex: Uvicorn/Node embutido).",
+    "concurrency": "Escala horizontal por tipos de processo: web (API/app), worker (processamento assíncrono de imagens e inferência de IA), scheduler (lembretes, relatórios), video-gateway (sessões de telemedicina). Cada tipo escala independentemente conforme carga (ex: workers de IA escalam com fila de exames pendentes).",
+    "disposability": "Containers com inicialização em poucos segundos (imagens enxutas, sem estado a recarregar); SIGTERM tratado graciosamente finalizando exames em processamento ou devolvendo à fila; sessões de vídeo com reconexão automática do lado do cliente.",
+    "dev_prod_parity": "Uso de Docker Compose local espelhando produção (mesmo Postgres, mesma fila, mock do serviço de IA), deploys contínuos (múltiplos por dia) para reduzir divergência de tempo, mesma equipe de dev operando o deploy (reduz divergência de pessoal), e ferramentas idênticas entre ambientes (reduz divergência de ferramentas).",
+    "backing_services_note": null,
+    "processes_state_note": null,
+    "logs_admin": "Logs tratados como fluxo de eventos (stdout/stderr) agregados via stack centralizada (ex: Datadog/ELK), nunca escritos em arquivo local. Tarefas administrativas (migração de schema, reprocessamento de exames, expurgo de dados por LGPD) executadas como processos pontuais one-off no mesmo ambiente de release, via CLI/admin scripts versionados.",
+    "interfaces": [
+      "API REST/GraphQL para app mobile e web (tutores e veterinários)",
+      "Interface de upload/análise de imagens (raio-x, ultrassom) com IA",
+      "Interface de videoconsulta (WebRTC)",
+      "Painel administrativo para clínicas parceiras",
+      "Webhooks de pagamento (Stripe)",
+      "Integração com sistemas de gestão de clínicas veterinárias (PIMS) via API",
+      "Dashboard de relatórios e analytics para veterinários"
+    ],
+    "escalabilidade": "Arquitetura stateless e orientada a filas permite escalar workers de IA e API horizontalmente conforme número de clínicas/tutores cresce. Uso de cache (Redis) e CDN para reduzir latência de imagens. Sharding de banco de dados por região quando volume de exames ultrapassar capacidade de instância única. Multi-tenancy lógico (row-level) inicialmente, migrando para isolamento físico por grandes contas se necessário.",
+    "custo_infra_estimado": "Servidor (containers/ECS/Kubernetes): $150/mês, RDS Postgres (Multi-AZ): $120/mês, Redis (ElastiCache): $40/mês, S3 (imagens DICOM): $60/mês, CDN (CloudFront): $30/mês, Fila (SQS): $10/mês, Serviço de inferência IA (GPU sob demanda): $200/mês, Videoconferência (Twilio/WebRTC): $80/mês, Monitoramento (Datadog): $50/mês. Total estimado: ~$740/mês para carga inicial (até ~5.000 exames/mês)",
+    "custo_por_cliente": "Cada análise de imagem por IA = $0.08 (inferência GPU) + $0.02 (storage da imagem) + $0.01 (banda/CDN) + $0.005 (processamento/fila) = $0.115/análise. Consulta em vídeo (15 min) = $0.06 (WebRTC/Twilio). Clínica com 200 exames/mês + 150 consultas/mês = (200 × $0.115) + (150 × $0.06) = $23 + $9 = $32/mês em custo variável por clínica",
+    "monetizacao": "Modelo freemium + assinatura SaaS em camadas: (1) Starter $49/mês - até 30 análises de IA e 20 consultas/mês, para clínicas pequenas/autônomos; (2) Professional $149/mês - até 150 análises e 100 consultas, relatórios avançados; (3) Enterprise $499+/mês - análises ilimitadas, múltiplas unidades, API/integração PIMS, SLA dedicado. Cobrança adicional por análise excedente ($1.50/análise). Métricas-alvo: CAC estimado $180 (marketing digital + vendas para clínicas), LTV médio $2.400 (assumindo churn mensal de 3%, ticket médio $150/mês, retenção 16 meses), razão LTV:CAC ~13:1. MRR projetado de $50k com 400 clínicas pagantes no plano médio em 12 meses.",
+    "stack_sugerida": "Backend: Python (FastAPI) para API e serviço de IA; Node.js (NestJS) opcional para BFF. IA: PyTorch/TensorFlow com modelos de visão computacional (CNN/Vision Transformer) servidos via NVIDIA Triton ou TorchServe, GPU sob demanda (AWS/GCP). Frontend: React/Next.js (web) + React Native (mobile). Banco: PostgreSQL (dados relacionais) + S3 (imagens). Fila: AWS SQS ou RabbitMQ. Cache: Redis. Vídeo: Twilio Video ou WebRTC self-hosted (Jitsi). Infra: Docker + Kubernetes (EKS/GKE), CI/CD via GitHub Actions. Observabilidade: Datadog ou Grafana+Prometheus. Pagamentos: Stripe Billing."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:49:51+00:00",
+    "runner": "runner.py"
+  }
+}

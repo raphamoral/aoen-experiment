@@ -1,0 +1,42 @@
+{
+  "ideia_idx": 88,
+  "ideia": "Plataforma de supply chain finance para pequenos fornecedores",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git, com múltiplas implantações (dev, staging, produção) geradas a partir do mesmo código-base via branches/tags. Módulos internos (API core, motor de scoring de crédito, integração bancária, portal do fornecedor, portal do comprador âncora) vivem no mesmo repo mas são deployados como serviços independentes a partir do mesmo commit.",
+    "dependencies": "Todas as dependências declaradas explicitamente em manifestos (package.json/poetry.lock/go.mod), sem confiança em pacotes globais do sistema operacional. Isolamento via containers Docker multi-stage; nenhuma dependência implícita de ferramentas do SO (ex: OpenSSL, libs de criptografia para assinatura de contratos) — tudo declarado e versionado, incluindo SDKs de gateways de pagamento e bureaus de crédito.",
+    "config": "Toda configuração injetada via variáveis de ambiente: credenciais de gateways de pagamento (Stripe/Pix/boleto), chaves de bureaus de crédito (Serasa, Boa Vista), strings de conexão de banco, feature flags de limites de crédito por região, taxas de deságio configuráveis por ambiente, URLs de webhooks bancários. O que varia entre implantações: limites de exposição de crédito, taxa de juros base, ambiente sandbox vs produção dos gateways, e credenciais de compliance (KYC/AML) por país.",
+    "backing_services": "Banco de dados transacional (PostgreSQL), fila de mensagens (SQS/RabbitMQ) para processamento assíncrono de antecipação de recebíveis, cache (Redis) para scoring, serviço de e-mail/SMS transacional, gateway de pagamento (Stripe/Pix), bureaus de crédito externos e storage de documentos (S3) — todos tratados como recursos anexáveis via URL/config, trocáveis sem alteração de código (ex: trocar bureau de crédito só muda a config).",
+    "build_release_run": "Pipeline CI/CD com estágio de build (compila artefato/imagem Docker imutável a partir do código), estágio de release (combina o build com config específica do ambiente, gerando release versionada e imutável) e estágio de run (executa a release em containers/orquestrador). Rollback é feito revertendo para release anterior, nunca alterando código em produção diretamente.",
+    "processes": "Processos de aplicação são stateless e share-nothing (API, workers de scoring, workers de conciliação bancária). Estado persistente reside exclusivamente no PostgreSQL (contratos, recebíveis, histórico de pagamentos) e no storage de objetos (documentos fiscais, notas fiscais eletrônicas). Sessões de usuário armazenadas em Redis, nunca em memória local do processo.",
+    "port_binding": "Cada serviço (API REST de originação de crédito, serviço de webhooks bancários, portal web) exporta funcionalidade via bind de porta HTTP própria (ex: :8080), autocontido com servidor embutido (Fastify/Express/Uvicorn), sem depender de um servidor de aplicação externo injetado em tempo de execução.",
+    "concurrency": "Escala horizontalmente por tipo de processo: 'web' (API e portal, escalado por requisições concorrentes), 'worker' (processamento de antecipação de recebíveis e scoring, escalado por profundidade de fila), 'clock' (processo agendado para cálculo diário de juros e vencimentos), 'webhook-listener' (recebimento de eventos bancários). Cada tipo escala independentemente via réplicas no orquestrador (Kubernetes HPA).",
+    "disposability": "Processos iniciam em segundos (containers leves, sem estado a carregar) e tratam SIGTERM graciosamente, finalizando transações de pagamento em andamento e devolvendo mensagens não processadas à fila antes de encerrar. Idempotência garantida em operações financeiras (antecipação de recebível) para permitir retries seguros após crash.",
+    "dev_prod_parity": "Uso de Docker Compose local com os mesmos backing services (Postgres, Redis, mock de gateway de pagamento) usados em produção, eliminando divergência de ferramentas. Deploys contínuos (múltiplas vezes ao dia) reduzem gap de tempo entre dev e produção. Mesmos times que desenvolvem operam o serviço (DevOps compartilhado), reduzindo divergência de pessoal.",
+    "build_release_run_extra": null,
+    "processes_extra": null,
+    "port_binding_extra": null,
+    "logs_admin": "Logs tratados como fluxo de eventos (stdout/stderr) agregados por um coletor centralizado (ELK/Datadog/CloudWatch), nunca gerenciados pela própria aplicação. Tarefas administrativas pontuais (migrações de schema, recálculo manual de scoring, estorno de operação) executadas como processos one-off isolados no mesmo ambiente de release, via CLI/admin scripts versionados junto ao código.",
+    "interfaces": [
+      "API REST para originação e antecipação de recebíveis (fornecedores)",
+      "API para integração com sistemas ERP de compradores âncora (aprovação de notas fiscais)",
+      "Webhook receiver para eventos de gateways de pagamento (Pix, boleto, cartão)",
+      "Integração com bureaus de crédito (Serasa/Boa Vista) para scoring",
+      "Portal web do fornecedor (self-service para solicitar antecipação)",
+      "Portal web do comprador âncora (aprovação/gestão de fornecedores homologados)",
+      "Dashboard administrativo interno (compliance, risco, operações)",
+      "API de conciliação bancária (Open Finance)"
+    ],
+    "escalabilidade": "O sistema escala horizontalmente adicionando réplicas stateless de cada tipo de processo conforme cresce o volume de fornecedores e recebíveis processados. O gargalo natural é o banco relacional, mitigado com read replicas para consultas de dashboard e particionamento de tabelas de transações por data/tenant. Filas assíncronas absorvem picos de solicitações de antecipação sem degradar a API síncrona. Multi-tenancy lógico (schema compartilhado com tenant_id) permite onboarding de novos compradores âncora sem replicar infraestrutura.",
+    "custo_infra_estimado": "Servidores (K8s/ECS, 3-6 nós): $300-600/mês; RDS PostgreSQL (Multi-AZ, médio porte): $150/mês; Redis gerenciado: $40/mês; Fila (SQS/RabbitMQ gerenciado): $30/mês; S3 (documentos fiscais/contratos): $25/mês; CDN (CloudFront) para portal web: $20/mês; Banda/transferência de dados: $50/mês; Observabilidade (logs/APM): $80/mês. Total estimado inicial: ~$700-900/mês para escala inicial (até ~500 fornecedores ativos).",
+    "custo_por_cliente": "Cada operação de antecipação de recebível = $0.15 (consulta ao bureau de crédito) + $0.02 (taxa de gateway de pagamento por transação) + $0.005 (processamento/CPU do motor de scoring) + $0.003 (storage de documento fiscal) = ~$0.178/operação. Um fornecedor médio realiza ~8 antecipações/mês → custo direto de infraestrutura por cliente ≈ $1.42/mês, desprezível frente ao spread cobrado sobre o valor antecipado.",
+    "monetizacao": "Modelo híbrido: (1) Taxa de deságio/juros sobre o valor antecipado (ex: 1,5-3% ao mês sobre o valor da nota, principal fonte de receita); (2) Assinatura SaaS mensal para compradores âncora usarem o módulo de gestão de fornecedores homologados — Starter $299/mês (até 50 fornecedores), Growth $799/mês (até 200 fornecedores), Enterprise sob consulta (ilimitado + SLA); (3) Taxa fixa por transação de conciliação bancária ($0.50/transação). Métricas-chave: MRR projetado de assinaturas + receita de spread por GMV antecipado; LTV estimado de um comprador âncora médio ~$28.800 (36 meses de assinatura Growth); CAC alvo <$3.000 via vendas outbound B2B, payback em ~4 meses.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Python (FastAPI) para APIs; PostgreSQL como banco primário; Redis para cache/filas de curto prazo; RabbitMQ ou SQS para processamento assíncrono de antecipações; Docker + Kubernetes (EKS/GKE) para orquestração; Terraform para infraestrutura como código; Stripe/Pix (via PSP local como Pagar.me ou Iugu) para pagamentos; integração com Open Finance para conciliação bancária; React/Next.js para portais web; Datadog ou Grafana+Loki para observabilidade; GitHub Actions para CI/CD."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T21:05:02+00:00",
+    "runner": "runner.py"
+  }
+}

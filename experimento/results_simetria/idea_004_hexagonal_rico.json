@@ -1,0 +1,51 @@
+{
+  "ideia_idx": 4,
+  "ideia": "Plataforma de leilão reverso para compras corporativas de TI",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Leilão (ciclo de vida: Rascunho → Publicado → Em Andamento → Encerrado → Adjudicado → Cancelado), Lance (valor, fornecedor, timestamp, status), Fornecedor (qualificação, compliance, histórico), Especificação Técnica/RFQ (itens, quantidades, critérios obrigatórios), Comprador/Empresa (orçamento, aprovadores), Critério de Adjudicação (menor preço, melhor valor ponderado por score técnico). Regras de negócio: um lance só é aceito se for estritamente menor que o lance vigente e o fornecedor estiver qualificado e apto (compliance ativo); janela anti-sniping estende o leilão automaticamente se um lance chegar nos últimos minutos; leilão só pode ser adjudicado após validação de todos os critérios obrigatórios da RFQ; fornecedor desqualificado tem lances invalidados retroativamente; orçamento aprovado é obrigatório antes da publicação. Nenhuma dessas regras conhece HTTP, banco de dados ou fila de mensagens.",
+    "driving_ports": "CreateAuctionPort (cria leilão a partir de uma RFQ), PublishAuctionPort, PlaceBidPort (recebe lance de fornecedor), CloseAuctionPort, AwardAuctionPort (decide vencedor), RegisterSupplierPort, QualifySupplierPort (aprova/reprova compliance), QueryAuctionStatusPort (consulta estado do leilão e ranking de lances), CancelAuctionPort.",
+    "driven_ports": "AuctionRepositoryPort, SupplierRepositoryPort, BidRepositoryPort, NotificationPort (avisar fornecedores/compradores), PaymentEscrowPort (garantia financeira do leilão), DocumentStoragePort (contratos e propostas técnicas), AuditLogPort (trilha de auditoria imutável), IdentityVerificationPort (KYC/validação de CNPJ e compliance), ERPIntegrationPort (sincronização de pedidos de compra), MarketPricingPort (benchmark de preços de mercado), ClockPort (para regras de tempo/anti-sniping).",
+    "driving_adapters": "API REST (portal do comprador: cria RFQ, acompanha leilão, aprova adjudicação), Portal do Fornecedor (web, envia lances em tempo real via WebSocket), Dashboard Administrativo (auditoria, compliance, relatórios), App Mobile de Aprovação (aprovadores de orçamento), Job Agendado (fecha leilões automaticamente ao expirar prazo), Webhook Receiver (integrações externas de procurement), CLI de importação em lote de RFQs.",
+    "driven_adapters": "PostgreSQL (AuctionRepository, SupplierRepository, BidRepository), Redis (cache de ranking de lances em tempo real e pub/sub para WebSocket), Kafka/SQS (eventos de domínio: LeilãoEncerrado, LanceRecebido), Amazon S3 (armazenamento de documentos e propostas técnicas), SendGrid/Twilio (NotificationAdapter), Stripe/gateway de pagamento (PaymentEscrowAdapter), DocuSign (assinatura de contratos), Serpro/Receita Federal API (IdentityVerificationAdapter), Conector SAP/Oracle (ERPIntegrationAdapter), API de índice de preços B2B (MarketPricingAdapter).",
+    "application_services": "AuctionOrchestrationService (coordena criação, publicação e encerramento chamando o domínio e os repositórios), BidProcessingService (recebe lance bruto do adaptador, delega validação ao domínio, persiste e publica evento), SupplierOnboardingService (orquestra KYC + registro + notificação), AwardDecisionService (busca lances, delega decisão de adjudicação ao domínio, dispara notificação e integração ERP). Esses serviços não contêm regra de negócio: apenas roteiam chamadas entre portas e o núcleo do domínio.",
+    "domain_isolation": "O núcleo do domínio é escrito em objetos de valor e entidades puras (ex: Money, Lance, Leilão) sem imports de framework, driver de banco, biblioteca HTTP ou SDK de fila. Toda comunicação com o exterior passa por interfaces (ports) definidas dentro do próprio módulo de domínio/aplicação; os adaptadores dependem do domínio, nunca o contrário (Dependency Inversion Principle). Tempo, aleatoriedade e I/O são abstraídos via ports (ex: ClockPort) para manter o domínio determinístico e testável.",
+    "test_doubles": "AuctionRepositoryPort → InMemoryAuctionRepository; NotificationPort → FakeNotificationAdapter que apenas captura mensagens enviadas; PaymentEscrowPort → FakePaymentGateway que simula bloqueio/liberação de garantia sem chamar rede; IdentityVerificationPort → StubKYCAdapter retornando aprovações programadas; ClockPort → FixedClock para testar regras de anti-sniping deterministicamente; ERPIntegrationPort → SpyERPAdapter para verificar que o pedido foi enviado corretamente. Testes de contrato (contract tests) garantem que os adaptadores reais respeitam o mesmo comportamento exigido pelos dublês.",
+    "configuration_wiring": "Um composition root (ex: módulo de bootstrap em NestJS/Spring) lê variáveis de ambiente e instancia os adaptadores concretos, registrando-os em um container de injeção de dependência contra as interfaces de porta. Em produção, PostgresAuctionRepository é ligado a AuctionRepositoryPort; em teste de integração, InMemoryAuctionRepository é ligado à mesma interface. Nenhuma classe de aplicação instancia adaptadores diretamente — tudo é injetado via construtor.",
+    "technology_substitution": "Banco de dados: PostgreSQL → outro RDBMS, custo baixo (apenas reescrever o adapter de persistência). Fila de eventos: SQS → Kafka, custo médio (mudança de garantias de entrega e ordenação exige ajuste no BidProcessingService). Gateway de pagamento: Stripe → outro provedor de escrow, custo médio-alto (regras de compliance financeiro e KYC podem variar por país). Provedor de KYC: Serpro → serviço privado, custo baixo a médio. Canal em tempo real: Redis pub/sub → Kafka Streams, custo alto (requer replanejar consistência do ranking de lances ao vivo).",
+    "symmetry": "Tanto as portas primárias (que acionam a aplicação) quanto as secundárias (que a aplicação aciona) são interfaces definidas e possuídas pelo núcleo da aplicação, nunca pelos adaptadores. Um adaptador primário (ex: API REST) traduz uma requisição HTTP em uma chamada a uma driving port; um adaptador secundário (ex: PostgresAuctionRepository) implementa uma driven port. Em ambos os lados, o núcleo nunca conhece a tecnologia concreta — apenas o contrato — e em ambos os lados a substituição por dublês de teste segue o mesmo mecanismo de injeção de dependência, preservando a simetria estrutural do hexágono.",
+    "interfaces": [
+      "CreateAuctionPort",
+      "PublishAuctionPort",
+      "PlaceBidPort",
+      "CloseAuctionPort",
+      "AwardAuctionPort",
+      "CancelAuctionPort",
+      "RegisterSupplierPort",
+      "QualifySupplierPort",
+      "QueryAuctionStatusPort",
+      "AuctionRepositoryPort",
+      "SupplierRepositoryPort",
+      "BidRepositoryPort",
+      "NotificationPort",
+      "PaymentEscrowPort",
+      "DocumentStoragePort",
+      "AuditLogPort",
+      "IdentityVerificationPort",
+      "ERPIntegrationPort",
+      "MarketPricingPort",
+      "ClockPort"
+    ],
+    "escalabilidade": "Adaptadores primários (API/WebSocket) são stateless e escalam horizontalmente atrás de um load balancer; o processamento de lances é orientado a eventos (Kafka/SQS) para absorver picos durante o encerramento de leilões concorridos; Redis mantém o ranking de lances em memória para latência baixa, com fallback assíncrono para o banco; multi-tenancy por empresa permite particionamento (sharding) por tenant conforme a base cresce; réplicas de leitura no PostgreSQL suportam relatórios e dashboards sem competir com a escrita transacional; autoscaling de workers de notificação e integração ERP conforme fila cresce.",
+    "custo_infra_estimado": "Servidores de aplicação (2x instâncias autoscaláveis): $80/mês; PostgreSQL gerenciado (RDS, instância média com réplica): $120/mês; Redis gerenciado (cache/pub-sub): $40/mês; Fila de eventos (SQS/Kafka gerenciado): $50/mês; Armazenamento S3 (documentos/contratos): $15/mês; CDN para portal do fornecedor: $20/mês; Banda/transferência de dados: $30/mês; Serviço de notificação (SendGrid/Twilio): $25/mês. Total estimado inicial: ~$380/mês para carga de MVP com dezenas de empresas ativas.",
+    "custo_por_cliente": "Cada leilão processado = $0.02 (fila de eventos) + $0.01 (armazenamento de documentos) + $0.015 (notificações a fornecedores) + $0.005 (CPU de processamento de lances) = $0.05/leilão. Empresa cliente com 50 leilões/mês = $2.50/mês em custo direto de infraestrutura, mais custo de KYC de novos fornecedores (~$1.50 por fornecedor verificado, amortizado). Cliente médio (50 leilões + 10 novos fornecedores/mês) = ~$17.50/mês em custo variável.",
+    "monetizacao": "Modelo híbrido SaaS + transacional: (1) Assinatura por tier — Starter $299/mês (até 10 leilões/mês, 1 usuário aprovador), Business $899/mês (até 50 leilões/mês, múltiplos aprovadores, integração ERP), Enterprise sob consulta (leilões ilimitados, SLA dedicado, múltiplas filiais); (2) Taxa de sucesso de 0,5% a 1,5% sobre a economia gerada em cada leilão adjudicado, cobrada do comprador; (3) Taxa de cadastro/qualificação para fornecedores recorrentes ($49 pontual). Métricas-alvo: MRR inicial de $15k com 30 clientes Business, LTV estimado de $10.800 (36 meses de retenção média × $300 médio/mês), CAC alvo de $1.800 via vendas B2B outbound, payback de CAC em ~6 meses.",
+    "stack_sugerida": "Backend: Node.js com NestJS (ou Java com Spring Boot) estruturado em módulos hexagonais (domain, application, adapters); Banco de dados: PostgreSQL; Cache/real-time: Redis (pub/sub e ranking de lances); Mensageria: Amazon SQS ou Kafka para eventos de domínio; Frontend: React/Next.js para portal do comprador e do fornecedor, com WebSocket para lances ao vivo; Armazenamento: Amazon S3; Infraestrutura: Docker + Kubernetes (ou ECS) com autoscaling; Observabilidade: OpenTelemetry + Grafana/Prometheus; Pagamentos: Stripe Connect para escrow e repasses; Autenticação: Auth0 ou Keycloak."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:51:14+00:00",
+    "runner": "runner.py"
+  }
+}

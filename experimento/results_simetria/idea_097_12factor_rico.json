@@ -1,0 +1,37 @@
+{
+  "ideia_idx": 97,
+  "ideia": "App de matchmaking de caronas corporativas com roteirização inteligente",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git com múltiplas implantações (dev, staging, produção) a partir da mesma base de código, usando branches de feature e tags de release. Backend (API de matchmaking/roteirização), frontend web (admin/RH) e apps mobile (motoristas/passageiros) vivem no mesmo repositório ou em repositórios irmãos com versionamento sincronizado via changelog semântico.",
+    "dependencies": "Todas as dependências declaradas explicitamente em manifestos (package.json/poetry.lock/requirements.txt) e isoladas via containers Docker; nenhuma dependência implícita do SO hospedeiro (ex: bibliotecas de geolocalização, motor de roteirização OSRM/GraphHopper embutido via imagem própria, não instalado manualmente no host).",
+    "config": "Toda configuração (chaves de API de mapas/roteirização, credenciais do banco, segredos JWT, URLs de serviços de notificação, feature flags de matching) armazenada em variáveis de ambiente. Varia entre implantações: URLs de banco, chaves de provedores de mapas (Google Maps/Mapbox), limites de raio de matching por região, throttling de filas, domínios habilitados para SSO corporativo.",
+    "backing_services": "Banco de dados (PostgreSQL com extensão PostGIS), fila de mensagens (Redis/SQS) para cálculo assíncrono de rotas, serviço de roteirização (OSRM/GraphHopper como serviço anexado), provedor de mapas externo, serviço de push notification (FCM/APNs) e serviço de e-mail transacional — todos tratados como recursos intercambiáveis via URL/config, sem acoplamento de código.",
+    "build_release_run": "Pipeline CI/CD com três estágios distintos: build (empacota código + assets em imagem Docker imutável), release (combina build com config do ambiente e gera release versionada), run (executa a release em containers orquestrados via Kubernetes/ECS), sem alteração de código em tempo de execução.",
+    "processes": "Processos stateless (API de matchmaking, workers de roteirização, workers de notificação); nenhum estado de sessão em memória local. Estado persistente reside no PostgreSQL/PostGIS (rotas, matches, perfis, histórico de caronas) e cache Redis (sessões, resultados de matching temporários).",
+    "port_binding": "API expõe serviços via HTTP/gRPC vinculando a uma porta configurável (ex: PORT env var), autocontida com servidor web embutido (ex: Uvicorn/Node), sem dependência de servidor de aplicação externo injetado em tempo de execução.",
+    "concurrency": "Escala horizontalmente por tipos de processo: 'web' (API REST/GraphQL), 'worker' (cálculo de rotas e matching assíncrono), 'scheduler' (jobs periódicos de recomendação de caronas), 'notifier' (envio de push/e-mail). Cada tipo escala independentemente conforme carga (ex: mais workers em horários de pico matutino/vespertino).",
+    "disposability": "Processos iniciam em segundos (containers leves, sem estado a carregar), tratam SIGTERM para finalizar requisições em andamento e devolver jobs de fila não concluídos, permitindo scale-down e deploys sem perda de dados ou caronas em processamento.",
+    "dev_prod_parity": "Uso de Docker Compose local espelhando serviços de produção (Postgres/PostGIS, Redis, mock do motor de roteirização), deploys contínuos (múltiplos por dia) reduzindo gap de tempo, mesma equipe de dev operando releases (reduz gap de pessoal) e mesmas ferramentas/backing services entre ambientes (reduz gap de ferramentas).",
+    "logs_admin": "Logs tratados como fluxo de eventos (stdout/stderr) agregados por coletor (ex: Fluentd/CloudWatch/Datadog), sem gestão de arquivos de log pela aplicação. Tarefas administrativas (recalcular rotas, reprocessar matches, migrações de banco) executadas como processos pontuais (one-off) no mesmo ambiente de release, via scripts CLI versionados no repositório.",
+    "interfaces": [
+      "API REST/GraphQL para apps mobile (motorista e passageiro)",
+      "Painel web administrativo para RH/gestores corporativos",
+      "Webhook de integração com sistemas de RH (SSO, folha de ponto)",
+      "API de roteirização inteligente (cálculo de rotas otimizadas)",
+      "Interface de notificações push/e-mail",
+      "Dashboard de analytics de uso e sustentabilidade (CO2 evitado)"
+    ],
+    "escalabilidade": "Escala horizontalmente adicionando instâncias dos tipos de processo (web/worker) conforme aumento de empresas clientes; particionamento de dados por região/cidade no PostGIS para reduzir latência de matching; cache de rotas frequentes no Redis; motor de roteirização escalável via filas para picos de horário comercial; multi-tenancy lógico (schema por empresa ou linha discriminadora) para isolar dados corporativos.",
+    "custo_infra_estimado": "Servidores (API + workers, K8s/ECS): $150/mês; Banco PostgreSQL/PostGIS gerenciado (RDS): $80/mês; Redis gerenciado: $30/mês; Motor de roteirização (instância dedicada OSRM): $60/mês; CDN (assets do painel web): $15/mês; Armazenamento (logs, backups, S3): $20/mês; API de mapas (Google Maps/Mapbox, uso moderado): $100/mês; Push/E-mail transacional: $20/mês. Total estimado: ~$475/mês para carga inicial (até ~50 empresas clientes).",
+    "custo_por_cliente": "Cada cálculo de rota otimizada = $0.008 (API de mapas) + $0.002 (CPU do motor de roteirização) + $0.001 (storage/log) = $0.011/operação. Empresa com 200 colaboradores fazendo 2 buscas de match/dia (22 dias úteis) = 8.800 operações/mês = ~$96.80/mês em custo variável por empresa cliente.",
+    "monetizacao": "Modelo SaaS B2B por assinatura mensal por empresa, escalonado por número de colaboradores ativos: Starter (até 50 colaboradores) R$499/mês; Business (até 300 colaboradores) R$1.999/mês; Enterprise (300+) sob consulta com SLA dedicado e SSO. Métricas-chave: MRR inicial projetado R$50k com 30 clientes Business; CAC estimado R$1.200 (vendas B2B consultivas); LTV estimado R$28.800 (24 meses de retenção média x ticket médio), payback de CAC em ~1 mês. Upsell via módulo de relatórios de sustentabilidade (ESG) e créditos de carbono como add-on.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Node.js (NestJS) com PostgreSQL + PostGIS; motor de roteirização OSRM ou GraphHopper self-hosted; filas com Redis + Celery/BullMQ; frontend admin em React/Next.js; apps mobile em React Native/Flutter; infraestrutura em containers (Docker) orquestrados via Kubernetes ou AWS ECS; CI/CD com GitHub Actions; observabilidade com Datadog/Grafana; mapas via Mapbox ou Google Maps Platform."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T21:08:17+00:00",
+    "runner": "runner.py"
+  }
+}

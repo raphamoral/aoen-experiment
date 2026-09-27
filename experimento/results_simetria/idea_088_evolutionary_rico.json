@@ -1,0 +1,64 @@
+{
+  "ideia_idx": 88,
+  "ideia": "Plataforma de supply chain finance para pequenos fornecedores",
+  "abordagem": "evolutionary_rico",
+  "response": {
+    "architectural_quantum": "Serviço 'Invoice Financing' (submissão de nota fiscal, scoring de risco, oferta de deságio e liquidação) como quantum independente: possui seu próprio banco de dados (append-only ledger de transações), contrato de API versionado, pipeline de deploy e testes de contrato — pode ser implantado, escalado e revertido sem coordenar deploy com os módulos de Onboarding/KYC, Marketplace de Investidores ou Notificações. Alta coesão funcional (tudo que envolve o ciclo de vida de uma antecipação de recebível) e baixo acoplamento estático/dinâmico com os demais quanta.",
+    "fitness_functions": {
+      "atomic": [
+        "Latência p99 do endpoint de scoring de crédito < 800ms sob carga de 200 rps (testado em pipeline via k6)",
+        "Cobertura de contrato: todo consumidor (Onboarding, Mobile, Portal do Investidor) valida contra o schema OpenAPI publicado — quebra de contrato falha o build (Pact/Spectral)",
+        "Zero divergência contábil: soma de lançamentos no ledger de antecipações deve fechar em zero a cada job de reconciliação horária"
+      ],
+      "holistic": [
+        "Teste de resiliência: chaos test mensal simulando queda do provedor de bureau de crédito — sistema deve degradar para scoring em cache sem parar novas submissões",
+        "Auditoria de segurança automatizada (SAST/DAST + verificação de PCI/LGPD) a cada PR que toca módulos de pagamento ou dados de fornecedor"
+      ],
+      "trigger_based": [
+        "Fitness function de custo: se custo por transação ultrapassar $0.15, pipeline gera alerta e bloqueia auto-scaling adicional até revisão manual",
+        "Fitness function de compliance: mudança em regras de KYC/AML dispara re-execução de suite de conformidade completa antes do próximo deploy"
+      ]
+    },
+    "evolvable_dimensions": {
+      "tecnica": "Migração gradual de monólito modular (Node/NestJS) para serviços extraídos (scoring de crédito, liquidação, KYC) conforme volume de transações justifique; APIs versionadas (v1, v2) com deprecação controlada",
+      "dados": "Schema de fornecedores e recebíveis evolui via expand-contract; adoção futura de data lake para modelos de risco sem impactar OLTP transacional",
+      "seguranca": "Postura de segurança evolui de OAuth2 básico para mTLS entre serviços internos e tokenização de dados sensíveis (CPF/CNPJ, dados bancários) conforme volume de PII cresce",
+      "operacional": "Observabilidade evolui de logs centralizados para tracing distribuído (OpenTelemetry) e SLOs formais conforme número de integrações com bancos parceiros aumenta"
+    },
+    "incremental_change": "Uso de feature flags para expor novos scorers de risco a subconjunto de fornecedores (canary por segmento de risco), branch by abstraction ao trocar provedor de bureau de crédito, e contract testing entre quanta para permitir deploys independentes múltiplas vezes por semana. Cada mudança arquitetural relevante é acompanhada de um Architecture Decision Record (ADR) versionado no repositório.",
+    "coupling_management": "Acoplamento aferente alto e deliberado no serviço de Ledger/Contabilidade (fonte única de verdade, consumido por Scoring, Liquidação e Relatórios) — mudanças ali exigem contrato estável e versionamento semântico. Acoplamento eferente do serviço de Scoring para bureaus de crédito externos é isolado via anticorruption layer (adapter pattern), permitindo trocar provedor sem propagar mudanças. Comunicação entre quanta é assíncrona via eventos (Kafka/SNS) para reduzir acoplamento temporal, exceto na liquidação financeira, que exige consistência forte (síncrona) por razões regulatórias.",
+    "deployment_pipeline": "Pipeline CI/CD (GitHub Actions) com estágios: build → testes unitários → testes de contrato (Pact) → SAST/dependency scan → deploy em canary (5% do tráfego) → execução de fitness functions atômicas (latência, cobertura de contrato) → promoção gradual → fitness functions holísticas (chaos, compliance) rodando em janela noturna agendada → relatório de aptidão arquitetural publicado em dashboard visível a todo o time.",
+    "data_evolution": "Padrão expand-contract: novas colunas/tabelas adicionadas como nullable e populadas via backfill assíncrono; serviços leem do novo e antigo esquema em paralelo (dual write/read) por um período de transição; feature flag controla corte para o novo esquema; esquema antigo é removido somente após confirmação de zero leituras (monitorado via métricas de acesso). Migrations versionadas e reversíveis (Flyway/Prisma Migrate).",
+    "experimentation": "Hipóteses de produto (ex: novo modelo de precificação de deságio, novo fluxo de KYC simplificado) testadas via feature flags + A/B testing em coorte de fornecedores, com métricas de fitness de negócio (taxa de conversão, tempo de aprovação, taxa de inadimplência) monitoradas junto às fitness functions técnicas — se uma variante degradar latência ou aumentar risco de crédito acima do limiar, rollback automático.",
+    "sacrificial_parts": "Motor de scoring de crédito baseado em regras (MVP) é deliberadamente descartável — construído para ser substituído por modelo de ML em 6-12 meses conforme volume de dados históricos cresça. Dashboard interno de operações (admin) construído em low-code/Retool é sacrificial e será reescrito quando o time de operações ultrapassar 20 pessoas. Integração inicial com único bureau de crédito é isolada via adapter para ser substituída por multi-bureau sem refatoração ampla.",
+    "guardrails": "ArchUnit/dependency-cruiser para impedir imports cruzados entre bounded contexts; política de API gateway que rejeita chamadas síncronas diretas entre serviços de domínios distintos (força uso de eventos); revisão obrigatória de ADR para qualquer nova dependência externa de pagamento; budget de complexidade ciclomática e de acoplamento monitorado em cada PR; política de dados que proíbe PII fora de serviços certificados para LGPD.",
+    "tradeoffs": "Prioriza-se consistência forte e auditabilidade no domínio financeiro (Ledger, Liquidação) em detrimento de velocidade de evolução nessa área — mudanças ali são mais lentas e passam por revisão de compliance. Em contrapartida, o domínio de Onboarding/UX evolui rapidamente com menor rigor formal. Escalabilidade técnica é sacrificada nos primeiros 12-18 meses (monólito modular) em favor de menor custo operacional e menor complexidade de coordenação, com plano explícito de extração de serviços quando métricas de carga justificarem.",
+    "interfaces": [
+      "REST API pública (fornecedores e integrações ERP) - /v1/invoices, /v1/offers",
+      "API interna de Scoring de Crédito (síncrona, gRPC)",
+      "Event bus (Kafka) para eventos de domínio: InvoiceSubmitted, OfferAccepted, SettlementCompleted",
+      "Webhook de liquidação para bancos parceiros e adquirentes",
+      "Portal do Investidor (GraphQL API para consulta de portfólio)",
+      "API de KYC/AML (integração com provedor externo de verificação de identidade)"
+    ],
+    "escalabilidade": "Escala horizontalmente por domínio: serviços stateless (Scoring, Onboarding) escalam via auto-scaling em Kubernetes/ECS conforme rps; camada de dados escala via read replicas para consultas e sharding por tenant (fornecedor/anchor buyer) quando volume de transações por cliente ancorador crescer; fila de eventos absorve picos de submissão de notas fiscais no fechamento de mês, desacoplando ingestão de processamento; cache distribuído (Redis) para scoring de crédito reduz carga no bureau externo.",
+    "custo_infra_estimado": "Servidores (ECS/K8s, 4-6 instâncias t3.medium): $180/mês; RDS Postgres Multi-AZ (dados transacionais): $220/mês; Redis (cache/sessions): $60/mês; Kafka gerenciado (MSK, cluster pequeno): $150/mês; S3 (armazenamento de documentos/notas fiscais): $25/mês; CDN (CloudFront): $15/mês; observabilidade (Datadog/Grafana Cloud): $80/mês; total estimado: ~$730/mês para MVP com até ~5.000 fornecedores ativos",
+    "custo_por_cliente": "Cada submissão de nota fiscal: $0.02 (bureau de crédito) + $0.005 (processamento assíncrono/Kafka) + $0.008 (storage de documento) + $0.003 (CPU scoring) = $0.036/submissão. Fornecedor médio com 8 submissões/mês = $0.29/mês em custo variável direto. Somando custo fixo de infra rateado (custo_infra_estimado / 5.000 fornecedores) ≈ $0.146/fornecedor/mês, custo total por fornecedor ativo ≈ $0.44/mês — muito abaixo do ticket médio de receita (ver monetização), garantindo margem saudável mesmo em early stage.",
+    "monetizacao": {
+      "modelo": "Taxa de deságio (fee) sobre cada antecipação + assinatura SaaS em camadas",
+      "tiers": [
+        "Starter (fornecedores pequenos, <R$50k/mês em recebíveis): sem mensalidade, taxa de deságio de 2,5% por antecipação",
+        "Growth (R$50k-500k/mês): mensalidade de $99/mês + taxa de deságio reduzida de 1,8%",
+        "Enterprise (grandes fornecedores/redes de anchor buyers): mensalidade custom ($500+/mês) + taxa negociada (1,0-1,5%) + SLA dedicado"
+      ],
+      "metricas": "MRR alvo de $50k em 12 meses (mix de assinaturas + take rate médio de 1,8% sobre GMV antecipado projetado de $2M/mês); CAC estimado em $180 por fornecedor via parcerias com ERPs e anchor buyers (canal B2B2B); LTV projetado de $2.400 (24 meses de retenção média x $100 receita média mensal combinada), resultando em LTV:CAC de 13:1, saudável para escala"
+    },
+    "stack_sugerida": "Backend: Node.js/NestJS (TypeScript) para serviços de domínio, com extração futura de Scoring de Crédito para Python (por ecossistema de ML); Banco: PostgreSQL (transacional, com particionamento por tenant) + Redis (cache); Mensageria: Kafka (MSK) para eventos de domínio; Infra: AWS (ECS Fargate ou EKS), Terraform para IaC; API Gateway: Kong ou AWS API Gateway; Observabilidade: OpenTelemetry + Grafana/Datadog; CI/CD: GitHub Actions; Pagamentos/liquidação: Stripe Connect ou integração direta com PIX/TED via banco parceiro; Frontend: Next.js (portal fornecedor e investidor); Feature flags: LaunchDarkly ou Unleash; Testes de contrato: Pact"
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "25a60daee261",
+    "gerado_em": "2026-09-27T21:05:13+00:00",
+    "runner": "runner.py"
+  }
+}

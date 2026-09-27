@@ -1,0 +1,41 @@
+{
+  "ideia_idx": 31,
+  "ideia": "Plataforma de mentoria online pareada por IA",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Um único repositório Git monorepo contendo a API core, o serviço de matching por IA e o frontend, com múltiplas implantações (dev, staging, produção) geradas a partir do mesmo código-fonte via tags/branches. Serviços auxiliares (ex: worker de notificações) podem viver em repositórios próprios se tiverem ciclo de vida de deploy independente, cada um com seu próprio Procfile-equivalente.",
+    "dependencies": "Todas as dependências declaradas explicitamente em manifestos (package.json/poetry.lock para o backend Python de matching, package-lock.json para Node), sem confiar em pacotes globais do sistema operacional. Build isolado em containers Docker multi-stage, garantindo que nenhuma lib do SO hospedeiro vaze para o ambiente de execução.",
+    "config": "Tudo que varia entre implantações fica em variáveis de ambiente: DATABASE_URL, REDIS_URL, OPENAI_API_KEY/ANTHROPIC_API_KEY, STRIPE_SECRET_KEY, JWT_SECRET, feature flags (ex: ENABLE_VIDEO_CALLS), limites de rate para o modelo de IA, e URLs de serviços de e-mail/SMS. Nada de credenciais hardcoded no código; staging e produção usam os mesmos binários com configs diferentes.",
+    "backing_services": "PostgreSQL (dados de usuários, mentorias, avaliações), Redis (filas de matching e cache de sessão), serviço de armazenamento de objetos tipo S3 (gravações de sessões, materiais), provedor de LLM (Anthropic/OpenAI) para o motor de pareamento e recomendação, serviço de e-mail transacional (Postgmark/SendGrid), gateway de pagamento (Stripe) e provedor de vídeo (Daily.co/Twilio) — todos tratados como recursos anexáveis via URL/config, trocáveis sem alterar código.",
+    "build_release_run": "Pipeline de CI/CD: build gera imagem Docker imutável e versionada (commit SHA); release combina essa imagem com config do ambiente-alvo (staging/produção) gerando um release ID único e rastreável; run apenas executa esse release já pronto, sem builds ou migrações ad-hoc no momento da execução. Rollback é simplesmente apontar para o release anterior.",
+    "processes": "Todos os processos da aplicação (API REST, workers de matching por IA, workers de envio de notificações) são stateless e sem afinidade de sessão. Estado persistente reside exclusivamente no PostgreSQL (perfis, histórico de mentorias, embeddings de matching) e no Redis (filas/cache), nunca em memória local ou disco do processo — permitindo reiniciar/escalar qualquer instância sem perda de dados.",
+    "port_binding": "A API é totalmente self-contained e exporta HTTP/WebSocket via bind em uma porta configurável (PORT env var), sem depender de um servidor de aplicação externo tipo Apache/Nginx injetado em runtime — atrás de um load balancer/proxy reverso gerenciado pela plataforma de nuvem, mas o serviço em si já fala HTTP nativamente.",
+    "concurrency": "Escala horizontal por tipo de processo: 'web' (API/BFF, stateless, autoscale por CPU/requests), 'worker-matching' (processa fila de pareamento IA, escala por profundidade da fila no Redis), 'worker-notifications' (e-mails/push), e 'scheduler' (cron jobs pontuais, ex: reengajamento). Cada tipo escala independentemente conforme a carga específica.",
+    "disposability": "Processos sobem em segundos (containers leves, sem estado a recuperar) e tratam SIGTERM graciosamente: a API para de aceitar novas conexões e finaliza requisições em curso; workers terminam o job de matching atual (ou o devolvem à fila via ack tardio) antes de encerrar. Isso permite deploys, autoscaling e recuperação de falhas robustos.",
+    "dev_prod_parity": "Docker Compose replica localmente os mesmos backing services de produção (Postgres, Redis, storage S3-compatible via MinIO), reduzindo divergência de ferramentas. Deploys contínuos (múltiplos por dia) reduzem divergência de tempo. Devs e SRE usam o mesmo pipeline de deploy, reduzindo divergência de pessoal. Chamadas ao LLM usam o mesmo provedor em dev (com chave de sandbox/rate limitada) e produção.",
+    "build_release_run_note": null,
+    "processes_note": null,
+    "logs_admin": "Logs tratados como fluxo de eventos: cada processo escreve stdout/stderr sem gerenciar arquivos de log, agregados por um coletor (ex: Vector/Fluentd) para um backend centralizado (Datadog/Grafana Loki). Tarefas administrativas pontuais (migrações de schema, recalcular embeddings de matching, backfill de dados) rodam como processos one-off no mesmo ambiente de release, nunca via SSH manual em produção.",
+    "interfaces": [
+      "API REST/GraphQL pública (app mobile e web)",
+      "WebSocket para chat e sessões de vídeo em tempo real",
+      "Webhooks de pagamento (Stripe)",
+      "Webhook/API do provedor de vídeo (Daily.co/Twilio)",
+      "API interna do motor de matching por IA (embeddings + LLM)",
+      "Painel administrativo interno (dashboard de operações e moderação)",
+      "Integração de calendário (Google Calendar/Outlook API)",
+      "API de e-mail/SMS transacional"
+    ],
+    "escalabilidade": "Escala horizontalmente adicionando instâncias stateless de cada tipo de processo conforme o crescimento da base: o serviço de matching por IA escala via filas assíncronas (Redis) e cache de embeddings para evitar recálculo constante; o banco escala com read replicas e particionamento por tenant/região; sessões de vídeo escalam delegando a um provedor terceirizado (Daily.co/Twilio) que já é elástico. CDN absorve o crescimento de tráfego estático/mídia sem tocar a arquitetura core.",
+    "custo_infra_estimado": "Servidores (API + workers, ex: 3 dynos/containers 1GB): $75/mês; PostgreSQL gerenciado (RDS/Supabase, plano inicial): $50/mês; Redis gerenciado: $15/mês; Armazenamento S3 (gravações/materiais, ~100GB): $10/mês; CDN (Cloudflare, tráfego estático): $20/mês; Provedor de vídeo (Daily.co, uso moderado): $50/mês; Total estimado inicial: ~$220/mês para até ~500 usuários ativos.",
+    "custo_por_cliente": "Cada sessão de matching por IA = $0.03 (chamada LLM para gerar recomendação) + $0.002 (embeddings) + $0.001 (armazenamento do perfil) = $0.033/matching. Cada sessão de mentoria em vídeo (60min) = $0.05 (custo do provedor de vídeo) + $0.01 (gravação/storage) = $0.06/sessão. Cliente médio com 2 matchings + 4 sessões/mês = (2 × $0.033) + (4 × $0.06) = $0.066 + $0.24 = $0.306/mês em custo variável direto.",
+    "monetizacao": "Modelo freemium + assinatura: Plano Free (1 matching/mês, sem gravação) para aquisição; Plano Mentee Pro ($29/mês, matchings ilimitados, gravações, prioridade na fila); Plano Mentor (comissão de 15% sobre sessões pagas, ou assinatura $19/mês para mentores com ferramentas avançadas); Plano Empresarial B2B (mentoria corporativa, licenciamento por assento, ex: $15/assento/mês, mínimo 20 assentos). Métricas-alvo: CAC estimado $40 (marketing digital + parcerias com empresas), LTV estimado $290 (assinatura média de 10 meses a $29), relação LTV/CAC de 7.25x considerada saudável; MRR projetado cresce combinando assinaturas recorrentes + comissões variáveis de mentores.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Python (FastAPI) para a API core; serviço de matching por IA em Python com LLM (Claude/OpenAI) + pgvector para embeddings; Frontend: Next.js/React; Banco: PostgreSQL com extensão pgvector; Cache/filas: Redis + BullMQ; Armazenamento: S3-compatible (AWS S3 ou Cloudflare R2); Vídeo: Daily.co ou Twilio Video; Pagamentos: Stripe (assinaturas + Connect para repasse a mentores); Infraestrutura: containers Docker orquestrados via ECS/Fly.io/Render, CI/CD via GitHub Actions, observabilidade via Datadog/Grafana + Sentry."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:56:59+00:00",
+    "runner": "runner.py"
+  }
+}

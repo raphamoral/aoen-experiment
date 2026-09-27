@@ -463,10 +463,11 @@ def cmd_dry_run(cfg, idxs):
           f"truncagem da avaliação: {cfg.eval_truncate or 'nenhuma'}")
 
 
-def cmd_consolidate(cfg):
+def cmd_consolidate(cfg, idxs=None):
     ideias = json.loads((EXPERIMENT_DIR / "ideias.json").read_text(encoding="utf-8"))
+    alvo = idxs if idxs is not None else list(range(len(ideias)))
     registros, buracos = [], []
-    for i in range(len(ideias)):
+    for i in alvo:
         for ab in ABORDAGENS:
             arq = cfg.results / f"eval_{i:03d}_{ab}.json"
             if artefato_ok(arq, "eval"):
@@ -484,11 +485,12 @@ def cmd_consolidate(cfg):
         "_meta": {
             "modelo_gerador": cfg.model, "modelo_avaliador": cfg.eval_model,
             "gerado_em": agora(),
-            "ideias_no_conjunto": len(ideias), "abordagens": list(ABORDAGENS),
+            "ideias_no_conjunto": len(alvo), "ideias": alvo,
+            "abordagens": list(ABORDAGENS),
             "avaliacoes": len(registros),
-            "esperadas": len(ideias) * len(ABORDAGENS),
+            "esperadas": len(alvo) * len(ABORDAGENS),
             "cobertura_pct": round(100 * len(registros) /
-                                   (len(ideias) * len(ABORDAGENS)), 1),
+                                   (len(alvo) * len(ABORDAGENS)), 1),
             "buracos": buracos,
             "pontos_de_dados": len(registros) * len(CRITERIOS),
         },
@@ -515,9 +517,12 @@ def parse_ideias(spec, total):
 
 
 def main():
+    global ABORDAGENS
     p = argparse.ArgumentParser(description="Runner retomável do experimento AOEN")
     p.add_argument("--model", default="claude-sonnet-5",
                    help="id do modelo gerador (fixo, não usar alias)")
+    p.add_argument("--prompts", default=None,
+                   help="módulo alternativo com ABORDAGENS (ex.: ablacao)")
     p.add_argument("--eval-model", default=None,
                    help="id do modelo avaliador; se omitido, usa --model")
     p.add_argument("--results", default="experimento/results_v4")
@@ -538,6 +543,10 @@ def main():
     p.add_argument("--force", action="store_true")
     cfg = p.parse_args()
     cfg.eval_model = cfg.eval_model or cfg.model
+    if cfg.prompts:
+        import importlib
+        ABORDAGENS = importlib.import_module(cfg.prompts).ABORDAGENS
+        print(f"prompts de {cfg.prompts}: {', '.join(ABORDAGENS)}")
     cfg.results = (BASE / cfg.results) if not Path(cfg.results).is_absolute() else Path(cfg.results)
     cfg.results.mkdir(parents=True, exist_ok=True)
 
@@ -549,7 +558,7 @@ def main():
     if cfg.dry_run:
         return cmd_dry_run(cfg, idxs) or 0
     if cfg.consolidate:
-        return cmd_consolidate(cfg)
+        return cmd_consolidate(cfg, idxs)
 
     def ao_sinal(signum, frame):
         if _parar.is_set():

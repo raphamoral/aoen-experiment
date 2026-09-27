@@ -1,0 +1,80 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Curso, Matrícula, Aluno, Instituição Emissora, Certificado, RegraDeConclusão, AssinaturaDigital, RegistroDeVerificação. Regras: um Certificado só pode ser emitido se RegraDeConclusão for satisfeita (carga horária, avaliação, presença); todo Certificado emitido recebe um identificador único verificável (hash/UUID) e uma assinatura criptográfica vinculada à Instituição Emissora; um Certificado pode ser revogado, mas nunca alterado (imutabilidade); a verificação pública de um certificado deve ser possível sem autenticação, apenas com o identificador; regras de expiração e revalidação de certificados por tipo de curso. Nenhuma regra depende de banco de dados, framework web, provedor de e-mail ou serviço de blockchain — apenas de Value Objects e Entities puros da linguagem.",
+    "driving_ports": {
+      "EmitirCertificadoPort": "Solicita emissão de certificado para um aluno que concluiu um curso, validando RegraDeConclusão",
+      "RevogarCertificadoPort": "Revoga um certificado emitido por motivo justificado",
+      "VerificarCertificadoPort": "Consulta pública a autenticidade e validade de um certificado por identificador",
+      "GerenciarCursoPort": "Cria/edita cursos e suas regras de conclusão (carga horária, nota mínima etc.)",
+      "MatricularAlunoPort": "Registra matrícula e progresso do aluno em um curso",
+      "ConsultarHistoricoPort": "Retorna histórico de certificados de um aluno ou instituição"
+    },
+    "driven_ports": {
+      "CertificadoRepositoryPort": "Persistência de certificados emitidos e seu estado (ativo/revogado)",
+      "CursoRepositoryPort": "Persistência de cursos, regras e matrículas",
+      "AssinaturaDigitalPort": "Geração e validação de assinatura criptográfica do certificado",
+      "NotificacaoPort": "Envio de notificação ao aluno sobre emissão/revogação",
+      "GeradorDeArquivoPort": "Geração do artefato visual do certificado (PDF/imagem)",
+      "ArmazenamentoDeArquivosPort": "Armazenamento do artefato gerado (PDF)",
+      "RelogioPort": "Fonte de tempo abstraída para timestamps de emissão/expiração",
+      "AuditoriaPort": "Registro imutável de eventos de emissão/revogação para trilha de auditoria"
+    },
+    "driving_adapters": {
+      "REST_API_Adapter": "Expõe endpoints HTTP para instituições emitirem certificados e para o público verificar autenticidade (GET /certificados/{id}/verificar)",
+      "Admin_Web_Adapter": "Dashboard web para instituições gerenciarem cursos, matrículas e emissões",
+      "Public_Verification_Page_Adapter": "Página pública HTML simples para verificação via QR code/ID sem autenticação",
+      "CLI_Adapter": "Interface de linha de comando para emissão em lote (bulk import de turmas concluídas)",
+      "Webhook_Inbound_Adapter": "Recebe eventos de LMS externos (ex: conclusão de curso) para disparar emissão automática"
+    },
+    "driven_adapters": {
+      "PostgreSQL_Adapter": "Implementa CertificadoRepositoryPort e CursoRepositoryPort",
+      "RSA_ECDSA_Signing_Adapter": "Implementa AssinaturaDigitalPort com chave privada da instituição",
+      "PDF_Generation_Adapter": "Implementa GeradorDeArquivoPort usando lib de renderização (ex: Puppeteer/PDFKit)",
+      "S3_Storage_Adapter": "Implementa ArmazenamentoDeArquivosPort para PDFs de certificados",
+      "SES_Email_Adapter": "Implementa NotificacaoPort via e-mail transacional",
+      "SystemClock_Adapter": "Implementa RelogioPort com relógio do sistema",
+      "AppendOnlyLog_Adapter": "Implementa AuditoriaPort (ex: tabela append-only ou serviço de log imutável)",
+      "Blockchain_Anchor_Adapter (opcional)": "Adaptador alternativo para ancorar hash do certificado em ledger público, trocável sem alterar o domínio"
+    },
+    "application_services": {
+      "EmissaoDeCertificadoService": "Orquestra: valida conclusão via domínio, invoca AssinaturaDigitalPort, persiste via CertificadoRepositoryPort, gera PDF, notifica aluno — sem conter a regra de quando o certificado é válido, apenas coordena chamadas às portas",
+      "VerificacaoPublicaService": "Orquestra consulta ao repositório e checagem de assinatura/revogação, retornando resultado formatado",
+      "RevogacaoService": "Orquestra a transição de estado do certificado e registro de auditoria"
+    },
+    "domain_isolation": "O domínio depende apenas de interfaces (portas) definidas por ele mesmo, nunca de implementações. Não há import de Express, SQL, SDK de nuvem ou biblioteca de PDF dentro das entidades ou regras de negócio. Toda comunicação com o exterior passa por uma porta injetada via construtor (Dependency Inversion), permitindo rodar o domínio inteiro em memória, sem I/O real, em testes.",
+    "test_doubles": "Cada porta possui um Fake ou Stub em memória: FakeCertificadoRepository (mapa em memória), StubAssinaturaDigital (retorna assinatura determinística), FakeRelogio (tempo controlável para testar expiração), SpyNotificacaoPort (captura chamadas sem enviar e-mail real), InMemoryAuditoria. Testes de domínio usam apenas esses dublês, nunca infraestrutura real; testes de adaptador testam cada implementação isoladamente contra a porta (contract tests).",
+    "configuration_wiring": "Um Composition Root (ex: main.ts/bootstrap.py) lê configuração de ambiente e injeta os adaptadores concretos nos serviços de aplicação via construtor, montando o grafo de dependências na inicialização (ex: com um container de DI leve ou wiring manual). Nenhuma classe de domínio ou serviço de aplicação instancia diretamente um adaptador.",
+    "technology_substitution": "PostgreSQL pode ser trocado por DynamoDB ou MongoDB alterando apenas o adaptador CertificadoRepositoryPort, custo: reescrever queries e migrações, sem tocar no domínio. Assinatura RSA pode ser trocada por ancoragem em blockchain (ex: Polygon) implementando o mesmo AssinaturaDigitalPort/AuditoriaPort, custo: latência maior e taxas de gas. SES pode ser trocado por outro provedor de e-mail (SendGrid) sem impacto no domínio. REST API pode ser substituída por GraphQL implementando os mesmos driving ports, custo: reescrever camada de serialização apenas.",
+    "symmetry": "Tanto o lado 'driving' (quem aciona a aplicação: API REST, dashboard, CLI) quanto o lado 'driven' (quem a aplicação aciona: banco, assinatura, storage) se comunicam exclusivamente através de interfaces definidas pelo núcleo do domínio. Nenhum dos dois lados conhece o outro diretamente — a aplicação nunca sabe se foi chamada por REST ou CLI, e nunca sabe se persiste em Postgres ou DynamoDB. Essa simetria é o que permite testar o núcleo inteiro sem nenhuma tecnologia real presente, apenas trocando os adaptadores injetados em cada lado.",
+    "interfaces": [
+      "EmitirCertificadoPort",
+      "RevogarCertificadoPort",
+      "VerificarCertificadoPort",
+      "GerenciarCursoPort",
+      "MatricularAlunoPort",
+      "ConsultarHistoricoPort",
+      "CertificadoRepositoryPort",
+      "CursoRepositoryPort",
+      "AssinaturaDigitalPort",
+      "NotificacaoPort",
+      "GeradorDeArquivoPort",
+      "ArmazenamentoDeArquivosPort",
+      "RelogioPort",
+      "AuditoriaPort"
+    ],
+    "escalabilidade": "Como o domínio é isolado via portas, cada adaptador pode escalar independentemente: a geração de PDF e a verificação pública (alto tráfego, leitura) podem ser extraídas para serviços/lambdas separados do serviço de emissão (baixo tráfego, escrita), compartilhando o mesmo núcleo de domínio como biblioteca. O endpoint de verificação pública pode ser colocado atrás de CDN/cache agressivo (respostas imutáveis por ID). Bancos de leitura replicados (read replicas) atendem picos de verificação; filas de mensageria (ex: SQS) desacoplam emissão em lote de notificação e geração de PDF, permitindo processamento assíncrono horizontal conforme a base de instituições cresce.",
+    "custo_infra_estimado": "Servidor (API + workers, ex: 2x t3.small ECS Fargate): $60/mês. RDS PostgreSQL (db.t3.micro, Multi-AZ opcional): $30-60/mês. S3 (armazenamento de PDFs, ~50GB): $2/mês + requests $5/mês. CloudFront CDN (verificação pública + PDFs): $15/mês. SES (e-mails transacionais): $5/mês. SQS (fila de emissão em lote): $2/mês. Total estimado inicial: aproximadamente $120-150/mês para carga baixa/moderada (até ~50 instituições, milhares de certificados/mês).",
+    "custo_por_cliente": "Cada emissão de certificado = $0.001 (assinatura digital/CPU) + $0.002 (geração de PDF) + $0.0005 (armazenamento S3, ~200KB) + $0.0001 (registro DB) + $0.0002 (e-mail SES) ≈ $0.004/certificado emitido. Cada verificação pública = $0.0001 (leitura DB/cache) + $0.00005 (bandwidth CDN) ≈ $0.00015/verificação. Instituição com 500 certificados emitidos/mês e 2.000 verificações/mês = (500 × $0.004) + (2.000 × $0.00015) = $2 + $0.30 = $2.30/mês em custo direto de infra.",
+    "monetizacao": "Modelo SaaS B2B por assinatura em camadas (tiers) por instituição emissora: Starter ($49/mês, até 200 certificados/mês, verificação pública ilimitada), Professional ($149/mês, até 1.500 certificados/mês, marca própria/white-label, API), Enterprise ($499+/mês, certificados ilimitados, SSO, SLA, integração LMS dedicada). Cobrança adicional de overage a $0.15/certificado acima do limite do plano. Métricas-alvo: CAC estimado em $150-300 (marketing de conteúdo + outbound para escolas/plataformas de cursos livres), LTV estimado em $2.500-4.000 (assumindo churn mensal de 3% e ticket médio de $150/mês por 24-30 meses), MRR inicial-alvo de $10.000 com 80-100 instituições pagantes, razão LTV:CAC alvo de 10:1.",
+    "stack_sugerida": "Domínio e serviços de aplicação: TypeScript puro (ou Python) sem dependências externas. Driving adapters: NestJS ou Express (REST API), Next.js (dashboard admin e página pública de verificação). Driven adapters: PostgreSQL (persistência), Prisma ou Knex como driver de acesso (isolado atrás do repository adapter), node-jsonwebtoken/crypto ou lib de assinatura RSA/ECDSA (assinatura digital), Puppeteer ou PDFKit (geração de PDF), AWS S3 (armazenamento), AWS SES (e-mail), AWS SQS (fila para emissão em lote), Redis (cache de verificação pública), Docker + AWS Fargate ou Railway (deploy), CloudFront (CDN)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:53:21+00:00",
+    "runner": "runner.py"
+  }
+}

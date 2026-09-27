@@ -1,0 +1,37 @@
+{
+  "ideia_idx": 17,
+  "ideia": "Plataforma de certificação digital de cursos livres com verificação pública",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git, contendo API de emissão/verificação, worker assíncrono e frontend (dashboard do emissor + página pública de verificação). Múltiplos deploys (dev, staging, produção) a partir da mesma base de código, sem forks por ambiente.",
+    "dependencies": "Todas as dependências declaradas em manifestos explícitos (package.json/lockfile ou go.mod), sem dependência implícita de pacotes do sistema operacional. Isolamento via containers Docker, garantindo que builds locais e de CI usem exatamente as mesmas versões.",
+    "config": "Toda configuração injetada via variáveis de ambiente: DATABASE_URL, REDIS_URL, S3_BUCKET, CERT_SIGNING_PRIVATE_KEY, JWT_SECRET, SMTP_CREDENTIALS, PUBLIC_VERIFICATION_BASE_URL, BLOCKCHAIN_ANCHOR_API_KEY (se aplicável). O que varia entre implantações: URLs de backing services, chaves de assinatura por ambiente, domínio público de verificação, limites de taxa e feature flags (ex: emissão em blockchain habilitada apenas em produção).",
+    "backing_services": "PostgreSQL (cursos, certificados, usuários, hashes de verificação) como recurso anexado via connection string; Redis para filas e cache de verificação; armazenamento de objetos S3-compatível para PDFs e QR codes; serviço de e-mail transacional (SMTP/API); serviço opcional de ancoragem em blockchain/timestamp para prova de integridade — todos substituíveis sem alteração de código, apenas trocando a URL/credencial.",
+    "build_release_run": "Pipeline de CI gera uma imagem de build imutável identificada pelo hash do commit; etapa de release combina essa imagem com a configuração do ambiente (staging/produção) gerando um release versionado; execução roda releases imutáveis em containers, sem alterações de código em tempo de execução (rollbacks via troca de release, não de deploy manual).",
+    "processes": "Processos web e worker são stateless — nenhuma sessão ou cache de certificado mantido em memória local. Estado persistente reside exclusivamente no PostgreSQL (registros de certificados e hashes de verificação) e no S3 (arquivos PDF/QR code). Autenticação via JWT stateless; filas de emissão processadas por workers idempotentes.",
+    "port_binding": "A API HTTP e a página pública de verificação são autocontidas e exportam serviço via bind em $PORT (ex: Express/Fastify/Go net/http embutido), sem depender de injeção de servidor web externo em tempo de execução; qualquer roteador/API gateway é apenas um backing service à frente.",
+    "concurrency": "Escala horizontal por tipo de processo: web (API + verificação pública), worker (geração de PDF, assinatura criptográfica, envio de e-mail), scheduler (jobs periódicos de expiração/revogação). Picos de emissão em massa (ex: fim de turma) absorvidos aumentando réplicas do worker via fila.",
+    "disposability": "Processos iniciam em segundos (sem estado a carregar), tratam SIGTERM para drenar requisições e finalizar jobs em andamento antes de encerrar; jobs de emissão são idempotentes (retry seguro em caso de crash) via chave de idempotência no enfileiramento.",
+    "dev_prod_parity": "Docker Compose replica localmente os mesmos backing services (Postgres, Redis, S3 via MinIO) usados em produção; deploys contínuos (CI/CD) reduzem divergência de tempo; mesma equipe desenvolve e opera (DevOps); staging espelha produção em topologia e versões.",
+    "logs_admin": "Logs emitidos como stream de eventos para stdout/stderr, coletados e agregados por ferramenta externa (ex: Datadog/ELK/CloudWatch), sem gestão de arquivos de log pela aplicação. Tarefas administrativas (reemissão em massa, revogação de certificados, migração de schema) executadas como processos pontuais (one-off) no mesmo ambiente e release da aplicação.",
+    "interfaces": [
+      "API REST de emissão de certificados (para integração com LMS/plataformas de curso)",
+      "Página pública de verificação (URL única por certificado com QR code)",
+      "API pública de verificação (consulta por hash/ID, sem autenticação)",
+      "Dashboard administrativo do emissor (instituições/cursos)",
+      "Webhooks de eventos (certificado emitido, revogado)",
+      "Endpoint compatível com padrão Open Badges / Verifiable Credentials"
+    ],
+    "escalabilidade": "Processos web e worker escalam horizontalmente de forma independente; leitura da verificação pública (alto volume, baixa latência) é cacheada via CDN e Redis; picos de emissão (formaturas em massa) absorvidos por fila assíncrona; banco de dados escala com réplicas de leitura conforme cresce a base de instituições/certificados emitidos.",
+    "custo_infra_estimado": "Servidor (2 instâncias web + 1 worker, containers): $60/mês; Banco de dados (Postgres gerenciado, ex: RDS/Supabase): $40/mês; Redis gerenciado: $15/mês; Armazenamento S3 (PDFs/QR codes, ~50GB): $5/mês; CDN (Cloudflare, tráfego de verificação pública): $20/mês; Banda adicional: $10/mês. Total estimado inicial: ~$150/mês para até ~50 mil certificados ativos.",
+    "custo_por_cliente": "Cada certificado emitido = $0.01 (armazenamento PDF+QR) + $0.005 (geração/assinatura, CPU) + $0.002 (registro no banco) + $0.001 (e-mail transacional) ≈ $0.018/certificado. Instituição cliente emitindo 500 certificados/mês = ~$9/mês de custo direto de infraestrutura, com margem confortável frente aos planos pagos.",
+    "monetizacao": "SaaS B2B por assinatura para instituições emissoras (a verificação pública é sempre gratuita e ilimitada, gerando confiança e distribuição orgânica). Tiers: Starter $29/mês (até 100 certificados/mês, 1 curso), Growth $99/mês (até 1.000 certificados/mês, múltiplos cursos, marca própria), Scale $299/mês (certificados ilimitados, API dedicada, SLA, blockchain anchoring). Métricas-chave: MRR alvo $10k em 12 meses; CAC estimado $150/instituição (marketing de conteúdo + parcerias com plataformas de curso); LTV estimado $1.800 (retenção média 18 meses em plano Growth), relação LTV:CAC ≈ 12:1.",
+    "stack_sugerida": "Backend: Node.js (NestJS) ou Go, API REST. Banco: PostgreSQL. Fila/Cache: Redis (BullMQ). Armazenamento: AWS S3 ou Cloudflare R2. Frontend: Next.js (dashboard + página pública de verificação com SSR para SEO). Autenticação: JWT + OAuth2 para integrações LMS. Infraestrutura: Docker + orquestração leve (Fly.io, Render ou ECS), CDN Cloudflare, CI/CD via GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:53:28+00:00",
+    "runner": "runner.py"
+  }
+}

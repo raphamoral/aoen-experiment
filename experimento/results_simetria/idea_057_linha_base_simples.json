@@ -1,0 +1,29 @@
+{
+  "ideia_idx": 57,
+  "ideia": "App de controle parental inteligente com relatórios de bem-estar digital",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Um app de controle parental que monitora uso de dispositivos (tempo de tela, apps, categorias de conteúdo, localização) e gera relatórios de bem-estar digital com insights e recomendações, permitindo que responsáveis configurem limites, bloqueios e alertas para os filhos via app companion.",
+    "como_comecar": "MVP focado em uma plataforma (Android, via app de dispositivo filho + app de dashboard para o responsável), com funcionalidades core: registro de tempo de tela por app, limites diários, bloqueio de apps/categorias e relatório semanal simples. Validar com um grupo pequeno de famílias antes de expandir para iOS e recursos avançados (IA, geofencing, análise de sentimento).",
+    "tecnologias": "Mobile: Kotlin/Swift nativo (necessário para APIs de acessibilidade, Device Policy Manager no Android e Screen Time API/Family Controls no iOS). Backend: Node.js ou Go para APIs. Processamento assíncrono: workers para agregação de dados de uso. IA/ML: modelo simples de classificação de conteúdo e detecção de padrões de uso (Python, scikit-learn ou serviço gerenciado). Notificações push: Firebase Cloud Messaging / APNs.",
+    "banco_dados": "PostgreSQL como banco relacional principal (usuários, famílias, dispositivos, políticas). Time-series database (TimescaleDB ou InfluxDB) para eventos de uso de apps e telemetria de dispositivos, dado o alto volume de eventos. Redis para cache de sessões e filas. Armazenamento de logs brutos em S3/object storage com agregação periódica para os relatórios.",
+    "interfaces": [
+      "App móvel para o dispositivo da criança (Android/iOS) com monitoramento em background",
+      "App/dashboard móvel para o responsável (configuração de regras, alertas em tempo real)",
+      "Painel web para relatórios detalhados de bem-estar digital",
+      "API REST/GraphQL para integrações e webhooks",
+      "Painel administrativo interno para suporte e billing"
+    ],
+    "usuarios": "Pais e responsáveis (usuários pagantes, gerenciam contas e políticas) e crianças/adolescentes (usuários do dispositivo monitorado, sem acesso a configurações). Público secundário: escolas ou terapeutas que queiram relatórios agregados de bem-estar digital.",
+    "escalabilidade": "Sim. Arquitetura orientada a eventos (ingestão de uso via fila como Kafka/SQS) para lidar com picos de telemetria de milhões de dispositivos. Separação de serviços (ingestão, agregação, relatórios, notificações) permite escalar independentemente. Agregações pré-computadas (batch/streaming) evitam queries pesadas em tempo real nos relatórios.",
+    "custos": "Principais custos: infraestrutura cloud (compute, storage de séries temporais, banda de notificações push), custos de terceiros (SMS/email para alertas), processamento de IA para classificação de conteúdo, e suporte a compliance (COPPA/LGPD) que exige auditorias e armazenamento seguro de dados de menores. Estratégia: usar serviços gerenciados no início e otimizar/migrar para self-hosted conforme escala justificar.",
+    "monetizacao": "Modelo de assinatura SaaS (freemium com limite de dispositivos/relatórios básicos, planos pagos mensais/anuais por família com múltiplos dispositivos e relatórios avançados de IA). Possível tier premium para escolas/organizações com relatórios agregados e suporte dedicado.",
+    "stack_sugerida": "Frontend mobile: Kotlin (Android) + Swift (iOS), ou React Native para dashboard cross-platform do responsável. Backend: Node.js (NestJS) ou Go com APIs REST/GraphQL. Banco: PostgreSQL + TimescaleDB + Redis. Mensageria: Kafka ou AWS SQS/SNS. Infra: AWS ou GCP com Kubernetes, Terraform para IaC. Autenticação: OAuth2/JWT com suporte a contas familiares. Pagamentos: Stripe Billing para assinaturas recorrentes."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:59:32+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "ideia_idx": 95,
+  "ideia": "Plataforma de telemedicina especializada em dermatologia com análise de imagem",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do paciente (lesão de pele suspeita) → descoberta e triagem inicial → agendamento → captura guiada de imagem da lesão → análise de imagem por IA (pré-triagem de risco) → fila priorizada para dermatologista → teleconsulta (vídeo/assíncrona) → diagnóstico e prescrição → encaminhamento/biópsia se necessário → acompanhamento e histórico longitudinal → faturamento/reembolso via convênio",
+    "wardley_map": "Gênese: modelos de IA para classificação de lesões raras e correlação com histórico longitudinal do paciente (pesquisa contínua). Sob medida: pipeline de análise de imagem dermatológica (pré-processamento, scoring de risco tipo ABCDE/melanoma), motor de matching paciente-especialista por complexidade do caso, motor de compliance LGPD/HIPAA para dados de imagem sensível. Produto: videoconsulta (Twilio/Vonage Video API), agendamento (Calendly-like/Acuity), e-prescrição (Memed no Brasil, DrFirst nos EUA), EHR/prontuário (integração via FHIR). Commodity: autenticação/identidade (Auth0/Cognito), pagamentos (Stripe), notificações (SMS/e-mail via Twilio/SendGrid), infraestrutura de nuvem, armazenamento de objetos (S3), CDN.",
+    "build_buy_decisions": "Construir: pipeline de análise de imagem por IA e scoring de risco dermatológico (diferencial competitivo, propriedade intelectual central), motor de matching/priorização de casos por especialista, camada de compliance de dados sensíveis de saúde. Comprar: videoconsulta (Twilio Video), pagamentos (Stripe/Stripe Connect para repasse a médicos), e-prescrição (Memed), autenticação (Auth0), agendamento base (customizado sobre biblioteca open-source). Usar como commodity: infraestrutura cloud (AWS/GCP), storage de imagens (S3 + Glacier para retenção), notificações (SendGrid/Twilio), observabilidade (Datadog). Razão: focar investimento de engenharia onde há vantagem competitiva (IA + triagem clínica) e comprar tudo que já é resolvido por fornecedores maduros e regulados.",
+    "core_domain": "Análise de imagem dermatológica por IA combinada com triagem e priorização clínica — é o que diferencia a plataforma de telemedicina genérica, justifica retenção de dados proprietários (dataset de imagens rotuladas), investimento contínuo em modelos e pesquisa clínica, e é o motor de confiança médica e regulatória do produto.",
+    "bounded_contexts": [
+      {
+        "contexto": "Jornada do Paciente (Patient Care)",
+        "linguagem_ubiqua": "paciente, sintoma, agendamento, consulta, plano de tratamento, acompanhamento"
+      },
+      {
+        "contexto": "Diagnóstico por Imagem (AI Diagnostics)",
+        "linguagem_ubiqua": "lesão, imagem, score de risco, classificação ABCDE, probabilidade de malignidade, confiança do modelo, dataset de treino"
+      },
+      {
+        "contexto": "Rede de Especialistas (Specialist Network)",
+        "linguagem_ubiqua": "dermatologista, disponibilidade, fila de casos, complexidade, credenciamento, carga de trabalho"
+      },
+      {
+        "contexto": "Registro Clínico (Clinical Records / EHR)",
+        "linguagem_ubiqua": "prontuário, diagnóstico, prescrição, histórico clínico, CID, laudo",
+        "nota": "aderente a FHIR"
+      },
+      {
+        "contexto": "Faturamento e Convênios (Billing)",
+        "linguagem_ubiqua": "fatura, plano, glosa, reembolso, convênio, repasse a médico"
+      },
+      {
+        "contexto": "Identidade e Consentimento (Identity & Consent)",
+        "linguagem_ubiqua": "usuário, papel, consentimento LGPD/HIPAA, termo de uso, autenticação"
+      },
+      {
+        "contexto": "Engajamento e Notificações",
+        "linguagem_ubiqua": "lembrete, alerta, campanha, canal de envio"
+      }
+    ],
+    "context_mapping": "AI Diagnostics é upstream/fornecedor (customer-supplier) de Jornada do Paciente e de Rede de Especialistas, que consomem seus resultados via API assíncrona. Entre AI Diagnostics e Registro Clínico há camada anticorrupção (ACL), pois o modelo interno de scoring não deve vazar para o padrão FHIR do prontuário. Jornada do Paciente e Rede de Especialistas mantêm relação de parceria (partnership), evoluindo juntas no fluxo de triagem e consulta. Faturamento é cliente (customer) de Identidade (fornece dados de usuário) e integra-se ao Stripe via ACL. Identidade e Consentimento atua como Open Host Service consumido por todos os demais contextos. Integrações com convênios/EHRs hospitalares externos usam ACL para isolar formatos legados (HL7 v2, por exemplo).",
+    "team_topologies": [
+      {
+        "time": "Jornada do Paciente",
+        "tipo": "stream-aligned",
+        "escopo": "app do paciente, agendamento, consulta"
+      },
+      {
+        "time": "Experiência do Especialista",
+        "tipo": "stream-aligned",
+        "escopo": "portal do dermatologista, fila de casos, laudo"
+      },
+      {
+        "time": "IA de Diagnóstico Dermatológico",
+        "tipo": "subsistema complicado",
+        "escopo": "modelos de visão computacional, pipeline de treino, dataset clínico"
+      },
+      {
+        "time": "Plataforma Core",
+        "tipo": "plataforma",
+        "escopo": "identidade, notificações, infraestrutura, integração EHR/FHIR, storage seguro de imagens"
+      },
+      {
+        "time": "Compliance e Segurança Clínica",
+        "tipo": "habilitação",
+        "escopo": "apoio temporário em LGPD/HIPAA, retenção de imagens médicas, auditoria"
+      },
+      {
+        "time": "Faturamento e Parcerias",
+        "tipo": "stream-aligned",
+        "escopo": "convênios, repasse a médicos, planos de assinatura"
+      }
+    ],
+    "cognitive_load": "O time de IA de Diagnóstico isola toda a complexidade de modelos, treino e validação clínica atrás de uma API simples de score/classificação, evitando que times de fluxo precisem entender ML. A Plataforma Core oferece serviços self-service (auth, storage seguro, notificações) como X-as-a-Service, removendo carga operacional dos times de fluxo. O time de Compliance atua por tempo limitado (enabling), transferindo conhecimento e depois se retirando. Cada time de fluxo é dono de um bounded context coeso (paciente, especialista ou faturamento), limitando o escopo de decisão e o número de integrações diretas que precisa manter.",
+    "interaction_modes": [
+      {
+        "entre": "Jornada do Paciente e IA de Diagnóstico",
+        "modo": "X-as-a-Service (API assíncrona de análise de imagem)"
+      },
+      {
+        "entre": "Experiência do Especialista e IA de Diagnóstico",
+        "modo": "X-as-a-Service, com colaboração pontual para feedback de re-treino do modelo"
+      },
+      {
+        "entre": "Plataforma Core e times de fluxo",
+        "modo": "X-as-a-Service (self-service)"
+      },
+      {
+        "entre": "Compliance e Segurança Clínica e demais times",
+        "modo": "facilitação (temporária)"
+      },
+      {
+        "entre": "Jornada do Paciente e Experiência do Especialista",
+        "modo": "colaboração (fluxo de triagem compartilhado)"
+      }
+    ],
+    "flow_optimization": "O fluxo é otimizado desacoplando captura de imagem (síncrona, rápida) da análise por IA (assíncrona, via fila/evento), evitando que o paciente espere pelo processamento pesado. O principal gargalo é a revisão humana do especialista — mitigado priorizando a fila por score de risco da IA (casos urgentes sobem na fila) e por gate de qualidade de imagem no app do paciente (rejeita imagens ruins antes de chegar ao médico). Eventos de domínio (ex.: ImagemAnalisada, CasoPriorizado) desacoplam os contextos e permitem escalar cada etapa independentemente.",
+    "independent_streams": "Cada bounded context tem pipeline de deploy, banco de dados e ciclo de release próprios, comunicando-se por APIs publicadas e eventos de domínio (ex.: ImagemAnalisada, ConsultaConcluida) em vez de acoplamento direto a banco. Isso permite que o time de IA evolua modelos e infraestrutura de ML sem esperar releases do time de Jornada do Paciente, e que Faturamento mude regras de convênio sem impactar a fila de triagem clínica. Feature flags por stream permitem rollout independente.",
+    "interfaces": [
+      "API REST/GraphQL do app do paciente",
+      "API de upload e captura de imagem",
+      "API assíncrona de análise de imagem por IA (webhook/evento ImagemAnalisada)",
+      "Portal web do dermatologista (fila de casos, laudo)",
+      "API de integração EHR/FHIR",
+      "Webhook de pagamentos (Stripe)",
+      "API de notificações (SMS/e-mail/push)",
+      "Painel administrativo e de compliance/auditoria",
+      "API de agendamento e disponibilidade"
+    ],
+    "escalabilidade": "Serviços stateless escalam horizontalmente via Kubernetes/serverless; processamento de imagem por IA usa fila (SQS/Kafka) e autoscaling de instâncias GPU (spot/on-demand) para picos de upload; banco relacional com réplicas de leitura para consultas de histórico; imagens servidas via CDN com cache de longo prazo; arquitetura multi-tenant permite isolar dados por região/clínica conforme a base cresce; sharding de banco por região geográfica quando o volume de pacientes justificar; feature de fila prioritária garante SLA de triagem mesmo sob alta demanda.",
+    "custo_infra_estimado": "Servidores de aplicação (K8s, 3-5 nós): $300/mês. Inferência de IA (GPU sob demanda/spot): $400/mês. Banco de dados (RDS Postgres multi-AZ): $150/mês. Armazenamento de imagens (S3 + Glacier): $80/mês. CDN (CloudFront): $40/mês. Banda/transferência: $60/mês. Videoconsulta (Twilio Video, uso variável): $200/mês. Observabilidade/logs (Datadog): $100/mês. Total estimado inicial: ~$1.330/mês para uma base inicial de até ~5.000 pacientes ativos.",
+    "custo_por_cliente": "Cada análise de imagem por IA = $0,04 (inferência GPU) + $0,01 (storage S3) + $0,005 (banda/CDN) + $0,005 (fila/processamento) = ~$0,06/análise. Videoconsulta = ~$0,08/minuto (Twilio), consulta média de 15min = $1,20/consulta. Cliente com 2 análises + 1 consulta/mês = (2 × $0,06) + $1,20 = $1,32/mês em custo variável direto, mais custo fixo de plataforma rateado (~$0,30/cliente com 5.000 usuários ativos) = ~$1,62/cliente/mês.",
+    "monetizacao": "Modelo híbrido B2C + B2B2C. Plano Básico (self-service): $19,90/mês — 1 triagem por IA + 1 teleconsulta assíncrona. Plano Plus: $39,90/mês — triagens ilimitadas por IA + 2 consultas por vídeo + acompanhamento longitudinal. Plano Família: $69,90/mês — até 4 perfis. B2B2C: parceria com convênios/empresas pagando por vida coberta (ex.: $5-8/vida/mês em contratos corporativos). Pay-per-use avulso: $29,90 por consulta única sem assinatura. Repasse a dermatologistas via Stripe Connect (comissão de plataforma de 20-25%). Métricas-alvo: CAC ~$25 (marketing digital + parcerias), LTV ~$240 (ticket médio $30/mês × retenção média de 8 meses), MRR crescendo via upsell de Básico para Plus, meta de LTV:CAC > 3:1.",
+    "stack_sugerida": "Frontend: React Native (app do paciente) e React/Next.js (portal do especialista e admin). Backend: Node.js/TypeScript (NestJS) para serviços de fluxo, Python (FastAPI) para o serviço de IA. IA/ML: PyTorch para modelos de visão computacional, MLflow para versionamento de modelos, dataset gerenciado em S3 com rotulagem via ferramenta própria. Dados: PostgreSQL (transacional), Redis (cache/filas rápidas), Kafka ou SQS/SNS para eventos assíncronos. Infraestrutura: AWS (EKS, S3, RDS, CloudFront) com BAA para HIPAA. Integrações: Twilio Video (teleconsulta), Stripe + Stripe Connect (pagamentos e repasses), Auth0 (identidade), Memed/DrFirst (e-prescrição), Redox ou motor FHIR próprio (interoperabilidade EHR). Observabilidade: Datadog ou Grafana/Prometheus. CI/CD: GitHub Actions + Terraform para IaC."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T21:08:27+00:00",
+    "runner": "runner.py"
+  }
+}

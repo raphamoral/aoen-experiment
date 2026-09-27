@@ -1,0 +1,71 @@
+{
+  "ideia_idx": 54,
+  "ideia": "Plataforma de criação de chatbots customizados sem código para PMEs",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Domínio: Chatbot (agregado raiz), com Fluxo de Conversa (árvore de nós/intents/respostas), Sessão de Conversa (estado da interação com um usuário final), Intenção (regra de correspondência de entrada), Regra de Negócio/Fluxo de Decisão, e Base de Conhecimento (conjunto de respostas versionado). Regras: um Chatbot só pode ser publicado se tiver um nó inicial e nenhum nó órfão; uma Sessão de Conversa avança de estado conforme transições válidas do Fluxo; limites de uso (mensagens/mês) por plano do Cliente são verificados antes de processar uma mensagem; versionamento imutável de Fluxos publicados para permitir rollback. Nenhuma classe do domínio conhece HTTP, banco de dados, filas ou provedores de IA/mensageria — apenas objetos de valor e entidades com métodos que expressam regras.",
+    "driving_ports": {
+      "ChatbotManagementPort": "criar/editar/publicar/despublicar um chatbot e seu fluxo de conversa",
+      "ConversationHandlingPort": "receber uma mensagem de um usuário final e retornar a próxima resposta/ação, dado um canal e sessão",
+      "AnalyticsQueryPort": "consultar métricas de uso, funil de conversas e satisfação",
+      "AccountManagementPort": "gerenciar cliente (PME), plano, limites e usuários administradores"
+    },
+    "driven_ports": {
+      "ConversationRepositoryPort": "persistir e recuperar Chatbots, Fluxos, Sessões",
+      "ChannelMessagingPort": "enviar mensagens de saída para o canal do usuário final (WhatsApp, site, Instagram)",
+      "NLUProviderPort": "interpretar linguagem natural quando o fluxo usa reconhecimento de intenção por IA",
+      "NotificationPort": "notificar administradores (e-mail/webhook) sobre eventos como limite de uso atingido",
+      "BillingPort": "reportar consumo e verificar status de assinatura",
+      "AuditLogPort": "registrar eventos de domínio para auditoria/compliance",
+      "CachePort": "cache de sessões ativas e fluxos publicados para baixa latência"
+    },
+    "driving_adapters": {
+      "REST_API_Adapter": "expõe ChatbotManagementPort e AccountManagementPort via HTTP/JSON para o painel web (dashboard no-code)",
+      "Webhook_Adapter_WhatsApp": "recebe eventos do WhatsApp Business API e aciona ConversationHandlingPort",
+      "Webhook_Adapter_Instagram_Messenger": "recebe eventos de Meta/Instagram e aciona ConversationHandlingPort",
+      "Widget_JS_Adapter": "endpoint chamado pelo widget de chat embutido no site do cliente, aciona ConversationHandlingPort",
+      "Scheduler_CLI_Adapter": "job agendado que aciona AnalyticsQueryPort para gerar relatórios periódicos"
+    },
+    "driven_adapters": {
+      "PostgreSQL_Adapter": "implementa ConversationRepositoryPort (persistência relacional de chatbots, fluxos, sessões)",
+      "Redis_Adapter": "implementa CachePort para sessões ativas e fluxos publicados",
+      "WhatsApp_Cloud_API_Adapter": "implementa ChannelMessagingPort para o canal WhatsApp",
+      "Meta_Messenger_API_Adapter": "implementa ChannelMessagingPort para Messenger/Instagram",
+      "OpenAI_Anthropic_NLU_Adapter": "implementa NLUProviderPort usando um LLM para reconhecimento de intenção mais flexível",
+      "SES_SendGrid_Adapter": "implementa NotificationPort para e-mails transacionais",
+      "Stripe_Adapter": "implementa BillingPort para cobrança recorrente e uso",
+      "S3_Adapter": "armazena anexos de mídia trocados nas conversas",
+      "Kafka_SQS_Adapter": "implementa AuditLogPort de forma assíncrona/duráve"
+    },
+    "application_services": "ConversationOrchestrationService: recebe mensagem via ConversationHandlingPort, carrega Sessão e Fluxo via ConversationRepositoryPort, delega a decisão de próximo passo ao domínio, chama NLUProviderPort se necessário, persiste novo estado e invoca ChannelMessagingPort para responder — nenhuma regra de negócio vive aqui, apenas coordenação e transação. ChatbotPublishingService: valida via domínio e persiste nova versão. UsageMeteringService: verifica limites do plano via domínio e reporta consumo ao BillingPort.",
+    "domain_isolation": "O domínio depende apenas de interfaces (portas) definidas por ele mesmo, escritas em termos do próprio vocabulário de negócio (ex.: 'ProximaResposta', não 'HttpResponse'). Não há import de bibliotecas de framework, SDK de nuvem, driver de banco ou SDK de IA dentro do núcleo. Toda serialização, protocolo de rede, schema de banco e formato de payload de terceiros fica exclusivamente nos adaptadores, que traduzem de/para os objetos de domínio na borda.",
+    "test_doubles": "ConversationRepositoryPort → InMemoryRepository (fake) nos testes de aplicação; ChannelMessagingPort → RecordingMessagingAdapter que apenas armazena mensagens enviadas para asserção; NLUProviderPort → StubNLU que retorna intenção pré-programada por cenário de teste (evita custo/latência de chamar LLM real); BillingPort → NoOpBilling; AuditLogPort → InMemoryAuditLog. Testes de domínio puro não usam nenhum dublê, pois o domínio não tem dependências. Testes de adaptador (ex. WhatsApp_Cloud_API_Adapter) usam contract tests contra a porta para garantir substituibilidade.",
+    "configuration_wiring": "Um Composition Root (camada de bootstrap, ex. main.ts/App Module) instancia os adaptadores concretos e os injeta nos serviços de aplicação via construtor, respeitando apenas os tipos de porta. Configuração externa (variáveis de ambiente/arquivo) escolhe qual adaptador usar por ambiente (ex. WhatsApp real em produção vs. stub em staging). Um container de DI (ou fábricas manuais) resolve o grafo de dependências uma única vez na inicialização; nenhuma classe de domínio ou de aplicação instancia um adaptador diretamente.",
+    "technology_substitution": "Trocar WhatsApp_Cloud_API_Adapter por outro provedor de mensageria (ex. Twilio) custa apenas a reimplementação do adaptador, sem tocar domínio ou aplicação — custo baixo/médio, concentrado em mapeamento de payloads e testes de contrato. Trocar PostgreSQL_Adapter por outro banco (ex. DynamoDB) exige reescrever o adaptador de persistência e possivelmente reconsiderar transações multi-agregado — custo médio. Trocar OpenAI_Anthropic_NLU_Adapter por outro LLM/motor de NLU é a mais barata, pois a porta já abstrai 'interpretar texto → intenção'; risco maior é qualidade da interpretação, não arquitetura.",
+    "symmetry": "Ambos os lados dependem apenas de portas definidas pelo núcleo, nunca o inverso: adaptadores primários (REST, webhooks) implementam a chamada às driving ports e são substituíveis por qualquer outro mecanismo de entrada sem alterar a aplicação; adaptadores secundários (banco, mensageria, IA) implementam as driven ports definidas e requeridas pela aplicação e são substituíveis sem que a aplicação saiba qual implementação está por trás. Em ambos os casos, a seta de dependência aponta para dentro (em direção às portas do domínio/aplicação), garantindo que a inversão de controle seja simétrica em ambos os lados do hexágono.",
+    "interfaces": [
+      "ChatbotManagementPort",
+      "ConversationHandlingPort",
+      "AnalyticsQueryPort",
+      "AccountManagementPort",
+      "ConversationRepositoryPort",
+      "ChannelMessagingPort",
+      "NLUProviderPort",
+      "NotificationPort",
+      "BillingPort",
+      "AuditLogPort",
+      "CachePort"
+    ],
+    "escalabilidade": "Horizontalmente: os serviços de aplicação são stateless (estado vive em PostgreSQL/Redis), permitindo múltiplas réplicas atrás de um load balancer. O ConversationOrchestrationService pode ser desacoplado por fila (ex. SQS/Kafka) entre recebimento do webhook e processamento, absorvendo picos de tráfego por canal. Sessões ativas em Redis com sharding por tenant evitam hot-keys quando um cliente grande gera volume desproporcional. Fluxos publicados (imutáveis) podem ser cacheados agressivamente por CDN/edge para os widgets JS. Multi-tenancy com isolamento lógico (schema ou tenant_id) inicialmente, migrando para isolamento físico apenas para clientes enterprise que exigirem.",
+    "custo_infra_estimado": "Servidor (app, 2-3 instâncias containerizadas, ex. Fly.io/ECS Fargate): $60-120/mês. PostgreSQL gerenciado (RDS/Neon, instância pequena): $30-50/mês. Redis gerenciado (ElastiCache/Upstash): $15-25/mês. Fila (SQS/Kafka gerenciado): $10-20/mês. S3 (mídia/anexos): $5-10/mês. CDN (Cloudflare, plano free/pro): $0-20/mês. Total infraestrutura base (antes de escalar por cliente): aproximadamente $120-245/mês para os primeiros milhares de conversas/mês.",
+    "custo_por_cliente": "Cada mensagem processada = $0.002 (NLU/LLM, ex. modelo pequeno) + $0.0005 (storage/log) + $0.0003 (compute/orquestração) + $0.005 (mensageria WhatsApp Business, tarifa por conversa iniciada pelo negócio, varia por país) ≈ $0.008/mensagem em média. Cliente PME típico com 2.000 mensagens/mês = ~$16/mês em custo variável direto. Clientes que usam apenas widget de site (sem tarifa de WhatsApp) custam ~$0.003/mensagem, ou ~$6/mês para o mesmo volume.",
+    "monetizacao": "Modelo SaaS em camadas (tiers) por volume de mensagens e recursos: Starter $29/mês (até 1.000 mensagens/mês, 1 chatbot, canal site); Growth $99/mês (até 10.000 mensagens/mês, 3 chatbots, WhatsApp + site, analytics básico); Business $299/mês (até 50.000 mensagens/mês, chatbots ilimitados, múltiplos canais, NLU com IA avançada, suporte prioritário); Enterprise sob consulta (SLA, isolamento dedicado, integrações customizadas). Mensagens excedentes cobradas como add-on (ex. $0.02/mensagem extra). Métricas-alvo: MRR inicial estimado com 100 clientes no tier Growth = $9.900/mês; CAC alvo < 3x o ticket médio mensal (ex. CAC $250 para plano $99, payback em ~2,5 meses); LTV estimado assumindo churn mensal de 4% e ticket médio $99 → LTV ≈ $99/0.04 = $2.475, dando LTV/CAC ≈ 10x, saudável para SaaS PME.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Kotlin/Spring, estruturado em módulos hexagonais explícitos (domain/application/adapters). Banco: PostgreSQL. Cache/sessões: Redis. Fila: SQS ou Kafka gerenciado. Frontend do painel no-code: React + editor visual de fluxo (ex. React Flow). NLU/IA: API de LLM (Claude/OpenAI) por trás de NLUProviderPort, com fallback a matching por regras/keywords para reduzir custo. Mensageria: WhatsApp Business Cloud API, Meta Messenger API. Infraestrutura: containers em ECS Fargate ou Fly.io, Cloudflare como CDN/WAF, S3 para mídia, Stripe para billing, Datadog/Grafana para observabilidade."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:59:08+00:00",
+    "runner": "runner.py"
+  }
+}

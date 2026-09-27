@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 77,
+  "ideia": "App de gestão de fazendas solares com monitoramento IoT",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) em Git com múltiplas implantações (dev, staging, produção, multi-tenant por região). Módulos: api-core, ingest-iot, worker-analytics, frontend-web. Cada implantação usa a mesma base de código em commits/tags diferentes.",
+    "dependencies": "Todas as dependências declaradas explicitamente (package.json/poetry.lock/go.mod) e isoladas via containers Docker; nenhuma dependência implícita do SO host. Ferramentas de sistema (ex: mosquitto, libmodbus) embutidas na imagem, nunca assumidas como pré-instaladas.",
+    "config": "Tudo que varia entre implantações fica em variáveis de ambiente: strings de conexão de banco (Postgres/TimescaleDB), chaves de API de gateways de pagamento, credenciais MQTT/broker IoT, endpoints de storage de imagens de satélite/drone, feature flags por tenant, limites de rate por plano. Nenhum config hardcoded no código.",
+    "backing_services": "Banco relacional (Postgres), banco de série temporal (TimescaleDB/InfluxDB) para telemetria dos inversores/sensores, broker de mensagens (MQTT/Kafka) para ingestão IoT, cache (Redis), storage de objetos (S3) para imagens térmicas/relatórios, serviço de e-mail/SMS para alertas — todos tratados como recursos anexáveis via URL de conexão, trocáveis sem alterar código.",
+    "build_release_run": "Pipeline CI/CD: build (compila e empacota imagem Docker imutável) → release (combina build + config do ambiente, versionado e imutável) → run (execução do release em containers orquestrados, sem alterações no runtime). Rollback trivial via reversão de release.",
+    "processes": "Processos stateless (API, workers de análise, consumidores MQTT); nenhum estado de sessão ou cache local em memória entre requisições. Estado persistente reside exclusivamente em Postgres (dados de fazendas/usuários/faturamento), TimescaleDB (séries de telemetria) e S3 (arquivos).",
+    "port_binding": "API HTTP/REST e WebSocket (para dashboards em tempo real) exportados via bind de porta própria (ex: :8080) usando servidor embutido (Uvicorn/Node), sem depender de servidor web externo injetado em runtime.",
+    "concurrency": "Escala horizontal por tipo de processo: web (API/dashboard), worker (processamento de séries temporais e geração de relatórios/ML de previsão de geração), ingest (consumidores MQTT/Kafka de dados de sensores), scheduler (jobs periódicos de faturamento e alertas). Cada tipo escala independentemente conforme carga (ex: mais ingest workers durante picos de telemetria).",
+    "disposability": "Processos iniciam em segundos (containers leves, sem estado a carregar), tratam SIGTERM para drenar filas MQTT e finalizar transações em andamento antes de encerrar; retomada robusta a falhas abruptas (crash-only design) sem perda de eventos IoT graças a filas persistentes.",
+    "dev_prod_parity": "Docker Compose local replica os mesmos backing services de produção (Postgres, TimescaleDB, Kafka/MQTT, Redis, S3 via MinIO); deploys contínuos (múltiplos por dia) reduzem gap de tempo; mesma equipe dev/ops (DevOps compartilhado) reduz gap de pessoal; mesmas versões de ferramentas entre ambientes reduzem gap de ferramentas.",
+    "logs_admin": "Logs tratados como fluxo de eventos (stdout/stderr) agregados via stack de observabilidade (ex: Loki/ELK/Datadog), nunca gravados em arquivo pelo app. Tarefas administrativas (migrações de schema, reprocessamento de telemetria, recalibração de sensores) executadas como processos pontuais (one-off) no mesmo ambiente de release, via console/CLI, isolados do código de aplicação.",
+    "interfaces": [
+      "API REST/GraphQL para integrações e frontend web",
+      "WebSocket para monitoramento em tempo real dos painéis solares",
+      "Endpoint MQTT/CoAP para ingestão de dados de sensores IoT (inversores, string boxes, estações meteorológicas)",
+      "Webhook para alertas (falhas de equipamento, quedas de geração)",
+      "Dashboard web (SPA) para operadores de fazenda",
+      "API de faturamento/billing integrada a gateway de pagamento (ex: Stripe)",
+      "Exportação de relatórios (CSV/PDF) via processo administrativo"
+    ],
+    "escalabilidade": "Escala horizontalmente adicionando instâncias de cada tipo de processo conforme o número de fazendas/sensores cresce; ingestão IoT particionada por tenant/região via Kafka topics; TimescaleDB com particionamento (hypertables) e retenção/downsampling automático para volumes crescentes de séries temporais; cache de agregações para dashboards evita recomputação constante; arquitetura multi-tenant com isolamento lógico permite onboarding de novos clientes sem redesenho.",
+    "custo_infra_estimado": "Servidores (API + workers, ex: AWS ECS/Fargate): $120/mês; Banco Postgres gerenciado (RDS): $60/mês; TimescaleDB/InfluxDB para telemetria: $80/mês; Broker MQTT/Kafka (gerenciado, ex: MSK/EMQX Cloud): $70/mês; Redis (cache): $25/mês; S3 (armazenamento de imagens/relatórios): $15/mês; CDN (CloudFront) para frontend: $10/mês; Banda/transferência de dados IoT: $20/mês. Total estimado inicial: ~$400/mês para até ~50 fazendas monitoradas.",
+    "custo_por_cliente": "Cada fazenda monitorada gera ~10.000 leituras de sensores/mês (1 leitura/min por sensor, 7 sensores médios): ingestão + storage em TimescaleDB = $0,004/leitura × 10.000 = $0,40/mês; processamento de alertas/ML de previsão = $0,05/execução × 30 execuções/mês = $1,50/mês; storage de imagens/relatórios (S3) = $0,20/mês; banda de rede = $0,10/mês. Custo total ≈ $2,20/fazenda/mês em infraestrutura pura. Com margem operacional e suporte, custo de servir ≈ $8-10/fazenda/mês.",
+    "monetizacao": "Modelo SaaS por assinatura em tiers baseados no número de fazendas/potência instalada monitorada: Starter ($49/mês, até 3 fazendas, 50 sensores), Professional ($199/mês, até 15 fazendas, 500 sensores, alertas avançados e previsão de geração via ML), Enterprise (a partir de $999/mês, fazendas ilimitadas, API dedicada, SLA e suporte prioritário). Add-ons: relatórios de compliance regulatório ($99/mês), integração com sistemas SCADA legados ($149/mês). Métricas-chave: MRR projetado de $15.000 com 100 clientes (mix de tiers); CAC estimado em $300 (vendas B2B consultivas); LTV estimado em $3.600 (churn ~3%/mês, ticket médio $150/mês, retenção ~24 meses) — LTV/CAC ≈ 12x, saudável para SaaS B2B vertical.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Node.js (NestJS) para API REST/GraphQL; Go para o serviço de ingestão IoT de alta performance. Banco: PostgreSQL (dados transacionais) + TimescaleDB (séries temporais). Mensageria: MQTT (Mosquitto/EMQX) + Kafka para pipeline de eventos. Cache: Redis. Frontend: React/Next.js com WebSocket para dashboards em tempo real. Infraestrutura: Docker + Kubernetes (ou AWS Fargate/ECS) orquestrado via CI/CD (GitHub Actions), Terraform para IaC. Observabilidade: Prometheus + Grafana + Loki. Pagamentos: Stripe Billing para assinaturas e uso métrico (usage-based) de sensores adicionais."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T21:02:39+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "iniciado_em": "2026-09-27T20:49:09+00:00",
+  "modelo": "claude-sonnet-5",
+  "modelo_avaliador": "claude-sonnet-5",
+  "cli": "2.1.283 (Claude Code)",
+  "workers": 10,
+  "eval_truncate": 0,
+  "ideias": "0-97",
+  "interrompido_por_cota": false,
+  "atualizado_em": "2026-09-27T21:15:25+00:00",
+  "fase": "eval",
+  "ultima_ideia": 75,
+  "contagem": {
+    "ok": 420,
+    "retry": 0,
+    "falha": 0,
+    "pulado": 0
+  },
+  "chars": {
+    "in": 2481786,
+    "out": 1887789
+  },
+  "concluido": true,
+  "duracao_s": 1576
+}

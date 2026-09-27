@@ -1,0 +1,37 @@
+{
+  "ideia_idx": 53,
+  "ideia": "App de rastreamento de hábitos sustentáveis com gamificação corporativa",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git, com múltiplas implantações (dev, staging, produção) a partir do mesmo código-base. Serviços logicamente distintos (API, worker de gamificação, ingestão de dados de hábitos) residem em pacotes separados dentro do mesmo repositório, cada um deployável de forma independente.",
+    "dependencies": "Dependências declaradas explicitamente via manifestos (package.json/poetry.lock ou go.mod), sem confiar em pacotes globais do sistema. Isolamento via containers Docker multi-stage, garantindo que nenhuma dependência implícita do SO seja assumida em runtime.",
+    "config": "Toda configuração (strings de conexão de banco, chaves de API de gamificação/badges, segredos JWT, URLs de webhook de RH corporativo, feature flags de programas de sustentabilidade) fica em variáveis de ambiente, nunca no código. O que varia entre implantações: credenciais de banco, domínio do tenant corporativo, limites de rate-limit por plano, chaves do provedor de e-mail/push e flags de experimentos A/B de gamificação.",
+    "backing_services": "Banco de dados (PostgreSQL), cache/fila (Redis), armazenamento de objetos (S3-compatível para relatórios de impacto ambiental), serviço de e-mail transacional, serviço de push notification e serviço de pagamentos (Stripe) são todos tratados como recursos anexados via URL/credenciais, intercambiáveis sem alteração de código.",
+    "build_release_run": "Pipeline de CI gera um artefato de build imutável (imagem Docker) a partir do código-fonte; a etapa de release combina esse build com a configuração do ambiente-alvo, gerando uma release versionada e imutável; a etapa de run apenas executa essa release nos processos, sem permitir alterações de código em runtime.",
+    "processes": "Todos os processos da API e workers de gamificação são stateless e compartilham nada entre si. Estado persistente (progresso de hábitos, streaks, pontuação, ranking corporativo, badges conquistadas) reside exclusivamente no PostgreSQL; estado efêmero de sessão/cache de leaderboard fica no Redis.",
+    "port_binding": "A aplicação é self-contained e exporta HTTP via vinculação de porta (ex.: porta 8080 configurável por variável de ambiente PORT), atuando como serviço via um servidor embutido (ex.: Uvicorn/Express), sem depender de um servidor web injetado externamente.",
+    "concurrency": "Escala horizontalmente pelo modelo de processos: processo web (API REST/GraphQL, stateless, escalado por réplicas), processo worker (processamento assíncrono de conquistas, cálculo de ranking, notificações de gamificação) e processo scheduler (jobs periódicos de reset de streaks e fechamento de desafios mensais), cada tipo escalável independentemente.",
+    "disposability": "Processos iniciam em segundos (sem estado em memória a recarregar) e respondem a SIGTERM finalizando requisições em andamento e devolvendo jobs não concluídos à fila Redis antes de encerrar, permitindo scale-down e deploys sem perda de dados de progresso do usuário.",
+    "dev_prod_parity": "Uso de Docker Compose local com os mesmos backing services (Postgres, Redis) usados em produção, eliminando divergência de ferramentas; deploys contínuos (múltiplos por dia) reduzem divergência de tempo; squads full-stack donas do ciclo completo reduzem divergência de pessoal.",
+    "logs_admin": "Logs emitidos como fluxo de eventos não-bufferizado (stdout/stderr) em formato estruturado (JSON), agregados por um coletor (ex.: Fluentd/CloudWatch/Datadog) fora da aplicação. Tarefas administrativas (migrations de schema, recalcular ranking histórico, exportar relatório de impacto ambiental) executam como processos pontuais isolados usando o mesmo código e config da release.",
+    "interfaces": [
+      "API REST/GraphQL para app mobile e web do colaborador",
+      "Dashboard administrativo para RH/gestores corporativos",
+      "Webhooks para integração com sistemas de RH (SSO/SCIM)",
+      "SDK/Widget embutível para intranets corporativas",
+      "API de integração com wearables/apps de saúde (Google Fit, Apple Health)",
+      "Painel de relatórios ESG/sustentabilidade exportável (CSV/PDF)"
+    ],
+    "escalabilidade": "Escala horizontalmente adicionando réplicas stateless dos processos web e worker atrás de um load balancer; o banco escala verticalmente e depois via read replicas; particionamento por tenant (empresa) permite isolamento de carga entre clientes grandes; cache Redis absorve leituras de ranking em tempo real, evitando pressão no banco.",
+    "custo_infra_estimado": "Servidor (2 instâncias API + 1 worker, ex. AWS Fargate/ECS): $90/mês, RDS PostgreSQL (db.t3.medium): $60/mês, Redis (ElastiCache small): $25/mês, S3 (relatórios/imagens): $8/mês, CDN (CloudFront): $12/mês, banda de saída estimada: $15/mês. Total aproximado: $210/mês para até ~5.000 usuários ativos.",
+    "custo_por_cliente": "Cada colaborador ativo gera: $0.004 (compute rateado) + $0.002 (storage de progresso/badges) + $0.001 (banda de notificações push) + $0.003 (queries de ranking em cache) = ~$0.01/usuário/mês em infraestrutura pura. Uma empresa-cliente com 200 colaboradores ativos custa aproximadamente $2/mês em infra, viabilizando margens altas nos planos B2B.",
+    "monetizacao": "Modelo B2B SaaS por assento corporativo com tiers: Starter ($3/colaborador/mês, até 100 colaboradores, gamificação básica), Business ($5/colaborador/mês, até 1.000 colaboradores, dashboards de RH e relatórios ESG), Enterprise (preço customizado, SSO, API dedicada, white-label). Métricas-alvo: ARPU médio $4/colaborador, LTV estimado de $480 por empresa-cliente (assumindo churn anual de 10% e ticket médio de 300 assentos), CAC alvo de $150 por empresa via vendas outbound + parcerias com consultorias de ESG, payback de CAC em ~1 mês de MRR.",
+    "stack_sugerida": "Backend: Node.js (NestJS) ou Python (FastAPI); Banco: PostgreSQL; Cache/Fila: Redis + BullMQ/Celery; Frontend web: React/Next.js; Mobile: React Native; Infraestrutura: Docker + AWS ECS Fargate (ou Kubernetes); Armazenamento: S3; CDN: CloudFront; Observabilidade: Datadog/Grafana+Prometheus; CI/CD: GitHub Actions; Pagamentos: Stripe Billing."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:58:11+00:00",
+    "runner": "runner.py"
+  }
+}

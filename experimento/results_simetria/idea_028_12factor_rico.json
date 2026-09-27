@@ -1,0 +1,37 @@
+{
+  "ideia_idx": 28,
+  "ideia": "SaaS de compliance LGPD automatizado para PMEs",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git, com múltiplas implantações (dev, staging, produção, e por região se necessário para conformidade LGPD). Módulos internos (API core, motor de compliance, portal do titular de dados, worker de varredura de dados) vivem no mesmo repo, mas cada implantação usa a mesma base de código em versões diferentes.",
+    "dependencies": "Todas as dependências declaradas explicitamente em manifestos (package.json/poetry.lock/go.mod) com lockfile versionado. Nenhuma dependência implícita do SO (ex: bibliotecas de OCR, PDF, criptografia) — tudo empacotado via containers Docker multi-stage, isolando runtime de build.",
+    "config": "Tudo que varia entre implantações fica em variáveis de ambiente: connection strings de banco, chaves de criptografia (KMS), URLs de webhooks, chaves de API de terceiros (ex: serviços de assinatura eletrônica, e-mail transacional), feature flags por tenant, e credenciais de integração com sistemas de RH/CRM do cliente. Nada de config hardcoded no código.",
+    "backing_services": "Banco de dados (PostgreSQL), fila de mensagens (SQS/RabbitMQ) para varredura assíncrona de dados pessoais, cache (Redis), armazenamento de objetos (S3-compatible) para evidências de conformidade e relatórios de impacto (RIPD), serviço de e-mail transacional, serviço de assinatura eletrônica — todos acessados via URL/credencial na config, trocáveis sem mudança de código.",
+    "build_release_run": "Pipeline CI/CD gera build imutável (imagem Docker com tag de commit), combina com config do ambiente para criar release versionado, e o processo de run apenas executa esse release — nunca modifica código em produção. Rollback é apenas apontar para release anterior.",
+    "processes": "Processos stateless (API, workers de varredura, gerador de relatórios). Estado persistente (dados pessoais mapeados, histórico de consentimentos, trilhas de auditoria, relatórios de impacto) fica exclusivamente no PostgreSQL e S3, nunca em memória ou disco local do processo.",
+    "port_binding": "API HTTP exporta serviço via bind em porta (ex: 8080) usando framework embutido (Express/FastAPI/Gin), sem depender de servidor web externo injetado em runtime; a própria aplicação é o serviço.",
+    "concurrency": "Escala horizontalmente por tipo de processo: web (API/portal do titular), worker (varredura de bases de dados do cliente e classificação de dados pessoais), scheduler (lembretes de prazos legais, relatórios periódicos). Cada tipo escala independente conforme carga (ex: picos de varredura vs tráfego constante de API).",
+    "disposability": "Processos iniciam em segundos (containers leves, sem estado local a carregar) e tratam SIGTERM graciosamente, finalizando jobs de varredura de forma idempotente (checkpoint em banco) antes de encerrar, permitindo scale-down e deploys sem perda de progresso.",
+    "dev_prod_parity": "Docker Compose replica localmente os mesmos backing services (Postgres, Redis, fila) usados em produção; deploys contínuos (múltiplos por dia) reduzem divergência de tempo; mesmo time (dev=ops) reduz divergência de pessoal; mesmas imagens e IaC (Terraform) do dev à produção reduzem divergência de ferramentas.",
+    "logs_admin": "Logs tratados como stream de eventos (stdout/stderr) agregados via ferramenta externa (ex: Datadog/ELK), incluindo trilha de auditoria de acesso a dados pessoais como log estruturado. Tarefas administrativas (reprocessar varredura, exportar relatório de titular, expurgo de dados) rodam como processos pontuais (one-off) no mesmo ambiente de release, via CLI/job runner.",
+    "interfaces": [
+      "API REST/GraphQL para integração com sistemas do cliente (RH, CRM, ERP)",
+      "Portal web para DPO (Encarregado) gerenciar mapeamento de dados e incidentes",
+      "Portal de atendimento ao titular de dados (exercício de direitos LGPD)",
+      "Webhooks para notificação de incidentes e prazos",
+      "Dashboard de conformidade e relatórios de auditoria",
+      "Integração com serviços de assinatura eletrônica para termos de consentimento"
+    ],
+    "escalabilidade": "Escala horizontal por tipo de processo (stateless), com sharding de banco por tenant conforme volume cresce, filas para desacoplar varreduras pesadas de dados do caminho síncrono da API, e cache para relatórios frequentes. Multi-tenancy com isolamento lógico (schema por cliente) migrável para isolamento físico em clientes enterprise.",
+    "custo_infra_estimado": "Servidor (containers em ECS/Fargate ou similar): $80/mês; RDS PostgreSQL (db.t3.medium multi-AZ): $120/mês; Redis (ElastiCache): $30/mês; S3 (armazenamento de evidências/relatórios): $15/mês; CDN (CloudFront): $10/mês; Fila (SQS): $5/mês; Total estimado: ~$260/mês para carga inicial (até ~200 clientes)",
+    "custo_por_cliente": "Cada varredura de dados pessoais = $0.02 (CPU worker) + $0.01 (storage de evidência) + $0.005 (fila) = $0.035/varredura. Cliente médio PME com 4 varreduras/mês + portal de titular (10 solicitações/mês a $0.01 cada) = 4×$0.035 + 10×$0.01 = $0.14 + $0.10 = $0.24/mês em custo variável direto, mais rateio de infraestrutura fixa ($260/200 clientes) = ~$1.30/mês fixo. Custo total aproximado: ~$1.54/cliente/mês",
+    "monetizacao": "Modelo SaaS em camadas (tiers) por número de titulares de dados e funcionalidades: Starter ($99/mês, até 5.000 titulares, mapeamento básico + portal do titular); Professional ($299/mês, até 50.000 titulares, relatórios de impacto, gestão de incidentes, integrações); Enterprise ($799+/mês, ilimitado, SLA, isolamento dedicado, suporte a auditoria). Métricas-alvo: MRR crescendo com upsell de tier; LTV estimado em $3.600 (24 meses de retenção média × $150 ticket médio); CAC alvo de $400 via marketing de conteúdo e parcerias com contadores/escritórios jurídicos, resultando em LTV:CAC de 9:1",
+    "stack_sugerida": "Backend: Node.js (NestJS) ou Python (FastAPI); Banco: PostgreSQL (dados relacionais + auditoria) com criptografia em repouso; Cache/Fila: Redis + SQS/RabbitMQ; Frontend: React/Next.js; Infraestrutura: Docker + Kubernetes ou AWS Fargate, Terraform para IaC; Armazenamento: S3 com criptografia KMS; Observabilidade: Datadog/Grafana + Loki; Autenticação: Auth0/Keycloak com MFA; Assinatura eletrônica: integração com provedor certificado (ex: Clicksign/DocuSign) para consentimentos"
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:55:25+00:00",
+    "runner": "runner.py"
+  }
+}

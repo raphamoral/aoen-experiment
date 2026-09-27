@@ -1,0 +1,58 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "evolutionary_rico",
+  "response": {
+    "architectural_quantum": "O quantum é o serviço de 'Matching' com seu próprio banco de dados (perfis de startups, teses de investimento, histórico de interações) e contrato de API assíncrono via eventos (match.proposed, match.accepted). É independentemente implantável porque encapsula dados + comportamento + contrato, sem depender de deploy síncrono de outros serviços (Perfis, Mensageria, Pagamentos/Billing, Compliance/KYC). Cada um desses também é seu próprio quantum menor, comunicando-se por contratos versionados (REST/eventos), permitindo evolução e deploy independentes.",
+    "fitness_functions": {
+      "atomicas_disparadas_em_pipeline": [
+        "Latência do algoritmo de matching (p95 < 800ms) — testes de carga automatizados a cada deploy",
+        "Cobertura de contrato de API (Pact/OpenAPI diff) — impede breaking changes entre Perfis, Matching e Mensageria",
+        "Score de qualidade de dados de KYC/compliance (% de perfis de investidor com documentação válida) — verificado via job noturno",
+        "Ausência de PII em logs (regex/DLP scan) — bloqueia merge se detectar CPF/CNPJ/e-mail em texto puro"
+      ],
+      "holisticas_continuas": [
+        "Taxa de match->conexão efetiva (KPI de negócio) monitorada em dashboard, alerta se cair 15% semana a semana",
+        "Tempo de resposta de investidor a propostas (SLA de engajamento) monitorado via métrica de produto",
+        "Teste de disaster recovery trimestral (RPO/RTO) validando que backups restauram em < 4h"
+      ],
+      "temporais": [
+        "Fitness function 'sunset check': alerta trimestral se algoritmo de matching baseado em regras ainda estiver em produção além do prazo planejado para migração a ML"
+      ]
+    },
+    "evolvable_dimensions": {
+      "tecnica": "Início com matching baseado em regras (filtros por setor/região/ticket) evoluindo para modelo de ML de recomendação conforme volume de dados cresce",
+      "dados": "Esquema de perfil de startup/investidor evolui de campos fixos para um modelo mais flexível (tags, atributos dinâmicos) à medida que novos critérios de matching surgem",
+      "seguranca": "De autenticação simples (e-mail/senha) para MFA obrigatório e verificação de identidade (KYC) reforçada conforme volume financeiro e exigências regulatórias (LGPD, CVM) aumentam",
+      "operacional": "De deploy manual/monolito modular para pipelines de CI/CD com fitness functions automatizadas e observabilidade distribuída conforme número de squads cresce"
+    },
+    "incremental_change": "Mudanças são feitas via pequenos lotes guiados por hipóteses de produto, cada uma validada por fitness functions antes de promoção entre ambientes (dev -> staging -> canary -> produção). Uso de feature flags para expor novos algoritmos de matching a um subconjunto de investidores/startups, com rollback automático caso métricas de fitness (latência, taxa de match) degradem além de um limiar definido.",
+    "coupling_management": "Acoplamento aferente alto é aceito no serviço de Perfis (muitos consumidores: Matching, Busca, Analytics) e mitigado por contratos versionados e eventos assíncronos (event sourcing) em vez de chamadas síncronas diretas. Acoplamento eferente é deliberadamente baixo em Matching e Mensageria, que dependem de interfaces abstratas (ports/adapters) para provedores externos (KYC, pagamentos, e-mail), permitindo trocar fornecedores sem impacto no core. Acoplamento é medido continuamente (afferent/efferent coupling metrics) e vira fitness function para times que ultrapassam limites definidos de dependências cruzadas.",
+    "deployment_pipeline": "Pipeline CI/CD (ex: GitHub Actions) com estágios: build -> testes unitários -> testes de contrato (Pact) -> fitness functions de performance e segurança -> deploy canário (5% tráfego) -> fitness functions de negócio monitoradas por 30min -> promoção completa ou rollback automático. Fitness functions rodam também de forma contínua em produção (jobs agendados) e disparam alertas/circuit breakers independentemente de novos deploys.",
+    "data_evolution": "Uso de migrações expand-contract: novos campos são adicionados como opcionais (expand), código é atualizado para ler/escrever ambos os formatos, dados históricos são migrados em background, e só então campos antigos são removidos (contract). Eventos de domínio versionados (schema registry) permitem que consumidores evoluam em ritmos diferentes. Zero-downtime via migrações reversíveis e feature flags que alternam entre schema antigo e novo.",
+    "experimentation": "Hipóteses de produto (ex: 'matching por afinidade de valores aumenta taxa de conexão') são testadas via A/B testing habilitado por feature flags no serviço de Matching, com métricas de fitness de negócio coletadas por coorte. Ambientes de sandbox isolados permitem simular volumes de dados sintéticos antes de expor a usuários reais.",
+    "sacrificial_parts": "O motor de matching baseado em regras é deliberadamente descartável, projetado para ser substituído por um modelo de ML assim que houver volume suficiente de dados de interação (~6-12 meses ou 5.000+ matches). O MVP de onboarding manual de KYC (revisão humana) é sacrificial e será substituído por verificação automatizada via provedor terceirizado quando o volume de investidores ultrapassar a capacidade da equipe de compliance.",
+    "guardrails": "Gates automatizados no pipeline que bloqueiam merge/deploy se fitness functions falharem (contrato quebrado, PII exposta, latência acima do SLA). Revisão arquitetural trimestral (ADR review) para evitar duplicação de lógica de negócio entre serviços. Linting de dependências para impedir acoplamento cíclico entre bounded contexts. Política de 'no breaking changes sem versionamento' aplicada via testes de contrato obrigatórios.",
+    "tradeoffs": "Prioriza-se desacoplamento e evolutividade sobre performance máxima nos primeiros estágios (ex: comunicação assíncrona via eventos gera latência maior que chamadas síncronas, mas permite evolução independente). Segurança/compliance (KYC rigoroso) é priorizada sobre velocidade de onboarding, aceitando fricção inicial em favor de confiança no marketplace. Flexibilidade de esquema de dados é trocada por maior complexidade operacional (schema registry, migrações expand-contract).",
+    "interfaces": [
+      "API REST/GraphQL de Perfis (startups e investidores)",
+      "API assíncrona de Matching (eventos match.proposed, match.accepted, match.rejected)",
+      "API de Mensageria/Chat entre partes conectadas",
+      "API de KYC/Compliance (integração com provedor terceirizado)",
+      "API de Billing/Assinatura (integração com Stripe)",
+      "API de Analytics/Dashboard para métricas de engajamento",
+      "Webhook público para integrações externas (CRMs de fundos de investimento)"
+    ],
+    "escalabilidade": "Escala horizontalmente por bounded context: serviço de Matching escala independentemente via filas (ex: SQS/Kafka) e workers stateless conforme volume de propostas cresce; banco de dados de Perfis usa read replicas e cache (Redis) para buscas frequentes; CDN para assets estáticos e páginas de perfil público; sharding geográfico (por região de investidor-anjo) pode ser introduzido conforme expansão internacional, já que o domínio é inerentemente regional.",
+    "custo_infra_estimado": "Servidor (containers em ECS/Fargate ou similar, 2-4 instâncias): $80-150/mês; Banco de dados (RDS PostgreSQL, instância pequena com read replica): $60-100/mês; Fila de eventos (SQS/Kafka gerenciado): $20-40/mês; Cache (Redis/ElastiCache): $25/mês; Armazenamento (S3 para documentos KYC e pitch decks): $10-15/mês; CDN (CloudFront): $10-20/mês; Observabilidade (logs/métricas, ex: Datadog básico): $30-50/mês. Total estimado inicial: ~$235-400/mês para até ~5.000 usuários ativos.",
+    "custo_por_cliente": "Cada operação de matching = $0.004 (compute do algoritmo/worker) + $0.001 (leitura/escrita no banco) + $0.0005 (mensageria de evento) = ~$0.0055/match. Cada verificação de KYC via provedor terceirizado = $1.50-3.00/verificação (custo dominante, cobrado uma vez por investidor). Cliente investidor com 20 matches/mês + 1 KYC no onboarding: (20 x $0.0055) + $2.00 (KYC amortizado) ≈ $2.11/mês nos primeiros meses, caindo para ~$0.11/mês após onboarding.",
+    "monetizacao": "Modelo freemium + assinatura em camadas: (1) Startup Free — perfil básico, até 3 matches ativos/mês; (2) Startup Pro — $99/mês, matches ilimitados, analytics de investidores, destaque no marketplace; (3) Investidor-Anjo — $149/mês, acesso a dealflow filtrado por tese, alertas personalizados; (4) Investidor Institucional/Family Office — $499/mês, API de integração com CRM, relatórios agregados de mercado regional. Métricas-chave: MRR projetado com 200 startups Pro + 100 investidores em 12 meses ≈ $34.700/mês; CAC estimado via marketing direcionado a hubs de inovação regionais: $150-300/cliente pago; LTV médio (churn ~4%/mês, ticket médio $180) ≈ $4.500, resultando em LTV:CAC de ~15:1, saudável para expansão.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Python (FastAPI) por serviço, com PostgreSQL como banco primário e Redis para cache/filas leves; Kafka ou AWS SQS/SNS para eventos entre bounded contexts; Frontend: React/Next.js; Infraestrutura: AWS (ECS Fargate ou EKS), Terraform para IaC; CI/CD: GitHub Actions com testes de contrato (Pact); Observabilidade: OpenTelemetry + Datadog/Grafana; Pagamentos: Stripe Billing; KYC: provedor terceirizado especializado (ex: integração via API) para verificação de investidores credenciados."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "25a60daee261",
+    "gerado_em": "2026-09-27T20:51:58+00:00",
+    "runner": "runner.py"
+  }
+}

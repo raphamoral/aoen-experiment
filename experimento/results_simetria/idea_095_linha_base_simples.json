@@ -1,0 +1,29 @@
+{
+  "ideia_idx": 95,
+  "ideia": "Plataforma de telemedicina especializada em dermatologia com análise de imagem",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma de telemedicina especializada em dermatologia, permitindo que pacientes enviem fotos de lesões/condições de pele, recebam triagem por IA (classificação de risco e sugestão de especialidade) e sejam conectados a dermatologistas para teleconsulta (vídeo, chat, laudo assíncrono). Inclui prontuário eletrônico, histórico de evolução de lesões (comparação temporal de fotos), prescrição digital e emissão de laudos.",
+    "como_comecar": "1) Validar o problema com poucos dermatologistas parceiros e um MVP simples: upload de foto + formulário clínico + resposta assíncrona de um médico (sem IA ainda). 2) Modelar o domínio (paciente, médico, consulta, laudo, imagem). 3) Implementar autenticação e conformidade básica com LGPD/HIPAA-like desde o dia 1 (dados sensíveis de saúde). 4) Só depois introduzir o modelo de análise de imagem como apoio (não substituto) ao diagnóstico médico.",
+    "tecnologias": "Backend em Node.js (NestJS) ou Python (FastAPI/Django) para APIs REST/GraphQL; fila de mensagens (SQS/RabbitMQ) para processamento assíncrono de imagens; modelo de visão computacional (CNN customizada ou fine-tuning de modelo pré-treinado tipo EfficientNet/ViT) servido via serviço dedicado (TorchServe/BentoML) ou API de terceiros; WebRTC (via Twilio/Daily.co/Agora) para videoconsulta; frontend em React/Next.js (web) e React Native/Flutter (mobile); infraestrutura em containers (Docker/Kubernetes) na nuvem.",
+    "banco_dados": "PostgreSQL como banco relacional principal (pacientes, médicos, consultas, prescrições) com criptografia em repouso; armazenamento de imagens em object storage (S3/GCS) com URLs assinadas e criptografia, nunca no banco relacional; metadados de imagens e resultados de IA em tabelas relacionadas; cache com Redis para sessões e filas; logs de auditoria em armazenamento append-only separado para rastreabilidade (compliance).",
+    "interfaces": [
+      "App/portal do paciente (upload de fotos, agendamento, chat, videochamada, histórico)",
+      "Painel do dermatologista (fila de casos, visualização de imagens com zoom/comparação, laudo, prescrição)",
+      "Dashboard administrativo (gestão de médicos, faturamento, métricas, compliance)",
+      "API pública/parceiros (integração com clínicas, planos de saúde, ERPs médicos)",
+      "App mobile para captura de imagem com padronização de qualidade (guia de enquadramento/iluminação)"
+    ],
+    "usuarios": "Pacientes buscando triagem ou consulta dermatológica; dermatologistas e outros médicos parceiros; administradores da plataforma e operações clínicas; potencialmente planos de saúde e clínicas parceiras via integração B2B2C.",
+    "escalabilidade": "Sim: separar o pipeline de análise de imagem (compute-intensivo, GPU) do restante da aplicação, escalando-o de forma independente e sob demanda (autoscaling, serverless GPU ou spot instances); usar CDN para entrega de imagens; particionar dados por região se houver expansão internacional (residência de dados por regulação local); arquitetura orientada a eventos para desacoplar upload, processamento de IA e notificação; cache agressivo de resultados e read-replicas no banco para picos de leitura.",
+    "custos": "Sim — principais centros de custo: armazenamento de imagens médicas (alto volume, retenção longa por exigência regulatória), inferência de IA (GPU sob demanda), infraestrutura de videochamada (custo por minuto via provedores como Twilio), compliance e auditoria (LGPD/HIPAA), e custos de aquisição/retenção de médicos parceiros. Mitigar com processamento em lote quando possível, modelos otimizados (quantização) e tiers de armazenamento (quente/frio) para imagens antigas.",
+    "monetizacao": "Modelo híbrido: assinatura mensal para pacientes (acesso a triagem por IA + consultas ilimitadas ou com limite), pagamento por consulta avulsa (fee-per-visit) para não assinantes, comissão sobre repasse aos médicos parceiros, planos B2B2C com operadoras de saúde e clínicas (white-label ou parceria), e upsell de serviços como acompanhamento contínuo de lesões e emissão de laudos para terceiros.",
+    "stack_sugerida": "Frontend: Next.js + React Native/Flutter. Backend: FastAPI (Python) para se beneficiar do ecossistema de ML, ou NestJS (Node.js) para o core transacional, com serviço de IA isolado em Python. Banco: PostgreSQL + Redis + S3/GCS para imagens. IA: PyTorch com modelo de visão treinado/fine-tuned, servido via BentoML/TorchServe. Videochamada: Twilio Video ou Daily.co. Infraestrutura: AWS ou GCP com Kubernetes (EKS/GKE), filas via SQS/EventBridge ou Kafka, observabilidade com Datadog/Grafana. Pagamentos: Stripe (assinaturas e cobrança por consulta) — requer atenção a compliance de dados de saúde ao integrar."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T21:07:55+00:00",
+    "runner": "runner.py"
+  }
+}

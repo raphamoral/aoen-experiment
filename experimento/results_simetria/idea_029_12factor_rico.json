@@ -1,0 +1,39 @@
+{
+  "ideia_idx": 29,
+  "ideia": "Marketplace de profissionais de energia solar para residências",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Um único repositório versionado (monorepo ou repositórios por serviço com versionamento sincronizado) contendo web app do cliente, web app do profissional, API e painel admin. Múltiplos deploys (dev, staging, produção) rodam a mesma base de código em diferentes commits/tags, nunca código divergente por ambiente.",
+    "dependencies": "Dependências declaradas explicitamente em manifests com lockfile (package.json/poetry.lock/go.sum) e isoladas em imagens Docker imutáveis — nada é assumido do SO hospedeiro (bibliotecas de geoprocessamento, SDK de pagamento, motor de cálculo de irradiação solar entram como pacotes versionados, não como binários do sistema).",
+    "config": "Toda configuração fica em variáveis de ambiente: strings de conexão do banco, chaves da API de geolocalização (mapa de telhados), credenciais do Stripe Connect (test/live), JWT secret, rate limits e feature flags. O que varia entre deploys: URLs de banco/Redis, chaves de API por ambiente, domínio, nível de log, limites de concorrência — nunca lógica de negócio.",
+    "backing_services": "PostgreSQL (usuários, leads, propostas, contratos), Redis (cache e filas de jobs), armazenamento de objetos tipo S3 (fotos de telhado, certificações, PDFs de proposta), serviço de e-mail transacional, serviço de geocodificação/mapas, e gateway de pagamento com split (Stripe Connect) — todos acessados via URL/credencial em config e substituíveis sem alterar código.",
+    "build_release_run": "Build: pipeline CI compila código e assets em imagem Docker imutável e roda testes automatizados. Release: a imagem é combinada com config do ambiente-alvo, gerando uma release única e versionada (ex.: v1.4.2-prod). Run: o orquestrador (Kubernetes/ECS) apenas executa releases já prontas, sem build nem alteração de código em runtime.",
+    "processes": "Processos de API, workers de matching e geração de propostas são stateless, sem afinidade de sessão. Estado persistente reside no PostgreSQL (dados transacionais) e no armazenamento de objetos (arquivos); sessões e tokens ficam em Redis/JWT, nunca em memória local do processo.",
+    "port_binding": "Cada serviço (API de clientes/profissionais, worker de matching, painel admin) é autocontido e expõe HTTP fazendo bind em uma porta própria (ex.: :8080); um load balancer/API gateway apenas roteia tráfego externo até a porta exportada.",
+    "concurrency": "Escala horizontal por tipo de processo: web (requisições de clientes e profissionais), worker (matching de leads, cálculo de economia/ROI solar, geração de PDF de proposta), scheduler (lembretes, follow-up de propostas). Cada tipo escala independentemente conforme a carga (ex.: mais workers em picos de captação de leads).",
+    "disposability": "Containers iniciam em segundos e respondem a SIGTERM finalizando requisições em curso e devolvendo jobs de fila (ex.: cálculo de proposta em andamento) antes de encerrar; filas idempotentes garantem recuperação segura em caso de crash abrupto.",
+    "dev_prod_parity": "Docker Compose local replica os mesmos backing services de produção (Postgres, Redis, mocks de Stripe Connect e Maps API); deploys contínuos (múltiplas vezes ao dia) reduzem o gap de tempo, o mesmo time de dev realiza o deploy (reduz gap de pessoal), e as mesmas ferramentas/versões são usadas em todos os ambientes (reduz gap de ferramentas).",
+    "logs_admin": "Logs são emitidos como stream de eventos para stdout/stderr e agregados externamente (ex.: Datadog/ELK), sem a aplicação gerenciar arquivos de log. Tarefas administrativas (migrações de schema, reprocessamento de propostas, importação em massa de instaladores) rodam como processos pontuais (one-off) no mesmo ambiente e release, via CLI.",
+    "interfaces": [
+      "Web app do cliente residencial (solicitação de orçamento, comparação de propostas)",
+      "Web app do profissional/instalador (gestão de leads, envio de propostas, agenda)",
+      "Painel administrativo (curadoria de profissionais, disputas, financeiro)",
+      "API pública REST/GraphQL para integrações e app mobile",
+      "App mobile do profissional (notificação de novos leads)",
+      "Webhooks (Stripe Connect para pagamentos/repasses, assinatura eletrônica de contrato)",
+      "Serviço de mensageria interna cliente-profissional",
+      "Sistema de avaliações e reputação dos instaladores"
+    ],
+    "escalabilidade": "Arquitetura de processos stateless com backing services gerenciados permite escalar horizontalmente adicionando réplicas por tipo de processo sem mudança estrutural. O crescimento de clientes aumenta tráfego web e volume de jobs (matching, cálculo de proposta), absorvido por autoscaling de workers; o banco escala verticalmente até necessitar read-replicas/sharding por região geográfica, já que o marketplace é naturalmente particionável por localidade (bacias de instaladores locais).",
+    "custo_infra_estimado": "Servidores (containers web+workers, ex. AWS ECS/Fargate): $80-150/mês; Banco (RDS PostgreSQL, instância pequena): $40-70/mês; Redis (ElastiCache): $15-25/mês; Armazenamento S3 (fotos/documentos): $10-20/mês; CDN (Cloudflare, plano básico/pro): $0-20/mês; Banda/transferência: $10-15/mês; Total estimado inicial: aproximadamente $155-300/mês para MVP com baixo-médio tráfego.",
+    "custo_por_cliente": "Cada solicitação de orçamento processada = $0.02 (geocodificação/mapa) + $0.015 (cálculo de irradiação/ROI solar) + $0.005 (armazenamento de fotos) + $0.01 (e-mail/notificações) = $0.05/lead. Um cliente residencial típico gera 1 lead único (não recorrente); já um profissional ativo recebendo 20 leads/mês custa 20 x $0.05 = $1.00/mês em processamento, mais custo de transação de pagamento (Stripe Connect: ~2.9%+$0.30 por cobrança) quando há repasse de comissão.",
+    "monetizacao": "Modelo híbrido de marketplace: (1) Comissão de 5-10% sobre o valor do contrato fechado entre cliente e instalador, cobrada via Stripe Connect no momento do pagamento; (2) Assinatura para profissionais em tiers — Básico (grátis, leads limitados), Pro ($49/mês, leads ilimitados + destaque), Premium ($149/mês, leads exclusivos por região + relatórios); (3) Lead fee opcional por contato qualificado ($5-15/lead) para quem não assina. Métricas-chave: MRR estimado inicial de $2-5k com 50-100 profissionais pagantes; LTV de um profissional Pro (~24 meses de retenção) ≈ $1.176; CAC alvo abaixo de $150 via marketing direcionado a instaladores regionais.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Python (FastAPI/Django) expondo API REST/GraphQL; Frontend: Next.js/React para web app de clientes e profissionais; Banco: PostgreSQL (com PostGIS para geolocalização); Cache/filas: Redis + BullMQ/Celery; Armazenamento: Amazon S3; Pagamentos: Stripe Connect (split payments para marketplace); Infra: Docker + Kubernetes ou AWS Fargate, CI/CD via GitHub Actions; Observabilidade: Datadog ou Grafana+Loki; CDN: Cloudflare."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:56:34+00:00",
+    "runner": "runner.py"
+  }
+}

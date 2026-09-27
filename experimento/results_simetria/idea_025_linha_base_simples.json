@@ -1,0 +1,29 @@
+{
+  "ideia_idx": 25,
+  "ideia": "SaaS de otimização de rotas para coleta de lixo reciclável",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS B2B que otimiza rotas de coleta de lixo reciclável para cooperativas, empresas de coleta e prefeituras, combinando geolocalização de pontos de coleta, previsão de volume de resíduos, e algoritmos de roteirização para reduzir distância percorrida, tempo e emissão de CO2, com rastreamento em tempo real dos veículos e dashboard de indicadores (rotas, custos, toneladas coletadas).",
+    "como_comecar": "Validar o problema com 2-3 cooperativas/empresas de coleta reais (entrevistas), mapear o fluxo atual de coleta manual, e construir um MVP focado em uma única funcionalidade core: cadastro de pontos de coleta + geração automática de rota otimizada diária via API de roteirização, testando com uma frota pequena antes de expandir para rastreamento em tempo real e analytics.",
+    "tecnologias": "Backend em Node.js (NestJS) ou Python (FastAPI/Django) para APIs; motor de otimização de rotas usando OR-Tools (Google) ou VROOM para VRP (Vehicle Routing Problem); mapas e geocodificação via Google Maps Platform ou Mapbox/OSRM (open-source, mais barato em escala); frontend em React/Next.js para dashboard web; app mobile para motoristas em React Native ou Flutter; filas assíncronas com Redis/BullMQ para processar cálculos de rota; WebSockets para rastreamento em tempo real.",
+    "banco_dados": "PostgreSQL com extensão PostGIS para dados geoespaciais (pontos de coleta, rotas, zonas); Redis para cache de rotas calculadas e filas de jobs; time-series (TimescaleDB ou InfluxDB) para histórico de telemetria dos veículos (GPS, volume coletado); armazenamento de objetos (S3/Cloudflare R2) para comprovantes fotográficos e relatórios.",
+    "interfaces": [
+      "Dashboard web (gestores/operadores): cadastro de pontos, geração e visualização de rotas, relatórios",
+      "App mobile para motoristas/coletores: rota do dia, check-in de coleta, navegação",
+      "Painel administrativo multi-tenant para prefeituras/cooperativas gerenciarem suas frotas",
+      "API pública para integração com ERPs municipais ou sistemas de logística existentes",
+      "Portal simplificado para geradores de resíduos (empresas parceiras) solicitarem coleta"
+    ],
+    "usuarios": "Cooperativas de catadores, empresas privadas de coleta seletiva, prefeituras e órgãos públicos de gestão de resíduos, e indiretamente geradores de resíduos (condomínios, indústrias, comércios) que contratam o serviço de coleta.",
+    "escalabilidade": "Sim: arquitetura multi-tenant desde o início (isolamento lógico por tenant_id), separação do serviço de otimização de rotas como microsserviço independente (stateless, escalável horizontalmente e sob demanda via filas), cache agressivo de cálculos geoespaciais, particionamento de dados por região/cidade, e uso de CDN para assets do dashboard; migrar cálculos pesados de VRP para workers dedicados que escalam conforme fila.",
+    "custos": "Sim: principais custos variáveis são chamadas de API de mapas/geocodificação (mitigar com OSRM/OSM self-hosted em escala), infraestrutura cloud (compute para otimização de rotas é CPU-intensivo), armazenamento de dados de telemetria histórica, e custo de suporte/onboarding de clientes com baixa maturidade digital (cooperativas). Modelo de precificação deve cobrir esses custos variáveis por volume de rotas/veículos.",
+    "monetizacao": "Assinatura SaaS em camadas por número de veículos/rotas ativas (ex: Starter, Pro, Enterprise), com cobrança adicional por veículo extra ou volume de otimizações; modelo freemium para cooperativas pequenas (impacto social) financiado por contratos maiores com prefeituras e empresas; possível receita adicional via marketplace de créditos de reciclagem ou relatórios ESG para empresas parceiras.",
+    "stack_sugerida": "Backend: NestJS (Node.js/TypeScript) + FastAPI (Python) para o motor de otimização; Otimização de rotas: OR-Tools ou VROOM; Banco: PostgreSQL + PostGIS, Redis, TimescaleDB; Mapas: Mapbox ou OSRM self-hosted; Frontend: Next.js + Tailwind + shadcn/ui; Mobile: Flutter; Infraestrutura: Docker + Kubernetes (ou AWS ECS), filas com BullMQ/RabbitMQ; Pagamentos/billing: Stripe Billing; Observabilidade: Grafana + Prometheus."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:54:11+00:00",
+    "runner": "runner.py"
+  }
+}

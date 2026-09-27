@@ -1,0 +1,43 @@
+{
+  "ideia_idx": 25,
+  "ideia": "SaaS de otimização de rotas para coleta de lixo reciclável",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Coletor, Rota, PontoDeColeta, Veiculo, Residuo, Janela de Tempo. Regras: cálculo de sequência ótima de paradas respeitando capacidade do veículo, janelas de disponibilidade dos pontos, tipos de resíduo compatíveis e restrições de distância/tempo máximo de jornada; recalculo de rota quando um ponto é adicionado, removido ou marcado como coletado; validação de que uma rota não excede capacidade ou jornada legal do motorista; priorização de pontos por volume acumulado ou tempo desde última coleta. Nenhuma regra referencia banco de dados, fila, mapa externo ou protocolo de rede.",
+    "driving_ports": "PlanejarRotaPort (recebe pontos e veículos disponíveis, devolve rota otimizada), RegistrarColetaPort (marca ponto como coletado e dispara recalculo se necessário), GerenciarPontoDeColetaPort (cadastro/edição/remoção de pontos), ConsultarRotaPort (status e sequência atual de uma rota), GerenciarVeiculoPort (cadastro de frota e capacidades)",
+    "driven_ports": "RepositorioRotaPort, RepositorioPontoDeColetaPort, RepositorioVeiculoPort, CalculadoraDistanciaPort (abstrai motor de geolocalização/matriz de distâncias), NotificadorPort (avisa coletores/gestores), PublicadorEventoPort (eventos de domínio como RotaRecalculada, ColetaRegistrada), RelogioPort (fonte de tempo testável)",
+    "driving_adapters": "API REST/GraphQL para app web de gestores (CRUD de pontos, veículos, disparo de planejamento); App mobile do coletor (consome RegistrarColetaPort e ConsultarRotaPort via API); CLI administrativa para operações em lote; Webhook receiver para integrações municipais que cadastram pontos automaticamente",
+    "driven_adapters": "PostgresRepositorioRotaAdapter, PostgresRepositorioPontoDeColetaAdapter, PostgresRepositorioVeiculoAdapter, GoogleMapsCalculadoraDistanciaAdapter (ou OSRM/Mapbox alternativo), SQSPublicadorEventoAdapter, FirebasePushNotificadorAdapter, SystemClockRelogioAdapter",
+    "application_services": "PlanejamentoRotaService (orquestra: busca pontos e veículos via repositórios, delega cálculo de sequência ao domínio, persiste resultado, publica evento), RegistroColetaService (orquestra: valida coleta no domínio, persiste, decide se aciona recalculo, notifica), CadastroPontoService (orquestra validação e persistência de pontos) — cada serviço apenas coordena chamadas às portas, toda decisão de negócio vive nas entidades/serviços de domínio internos",
+    "domain_isolation": "O núcleo depende apenas de interfaces (portas) definidas por ele mesmo, nunca de bibliotecas de infraestrutura. Tipos primitivos e Value Objects próprios (Coordenada, Capacidade, JanelaDeTempo) substituem tipos de frameworks. Nenhuma anotação de ORM, SDK de mapas ou cliente HTTP aparece no domínio; toda comunicação externa é injetada via construtor através das portas secundárias.",
+    "test_doubles": "Para portas de entrada: testes de aceitação chamam os serviços de aplicação diretamente, sem HTTP real. Para portas de saída: FakeRepositorioRotaAdapter (in-memory), FakeCalculadoraDistanciaAdapter (retorna distâncias fixas determinísticas), FakeNotificadorAdapter (apenas registra chamadas), FakeRelogioAdapter (tempo controlável) — todos implementando os mesmos contratos das portas, permitindo testar o domínio e os serviços sem infraestrutura real.",
+    "configuration_wiring": "Um Composition Root (ex.: main.go, app.module.ts ou bootstrap.py) instancia os adaptadores concretos conforme variáveis de ambiente/configuração, injeta-os nos serviços de aplicação via construtor, e registra os adaptadores primários (controllers REST) apontando para esses serviços já montados. Nenhuma camada de domínio ou aplicação instancia adaptadores diretamente — apenas recebe interfaces já resolvidas.",
+    "technology_substitution": "Trocar Google Maps por OSRM/Mapbox: custo baixo, apenas novo adaptador de CalculadoraDistanciaPort. Trocar Postgres por DynamoDB: custo médio-alto, exige reescrever adaptadores de repositório e possivelmente revisar modelagem de consultas, mas domínio permanece intacto. Trocar API REST por gRPC: custo baixo, novo adaptador primário reaproveitando os mesmos serviços de aplicação. Trocar fila SQS por Kafka: custo baixo-médio, apenas novo PublicadorEventoAdapter.",
+    "symmetry": "Portas primárias e secundárias são ambas interfaces definidas pelo domínio/aplicação; adaptadores primários traduzem protocolo externo (HTTP, CLI, mobile) para chamadas de porta primária, enquanto adaptadores secundários traduzem chamadas de porta secundária para protocolo externo (SQL, HTTP de terceiros, push). Em nenhum dos lados a aplicação conhece o adaptador concreto — apenas o contrato — preservando a mesma distância arquitetural de ambos os lados do núcleo.",
+    "interfaces": [
+      "PlanejarRotaPort",
+      "RegistrarColetaPort",
+      "GerenciarPontoDeColetaPort",
+      "ConsultarRotaPort",
+      "GerenciarVeiculoPort",
+      "RepositorioRotaPort",
+      "RepositorioPontoDeColetaPort",
+      "RepositorioVeiculoPort",
+      "CalculadoraDistanciaPort",
+      "NotificadorPort",
+      "PublicadorEventoPort",
+      "RelogioPort"
+    ],
+    "escalabilidade": "Horizontal: serviços de aplicação são stateless e podem escalar via múltiplas instâncias atrás de load balancer; cálculo de otimização de rotas (NP-difícil) é isolado em workers assíncronos consumidos via fila, permitindo escalar separadamente do tráfego web; particionamento de dados por município/cidade reduz contenção no banco; cache de matriz de distâncias evita recomputar chamadas caras à API de mapas; read replicas do Postgres para consultas de status de rota.",
+    "custo_infra_estimado": "Servidor (API + workers, 2-4 instâncias pequenas): $60-120/mês; RDS Postgres (db.t3.medium): $60/mês; Fila (SQS/RabbitMQ gerenciado): $10-20/mês; Cache (Redis pequeno): $15/mês; CDN (assets do painel web): $5-10/mês; Armazenamento S3 (logs, exports): $5/mês; API de geolocalização (Google Maps/Mapbox): $50-200/mês dependendo do volume; Total estimado inicial: ~$205-430/mês para até ~50 municípios/clientes pequenos",
+    "custo_por_cliente": "Cada recalculo de rota = $0.005 (chamada matriz de distâncias, ~10 pontos) + $0.001 (CPU do algoritmo de otimização) + $0.0005 (escrita no banco) ≈ $0.0065/recalculo. Cliente médio (1 rota/dia recalculada 3x = 90 recalculos/mês) = ~$0.59/mês em custo variável direto. Somando overhead de infraestrutura fixa dividido por 50 clientes ativos (~$300/mês ÷ 50) = $6/mês fixo por cliente. Custo total aproximado por cliente: ~$6.60/mês.",
+    "monetizacao": "Modelo SaaS B2B por assinatura com tiers baseados em número de pontos de coleta e veículos: Starter ($99/mês, até 50 pontos e 2 veículos), Growth ($299/mês, até 300 pontos e 8 veículos), Enterprise (a partir de $899/mês, pontos/veículos ilimitados + SLA + API dedicada). Add-on de otimização avançada (multi-depósito, restrições complexas) +$150/mês. Métricas-alvo: MRR inicial de $5-15k com 30-50 clientes Starter/Growth; LTV estimado de $3.600 (churn ~5%/mês, ticket médio $180); CAC alvo abaixo de $600 via vendas outbound para prefeituras e cooperativas de reciclagem, payback em ~4 meses.",
+    "stack_sugerida": "Backend: Go ou Node.js/TypeScript (NestJS) para domínio e serviços de aplicação; Postgres com PostGIS para dados geoespaciais; Redis para cache de distâncias; RabbitMQ/SQS para processamento assíncrono de otimização; OSRM self-hosted ou Google Maps/Mapbox API como CalculadoraDistanciaAdapter; Frontend web em React/Next.js para painel de gestores; App mobile em React Native/Flutter para coletores; Infraestrutura em AWS ou GCP com containers (ECS/Cloud Run) e Terraform para IaC."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:54:02+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "ideia_idx": 3,
+  "ideia": "App de monitoramento de saúde mental para empresas com relatórios anônimos",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório Git único (monorepo) com múltiplas implantações (dev, staging, produção) geradas a partir da mesma base via branches/tags. Serviços internos (API, worker de relatórios, painel web) versionados no mesmo repo, mas com deploys independentes por diretório.",
+    "dependencies": "Todas as dependências declaradas explicitamente em manifests (package.json/requirements.txt/go.mod) com versões travadas via lockfile. Nenhuma dependência implícita do SO (ex: bibliotecas de criptografia para anonimização, libs de PDF para relatórios) — tudo isolado via containers Docker, sem confiar em pacotes globais do host.",
+    "config": "Toda config sensível (strings de conexão do banco, chaves de criptografia para anonimização, tokens de SSO corporativo, chaves de e-mail/Slack para notificações, feature flags de módulos de saúde mental) fica em variáveis de ambiente. Varia entre implantações: URL do banco, nível de agregação mínima para exibir relatórios (k-anonimato), domínios permitidos por empresa-cliente, região de armazenamento de dados (compliance LGPD/GDPR).",
+    "backing_services": "Banco relacional (PostgreSQL) para dados estruturados, banco de filas (Redis) para agregação assíncrona de respostas anônimas, serviço de armazenamento de objetos (S3-compatible) para exports de relatórios, provedor de e-mail/SMS transacional e serviço de SSO (SAML/OIDC) — todos tratados como recursos anexáveis via URL/credencial, trocáveis sem alterar código.",
+    "build_release_run": "Pipeline CI gera build imutável (imagem Docker versionada com hash de commit), combinado com config do ambiente para criar um release identificável, executado por processos stateless no ambiente de execução (Kubernetes/ECS). Rollback é apenas apontar para release anterior.",
+    "processes": "Processos da API e do worker de agregação são stateless e share-nothing; nenhum dado de sessão ou resposta de formulário fica em memória local. Estado persistente (respostas anônimas, agregações, metadados de empresas/usuários) reside exclusivamente no PostgreSQL e cache efêmero no Redis.",
+    "port_binding": "API HTTP e serviço de webhooks exportados via bind de porta própria (ex: :8080) usando servidor embutido (Express/FastAPI/Gin), sem depender de container HTTP externo injetado em runtime; painel web servido da mesma forma via porta dedicada.",
+    "concurrency": "Escala horizontal por tipo de processo: 'web' (API/painel), 'worker' (agregação e anonimização de respostas, geração de relatórios), 'scheduler' (envio periódico de pesquisas/check-ins). Cada tipo escala independentemente conforme carga (ex: picos de respostas no fim do expediente).",
+    "disposability": "Processos iniciam em segundos (sem estado a carregar) e tratam SIGTERM finalizando requisições em andamento e devolvendo jobs de fila não concluídos ao Redis antes de encerrar, garantindo que nenhuma resposta anônima seja perdida ou corrompida durante deploys/scale-down.",
+    "dev_prod_parity": "Docker Compose replica localmente os mesmos backing services (Postgres, Redis, S3 local via MinIO) usados em produção; deploys contínuos (múltiplas vezes ao dia) reduzem gap temporal; mesmos engenheiros fazem dev e operam produção, reduzindo gap de pessoal; mesmas imagens de container do dev ao prod eliminam divergência de ferramentas.",
+    "logs_admin": "Logs tratados como fluxo de eventos (stdout/stderr) coletados por agregador externo (ex: Datadog/ELK), sem gestão de arquivos de log pela aplicação. Tarefas administrativas (migrações de schema, reprocessamento de anonimização, exportação de relatórios agregados) executadas como processos pontuais (one-off) no mesmo ambiente e release da aplicação.",
+    "interfaces": [
+      "API REST para envio de respostas anônimas (app mobile/web do colaborador)",
+      "Painel web administrativo para RH/gestores visualizarem relatórios agregados",
+      "Webhooks para integração com Slack/Teams (lembretes de check-in)",
+      "SSO/SAML para autenticação corporativa",
+      "API de exportação de relatórios (CSV/PDF)",
+      "Integração com calendário para agendamento de pesquisas periódicas"
+    ],
+    "escalabilidade": "Arquitetura stateless permite escalar horizontalmente processos web e worker de forma independente via orquestrador de containers. Banco de dados escala verticalmente inicialmente e migra para réplicas de leitura conforme aumento de empresas-clientes; agregação de dados anônimos é particionada por empresa (tenant) para isolar carga e dados sensíveis, permitindo modelo multi-tenant com isolamento lógico ou físico conforme o plano contratado.",
+    "custo_infra_estimado": "Servidor (containers web+worker, ex: ECS Fargate/DigitalOcean): $80/mês, Banco (RDS PostgreSQL db.t3.medium): $60/mês, Redis gerenciado: $25/mês, S3 (armazenamento de relatórios/exports): $8/mês, CDN (CloudFront para painel web): $10/mês, Banda de dados: $15/mês, E-mail transacional (SendGrid): $20/mês. Total estimado: ~$218/mês para carga inicial (até ~50 empresas-clientes).",
+    "custo_por_cliente": "Cada colaborador ativo gera ~4 check-ins/mês: processamento e anonimização = $0.008 (CPU/worker) + armazenamento de resposta = $0.002 (DB/S3) + geração de relatório agregado mensal = $0.02 (compute) = ~$0.03/colaborador/mês em custo variável direto. Empresa-cliente com 200 colaboradores: 200 x $0.03 = $6/mês em custo direto, mais parcela de infraestrutura fixa rateada (~$218/mês ÷ 50 empresas = $4,36/mês) = custo total aproximado de $10,36/mês por cliente médio.",
+    "monetizacao": "Modelo SaaS B2B por assinatura, precificado por colaborador/mês (per-seat), com tiers: Starter (até 50 colaboradores) = $3/colaborador/mês; Business (até 500 colaboradores) = $2,50/colaborador/mês com relatórios avançados e integrações SSO/Slack; Enterprise (500+) = preço customizado com SLA, isolamento de dados dedicado e suporte prioritário. Métricas-chave: MRR alvo de $15.000 nos primeiros 12 meses (~60 clientes médios de 150 colaboradores a $2,50); LTV estimado em $3.600 por cliente (churn anual de 15%, ticket médio $375/mês, vida útil ~9,6 meses/ano recorrente ao longo de anos); CAC alvo de $600 via vendas outbound + parcerias com consultorias de RH, mantendo razão LTV:CAC acima de 3:1.",
+    "stack_sugerida": "Backend: Node.js (NestJS) ou Python (FastAPI) para API REST; PostgreSQL como banco principal com criptografia em repouso e técnicas de k-anonimato/agregação para garantir anonimato; Redis para filas (BullMQ/Celery) e cache; React/Next.js para o painel administrativo e app do colaborador (PWA); Docker + Kubernetes (ou ECS Fargate) para orquestração; Terraform para infraestrutura como código; S3-compatible storage para exports; Auth0/WorkOS para SSO corporativo; Datadog ou Grafana+Loki para observabilidade; CI/CD via GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:49:48+00:00",
+    "runner": "runner.py"
+  }
+}

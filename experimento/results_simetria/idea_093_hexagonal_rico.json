@@ -1,0 +1,75 @@
+{
+  "ideia_idx": 93,
+  "ideia": "Marketplace de serviços de cibersegurança para PMEs",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Cliente(PME), Prestador(Fornecedor de Serviço de Segurança), Servico (catálogo: pentest, análise de vulnerabilidade, resposta a incidentes, compliance/LGPD), Proposta, Contrato, Avaliacao, Disputa. Regras: elegibilidade de prestador (credenciais mínimas, certificações válidas), matching cliente-prestador por escopo/risco/orçamento, precificação e comissão do marketplace, ciclo de vida do contrato (proposta → aceite → execução → entrega → avaliação), regras de disputa/reembolso, SLA mínimo por categoria de serviço, e verificação de conformidade (ex: exigir certificações como ISO 27001, OSCP para certas categorias). Nenhuma regra depende de gateway de pagamento, banco de dados ou protocolo de transporte.",
+    "driving_ports": {
+      "PublicarServicoPort": "Prestador cadastra/edita oferta de serviço no catálogo",
+      "SolicitarServicoPort": "Cliente abre demanda descrevendo necessidade de segurança",
+      "GerenciarPropostaPort": "Prestador envia proposta; cliente aceita/recusa",
+      "GerenciarContratoPort": "Iniciar, acompanhar e encerrar contrato de prestação de serviço",
+      "AvaliarPrestadorPort": "Cliente avalia serviço entregue",
+      "AbrirDisputaPort": "Cliente ou prestador contesta entrega/pagamento",
+      "ConsultarCatalogoPort": "Busca e filtragem de prestadores/serviços"
+    },
+    "driven_ports": {
+      "RepositorioClientePort": "Persistência de dados de cliente",
+      "RepositorioPrestadorPort": "Persistência de dados e credenciais de prestador",
+      "RepositorioContratoPort": "Persistência de contratos e propostas",
+      "ProcessadorPagamentoPort": "Cobrança, split de pagamento e repasse ao prestador",
+      "NotificacaoPort": "Envio de notificações (email, push, sms)",
+      "VerificacaoCredenciaisPort": "Validação externa de certificações/antecedentes do prestador",
+      "EventoDominioPort": "Publicação de eventos de domínio para consumidores externos",
+      "ArmazenamentoDocumentoPort": "Guarda de relatórios de pentest, evidências, contratos assinados"
+    },
+    "driving_adapters": {
+      "REST_API_Web": "Expõe endpoints HTTP para o frontend web do cliente/prestador",
+      "Mobile_API_Adapter": "Expõe endpoints otimizados para app mobile",
+      "Admin_CLI": "Ferramenta interna para operações administrativas e auditoria",
+      "Webhook_Receiver_Adapter": "Recebe callbacks de terceiros (ex: confirmação de KYC) e traduz em chamadas às driving ports"
+    },
+    "driven_adapters": {
+      "PostgresRepositorioAdapter": "Implementa os repositórios via PostgreSQL",
+      "StripeConnectAdapter": "Implementa ProcessadorPagamentoPort usando Stripe Connect para split payments entre marketplace e prestadores",
+      "SendgridNotificacaoAdapter": "Implementa NotificacaoPort via email",
+      "S3ArmazenamentoAdapter": "Implementa ArmazenamentoDocumentoPort para relatórios e evidências",
+      "KafkaEventoAdapter": "Implementa EventoDominioPort publicando em tópicos",
+      "ClearCheckVerificacaoAdapter": "Implementa VerificacaoCredenciaisPort consultando serviço externo de verificação de certificações/background check"
+    },
+    "application_services": "ServicoDeContratacao (orquestra: validar elegibilidade via VerificacaoCredenciaisPort, criar contrato via RepositorioContratoPort, disparar cobrança via ProcessadorPagamentoPort, notificar via NotificacaoPort) e ServicoDeMatching (orquestra busca no catálogo e aplica filtros de compliance); ambos apenas coordenam chamadas às portas e delegam toda regra de negócio às entidades de domínio (ex: Contrato.podeSerAceito(), Prestador.estaQualificado()).",
+    "domain_isolation": "O domínio (entidades, agregados e regras) é escrito em objetos/POJOs puros, sem imports de frameworks HTTP, ORM ou SDKs de pagamento. Toda comunicação com o exterior passa por interfaces (ports) definidas dentro do domínio/aplicação; adaptadores implementam essas interfaces na camada externa, e o domínio nunca importa um adaptador diretamente (Dependency Inversion).",
+    "test_doubles": "RepositorioClientePort/RepositorioContratoPort → repositórios in-memory (fake) para testes de unidade e integração leve; ProcessadorPagamentoPort → stub que simula sucesso/falha de cobrança sem chamar Stripe; VerificacaoCredenciaisPort → mock retornando aprovações/reprovações determinísticas; NotificacaoPort → spy que captura mensagens enviadas para asserção; EventoDominioPort → fake que armazena eventos publicados em lista para verificação.",
+    "configuration_wiring": "Um Composition Root (ex: main.ts ou modulo bootstrap) instancia os adaptadores concretos (PostgresRepositorioAdapter, StripeConnectAdapter etc.) e os injeta nos serviços de aplicação via construtor/DI container (ex: NestJS providers, Spring beans) no momento da inicialização, mapeando cada porta à sua implementação escolhida por ambiente (dev usa fakes/in-memory, prod usa adapters reais), sem que o domínio saiba qual foi escolhida.",
+    "technology_substitution": "Stripe Connect pode ser trocado por outro PSP (ex: Adyen for Platforms) reescrevendo apenas o ProcessadorPagamentoPort adapter, custo médio (2-4 semanas, testes de reconciliação financeira); PostgreSQL pode ser trocado por outro RDBMS/NoSQL reescrevendo o Repositorio*Adapter, custo médio-alto se houver migração de dados; SendgridNotificacaoAdapter pode ser trocado por SES/Twilio com custo baixo (poucos dias); REST_API_Web pode ser substituído por GraphQL sem tocar no domínio, custo baixo-médio.",
+    "symmetry": "Tanto driving quanto driven adapters dependem de interfaces (ports) definidas pela aplicação; nenhum lado conhece o outro diretamente. O lado esquerdo (driving) traduz solicitações externas (HTTP, CLI, mobile) em chamadas às driving ports; o lado direito (driven) implementa as driven ports que a aplicação invoca para agir no mundo externo (banco, pagamento, notificação). Essa simetria garante que qualquer adaptador de qualquer lado pode ser trocado sem alterar o núcleo, mantendo o hexágono como fronteira única de contrato.",
+    "interfaces": [
+      "PublicarServicoPort",
+      "SolicitarServicoPort",
+      "GerenciarPropostaPort",
+      "GerenciarContratoPort",
+      "AvaliarPrestadorPort",
+      "AbrirDisputaPort",
+      "ConsultarCatalogoPort",
+      "RepositorioClientePort",
+      "RepositorioPrestadorPort",
+      "RepositorioContratoPort",
+      "ProcessadorPagamentoPort",
+      "NotificacaoPort",
+      "VerificacaoCredenciaisPort",
+      "EventoDominioPort",
+      "ArmazenamentoDocumentoPort"
+    ],
+    "escalabilidade": "Escala horizontalmente separando driving adapters (API stateless atrás de load balancer/auto-scaling group) do domínio; leitura do catálogo pode usar cache (Redis) e réplicas de leitura do Postgres; eventos de domínio via Kafka permitem desacoplar processamento assíncrono (matching, notificações, faturamento) em workers escaláveis independentemente; picos sazonais (ex: aumento de demanda por pentest após incidentes de mercado) são absorvidos por autoscaling dos workers de matching e filas de mensageria com backpressure.",
+    "custo_infra_estimado": "Servidor (API + workers, ECS Fargate/EKS, 2-4 instâncias): $150/mês; RDS PostgreSQL (db.t3.medium, multi-AZ): $120/mês; Redis cache (ElastiCache): $40/mês; Kafka gerenciado (MSK serverless ou Confluent): $80/mês; S3 armazenamento de relatórios/evidências: $15/mês; CDN (CloudFront) para frontend: $20/mês; banda de saída estimada: $30/mês; monitoramento (Datadog/CloudWatch): $50/mês. Total aproximado: $505/mês em estágio inicial (até ~500 clientes ativos).",
+    "custo_por_cliente": "Por operação de contratação: verificação de credenciais do prestador (chamada API externa) = $0.10, processamento de pagamento (Stripe Connect, 2.9%+$0.30 sobre transação média de $500 = ~$14.80, mas custo de infraestrutura por chamada é $0.02), armazenamento de relatório/evidência (S3, ~5MB) = $0.001, notificação (email/push) = $0.002, matching/consulta ao catálogo (compute) = $0.005. Custo de infraestrutura por transação (excluindo taxa do PSP repassada ao prestador) ≈ $0.128/operação. Cliente médio com 2 contratações/mês = ~$0.26/mês em custo direto de infra, muito abaixo do ticket médio de comissão capturada.",
+    "monetizacao": "Modelo de comissão sobre transação (take rate 10-15% sobre valor do serviço contratado) combinado com assinatura SaaS em camadas para clientes: Free (busca limitada, até 1 contratação/mês), Pro ($99/mês: contratações ilimitadas, relatórios de compliance, suporte priorizado), Enterprise ($299/mês: múltiplos usuários, dashboards de risco consolidados, SLA dedicado). Prestadores pagam taxa de listagem premium opcional ($49/mês para destaque no catálogo). Métricas-alvo: ARPU cliente Pro ~$99 + comissão média de $75/transação; MRR projetado com 200 clientes Pro = $19.800 + comissões; CAC estimado $150 via marketing direcionado a associações de PMEs; LTV estimado $1.800 (18 meses de retenção média), resultando em LTV:CAC de 12:1.",
+    "stack_sugerida": "Backend: Node.js com NestJS (estrutura modular favorece hexagonal architecture) ou Java/Spring Boot; Banco: PostgreSQL (RDS); Cache: Redis; Mensageria: Kafka (MSK) ou RabbitMQ para volumes menores; Pagamentos: Stripe Connect (split payments); Armazenamento: S3; Frontend: React/Next.js; Infra: AWS (ECS Fargate + CloudFront + RDS), IaC com Terraform; Observabilidade: Datadog ou Grafana+Prometheus; CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T21:06:24+00:00",
+    "runner": "runner.py"
+  }
+}

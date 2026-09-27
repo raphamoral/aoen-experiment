@@ -1,0 +1,89 @@
+{
+  "ideia_idx": 28,
+  "ideia": "SaaS de compliance LGPD automatizado para PMEs",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: TitularDeDados, ConsentimentoLGPD, AtivoDeDadoPessoal (com classificação: comum, sensível, criança/adolescente), BaseLegal (dos 10 fundamentos do Art. 7º/11º), SolicitacaoARCO (acesso, retificação, cancelamento, oposição, portabilidade, eliminação), RelatorioImpactoRIPD, IncidenteDeSeguranca, RegistroDeTratamento (ROPA), RelacionamentoComOperador (fornecedor/terceiro). Regras de negócio: cálculo de prazo legal de resposta a solicitações de titular (15 dias, prorrogável +15), validação de existência de base legal antes de autorizar tratamento, obrigatoriedade de RIPD para tratamentos de alto risco, prazo de comunicação de incidente à ANPD 'em prazo razoável', regras de retenção mínima/máxima por finalidade, cálculo de score de conformidade e priorização de gaps, regras de anonimização vs pseudonimização. Nenhuma regra referencia banco de dados, e-mail, fila ou IA — são conceitos puros do domínio.",
+    "driving_ports": {
+      "RegistrarAtivoDeDadoPort": "cadastrar/atualizar um ativo de dado pessoal no inventário (data mapping)",
+      "GerenciarConsentimentoPort": "capturar, revogar e consultar histórico de consentimento de um titular",
+      "AbrirSolicitacaoTitularPort": "abrir, acompanhar e responder solicitações ARCO com SLA legal",
+      "ExecutarAvaliacaoDeConformidadePort": "rodar diagnóstico/gap analysis e obter score de conformidade",
+      "RegistrarIncidentePort": "registrar incidente de segurança e disparar fluxo de resposta",
+      "GerarDocumentoDePoliticaPort": "solicitar geração de política de privacidade/aviso de cookies a partir do inventário",
+      "GerenciarOperadorPort": "cadastrar fornecedores/operadores e seus contratos de tratamento (DPA)"
+    },
+    "driven_ports": {
+      "RepositorioDeConformidadePort": "persistir e consultar ativos, consentimentos, solicitações, incidentes",
+      "NotificacaoPort": "enviar e-mail/SMS/WhatsApp a titulares, DPO e stakeholders",
+      "ArmazenamentoDeDocumentosPort": "guardar evidências, políticas geradas e RIPDs",
+      "GeradorDeTextoPort": "gerar minutas de políticas/RIPD via IA generativa",
+      "TrilhaDeAuditoriaPort": "registrar toda ação relevante de forma imutável",
+      "VarreduraDeDadosPort": "escanear bancos/sistemas do cliente em busca de PII (data discovery)",
+      "AtualizacaoRegulatoriaPort": "obter mudanças normativas da ANPD",
+      "FaturamentoPort": "cobrar assinatura, gerenciar plano e uso",
+      "VerificacaoDeIdentidadePort": "validar identidade do titular antes de executar solicitação sensível"
+    },
+    "driving_adapters": {
+      "REST_API_Dashboard": "expõe endpoints para o painel web usado pelo DPO/gestor da PME (CRUD de inventário, solicitações, relatórios)",
+      "PortalDoTitularWeb": "formulário público onde o titular abre solicitações ARCO",
+      "BotWhatsAppEmail": "intake conversacional de solicitações e dúvidas de titulares",
+      "CLI_DeScanInterno": "ferramenta de linha de comando para disparar varredura de PII em ambientes on-premise do cliente",
+      "SchedulerCronTrigger": "dispara reavaliação periódica de conformidade e lembretes de SLA",
+      "WebhookReceiver": "recebe eventos de sistemas do cliente (CRM/ERP) indicando criação de novos dados pessoais"
+    },
+    "driven_adapters": {
+      "PostgresComplianceRepositoryAdapter": "implementa RepositorioDeConformidadePort com Postgres multi-tenant",
+      "S3DocumentStorageAdapter": "implementa ArmazenamentoDeDocumentosPort com AWS S3/MinIO",
+      "SendGridTwilioNotificationAdapter": "implementa NotificacaoPort via e-mail e SMS/WhatsApp Business API",
+      "ClaudeDocumentGeneratorAdapter": "implementa GeradorDeTextoPort chamando a API da Anthropic para redigir políticas e RIPDs",
+      "ElasticAuditLogAdapter": "implementa TrilhaDeAuditoriaPort com armazenamento imutável (WORM) em Elasticsearch/OpenSearch",
+      "JDBCApiPiiScannerAdapter": "implementa VarreduraDeDadosPort conectando a bancos/planilhas/SaaS do cliente",
+      "ANPDFeedScraperAdapter": "implementa AtualizacaoRegulatoriaPort consumindo publicações oficiais da ANPD",
+      "StripeBillingAdapter": "implementa FaturamentoPort com assinaturas e métricas de uso",
+      "GovBrIdentityAdapter": "implementa VerificacaoDeIdentidadePort validando CPF/e-mail do titular"
+    },
+    "application_services": {
+      "ComplianceAssessmentOrchestrator": "coordena varredura + inventário + regras de score, sem definir a regra de score em si",
+      "DataSubjectRequestWorkflowService": "orquestra abertura, verificação de identidade, execução e resposta dentro do SLA",
+      "ConsentLifecycleService": "orquestra captura/revogação de consentimento e disparo de notificações",
+      "IncidentResponseCoordinator": "orquestra registro, avaliação de gravidade e comunicação de incidente",
+      "PolicyGenerationService": "orquestra chamada ao gerador de texto e armazenamento do documento final",
+      "VendorRiskAggregator": "orquestra avaliação de risco de operadores a partir dos DPAs cadastrados"
+    },
+    "domain_isolation": "O núcleo é escrito em módulos/pacotes puros (ex.: 'domain/' e 'application/') sem nenhuma dependência de framework web, ORM, SDK de nuvem ou biblioteca de IA. Toda comunicação com o exterior passa por interfaces (ports) definidas dentro do próprio domínio/aplicação. A Regra de Dependência é invertida: os adaptadores importam e implementam as interfaces do domínio, o domínio nunca importa um adaptador. Objetos de valor e entidades usam apenas tipos primitivos e estruturas próprias, nunca DTOs de HTTP ou modelos de ORM.",
+    "test_doubles": "Para cada porta secundária existe um dublê in-memory usado em testes: InMemoryComplianceRepository, FakeNotificationAdapter (captura mensagens em lista), FakeDocumentGenerator (retorna texto fixo), FakeAuditLog, FakePiiScanner (retorna achados simulados), FakeBillingAdapter. Os testes de aplicação instanciam os serviços injetando esses fakes, validando as regras de orquestração sem tocar rede/banco. Para as portas primárias, testes de contrato chamam diretamente a interface do caso de uso (sem subir servidor HTTP), garantindo que qualquer adaptador primário futuro (REST, CLI, bot) respeite o mesmo contrato.",
+    "configuration_wiring": "Um composition root único (ex.: bootstrap.ts / container.py) lê variáveis de ambiente e instancia os adaptadores concretos (PostgresComplianceRepositoryAdapter, S3DocumentStorageAdapter, ClaudeDocumentGeneratorAdapter etc.), injetando-os via construtor nos serviços de aplicação que dependem apenas das interfaces de porta. Um container de DI (ou factory manual) resolve isso na inicialização do processo; em testes, o mesmo composition root troca os adaptadores reais pelos dublês, sem alterar uma linha do domínio ou dos serviços de aplicação.",
+    "technology_substitution": "Trocar Claude por outro provedor de IA generativa (custo: reescrever apenas ClaudeDocumentGeneratorAdapter, contrato GeradorDeTextoPort inalterado — baixo custo). Trocar Postgres por outro banco relacional ou até NoSQL (custo médio: reescrever o adapter de repositório e migrar dados, mas nenhuma regra de negócio muda). Trocar Stripe por outro gateway de pagamento (custo médio: reintegração de webhooks de cobrança). Trocar REST por GraphQL como adaptador primário (custo baixo-médio: novo adaptador chamando os mesmos casos de uso). Em todos os casos o custo está isolado na camada de adaptador; o risco cresce apenas se algum adaptador tiver vazado detalhes de implementação para dentro do domínio.",
+    "symmetry": "Do lado esquerdo (driving), atores externos — dashboard web, bot de WhatsApp, scheduler, CLI — acionam a aplicação exclusivamente através das portas primárias (casos de uso), nunca chamando o domínio diretamente. Do lado direito (driven), a aplicação aciona o mundo externo — banco, storage, e-mail, IA, pagamento — exclusivamente através de portas secundárias implementadas por adaptadores. Em ambos os lados a aplicação central desconhece qual tecnologia concreta está do outro lado da porta: um caso de uso não sabe se foi chamado via REST ou WhatsApp, e um serviço de aplicação não sabe se o e-mail foi enviado via SendGrid ou SES. A simetria é mantida porque tanto adaptadores primários quanto secundários são plugáveis e substituíveis sem tocar o núcleo.",
+    "interfaces": [
+      "RegistrarAtivoDeDadoPort",
+      "GerenciarConsentimentoPort",
+      "AbrirSolicitacaoTitularPort",
+      "ExecutarAvaliacaoDeConformidadePort",
+      "RegistrarIncidentePort",
+      "GerarDocumentoDePoliticaPort",
+      "GerenciarOperadorPort",
+      "RepositorioDeConformidadePort",
+      "NotificacaoPort",
+      "ArmazenamentoDeDocumentosPort",
+      "GeradorDeTextoPort",
+      "TrilhaDeAuditoriaPort",
+      "VarreduraDeDadosPort",
+      "AtualizacaoRegulatoriaPort",
+      "FaturamentoPort",
+      "VerificacaoDeIdentidadePort"
+    ],
+    "escalabilidade": "Arquitetura multi-tenant com isolamento lógico por tenant_id no schema; serviços de aplicação stateless escalam horizontalmente atrás de um load balancer; varreduras de PII e geração de documentos rodam em fila assíncrona (worker pool) para não bloquear a API; leitura pesada (relatórios, dashboards) usa réplicas de leitura do Postgres; cache Redis para scores de conformidade recalculados; arquitetura orientada a eventos (ex.: SQS/Kafka) permite plugar novos adaptadores de notificação/varredura conforme a base cresce sem reescrever o núcleo; camada de storage de documentos em S3 escala nativamente.",
+    "custo_infra_estimado": "Servidor/App (2x instância t3.medium em auto-scaling): $60/mês. Banco (RDS Postgres db.t3.medium multi-AZ): $120/mês. Redis (ElastiCache t3.micro): $15/mês. Storage S3 (100GB documentos + backups): $10/mês. CDN (CloudFront para dashboard): $10/mês. Fila (SQS): $5/mês. Observabilidade (logs/APM): $20/mês. IA generativa (uso moderado): $50/mês. Total estimado inicial: ~$290/mês para até ~200 clientes ativos.",
+    "custo_por_cliente": "Cada análise de conformidade com IA = $0.04 (chamada à API Claude) + $0.005 (storage do relatório) + $0.002 (CPU/orquestração) = $0.047/operação. Cada solicitação ARCO processada = $0.01 (notificação) + $0.003 (storage) + $0.002 (CPU) = $0.015/operação. Um cliente PME típico gera ~20 solicitações/mês + 2 reavaliações de conformidade/mês: custo variável ≈ 20×$0.015 + 2×$0.047 = $0.30 + $0.094 = ~$0.39/mês por cliente. Somado ao rateio de infraestrutura fixa ($290/mês ÷ 200 clientes = $1.45/cliente), o custo total por cliente fica em torno de $1.85/mês, com margem bruta muito alta mesmo no plano de entrada.",
+    "monetizacao": "Modelo de assinatura SaaS B2B por faixa de porte da PME: Starter — R$149/mês (até 3 usuários, 1 varredura/mês, 20 solicitações ARCO incluídas); Business — R$399/mês (até 10 usuários, varreduras semanais, solicitações ilimitadas, geração de política via IA); Enterprise — R$999/mês (multiusuário ilimitado, API própria, DPO como serviço opcional, SLA dedicado). Add-ons: varredura extra (R$50), consultoria de RIPD sob demanda (R$300/relatório). Métricas-alvo: CAC estimado R$450 (marketing + vendas), LTV médio (churn mensal 3%, ticket médio R$350) ≈ R$350/0.03 = R$11.667, razão LTV:CAC ≈ 26:1, payback de CAC em ~1.3 meses. MRR projetado com 500 clientes em mix 60% Starter/30% Business/10% Enterprise ≈ 500×(0.6×149+0.3×399+0.1×999) = R$154.860/mês.",
+    "stack_sugerida": "Backend: Node.js/NestJS ou Python/FastAPI estruturado em camadas hexagonais (domain/application/adapters); Banco: PostgreSQL (multi-tenant) + Redis para cache; Storage: AWS S3 ou MinIO self-hosted; Fila/mensageria: SQS ou RabbitMQ; IA generativa: API Claude (Anthropic) para geração de políticas/RIPD; Notificações: SendGrid (e-mail) + WhatsApp Business API (Twilio ou Meta Cloud API); Pagamentos: Stripe; Frontend: React/Next.js com Tailwind; Infraestrutura: Docker + Kubernetes ou ECS Fargate, Terraform para IaC; Observabilidade: Datadog ou Grafana+Prometheus; CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:56:13+00:00",
+    "runner": "runner.py"
+  }
+}

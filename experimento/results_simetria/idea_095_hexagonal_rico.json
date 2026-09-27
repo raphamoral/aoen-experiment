@@ -1,0 +1,48 @@
+{
+  "ideia_idx": 95,
+  "ideia": "Plataforma de telemedicina especializada em dermatologia com análise de imagem",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades e regras de negócio puras: Paciente, Dermatologista, Consulta, ImagemDermatologica, LaudoDiagnostico, Prescricao, Prontuario. Regras: elegibilidade para teleconsulta, fluxo de triagem por imagem antes de agendar especialista, política de confidencialidade/LGPD-HIPAA sobre dados sensíveis de saúde, regras de validade e assinatura de prescrição, política de urgência (encaminhamento presencial se lesão suspeita de malignidade), regras de consentimento informado para uso de IA no diagnóstico. Nenhuma referência a HTTP, banco de dados, filas ou provedores de IA — apenas objetos de domínio e políticas.",
+    "driving_ports": "ScheduleConsultationPort (agendar consulta), SubmitSkinImageForAnalysisPort (enviar imagem para triagem), ReviewDiagnosisPort (dermatologista revisa laudo assistido por IA), IssuePrescriptionPort (emitir receita), ManagePatientRecordPort (CRUD de prontuário), CancelConsultationPort, RequestSecondOpinionPort — contratos que definem casos de uso acionáveis por qualquer front-end.",
+    "driven_ports": "PatientRepositoryPort, ConsultationRepositoryPort, MedicalRecordRepositoryPort, ImageStoragePort (armazenar imagem clínica), ImageAnalysisServicePort (motor de IA de análise dermatológica), VideoCallProviderPort (teleconsulta), NotificationPort (email/SMS/push), PaymentGatewayPort, ESignaturePort (assinatura digital de receita/laudo), EventPublisherPort (eventos de domínio) — contratos pelos quais o domínio aciona o exterior, sem saber qual tecnologia os implementa.",
+    "driving_adapters": "REST API (controllers para app web/mobile do paciente e do médico), GraphQL BFF para app mobile React Native, Painel administrativo web para clínica, Webhook receiver para eventos de pagamento (Stripe) que disparam casos de uso internos, CLI interna para operações de suporte/backoffice.",
+    "driven_adapters": "PostgreSQL (via repositório) para Paciente/Consulta/Prontuário, Amazon S3/Cloud Storage para imagens clínicas com criptografia em repouso, adaptador de inferência de IA (modelo CNN próprio servido via FastAPI/SageMaker ou API de terceiro tipo SkinVision), Twilio Video ou Daily.co para chamadas, SendGrid/Twilio para notificações, Stripe para cobrança e planos, DocuSign/adaptador de assinatura eletrônica para receitas, Kafka/SNS/SQS para publicação de eventos de domínio.",
+    "application_services": "ConsultationApplicationService (orquestra agendamento, chama repositório e notificação), ImageAnalysisOrchestrationService (recebe imagem, chama IA, aplica regra de triagem do domínio, persiste laudo), PrescriptionIssuanceService (valida regra de domínio e coordena assinatura eletrônica + persistência), BillingApplicationService (orquestra cobrança pós-consulta). Nenhum contém regra de negócio própria — apenas coordenam chamadas às portas e ao domínio.",
+    "domain_isolation": "O núcleo de domínio é escrito em objetos e políticas puros da linguagem, sem anotações de ORM, sem imports de frameworks web, sem SDKs de nuvem. Toda comunicação com o exterior passa por interfaces (ports) definidas dentro do próprio módulo de domínio/aplicação; adaptadores dependem do domínio (inversão de dependência), nunca o contrário — o domínio nunca importa um adaptador concreto.",
+    "test_doubles": "PatientRepositoryPort e ConsultationRepositoryPort substituídos por implementações em memória (fakes) em testes de unidade; ImageAnalysisServicePort substituído por stub que retorna laudo fixo (ex.: 'benigno' ou 'suspeito') para testar a política de triagem sem custo de IA real; PaymentGatewayPort e ESignaturePort substituídos por mocks que registram chamadas; VideoCallProviderPort substituído por fake que apenas retorna uma URL de sala simulada; NotificationPort substituído por spy para verificar disparo de alertas sem enviar e-mail/SMS real.",
+    "configuration_wiring": "Um composition root (ex.: módulo de bootstrap único) lê configuração de ambiente (dev/staging/prod) e injeta a implementação concreta de cada port via container de injeção de dependência (ex.: módulos NestJS ou Spring @Configuration), decidindo em runtime, por exemplo, se ImageAnalysisServicePort aponta para o modelo interno ou para API de terceiro, e se PatientRepositoryPort usa Postgres real ou fake em testes de integração.",
+    "technology_substitution": "Trocar o provedor de IA de análise de imagem (modelo próprio → API de terceiro como SkinVision) custa apenas reescrever o adaptador ImageAnalysisServicePort e recalibrar limiares de confiança, sem tocar no domínio. Trocar o provedor de vídeo (Twilio → Daily.co) custa remapear ciclo de vida de sessão no adaptador VideoCallProviderPort. Trocar banco de dados (Postgres → DynamoDB) custa reescrever os repositórios e migrar dados, mas as regras de negócio permanecem intactas.",
+    "symmetry": "Tanto o lado que aciona a aplicação (adaptadores primários: REST, GraphQL, admin web) quanto o lado acionado por ela (adaptadores secundários: banco, IA, pagamento, vídeo) só se comunicam com o núcleo através de interfaces definidas pelo próprio núcleo. Nenhum dos dois lados conhece detalhes de implementação do outro; a direção de dependência é sempre para dentro do hexágono, preservando simetria estrutural entre 'ser chamado' e 'chamar'.",
+    "interfaces": [
+      "ScheduleConsultationPort",
+      "SubmitSkinImageForAnalysisPort",
+      "ReviewDiagnosisPort",
+      "IssuePrescriptionPort",
+      "ManagePatientRecordPort",
+      "CancelConsultationPort",
+      "RequestSecondOpinionPort",
+      "PatientRepositoryPort",
+      "ConsultationRepositoryPort",
+      "MedicalRecordRepositoryPort",
+      "ImageStoragePort",
+      "ImageAnalysisServicePort",
+      "VideoCallProviderPort",
+      "NotificationPort",
+      "PaymentGatewayPort",
+      "ESignaturePort",
+      "EventPublisherPort"
+    ],
+    "escalabilidade": "Serviços de aplicação stateless atrás de load balancer permitem escala horizontal do tier web/API. Análise de imagem é processada de forma assíncrona via fila (SQS/Kafka), permitindo autoscaling independente de instâncias GPU para inferência de IA conforme a demanda de uploads. Leitura de prontuários escala com réplicas de leitura do banco; imagens servidas via CDN reduzem carga de storage. Arquitetura multi-tenant com particionamento por clínica/região permite crescer a base de clientes sem redesenho do domínio, já que os adaptadores são o único ponto que muda.",
+    "custo_infra_estimado": "Servidor de aplicação (containers em ECS/K8s, 2-4 instâncias): $150/mês. Banco de dados gerenciado (RDS Postgres, instância média + réplica): $120/mês. Storage de imagens (S3, ~500GB com criptografia): $15/mês. CDN (CloudFront) para entrega de imagens: $20/mês. Fila de mensageria (SQS/Kafka gerenciado): $30/mês. Inferência de IA (instância GPU sob demanda para picos): $200/mês. Vídeo (Twilio Video, custo variável por minuto): $100/mês estimado. Total aproximado: $635/mês para uma base inicial.",
+    "custo_por_cliente": "Cada análise de imagem por IA = $0.04 (inferência GPU) + $0.01 (storage S3) + $0.005 (CPU/orquestração) = $0.055/operação. Cada minuto de teleconsulta em vídeo ≈ $0.004 (Twilio). Uma consulta típica de 20 min + 1 análise de imagem = (20 × $0.004) + $0.055 = $0.135/consulta. Um dermatologista com 200 consultas/mês custa à plataforma ≈ $27/mês em infraestrutura variável, viabilizando margem sobre um plano de $99/mês.",
+    "monetizacao": "Modelo SaaS B2B2C por assinatura de clínica/dermatologista + taxa por consulta: Plano Básico $29/mês (até 20 consultas, sem IA avançada), Plano Pro $99/mês (até 100 consultas + triagem por IA ilimitada), Plano Enterprise (clínicas/hospitais, preço customizado, SLA e integração com prontuário eletrônico). Taxa adicional de $2 por consulta acima do limite do plano. Métricas-alvo: MRR inicial de $10-15k com 100-150 dermatologistas pagantes; LTV estimado em $1.200 (assinatura média de $80/mês por 15 meses de retenção); CAC alvo de $250 via marketing médico direcionado, payback de CAC em ~3 meses.",
+    "stack_sugerida": "Backend: Node.js com NestJS (ou Java/Spring Boot) para o núcleo hexagonal, TypeScript para tipagem dos ports. Banco: PostgreSQL (RDS/Cloud SQL). Storage: S3/Google Cloud Storage com criptografia. IA: Python/FastAPI servindo modelo PyTorch/TensorFlow, ou integração com API de terceiro (ex.: SkinVision), servido via SageMaker/Vertex AI com autoscaling GPU. Mensageria: Kafka ou SQS/SNS para eventos assíncronos. Vídeo: Twilio Video ou Daily.co. Frontend web: React/Next.js; mobile: React Native. Pagamentos: Stripe (assinaturas e cobrança por consulta). Auth: Auth0/Cognito com MFA para dados de saúde. Infra: AWS ou GCP com Docker/Kubernetes, Terraform para IaC, CloudFront como CDN."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T21:07:58+00:00",
+    "runner": "runner.py"
+  }
+}

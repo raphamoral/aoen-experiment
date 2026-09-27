@@ -1,0 +1,80 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Startup (perfil, estágio, setor, região, thesis fit, métricas de tração), InvestorAngel (perfil, tese de investimento, ticket médio, setor preferido, região de atuação), Match (par startup-investidor com score de compatibilidade e estado: sugerido, visualizado, aceito, recusado, expirado), Interaction (mensagens, propostas de reunião), Deal (interesse formalizado, não a transação financeira em si). Regras de negócio: cálculo de compatibilidade (setor, estágio, ticket, região, tese), elegibilidade para matching (KYC/verificação mínima de ambas as partes), limites de matches simultâneos por plano, regras de expiração de match sem resposta, prevenção de conflito de interesse (ex: investidor já em rodada concorrente), anonimização progressiva de dados sensíveis até aceite mútuo. Tudo isso é puro, sem SDK de pagamento, banco ou fila.",
+    "driving_ports": {
+      "StartupOnboardingPort": "cadastrar/atualizar perfil de startup e métricas",
+      "InvestorOnboardingPort": "cadastrar/atualizar perfil e tese de investidor",
+      "MatchmakingPort": "solicitar sugestões de match, aceitar/recusar match",
+      "InteractionPort": "iniciar conversa, agendar reunião entre partes casadas",
+      "AdminModerationPort": "aprovar/reprovar perfis, banir contas, auditar matches"
+    },
+    "driven_ports": {
+      "ProfileRepositoryPort": "persistir e consultar perfis de startups e investidores",
+      "MatchRepositoryPort": "persistir e consultar matches e seus estados",
+      "NotificationPort": "enviar notificações de novo match, mensagem, lembrete",
+      "IdentityVerificationPort": "verificar identidade/KYC de investidores e representantes de startups",
+      "PaymentGatewayPort": "cobrar assinaturas e taxas de sucesso",
+      "EventPublisherPort": "publicar eventos de domínio (match criado, aceito, deal fechado) para consumo assíncrono",
+      "GeoRegionPort": "resolver regionalização de investidores e startups",
+      "AuditLogPort": "registrar ações sensíveis para compliance"
+    },
+    "driving_adapters": {
+      "REST_API_Adapter": "endpoints HTTP/JSON consumidos pelo frontend web (cadastro, busca de matches, aceite)",
+      "Web_App_Adapter (Next.js/React)": "interface visual para startups e investidores navegarem matches",
+      "Mobile_Adapter (futuro)": "app mobile consumindo os mesmos driving ports via API",
+      "Admin_Dashboard_Adapter": "painel interno para moderação e auditoria",
+      "CLI_Adapter (interno)": "scripts operacionais para reprocessar matches em lote",
+      "Webhook_Inbound_Adapter": "recebe callbacks de KYC/pagamento e traduz para chamadas aos driving ports"
+    },
+    "driven_adapters": {
+      "PostgreSQL_Adapter": "implementa ProfileRepositoryPort e MatchRepositoryPort via ORM (Prisma/TypeORM)",
+      "SES_SNS_Adapter ou SendGrid_Adapter": "implementa NotificationPort para e-mail/push",
+      "Stripe_Adapter": "implementa PaymentGatewayPort para assinaturas SaaS",
+      "Persona_ou_Sumsub_Adapter": "implementa IdentityVerificationPort para KYC de investidores anjo",
+      "SQS_ou_Kafka_Adapter": "implementa EventPublisherPort para eventos assíncronos",
+      "GoogleGeocoding_Adapter": "implementa GeoRegionPort para inferir região a partir de CEP/IP",
+      "CloudWatch_ou_Datadog_Adapter": "implementa AuditLogPort para trilha de auditoria",
+      "S3_Adapter": "armazenamento de pitch decks e documentos de due diligence"
+    },
+    "application_services": {
+      "MatchmakingApplicationService": "orquestra MatchRepositoryPort + regra de compatibilidade do domínio + EventPublisherPort ao gerar sugestões",
+      "OnboardingApplicationService": "orquestra ProfileRepositoryPort + IdentityVerificationPort durante cadastro, sem decidir regra de aprovação (isso é do domínio)",
+      "InteractionApplicationService": "orquestra abertura de chat/reunião após match aceito, delega para NotificationPort",
+      "BillingApplicationService": "orquestra assinatura de plano via PaymentGatewayPort, invocando domínio para validar limites por tier"
+    },
+    "domain_isolation": "O domínio (entidades Startup, InvestorAngel, Match e o serviço de compatibilidade) é escrito em objetos e funções puras da linguagem, sem imports de frameworks HTTP, ORM, SDK de pagamento ou fila. Toda comunicação com o exterior passa por interfaces (ports) definidas dentro do domínio/aplicação; adaptadores implementam essas interfaces na camada externa e são injetados por inversão de dependência. Nenhuma anotação de banco (ex: @Entity de ORM) ou tipo de request HTTP aparece nas classes de domínio — DTOs de borda são mapeados para objetos de domínio nos adaptadores.",
+    "test_doubles": "Cada porta tem um adaptador fake/in-memory usado em testes: InMemoryProfileRepository e InMemoryMatchRepository substituem o Postgres para testar regras de matching sem I/O; FakeNotificationPort captura mensagens enviadas para assert; FakeIdentityVerificationPort retorna resultados determinísticos de KYC (aprovado/reprovado) sem chamar Persona/Sumsub real; FakePaymentGatewayPort simula cobrança sem tocar Stripe; StubGeoRegionPort retorna região fixa. Isso permite testar MatchmakingApplicationService e as regras de compatibilidade do domínio 100% em memória, rápido e determinístico, incluindo casos de borda (região distinta, tese incompatível, limite de plano).",
+    "configuration_wiring": "Um composition root (ex: main.ts/bootstrap.ts ou um container de DI como InversifyJS/NestJS Module) instancia os adaptadores concretos (PostgresProfileRepository, StripeAdapter, SendGridAdapter etc.) e os injeta nos serviços de aplicação através das interfaces de porta. Em ambiente de teste, o mesmo composition root troca os adaptadores reais pelos fakes/in-memory. Variáveis de ambiente decidem qual adaptador concreto é ligado (ex: NOTIFICATION_PROVIDER=sendgrid|ses). O domínio nunca sabe qual adaptador foi escolhido.",
+    "technology_substitution": "Trocar Postgres por outro banco (ex: DynamoDB) custa reescrever apenas o adaptador de persistência, sem tocar domínio ou aplicação — custo médio, concentrado em mapeamento objeto-relacional/documento. Trocar Stripe por outro gateway custa reescrever PaymentGatewayAdapter e reconfigurar webhooks — custo baixo a médio, isolado. Trocar o provedor de KYC (Persona → Sumsub) é praticamente plug-and-play dado que a IdentityVerificationPort já abstrai o contrato — custo baixo. Trocar o frontend de Next.js para outro framework não afeta backend algum, pois é apenas um consumidor da API driving adapter — custo zero no core.",
+    "symmetry": "Do lado esquerdo (driving), atores humanos ou sistemas externos (usuário web, admin, webhook de terceiros) acionam a aplicação através de portas primárias bem definidas, e múltiplos adaptadores primários (REST, Admin Dashboard, CLI) podem chamar a mesma porta sem duplicar regra de negócio. Do lado direito (driven), a aplicação aciona o exterior através de portas secundárias, e múltiplos adaptadores secundários podem implementar a mesma porta (ex: trocar SendGrid por SES sem alterar NotificationPort). Essa simetria garante que tanto entrada quanto saída sejam mediadas por contratos, e o núcleo do domínio nunca conhece se está sendo chamado por REST ou CLI, nem se está notificando por e-mail ou push.",
+    "interfaces": [
+      "StartupOnboardingPort",
+      "InvestorOnboardingPort",
+      "MatchmakingPort",
+      "InteractionPort",
+      "AdminModerationPort",
+      "ProfileRepositoryPort",
+      "MatchRepositoryPort",
+      "NotificationPort",
+      "IdentityVerificationPort",
+      "PaymentGatewayPort",
+      "EventPublisherPort",
+      "GeoRegionPort",
+      "AuditLogPort"
+    ],
+    "escalabilidade": "Horizontalmente: os serviços de aplicação são stateless e podem ser replicados atrás de um load balancer; o cálculo de compatibilidade de matching pode ser movido para workers assíncronos consumindo EventPublisherPort (fila) à medida que o volume de perfis cresce, evitando recomputar em tempo real. O banco de perfis pode receber réplicas de leitura e, em escala regional maior, sharding por região geográfica (alinhado ao próprio domínio, que já é regionalizado). Cache (Redis) para scores de compatibilidade recentes reduz carga no banco. A arquitetura hexagonal facilita extrair o MatchmakingApplicationService para um microsserviço independente no futuro, pois já se comunica só por portas.",
+    "custo_infra_estimado": "Fase inicial (MVP, até ~5k usuários): Servidor (Render/Fly.io, 2 instâncias): $40/mês, RDS Postgres (db.t3.small): $35/mês, Redis (cache): $15/mês, S3 (pitch decks): $10/mês, CDN (Cloudflare free/pro): $20/mês, SES/SendGrid (e-mail): $15/mês, Fila (SQS): $5/mês, KYC provider (Persona, por verificação, não fixo): variável. Total fixo estimado: ~$140/mês",
+    "custo_por_cliente": "Cada match sugerido = $0.002 (cálculo de compatibilidade, CPU) + $0.001 (leitura/gravação DB) = $0.003/match. Cada verificação KYC de investidor = $1.00 a $2.50 (Persona/Sumsub, cobrança por verificação, evento único não recorrente). Cada notificação (e-mail/push) = $0.0006 (SendGrid) + $0.0001 (fila) = $0.0007/notificação. Investidor ativo gerando 20 matches/mês e 40 notificações/mês = 20×$0.003 + 40×$0.0007 = $0.06 + $0.028 = ~$0.088/mês em custo variável (excluindo KYC, que é único no onboarding).",
+    "monetizacao": "Modelo freemium + assinatura SaaS em dois lados: Startups pagam para aparecer com destaque e ter matches ilimitados; Investidores anjo pagam para acessar deal flow qualificado. Tiers sugeridos: Free (startup) — 3 matches/mês, perfil básico; Growth ($99/mês, startup) — matches ilimitados, destaque em busca, analytics de investidores que visualizaram; Investor Basic ($149/mês) — acesso a até 15 matches qualificados/mês, filtros por tese; Investor Pro ($399/mês) — matches ilimitados, alertas em tempo real, dados de tração completos, prioridade em novas startups da região. Taxa de sucesso opcional: 1% sobre rodadas fechadas via plataforma (upsell, não obrigatório). Métricas-alvo: MRR inicial projetado com 200 investidores Pro + 500 startups Growth = 200×$399 + 500×$99 = $79.800 + $49.500 = ~$129.300 MRR em maturidade regional; CAC estimado via marketing de nicho (eventos de venture, LinkedIn Ads) ~$180/investidor, ~$60/startup; LTV investidor (churn ~4%/mês) = $399/0.04 = ~$9.975, LTV startup (churn ~8%/mês) = $99/0.08 = ~$1.238 — ambos com LTV:CAC saudável (>3x).",
+    "stack_sugerida": "Backend: Node.js/TypeScript com NestJS (facilita DI e módulos alinhados a hexagonal) ou Python com FastAPI; ORM Prisma ou TypeORM apenas na camada de adaptador. Frontend: Next.js + React + Tailwind. Banco: PostgreSQL (Supabase ou RDS) para dados relacionais de perfis e matches. Cache/Fila: Redis + SQS ou BullMQ. Armazenamento: S3 para pitch decks e documentos. Autenticação: Auth0 ou Clerk. Pagamentos: Stripe (assinaturas e taxa de sucesso). KYC: Persona ou Sumsub. Observabilidade: Datadog ou Grafana+Prometheus. Infra: containers em Fly.io/Render inicialmente, migrando para AWS ECS/EKS na escala regional."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:51:48+00:00",
+    "runner": "runner.py"
+  }
+}

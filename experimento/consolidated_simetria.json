@@ -1,0 +1,4676 @@
+{
+  "_meta": {
+    "modelo_gerador": "claude-sonnet-5",
+    "modelo_avaliador": "claude-sonnet-5",
+    "gerado_em": "2026-09-27T21:36:22+00:00",
+    "ideias_no_conjunto": 30,
+    "ideias": [
+      0,
+      3,
+      4,
+      11,
+      13,
+      14,
+      17,
+      25,
+      27,
+      28,
+      29,
+      31,
+      35,
+      53,
+      54,
+      57,
+      64,
+      69,
+      71,
+      75,
+      77,
+      81,
+      84,
+      86,
+      88,
+      89,
+      93,
+      94,
+      95,
+      97
+    ],
+    "abordagens": [
+      "clean_arch_rico",
+      "hexagonal_rico",
+      "12factor_rico",
+      "evolutionary_rico",
+      "arch_flow_rico",
+      "linha_base_rica",
+      "linha_base_simples"
+    ],
+    "avaliacoes": 210,
+    "esperadas": 210,
+    "cobertura_pct": 100.0,
+    "buracos": [],
+    "pontos_de_dados": 1890
+  },
+  "avaliacoes": [
+    {
+      "ideia_idx": 0,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 7,
+        "multi_interface": 5,
+        "configurabilidade": 2,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:20+00:00"
+      }
+    },
+    {
+      "ideia_idx": 0,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:34+00:00"
+      }
+    },
+    {
+      "ideia_idx": 0,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:22+00:00"
+      }
+    },
+    {
+      "ideia_idx": 0,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 10,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:22+00:00"
+      }
+    },
+    {
+      "ideia_idx": 0,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:20+00:00"
+      }
+    },
+    {
+      "ideia_idx": 0,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 8,
+        "isolamento_processamento": 10,
+        "consideracao_custo": 10,
+        "monetizacao": 10,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:23+00:00"
+      }
+    },
+    {
+      "ideia_idx": 0,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 1,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 6,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:19+00:00"
+      }
+    },
+    {
+      "ideia_idx": 3,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 6,
+        "multi_interface": 6,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:30+00:00"
+      }
+    },
+    {
+      "ideia_idx": 3,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:21+00:00"
+      }
+    },
+    {
+      "ideia_idx": 3,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:24+00:00"
+      }
+    },
+    {
+      "ideia_idx": 3,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 10,
+        "monetizacao": 9,
+        "evolucao": 10,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:34+00:00"
+      }
+    },
+    {
+      "ideia_idx": 3,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:34+00:00"
+      }
+    },
+    {
+      "ideia_idx": 3,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:27+00:00"
+      }
+    },
+    {
+      "ideia_idx": 3,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 7,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:32+00:00"
+      }
+    },
+    {
+      "ideia_idx": 4,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 7,
+        "configurabilidade": 6,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:47+00:00"
+      }
+    },
+    {
+      "ideia_idx": 4,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:38+00:00"
+      }
+    },
+    {
+      "ideia_idx": 4,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 3,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:41+00:00"
+      }
+    },
+    {
+      "ideia_idx": 4,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:38+00:00"
+      }
+    },
+    {
+      "ideia_idx": 4,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:41+00:00"
+      }
+    },
+    {
+      "ideia_idx": 4,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 10,
+        "monetizacao": 10,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:42+00:00"
+      }
+    },
+    {
+      "ideia_idx": 4,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 6,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:45+00:00"
+      }
+    },
+    {
+      "ideia_idx": 11,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 5,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:50+00:00"
+      }
+    },
+    {
+      "ideia_idx": 11,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:50+00:00"
+      }
+    },
+    {
+      "ideia_idx": 11,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:46+00:00"
+      }
+    },
+    {
+      "ideia_idx": 11,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:52+00:00"
+      }
+    },
+    {
+      "ideia_idx": 11,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:52+00:00"
+      }
+    },
+    {
+      "ideia_idx": 11,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:51+00:00"
+      }
+    },
+    {
+      "ideia_idx": 11,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 6,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 7
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:56+00:00"
+      }
+    },
+    {
+      "ideia_idx": 13,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 6,
+        "configurabilidade": 3,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 6
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:57+00:00"
+      }
+    },
+    {
+      "ideia_idx": 13,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 5,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:01+00:00"
+      }
+    },
+    {
+      "ideia_idx": 13,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:53+00:00"
+      }
+    },
+    {
+      "ideia_idx": 13,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:03+00:00"
+      }
+    },
+    {
+      "ideia_idx": 13,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 7,
+        "multi_interface": 8,
+        "configurabilidade": 3,
+        "isolamento_processamento": 5,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:05+00:00"
+      }
+    },
+    {
+      "ideia_idx": 13,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:09:58+00:00"
+      }
+    },
+    {
+      "ideia_idx": 13,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 5,
+        "consideracao_custo": 7,
+        "monetizacao": 8,
+        "evolucao": 6,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:08+00:00"
+      }
+    },
+    {
+      "ideia_idx": 14,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:13+00:00"
+      }
+    },
+    {
+      "ideia_idx": 14,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:07+00:00"
+      }
+    },
+    {
+      "ideia_idx": 14,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:11+00:00"
+      }
+    },
+    {
+      "ideia_idx": 14,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:13+00:00"
+      }
+    },
+    {
+      "ideia_idx": 14,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 6,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:09+00:00"
+      }
+    },
+    {
+      "ideia_idx": 14,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:05+00:00"
+      }
+    },
+    {
+      "ideia_idx": 14,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 7,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:14+00:00"
+      }
+    },
+    {
+      "ideia_idx": 17,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 7,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:20+00:00"
+      }
+    },
+    {
+      "ideia_idx": 17,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:22+00:00"
+      }
+    },
+    {
+      "ideia_idx": 17,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:12+00:00"
+      }
+    },
+    {
+      "ideia_idx": 17,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:21+00:00"
+      }
+    },
+    {
+      "ideia_idx": 17,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:16+00:00"
+      }
+    },
+    {
+      "ideia_idx": 17,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:16+00:00"
+      }
+    },
+    {
+      "ideia_idx": 17,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:27+00:00"
+      }
+    },
+    {
+      "ideia_idx": 25,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:32+00:00"
+      }
+    },
+    {
+      "ideia_idx": 25,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:28+00:00"
+      }
+    },
+    {
+      "ideia_idx": 25,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 7
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:29+00:00"
+      }
+    },
+    {
+      "ideia_idx": 25,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:27+00:00"
+      }
+    },
+    {
+      "ideia_idx": 25,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:31+00:00"
+      }
+    },
+    {
+      "ideia_idx": 25,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:25+00:00"
+      }
+    },
+    {
+      "ideia_idx": 25,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:32+00:00"
+      }
+    },
+    {
+      "ideia_idx": 27,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:40+00:00"
+      }
+    },
+    {
+      "ideia_idx": 27,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 5,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:38+00:00"
+      }
+    },
+    {
+      "ideia_idx": 27,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:42+00:00"
+      }
+    },
+    {
+      "ideia_idx": 27,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 4,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 10,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:48+00:00"
+      }
+    },
+    {
+      "ideia_idx": 27,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 10,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:42+00:00"
+      }
+    },
+    {
+      "ideia_idx": 27,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 10,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:34+00:00"
+      }
+    },
+    {
+      "ideia_idx": 27,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 3,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 7,
+        "monetizacao": 8,
+        "evolucao": 6,
+        "coerencia": 7
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:44+00:00"
+      }
+    },
+    {
+      "ideia_idx": 28,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 7,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:52+00:00"
+      }
+    },
+    {
+      "ideia_idx": 28,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 7,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:34+00:00"
+      }
+    },
+    {
+      "ideia_idx": 28,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:50+00:00"
+      }
+    },
+    {
+      "ideia_idx": 28,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:51+00:00"
+      }
+    },
+    {
+      "ideia_idx": 28,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 10,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:52+00:00"
+      }
+    },
+    {
+      "ideia_idx": 28,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:52+00:00"
+      }
+    },
+    {
+      "ideia_idx": 28,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 6,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:56+00:00"
+      }
+    },
+    {
+      "ideia_idx": 29,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 3,
+        "visao_mercado": 6,
+        "multi_interface": 2,
+        "configurabilidade": 1,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:55+00:00"
+      }
+    },
+    {
+      "ideia_idx": 29,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:10:59+00:00"
+      }
+    },
+    {
+      "ideia_idx": 29,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:04+00:00"
+      }
+    },
+    {
+      "ideia_idx": 29,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:07+00:00"
+      }
+    },
+    {
+      "ideia_idx": 29,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 7,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:06+00:00"
+      }
+    },
+    {
+      "ideia_idx": 29,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:05+00:00"
+      }
+    },
+    {
+      "ideia_idx": 29,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 3,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 5,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:07+00:00"
+      }
+    },
+    {
+      "ideia_idx": 31,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 3,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:10+00:00"
+      }
+    },
+    {
+      "ideia_idx": 31,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:12+00:00"
+      }
+    },
+    {
+      "ideia_idx": 31,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:11+00:00"
+      }
+    },
+    {
+      "ideia_idx": 31,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:12+00:00"
+      }
+    },
+    {
+      "ideia_idx": 31,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 7,
+        "multi_interface": 6,
+        "configurabilidade": 2,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:16+00:00"
+      }
+    },
+    {
+      "ideia_idx": 31,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 10,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:19+00:00"
+      }
+    },
+    {
+      "ideia_idx": 31,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:19+00:00"
+      }
+    },
+    {
+      "ideia_idx": 35,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 8,
+        "configurabilidade": 6,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:25+00:00"
+      }
+    },
+    {
+      "ideia_idx": 35,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:24+00:00"
+      }
+    },
+    {
+      "ideia_idx": 35,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:24+00:00"
+      }
+    },
+    {
+      "ideia_idx": 35,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:27+00:00"
+      }
+    },
+    {
+      "ideia_idx": 35,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:24+00:00"
+      }
+    },
+    {
+      "ideia_idx": 35,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:21+00:00"
+      }
+    },
+    {
+      "ideia_idx": 35,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 7,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:32+00:00"
+      }
+    },
+    {
+      "ideia_idx": 53,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:33+00:00"
+      }
+    },
+    {
+      "ideia_idx": 53,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:35+00:00"
+      }
+    },
+    {
+      "ideia_idx": 53,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 3,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 6,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:36+00:00"
+      }
+    },
+    {
+      "ideia_idx": 53,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:39+00:00"
+      }
+    },
+    {
+      "ideia_idx": 53,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:49+00:00"
+      }
+    },
+    {
+      "ideia_idx": 53,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:39+00:00"
+      }
+    },
+    {
+      "ideia_idx": 53,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 3,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 6,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:40+00:00"
+      }
+    },
+    {
+      "ideia_idx": 54,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 6,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:38+00:00"
+      }
+    },
+    {
+      "ideia_idx": 54,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:38+00:00"
+      }
+    },
+    {
+      "ideia_idx": 54,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:50+00:00"
+      }
+    },
+    {
+      "ideia_idx": 54,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:49+00:00"
+      }
+    },
+    {
+      "ideia_idx": 54,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 9,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:47+00:00"
+      }
+    },
+    {
+      "ideia_idx": 54,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:56+00:00"
+      }
+    },
+    {
+      "ideia_idx": 54,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 3,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:53+00:00"
+      }
+    },
+    {
+      "ideia_idx": 57,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 7,
+        "configurabilidade": 6,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:59+00:00"
+      }
+    },
+    {
+      "ideia_idx": 57,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:54+00:00"
+      }
+    },
+    {
+      "ideia_idx": 57,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:58+00:00"
+      }
+    },
+    {
+      "ideia_idx": 57,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:01+00:00"
+      }
+    },
+    {
+      "ideia_idx": 57,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:02+00:00"
+      }
+    },
+    {
+      "ideia_idx": 57,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:11:57+00:00"
+      }
+    },
+    {
+      "ideia_idx": 57,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 6,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:03+00:00"
+      }
+    },
+    {
+      "ideia_idx": 64,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 3,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:07+00:00"
+      }
+    },
+    {
+      "ideia_idx": 64,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:08+00:00"
+      }
+    },
+    {
+      "ideia_idx": 64,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:07+00:00"
+      }
+    },
+    {
+      "ideia_idx": 64,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 8,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:14+00:00"
+      }
+    },
+    {
+      "ideia_idx": 64,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:09+00:00"
+      }
+    },
+    {
+      "ideia_idx": 64,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:10+00:00"
+      }
+    },
+    {
+      "ideia_idx": 64,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 5,
+        "consideracao_custo": 7,
+        "monetizacao": 8,
+        "evolucao": 6,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:12+00:00"
+      }
+    },
+    {
+      "ideia_idx": 69,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 4,
+        "configurabilidade": 2,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:15+00:00"
+      }
+    },
+    {
+      "ideia_idx": 69,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:08+00:00"
+      }
+    },
+    {
+      "ideia_idx": 69,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:19+00:00"
+      }
+    },
+    {
+      "ideia_idx": 69,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 10,
+        "configurabilidade": 3,
+        "isolamento_processamento": 10,
+        "consideracao_custo": 10,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:24+00:00"
+      }
+    },
+    {
+      "ideia_idx": 69,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:22+00:00"
+      }
+    },
+    {
+      "ideia_idx": 69,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 10,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:17+00:00"
+      }
+    },
+    {
+      "ideia_idx": 69,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:22+00:00"
+      }
+    },
+    {
+      "ideia_idx": 71,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 5,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:24+00:00"
+      }
+    },
+    {
+      "ideia_idx": 71,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:29+00:00"
+      }
+    },
+    {
+      "ideia_idx": 71,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 10,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:28+00:00"
+      }
+    },
+    {
+      "ideia_idx": 71,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:21+00:00"
+      }
+    },
+    {
+      "ideia_idx": 71,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:30+00:00"
+      }
+    },
+    {
+      "ideia_idx": 71,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:30+00:00"
+      }
+    },
+    {
+      "ideia_idx": 71,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:35+00:00"
+      }
+    },
+    {
+      "ideia_idx": 75,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 5,
+        "configurabilidade": 7,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:37+00:00"
+      }
+    },
+    {
+      "ideia_idx": 75,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:40+00:00"
+      }
+    },
+    {
+      "ideia_idx": 75,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:42+00:00"
+      }
+    },
+    {
+      "ideia_idx": 75,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 6,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:15:25+00:00"
+      }
+    },
+    {
+      "ideia_idx": 75,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:36+00:00"
+      }
+    },
+    {
+      "ideia_idx": 75,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:36+00:00"
+      }
+    },
+    {
+      "ideia_idx": 75,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 8,
+        "monetizacao": 7,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:45+00:00"
+      }
+    },
+    {
+      "ideia_idx": 77,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 6,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:46+00:00"
+      }
+    },
+    {
+      "ideia_idx": 77,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 5,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:49+00:00"
+      }
+    },
+    {
+      "ideia_idx": 77,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:50+00:00"
+      }
+    },
+    {
+      "ideia_idx": 77,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 10,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:52+00:00"
+      }
+    },
+    {
+      "ideia_idx": 77,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:52+00:00"
+      }
+    },
+    {
+      "ideia_idx": 77,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:55+00:00"
+      }
+    },
+    {
+      "ideia_idx": 77,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 5,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:12:58+00:00"
+      }
+    },
+    {
+      "ideia_idx": 81,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 5,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:03+00:00"
+      }
+    },
+    {
+      "ideia_idx": 81,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:04+00:00"
+      }
+    },
+    {
+      "ideia_idx": 81,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 6,
+        "multi_interface": 8,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:01+00:00"
+      }
+    },
+    {
+      "ideia_idx": 81,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 10,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:04+00:00"
+      }
+    },
+    {
+      "ideia_idx": 81,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 4,
+        "configurabilidade": 2,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:08+00:00"
+      }
+    },
+    {
+      "ideia_idx": 81,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:05+00:00"
+      }
+    },
+    {
+      "ideia_idx": 81,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 6,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 7
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:08+00:00"
+      }
+    },
+    {
+      "ideia_idx": 84,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 3,
+        "configurabilidade": 4,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:14+00:00"
+      }
+    },
+    {
+      "ideia_idx": 84,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:15+00:00"
+      }
+    },
+    {
+      "ideia_idx": 84,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:20+00:00"
+      }
+    },
+    {
+      "ideia_idx": 84,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:17+00:00"
+      }
+    },
+    {
+      "ideia_idx": 84,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:16+00:00"
+      }
+    },
+    {
+      "ideia_idx": 84,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:17+00:00"
+      }
+    },
+    {
+      "ideia_idx": 84,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 7,
+        "monetizacao": 9,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:22+00:00"
+      }
+    },
+    {
+      "ideia_idx": 86,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:22+00:00"
+      }
+    },
+    {
+      "ideia_idx": 86,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 10,
+        "configurabilidade": 3,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:30+00:00"
+      }
+    },
+    {
+      "ideia_idx": 86,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:30+00:00"
+      }
+    },
+    {
+      "ideia_idx": 86,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:31+00:00"
+      }
+    },
+    {
+      "ideia_idx": 86,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:33+00:00"
+      }
+    },
+    {
+      "ideia_idx": 86,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:28+00:00"
+      }
+    },
+    {
+      "ideia_idx": 86,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 6,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 7,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:33+00:00"
+      }
+    },
+    {
+      "ideia_idx": 88,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 4,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:37+00:00"
+      }
+    },
+    {
+      "ideia_idx": 88,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:38+00:00"
+      }
+    },
+    {
+      "ideia_idx": 88,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:38+00:00"
+      }
+    },
+    {
+      "ideia_idx": 88,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:47+00:00"
+      }
+    },
+    {
+      "ideia_idx": 88,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:45+00:00"
+      }
+    },
+    {
+      "ideia_idx": 88,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:46+00:00"
+      }
+    },
+    {
+      "ideia_idx": 88,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 8,
+        "monetizacao": 9,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:45+00:00"
+      }
+    },
+    {
+      "ideia_idx": 89,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 7,
+        "multi_interface": 6,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:49+00:00"
+      }
+    },
+    {
+      "ideia_idx": 89,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:47+00:00"
+      }
+    },
+    {
+      "ideia_idx": 89,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 7,
+        "multi_interface": 8,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:50+00:00"
+      }
+    },
+    {
+      "ideia_idx": 89,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:54+00:00"
+      }
+    },
+    {
+      "ideia_idx": 89,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 7,
+        "multi_interface": 8,
+        "configurabilidade": 5,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:51+00:00"
+      }
+    },
+    {
+      "ideia_idx": 89,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:13:52+00:00"
+      }
+    },
+    {
+      "ideia_idx": 89,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:01+00:00"
+      }
+    },
+    {
+      "ideia_idx": 93,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 7,
+        "multi_interface": 3,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:03+00:00"
+      }
+    },
+    {
+      "ideia_idx": 93,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 6,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:01+00:00"
+      }
+    },
+    {
+      "ideia_idx": 93,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 3,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:17+00:00"
+      }
+    },
+    {
+      "ideia_idx": 93,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:07+00:00"
+      }
+    },
+    {
+      "ideia_idx": 93,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 5,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:10+00:00"
+      }
+    },
+    {
+      "ideia_idx": 93,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:03+00:00"
+      }
+    },
+    {
+      "ideia_idx": 93,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 6,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:08+00:00"
+      }
+    },
+    {
+      "ideia_idx": 94,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 7,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:09+00:00"
+      }
+    },
+    {
+      "ideia_idx": 94,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:16+00:00"
+      }
+    },
+    {
+      "ideia_idx": 94,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 7,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:14+00:00"
+      }
+    },
+    {
+      "ideia_idx": 94,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:08+00:00"
+      }
+    },
+    {
+      "ideia_idx": 94,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:14+00:00"
+      }
+    },
+    {
+      "ideia_idx": 94,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:20+00:00"
+      }
+    },
+    {
+      "ideia_idx": 94,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 2,
+        "isolamento_processamento": 7,
+        "consideracao_custo": 7,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:24+00:00"
+      }
+    },
+    {
+      "ideia_idx": 95,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 7,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:26+00:00"
+      }
+    },
+    {
+      "ideia_idx": 95,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:22+00:00"
+      }
+    },
+    {
+      "ideia_idx": 95,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 6,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:27+00:00"
+      }
+    },
+    {
+      "ideia_idx": 95,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 7,
+        "configurabilidade": 5,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:28+00:00"
+      }
+    },
+    {
+      "ideia_idx": 95,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 2,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:25+00:00"
+      }
+    },
+    {
+      "ideia_idx": 95,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:22+00:00"
+      }
+    },
+    {
+      "ideia_idx": 95,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 1,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:33+00:00"
+      }
+    },
+    {
+      "ideia_idx": 97,
+      "abordagem": "clean_arch_rico",
+      "scores": {
+        "core_diferenciador": 4,
+        "visao_mercado": 8,
+        "multi_interface": 6,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:37+00:00"
+      }
+    },
+    {
+      "ideia_idx": 97,
+      "abordagem": "hexagonal_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 8,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 7,
+        "evolucao": 9,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:39+00:00"
+      }
+    },
+    {
+      "ideia_idx": 97,
+      "abordagem": "12factor_rico",
+      "scores": {
+        "core_diferenciador": 5,
+        "visao_mercado": 7,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 8,
+        "evolucao": 7,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:38+00:00"
+      }
+    },
+    {
+      "ideia_idx": 97,
+      "abordagem": "evolutionary_rico",
+      "scores": {
+        "core_diferenciador": 8,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 3,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:39+00:00"
+      }
+    },
+    {
+      "ideia_idx": 97,
+      "abordagem": "arch_flow_rico",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 8,
+        "multi_interface": 8,
+        "configurabilidade": 6,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 9,
+        "monetizacao": 9,
+        "evolucao": 8,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:37+00:00"
+      }
+    },
+    {
+      "ideia_idx": 97,
+      "abordagem": "linha_base_rica",
+      "scores": {
+        "core_diferenciador": 9,
+        "visao_mercado": 9,
+        "multi_interface": 10,
+        "configurabilidade": 9,
+        "isolamento_processamento": 9,
+        "consideracao_custo": 10,
+        "monetizacao": 8,
+        "evolucao": 9,
+        "coerencia": 9
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:39+00:00"
+      }
+    },
+    {
+      "ideia_idx": 97,
+      "abordagem": "linha_base_simples",
+      "scores": {
+        "core_diferenciador": 7,
+        "visao_mercado": 8,
+        "multi_interface": 9,
+        "configurabilidade": 4,
+        "isolamento_processamento": 8,
+        "consideracao_custo": 8,
+        "monetizacao": 8,
+        "evolucao": 8,
+        "coerencia": 8
+      },
+      "_meta": {
+        "modelo_avaliador": "claude-sonnet-5",
+        "modelo_gerador": "claude-sonnet-5",
+        "prompt_sha": "19bc6010fb58",
+        "truncagem": 0,
+        "avaliado_em": "2026-09-27T21:14:41+00:00"
+      }
+    }
+  ]
+}

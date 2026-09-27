@@ -1,0 +1,118 @@
+{
+  "ideia_idx": 13,
+  "ideia": "App de reserva e gestão de espaços de coworking descentralizados",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do usuário (encontrar e reservar espaço de trabalho flexível perto de onde está) → Descoberta/Busca (geolocalização, filtros, disponibilidade) → Reserva (seleção de slot, confirmação) → Pagamento (checkout, split entre plataforma e host) → Acesso físico (check-in, liberação de fechadura/portaria) → Uso do espaço → Gestão do host (listagem, precificação, disponibilidade, repasse financeiro) → Avaliação/Reputação (feedback bilateral) → Retenção (recompra, assinatura de créditos)",
+    "wardley_map": {
+      "genese": [
+        "Motor de matching dinâmico entre hosts descentralizados e demanda em tempo real",
+        "Sistema de reputação/confiança para hosts sem marca única (rede descentralizada)"
+      ],
+      "sob_medida": [
+        "Motor de reservas e disponibilidade multi-host",
+        "Dashboard de gestão de espaço para hosts",
+        "Precificação dinâmica por ocupação/demanda",
+        "Orquestração de acesso físico (abstração sobre múltiplos vendors de fechadura)"
+      ],
+      "produto": [
+        "Split payments/marketplace (Stripe Connect)",
+        "Busca com mapa (Google/Mapbox)",
+        "Notificações transacionais (push/SMS/email)",
+        "Verificação de identidade (KYC)"
+      ],
+      "commodity": [
+        "Autenticação (Auth0/Clerk)",
+        "Hospedagem cloud (AWS/GCP)",
+        "Armazenamento de objetos (S3)",
+        "CDN",
+        "Envio de email/SMS (SendGrid/Twilio)",
+        "Banco de dados relacional gerenciado (RDS)"
+      ]
+    },
+    "build_buy_decisions": {
+      "construir": "Motor de reservas/disponibilidade, dashboard do host, algoritmo de matching e precificação — são a vantagem competitiva do negócio e não existem prontos para o modelo descentralizado.",
+      "comprar": "Stripe Connect para pagamentos e repasses (evita lidar com compliance financeiro), Auth0/Clerk para identidade, Mapbox/Google Maps para geolocalização, integração com fechaduras inteligentes via APIs de vendors existentes (August, Salto, Nuki) — reduz time-to-market e risco regulatório.",
+      "commodity": "Hospedagem, banco de dados, storage, CDN, email/SMS transacional — sem diferenciação competitiva, usar serviços gerenciados padrão de mercado."
+    },
+    "core_domain": "Gestão de Reservas e Disponibilidade em rede descentralizada de espaços — é o componente que resolve o problema central (coordenar oferta fragmentada e heterogênea de hosts independentes com demanda em tempo real) e justifica investimento contínuo sob medida; os demais domínios são de suporte.",
+    "bounded_contexts": [
+      {
+        "nome": "Space Management",
+        "linguagem": "Space, Host, Listing, Amenity, Availability Slot, Capacity, House Rule"
+      },
+      {
+        "nome": "Booking & Reservations",
+        "linguagem": "Reservation, Booking Window, Slot, Cancellation, Check-in, No-show"
+      },
+      {
+        "nome": "Payments & Payouts",
+        "linguagem": "Charge, Payout, Connected Account, Split, Invoice, Refund"
+      },
+      {
+        "nome": "Access Control",
+        "linguagem": "Access Credential, Smart Lock, Entry Event, Access Window, Revocation"
+      },
+      {
+        "nome": "Search & Discovery",
+        "linguagem": "Search Query, Ranking Score, Geo-radius, Filter, Recommendation"
+      },
+      {
+        "nome": "Identity & Trust",
+        "linguagem": "User, Host, Verification, Reputation Score, Review, Dispute"
+      },
+      {
+        "nome": "Notifications",
+        "linguagem": "Notification, Channel, Template, Delivery Status"
+      }
+    ],
+    "context_mapping": [
+      "Booking ↔ Space Management: Cliente-Fornecedor (Booking consome disponibilidade e regras publicadas por Space Management)",
+      "Booking ↔ Payments: Cliente-Fornecedor com Camada Anticorrupção sobre Stripe Connect (isola o domínio de linguagem específica de gateway de pagamento)",
+      "Booking ↔ Access Control: Parceria (ambos evoluem juntos para garantir que reserva confirmada = acesso liberado em tempo real)",
+      "Access Control ↔ vendors externos de fechadura: Camada Anticorrupção (traduz múltiplos protocolos proprietários para um modelo de domínio único)",
+      "Search & Discovery ↔ Space Management: Cliente-Fornecedor conformista (consome o modelo de dados de Space sem exigir mudanças)",
+      "Identity & Trust: Open Host Service consumido por Booking, Space Management e Payments (fonte única de verdade sobre identidade/verificação)"
+    ],
+    "team_topologies": {
+      "fluxo": [
+        "Booking Team (reservas + busca/descoberta, ponta a ponta de valor para o usuário final)",
+        "Host Enablement Team (onboarding e gestão de espaços/hosts)"
+      ],
+      "plataforma": [
+        "Payments & Access Platform Team (expõe Stripe Connect e integrações de fechadura como serviço interno self-service)"
+      ],
+      "subsistema_complicado": [
+        "Access Control / IoT Integration Team (domínio profundo em protocolos heterogêneos de fechaduras inteligentes de múltiplos vendors)"
+      ],
+      "habilitacao": [
+        "Platform Enabling Team (observabilidade, CI/CD, padrões de arquitetura de eventos, apoia os times de fluxo a adotarem práticas sem aumentar headcount deles)"
+      ]
+    },
+    "cognitive_load": "Cada time de fluxo é dono de um único bounded context (Booking; Space Management) para caber no limite de carga cognitiva. Complexidade de pagamentos multi-parte e integração com N vendors de fechadura é absorvida pelo Platform Team e pelo time de Subsistema Complicado, expostos como APIs simples (X-as-a-Service), removendo essa carga dos times de fluxo.",
+    "interaction_modes": "Colaboração intensa e temporária entre Booking Team e Access Control Team durante a definição do contrato de eventos de check-in. X-as-a-Service entre times de fluxo e Payments & Access Platform Team (consumo via API/SDK sem necessidade de entender internals). Facilitação do Enabling Team junto ao Host Enablement Team na adoção de padrões de observabilidade e deploy.",
+    "flow_optimization": "Fluxo de valor otimizado via arquitetura orientada a eventos (reserva confirmada dispara eventos assíncronos para pagamento, acesso e notificação, evitando acoplamento síncrono). Principal gargalo esperado: consistência de disponibilidade em tempo real entre múltiplos hosts descentralizados com sistemas próprios de calendário/fechadura — mitigado com eventual consistency, cache de disponibilidade com invalidação por evento e circuit breakers na Camada Anticorrupção de Access Control.",
+    "independent_streams": "Cada bounded context expõe contratos (APIs REST/GraphQL e eventos de domínio versionados) permitindo deploy independente. Booking Team não depende do ciclo de release do Access Control Team graças à Camada Anticorrupção e comunicação assíncrona via barramento de eventos, permitindo evolução e escala independentes de cada fluxo de valor.",
+    "interfaces": [
+      "API REST/GraphQL de Booking (criação, cancelamento, consulta de reservas)",
+      "API de Space Management (CRUD de listings, disponibilidade, regras)",
+      "Webhook de eventos de pagamento (Stripe Connect)",
+      "API/Webhook de Access Control (abstração sobre fechaduras de terceiros)",
+      "API de Search (busca geoespacial e filtros)",
+      "SDK mobile (iOS/Android) para app do usuário final",
+      "Portal/API administrativa para hosts (dashboard de gestão)",
+      "Barramento de eventos de domínio (reserva confirmada, pagamento processado, acesso liberado)"
+    ],
+    "escalabilidade": "Serviços stateless por bounded context escalam horizontalmente atrás de load balancers; leitura de busca/disponibilidade usa réplicas de leitura e cache (Redis) para absorver picos; comunicação assíncrona via fila/streaming (Kafka/EventBridge) desacopla picos de reserva do processamento de pagamento e acesso; arquitetura multi-região acompanha a distribuição geográfica natural de espaços descentralizados; CDN para assets estáticos e imagens de listings.",
+    "custo_infra_estimado": "Servidores (containers em ECS/GKE, 3-6 instâncias): $150-300/mês. Banco de dados (RDS PostgreSQL multi-AZ): $120/mês. Cache (Redis/ElastiCache): $40/mês. Fila de eventos (Kafka gerenciado/EventBridge): $60/mês. Storage (S3, imagens de listings): $15/mês. CDN (CloudFront): $25/mês. Banda/transferência: $30/mês. Observabilidade (Datadog/Sentry): $50/mês. Total estimado inicial: ~$490-640/mês para escala inicial (até ~5.000 reservas/mês).",
+    "custo_por_cliente": "Por reserva processada: taxa Stripe Connect (2.9% + $0.30) + custo de infraestrutura marginal (~$0.02 CPU/query) + notificação (SMS $0.01, email desprezível) + storage de metadados ($0.001) ≈ $0.35-$0.45 de custo direto por reserva de ticket médio $30. Host médio com 40 reservas/mês gera ~$16 de custo direto de plataforma, versus receita de comissão (ver monetização) de $360 (30% de $1.200 em GMV), margem bruta unitária saudável.",
+    "monetizacao": "Modelo híbrido marketplace: (1) Comissão de 15-25% sobre cada reserva cobrada do host (transação principal de receita); (2) Assinatura SaaS para hosts com planos: Starter (grátis, comissão 25%), Pro $49/mês (comissão 18%, analytics avançado), Business $149/mês (comissão 12%, múltiplos espaços, API access); (3) Taxa de serviço de $1-3 cobrada do usuário final por reserva. Métricas-alvo: GMV médio por host $1.200/mês, MRR projetado com 200 hosts Pro = $9.800 + comissões; LTV de host estimado em $1.800 (18 meses de retenção média); CAC alvo <$150 via marketing de performance e parcerias locais, payback em ~2 meses.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Go por serviço, arquitetura de microsserviços por bounded context. Banco de dados: PostgreSQL (transacional) + Redis (cache/disponibilidade). Mensageria/eventos: Kafka ou AWS EventBridge para comunicação assíncrona entre contextos. Pagamentos: Stripe Connect (Standard ou Express accounts). Identidade: Auth0 ou Clerk. Mapas/geolocalização: Mapbox. Mobile: React Native ou Flutter. Infraestrutura: AWS ou GCP com containers (ECS/EKS ou GKE), Terraform para IaC. Observabilidade: Datadog/Grafana + Sentry. Acesso físico: integração via APIs de vendors (Seam, Latch, Salto) para abstrair múltiplas fechaduras."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T20:52:52+00:00",
+    "runner": "runner.py"
+  }
+}

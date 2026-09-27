@@ -1,0 +1,140 @@
+{
+  "ideia_idx": 27,
+  "ideia": "Plataforma de gestão de eventos corporativos híbridos",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do usuário (organizar evento corporativo com público presencial e remoto de forma unificada) → criação e configuração do evento (agenda, trilhas, palestrantes) → inscrição e emissão de ingressos → comunicação e engajamento pré-evento → experiência híbrida ao vivo (transmissão + presença física sincronizadas) → logística presencial (check-in, credenciamento, acesso) → engajamento e networking (matchmaking, chat, Q&A) → monetização de patrocínio (estandes virtuais, leads) → cobrança e faturamento → analytics e relatórios pós-evento → nutrição de leads e follow-up em CRM externo.",
+    "wardley_map": {
+      "genese": [
+        "Matchmaking de networking guiado por IA",
+        "Orquestração de experiência híbrida (sincronização presencial+virtual em tempo real)"
+      ],
+      "sob_medida": [
+        "Estandes virtuais de patrocinadores",
+        "Modelo de engajamento unificado (presencial+remoto)",
+        "Motor de agenda multi-trilha com dependências"
+      ],
+      "produto": [
+        "Ticketing e inscrição",
+        "Credenciamento/check-in com QR/RFID",
+        "Dashboards de analytics de evento",
+        "App mobile de check-in"
+      ],
+      "commodity": [
+        "Streaming/vídeo (Mux, Agora, Vonage)",
+        "Pagamentos (Stripe)",
+        "Notificações (SendGrid, Twilio)",
+        "Autenticação (Auth0/Clerk)",
+        "Armazenamento/CDN (S3, Cloudflare)",
+        "Observabilidade (Datadog)"
+      ]
+    },
+    "build_buy_decisions": {
+      "construir": "Orquestração de experiência híbrida, matchmaking de networking, motor de agenda e estandes virtuais de patrocinadores — são o diferencial competitivo e ainda estão em gênese/sob medida, comprar aqui gera commoditização prematura da vantagem competitiva.",
+      "comprar": "Streaming de vídeo, pagamentos, autenticação, notificações e CDN — componentes já commoditizados onde construir do zero destrói fluxo de valor sem gerar diferenciação.",
+      "usar_como_commodity": "Infraestrutura cloud (AWS/GCP), observabilidade e filas gerenciadas (SQS/EventBridge/Kafka gerenciado) — foco de investimento deve ir para o domínio central, não para operação de infra."
+    },
+    "core_domain": "Orquestração da experiência híbrida: sincronizar em tempo real o que acontece na sala física com o que acontece na transmissão (perguntas, votações, networking cruzado presencial-virtual), garantindo que participantes remotos tenham paridade de experiência com os presenciais. É o único ponto que justifica investimento sob medida contínuo, pois plataformas genéricas de ticketing (Eventbrite) e de webinar (Zoom Events) não resolvem essa sincronização como capacidade central.",
+    "bounded_contexts": [
+      {
+        "contexto": "Gestão de Eventos",
+        "linguagem_ubiqua": "Evento, Sessão, Trilha, Palestrante, Agenda, Sala"
+      },
+      {
+        "contexto": "Inscrição e Ticketing",
+        "linguagem_ubiqua": "Inscrição, Ingresso, Lote, Cupom, Participante, Formulário"
+      },
+      {
+        "contexto": "Venue Virtual e Streaming",
+        "linguagem_ubiqua": "Sala Virtual, Transmissão, Player, Qualidade de Stream, Gravação"
+      },
+      {
+        "contexto": "Engajamento Híbrido e Networking",
+        "linguagem_ubiqua": "Match, Interesse, Sala de Networking, Q&A, Enquete"
+      },
+      {
+        "contexto": "Logística Presencial",
+        "linguagem_ubiqua": "Check-in, Credencial, Controle de Acesso, Impressão de Badge"
+      },
+      {
+        "contexto": "Patrocínio e Expositores",
+        "linguagem_ubiqua": "Patrocinador, Estande Virtual, Lead, Cota de Patrocínio, Material"
+      },
+      {
+        "contexto": "Pagamentos e Faturamento",
+        "linguagem_ubiqua": "Fatura, Assinatura, Cobrança, Plano, Reembolso"
+      },
+      {
+        "contexto": "Analytics e Relatórios",
+        "linguagem_ubiqua": "Métrica de Engajamento, Funil, Relatório, Dashboard, Sessão Assistida"
+      },
+      {
+        "contexto": "Identidade e Acesso",
+        "linguagem_ubiqua": "Usuário, Papel, Permissão, Organização, Tenant"
+      },
+      {
+        "contexto": "Comunicação e Notificações",
+        "linguagem_ubiqua": "Campanha, Template, Canal, Envio, Lembrete"
+      }
+    ],
+    "context_mapping": {
+      "Inscrição/Ticketing -> Pagamentos": "cliente-fornecedor: Pagamentos é upstream, expõe contrato estável de cobrança consumido por Ticketing.",
+      "Gestão de Eventos <-> Engajamento Híbrido": "parceria: ambos co-evoluem o modelo de sessão/agenda em conjunto, mudanças precisam ser negociadas mutuamente.",
+      "Engajamento Híbrido -> Venue Virtual/Streaming (terceiros)": "camada anticorrupção: isola o domínio de eventos das APIs específicas de Mux/Agora, traduzindo para o modelo próprio de 'Sala Virtual'.",
+      "Patrocínio -> Analytics": "cliente-fornecedor: Analytics consome eventos de lead gerados por Patrocínio.",
+      "Logística Presencial <-> Inscrição": "parceria: dados de participante são compartilhados e evoluem juntos (ex.: mudança de formulário de inscrição impacta badge).",
+      "Identidade e Acesso -> todos os contextos": "open host service: serviço de plataforma consumido via API padronizada por todos os demais contextos.",
+      "Comunicação/Notificações -> todos os contextos": "open host service: capacidade de envio consumida via eventos assíncronos, sem acoplamento direto."
+    },
+    "team_topologies": {
+      "fluxo": [
+        "Time de Inscrição e Ticketing",
+        "Time de Gestão de Eventos",
+        "Time de Engajamento Híbrido e Networking",
+        "Time de Patrocínio e Expositores",
+        "Time de Logística Presencial"
+      ],
+      "plataforma": [
+        "Time de Plataforma (Identidade, Pagamentos, Notificações, Observabilidade, CI/CD como self-service)"
+      ],
+      "subsistema_complicado": [
+        "Time de Streaming/Vídeo de baixa latência e sincronização híbrida",
+        "Time de Matchmaking/IA de networking"
+      ],
+      "habilitacao": [
+        "Time de Arquitetura e Práticas de DDD",
+        "Time de Habilitação em Dados/Analytics"
+      ]
+    },
+    "cognitive_load": "Times de fluxo consomem pagamentos, auth e notificações como APIs self-service do time de plataforma, sem precisar entender a complexidade interna. O time de subsistema complicado absorve toda a complexidade de streaming de baixa latência e algoritmos de matchmaking, expondo um SDK simples para os times de fluxo. O time de habilitação atua de forma temporária (semanas, não permanente) para transferir conhecimento de DDD e instrumentação de dados, evitando que os times de fluxo acumulem carga extrínseca desnecessária.",
+    "interaction_modes": {
+      "colaboracao": "Time de Engajamento Híbrido com Time de Gestão de Eventos (modelo de sessão/agenda em co-evolução); Time de Streaming com Engajamento Híbrido durante integração de sincronização em tempo real.",
+      "x_as_a_service": "Time de Plataforma oferecendo Identidade, Pagamentos e Notificações como serviço para todos os times de fluxo.",
+      "facilitacao": "Time de Habilitação orientando temporariamente os times de fluxo em práticas de DDD e instrumentação de eventos de analytics."
+    },
+    "flow_optimization": "Fluxo otimizado via arquitetura orientada a eventos (event bus) entre contextos, eliminando chamadas síncronas entre times. Gargalos previstos: (1) Venue Virtual/Streaming como subsistema complicado e dependência de terceiros, mitigado com fallback multi-provider e circuit breakers; (2) picos de Inscrição/Pagamentos em lançamentos de evento, mitigado com filas assíncronas e autoscaling; (3) acoplamento entre Logística Presencial e Inscrição, mitigado por eventos de domínio (InscricaoConfirmada) em vez de leitura direta do banco de dados do outro contexto.",
+    "independent_streams": "Cada bounded context possui banco de dados próprio e pipeline de deploy independente. Integração entre contextos ocorre via barramento de eventos (ex.: Kafka/EventBridge) publicando eventos de domínio (InscricaoConfirmada, CheckinRealizado, LeadCapturado), permitindo que cada time de fluxo evolua e libere versões sem coordenação síncrona com os demais.",
+    "interfaces": [
+      "API pública REST/GraphQL para inscrição e ticketing",
+      "Portal de organizador (admin dashboard)",
+      "Portal público de inscrição do participante",
+      "App mobile de check-in/credenciamento",
+      "SDK/Player embarcado para transmissão ao vivo",
+      "Portal de patrocinadores/expositores (estande virtual)",
+      "Barramento de eventos assíncrono entre contextos",
+      "Webhooks para integração com CRMs externos (Salesforce, HubSpot)",
+      "Dashboard de analytics e relatórios"
+    ],
+    "escalabilidade": "Serviços stateless por contexto escalam horizontalmente atrás de load balancers; arquitetura orientada a eventos desacopla picos de carga (ex.: pico de check-in não impacta streaming); dados particionados por tenant (multi-tenant com isolamento lógico); CDN para ativos estáticos e réplicas/edge para vídeo; réplicas de leitura no banco para relatórios pesados sem afetar transações; autoscaling dedicado no subsistema de streaming durante picos de audiência simultânea; cache (Redis) para agenda e dados de sessão de alta leitura.",
+    "custo_infra_estimado": "Servidores/containers (K8s, 6-10 serviços): $300-500/mês; Banco de dados gerenciado (Postgres multi-AZ): $150/mês; Redis (cache/sessões): $40/mês; Streaming de vídeo (Mux/Agora, uso variável): $400-1500/mês conforme volume; Fila de eventos (MSK/EventBridge): $80/mês; CDN (Cloudflare): $50/mês; Armazenamento S3 (gravações, materiais): $60/mês; Observabilidade (Datadog): $100/mês. Total base: aproximadamente $1.200-2.500/mês para operação inicial (escala pequena a média).",
+    "custo_por_cliente": "Por participante em evento híbrido: streaming = $0.08 (custo de minutos de vídeo por espectador), notificações (e-mail/SMS) = $0.02, armazenamento de gravação = $0.005, processamento/CPU (matchmaking, analytics) = $0.015, pagamento (taxa Stripe ~2.9%+$0.30 repassada) = variável. Custo direto por participante ≈ $0.12/participante. Um evento com 500 participantes remotos e 200 presenciais = ~500 × $0.12 = $60 de custo variável direto, mais custo fixo de infra amortizado entre eventos do mês.",
+    "monetizacao": "Modelo SaaS por assinatura + uso: Plano Starter $299/mês (até 3 eventos/mês, 200 participantes/evento); Plano Business $899/mês (eventos ilimitados, até 1.500 participantes/evento, estandes de patrocínio); Plano Enterprise (customizado, a partir de $2.500/mês, SLA, SSO, white-label). Add-ons: analytics avançado +$150/mês, módulo de patrocínio/leads +$300/mês, minutos extras de streaming $0.10/participante excedente. Métricas-alvo: MRR inicial de $50k em 12 meses com ~80 clientes Business equivalentes; LTV médio $10.800 (36 meses de retenção média × $300 ARPU); CAC alvo $1.500 via vendas outbound para RH/eventos corporativos, payback CAC em ~5 meses.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Go por contexto de domínio, seguindo bounded contexts como serviços independentes; Frontend: React/Next.js; Banco de dados: PostgreSQL (um schema/instância por contexto crítico); Cache: Redis; Mensageria/eventos: Kafka ou AWS EventBridge + SQS; Streaming: Mux ou Agora via camada anticorrupção; Pagamentos: Stripe (Billing + Connect para repasse a patrocinadores); Autenticação: Auth0 ou Clerk; Infra: AWS ou GCP com Kubernetes (EKS/GKE); CDN: Cloudflare; Observabilidade: Datadog ou Grafana/Prometheus; CI/CD: GitHub Actions + Argo CD."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T20:55:32+00:00",
+    "runner": "runner.py"
+  }
+}

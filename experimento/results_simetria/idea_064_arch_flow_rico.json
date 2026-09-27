@@ -1,0 +1,88 @@
+{
+  "ideia_idx": 64,
+  "ideia": "Plataforma de licitação eletrônica simplificada para prefeituras",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do cidadão/prefeitura por compras públicas transparentes e eficientes → Planejamento da contratação (DFD, pesquisa de preços) → Elaboração e publicação do edital → Cadastro e habilitação de fornecedores → Sessão de disputa/lances → Julgamento das propostas → Recursos administrativos → Homologação e adjudicação → Contrato/empenho → Execução e fiscalização do contrato → Publicidade e auditoria (portal da transparência, TCEs)",
+    "wardley_map": {
+      "genese": [
+        "Motor de compliance adaptativo (aplica automaticamente regras da Lei 14.133/2021 conforme modalidade)",
+        "Simplificação de UX para pequenos municípios com baixa maturidade digital"
+      ],
+      "sob_medida": [
+        "Motor de regras de licitação (fases, prazos, modalidades)",
+        "Motor de sessão de disputa/lances em tempo real",
+        "Fluxo de julgamento e recursos",
+        "Gestão de contratos e aditivos"
+      ],
+      "produto": [
+        "Portal de transparência pública",
+        "Cadastro/habilitação de fornecedores",
+        "Dashboard de gestão e BI de gastos públicos"
+      ],
+      "commodity": [
+        "Autenticação (gov.br SSO)",
+        "Assinatura eletrônica (ICP-Brasil)",
+        "Armazenamento de documentos (S3)",
+        "Notificações (e-mail/SMS)",
+        "Infraestrutura cloud (compute, banco gerenciado, CDN)"
+      ]
+    },
+    "build_buy_decisions": "Construir: motor de regras de licitação, motor de disputa/lances, fluxo de julgamento/homologação e gestão de contratos — é onde reside a vantagem competitiva e a conformidade legal específica do domínio. Comprar: gov.br (SSO/identidade), provedores de assinatura ICP-Brasil (ex.: Serpro, Valid), gateway de notificações (SendGrid/Twilio), gateway de pagamento — soluções maduras e regulatórias já resolvidas por terceiros. Usar como commodity: infraestrutura cloud (AWS/GCP), banco de dados gerenciado, storage de objetos, CDN — sem diferencial competitivo em construir do zero.",
+    "core_domain": "Processo de Licitação (regras de julgamento, fases, prazos e conformidade com a Lei 14.133/2021), pois é o que gera valor diferencial: simplificar radicalmente um processo legalmente complexo para prefeituras com pouca estrutura técnica e jurídica. Justifica investimento sob medida porque erros aqui geram risco jurídico e é o núcleo da proposta de valor 'licitação simplificada'.",
+    "bounded_contexts": {
+      "Gestao_de_Editais": "Linguagem: edital, item, lote, modalidade (pregão, concorrência, dispensa), fase, prazo",
+      "Habilitacao_de_Fornecedores": "Linguagem: fornecedor, documentação, certidão, habilitação jurídica/fiscal/técnica, impedimento",
+      "Sessao_de_Disputa": "Linguagem: lance, proposta, disputa aberta/fechada, empate ficto, lance intermediário",
+      "Julgamento_e_Homologacao": "Linguagem: julgamento, classificação, recurso, contrarrazão, adjudicação, homologação",
+      "Contratos_e_Empenhos": "Linguagem: contrato, empenho, aditivo, execução, fiscal do contrato, rescisão",
+      "Transparencia_Publica": "Linguagem: publicação, diário oficial, portal da transparência, prestação de contas",
+      "Identidade_e_Acesso": "Linguagem: usuário, perfil, permissão, órgão, gov.br"
+    },
+    "context_mapping": "Gestao_de_Editais → Habilitacao_de_Fornecedores: cliente-fornecedor (edital define requisitos de habilitação). Gestao_de_Editais → Sessao_de_Disputa: cliente-fornecedor (edital parametriza a disputa). Sessao_de_Disputa → Julgamento_e_Homologacao: cliente-fornecedor (lances alimentam julgamento). Julgamento_e_Homologacao → Contratos_e_Empenhos: cliente-fornecedor (homologação gera contrato). Identidade_e_Acesso: camada anticorrupção entre gov.br externo e o domínio interno. Assinatura ICP-Brasil: camada anticorrupção (fornecedor externo). Transparencia_Publica: parceria com todos os contextos, pois consome eventos de todos para publicação obrigatória.",
+    "team_topologies": {
+      "fluxo": [
+        "Time Editais & Habilitação",
+        "Time Disputa & Julgamento",
+        "Time Contratos & Execução"
+      ],
+      "plataforma": [
+        "Time de Plataforma (infra, identidade, notificações, observabilidade, CI/CD self-service)"
+      ],
+      "subsistema_complicado": [
+        "Time de Compliance Jurídico (motor de regras da Lei 14.133/2021)",
+        "Time de Assinatura Digital/Criptografia (integração ICP-Brasil)"
+      ],
+      "habilitacao": [
+        "Time de UX Gov/Acessibilidade (simplificação para municípios de baixa maturidade digital)",
+        "Time de Segurança e LGPD"
+      ]
+    },
+    "cognitive_load": "Cada time de fluxo é dono de 1-2 bounded contexts, sem precisar entender toda a Lei 14.133/2021 em detalhe — o motor de compliance expõe regras como serviço consumível (regras como configuração/API). O time de plataforma abstrai infraestrutura via APIs self-service e templates padronizados. O time de assinatura digital isola toda a complexidade de certificados e ICP-Brasil atrás de uma API simples de 'assinar documento'.",
+    "interaction_modes": "Times de fluxo ↔ Plataforma: X-as-a-Service (APIs self-service de infra, auth, notificação). Times de fluxo ↔ Subsistemas complicados (compliance, assinatura): X-as-a-Service em regime, com colaboração intensiva no início da integração. Time de Habilitação (UX/Acessibilidade e Segurança/LGPD) ↔ Times de fluxo: facilitação temporária até internalização das práticas. Entre times de fluxo: colaboração pontual via eventos de domínio assíncronos, evitando dependências síncronas.",
+    "flow_optimization": "Fluxo de valor otimizado via eventos de domínio assíncronos entre contextos (edital publicado → habilitação liberada em paralelo → disputa → julgamento → contrato), permitindo que habilitação de fornecedores ocorra em paralelo à divulgação do edital em vez de sequencialmente. Principais gargalos: homologação manual (aprovação jurídica/autoridade) e verificação de documentos de habilitação — mitigados com automação de conferência documental (OCR/validação com bases públicas) e SLAs internos.",
+    "independent_streams": "Cada bounded context publica e consome eventos de domínio via message broker (ex.: 'EditalPublicado', 'FornecedorHabilitado', 'LanceRegistrado', 'ProcessoHomologado'), permitindo deploy e evolução independentes por time. Contratos de eventos versionados evitam acoplamento direto entre serviços, e cada stream de valor (Editais, Disputa, Contratos) pode escalar e ser modificado sem coordenação síncrona com os demais.",
+    "interfaces": [
+      "API REST/GraphQL pública para integração com sistemas municipais (ERPs de gestão pública)",
+      "Portal de Transparência (público, somente leitura)",
+      "Integração SSO com gov.br",
+      "Integração com provedores de assinatura ICP-Brasil",
+      "Webhooks para eventos de processo (edital publicado, homologação, etc.)",
+      "Integração com Diário Oficial / imprensa oficial",
+      "API de notificações (e-mail/SMS) para fornecedores",
+      "Dashboard administrativo para gestores municipais",
+      "Exportação de dados para Tribunais de Contas (TCEs)"
+    ],
+    "escalabilidade": "Arquitetura multi-tenant com particionamento lógico por prefeitura (tenant_id), serviços stateless em containers com autoscaling horizontal, cache de leitura (CDN/Redis) para o portal de transparência (alto tráfego público e picos de acesso), filas assíncronas para absorver picos concorrentes durante sessões de disputa (múltiplos fornecedores dando lances simultaneamente), e banco de dados com réplicas de leitura para relatórios/BI sem impactar transações críticas.",
+    "custo_infra_estimado": "Servidores/containers (ECS/Cloud Run autoscaling): $150-300/mês; Banco de dados gerenciado (RDS PostgreSQL, multi-AZ): $120/mês; Cache (Redis gerenciado): $40/mês; Storage de documentos (S3): $30/mês; CDN (CloudFront/Cloudflare): $25/mês; Fila/broker de eventos (SQS/managed Kafka): $50/mês; Observabilidade (logs/monitoramento): $40/mês. Total estimado inicial: ~$455-605/mês para suportar dezenas de municípios pequenos/médios.",
+    "custo_por_cliente": "Por processo licitatório: armazenamento de documentos (~$0.02) + assinatura digital via provedor terceiro (~$0.15/assinatura, ~3 assinaturas/processo = $0.45) + notificações (e-mail/SMS a fornecedores, ~$0.03) + processamento/CPU (~$0.05) = ~$0.55/processo licitatório. Uma prefeitura pequena com 10 processos/mês custa ~$5.50/mês em infraestrutura variável; uma prefeitura média com 50 processos/mês custa ~$27.50/mês.",
+    "monetizacao": "Modelo SaaS por assinatura mensal escalonado pelo porte do município (população/orçamento): Plano Essencial (municípios até 20 mil habitantes) R$490/mês — até 15 processos/mês; Plano Padrão (20-100 mil habitantes) R$1.290/mês — até 60 processos/mês; Plano Avançado (>100 mil habitantes ou consórcios) R$2.990/mês — processos ilimitados + BI avançado. Portal de transparência pública gratuito (requisito legal, gera aquisição/lead). Métricas: CAC estimado R$3.000-5.000 (venda B2G consultiva/licitação), LTV médio ~R$46.000 (retenção alta por ser sistema crítico de compliance, churn baixo ~3%/ano), MRR alvo de R$150.000 com 100-150 municípios ativos no ano 2.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Java/Kotlin (Spring Boot) para o motor de regras; PostgreSQL como banco principal; Redis para cache/sessão; RabbitMQ ou Kafka para eventos de domínio entre bounded contexts; Frontend: React/Next.js com foco em acessibilidade (WCAG, dado o público de baixa maturidade digital); Infraestrutura: AWS ou GCP com containers (ECS/Cloud Run) e Terraform para IaC; Integrações: gov.br (SSO), provedor ICP-Brasil para assinatura digital, SendGrid/Twilio para notificações; Observabilidade: Datadog ou Grafana/Prometheus + Sentry."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T21:00:50+00:00",
+    "runner": "runner.py"
+  }
+}

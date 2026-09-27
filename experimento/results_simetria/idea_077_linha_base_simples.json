@@ -1,0 +1,30 @@
+{
+  "ideia_idx": 77,
+  "ideia": "App de gestão de fazendas solares com monitoramento IoT",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS multi-tenant para monitoramento e gestão operacional de fazendas solares (usinas fotovoltaicas), integrando dados IoT de inversores, sensores meteorológicos, medidores de energia e trackers solares. Inclui dashboards de performance (geração real vs esperada), alertas de falha/degradação, gestão de manutenção preventiva/corretiva, relatórios financeiros (ROI, tarifas evitadas) e previsão de geração via dados climáticos.",
+    "como_comecar": "1) Validar com 2-3 clientes piloto (proprietários de usinas ou integradoras) o problema mais doloroso (ex: detecção tardia de falhas). 2) Definir um MVP com ingestão de dados de 1-2 protocolos comuns (Modbus/SunSpec via gateway, ou API de fabricantes como Huawei/SMA/Growatt). 3) Construir pipeline de ingestão + dashboard básico de geração e alertas. 4) Validar com dados reais de uma usina piloto antes de generalizar para múltiplos fabricantes.",
+    "tecnologias": "Backend: Node.js/TypeScript ou Python (FastAPI) para APIs; protocolo MQTT para telemetria IoT; Modbus TCP/RTU para leitura de inversores; Time-series DB para métricas; mensageria assíncrona para processamento de eventos; Next.js/React no frontend; autenticação multi-tenant (Auth0/Clerk ou solução própria com RBAC).",
+    "banco_dados": "Arquitetura híbrida: (1) Banco de séries temporais (TimescaleDB ou InfluxDB) para métricas de telemetria de alta frequência (potência, tensão, corrente, irradiância); (2) PostgreSQL relacional para dados de negócio (tenants, usinas, ativos, usuários, contratos, ordens de manutenção); (3) Object storage (S3) para relatórios, imagens de inspeção e logs brutos; (4) Cache (Redis) para dados em tempo real do dashboard.",
+    "interfaces": [
+      "Dashboard web (visão geral de portfólio de usinas)",
+      "Dashboard detalhado por usina/inversor/string",
+      "App mobile para técnicos de campo (ordens de serviço, checklist de manutenção)",
+      "Painel de alertas e notificações (SMS/email/push/webhook)",
+      "API pública/webhooks para integração com ERPs e sistemas de billing",
+      "Portal do cliente final (proprietário do ativo) com relatórios de geração e economia"
+    ],
+    "usuarios": "Operadoras e integradoras de energia solar (O&M), proprietários/investidores de usinas (residencial, comercial e utility-scale), técnicos de manutenção em campo, e gestores financeiros que acompanham performance de ativos energéticos.",
+    "escalabilidade": "Sim: arquitetura multi-tenant desde o início, ingestão de IoT desacoplada via fila de mensagens (Kafka/SQS) para absorver picos de milhares de dispositivos enviando dados a cada poucos segundos; particionamento do banco de séries temporais por tenant/usina; auto-scaling horizontal dos workers de processamento; agregações pré-computadas para dashboards evitarem queries pesadas em dados brutos.",
+    "custos": "Principais custos: infraestrutura cloud (compute + storage de séries temporais, que cresce rápido com muitos dispositivos), gateways IoT físicos (hardware, se fornecidos pela empresa), banda para transmissão contínua de telemetria, custos de terceiros para dados climáticos/previsão, suporte e onboarding técnico em campo, e conformidade/segurança (já que lida com infraestrutura crítica de energia).",
+    "monetizacao": "Modelo SaaS por assinatura recorrente, precificado por capacidade monitorada (R$/kWp instalado/mês) ou por número de usinas/dispositivos conectados. Camadas: Starter (monitoramento básico), Pro (alertas avançados + previsão), Enterprise (multi-usina, API, white-label para integradoras). Possíveis add-ons: relatórios financeiros avançados, integração com faturamento de energia, módulo de manutenção preditiva com IA.",
+    "stack_sugerida": "Frontend: Next.js + TypeScript + TailwindCSS + Recharts/D3 para visualizações. Backend: Node.js (NestJS) ou Python (FastAPI) com arquitetura de microsserviços leves. Ingestão IoT: MQTT broker (EMQX/HiveMQ) + Modbus gateway. Mensageria: Kafka ou AWS SQS/SNS. Bancos: TimescaleDB (séries temporais) + PostgreSQL (relacional) + Redis (cache). Infra: AWS ou GCP com Kubernetes, Terraform para IaC. Observabilidade: Grafana + Prometheus. Pagamentos: Stripe Billing para assinaturas recorrentes."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T21:02:39+00:00",
+    "runner": "runner.py"
+  }
+}

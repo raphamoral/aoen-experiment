@@ -1,0 +1,71 @@
+{
+  "ideia_idx": 94,
+  "ideia": "App de gestão de obras com timeline visual e controle de custos em tempo real",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do usuário (engenheiro/gestor de obra quer visibilidade de prazo e custo em tempo real) → captura de dados em campo (apontamentos, fotos, medições) → processamento e regras de negócio (cronograma físico-financeiro, BOQ, aditivos) → visualização (timeline visual tipo Gantt) e controle de custos (orçado vs. realizado) → alertas e relatórios → decisão gerencial (replanejar, renegociar, aprovar aditivo).",
+    "wardley_map": {
+      "genesis": [
+        "Motor de correlação cronograma-custo em tempo real (diferencial competitivo)",
+        "Engine de conciliação offline-first para apontamentos em campo com baixa conectividade"
+      ],
+      "sob_medida": [
+        "Domínio de custos de obra (BOQ, centros de custo, aditivos/change orders)",
+        "Timeline visual com dependências e replanejamento automático",
+        "Diário de obra digital e checklists de campo"
+      ],
+      "produto": [
+        "Biblioteca de Gantt/visualização (ex: base de dhtmlxGantt/Bryntum)",
+        "Dashboards de BI/relatórios (ex: embutir Metabase)",
+        "Integração contábil/ERP",
+        "Mapas e geolocalização"
+      ],
+      "commodity": [
+        "Autenticação (Auth0/Clerk)",
+        "Pagamentos e billing (Stripe)",
+        "Armazenamento de arquivos (S3)",
+        "Notificações push/email/SMS (Twilio/SendGrid)",
+        "Infraestrutura/hosting (AWS/GCP)",
+        "Banco de dados gerenciado (RDS Postgres)",
+        "CDN (Cloudflare)"
+      ]
+    },
+    "build_buy_decisions": "Construir: motor de custo em tempo real, timeline com replanejamento, domínio de BOQ/aditivos, sync offline de campo — são o diferencial e não existem prontos no mercado com a granularidade necessária. Comprar: autenticação, pagamentos/billing, notificações, mapas, observabilidade — commoditizados e reimplementar destrói foco. Usar como commodity: infraestrutura cloud, banco gerenciado, storage, CDN — sem vantagem competitiva em operar isso internamente.",
+    "core_domain": "Controle de Custos em Tempo Real vinculado à Timeline (orçado vs. realizado, atualizado por eventos de progresso físico) — é o que justifica investimento sob medida porque é a razão de compra do cliente; qualquer atraso ou gargalo aqui compromete a proposta de valor central do produto.",
+    "bounded_contexts": {
+      "Planejamento_de_Obra": "Linguagem: obra, etapa, tarefa, marco, dependência, caminho crítico, atraso, replanejamento.",
+      "Controle_de_Custos": "Linguagem: orçamento, custo realizado, centro de custo, BOQ (composição de custos), medição, aditivo, desvio (variance).",
+      "Execução_em_Campo": "Linguagem: diário de obra, apontamento, foto, checklist, ocorrência, efetivo (mão de obra em campo).",
+      "Suprimentos": "Linguagem: fornecedor, cotação, pedido de compra, nota fiscal, prazo de entrega.",
+      "Gestão_de_Usuários_e_Acesso": "Linguagem: papel, permissão, equipe, convite, tenant.",
+      "Faturamento_SaaS": "Linguagem: plano, assinatura, fatura, trial, upgrade/downgrade."
+    },
+    "context_mapping": "Planejamento_de_Obra ↔ Controle_de_Custos: parceria (mudanças de cronograma e custo se afetam mutuamente e evoluem juntas). Execução_em_Campo → Planejamento_de_Obra: cliente-fornecedor (apontamentos alimentam progresso). Suprimentos → Controle_de_Custos: cliente-fornecedor (compras alimentam custo realizado). Faturamento_SaaS: camada anticorrupção isolando o modelo do Stripe do domínio de negócio. Gestão_de_Usuários_e_Acesso: subdomínio genérico, conformista com provedor externo de identidade (Auth0).",
+    "team_topologies": "Times de fluxo: Planejamento/Timeline, Controle de Custos (core, mais investimento), Execução em Campo/Mobile. Time de plataforma: Infra/DevOps/Dados (CI/CD, observabilidade, self-service). Subsistema complicado: motor de sincronização offline-first e resolução de conflitos. Time de habilitação: temporário, apoia arquitetura offline-first e UX de visualização de timeline.",
+    "cognitive_load": "Cada time de fluxo é dono de um único bounded context, evitando sobreposição de domínio. O time de plataforma abstrai infraestrutura via APIs self-service, removendo a necessidade de expertise em cloud dos times de fluxo. O subsistema complicado isola a complexidade algorítmica de sync/CRDT, exposta como serviço simples. O time de habilitação atua por tempo limitado e se dissolve após transferir conhecimento.",
+    "interaction_modes": "X-as-a-Service: plataforma oferece infraestrutura e observabilidade aos times de fluxo; subsistema complicado oferece o motor de sync como serviço/biblioteca. Colaboração: Planejamento e Controle de Custos colaboram intensamente por serem parceiros no core domain. Facilitação: time de habilitação apoia temporariamente Execução em Campo na adoção de offline-first.",
+    "flow_optimization": "Cada bounded context é deployável independentemente (monólito modular ou microsserviços), comunicação assíncrona via barramento de eventos (ex: EventBridge/Kafka) entre Timeline e Custos evita acoplamento síncrono. Gargalo principal: a parceria Timeline↔Custos exige contratos de eventos bem definidos e testes de contrato para não travar releases um do outro; segundo gargalo é a sincronização de campo com conectividade instável, mitigada pelo subsistema complicado dedicado.",
+    "independent_streams": "Cada time de fluxo possui API e esquema de dados próprios, publica e consome eventos de domínio via contratos versionados, e faz deploy sem coordenação com os demais. A plataforma interna garante que dependências de infraestrutura não criem bloqueios cruzados entre times.",
+    "interfaces": [
+      "API REST/GraphQL para app mobile e web",
+      "Barramento de eventos de domínio (progresso, custo, aditivo)",
+      "Webhooks para integrações externas (ERP/contábil)",
+      "API de billing (Stripe)",
+      "API de identidade (OIDC/Auth0)",
+      "API de upload de arquivos (S3 presigned URLs)",
+      "API de exportação de relatórios (PDF/Excel)",
+      "API de notificações (push/SMS/email)"
+    ],
+    "escalabilidade": "Serviços stateless escaláveis horizontalmente atrás de load balancer; réplicas de leitura no Postgres; arquitetura orientada a eventos com fila (SQS/Kafka) para absorver picos de apontamentos de campo; CDN para fotos e ativos estáticos; particionamento multi-tenant no banco conforme a base cresce; cache (Redis) para agregações de dashboards de custo.",
+    "custo_infra_estimado": "Servidor/containers (ECS/Kubernetes): $200/mês; RDS Postgres multi-AZ: $120/mês; S3 (fotos/documentos): $40/mês; CDN (Cloudflare): $20/mês; Redis (cache): $30/mês; Fila/eventos (SQS/EventBridge): $15/mês; Observabilidade (Sentry/Datadog): $50/mês; Notificações (Twilio/SendGrid): $30/mês. Total estimado: ~$505/mês na fase inicial (até ~300 clientes ativos).",
+    "custo_por_cliente": "Cliente médio com 5 obras ativas e 200 apontamentos/mês: storage (2GB fotos/obra × 5 × $0.023/GB) = $0.23; compute de API (50k requisições/mês amortizadas) = $0.30; DB compute amortizado por tenant = $0.50; notificações (100 push+SMS × $0.01 médio) = $1.00. Total ≈ $2.03/mês por cliente em infraestrutura, com plano de $59-99/mês gerando margem bruta > 95%.",
+    "monetizacao": "Starter: até 3 obras, R$99/mês ($19) — inclui timeline e custos básicos. Professional: até 15 obras, R$299/mês ($59) + R$20 por obra extra — inclui apontamento em campo e relatórios. Enterprise: obras ilimitadas + integrações ERP/contábeis, a partir de R$999/mês, contrato anual. Métricas-alvo: churn mensal < 5%, LTV:CAC ≥ 3:1, CAC recuperado em até 12 meses, MRR crescendo via upsell de obras adicionais.",
+    "stack_sugerida": "Frontend: React/Next.js + TypeScript, biblioteca de Gantt (dhtmlxGantt/Bryntum) para timeline visual. Mobile: React Native com suporte offline-first e sync em background. Backend: Node.js/NestJS (ou Go para o subsistema de sync), Postgres multi-tenant, Redis, EventBridge/Kafka para eventos de domínio. Infra: AWS (ECS/EKS, RDS, S3, CloudFront), Auth0 para identidade, Stripe para billing, Sentry/Datadog para observabilidade, GitHub Actions para CI/CD."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T21:07:38+00:00",
+    "runner": "runner.py"
+  }
+}

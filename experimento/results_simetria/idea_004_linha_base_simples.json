@@ -1,0 +1,29 @@
+{
+  "ideia_idx": 4,
+  "ideia": "Plataforma de leilão reverso para compras corporativas de TI",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma B2B de leilão reverso onde empresas publicam demandas de compra de TI (hardware, software, serviços, licenças), fornecedores competem oferecendo lances decrescentes de preço/condições, e o sistema gerencia todo o ciclo: RFQ, qualificação de fornecedores, leilão em tempo real, contratação e auditoria de compliance.",
+    "como_comecar": "Validar com um MVP focado em um único vertical (ex: hardware corporativo) e poucos clientes-piloto: cadastro de compradores e fornecedores, criação de RFQ, motor de leilão simples (contagem regressiva, lance mínimo decrescente) e notificações. Priorizar o fluxo core (criar leilão → lances → fechamento) antes de features de compliance/integrações.",
+    "tecnologias": "Backend em Node.js/TypeScript (NestJS) ou Go para o motor de leilão de baixa latência; WebSockets (Socket.io ou ws) para lances em tempo real; frontend em React/Next.js; filas com Kafka ou RabbitMQ para eventos de leilão; Redis para estado efêmero e locks distribuídos; autenticação com OAuth2/OIDC (Auth0 ou Keycloak) dado o contexto B2B multi-tenant.",
+    "banco_dados": "PostgreSQL como banco relacional principal (empresas, usuários, RFQs, contratos, lances históricos) com particionamento por tenant; Redis para estado ativo de leilões e cache de ranking em tempo real; ClickHouse ou TimescaleDB para analytics/histórico de lances e auditoria; S3/blob storage para documentos (propostas, certificações, NDAs).",
+    "interfaces": [
+      "Portal do comprador (criação de RFQ, dashboard de leilões, aprovação de vencedor)",
+      "Portal do fornecedor (catálogo de leilões elegíveis, sala de lances em tempo real)",
+      "Console de administração/compliance (auditoria, KYB de fornecedores, disputas)",
+      "API REST/GraphQL para integrações com ERP e procurement (SAP Ariba, Coupa)",
+      "App mobile ou PWA para notificações de lances e alertas de leilão"
+    ],
+    "usuarios": "Equipes de compras/procurement corporativo (compradores), fornecedores/revendedores de TI (hardware, software, serviços), gestores de compliance e auditoria, e administradores da plataforma que fazem curadoria e moderação de disputas.",
+    "escalabilidade": "Motor de leilão desacoplado via event sourcing para lidar com picos de lances concorrentes; sharding por tenant/região no Postgres; auto-scaling horizontal dos serviços de leilão via Kubernetes; cache agressivo de leaderboard em Redis; CDN para assets estáticos; rate limiting por fornecedor para evitar abuso de lances automatizados.",
+    "custos": "Principais custos: infraestrutura cloud (compute para WebSockets sempre ativos, banco de dados), custos de compliance/KYB de fornecedores (verificação de documentos, possivelmente serviço terceirizado), processamento de pagamentos (taxas Stripe/gateway), suporte e onboarding de clientes enterprise (sales-assisted, alto custo de aquisição B2B).",
+    "monetizacao": "Modelo híbrido: assinatura SaaS mensal/anual por empresa compradora (tiers por volume de RFQs), taxa de transação (% sobre o valor do contrato fechado) cobrada do fornecedor vencedor, e add-ons premium (analytics avançado, integrações com ERP, SLA prioritário de suporte).",
+    "stack_sugerida": "Frontend: Next.js + TypeScript + TailwindCSS. Backend: NestJS (Node.js/TypeScript) com WebSockets para o motor de leilão. Banco: PostgreSQL + Redis + TimescaleDB. Mensageria: Kafka ou RabbitMQ. Auth: Keycloak/Auth0 com SSO corporativo (SAML). Infra: Kubernetes (EKS/GKE) + Terraform. Pagamentos: Stripe (billing de assinatura e cobrança de taxas de transação). Observabilidade: Datadog ou Grafana/Prometheus."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:51:04+00:00",
+    "runner": "runner.py"
+  }
+}

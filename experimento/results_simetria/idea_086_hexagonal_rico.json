@@ -1,0 +1,72 @@
+{
+  "ideia_idx": 86,
+  "ideia": "SaaS de análise de risco para seguradoras de nicho",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Apólice, Segurado, Sinistro, PerfilDeRisco, RegraDeSubscrição, Score. Regras: cálculo de score de risco por nicho (ex: seguros para drones, pet, eventos, cyber), aplicação de regras de subscrição (aceitar/recusar/condicionar), precificação baseada em fatores de risco, detecção de sinistros atípicos (fraude), versionamento de modelos de risco por ramo. Nenhuma regra depende de banco de dados, fila, API externa ou framework web — apenas objetos de valor, entidades e serviços de domínio puros (ex: RiskScoringPolicy, UnderwritingRuleEngine).",
+    "driving_ports": {
+      "SubmitRiskAssessmentPort": "Solicitar análise de risco de uma apólice/segurado",
+      "EvaluateUnderwritingPort": "Executar decisão de subscrição (aceitar/recusar/condicionar)",
+      "ReportClaimPort": "Registrar um sinistro para reavaliação de risco",
+      "QueryRiskProfilePort": "Consultar perfil de risco consolidado de um segurado",
+      "ManageRiskModelPort": "Criar/atualizar versões de modelos de risco por nicho"
+    },
+    "driven_ports": {
+      "RiskDataRepositoryPort": "Persistir e recuperar apólices, sinistros e perfis de risco",
+      "ExternalScoringProviderPort": "Consultar bureaus de crédito, dados climáticos, telemetria IoT, histórico de sinistros do mercado",
+      "NotificationPort": "Notificar corretores/seguradoras sobre decisões e alertas de risco",
+      "EventPublisherPort": "Publicar eventos de domínio (RiscoReavaliado, SinistroDetectado) para consumidores externos",
+      "AuditLogPort": "Registrar trilha de auditoria de decisões de subscrição",
+      "DocumentStoragePort": "Armazenar laudos, evidências e documentos de sinistro"
+    },
+    "driving_adapters": {
+      "REST_API_Adapter": "Expõe endpoints HTTP/JSON para corretoras e seguradoras integrarem via API",
+      "Web_Dashboard_Adapter": "Interface web para analistas de risco revisarem e aprovarem casos",
+      "Webhook_Ingestion_Adapter": "Recebe eventos de sinistros de sistemas terceiros das seguradoras parceiras",
+      "CLI_Batch_Adapter": "Processa lotes de reavaliação de risco em jobs agendados",
+      "gRPC_Adapter": "Integração de baixa latência para parceiros com alto volume de chamadas"
+    },
+    "driven_adapters": {
+      "PostgreSQL_Adapter": "Implementa RiskDataRepositoryPort com persistência relacional (apólices, sinistros)",
+      "S3_Adapter": "Implementa DocumentStoragePort para laudos e evidências",
+      "ExternalBureau_HTTP_Adapter": "Implementa ExternalScoringProviderPort consultando Serasa/bureaus e APIs climáticas",
+      "Kafka_Adapter": "Implementa EventPublisherPort para eventos de domínio",
+      "SendGrid_Twilio_Adapter": "Implementa NotificationPort para e-mail/SMS",
+      "ElasticSearch_Audit_Adapter": "Implementa AuditLogPort para trilha de auditoria pesquisável"
+    },
+    "application_services": {
+      "RiskAssessmentService": "Orquestra chamada ao domínio (RiskScoringPolicy) + busca de dados externos + persistência do resultado, sem conter a regra de score em si",
+      "UnderwritingOrchestrationService": "Coordena avaliação de risco, aplicação de regras de subscrição do domínio e disparo de notificação/eventos",
+      "ClaimIntakeService": "Recebe sinistro, aciona reavaliação de perfil de risco via domínio e persiste"
+    },
+    "domain_isolation": "O núcleo depende apenas de interfaces (ports) definidas por ele mesmo, nunca de bibliotecas de infraestrutura. Não há imports de SQL, HTTP, SDKs de nuvem ou serializadores JSON dentro das entidades/serviços de domínio. Toda comunicação passa por portas definidas em termos do domínio (ex: RiskProfile, não DTOs de banco).",
+    "test_doubles": "Cada porta driven tem um Fake/InMemory adapter (ex: InMemoryRiskRepository, FakeExternalScoringProvider) usado em testes de aplicação sem I/O real. Portas driving são testadas chamando os application services diretamente com fakes injetados, sem subir servidor HTTP. Testes de domínio puro não usam nenhum dublê — são funções determinísticas testadas isoladamente.",
+    "configuration_wiring": "Um composition root (ex: main.go/bootstrap.py) lê configuração de ambiente e injeta as implementações concretas dos adapters nas portas via Dependency Injection explícita (construtor), montando o grafo de objetos na inicialização — nenhuma lógica de negócio conhece qual adapter concreto está em uso.",
+    "technology_substitution": "PostgreSQL pode ser trocado por DynamoDB/MongoDB reimplementando apenas RiskDataRepositoryPort (custo: médio, exige migração de dados e reescrita de queries). Kafka pode ser trocado por SQS/RabbitMQ implementando EventPublisherPort (custo: baixo, apenas adapter). Bureau de crédito pode ser trocado por outro provedor implementando ExternalScoringProviderPort (custo: baixo a médio, dependendo de diferenças de schema de resposta). REST pode virar GraphQL sem tocar no domínio (custo: baixo).",
+    "symmetry": "Tanto driving quanto driven ports são interfaces definidas pelo domínio/aplicação, nunca pelos adapters. Um adapter primário (ex: REST) traduz requisição HTTP para uma chamada de método de porta driving; um adapter secundário (ex: PostgreSQL) implementa uma porta driven definida pela aplicação. Ambos os lados são plugáveis e testáveis isoladamente, mantendo a aplicação como núcleo agnóstico que 'não sabe' se é chamado por REST ou CLI, nem se persiste em Postgres ou Mongo.",
+    "interfaces": [
+      "SubmitRiskAssessmentPort",
+      "EvaluateUnderwritingPort",
+      "ReportClaimPort",
+      "QueryRiskProfilePort",
+      "ManageRiskModelPort",
+      "RiskDataRepositoryPort",
+      "ExternalScoringProviderPort",
+      "NotificationPort",
+      "EventPublisherPort",
+      "AuditLogPort",
+      "DocumentStoragePort"
+    ],
+    "escalabilidade": "Escala horizontalmente via stateless application services atrás de load balancer; separação de leitura/escrita (CQRS leve) para consultas de perfil de risco de alto volume; filas (Kafka/SQS) desacoplam picos de ingestão de sinistros do processamento síncrono; cache (Redis) para scores recentes; modelos de risco por nicho podem ser escalados/versionados independentemente como serviços separados conforme a base de seguradoras cresce.",
+    "custo_infra_estimado": "Servidor (2x app instances, ECS/Fargate): $80/mês, RDS PostgreSQL (db.t3.medium): $60/mês, Redis cache: $25/mês, S3 (documentos/laudos): $15/mês, Kafka gerenciado (MSK Serverless) ou SQS: $30/mês, CDN (CloudFront): $10/mês, banda/transferência de dados: $20/mês, monitoramento (Datadog básico): $30/mês. Total estimado: ~$270/mês para operação inicial (baixo volume)",
+    "custo_por_cliente": "Cada análise de risco = $0.03 (chamada a bureau externo) + $0.01 (armazenamento de laudo em S3) + $0.005 (CPU/processamento do score) + $0.002 (evento Kafka + log de auditoria) = $0.047/operação. Seguradora de nicho com 500 análises/mês = $23.50/mês em custo variável direto, mais custo fixo rateado de infraestrutura (~$270/mês / N clientes ativos)",
+    "monetizacao": "Modelo SaaS B2B por assinatura + uso: Plano Starter $299/mês (até 300 análises/mês incluídas, $0.80 por análise extra) para seguradoras pequenas de nicho; Plano Growth $899/mês (até 1.500 análises/mês, $0.60 extra) para seguradoras médias; Plano Enterprise a partir de $2.500/mês com SLA, modelos de risco customizados por ramo e integração dedicada (gRPC/webhooks). Métricas-alvo: MRR inicial de $15k com 20 clientes (mix Starter/Growth), LTV estimado de $10.800 por cliente Growth (assumindo churn de 2%/mês, ticket médio $900), CAC alvo de $1.800 via vendas diretas para nichos (drones, pet, eventos, cyber), payback de CAC em ~2 meses.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Go para os application services e adapters REST; PostgreSQL como store principal; Redis para cache de scores; Kafka (ou SQS/SNS) para eventos de domínio; S3 para documentos; Docker + ECS/Fargate (ou Kubernetes) para deploy; Terraform para IaC; Datadog/Grafana para observabilidade; frontend React/Next.js para o dashboard de analistas."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T21:04:20+00:00",
+    "runner": "runner.py"
+  }
+}

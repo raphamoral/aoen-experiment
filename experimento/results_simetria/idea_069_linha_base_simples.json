@@ -1,0 +1,30 @@
+{
+  "ideia_idx": 69,
+  "ideia": "SaaS de automação de testes de acessibilidade web com relatórios WCAG",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS que audita sites automaticamente contra as diretrizes WCAG (2.1/2.2, níveis A/AA/AAA), combinando testes automatizados (via axe-core/Pa11y/Lighthouse) com fluxos de revisão manual assistida, gerando relatórios de conformidade, dashboards de progresso, integração em CI/CD e monitoramento contínuo (crawler agendado) para detectar regressões de acessibilidade.",
+    "como_comecar": "MVP focado em um único fluxo: usuário cadastra uma URL, o sistema roda um scan com axe-core headless (Playwright), gera um relatório WCAG básico (erros críticos, nível A/AA, screenshots dos elementos) e exibe em um dashboard simples. Validar com poucos usuários beta (agências de dev, times de QA) antes de adicionar crawler multi-página, agendamento e integração CI/CD.",
+    "tecnologias": "Frontend: React/Next.js + TypeScript + TailwindCSS. Backend: Node.js (NestJS) ou Python (FastAPI) para orquestração de scans. Motor de acessibilidade: axe-core, Pa11y, Lighthouse via Playwright/Puppeteer headless. Fila de jobs: BullMQ/Redis ou Celery para processar scans assíncronos. Autenticação: Auth0/Clerk ou solução própria com JWT.",
+    "banco_dados": "PostgreSQL como banco relacional principal (usuários, organizações, projetos, sites, histórico de scans, permissões). Armazenamento de artefatos (screenshots, HTML snapshots, relatórios PDF) em object storage (S3/R2/GCS). Cache e filas em Redis. Opcionalmente um índice de busca (Elasticsearch/Meilisearch) para buscar violações por texto/regra.",
+    "interfaces": [
+      "Dashboard web (visão geral de projetos, score WCAG, tendências)",
+      "Relatório detalhado por página (violações, elemento, regra WCAG, sugestão de correção)",
+      "API REST/GraphQL para integração com CI/CD e ferramentas externas",
+      "CLI para rodar scans localmente ou em pipelines",
+      "Extensão de navegador para inspeção rápida ad-hoc",
+      "Painel de administração/billing para gestão de planos e equipes"
+    ],
+    "usuarios": "Desenvolvedores front-end, QA/testers, times de acessibilidade digital, agências de desenvolvimento web, product owners e empresas sujeitas a compliance legal (ADA, EN 301 549, LGPD/setor público) que precisam comprovar conformidade WCAG.",
+    "escalabilidade": "Arquitetura orientada a filas para desacoplar requisição de scan da execução (workers horizontais escaláveis rodando containers de browser headless). Uso de Kubernetes ou serviços gerenciados (ECS/Fargate) para escalar workers sob demanda. Cache de resultados por hash de página para evitar reprocessamento. Particionamento de dados por organização (multi-tenant) e uso de CDN para assets de relatórios.",
+    "custos": "Principais custos: compute para browsers headless (CPU/memória intensivos), armazenamento de screenshots/relatórios, banda para crawling, e licenciamento de serviços gerenciados (auth, filas, observabilidade). Mitigação: usar spot instances/preemptible para workers, limitar profundidade de crawl por plano, cache agressivo de resultados, e políticas de retenção de artefatos (expirar screenshots antigos).",
+    "monetizacao": "Modelo SaaS por assinatura em camadas (freemium com 1 site/limite de páginas; planos Pro/Business por número de sites, páginas escaneadas e frequência de monitoramento; plano Enterprise com SSO, relatórios white-label, API dedicada e suporte a compliance). Cobrança recorrente via Stripe Billing, com add-ons para scans extras ou auditoria manual especializada.",
+    "stack_sugerida": "Next.js + TypeScript (frontend), NestJS (backend/API), Playwright + axe-core (engine de scan), BullMQ + Redis (filas), PostgreSQL (dados), S3-compatible storage (artefatos), Stripe (billing), Docker/Kubernetes (infra), Auth0/Clerk (auth), Datadog/Grafana (observabilidade)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T21:00:49+00:00",
+    "runner": "runner.py"
+  }
+}

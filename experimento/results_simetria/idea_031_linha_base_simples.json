@@ -1,0 +1,29 @@
+{
+  "ideia_idx": 31,
+  "ideia": "Plataforma de mentoria online pareada por IA",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS que conecta mentorados a mentores usando um algoritmo de matching por IA (baseado em objetivos, skills, disponibilidade, estilo de comunicação e histórico de sessões), com agendamento, videochamada, chat, acompanhamento de metas e feedback estruturado.",
+    "como_comecar": "Validar o problema com um MVP manual (matching feito por humano/planilha) para 10-20 pares mentor-mentorado, medindo taxa de match aceito e retenção. Depois construir: cadastro/perfis, motor de matching básico (regras + embeddings), agendamento e integração de vídeo (ex.: link externo), e cobrança. Só depois investir em IA de matching mais sofisticada e analytics.",
+    "tecnologias": "Frontend: React/Next.js + TypeScript, TailwindCSS. Backend: Node.js (NestJS) ou Python (FastAPI/Django) para APIs, especialmente se o matching usar ML em Python. Fila/eventos: para notificações e jobs assíncronos. Videochamada: SDK terceirizado (Daily.co, Twilio Video ou LiveKit) em vez de construir do zero. IA/matching: embeddings de perfil (ex. via API de LLM) + busca vetorial para similaridade + regras de negócio (disponibilidade, fuso, idioma).",
+    "banco_dados": "Banco relacional (PostgreSQL) para usuários, perfis, sessões, pagamentos e histórico — dados transacionais e com forte necessidade de integridade. Banco vetorial (pgvector no próprio Postgres, ou Pinecone/Weaviate) para embeddings de perfil usados no matching por similaridade semântica. Cache (Redis) para sessões, filas e resultados de matching recentes. Armazenamento de objetos (S3) para gravações de sessão, documentos e avatares.",
+    "interfaces": [
+      "Web app (mentorado e mentor) responsivo",
+      "Painel administrativo (moderação, métricas, suporte)",
+      "App mobile (opcional, fase 2)",
+      "API pública/webhooks para integrações (calendário, Slack, CRM)",
+      "Painel de analytics para mentores (progresso dos mentorados)"
+    ],
+    "usuarios": "Mentorados (profissionais buscando desenvolvimento de carreira/skills), mentores independentes ou de empresas parceiras, administradores da plataforma e, potencialmente, empresas (RH) contratando programas de mentoria para seus times.",
+    "escalabilidade": "Arquitetura de serviços desacoplados (matching, agendamento, pagamentos, notificações) permitindo escalar horizontalmente cada componente. Processamento de matching em jobs assíncronos (fila) para não bloquear a API. Cache agressivo de resultados de matching e perfis. CDN para assets estáticos. Uso de serviços gerenciados (banco, vídeo, fila) para reduzir operação própria enquanto a base de usuários cresce.",
+    "custos": "Principais custos: infraestrutura cloud (compute, banco, storage), custo por chamada de API de LLM/embeddings (matching), SDK de videochamada (cobrado por minuto/participante), gateway de pagamento (taxas por transação), e custo de suporte/moderação humana. Monitorar custo por match e custo por sessão realizada como métricas de unit economics desde o início.",
+    "monetizacao": "Modelo de assinatura (SaaS) com planos mensais para mentorados (acesso a X sessões/mês) e/ou comissão sobre pagamento por sessão a mentores independentes. Camada B2B: contratos anuais com empresas para programas de mentoria de equipe (preço por assento). Possível freemium com matching limitado e upsell para sessões ilimitadas ou mentores premium.",
+    "stack_sugerida": "Next.js + TypeScript (frontend), NestJS ou FastAPI (backend/API), PostgreSQL + pgvector (dados + embeddings), Redis (cache/filas), LiveKit ou Daily.co (vídeo), Stripe (pagamentos e assinaturas), S3-compatível (storage), Docker + Kubernetes ou serverless (deploy), API de LLM (ex. Claude) para geração de embeddings e sugestões de matching."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:57:02+00:00",
+    "runner": "runner.py"
+  }
+}

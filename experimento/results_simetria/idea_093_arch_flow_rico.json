@@ -1,0 +1,52 @@
+{
+  "ideia_idx": 93,
+  "ideia": "Marketplace de serviços de cibersegurança para PMEs",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade da PME (segurança cibernética sem orçamento/expertise interna) → Diagnóstico de risco e superfície de ataque → Descoberta e comparação de provedores especializados → Cotação e contratação → Pagamento e formalização → Entrega do serviço (pentest, SOC, DPO, treinamento, etc.) → Avaliação e reputação → Relatório de conformidade e renovação/monitoramento contínuo.",
+    "wardley_map": "Gênese: motor de recomendação com IA para diagnóstico de risco personalizado. Sob medida: algoritmo de matching PME-provedor, score de confiança/reputação, agregação de relatórios de compliance multi-framework. Produto: catálogo/marketplace core, dashboard de risco, sistema de avaliações. Commodity: autenticação, pagamentos/escrow, KYC/identidade, mensageria, videochamada, hosting, CDN, storage, observabilidade.",
+    "build_buy_decisions": "Construir: motor de matching e scoring de confiança (diferencial competitivo, dados proprietários), diagnóstico de risco/wizard de onboarding de PME, dashboard agregador de compliance. Comprar: pagamentos e split payment (Stripe Connect), KYC/verificação de identidade (Stripe Identity/Persona), autenticação (Clerk/Auth0), mensageria (Twilio/Sendbird), videochamada (Daily.co). Usar como commodity: infraestrutura cloud (AWS/GCP), CDN (Cloudflare), storage (S3), observabilidade (Datadog), analytics (Amplitude/Segment) — razão: acelerar time-to-market e concentrar investimento apenas onde há vantagem competitiva defensável.",
+    "core_domain": "Matching e Confiança (Trust & Matching Engine): o algoritmo que traduz o perfil de risco da PME em recomendações precisas de provedores certificados, combinado com o score de reputação/confiança — é o que gera valor percebido e justifica a comissão do marketplace, logo merece investimento sob medida contínuo.",
+    "bounded_contexts": {
+      "Diagnostico_de_Risco": "Linguagem: questionário, superfície de ataque, maturidade de segurança, score de risco, vulnerabilidade crítica",
+      "Catalogo_de_Provedores": "Linguagem: listing, categoria de serviço, especialidade, SLA, faixa de preço, certificação",
+      "Matching_e_Recomendacao": "Linguagem: match score, ranking, recomendação, perfil de compatibilidade",
+      "Onboarding_e_Vetting_de_Provedores": "Linguagem: verificação, credencial, certificação (ISO 27001, PCI-DSS), status de aprovação",
+      "Contratacao_e_Pagamentos": "Linguagem: proposta, contrato, escrow, fatura, split payment, comissão",
+      "Entrega_de_Servico": "Linguagem: engajamento, escopo, entregável, milestone, encerramento",
+      "Confianca_e_Reputacao": "Linguagem: avaliação, nota, disputa, selo de confiança",
+      "Compliance_e_Relatorios": "Linguagem: framework (LGPD, ISO 27001), certificado, relatório de conformidade, gap de compliance",
+      "Identidade_e_Autenticacao": "Linguagem: conta, papel (PME/provedor/admin), sessão, permissão",
+      "Comunicacao": "Linguagem: mensagem, thread, notificação, canal"
+    },
+    "context_mapping": "Diagnóstico de Risco → Matching: cliente-fornecedor (upstream fornece perfil de risco). Matching → Catálogo de Provedores: cliente-fornecedor (conformist ao modelo de dados do catálogo). Onboarding/Vetting → Catálogo: parceria (times colaboram para manter dados de provedores confiáveis). Contratação & Pagamentos → Stripe/gateways externos: camada anticorrupção (isola o domínio de mudanças na API externa). Compliance & Relatórios → serviços externos de compliance (ex.: APIs de frameworks regulatórios): camada anticorrupção. Identidade & Autenticação: open host service consumido por todos os contextos via contrato estável. Entrega de Serviço → Confiança & Reputação: cliente-fornecedor (eventos de conclusão alimentam o score).",
+    "team_topologies": "Stream-aligned: Descoberta & Matching (diagnóstico + recomendação), Transação (catálogo + contratação + pagamentos), Provider Success (onboarding + vetting + entrega), Confiança & Compliance (reputação + relatórios). Plataforma: Plataforma de Identidade/Pagamentos/Infra (APIs self-service de auth, billing, observabilidade). Subsistema complicado: Motor de Risco & Matching (algoritmo de scoring/ML, exige expertise especializada). Habilitação: Segurança & Compliance Enablement (coaching temporário em LGPD, frameworks e boas práticas para os demais times).",
+    "cognitive_load": "Cada stream-aligned team possui 1-2 bounded contexts coesos, evitando sobreposição de responsabilidades. A plataforma abstrai pagamentos, auth e infraestrutura atrás de APIs self-service, removendo essa complexidade dos times de fluxo. O subsistema complicado (matching/scoring) isola a complexidade algorítmica atrás de uma API simples (match score), permitindo que os times de fluxo consumam sem entender o modelo internamente. O time de habilitação atua por tempo limitado, transferindo conhecimento em vez de virar dependência permanente.",
+    "interaction_modes": "Entre stream-aligned teams: X-as-a-Service via APIs e eventos assíncronos bem definidos (ex.: Diagnóstico expõe risk-profile API consumida por Matching). Stream-aligned ↔ Plataforma: X-as-a-Service (self-service, sem coordenação síncrona). Stream-aligned ↔ Subsistema complicado (Matching Engine): X-as-a-Service no dia a dia, com colaboração pontual em mudanças de modelo. Habilitação ↔ Stream-aligned: Facilitação temporária (coaching em compliance/segurança), sem virar bloqueio permanente.",
+    "flow_optimization": "Fluxo otimizado via eventos assíncronos entre diagnóstico → matching → contratação, reduzindo handoffs síncronos. Gargalos identificados: (1) vetting manual de provedores — mitigado com checklist semi-automatizado e SLA de aprovação; (2) validação de compliance da PME — mitigado com templates pré-configurados por setor; (3) dependência de webhooks de pagamento/escrow de terceiros — mitigado processando de forma assíncrona sem bloquear a UX de contratação.",
+    "independent_streams": "Cada fluxo de valor (Descoberta, Transação, Provider Success, Confiança & Compliance) possui bounded context, banco de dados e pipeline de deploy próprios, comunicando-se por eventos assíncronos e APIs versionadas — nunca por acesso direto a banco de dados de outro contexto — permitindo releases e escalonamento independentes.",
+    "interfaces": [
+      "Risk Assessment API",
+      "Matching/Recommendation API",
+      "Provider Catalog API",
+      "Provider Onboarding & Vetting API",
+      "Booking & Payments API (Stripe Connect)",
+      "Identity & Auth API",
+      "Trust & Reviews API",
+      "Compliance Reporting API",
+      "Messaging & Notification API",
+      "Webhooks de eventos (serviço concluído, pagamento liquidado, disputa aberta)"
+    ],
+    "escalabilidade": "Microsserviços stateless escaláveis horizontalmente atrás de load balancer; motor de matching escalado separadamente com cache de scores (Redis) e filas assíncronas para picos de diagnóstico; banco de dados poliglota particionado por bounded context; Elasticsearch para busca no catálogo crescente de provedores; CDN para ativos estáticos; multi-tenancy com isolamento de dados sensíveis por cliente; sharding regional conforme a base de PMEs/provedores cresce.",
+    "custo_infra_estimado": "Servidores/compute (K8s em AWS/GCP): $150-300/mês (fase inicial). Banco de dados (RDS PostgreSQL): $60-100/mês. Cache (Redis/ElastiCache): $30/mês. Busca (Elasticsearch gerenciado): $50/mês. CDN (Cloudflare): $20/mês. Storage (S3): $15/mês. Observabilidade (Datadog): $40/mês. Mensageria/Video (Twilio + Daily.co): $50/mês variável por uso. Total estimado inicial: ~$400-600/mês para até ~500 PMEs ativas.",
+    "custo_por_cliente": "Diagnóstico de risco (chamada IA/LLM) = $0.03 + processamento/matching = $0.01 + storage do perfil = $0.005 + notificações = $0.005 = $0.05/diagnóstico. PME com 4 diagnósticos/mês + 2 contratações/mês (cada contratação: $0.02 processamento pagamento Stripe fixo + variável 2.9%+$0.30 repassado) = custo direto de infra ≈ $0.20/mês por PME ativa, excluindo taxas de pagamento repassadas ao provedor/comissão.",
+    "monetizacao": "Modelo híbrido: (1) Comissão de marketplace de 10-15% sobre cada transação PME-provedor; (2) Assinatura para PMEs: Free (1 diagnóstico/mês, acesso limitado ao catálogo), Basic $29/mês (diagnósticos ilimitados, até 3 contratações/mês, relatórios básicos de compliance), Pro $99/mês (compliance multi-framework, suporte prioritário, dashboard avançado); (3) Assinatura para provedores: listagem destacada $49-199/mês. Métricas-alvo ano 1: MRR ~$15k-30k, CAC ~$150/PME (marketing + vendas), LTV ~$900 (assumindo churn de 3%/mês, ticket médio $30/mês), payback CAC em ~5 meses.",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Python (FastAPI), arquitetura orientada a eventos (Kafka ou SQS/SNS). Frontend: Next.js/React + TypeScript. Banco de dados: PostgreSQL (transacional) + Redis (cache) + Elasticsearch (busca/catálogo). Pagamentos: Stripe Connect. Identidade/KYC: Stripe Identity ou Persona. Autenticação: Clerk ou Auth0. Mensageria: Twilio/Sendbird. Vídeo: Daily.co. Infraestrutura: AWS ou GCP + Kubernetes, Cloudflare (CDN/WAF), S3 (storage). Observabilidade: Datadog ou Grafana+Prometheus. Analytics: Segment + Amplitude."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T21:07:01+00:00",
+    "runner": "runner.py"
+  }
+}

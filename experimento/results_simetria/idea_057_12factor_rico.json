@@ -1,0 +1,37 @@
+{
+  "ideia_idx": 57,
+  "ideia": "App de controle parental inteligente com relatórios de bem-estar digital",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) sob Git, com deploys distintos para dev, staging e produção a partir da mesma base de código, versionado semanticamente e com trunk-based development.",
+    "dependencies": "Dependências declaradas explicitamente em manifestos (package.json/poetry.lock para backend Python, package-lock.json para frontend Node), isoladas via containers Docker e ambientes virtuais, sem confiar em pacotes do sistema operacional hospedeiro.",
+    "config": "Toda configuração sensível a ambiente (chaves de API de IA, credenciais de banco, segredos JWT, URLs de serviços de notificação push, feature flags de relatórios) fica em variáveis de ambiente, nunca no código. O que varia entre implantações: endpoints de banco, chaves de terceiros (Stripe, provedores de push, APIs de IA), limites de rate-limiting e URLs de callback.",
+    "backing_services": "Banco de dados (PostgreSQL), cache/fila (Redis), serviço de IA para análise comportamental (API externa como Anthropic/OpenAI), serviço de push notification, e storage de relatórios (S3-compatible) são todos tratados como recursos anexáveis via URL/config, permitindo trocar provedor sem alterar código.",
+    "build_release_run": "Pipeline CI/CD separa claramente: build (compila código e gera imagem Docker imutável), release (combina build com config de ambiente específico, versionado e com ID único) e run (execução do release em processos isolados, sem alterações em tempo de execução).",
+    "processes": "Processos de API e workers de análise IA são stateless; nenhum estado de sessão ou cache local é mantido no processo. Estado persistente reside exclusivamente no PostgreSQL (dados de usuários, dispositivos, relatórios) e Redis (filas de processamento, sessões temporárias).",
+    "port_binding": "A API é totalmente self-contained e exporta HTTP/HTTPS via vinculação de porta (ex: porta 8080 via servidor embutido como Uvicorn/Node), sem depender de um servidor web externo injetado em tempo de execução.",
+    "concurrency": "Escala horizontalmente por tipos de processo: 'web' (API REST/GraphQL), 'worker' (processamento assíncrono de análise de uso e geração de relatórios de bem-estar digital) e 'scheduler' (agendamento de relatórios periódicos), cada um escalável independentemente conforme carga.",
+    "disposability": "Processos iniciam em segundos (containers leves, sem estado local a carregar) e leigam SIGTERM graciosamente, finalizando processamento de filas em andamento antes de encerrar, permitindo deploys e auto-scaling sem perda de dados.",
+    "dev_prod_parity": "Uso de Docker Compose replicando os mesmos backing services (Postgres, Redis) em dev e produção, deploys contínuos (múltiplos por dia) para reduzir divergência temporal, mesma equipe cuidando de dev e ops (DevOps), e uso das mesmas versões de dependências em todos os ambientes.",
+    "logs_admin": "Logs são tratados como fluxo de eventos (stdout/stderr) agregados por ferramenta externa (ex: Datadog/CloudWatch/Loki), sem gerenciamento de arquivos de log pela aplicação. Tarefas administrativas (migrations de banco, backfill de relatórios, reprocessamento de IA) rodam como processos pontuais (one-off) no mesmo ambiente de release, usando o mesmo código e config.",
+    "interfaces": [
+      "API REST/GraphQL para app mobile (pais)",
+      "API para app/agente instalado no dispositivo monitorado (filhos)",
+      "Dashboard web de relatórios de bem-estar digital",
+      "Webhooks para integrações (Stripe, notificações push)",
+      "API de exportação de relatórios (PDF/CSV)",
+      "Integração com IA para análise comportamental"
+    ],
+    "escalabilidade": "Escala horizontalmente adicionando instâncias dos processos web e worker de forma independente conforme número de dispositivos monitorados cresce; processamento pesado de análise IA é desacoplado via filas (Redis/SQS) para absorver picos sem afetar a API; banco de dados escala via read replicas e particionamento por tenant conforme a base cresce.",
+    "custo_infra_estimado": "Servidor (2x instâncias web + 2x workers, ex: AWS Fargate/ECS): $120/mês, RDS PostgreSQL (db.t3.medium com réplica): $90/mês, Redis (ElastiCache): $40/mês, S3 (storage de relatórios/exports): $15/mês, CDN (CloudFront para dashboard): $10/mês, API de IA (base fixa/monitoramento): $50/mês, banda e monitoramento (Datadog): $25/mês. Total estimado: ~$350/mês para até ~5.000 famílias ativas.",
+    "custo_por_cliente": "Cada análise de bem-estar digital (IA) = $0.04 (chamada API de IA) + $0.005 (storage do relatório) + $0.002 (processamento/CPU worker) + $0.001 (notificação push) = $0.048/análise. Cliente médio com 3 dispositivos gerando 30 análises/mês (1/dia por dispositivo) = $1.44/mês em custo variável. Somando overhead fixo de infra rateado (~$350/5.000 clientes = $0.07/cliente), custo total por cliente ≈ $1.51/mês.",
+    "monetizacao": "Modelo freemium com assinatura recorrente (SaaS B2C): Plano Free (1 dispositivo, relatório semanal básico, sem IA avançada) — $0; Plano Família ($9.99/mês, até 5 dispositivos, relatórios diários com IA, alertas em tempo real); Plano Premium ($19.99/mês, dispositivos ilimitados, insights preditivos de IA, suporte prioritário, exportação de relatórios). Métricas-alvo: MRR crescendo com conversão free-to-paid de ~5%, LTV estimado em $180 (18 meses de retenção média x $10 ticket médio), CAC alvo de $35 via marketing digital/ASO, payback de CAC em ~3.5 meses, margem bruta por cliente pago ~85% após custo de infra ($1.51) e IA.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Node.js (NestJS) containerizado em Docker; Banco: PostgreSQL (dados relacionais) + Redis (filas/cache); Processamento assíncrono: Celery ou BullMQ; IA: API Anthropic Claude para análise comportamental e geração de insights de bem-estar digital; Frontend web: React/Next.js; Apps mobile: React Native ou Flutter; Infraestrutura: AWS (ECS/Fargate, RDS, ElastiCache, S3, CloudFront) ou equivalente GCP; CI/CD: GitHub Actions; Observabilidade: Datadog ou Grafana+Loki; Pagamentos: Stripe Billing para assinaturas."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:59:18+00:00",
+    "runner": "runner.py"
+  }
+}

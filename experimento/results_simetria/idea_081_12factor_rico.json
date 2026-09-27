@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 81,
+  "ideia": "Plataforma de gestão de créditos de carbono para PMEs",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git, com múltiplos ambientes de implantação (dev, staging, produção) gerados a partir da mesma base de código via branches/tags. Módulos separados por domínio (créditos, MRV, auditoria, faturamento) dentro do mesmo repo, evitando múltiplos repositórios divergentes por serviço.",
+    "dependencies": "Dependências declaradas explicitamente em manifestos (package.json/poetry.lock, requirements.txt com versões fixas), isoladas via containers Docker; nenhuma dependência implícita do SO hospedeiro (ex: bibliotecas de cálculo de CO2, SDKs de blockchain/registro de créditos, libs de geoprocessamento). Builds reproduzíveis via lockfiles e imagens base fixas.",
+    "config": "Toda configuração via variáveis de ambiente (12factor .env / secrets manager): credenciais de banco, chaves de API de registradoras de crédito de carbono (Verra, Gold Standard), tokens de gateway de pagamento, URLs de serviços de MRV externos, feature flags por tenant. Varia entre implantações: URLs de banco, limites de rate-limit, chaves de sandbox vs produção dos registros de carbono, domínio multi-tenant.",
+    "backing_services": "Banco de dados (PostgreSQL), fila de mensagens (Redis/SQS) para processamento assíncrono de verificação MRV, storage de objetos (S3) para documentos de auditoria/certificados, serviço de e-mail transacional, APIs externas de registradoras de créditos de carbono e gateway de pagamento — todos acessados via URL/credencial em config, trocáveis sem alteração de código.",
+    "build_release_run": "Pipeline CI/CD separa build (compilação de artefato/imagem Docker imutável), release (combinação do build com config do ambiente, versionada e com rollback) e run (execução do artefato via orquestrador, ex: Kubernetes/ECS), sem alterações de código em tempo de execução.",
+    "processes": "Processos stateless e compartilham-nada; sessões de usuário e tokens JWT não guardam estado em memória do processo. Estado persistente (saldo de créditos, histórico de transações, dados de MRV, documentos de auditoria) reside exclusivamente no PostgreSQL e no S3, nunca em disco local ou cache de processo.",
+    "port_binding": "Aplicação expõe API HTTP/REST (e webhooks) via bind de porta própria (ex: porta 8080) usando servidor embutido (Uvicorn/Node), sem depender de injeção de runtime de container web externo; roteamento e TLS terminam em load balancer/API gateway na frente.",
+    "concurrency": "Escala horizontalmente por tipos de processo: 'web' (API REST), 'worker' (processamento assíncrono de cálculo/verificação de créditos e integrações MRV), 'scheduler' (jobs de reconciliação com registradoras e vencimento de créditos). Cada tipo escala independentemente conforme carga (ex: mais workers em picos de auditoria).",
+    "disposability": "Processos iniciam em segundos (containers leves, sem estado local a recarregar) e tratam SIGTERM para finalizar requisições em andamento e devolver jobs de fila não concluídos antes de encerrar, permitindo autoscaling e deploys sem downtime.",
+    "dev_prod_parity": "Docker Compose replica localmente os mesmos backing services de produção (Postgres, Redis, S3 via MinIO), reduzindo divergência de ferramentas; deploys contínuos (múltiplos por dia) reduzem divergência de tempo; mesmo time cuida de dev e operação (DevOps) reduzindo divergência de pessoal; sandbox das registradoras de carbono usado em dev/staging espelha a API de produção.",
+    "logs_admin": "Logs tratados como fluxo de eventos (stdout/stderr) agregados por um coletor central (ex: CloudWatch/Datadog/ELK), não gravados em arquivo pela aplicação. Tarefas administrativas (migrações de schema, recálculo de saldo de créditos, importação em massa de dados MRV) executadas como processos pontuais (one-off) no mesmo ambiente de release, via CLI/console management command.",
+    "interfaces": [
+      "API REST para cadastro e gestão de créditos de carbono",
+      "Portal web para PMEs (dashboard de emissões e créditos)",
+      "Integração com registradoras (Verra, Gold Standard, Puro.earth)",
+      "Webhooks para eventos de transação/verificação",
+      "API de relatórios/exportação (CSV/PDF) para compliance",
+      "Integração com gateway de pagamento (Stripe)",
+      "SDK/API para parceiros de MRV (Monitoramento, Relato e Verificação)"
+    ],
+    "escalabilidade": "Arquitetura stateless com processos web/worker independentes permite escala horizontal automática (Kubernetes HPA) conforme número de tenants cresce; separação por tipo de processo permite escalar somente workers em picos de verificação/auditoria; banco de dados escala verticalmente inicialmente e migra para read replicas e particionamento por tenant conforme volume; uso de filas assíncronas evita gargalos em integrações externas lentas (registradoras).",
+    "custo_infra_estimado": "Servidor (ECS/K8s, 2-4 instâncias t3.medium): $120/mês; RDS PostgreSQL (db.t3.medium, Multi-AZ): $140/mês; Redis (ElastiCache cache.t3.micro): $25/mês; S3 (documentos/certificados, 50GB): $5/mês; CDN (CloudFront): $15/mês; banda/transferência de dados: $20/mês; monitoramento (Datadog/CloudWatch): $30/mês. Total estimado: ~$355/mês para carga inicial (até ~200 PMEs ativas).",
+    "custo_por_cliente": "Cada verificação de crédito de carbono = $0.08 (chamada API registradora) + $0.02 (processamento/cálculo CPU) + $0.005 (storage de certificado) = $0.105/verificação. PME média realiza ~10 verificações/mês = $1.05/mês em custo variável direto. Somado ao custo fixo rateado de infra ($355/mês ÷ 200 clientes = $1.78/cliente), custo total por cliente ≈ $2.83/mês, com margem alta frente aos preços de assinatura.",
+    "monetizacao": "Modelo SaaS em camadas (tiers) por volume de créditos geridos: Starter ($49/mês, até 500 tCO2e/ano e 1 usuário), Growth ($149/mês, até 5.000 tCO2e/ano, 5 usuários, integrações com registradoras), Enterprise ($499+/mês, volume ilimitado, API dedicada, suporte a auditoria multi-site). Receita adicional via comissão de 2% sobre transações de compra/venda de créditos na marketplace interna. Métricas-alvo: MRR inicial de $15k (100 clientes tier Starter/Growth misto), LTV estimado em $1.800 (churn mensal ~3%, ticket médio $90/mês, retenção 20 meses), CAC alvo de $300 via marketing de conteúdo e parcerias com consultorias ESG, payout CAC em ~3,3 meses.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Node.js (NestJS) para APIs; PostgreSQL como banco principal; Redis para cache/filas; Celery/BullMQ para workers assíncronos; Frontend: React + TypeScript (Next.js); Infraestrutura: Docker + Kubernetes (ou AWS ECS Fargate) para orquestração; Terraform para IaC; AWS S3 para armazenamento de documentos/certificados; CloudFront como CDN; Stripe para pagamentos/assinaturas; Auth0/Cognito para autenticação; Datadog/Grafana para observabilidade; GitHub Actions para CI/CD."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T21:03:09+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "ideia_idx": 97,
+  "ideia": "App de matchmaking de caronas corporativas com roteirização inteligente",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS B2B de matchmaking de caronas corporativas que conecta funcionários de uma mesma empresa ou de empresas parceiras/parques empresariais com trajetos e horários compatíveis, com roteirização inteligente para otimizar pontos de encontro, ordem de embarque e desvios mínimos, reduzindo custo de deslocamento, emissões de CO2 e tempo de viagem.",
+    "como_comecar": "Validar com 1-2 empresas âncora (RH/facilities) via piloto fechado: MVP com cadastro de funcionários, definição de origem/destino/horário, matching básico por proximidade geográfica e janela de horário, e roteirização simples (sem otimização multi-parada ainda). Medir taxa de adesão e caronas efetivadas antes de investir em roteirização avançada.",
+    "tecnologias": "Backend em Node.js (NestJS) ou Python (FastAPI/Django) para APIs; motor de roteirização com OSRM ou GraphHopper self-hosted (ou APIs Google Maps/Mapbox Directions e Distance Matrix); algoritmo de matching baseado em geohashing/clustering (DBSCAN) combinado com solver de VRP (Vehicle Routing Problem) usando OR-Tools do Google; filas assíncronas (RabbitMQ/SQS) para recalcular rotas; WebSockets para atualização em tempo real de localização.",
+    "banco_dados": "PostgreSQL com extensão PostGIS para dados geoespaciais (localizações, rotas, zonas de embarque); Redis para cache de matching em tempo real e geolocalização ao vivo (geo commands); armazenamento de eventos/telemetria de trajeto em um data warehouse (BigQuery/Redshift) para analytics; S3-compatible storage para documentos (CNH, comprovantes).",
+    "interfaces": [
+      "App mobile para motoristas (iOS/Android) - oferecer carona, ver rota otimizada, navegação turn-by-turn",
+      "App mobile para passageiros (iOS/Android) - solicitar carona, ver status, avaliar",
+      "Portal web administrativo para RH/facilities da empresa cliente - gestão de funcionários, políticas, relatórios de sustentabilidade e custo",
+      "Dashboard de analytics (economia gerada, redução de CO2, taxa de adoção)",
+      "API pública/webhooks para integração com sistemas de RH (SAP, Workday) e crachá/controle de acesso"
+    ],
+    "usuarios": "Funcionários de empresas clientes (motoristas e passageiros), administradores de RH/facilities das empresas contratantes, e eventualmente gestores de parques empresariais/condomínios corporativos que atendem múltiplas empresas.",
+    "escalabilidade": "Sim: arquitetura de microserviços separando matching engine, roteirização e notificações para escalar independentemente; sharding geográfico do matching (processar por região/cidade); cache agressivo de rotas frequentes; filas para desacoplar picos de horário de pico (7-9h e 17-19h concentram 80% da carga); uso de CDN para apps e autoscaling horizontal em Kubernetes para os serviços de matching/roteirização nos horários de pico.",
+    "custos": "Principais custos: APIs de mapas/roteirização (Google Maps cobra por request - considerar OSRM self-hosted para reduzir custo em escala), infraestrutura cloud (compute para VRP solver é intensivo em CPU), notificações push/SMS, armazenamento geoespacial, e suporte/onboarding de clientes corporativos (custo de vendas B2B é alto - ciclo de vendas longo).",
+    "monetizacao": "Modelo SaaS B2B por assinatura mensal/anual cobrado da empresa cliente, com pricing por número de funcionários ativos (per-seat) ou por faixas (tiers); possíveis add-ons como relatórios avançados de ESG/sustentabilidade, integração com folha de pagamento para reembolso automático de km rodado, e módulo de reserva de vagas de estacionamento; modelo freemium limitado para pequenas empresas como isca de aquisição.",
+    "stack_sugerida": "Frontend: React Native (apps mobile) + React/Next.js (portal web admin). Backend: NestJS (Node.js) com arquitetura de microserviços. Roteirização: OSRM/GraphHopper + Google OR-Tools para VRP. Banco de dados: PostgreSQL + PostGIS, Redis para cache/geo em tempo real. Mensageria: RabbitMQ ou AWS SQS. Infraestrutura: AWS ou GCP com Kubernetes (EKS/GKE), Terraform para IaC. Observabilidade: Datadog ou Grafana+Prometheus. Pagamentos/billing: Stripe Billing para assinaturas B2B."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T21:08:23+00:00",
+    "runner": "runner.py"
+  }
+}

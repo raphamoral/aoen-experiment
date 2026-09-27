@@ -1,0 +1,48 @@
+{
+  "ideia_idx": 97,
+  "ideia": "App de matchmaking de caronas corporativas com roteirização inteligente",
+  "abordagem": "evolutionary_rico",
+  "response": {
+    "architectural_quantum": "O quantum arquitetural é o serviço de 'Matching & Rota' (motor de matchmaking + roteirização) empacotado com seu próprio banco de dados geoespacial, filas de eventos e contratos de API — pode ser implantado, escalado e revertido de forma independente dos serviços de Identidade/Empresas, Pagamentos/Billing e Notificações. Cada quantum inclui suas próprias funções de aptidão executáveis (testes de contrato, testes de latência, testes de precisão de rota) que viajam junto com o código, garantindo alta coesão funcional e baixo acoplamento estático com os demais quanta.",
+    "fitness_functions": {
+      "atomicas": "Testes unitários de cálculo de rota (desvio máximo aceitável vs. rota ótima, ex: <15%); testes de contrato (Pact) entre Matching Service e Payments Service para não quebrar payloads.",
+      "holisticas": "Testes de carga simulando picos de horário de rush (p95 de resposta de matching <800ms com 50k usuários simultâneos); SLO de disponibilidade 99.9% via chaos testing mensal.",
+      "temporais": "Auditoria trimestral de dependências desatualizadas (OWASP dependency-check) e teste de deprecação de APIs externas de mapas (Google Maps/Mapbox) com aviso 90 dias antes do EOL.",
+      "seguranca": "Scan estático (SAST) e dinâmico (DAST) em cada PR; teste de anonimização de dados de localização em logs; verificação de LGPD/GDPR compliance a cada release.",
+      "custo": "Fitness function de custo por operação: alerta automático se custo médio por match exceder $0.08, disparando revisão de arquitetura."
+    },
+    "evolvable_dimensions": {
+      "tecnica": "Evolução de monolito modular para microsserviços conforme volume de rotas cresce; troca de provedor de roteirização (Mapbox → OSRM self-hosted) sem reescrever consumidores, via camada de abstração (Routing Provider Interface).",
+      "dados": "Esquema de usuários e rotas evolui de relacional (Postgres) para híbrido com grafo (Neo4j/PostGIS) à medida que a complexidade de matching por afinidade aumenta.",
+      "seguranca": "Evolução de autenticação básica (JWT) para OAuth2 + SSO corporativo (SAML) conforme clientes enterprise exigem integração com AD/Okta.",
+      "operacional": "Evolução de deploy manual para CI/CD com canary releases e feature flags, e de monitoramento reativo para observabilidade proativa (SLOs + alertas preditivos)."
+    },
+    "incremental_change": "Mudanças são entregues via feature toggles e canary deployments (5% → 25% → 100% do tráfego), com cada incremento validado pelas funções de aptidão antes de avançar. Branch by abstraction é usado para trocar componentes críticos (ex: motor de roteirização) sem downtime, permitindo rollback instantâneo caso as métricas de aptidão degradem.",
+    "coupling_management": "Acoplamento aferente alto no serviço de Identidade (consumido por todos) é mitigado com contratos versionados e cache local de perfis. Acoplamento eferente do Matching Service para APIs de mapas externas é deliberadamente isolado via Anti-Corruption Layer, permitindo troca de fornecedor sem impacto. O acoplamento entre Matching e Billing é assíncrono (eventos via message broker), evitando dependência síncrona direta — uma decisão deliberada para preservar a independência de deploy de cada quantum.",
+    "deployment_pipeline": "Pipeline CI/CD (GitHub Actions/GitLab CI) executa em cada commit: testes unitários → testes de contrato → build de containers → scan de segurança (SAST/DAST) → testes de performance em ambiente de staging → deploy canary → monitoramento automatizado de métricas de aptidão (latência, taxa de erro, custo por operação) por 30 minutos antes de promoção total, com rollback automático se qualquer fitness function falhar.",
+    "data_evolution": "Migrações usam padrão expand-contract: novas colunas/tabelas são adicionadas de forma aditiva (expand), código é atualizado para escrever em ambos os esquemas (dual-write), dados históricos são migrados em background, e apenas após validação completa o esquema antigo é removido (contract). Uso de feature flags no ORM permite alternar entre versões de esquema sem downtime, com versionamento de eventos no message broker para consumidores assíncronos.",
+    "experimentation": "Hipóteses de produto (ex: 'roteirização por afinidade de horário aumenta taxa de match em 20%') são testadas via A/B testing com feature flags, medindo métricas de negócio (taxa de match, NPS) e técnicas (latência) simultaneamente. Dark launching é usado para novos algoritmos de matching, rodando em paralelo sem afetar usuários reais antes da promoção.",
+    "sacrificial_parts": "O algoritmo inicial de matching (baseado em regras simples de proximidade) é deliberadamente descartável e será substituído por um modelo de ML de recomendação quando a base de dados de viagens atingir volume suficiente (~6-12 meses). O dashboard administrativo inicial (low-code/Retool) é sacrificial e será substituído por uma interface customizada quando os requisitos de UX corporativo amadurecerem.",
+    "guardrails": "Linters arquiteturais (ArchUnit/dependency-cruiser) bloqueiam PRs que criem dependências cíclicas entre bounded contexts; políticas de branch protection exigem passagem das fitness functions antes de merge; revisões arquiteturais trimestrais (ADR reviews) previnem erosão; limites de orçamento de custo por serviço disparam alertas automáticos no pipeline.",
+    "tradeoffs": "Prioriza-se evolutividade técnica e de dados sobre otimização de custo no curto prazo (uso de serviços gerenciados mais caros para reduzir complexidade operacional); segurança e compliance (LGPD) têm prioridade sobre velocidade de experimentação em features que tocam dados de localização; a dimensão operacional aceita maior complexidade de infraestrutura (múltiplos serviços) em troca de deploys independentes e menor blast radius de falhas.",
+    "interfaces": [
+      "Routing Provider Interface (abstração sobre Mapbox/OSRM/Google Maps)",
+      "Matching API (REST/gRPC) para consumo por apps mobile e web",
+      "Payments/Billing Event Interface (eventos assíncronos via Kafka/SQS)",
+      "Identity & SSO Interface (OAuth2/SAML para autenticação corporativa)",
+      "Notification Interface (push, e-mail, SMS via provedor abstrato)",
+      "Admin/Reporting Interface (dashboards e exportação de dados corporativos)"
+    ],
+    "escalabilidade": "Escala horizontalmente via containers stateless (Kubernetes/ECS) com auto-scaling baseado em métricas de fila de matching; banco de dados geoespacial usa read replicas e sharding por região metropolitana; cache distribuído (Redis) reduz carga de consultas de rota repetidas; message broker desacopla picos de demanda entre serviços, permitindo que o Matching Service escale independentemente do Billing.",
+    "custo_infra_estimado": "Servidor (K8s/ECS, 3-5 nodes): $300-500/mês; Banco de dados (RDS Postgres + PostGIS, com réplica): $150-250/mês; Cache (Redis/ElastiCache): $50/mês; Message Broker (SQS/Kafka gerenciado): $80/mês; CDN (CloudFront) para assets do app: $20/mês; Armazenamento (S3 para logs/exports): $15/mês; APIs de mapas (Mapbox/Google, ~50k requisições/mês): $200/mês; Monitoramento (Datadog/Grafana Cloud): $100/mês. Total estimado: ~$915-1215/mês para até ~10k usuários ativos.",
+    "custo_por_cliente": "Cada match com roteirização = $0.02 (API de mapas) + $0.008 (compute do algoritmo) + $0.002 (storage de evento) + $0.005 (mensageria) = $0.035/match. Cliente corporativo médio com 200 colaboradores gerando 400 matches/mês = $14/mês em custo direto de infraestrutura, cobrado dentro de um plano que gera margem confortável (ver monetização).",
+    "monetizacao": "Modelo B2B2C por assinatura corporativa (SaaS): Plano Starter ($199/mês, até 100 colaboradores), Plano Growth ($499/mês, até 500 colaboradores, inclui analytics avançado), Plano Enterprise (custom, $1.500+/mês, SSO/SAML, SLA dedicado e API própria). Métricas-chave: MRR inicial estimado de $15k-30k com 30-50 clientes Starter/Growth no primeiro ano; CAC estimado em $800-1.200 por cliente corporativo (vendas outbound + demos); LTV estimado em $8.000-15.000 (churn anual ~15%, ticket médio $350/mês, retenção de 24-36 meses); payback de CAC em ~3-4 meses. Receita adicional via add-ons (relatórios de sustentabilidade/ESG, integração com folha de pagamento para reembolso automático de caronas).",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Go para o Matching Service (baixa latência); Banco de dados: PostgreSQL + extensão PostGIS para dados geoespaciais, Redis para cache; Roteirização: OSRM self-hosted com fallback para Mapbox Directions API; Mensageria: Kafka ou AWS SQS/SNS; Infraestrutura: Kubernetes (EKS/GKE) ou AWS ECS Fargate; CI/CD: GitHub Actions com deploy canary via Argo Rollouts; Observabilidade: Datadog ou Grafana + Prometheus + OpenTelemetry; Autenticação: Auth0 ou Keycloak com suporte a SAML/OAuth2; Frontend: React Native (mobile) + Next.js (painel corporativo web); Pagamentos: Stripe Billing para assinaturas SaaS."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "25a60daee261",
+    "gerado_em": "2026-09-27T21:08:42+00:00",
+    "runner": "runner.py"
+  }
+}

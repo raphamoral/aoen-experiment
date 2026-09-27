@@ -1,0 +1,129 @@
+{
+  "ideia_idx": 29,
+  "ideia": "Marketplace de profissionais de energia solar para residências",
+  "abordagem": "arch_flow_rico",
+  "response": {
+    "value_chain": "Necessidade do cliente (reduzir conta de energia / sustentabilidade) → descoberta de profissionais qualificados → simulação de dimensionamento e economia solar → orçamento comparativo → agendamento de visita técnica → contratação e assinatura → pagamento e repasse ao profissional → instalação → vistoria/homologação → monitoramento pós-venda e avaliação. Componentes de suporte: identidade e acesso, verificação de credenciais, comunicação, notificações, analytics.",
+    "wardley_map": {
+      "genese": [
+        "Motor de dimensionamento e simulação de ROI solar (dados de telhado, irradiação, consumo, tarifas)",
+        "Recomendação de match cliente-profissional baseada em histórico e especialidade"
+      ],
+      "sob_medida": [
+        "Verificação e scoring de credenciais/certificações de profissionais",
+        "Orquestração de orçamento e comparação de propostas",
+        "Reputação e avaliação ponderada por tipo de projeto"
+      ],
+      "produto": [
+        "Pagamentos e repasses (Stripe Connect)",
+        "Assinatura digital de contratos (DocuSign/Clicksign)",
+        "Agendamento (Calendly-like)",
+        "Chat/mensageria in-app"
+      ],
+      "commodity": [
+        "Autenticação (Auth0/Clerk/Cognito)",
+        "Notificações e-mail/SMS/push (Twilio/SendGrid)",
+        "Mapas e geolocalização (Google Maps API)",
+        "Hospedagem, CDN, armazenamento de arquivos (AWS/Cloudflare)"
+      ]
+    },
+    "build_buy_decisions": {
+      "construir": "Motor de dimensionamento/ROI solar e o algoritmo de matching — são a fonte de vantagem competitiva e ainda não existem soluções de prateleira adequadas ao mercado residencial local.",
+      "comprar": "Pagamentos e repasses via Stripe Connect (evita construir compliance financeiro, KYC e antifraude do zero), assinatura digital via DocuSign/Clicksign, autenticação via Auth0/Clerk.",
+      "commodity": "Infraestrutura (AWS/Vercel), CDN, e-mail/SMS (Twilio/SendGrid), mapas (Google Maps) — usar diretamente via API, sem investimento de engenharia."
+    },
+    "core_domain": "Motor de Orçamento e Dimensionamento Solar + Matching de Profissionais: é onde reside a diferenciação (qualidade da simulação de economia, precisão do match considerando especialidade/região/disponibilidade). Justifica investimento sob medida porque impacta diretamente conversão e confiança — commodities não resolvem essa complexidade de domínio.",
+    "bounded_contexts": [
+      {
+        "contexto": "Identidade e Acesso",
+        "linguagem": "Usuário, Conta, Papel (Cliente/Profissional/Admin), Sessão, Credencial"
+      },
+      {
+        "contexto": "Cadastro e Verificação de Profissionais",
+        "linguagem": "Profissional, Certificação, Documento, Score de Confiança, Status de Verificação"
+      },
+      {
+        "contexto": "Busca e Matching",
+        "linguagem": "Solicitação, Candidato, Match, Especialidade, Raio de Atuação"
+      },
+      {
+        "contexto": "Orçamento e Dimensionamento (core)",
+        "linguagem": "Simulação, Consumo, Irradiação, Sistema Fotovoltaico, Economia Estimada, Proposta"
+      },
+      {
+        "contexto": "Agendamento",
+        "linguagem": "Visita Técnica, Slot, Disponibilidade, Confirmação"
+      },
+      {
+        "contexto": "Contratação",
+        "linguagem": "Contrato, Cláusula, Assinatura, Versão"
+      },
+      {
+        "contexto": "Pagamentos e Repasses",
+        "linguagem": "Cobrança, Conta Conectada, Comissão da Plataforma, Repasse, Estorno, Disputa"
+      },
+      {
+        "contexto": "Reputação e Avaliações",
+        "linguagem": "Avaliação, Nota, Comentário, Reputação Agregada"
+      },
+      {
+        "contexto": "Comunicação",
+        "linguagem": "Conversa, Mensagem, Notificação, Canal"
+      }
+    ],
+    "context_mapping": {
+      "Orçamento_e_Dimensionamento <-> Busca_e_Matching": "Parceria — evoluem juntos pois a qualidade do orçamento depende do profissional retornado pelo match",
+      "Cadastro_de_Profissionais -> Pagamentos": "Cliente-Fornecedor — verificação precisa concluir antes da criação da conta conectada no Stripe",
+      "Pagamentos -> Stripe (externo)": "Camada Anticorrupção — adapter isola o domínio de pagamentos dos modelos e webhooks da API do Stripe",
+      "Contratação -> Pagamentos": "Cliente-Fornecedor — assinatura do contrato dispara a cobrança e o agendamento do repasse",
+      "Identidade e Acesso -> demais contextos": "Conformista — todos consomem o modelo de identidade via ACL para provedor externo (Auth0/Clerk)",
+      "Comunicação -> Notificações (externo)": "Camada Anticorrupção sobre Twilio/SendGrid"
+    },
+    "team_topologies": {
+      "fluxo": [
+        "Time Match & Orçamento (core domain)",
+        "Time Profissionais (cadastro, verificação, reputação)",
+        "Time Transações (agendamento, contratação, pagamentos)"
+      ],
+      "plataforma": [
+        "Time de Plataforma Interna (identidade, notificações, observabilidade, CI/CD, infraestrutura como self-service)"
+      ],
+      "subsistema_complicado": [
+        "Time de Pagamentos/Conformidade Financeira (integração Stripe Connect, disputas, antifraude, reconciliação)"
+      ],
+      "habilitacao": [
+        "Time de Habilitação (apoia adoção de ML para matching e de Stripe Connect Accounts v2 nos times de fluxo, depois se dissolve ou reduz)"
+      ]
+    },
+    "cognitive_load": "Cada time de fluxo é dono de 1-2 bounded contexts coesos, evitando sobreposição. Complexidade financeira (reconciliação, disputas, antifraude) é isolada no time de subsistema complicado para não sobrecarregar o time de Transações. Plumbing de infraestrutura, auth e notificações é abstraído pelo time de Plataforma via APIs self-service, reduzindo carga extrínseca dos times de fluxo. O time de Habilitação absorve temporariamente a curva de aprendizado de tecnologias novas (ML de matching, Stripe Connect Accounts v2).",
+    "interaction_modes": {
+      "colaboracao": "Time Match & Orçamento com Time Profissionais durante a fase de descoberta do domínio central (alta incerteza, genesis)",
+      "x_as_a_service": "Time de Plataforma expõe identidade, notificações e observabilidade como serviços self-service para os times de fluxo; Time de Pagamentos expõe API interna de cobrança/repasse como serviço para Time de Transações",
+      "facilitacao": "Time de Habilitação orienta o Time de Transações na configuração de Stripe Connect (Accounts v2, destination charges) e o Time Match & Orçamento na adoção de modelos de recomendação"
+    },
+    "flow_optimization": "Gargalos esperados: (1) verificação manual de credenciais de profissionais — mitigado com componentes embutidos de onboarding e verificação assistida por documento; (2) reconciliação financeira e disputas no repasse — isolado no time de subsistema complicado; (3) acoplamento síncrono entre contextos — mitigado com arquitetura orientada a eventos (Orcamento.Aceito, Contrato.Assinado, Pagamento.Capturado, Profissional.Verificado) permitindo que cada time libere de forma independente.",
+    "independent_streams": "Contextos se comunicam por eventos de domínio assíncronos via barramento de eventos (Kafka/EventBridge) em vez de chamadas síncronas ou banco compartilhado, permitindo deploys e ciclos de release independentes por time. Integrações externas (Stripe, DocuSign, Twilio, Auth0) passam por camadas anticorrupção próprias de cada contexto, evitando que mudanças de fornecedor vazem para outros times.",
+    "interfaces": [
+      "API Gateway (REST/GraphQL) para apps web e mobile",
+      "Barramento de eventos (Kafka/AWS EventBridge) para comunicação entre contextos",
+      "Stripe Connect API (contas conectadas, cobranças, repasses, webhooks)",
+      "API de assinatura digital (DocuSign/Clicksign)",
+      "Google Maps/Geocoding API",
+      "API de autenticação (Auth0/Clerk)",
+      "API de notificações (Twilio/SendGrid)",
+      "Painel administrativo interno",
+      "SDK/app mobile para profissionais (agenda, propostas, repasses)"
+    ],
+    "escalabilidade": "Serviços stateless por bounded context escalando horizontalmente em Kubernetes/serverless (ECS Fargate); cache (Redis) para resultados de simulação de dimensionamento e buscas de matching; réplicas de leitura no PostgreSQL para consultas de busca; particionamento por região geográfica à medida que a base cresce; CDN multi-região para ativos estáticos; processamento assíncrono via filas para picos de solicitações de orçamento.",
+    "custo_infra_estimado": "Compute (ECS/EKS, 3-5 serviços): $150/mês; RDS PostgreSQL (db.t3.medium multi-AZ): $120/mês; Redis (ElastiCache): $40/mês; Kafka gerenciado (MSK Serverless) ou EventBridge: $60/mês; S3 (documentos, fotos de telhado): $15/mês; CloudFront CDN: $20/mês; Auth0 (plano growth): $150/mês; Twilio/SendGrid: $50/mês; Observabilidade (Datadog/CloudWatch): $50/mês. Total estimado inicial: ~$655/mês para até ~10 mil usuários ativos.",
+    "custo_por_cliente": "Cobrança Stripe: 2.9% + $0.30 por transação absorvida no split; Repasse ao profissional (Stripe Connect payout): $0.25/transferência; Armazenamento de documentos/fotos: $0.01/cliente/mês; Notificações (SMS+email, ~5/mês): $0.02/cliente/mês; Simulação de dimensionamento (CPU + chamada de API de irradiação solar): $0.03/simulação. Cliente médio gera 1 orçamento + 1 contrato/mês: custo variável ≈ $0.03 (simulação) + $0.02 (notificações) + $0.01 (storage) = $0.06/cliente/mês, mais taxas de transação proporcionais ao valor do projeto (ex.: projeto de $8.000 → ~$232 em taxas Stripe, coberto pela comissão da plataforma).",
+    "monetizacao": "Modelo híbrido: (1) Comissão de 8-12% sobre o valor de cada instalação fechada, cobrada via Stripe Connect com application_fee_amount na cobrança de destino (destination charge) — plataforma é a merchant of record perante o cliente; (2) Assinatura mensal para profissionais destacarem perfil e receberem mais leads: Básico $0 (leads limitados), Pro $49/mês (leads ilimitados + selo verificado), Premium $149/mês (leads prioritários + analytics). Métricas-alvo: ARPU profissional ~$80/mês, LTV profissional ~$1.900 (24 meses de retenção média), CAC profissional ~$300 (marketing + verificação), payback ~4 meses; MRR projetado a 500 profissionais pagantes: ~$40.000/mês só em assinatura, mais comissão variável sobre GMV de instalações.",
+    "stack_sugerida": "Frontend: Next.js/React + TypeScript (web) e React Native (app profissional). Backend: NestJS/TypeScript (Node) para contextos de negócio, possivelmente Python/FastAPI para o motor de dimensionamento solar (bibliotecas científicas). Banco de dados: PostgreSQL (dados transacionais) + Redis (cache/sessão). Mensageria: Kafka (MSK) ou AWS EventBridge para eventos de domínio. Pagamentos: Stripe Connect (contas conectadas Express, destination charges, application_fee_amount para comissão). Identidade: Auth0 ou Clerk. Assinatura digital: DocuSign ou Clicksign API. Notificações: Twilio (SMS) + SendGrid (email). Geolocalização: Google Maps Platform. Infraestrutura: AWS (ECS Fargate/EKS, S3, CloudFront, RDS), Terraform para IaC, Datadog para observabilidade."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "ac5fb6a0d801",
+    "gerado_em": "2026-09-27T20:57:12+00:00",
+    "runner": "runner.py"
+  }
+}

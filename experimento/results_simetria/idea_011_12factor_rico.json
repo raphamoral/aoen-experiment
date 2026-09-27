@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 11,
+  "ideia": "Plataforma de matchmaking entre startups e investidores-anjo regionais",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo Git) contendo backend (API), frontend (dashboard web) e workers assíncronos, com múltiplas implantações (dev, staging, produção) derivadas do mesmo código via branches/tags. Bibliotecas compartilhadas (ex.: motor de matching, validação de compliance CVM) extraídas como pacotes internos versionados, não copiados entre repositórios.",
+    "dependencies": "Dependências declaradas explicitamente (package.json/poetry.lock ou requirements.txt com hashes), sem depender de pacotes globais do sistema. Isolamento via containers Docker; nenhuma chamada a ferramentas de CLI do SO (ex.: ImageMagick para geração de PDFs de term sheets) sem declará-las na imagem.",
+    "config": "Tudo que varia entre implantações fica em variáveis de ambiente: DATABASE_URL, REDIS_URL, JWT_SECRET, chaves do Stripe (test/live), credenciais de e-mail transacional, feature flags de região (ex.: habilitar matching em SP vs. NE), limites de rate-limit por plano. Nenhuma credencial ou lista de investidores fica hardcoded no código.",
+    "backing_services": "Postgres (dados relacionais de startups/investidores/matches), Redis (cache e filas), serviço de e-mail transacional (ex.: Postgmark/SES), Stripe (cobrança), serviço de armazenamento de objetos (pitch decks, documentos de due diligence) e provedor de assinatura eletrônica — todos acessados via URL/credencial injetada, trocáveis sem alterar código.",
+    "build_release_run": "Pipeline CI gera artefato de build (imagem Docker imutável) a partir do código + dependências; etapa de release combina o build com a config do ambiente (staging/produção) gerando um release versionado e rastreável; execução via orquestrador (ex.: ECS/Kubernetes) que apenas roda o release, sem builds ad-hoc em produção.",
+    "processes": "Processos da API e dos workers de matching são stateless — nenhuma sessão de usuário ou fila em memória local. Estado persistente (perfis, matches, mensagens, status de deals) vive exclusivamente no Postgres; sessões e filas ficam no Redis, nunca no processo.",
+    "port_binding": "API expõe HTTP via porta configurável (ex.: PORT=8080) usando servidor embutido (ex.: Uvicorn/Express), sem depender de um servidor web externo injetado em runtime; o serviço é autocontido e pode ser referenciado como backing service por outra aplicação.",
+    "concurrency": "Escala horizontal por tipos de processo: 'web' (API REST/GraphQL, stateless, atrás de load balancer), 'worker' (cálculo de score de matching, notificações, geração de relatórios), 'scheduler' (cron jobs para reengajamento e expiração de propostas). Cada tipo escala independentemente conforme demanda.",
+    "disposability": "Processos iniciam em segundos (sem estado a carregar), tratam SIGTERM finalizando requisições em andamento e devolvendo jobs não concluídos à fila (idempotência garantida por chave de idempotência nos matches), permitindo deploys e autoscaling sem perda de dados.",
+    "dev_prod_parity": "Docker Compose replica localmente Postgres, Redis e mocks de Stripe/e-mail idênticos aos de produção; mesmas versões de dependências entre dev/staging/produção; deploys contínuos (múltiplos por dia) reduzem divergência temporal; mesmo time (dev = ops) opera CI/CD, reduzindo divergência de pessoal e ferramental.",
+    "logs_admin": "Logs tratados como stream de eventos não bufferizados (stdout/stderr), coletados por agregador (ex.: CloudWatch/Datadog) para auditoria de matches e compliance. Tarefas administrativas (migrações de schema, reprocessamento de score de matching, exportação de relatórios para investidores) executadas como processos pontuais no mesmo ambiente de release, via scripts versionados no repositório.",
+    "interfaces": [
+      "API REST/GraphQL para dashboard web e mobile",
+      "Webhook de eventos de match/proposta para integrações externas (CRM do investidor)",
+      "Webhook Stripe para eventos de cobrança",
+      "Painel administrativo interno (curadoria de perfis, moderação)",
+      "Exportação de relatórios (PDF/CSV) de deals e pipeline",
+      "Integração de e-mail transacional (convites, notificações de match)",
+      "SSO/OAuth para login social (Google/LinkedIn)"
+    ],
+    "escalabilidade": "Escala horizontalmente adicionando instâncias stateless de API e workers conforme volume de startups/investidores cresce; matching intensivo (scoring, ranking) é descarregado para workers assíncronos e filas, evitando bloqueio da API; sharding regional do banco pode ser introduzido apenas se o volume por região justificar, sem alterar a arquitetura de processos.",
+    "custo_infra_estimado": "Servidor (API + workers em containers, ex. ECS Fargate): $80/mês. RDS Postgres (db.t3.medium): $60/mês. Redis (ElastiCache): $25/mês. S3 (armazenamento de pitch decks/documentos): $15/mês. CDN (CloudFront para assets do dashboard): $10/mês. Banda/transferência: $10/mês. Serviço de e-mail transacional: $15/mês. Total estimado: ~$215/mês para MVP com poucas centenas de usuários ativos.",
+    "custo_por_cliente": "Cada match processado = $0.02 (compute do algoritmo de scoring) + $0.005 (storage de metadados) + $0.01 (notificação por e-mail) = $0.035/match. Startup ativa gerando ~20 matches/mês = $0.70/mês em custo direto. Investidor-anjo com upload de 5 documentos/mês (S3 + processamento) adiciona ~$0.50/mês. Custo médio total por cliente ativo: ~$1.20/mês em infraestrutura variável.",
+    "monetizacao": "Modelo freemium + assinatura em camadas: (1) Starter (startups) - grátis, até 3 propostas ativas/mês; (2) Growth (startups) - $99/mês, propostas ilimitadas + analytics de matching; (3) Investidor Anjo - $149/mês, acesso a deal flow filtrado por tese/região + relatórios; (4) Enterprise (aceleradoras/fundos) - $499/mês, múltiplos assentos + API de integração com CRM. Métricas-alvo: CAC estimado $150 (marketing de conteúdo + eventos regionais de venture), LTV projetado $1.800 (churn mensal ~5%, ticket médio $125/mês, retenção 12 meses), MRR meta de $25k em 12 meses com ~150 assinantes pagantes.",
+    "stack_sugerida": "Backend: Node.js (NestJS) ou Python (FastAPI); Banco: PostgreSQL (Supabase/RDS); Cache/filas: Redis + BullMQ; Frontend: Next.js + TailwindCSS; Autenticação: Auth0 ou Clerk; Pagamentos: Stripe Billing; Armazenamento: S3-compatible (AWS S3/Cloudflare R2); Infraestrutura: Docker + ECS Fargate ou Fly.io; CI/CD: GitHub Actions; Observabilidade: Datadog ou Grafana + Loki."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T20:51:43+00:00",
+    "runner": "runner.py"
+  }
+}

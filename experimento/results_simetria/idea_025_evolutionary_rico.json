@@ -1,0 +1,71 @@
+{
+  "ideia_idx": 25,
+  "ideia": "SaaS de otimização de rotas para coleta de lixo reciclável",
+  "abordagem": "evolutionary_rico",
+  "response": {
+    "architectural_quantum": "O quantum arquitetural é o serviço de 'Otimização de Rota' encapsulado com seu próprio banco de dados operacional (rotas, paradas, restrições de veículo), sua API de otimização e seu contrato de eventos. Ele é implantável de forma independente porque contém: (1) o motor de otimização (VRP solver), (2) o modelo de dados de geolocalização/pontos de coleta, e (3) os fitness functions que o protegem. Serviços satélites (autenticação, faturamento, notificações, app do motorista) são quanta separados que se comunicam via eventos assíncronos, garantindo que a alta carga computacional do solver não acople disponibilidade com os demais domínios.",
+    "fitness_functions": {
+      "atomicas": [
+        "Tempo de resposta do endpoint de otimização de rota deve ser < 3s para até 200 pontos de coleta (P95), executado a cada build via teste de carga sintético",
+        "Cobertura de testes de contrato (Pact) entre serviço de rotas e serviço de faturamento >= 95%, verificada em cada PR",
+        "Nenhuma dependência circular entre bounded contexts, verificado via ArchUnit/dependency-cruiser no CI",
+        "Esquema de eventos (Avro/JSON Schema) deve ser backward-compatible, validado pelo Schema Registry antes do deploy",
+        "Zero downtime em migrações de schema, validado por teste de migração expand-contract em staging",
+        "Latência de geocodificação e cálculo de distância < 500ms (P99), monitorado continuamente em produção"
+      ],
+      "holisticas": [
+        "Teste de caos mensal: simular queda do provedor de mapas (Google Maps/OSRM) e validar fallback para provedor secundário sem interromper rotas já otimizadas",
+        "Auditoria trimestral de custo por operação, alertando se custo/operação subir >15% sem aumento correspondente de receita",
+        "Teste de conformidade LGPD/GDPR sobre dados de localização de coletores, executado a cada release"
+      ]
+    },
+    "evolvable_dimensions": {
+      "tecnica": "Motor de otimização evolui de heurísticas simples (nearest neighbor) para solvers mais sofisticados (OR-Tools, algoritmos genéticos, ML preditivo de volume de resíduos) sem quebrar contrato de API",
+      "dados": "Modelo de dados evolui de rotas estáticas para dados dinâmicos em tempo real (IoT sensores de nível de lixeira, telemetria de veículos)",
+      "seguranca": "Evolui de autenticação básica para RBAC granular por município/cliente, e depois para conformidade LGPD com anonimização de dados de coleta",
+      "operacional": "Evolui de deploy manual para pipeline totalmente automatizado com canary releases e rollback automático baseado em fitness functions"
+    },
+    "incremental_change": "Mudanças são feitas via padrão expand-contract: nova funcionalidade é adicionada em paralelo (feature flag), validada contra fitness functions em ambiente de staging com dados sombra (shadow traffic), promovida gradualmente via canary deployment (5% -> 25% -> 100% do tráfego de rotas), e a versão antiga é removida somente após o período de contração confirmar estabilidade métrica por pelo menos 2 semanas.",
+    "coupling_management": "Acoplamento aferente (Ca) alto é aceito no serviço de Geolocalização/Mapas, pois é consumido por Rotas, App do Motorista e Faturamento — tratado como componente estável com contrato versionado. Acoplamento eferente (Ce) do serviço de Otimização de Rotas é mantido baixo, dependendo apenas de interfaces abstratas (ports) para provedores de mapas e para o event bus, permitindo troca de fornecedor sem impacto. O acoplamento entre Rotas e Faturamento é deliberadamente assíncrono (via eventos de 'rota concluída'), evitando acoplamento temporal.",
+    "deployment_pipeline": "Pipeline CI/CD com estágios: (1) build e testes unitários, (2) testes de contrato entre serviços, (3) fitness functions atômicas (performance, arquitetura, segurança) como gates obrigatórios, (4) deploy em staging com fitness functions holísticas (caos, conformidade), (5) canary deployment em produção com monitoramento contínuo das fitness functions via Prometheus/Grafana, (6) rollback automático se qualquer fitness function violar o threshold definido.",
+    "data_evolution": "Esquema evolui via padrão expand-contract: novas colunas/campos são adicionados como opcionais (expand), código é migrado para usar o novo campo com dual-write, dados históricos são retrofitados em background, e campos antigos são removidos (contract) somente após confirmação de que nenhum consumidor os utiliza mais. Eventos usam versionamento semântico de schema com Schema Registry garantindo compatibilidade backward/forward.",
+    "experimentation": "Hipóteses de produto (ex: 'coletores preferem rotas otimizadas por menor distância vs. menor tempo') são testadas via feature flags e A/B testing na camada de otimização, com métricas de negócio (litros coletados/km, satisfação do motorista, tempo total) capturadas via event streaming e analisadas em um data warehouse separado, sem impactar o serviço core.",
+    "sacrificial_parts": "O motor de otimização inicial (heurística simples nearest-neighbor) é deliberadamente descartável, sendo substituído por um solver VRP mais robusto (ex: OR-Tools ou Jsprit) assim que o volume de clientes ultrapassar ~50 rotas simultâneas. O dashboard administrativo inicial (MVP em low-code/Retool) é descartável e será substituído por uma aplicação React customizada quando os requisitos de UX ultrapassarem as capacidades do low-code, estimado para 12-18 meses após o lançamento.",
+    "guardrails": "Gates automatizados de CI/CD que bloqueiam merge se fitness functions falharem; revisão arquitetural obrigatória (ADR) para qualquer mudança que introduza acoplamento síncrono entre bounded contexts; política de 'no schema breaking changes' aplicada via linter de schema; limites de SLA contratuais monitorados com alertas automáticos antes de violação.",
+    "tradeoffs": "Prioriza-se consistência eventual (via eventos assíncronos) em vez de consistência forte entre Rotas e Faturamento, aceitando uma janela de poucos segundos de defasagem em troca de resiliência e desacoplamento. Escolhe-se maior custo computacional do solver VRP (mais preciso) em vez de heurísticas mais baratas, trocando custo de infraestrutura por melhor eficiência de rota (economia de combustível). Prioriza-se time-to-market do MVP com low-code no admin em detrimento de customização total da UX.",
+    "interfaces": [
+      "REST API /routes/optimize (entrada: pontos de coleta, veículos, restrições; saída: rota otimizada)",
+      "REST API /vehicles (CRUD de frota)",
+      "REST API /collection-points (CRUD de pontos de coleta reciclável)",
+      "Webhook/Evento 'route.completed' (para faturamento e analytics)",
+      "Evento 'route.optimized' (para notificação ao app do motorista)",
+      "Interface de provedor de mapas (port abstrata: Google Maps, OSRM, HERE)",
+      "API de telemetria IoT (nível de lixeira, localização em tempo real do veículo)",
+      "API pública para integração com prefeituras/cooperativas (relatórios de volume coletado)"
+    ],
+    "escalabilidade": "Escala horizontalmente via containers stateless para a API de otimização, com o solver VRP executando em workers assíncronos (fila) para não bloquear requisições. Sharding de dados por região/município permite particionar carga geograficamente. Cache de distâncias/tempos de viagem (Redis) reduz chamadas repetidas ao provedor de mapas. Para picos (ex: início do dia com todas as rotas sendo recalculadas), autoscaling de workers baseado em fila (SQS/RabbitMQ) absorve a demanda.",
+    "custo_infra_estimado": "Servidor (API + workers, ECS/Fargate): $120/mês. Banco de dados (RDS PostgreSQL + PostGIS): $80/mês. Cache (Redis/ElastiCache): $30/mês. Fila de mensagens (SQS): $10/mês. CDN (CloudFront para dashboard): $15/mês. Armazenamento (S3 para relatórios/logs): $10/mês. Provedor de mapas (Google Maps Distance Matrix API): $150/mês (estimado para 10k clientes de rota/mês). Monitoramento (Grafana Cloud/Datadog): $50/mês. Total estimado: ~$465/mês para operação inicial (até ~50 municípios/cooperativas).",
+    "custo_por_cliente": "Cada otimização de rota = $0.02 (chamadas de API de mapas, ~10 chamadas de matriz de distância a $0.002 cada) + $0.005 (CPU do solver, ~2s de processamento) + $0.001 (armazenamento do resultado da rota) = $0.026/otimização. Cliente cooperativa com 30 rotas otimizadas/mês (uma por dia útil) = $0.78/mês em custo direto de operação, mais custo fixo alocado de infraestrutura (~$465/50 clientes = $9.30/mês por cliente). Custo total por cliente médio: ~$10.08/mês.",
+    "monetizacao": {
+      "modelo": "SaaS por assinatura com tiers baseados em número de veículos/rotas, mais um plano enterprise com relatórios de sustentabilidade (créditos de carbono).",
+      "tiers": [
+        "Starter: até 5 veículos, $99/mês",
+        "Growth: até 20 veículos, $349/mês",
+        "Enterprise: veículos ilimitados + API + relatórios ESG, $999+/mês (custom)"
+      ],
+      "metricas": {
+        "CAC_estimado": "$300 (vendas B2B para cooperativas/prefeituras via outbound)",
+        "LTV_estimado": "$349/mês x 24 meses médios de retenção = $8.376 (tier Growth)",
+        "LTV_CAC_ratio": "~28:1, indicando modelo saudável para escala",
+        "MRR_meta_ano1": "$50.000 MRR com ~150 clientes no tier Growth equivalente"
+      }
+    },
+    "stack_sugerida": "Backend: Node.js/TypeScript ou Go para APIs, com serviço de otimização em Python (OR-Tools/Jsprit) ou Java (para performance do solver). Banco de dados: PostgreSQL com extensão PostGIS para dados geoespaciais. Fila/eventos: Kafka ou RabbitMQ/SQS para comunicação assíncrona entre bounded contexts. Cache: Redis. Frontend: React/Next.js para dashboard administrativo, React Native ou Flutter para app do motorista. Infraestrutura: AWS (ECS/Fargate, RDS, ElastiCache, S3, CloudFront) ou GCP equivalente. CI/CD: GitHub Actions com gates de fitness functions (ArchUnit, k6 para performance, Pact para contratos). Observabilidade: Prometheus + Grafana, com Schema Registry (Confluent/AWS Glue) para governança de eventos. Mapas: Google Maps Platform ou OSRM self-hosted como fallback."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "25a60daee261",
+    "gerado_em": "2026-09-27T20:54:23+00:00",
+    "runner": "runner.py"
+  }
+}

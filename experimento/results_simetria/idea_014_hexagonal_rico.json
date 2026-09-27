@@ -1,0 +1,48 @@
+{
+  "ideia_idx": 14,
+  "ideia": "Plataforma de tradução simultânea para reuniões corporativas multilíngues",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "O domínio contém as regras de uma Sessão de Tradução Simultânea: criação e ciclo de vida de uma reunião multilíngue, participantes com idioma de origem/destino, segmentos de fala capturados e sua tradução correspondente, glossários terminológicos por conta/organização, políticas de qualidade (confiança mínima de tradução, fallback para intérprete humano), regras de faturamento por minuto traduzido e regras de retenção/expurgo de transcrições. Não conhece STT, MT engines, WebRTC, banco de dados ou provedores de nuvem — apenas entidades como SessaoReuniao, Participante, SegmentoFala, TraducaoSegmento, Glossario e as invariantes que governam suas transições de estado.",
+    "driving_ports": "IniciarSessaoPort (abrir reunião), EntrarNaSessaoPort (participante entra com idioma preferido), ReceberSegmentoDeFalaPort (submeter áudio/texto transcrito para tradução), ConsultarTraducaoAoVivoPort (obter stream de legendas/áudio traduzido), GerenciarGlossarioPort (CRUD de termos), EncerrarSessaoPort, GerarRelatorioPosReuniaoPort, ConsultarFaturamentoPort",
+    "driven_ports": "TranscricaoDeFalaPort (STT), MotorDeTraducaoPort (MT), SintiseDeVozPort (TTS), RepositorioSessaoPort, RepositorioGlossarioPort, NotificacaoParticipantePort, PublicadorDeEventosPort (streaming de legendas), GatewayDePagamentoPort, ArmazenamentoDeGravacaoPort, RelogioPort (para métricas/faturamento temporal)",
+    "driving_adapters": "API REST/GraphQL (integração com sistemas corporativos de agenda), WebSocket Gateway (stream de áudio/legendas em tempo real para clientes web/desktop), Plugin Zoom/Teams/Meet (aciona a aplicação a partir da plataforma de videoconferência), CLI administrativa (operações batch de glossário), Webhook Receiver (eventos externos de calendário)",
+    "driven_adapters": "Adaptador AWS Transcribe/Google STT (implementa TranscricaoDeFalaPort), Adaptador DeepL/Google Translate/modelo proprietário (MotorDeTraducaoPort), Adaptador Amazon Polly/ElevenLabs (SintiseDeVozPort), Adaptador PostgreSQL (RepositorioSessaoPort e RepositorioGlossarioPort), Adaptador Kafka/Redis Pub-Sub (PublicadorDeEventosPort), Adaptador Stripe (GatewayDePagamentoPort), Adaptador S3/Blob Storage (ArmazenamentoDeGravacaoPort), Adaptador SMTP/Push (NotificacaoParticipantePort)",
+    "application_services": "SessaoTraducaoService orquestra: recebe segmento via porta primária, invoca TranscricaoDeFalaPort se necessário, aplica glossário do domínio, invoca MotorDeTraducaoPort, persiste via RepositorioSessaoPort, publica resultado via PublicadorDeEventosPort. FaturamentoService agrega minutos traduzidos e aciona GatewayDePagamentoPort. Nenhum desses serviços decide 'o que é uma tradução válida' — isso é regra de domínio.",
+    "domain_isolation": "O domínio expõe apenas interfaces (ports) em sua própria linguagem ubíqua; todo acesso a SDKs de STT/MT/TTS, banco de dados, filas ou APIs de pagamento passa por adaptadores que implementam essas interfaces e residem em módulos externos, nunca importados pelo núcleo. O núcleo compila e testa isoladamente, sem nenhuma dependência de infraestrutura.",
+    "test_doubles": "TranscricaoDeFalaPort e MotorDeTraducaoPort são substituídos por stubs deterministas (retornam texto/tradução fixos) em testes unitários do domínio; RepositorioSessaoPort por um InMemoryRepositorio; PublicadorDeEventosPort por um coletor de eventos em memória para asserção; GatewayDePagamentoPort por um fake que registra chamadas sem cobrar de fato. Testes de aceitação usam esses dublês para validar regras de negócio sem custo de rede nem chamadas a IA reais.",
+    "configuration_wiring": "Um Composition Root (ex.: main.ts/bootstrap.py) lê configuração de ambiente e instancia os adaptadores concretos, injetando-os nos serviços de aplicação via construtor conforme as interfaces de porta — usando um container de DI (ex.: tsyringe, Spring, ou wiring manual) para trocar implementações por ambiente (dev usa stubs locais, produção usa AWS Transcribe + DeepL + PostgreSQL).",
+    "technology_substitution": "Trocar DeepL por um modelo de tradução proprietário custa apenas a reimplementação do MotorDeTraducaoPort, sem tocar no domínio ou nos demais adaptadores; trocar PostgreSQL por DynamoDB exige reimplementar RepositorioSessaoPort e ajustar consultas complexas de relatório, custo médio-alto; trocar WebRTC por outro protocolo de streaming afeta apenas o adaptador WebSocket Gateway, custo baixo-médio; migrar de AWS Transcribe para Whisper self-hosted afeta TranscricaoDeFalaPort e requer nova infraestrutura de GPU, custo alto.",
+    "symmetry": "O lado esquerdo (driving) e o lado direito (driven) são espelhados: ambos definidos como interfaces puras na camada de aplicação, ambos implementados por adaptadores plugáveis externos, e ambos desconhecidos do domínio central. Assim como um WebSocket Gateway aciona a aplicação através de uma porta primária, a aplicação aciona um Motor de Tradução através de uma porta secundária — nenhum dos dois lados conhece a implementação concreta do outro, apenas o contrato.",
+    "interfaces": [
+      "IniciarSessaoPort",
+      "EntrarNaSessaoPort",
+      "ReceberSegmentoDeFalaPort",
+      "ConsultarTraducaoAoVivoPort",
+      "GerenciarGlossarioPort",
+      "EncerrarSessaoPort",
+      "GerarRelatorioPosReuniaoPort",
+      "ConsultarFaturamentoPort",
+      "TranscricaoDeFalaPort",
+      "MotorDeTraducaoPort",
+      "SintiseDeVozPort",
+      "RepositorioSessaoPort",
+      "RepositorioGlossarioPort",
+      "NotificacaoParticipantePort",
+      "PublicadorDeEventosPort",
+      "GatewayDePagamentoPort",
+      "ArmazenamentoDeGravacaoPort"
+    ],
+    "escalabilidade": "Escala horizontalmente por sessão: cada reunião é isolada e pode ser processada por workers stateless independentes; segmentos de áudio são distribuídos via fila (Kafka/SQS) para múltiplas instâncias de tradução; uso de auto-scaling baseado em número de sessões ativas e picos de horário comercial por fuso horário; cache de glossários e traduções recorrentes reduz custo de MT; sharding do banco por tenant/organização conforme a base corporativa cresce; CDN para distribuição de áudio/legendas sintetizadas.",
+    "custo_infra_estimado": "Servidores de aplicação (ECS/Kubernetes): $200/mês; Banco de dados (RDS PostgreSQL multi-AZ): $150/mês; Fila de mensagens (MSK/SQS): $80/mês; STT (AWS Transcribe, uso moderado): $500/mês; MT (DeepL API): $300/mês; TTS (Polly): $100/mês; Armazenamento de gravações (S3): $40/mês; CDN (CloudFront): $60/mês; Banda WebRTC/streaming: $150/mês; Total estimado: ~$1.580/mês para carga inicial (até ~500 horas de reunião/mês)",
+    "custo_por_cliente": "Por minuto de reunião traduzida: STT ($0.024/min) + MT (~$0.02/100 caracteres, ~$0.03/min) + TTS opcional ($0.016/min) + infraestrutura/streaming (~$0.005/min) = ~$0.075/min sem TTS ou ~$0.091/min com TTS. Cliente corporativo com 20 reuniões/mês de 1h (1200 min) = 1200 × $0.075 = $90/mês em custo direto de operação, antes da margem.",
+    "monetizacao": "Modelo SaaS B2B por assinatura com tiers baseados em minutos de tradução: Starter $299/mês (até 2.000 min, 3 idiomas), Business $899/mês (até 8.000 min, todos os idiomas, glossário customizado), Enterprise $2.500+/mês (minutos ilimitados, SLA, on-premise STT/MT, SSO). Cobrança adicional de $0.10/min excedente. Métricas-alvo: CAC estimado em $1.200 (vendas B2B outbound), LTV médio de $28.800 (tier Business, churn anual de 15%, ~32 meses de retenção média), MRR alvo de $150k em 12 meses com 170 clientes Business equivalentes, payback de CAC em ~1,3 meses de margem bruta.",
+    "stack_sugerida": "Backend: Node.js/TypeScript ou Kotlin com arquitetura hexagonal explícita (camadas domain/application/adapters); Comunicação em tempo real: WebRTC + WebSocket; Fila: Apache Kafka; Banco de dados: PostgreSQL (dados transacionais) + Redis (cache/sessão ao vivo); STT: AWS Transcribe ou Whisper self-hosted; MT: DeepL API ou modelo proprietário fine-tuned; TTS: Amazon Polly/ElevenLabs; Armazenamento: S3 + CloudFront; Orquestração: Kubernetes (EKS); Observabilidade: Datadog/Grafana; Pagamentos: Stripe Billing."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:52:44+00:00",
+    "runner": "runner.py"
+  }
+}

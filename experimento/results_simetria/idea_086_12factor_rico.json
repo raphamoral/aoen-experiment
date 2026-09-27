@@ -1,0 +1,37 @@
+{
+  "ideia_idx": 86,
+  "ideia": "SaaS de análise de risco para seguradoras de nicho",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único versionado em Git (monorepo com backend, workers e frontend do dashboard), com múltiplas implantações (dev, staging, produção e, se exigido por compliance de determinada seguradora, instâncias dedicadas single-tenant) geradas a partir da mesma base de código via branches curtas e trunk-based development.",
+    "dependencies": "Dependências declaradas explicitamente em arquivos de lock (poetry.lock/requirements.txt para os serviços de modelagem em Python, package-lock.json para o frontend), isoladas via containers Docker — nenhuma dependência implícita de pacotes do sistema operacional hospedeiro (ex: libs estatísticas do SO).",
+    "config": "Toda configuração injetada via variáveis de ambiente (nunca hardcoded), gerenciada por AWS Secrets Manager/Vault. Varia entre implantações: credenciais de banco e filas, chaves de APIs externas (bureaus de crédito, dados climáticos, histórico de sinistros), feature flags por seguradora-cliente, limites de rate-limit e domínios/URLs de serviços de terceiros.",
+    "backing_services": "Postgres (dados transacionais e apólices), Redis/SQS (filas de processamento assíncrono de scoring), S3 (relatórios e modelos treinados) e APIs externas de dados (clima, sinistros, crédito) tratados como recursos anexáveis via URL de configuração, permitindo trocar provedor sem alterar código.",
+    "build_release_run": "Pipeline CI/CD (GitHub Actions): build gera imagem Docker imutável a partir do commit; release combina essa imagem com a config do ambiente-alvo (staging/produção), gerando um artefato de release versionado; run apenas executa esse artefato, sem alterações no código — rollback é reverter para o release anterior.",
+    "processes": "Processos stateless: API (requisições HTTP), workers (execução de modelos de risco em lote) e scheduler (jobs periódicos de atualização atuarial). Estado persistente reside exclusivamente em Postgres (dados estruturados), Redis (filas/cache) e S3 (relatórios, documentos, artefatos de modelo).",
+    "port_binding": "Cada serviço expõe sua própria porta HTTP/gRPC (via Uvicorn/Express embutido), sem depender de injeção de servidor web em runtime — a API de risco pode, por sua vez, ser consumida como backing service por sistemas core das seguradoras.",
+    "concurrency": "Escala horizontal por tipo de processo: web (requisições), worker (processamento de scoring/ML em batch, ex: renovação de apólices em massa) e scheduler (recalibração periódica de modelos). Orquestração via Kubernetes/ECS com autoscaling independente por tipo de processo.",
+    "disposability": "Containers leves com inicialização em segundos; tratamento de SIGTERM para finalizar análises em andamento, devolver jobs não concluídos à fila e encerrar conexões de forma graciosa. Jobs de scoring são idempotentes, permitindo reprocessamento seguro após crash.",
+    "dev_prod_parity": "Docker Compose local espelha produção (mesmas versões de Postgres/Redis), deploys contínuos (múltiplos por dia) reduzem divergência temporal, e a mesma equipe realiza desenvolvimento e operação (DevOps colaborativo), reduzindo divergências de pessoal e ferramentas entre ambientes.",
+    "logs_admin": "Logs emitidos como stream para stdout/stderr, agregados centralmente (Datadog/CloudWatch/ELK) para auditoria e observabilidade. Tarefas administrativas (recalibração de modelo, migração de schema, reprocessamento de sinistros históricos) executadas como processos pontuais (one-off) no mesmo ambiente e release da aplicação.",
+    "interfaces": [
+      "API REST/GraphQL para integração com sistemas core das seguradoras",
+      "Dashboard web para underwriters e analistas de risco",
+      "Webhooks para notificação de eventos de risco em tempo real",
+      "Conectores com bureaus externos de dados (crédito, clima, sinistros)",
+      "Exportação de relatórios (PDF/CSV) para auditoria e compliance",
+      "SDK/CLI para automação de integrações por parceiros técnicos"
+    ],
+    "escalabilidade": "Multi-tenancy com isolamento lógico (tenant_id ou schema por seguradora), workers escaláveis horizontalmente para absorver picos de processamento (ex: safra de renovações), cache de resultados de scoring recorrentes, particionamento de dados por cliente e filas para desacoplar ingestão de dados externos do processamento síncrono.",
+    "custo_infra_estimado": "Compute (ECS/EKS): $150/mês, RDS Postgres: $80/mês, Redis (ElastiCache): $40/mês, S3 storage: $20/mês, CDN (CloudFront): $15/mês, banda: $25/mês, observabilidade (Datadog): $50/mês. Total inicial estimado: ~$380/mês.",
+    "custo_por_cliente": "Cada análise de risco = $0.02 (chamadas a APIs externas de dados) + $0.01 (processamento do modelo ML) + $0.005 (storage do relatório em S3) + $0.002 (logging/monitoramento) = $0.037/análise. Seguradora com 5.000 análises/mês = $185/mês em custo variável direto.",
+    "monetizacao": "SaaS B2B por assinatura + uso: Starter $499/mês (até 1.000 análises), Growth $1.499/mês (até 5.000 análises + acesso à API), Enterprise $4.999+/mês (ilimitado, SLA, white-label, integração dedicada). Excedentes cobrados a $0.15/análise. LTV alto esperado (nicho com alto switching cost e churn baixo); CAC elevado por ciclo de vendas B2B longo, mitigado por MRR previsível e expansão via upsell de tiers.",
+    "stack_sugerida": "Backend em Python (FastAPI) para APIs e modelos de risco/ML (scikit-learn/XGBoost), Postgres para dados transacionais, Redis para filas e cache, S3 para armazenamento de documentos e artefatos de modelo, Docker + Kubernetes (EKS) para orquestração, React/Next.js para o dashboard, Terraform para infraestrutura como código, GitHub Actions para CI/CD, Datadog para observabilidade e Stripe para billing."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T21:04:32+00:00",
+    "runner": "runner.py"
+  }
+}

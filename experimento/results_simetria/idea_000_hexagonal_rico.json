@@ -1,0 +1,87 @@
+{
+  "ideia_idx": 0,
+  "ideia": "Plataforma de telemedicina veterinária com IA para diagnóstico por imagem",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Tutor, Animal (espécie, raça, idade, histórico clínico), Veterinário (CRMV, especialidades), Consulta (agendamento, status, anamnese), ExameImagem (radiografia, ultrassom, dermatoscopia), Diagnostico (hipóteses, confiança, laudo), Prontuario (histórico consolidado). Regras: um Diagnostico de IA nunca é definitivo sem aprovação de Veterinário licenciado; uma Consulta só pode ser encerrada com Prontuario atualizado; ExameImagem só pode gerar Diagnostico se atender a critérios mínimos de qualidade (resolução, foco); Veterinário só atende espécies/especialidades para as quais está habilitado; triagem de urgência classifica o caso antes do agendamento. Nenhuma dessas regras conhece HTTP, banco de dados, fila ou provedor de IA.",
+    "driving_ports": {
+      "AgendarConsultaPort": "Solicitar e confirmar agendamento de teleconsulta",
+      "ConduzirConsultaPort": "Iniciar/conduzir sessão de consulta (anamnese, notas, encerramento)",
+      "SubmeterExameImagemPort": "Enviar imagem para análise e obter diagnóstico preliminar",
+      "RevisarDiagnosticoPort": "Veterinário aprova, corrige ou rejeita diagnóstico sugerido pela IA",
+      "ConsultarProntuarioPort": "Consultar histórico clínico consolidado do animal",
+      "GerenciarCadastroPort": "CRUD de tutores, animais e veterinários",
+      "EmitirReceitaLaudoPort": "Gerar receita/laudo assinado digitalmente"
+    },
+    "driven_ports": {
+      "AnaliseImagemIAPort": "Contrato para inferência de modelo de IA sobre imagem médica",
+      "NotificacaoPort": "Envio de notificações (push, e-mail, SMS)",
+      "PersistenciaProntuarioPort": "Armazenamento e recuperação de dados clínicos",
+      "ArmazenamentoImagemPort": "Upload/download de arquivos de imagem médica",
+      "PagamentoPort": "Cobrança e gestão de assinatura/uso",
+      "VideochamadaPort": "Provisionamento de sala de chamada de vídeo",
+      "AssinaturaDigitalPort": "Assinatura eletrônica de laudos e receitas",
+      "AuditoriaPort": "Registro imutável de eventos clínicos e decisões de IA",
+      "IdentidadeVeterinariaPort": "Validação de credenciais (CRMV) junto a conselho profissional"
+    },
+    "driving_adapters": {
+      "REST_API_WebApp": "Expõe endpoints HTTP para app web de tutores e painel de veterinários",
+      "Mobile_API_GraphQL": "Expõe API para app mobile (iOS/Android) de tutores",
+      "CLI_AdminTool": "Expõe operações administrativas e de suporte interno",
+      "WebhookInboundAdapter": "Recebe eventos externos (ex.: confirmação de pagamento) e traduz para chamadas de porta primária",
+      "SchedulerAdapter": "Aciona ConduzirConsultaPort em horários agendados (job cron)"
+    },
+    "driven_adapters": {
+      "PostgresProntuarioAdapter": "Implementa PersistenciaProntuarioPort via PostgreSQL",
+      "S3ImagemAdapter": "Implementa ArmazenamentoImagemPort via S3/Object Storage",
+      "SageMakerVisionAdapter": "Implementa AnaliseImagemIAPort chamando modelo de visão computacional hospedado",
+      "OpenAIVisionAdapter": "Implementação alternativa de AnaliseImagemIAPort via API multimodal externa",
+      "TwilioVideoAdapter": "Implementa VideochamadaPort via Twilio/Daily",
+      "StripeBillingAdapter": "Implementa PagamentoPort via Stripe",
+      "SendgridNotificacaoAdapter": "Implementa NotificacaoPort via e-mail/SMS",
+      "DocuSignAdapter": "Implementa AssinaturaDigitalPort",
+      "CRMVConsultaAdapter": "Implementa IdentidadeVeterinariaPort consultando conselho regional",
+      "EventLogAuditoriaAdapter": "Implementa AuditoriaPort via log append-only (ex.: Kafka + S3)"
+    },
+    "application_services": {
+      "ServicoAgendamento": "Orquestra verificação de disponibilidade, criação de Consulta e disparo de NotificacaoPort, delegando regras de conflito ao domínio",
+      "ServicoAnaliseImagem": "Coordena upload via ArmazenamentoImagemPort, chamada a AnaliseImagemIAPort e persistência do Diagnostico preliminar, sem decidir regras clínicas",
+      "ServicoRevisaoClinica": "Orquestra fluxo de aprovação do veterinário sobre diagnóstico de IA e emissão de laudo via AssinaturaDigitalPort",
+      "ServicoProntuario": "Agrega dados de múltiplas fontes (consultas, exames, receitas) para apresentar prontuário consolidado"
+    },
+    "domain_isolation": "O núcleo (entidades e regras) depende apenas de interfaces (portas) definidas dentro do próprio domínio, em Java/Kotlin sem anotações de framework, ou Python puro sem imports de boto3/requests/sqlalchemy. Nenhuma classe de domínio importa SDK de nuvem, ORM, cliente HTTP ou biblioteca de IA. Objetos de transporte (DTOs de API, modelos ORM) são mapeados para entidades de domínio nas bordas dos adaptadores, nunca compartilhados diretamente.",
+    "test_doubles": "Cada porta secundária recebe um Fake/Stub em memória para testes de unidade dos serviços de aplicação: FakeAnaliseImagemIA retorna diagnósticos determinísticos configuráveis; FakeProntuarioRepository usa mapa em memória; FakePagamentoGateway simula aprovação/recusa; FakeAssinaturaDigital retorna assinatura mockada. Portas primárias são testadas via chamadas diretas aos serviços de aplicação, sem subir servidor HTTP. Testes de contrato (contract tests) validam que cada adaptador real satisfaz o mesmo comportamento esperado pela porta.",
+    "configuration_wiring": "Um Composition Root (ex.: módulo main.py, classe AppConfig ou container de DI como Spring/Guice/dependency-injector) instancia os adaptadores concretos com base em variáveis de ambiente (ex.: AI_PROVIDER=sagemaker|openai) e os injeta nos serviços de aplicação, que só conhecem as interfaces de porta. A troca de adaptador ocorre exclusivamente nesse ponto único de inicialização, sem alterar o domínio.",
+    "technology_substitution": "AnaliseImagemIAPort pode trocar de SageMaker para OpenAI Vision ou modelo proprietário on-premise a custo baixo (apenas novo adaptador); PersistenciaProntuarioPort pode migrar de PostgreSQL para outro RDBMS ou até NoSQL com custo médio (mapeamento de agregados); VideochamadaPort pode trocar Twilio por Daily/Agora a custo baixo; PagamentoPort trocar Stripe por outro gateway tem custo médio-alto devido a webhooks e reconciliação financeira já integrados aos fluxos de assinatura.",
+    "symmetry": "Ambos os lados são contratos definidos pelo domínio: portas primárias descrevem 'o que a aplicação oferece' e são implementadas por quem aciona (adaptadores driving); portas secundárias descrevem 'o que a aplicação precisa' e são implementadas por quem é acionado (adaptadores driven). Em ambos os casos o domínio define a interface e nunca a implementação, mantendo a mesma direção de dependência (adaptadores → domínio) nos dois lados do hexágono.",
+    "interfaces": [
+      "AgendarConsultaPort",
+      "ConduzirConsultaPort",
+      "SubmeterExameImagemPort",
+      "RevisarDiagnosticoPort",
+      "ConsultarProntuarioPort",
+      "GerenciarCadastroPort",
+      "EmitirReceitaLaudoPort",
+      "AnaliseImagemIAPort",
+      "NotificacaoPort",
+      "PersistenciaProntuarioPort",
+      "ArmazenamentoImagemPort",
+      "PagamentoPort",
+      "VideochamadaPort",
+      "AssinaturaDigitalPort",
+      "AuditoriaPort",
+      "IdentidadeVeterinariaPort"
+    ],
+    "escalabilidade": "Escala horizontalmente por serviço de aplicação (stateless), com filas assíncronas (SQS/Kafka) desacoplando SubmeterExameImagemPort da execução do modelo de IA para absorver picos de upload; cache de leitura para ConsultarProntuarioPort; sharding de PostgreSQL por tenant/região quando a base ultrapassar dezenas de milhões de registros; adaptadores de IA escalam via autoscaling de GPU/endpoint gerenciado independente do restante da aplicação, permitindo escalar análise de imagem sem escalar o resto do sistema.",
+    "custo_infra_estimado": "Servidor (ECS/Fargate, 2-4 instâncias): $150/mês; RDS PostgreSQL (db.t3.medium multi-AZ): $120/mês; S3 (armazenamento de imagens, 500GB): $12/mês; CDN (CloudFront): $20/mês; SageMaker Endpoint (GPU inferência sob demanda): $300/mês; Fila (SQS/Kafka gerenciado): $30/mês; Vídeo (Twilio, uso variável): $100/mês na faixa inicial; Observabilidade (logs/APM): $40/mês. Total estimado inicial: ~$770/mês para carga baixa-média (até ~5 mil consultas/mês).",
+    "custo_por_cliente": "Cada análise de imagem por IA = $0.04 (inferência GPU) + $0.008 (storage S3 por imagem) + $0.002 (CPU/orquestração) + $0.01 (banda/CDN) = $0.06/análise. Cada teleconsulta em vídeo = $0.015/minuto (Twilio) x 15min médios = $0.225/consulta. Cliente típico (tutor) com 2 consultas/mês e 3 exames de imagem/mês = (2 x $0.225) + (3 x $0.06) = $0.45 + $0.18 = $0.63/mês em custo direto de infraestrutura, antes de custos de suporte e comissão veterinária.",
+    "monetizacao": "Modelo freemium + assinatura + comissão: Plano Tutor Free (1 teleconsulta/mês, sem IA avançada) = $0; Plano Tutor Plus = $19,90/mês (consultas ilimitadas com fila prioritária + 5 análises de IA/mês); Plano Tutor Premium = $39,90/mês (IA ilimitada + histórico multi-pet + telemetria wearable). Para clínicas/veterinários parceiros: SaaS B2B por assento = $79/mês/veterinário + comissão de 10% sobre consultas pagas por tutores avulsos. Métricas-alvo: CAC estimado $25 (marketing digital + parcerias com clínicas), LTV estimado $220 (churn mensal ~5%, ticket médio $18/mês, retenção 12 meses), relação LTV/CAC ~8.8x considerada saudável. MRR projetado com 2.000 assinantes Plus/Premium mistos ≈ $50.000/mês em 12-18 meses.",
+    "stack_sugerida": "Backend: Python (FastAPI) ou Kotlin (Spring Boot) para os serviços de aplicação e domínio; PostgreSQL para persistência transacional; S3-compatible object storage para imagens; Redis para cache e filas leves, Kafka/SQS para processamento assíncrono de análise de IA; modelo de visão computacional via SageMaker/Vertex AI ou API multimodal (Claude/GPT-4V) por trás de AnaliseImagemIAPort; Twilio/Daily para vídeo; Stripe para pagamentos e assinaturas; DocuSign ou assinatura própria via certificado ICP para laudos; frontend web em React/Next.js e mobile em React Native/Flutter; observabilidade com OpenTelemetry + Grafana; infraestrutura em containers (ECS/EKS) com IaC via Terraform."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:50:02+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "ideia_idx": 0,
+  "ideia": "Plataforma de telemedicina veterinária com IA para diagnóstico por imagem",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS de telemedicina veterinária que conecta tutores de animais a veterinários via consultas remotas (chat/vídeo), com um módulo de IA para triagem e apoio diagnóstico por imagem (radiografias, dermatoscopia, fotos de lesões), incluindo prontuário eletrônico, agendamento, prescrição digital e cobrança.",
+    "como_comecar": "Validar o problema com um MVP restrito: (1) cadastro de tutor/veterinário, (2) upload de imagem + triagem por IA com laudo preliminar, (3) consulta por vídeo/chat com um veterinário humano validando o diagnóstico, (4) pagamento único por consulta. Lançar com poucos parceiros (clínicas piloto) antes de escalar o modelo de IA.",
+    "tecnologias": "Backend em Python (FastAPI) ou Node.js (NestJS) para APIs; modelos de visão computacional (PyTorch/TensorFlow, fine-tuning de CNNs ou modelos multimodais tipo CLIP/ViT) para análise de imagem; WebRTC (via Twilio/Daily.co) para teleconsulta; fila assíncrona (Celery/RabbitMQ ou SQS) para processamento de imagem; frontend em React/Next.js e app mobile em React Native/Flutter.",
+    "banco_dados": "PostgreSQL como banco relacional principal (usuários, agendamentos, prontuários, cobrança), com criptografia em repouso; armazenamento de imagens médicas em object storage (S3/GCS) com URLs assinadas; metadados de imagem e resultados de IA em tabelas relacionadas; cache com Redis para sessões e filas; considerar versionamento de dataset de imagens para retraining dos modelos.",
+    "interfaces": [
+      "App mobile para tutores (agendamento, upload de fotos, chat/vídeo, histórico)",
+      "Portal web para veterinários (dashboard de casos, laudo de IA, prontuário, prescrição)",
+      "Painel administrativo (gestão de clínicas parceiras, faturamento, métricas)",
+      "API pública/parceiros para integração com clínicas e ERPs veterinários"
+    ],
+    "usuarios": "Tutores de animais de estimação, veterinários autônomos e clínicas veterinárias parceiras, além de administradores da plataforma que gerenciam parcerias, compliance e qualidade do serviço.",
+    "escalabilidade": "Sim: arquitetura de microsserviços ou modular monolith com filas assíncronas para desacoplar o processamento de IA (que é custoso) do fluxo síncrono de consulta; autoscaling de workers de inferência (GPU sob demanda); CDN para entrega de imagens; particionamento de banco por região/clínica se o volume crescer; cache agressivo de resultados de IA para imagens semelhantes.",
+    "custos": "Principais custos: infraestrutura de GPU para inferência de IA (maior custo variável), armazenamento de imagens médicas em alto volume, custos de vídeo/streaming (Twilio/Daily cobram por minuto), compliance e segurança de dados de saúde, e custo humano de veterinários revisando laudos de IA. Modelo de custo deve ser monitorado por consulta para garantir margem.",
+    "monetizacao": "Modelo híbrido: assinatura mensal para clínicas parceiras (SaaS B2B) com número de consultas incluídas, cobrança por consulta avulsa para tutores (pay-per-use), taxa adicional por análise de imagem com IA, e planos premium com laudo prioritário/urgente. Comissão sobre consultas realizadas por veterinários autônomos na plataforma.",
+    "stack_sugerida": "Backend: Python/FastAPI + PostgreSQL + Redis + Celery; IA: PyTorch com modelos de visão treinados/fine-tuned, servidos via Triton Inference Server ou API própria em GPU (AWS/GCP); Storage: S3/GCS para imagens; Vídeo: Twilio Video ou Daily.co; Frontend web: Next.js + TypeScript; Mobile: React Native; Infra: Docker + Kubernetes, CI/CD com GitHub Actions; Pagamentos: Stripe; Observabilidade: Grafana + Prometheus + Sentry."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:50:41+00:00",
+    "runner": "runner.py"
+  }
+}

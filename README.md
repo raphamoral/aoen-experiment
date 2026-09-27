@@ -11,6 +11,8 @@ Acompanha o TCC *"AOEN: arquitetura orgânica orientada a estratégia de negóci
 aplicada a projetos SaaS"* (Raphael Moral Piazera, MBA em Engenharia de
 Software, USP/Esalq).
 
+O percurso completo das rodadas — o que foi executado, o que falhou e por que cada arquivo existe — está em [HISTORICO.md](HISTORICO.md).
+
 ---
 
 ## Resultados da rodada válida (v4)
@@ -49,9 +51,11 @@ contra uma média de 1.176 dos seis concorrentes — razão de 3,3 para 1 — e
 menciona explicitamente **oito dos nove critérios** da rubrica, enquanto os
 concorrentes mencionam de três a cinco. Parte da vantagem observada pode decorrer
 de o prompt instruir o modelo a tratar precisamente aquilo que o avaliador
-pontua, e não da superioridade do framework. Separar as duas explicações exigiria
-prompts normalizados em extensão e especificidade, ou uma rubrica construída
-independentemente do framework avaliado. Nenhum desses controles foi aplicado.
+pontua, e não da superioridade do framework. **Esta limitação foi medida**, e não apenas
+declarada: ver *Estudo de simetria de esquema* abaixo. O resultado é que o
+formulário responde por cerca de nove décimos da distância observada. Permanece
+não controlada a origem da rubrica, construída pelo mesmo pesquisador que propõe
+o framework.
 
 **2. A avaliação não é cega.** O `PROMPT_AVALIADOR` informa ao avaliador o nome
 da abordagem que gerou a proposta (`Proposta (abordagem: {abordagem})`).
@@ -68,10 +72,76 @@ aqui e o mesmo conjunto de ideias.
 
 ---
 
+## Estudo de simetria de esquema
+
+A rodada v4 tem uma assimetria conhecida: o prompt do AOEN exigia 17 campos de
+resposta, dez correspondendo a critérios da rubrica e com exemplos de cálculo,
+enquanto os concorrentes exigiam 10 a 13 campos, com 3 a 4 correspondências e
+perguntas retóricas no lugar dos exemplos. Daquela rodada isolada não se
+distingue a contribuição do framework da contribuição do formulário.
+
+O teste nivela **para cima**: cada concorrente recebeu 17 campos no vocabulário
+canônico da própria fonte (Martin, Cockburn, Wiggins, Ford, Kaiser), mais a mesma
+cauda genérica exigente do AOEN. Dois braços de controle sem framework completam
+o desenho. 30 ideias sorteadas com semente fixa; o braço do AOEN reaproveita as
+respostas da v4 para as mesmas ideias.
+
+| Braço | Campos | Média |
+|---|---|---|
+| AOEN (rodada principal) | 17 | **8,92** |
+| **Linha de base sem framework, esquema rico** | 17 | **8,80** |
+| Architecture for Flow nivelado | 17 | 8,09 |
+| Evolutionary Architecture nivelado | 17 | 8,00 |
+| Hexagonal Architecture nivelado | 17 | 7,67 |
+| Twelve-Factor App nivelado | 17 | 7,47 |
+| Clean Architecture nivelado | 17 | 7,14 |
+| Linha de base sem framework, esquema simples | 10 | 6,86 |
+
+**Três achados.**
+
+1. Nivelar não ajudou os concorrentes: variações de +0,07 a −0,36 ponto. O Clean
+   Architecture ricamente interrogado (7,14) fica 1,66 abaixo de um prompt neutro
+   que apenas formula perguntas de negócio (8,80). Interrogar a fundo sobre
+   entidades, portas ou fatores não produz decisões orientadas a negócio.
+
+2. O AOEN manteve a primeira posição e superou os cinco frameworks em **30 de 30**
+   ideias, com todos igualmente interrogados. A vantagem sobre eles não era
+   artefato do formulário.
+
+3. **O formulário vale 1,95 ponto; o framework vale 0,11.** A linha de base sem
+   framework subiu de 6,86 para 8,80 apenas por receber o esquema rico, e a
+   diferença entre ela e o AOEN é de 0,11, com vitória em 16 de 30 ideias.
+
+**Leitura.** Cerca de nove décimos da distância entre o AOEN e a média das
+abordagens concorrentes decorrem da estrutura da resposta exigida, não do aparato
+do framework. O que produz arquitetura orientada a negócio é a prescrição das
+perguntas — núcleo diferenciador, alcance de mercado, variação por cliente,
+isolamento e custo —, não a nomenclatura nem o sequenciamento em fases. Por
+critério, o AOEN só se distancia apreciavelmente da linha de base em evolução
+(+0,77) e configurabilidade (+0,63).
+
+**Ressalva.** O esquema rico da linha de base foi construído a partir das mesmas
+dimensões que o AOEN prescreve, sem sua nomenclatura. O teste compara, portanto,
+o framework com uma versão anônima de si próprio, e a equivalência pode ser lida
+como evidência de que as dimensões são a contribuição.
+
+Arquivos: `simetria.py` (prompts e derivação de cada campo), `ablacao.py`
+(subamostra e esquema genérico), `experimento/results_simetria/` (420 artefatos),
+`experimento/consolidated_simetria.json` (210 avaliações, cobertura 100%).
+
+```bash
+python runner.py --prompts simetria --workers 10 \
+  --results experimento/results_simetria \
+  --ideias "$(python -c 'from ablacao import IDEIAS_ABLACAO as I; print(",".join(map(str,I)))')"
+```
+
+---
+
 ## Rodadas anteriores (preservadas, não use para citar)
 
 Os arquivos abaixo são de rodadas anteriores e estão mantidos por transparência.
-**Nenhum deles sustenta os números publicados.**
+**Nenhum deles sustenta os números publicados.** O relato cronológico de cada uma
+está em [HISTORICO.md](HISTORICO.md).
 
 | Arquivo | O que é | Por que não usar |
 |---|---|---|
@@ -132,6 +202,9 @@ tentativa) e `_state.json` (checkpoint).
 ```
 experimento_aoen.py          100 ideias, 7 prompts de abordagem, PROMPT_AVALIADOR
 runner.py                    runner retomável (recomendado)
+simetria.py                  prompts do estudo de simetria de esquema
+ablacao.py                   subamostra de 30 ideias e esquema genérico
+HISTORICO.md                 cronologia das rodadas, falhas e correções
 run_experiment.py            runner original (histórico; ver rodadas anteriores)
 legado/                      scripts de gráfico antigos, com valores cravados — não usar
 gerar_figuras_v4.py          figuras a partir de consolidated_v4.json
@@ -140,6 +213,8 @@ experimento/
   ideias.json                as 100 ideias
   config.json                abordagens, critérios, contagens
   consolidated_v4.json       RESULTADO DE REFERÊNCIA
+  consolidated_simetria.json resultado do estudo de simetria
+  results_simetria/          artefatos do estudo de simetria
   results_v4/                artefatos brutos + log de tentativas
 pocs/                        21 projetos gerados (3 ideias × 7 abordagens)
 gerar_pocs.py                gerador dos projetos acima

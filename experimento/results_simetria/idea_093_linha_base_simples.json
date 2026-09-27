@@ -1,0 +1,29 @@
+{
+  "ideia_idx": 93,
+  "ideia": "Marketplace de serviços de cibersegurança para PMEs",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma marketplace que conecta PMEs a provedores verificados de serviços de cibersegurança (pentest, auditoria LGPD/compliance, resposta a incidentes, monitoramento SOC, treinamento de conscientização, hardening de infraestrutura), com fluxo de descoberta, orçamento, contratação, execução do serviço, entrega de relatórios e avaliação.",
+    "como_comecar": "MVP focado em 2-3 categorias de serviço mais demandadas (ex: pentest básico e auditoria de compliance), com listagem de provedores curados manualmente, checkout simples e um dashboard mínimo para acompanhar status do serviço. Validar com um grupo piloto de 10-20 PMEs e 5-10 provedores antes de abrir cadastro público.",
+    "tecnologias": "Next.js (React) no frontend, Node.js/NestJS ou Python/FastAPI no backend, autenticação com Auth0/Clerk, filas com BullMQ/SQS para processamento assíncrono (matching, notificações), integração de pagamentos via Stripe Connect (split payments para marketplace).",
+    "banco_dados": "PostgreSQL como banco relacional principal (usuários, provedores, contratos, transações), Redis para cache e filas, S3/Cloud Storage para armazenar relatórios de auditoria e evidências de pentest com criptografia em repouso, e Elasticsearch/Algolia para busca e matching de provedores.",
+    "interfaces": [
+      "Portal web para PMEs (buscar, comparar e contratar serviços)",
+      "Portal web para provedores (gerenciar propostas, entregar relatórios, faturar)",
+      "Dashboard administrativo interno (moderação, disputas, compliance)",
+      "API pública/webhooks para integrações (ex: ferramentas de gestão de vulnerabilidades)",
+      "App mobile (opcional, fase 2) para notificações e acompanhamento de status"
+    ],
+    "usuarios": "PMEs sem equipe interna de segurança buscando serviços pontuais ou recorrentes; provedores/consultorias de cibersegurança (freelancers e empresas) que querem captar clientes; administradores da plataforma responsáveis por curadoria, disputas e compliance.",
+    "escalabilidade": "Sim: arquitetura em microsserviços ou modular monolith desacoplado por domínio (catálogo, matching, pagamentos, mensageria), containers com Kubernetes/ECS para autoscaling horizontal, CDN para assets estáticos, filas assíncronas para desacoplar processos pesados (geração de relatórios, matching de provedores), e cache agressivo nas buscas.",
+    "custos": "Sim: custos de infraestrutura cloud (compute, storage, banco de dados), taxas de gateway de pagamento (Stripe Connect ~2-3% + fee de plataforma), custos de compliance/segurança (certificações SOC2, auditorias próprias), suporte ao cliente, e custos de aquisição de provedores/PMEs (marketing, curadoria manual no início).",
+    "monetizacao": "Modelo híbrido: comissão sobre cada transação fechada entre PME e provedor (10-20%), assinatura mensal premium para provedores com maior visibilidade/destaque no marketplace, e taxa de assinatura para PMEs que desejam monitoramento contínuo/SLA prioritário (upsell de serviços recorrentes tipo SOC-as-a-Service).",
+    "stack_sugerida": "Frontend: Next.js + TypeScript + TailwindCSS. Backend: Node.js/NestJS (ou Python/FastAPI) com arquitetura modular. Banco: PostgreSQL + Redis. Busca: Algolia ou Elasticsearch. Pagamentos: Stripe Connect. Infra: AWS/GCP com Kubernetes ou serviços gerenciados (ECS/Cloud Run), Terraform para IaC. Observabilidade: Datadog/Grafana + Sentry. CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T21:06:11+00:00",
+    "runner": "runner.py"
+  }
+}

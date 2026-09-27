@@ -1,0 +1,76 @@
+{
+  "ideia_idx": 77,
+  "ideia": "App de gestão de fazendas solares com monitoramento IoT",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Fazenda Solar (identidade, localização, capacidade instalada), Inversor, Painel/String, Dispositivo IoT (identidade lógica, não o protocolo físico), Leitura de Telemetria (potência, tensão, corrente, temperatura, timestamp), Alerta de Anomalia, Janela de Manutenção, Contrato de Geração/SLA. Regras: cálculo de performance ratio (PR) e yield esperado vs. real, detecção de degradação de painel por desvio estatístico, classificação de severidade de alertas (threshold, taxa de variação, ausência de dados), elegibilidade de manutenção preventiva por acúmulo de anomalias, cálculo de perda financeira estimada por indisponibilidade, regras de agregação multi-tenant (isolamento por fazenda/cliente). Nenhuma regra referencia protocolo MQTT/HTTP, banco de dados, fila ou formato de payload de dispositivo.",
+    "driving_ports": {
+      "MonitorarTelemetriaPort": "registrar leituras vindas de dispositivos, validar e aplicar regras de anomalia",
+      "GerenciarFazendaPort": "cadastrar/atualizar fazendas, inversores e strings",
+      "ConsultarPerformancePort": "obter PR, yield, comparativos históricos",
+      "GerenciarAlertasPort": "listar, reconhecer, escalar e fechar alertas",
+      "GerenciarManutencaoPort": "agendar, executar e concluir ordens de manutenção",
+      "GerarRelatorioSLAPort": "solicitar relatório de conformidade contratual"
+    },
+    "driven_ports": {
+      "RepositorioFazendaPort": "persistir e recuperar agregados de fazenda/inversor/string",
+      "RepositorioTelemetriaPort": "persistir séries temporais de leitura",
+      "RepositorioAlertaPort": "persistir e consultar alertas",
+      "NotificadorPort": "enviar notificações de alerta (e-mail, SMS, push, webhook)",
+      "RelogioPort": "obter tempo corrente de forma testável",
+      "PublicadorEventosPort": "publicar eventos de domínio (AnomaliaDetectada, ManutençãoConcluída) para integração externa",
+      "ProvedorClimaticoPort": "obter dados de irradiância/clima externos para cálculo de yield esperado",
+      "FaturamentoPort": "reportar uso/consumo para cobrança do cliente SaaS"
+    },
+    "driving_adapters": {
+      "REST_API_Adapter": "expõe endpoints HTTP/JSON para dashboard web e integrações de terceiros",
+      "MQTT_Ingestion_Adapter": "recebe telemetria publicada por gateways IoT em tópicos MQTT e chama MonitorarTelemetriaPort",
+      "GraphQL_Adapter": "expõe consultas flexíveis de performance para o frontend",
+      "CLI_Admin_Adapter": "operações administrativas via linha de comando (cadastro em lote de fazendas)",
+      "Scheduler_Adapter": "job periódico que chama GerarRelatorioSLAPort e checagens de manutenção preventiva",
+      "Webhook_Inbound_Adapter": "recebe eventos de gateways proprietários (ex. SolarEdge, Huawei FusionSolar) e traduz para chamadas de porta"
+    },
+    "driven_adapters": {
+      "PostgresTimescale_Adapter": "implementa RepositorioTelemetriaPort com hypertables para séries temporais",
+      "Postgres_Adapter": "implementa RepositorioFazendaPort e RepositorioAlertaPort com dados relacionais",
+      "Kafka_Adapter": "implementa PublicadorEventosPort para pipeline de eventos e analytics",
+      "SES_Twilio_Adapter": "implementa NotificadorPort para e-mail e SMS",
+      "OpenWeather_Adapter": "implementa ProvedorClimaticoPort consumindo API externa de clima",
+      "Stripe_Adapter": "implementa FaturamentoPort reportando uso via Stripe Billing/Metering",
+      "SystemClock_Adapter": "implementa RelogioPort usando relógio do sistema"
+    },
+    "application_services": "TelemetriaAppService orquestra: recebe leitura via porta primária, delega validação e detecção de anomalia ao domínio, persiste via RepositorioTelemetriaPort, publica evento se anomalia via PublicadorEventosPort, sem decidir regra de negócio (apenas invoca métodos do agregado). PerformanceAppService coordena busca de dados históricos e cálculo delegado ao domínio, enriquecendo com dados climáticos via ProvedorClimaticoPort. ManutencaoAppService orquestra transição de estado de ordens de manutenção e notificação, delegando elegibilidade ao domínio.",
+    "domain_isolation": "O núcleo depende apenas de interfaces (ports) declaradas dentro do próprio domínio/application layer, sem imports de bibliotecas de infraestrutura (sem driver MQTT, sem ORM, sem SDK de nuvem). Objetos de domínio são POJOs/records puros; conversão de payload de dispositivo (JSON, protobuf, binário proprietário) ocorre inteiramente no adaptador de entrada, que traduz para comandos/DTOs de domínio antes de invocar a porta primária. Timestamps e IDs externos são mapeados para tipos de domínio (VO) no adaptador, nunca o inverso.",
+    "test_doubles": "Cada driving port é testada chamando a aplicação diretamente com stubs de driven ports (InMemoryRepositorioFazenda, InMemoryRepositorioTelemetria, NotificadorSpy, RelogioFixo) permitindo testes determinísticos de detecção de anomalia sem banco real. Cada driven port tem um FakeAdapter em memória usado em testes de aplicação, e um contract test que roda contra o adapter real (ex. Testcontainers Postgres) para garantir conformidade com o contrato da porta. Driving adapters (REST, MQTT) são testados com testes de integração que mockam as driving ports via InMemory app service ou double simples.",
+    "configuration_wiring": "Um Composition Root (ex. módulo main/bootstrap) instancia os adapters concretos (PostgresTimescaleAdapter, KafkaAdapter, SESAdapter, OpenWeatherAdapter) e os injeta via construtor nos application services, que por sua vez são injetados nos driving adapters (controllers REST, listener MQTT). Uso de container de DI (ex. Spring, NestJS providers, ou wiring manual em Go/Node) mapeando interface->implementação por variável de ambiente/profile (dev usa InMemory/Testcontainers, prod usa Postgres/Kafka/SES reais).",
+    "technology_substitution": "MQTT pode ser substituído por LoRaWAN/CoAP criando novo driving adapter sem tocar no domínio, custo: apenas desenvolvimento do novo adapter e testes de contrato. Postgres/Timescale pode ser trocado por InfluxDB ou TimescaleDB Cloud implementando novo RepositorioTelemetriaPort, custo: migração de dados e reescrita de queries de agregação, domínio intacto. Stripe pode ser trocado por outro billing provider implementando FaturamentoPort, custo baixo pois é porta fina. Trocar de monolito para microsserviços exigiria dividir application services em bounded contexts, custo alto arquitetural mas ports/adapters facilitam o corte.",
+    "symmetry": "Tanto driving quanto driven ports são interfaces definidas pelo domínio/aplicação, nunca pelo adaptador; um driving adapter (ex. MQTT listener) depende da porta primária assim como um driven adapter (ex. Kafka publisher) implementa a porta secundária — em ambos os casos a seta de dependência aponta para dentro, em direção ao domínio. Isso garante que trocar a origem do acionamento (REST->MQTT->CLI) ou o destino da ação (Postgres->DynamoDB) nunca exige alterar a aplicação, apenas plugar um novo adaptador simétrico ao mesmo contrato.",
+    "interfaces": [
+      "MonitorarTelemetriaPort",
+      "GerenciarFazendaPort",
+      "ConsultarPerformancePort",
+      "GerenciarAlertasPort",
+      "GerenciarManutencaoPort",
+      "GerarRelatorioSLAPort",
+      "RepositorioFazendaPort",
+      "RepositorioTelemetriaPort",
+      "RepositorioAlertaPort",
+      "NotificadorPort",
+      "RelogioPort",
+      "PublicadorEventosPort",
+      "ProvedorClimaticoPort",
+      "FaturamentoPort"
+    ],
+    "escalabilidade": "Ingestão de telemetria escala horizontalmente via particionamento por fazenda/dispositivo em Kafka e sharding de hypertables no TimescaleDB por tempo/tenant. Driving adapters (REST/MQTT) escalam como réplicas stateless atrás de load balancer. Application services permanecem stateless, permitindo scale-out independente da camada de ingestão vs. camada de consulta (CQRS opcional: leitura via read-model materializado, escrita via domínio). Multi-tenancy isolada por schema ou tenant_id permite crescimento incremental por cliente sem reescrita de domínio.",
+    "custo_infra_estimado": "Servidor de aplicação (2x instância 2vCPU/4GB, auto-scaling): $60/mês. Banco relacional (Postgres gerenciado, ex. RDS/Neon, 2vCPU/8GB): $90/mês. TimescaleDB para séries temporais (mesma instância ou add-on): $50/mês. Kafka gerenciado (ex. Confluent Cloud, tier básico): $40/mês. Armazenamento de logs/relatórios (S3, ~50GB): $5/mês. CDN para dashboard estático (Cloudflare): $0-20/mês. Notificações (SES+Twilio, volume médio): $30/mês. Total estimado inicial: ~$275-300/mês para uma base pequena/média de clientes.",
+    "custo_por_cliente": "Cada fazenda solar gera leitura de telemetria a cada 5min por inversor: ~288 leituras/dia/inversor. Fazenda média com 10 inversores = 2.880 leituras/dia = 86.400/mês. Custo de ingestão+storage TimescaleDB (~$0.0000005/leitura) = $0.043/mês. Custo de processamento de anomalia (CPU, ~$0.00001/leitura) = $0.86/mês. Custo de notificação (assumindo 20 alertas/mês via SES+Twilio, $0.01/notificação) = $0.20/mês. Custo de consulta ao provedor climático (24 chamadas/dia, $0.001/chamada) = $0.72/mês. Total aproximado por fazenda: ~$1.82/mês em custos variáveis diretos.",
+    "monetizacao": "Modelo de assinatura em camadas (SaaS B2B): Starter ($49/mês, até 5 fazendas, 50 inversores, alertas básicos), Professional ($199/mês, até 25 fazendas, análise preditiva, relatórios de SLA), Enterprise ($800+/mês, fazendas ilimitadas, API dedicada, SLA garantido, suporte prioritário) — cobrança adicional de $2/inversor/mês acima do limite do plano. Métricas-alvo: MRR crescendo a partir de clientes Enterprise (maior ticket), CAC estimado em $500-1.500 via vendas diretas a operadoras de energia, LTV projetado em 24-36 meses de retenção (~$4.800-$28.800 dependendo do tier), payback de CAC em 3-6 meses no tier Professional/Enterprise. Upsell natural via módulos adicionais (previsão de manutenção com IA, integração com mercado de energia).",
+    "stack_sugerida": "Backend: Node.js/TypeScript (NestJS) ou Go para os application services e adapters, com camada de domínio isolada em módulo puro. Persistência: PostgreSQL + extensão TimescaleDB para séries temporais. Mensageria: Kafka ou Redpanda para eventos de anomalia/pipeline. Ingestão IoT: broker MQTT (EMQX ou AWS IoT Core) como driving adapter. Frontend: React/Next.js consumindo REST/GraphQL. Infra: containers em Kubernetes ou serviço gerenciado (ECS/Fly.io), Terraform para IaC. Observabilidade: OpenTelemetry + Grafana. Billing: Stripe Billing integrado via FaturamentoPort."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T21:02:48+00:00",
+    "runner": "runner.py"
+  }
+}

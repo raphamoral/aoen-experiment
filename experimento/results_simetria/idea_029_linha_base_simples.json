@@ -1,0 +1,28 @@
+{
+  "ideia_idx": 29,
+  "ideia": "Marketplace de profissionais de energia solar para residências",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma marketplace que conecta proprietários residenciais a instaladores/profissionais certificados de energia solar (avaliação de telhado, dimensionamento de sistema, orçamento, instalação e manutenção), com fluxo de solicitação de orçamento, comparação de propostas, agendamento, pagamento e avaliação pós-serviço.",
+    "como_comecar": "MVP com: (1) cadastro e verificação de profissionais (documentos, certificações, área de atuação), (2) formulário de solicitação de orçamento do cliente residencial, (3) matching simples por CEP/região e disponibilidade, (4) chat/propostas entre cliente e profissional, (5) pagamento e comissão da plataforma. Validar com um número pequeno de instaladores parceiros antes de escalar aquisição.",
+    "tecnologias": "Backend em Node.js (NestJS) ou Python (FastAPI/Django); frontend web em React/Next.js; app mobile opcional em React Native; filas assíncronas (SQS/RabbitMQ) para notificações e matching; busca geográfica com PostGIS ou Elasticsearch; autenticação com OAuth2/JWT; armazenamento de arquivos (fotos de telhado, propostas em PDF) em S3.",
+    "banco_dados": "PostgreSQL como banco relacional principal (usuários, profissionais, propostas, transações, avaliações), com extensão PostGIS para buscas geoespaciais; Redis para cache e sessões; S3 (ou equivalente) para arquivos/documentos; opcionalmente um data warehouse (BigQuery/Redshift) para analytics.",
+    "interfaces": [
+      "Web app para clientes residenciais (solicitar orçamento, comparar propostas, agendar, pagar, avaliar)",
+      "Web/app para profissionais (gerenciar leads, enviar propostas, agenda, faturamento)",
+      "Painel administrativo interno (moderação, verificação de profissionais, métricas, suporte)",
+      "API pública/parceiros para integrações (ex: fabricantes de painéis, financiadoras)"
+    ],
+    "usuarios": "Proprietários de residências interessados em energia solar; instaladores e empresas de engenharia solar; administradores da plataforma; potencialmente parceiros financeiros que oferecem crédito solar.",
+    "escalabilidade": "Sim: arquitetura desacoplada (API + serviços assíncronos), cache com Redis, CDN para assets estáticos, auto-scaling horizontal em containers (Docker/Kubernetes ou serverless), sharding/particionamento por região geográfica no banco se o volume crescer, e uso de filas para desacoplar matching e notificações de picos de tráfego.",
+    "custos": "Sim: infraestrutura cloud (compute, banco, storage, CDN) escalando com uso; custos de verificação/KYC de profissionais; gateway de pagamento (taxas por transação); custos de aquisição de clientes (marketing/SEO/ads); suporte ao cliente; compliance e seguros.",
+    "monetizacao": "Comissão sobre cada projeto fechado entre cliente e profissional (marketplace fee), assinatura premium para profissionais (mais leads, destaque na busca), taxas de geração de leads qualificados, e possíveis parcerias com financiadoras de energia solar (comissão por indicação de crédito).",
+    "stack_sugerida": "Frontend: Next.js + TypeScript + TailwindCSS. Backend: NestJS (Node.js) ou FastAPI (Python) com arquitetura de microsserviços/modular monolith. Banco: PostgreSQL + PostGIS, Redis. Infra: AWS ou GCP com Docker/Kubernetes, S3, CloudFront/CDN. Pagamentos: Stripe Connect (para split de pagamentos entre plataforma e profissionais). Observabilidade: Datadog ou Grafana/Prometheus. CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:56:29+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "ideia_idx": 84,
+  "ideia": "App de diagnóstico automotivo por OBD com recomendação de oficinas",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Entidades: Veiculo (VIN, marca, modelo, ano), SessaoDiagnostico (id, veiculoId, timestampInicio, codigosDTC, status), CodigoDTC (código, descrição, severidade, sistemaAfetado), Diagnostico (causaProvavel, urgencia, recomendações), Oficina (id, especialidades, localização, reputação), MatchOficina (score de compatibilidade). Regras: interpretação de códigos DTC para severidade e sistema afetado; cálculo de urgência do reparo (crítico/moderado/baixo) a partir da combinação de códigos; regra de elegibilidade de oficina (deve ter especialidade compatível com o sistema afetado e estar dentro do raio de busca); regra de ranking de oficinas (score = especialidade + proximidade + reputação, sem depender de nenhum provedor de mapa ou banco específico); política de encerramento de sessão de diagnóstico (expira após inatividade). Nenhuma regra referencia protocolo OBD-II físico, formato de API, banco de dados ou biblioteca de geolocalização — apenas os dados já traduzidos em conceitos de domínio.",
+    "driving_ports": {
+      "IniciarDiagnosticoPort": "Contrato para iniciar uma sessão de diagnóstico a partir de dados brutos do veículo",
+      "ConsultarHistoricoDiagnosticoPort": "Contrato para consultar diagnósticos anteriores de um veículo",
+      "RecomendarOficinasPort": "Contrato para obter lista ranqueada de oficinas dado um diagnóstico",
+      "AgendarReparoPort": "Contrato para solicitar agendamento em uma oficina recomendada",
+      "GerenciarPerfilVeiculoPort": "Contrato para CRUD do perfil do veículo pelo usuário"
+    },
+    "driven_ports": {
+      "RepositorioVeiculoPort": "Persistir e recuperar dados de veículos e sessões",
+      "RepositorioOficinaPort": "Consultar catálogo de oficinas cadastradas",
+      "CatalogoDTCPort": "Consultar base de conhecimento de códigos DTC e seus significados",
+      "GeolocalizacaoPort": "Calcular distância/proximidade entre veículo e oficinas",
+      "NotificacaoPort": "Enviar alertas ao usuário (push, e-mail, SMS)",
+      "PublicadorEventosPort": "Publicar eventos de domínio (diagnóstico concluído, reparo agendado) para consumidores externos",
+      "PagamentoPort": "Processar cobrança de assinatura ou comissão de agendamento"
+    },
+    "driving_adapters": {
+      "AdaptadorAppMobile": "Expõe leitura via Bluetooth do dongle OBD-II e UI para o motorista iniciar diagnóstico e ver recomendações",
+      "AdaptadorAPIRest": "Expõe endpoints HTTP/JSON para parceiros (seguradoras, frotas) consumirem diagnóstico e recomendação",
+      "AdaptadorCLIOficina": "Interface administrativa para oficina gerenciar seu cadastro e agenda",
+      "AdaptadorWebhookIngestao": "Recebe leituras assíncronas de dispositivos OBD conectados (telemetria contínua)"
+    },
+    "driven_adapters": {
+      "PostgresRepositorioVeiculoAdapter": "Implementa RepositorioVeiculoPort com PostgreSQL",
+      "PostgresRepositorioOficinaAdapter": "Implementa RepositorioOficinaPort com PostgreSQL + PostGIS para busca geoespacial",
+      "DTCKnowledgeBaseAdapter": "Implementa CatalogoDTCPort consultando base própria ou API de terceiros de códigos SAE J2012",
+      "GoogleMapsGeolocalizacaoAdapter": "Implementa GeolocalizacaoPort via Google Maps Distance Matrix API",
+      "FirebaseNotificacaoAdapter": "Implementa NotificacaoPort via Firebase Cloud Messaging",
+      "KafkaPublicadorEventosAdapter": "Implementa PublicadorEventosPort publicando em tópicos Kafka",
+      "StripePagamentoAdapter": "Implementa PagamentoPort via Stripe (assinaturas e comissões)"
+    },
+    "application_services": {
+      "DiagnosticoAppService": "Orquestra: recebe códigos DTC crus, invoca CatalogoDTCPort para tradução, delega ao domínio o cálculo de severidade/urgência, persiste via RepositorioVeiculoPort, publica evento via PublicadorEventosPort",
+      "RecomendacaoOficinaAppService": "Orquestra: obtém diagnóstico, busca oficinas candidatas via RepositorioOficinaPort, calcula distância via GeolocalizacaoPort, delega ranking ao domínio, retorna lista ordenada",
+      "AgendamentoAppService": "Orquestra: valida disponibilidade, coordena PagamentoPort e NotificacaoPort, persiste agendamento — sem decidir regras de elegibilidade (isso é do domínio)"
+    },
+    "domain_isolation": "O núcleo depende apenas de interfaces (ports) definidas em sua própria linguagem ubíqua, nunca de SDKs, ORMs, frameworks web ou protocolos de rede. Objetos de domínio são POJOs/POCOs puros; conversão de DTOs HTTP, linhas SQL ou payloads Bluetooth ocorre inteiramente nos adaptadores, antes de cruzar a fronteira. O domínio não conhece a existência de Postgres, Kafka, Stripe, Google Maps ou Bluetooth — apenas invoca driven ports com objetos de domínio como parâmetro e retorno.",
+    "test_doubles": {
+      "RepositorioVeiculoPort": "InMemoryRepositorioVeiculoAdapter armazenando em Map/lista",
+      "RepositorioOficinaPort": "FakeRepositorioOficinaAdapter com dataset fixo de oficinas para testes de ranking",
+      "CatalogoDTCPort": "StubCatalogoDTCAdapter retornando mapeamento fixo código→descrição",
+      "GeolocalizacaoPort": "FakeGeolocalizacaoAdapter retornando distâncias determinísticas configuráveis",
+      "NotificacaoPort": "SpyNotificacaoAdapter que apenas registra chamadas para asserção",
+      "PagamentoPort": "FakePagamentoAdapter simulando sucesso/falha sem chamar rede",
+      "driving_ports": "Testados diretamente chamando o AppService com dublês injetados nas driven ports, sem subir HTTP nem mobile real"
+    },
+    "configuration_wiring": "Um Composition Root (ex.: main.ts, Application.java, ou bootstrap com injeção de dependência como Spring, NestJS ou Dagger) lê configuração de ambiente e, na inicialização, instancia os adaptadores concretos (Postgres, Kafka, Stripe, Google Maps) e os injeta nos application services através dos construtores/portas. Nenhuma classe de domínio ou de serviço de aplicação instancia um adaptador diretamente; tudo é resolvido por injeção de dependência centralizada, permitindo trocar implementações via arquivo de config ou variável de ambiente sem tocar no núcleo.",
+    "technology_substitution": "Google Maps Distance Matrix pode ser trocado por Mapbox ou OpenStreetMap/OSRM apenas reimplementando GeolocalizacaoPort — custo baixo, isolado a um adaptador. PostgreSQL poderia migrar para DynamoDB reescrevendo RepositorioVeiculoPort/RepositorioOficinaPort — custo médio, pois queries geoespaciais (PostGIS) exigem reprojetar lógica de busca por raio. Stripe por outro PSP (Adyen) — custo baixo a médio, isolado ao PagamentoPort, mas exige atenção a webhooks assíncronos. Substituir o dongle Bluetooth OBD-II por um adaptador Wi-Fi ELM327 afeta apenas o AdaptadorAppMobile (driving adapter), sem tocar no domínio nem nos demais adaptadores — custo baixo.",
+    "symmetry": "Tanto driving quanto driven ports são interfaces definidas pelo próprio domínio/aplicação, nunca pelos adaptadores. O lado esquerdo (driving) tem múltiplos adaptadores diferentes (mobile, REST, CLI, webhook) todos conduzindo aos mesmos application services através das mesmas portas primárias; o lado direito (driven) tem múltiplos adaptadores diferentes (Postgres, Kafka, Stripe, Maps) todos implementando as mesmas portas secundárias. Em ambos os lados, o núcleo nunca importa um adaptador concreto — apenas a interface —, e em ambos os lados a troca de adaptador é transparente para o núcleo, preservando a simetria conceitual do hexágono: 'o núcleo é acionado' (esquerda) é estruturalmente idêntico a 'o núcleo aciona' (direita), apenas com a direção da dependência de implementação invertida.",
+    "interfaces": [
+      "IniciarDiagnosticoPort",
+      "ConsultarHistoricoDiagnosticoPort",
+      "RecomendarOficinasPort",
+      "AgendarReparoPort",
+      "GerenciarPerfilVeiculoPort",
+      "RepositorioVeiculoPort",
+      "RepositorioOficinaPort",
+      "CatalogoDTCPort",
+      "GeolocalizacaoPort",
+      "NotificacaoPort",
+      "PublicadorEventosPort",
+      "PagamentoPort"
+    ],
+    "escalabilidade": "Application services são stateless e podem escalar horizontalmente atrás de um load balancer. Leituras de catálogo DTC e busca de oficinas são cacheáveis (Redis) por serem baixa volatilidade. Ingestão de telemetria contínua (webhook) deve ser desacoplada via fila (Kafka/SQS) para absorver picos, processada por workers assíncronos que chamam o mesmo AppService. Banco relacional pode receber réplicas de leitura para consultas de histórico; buscas geoespaciais de oficina se beneficiam de sharding por região. Como o domínio é isolado, cada componente de infraestrutura escala independentemente sem exigir mudança de regra de negócio.",
+    "custo_infra_estimado": "Servidor (2x instância t3.medium em auto-scaling, API + workers): $60/mês. RDS PostgreSQL com PostGIS (db.t3.medium, Multi-AZ): $110/mês. Redis (cache, ElastiCache t3.micro): $25/mês. Kafka gerenciado (MSK serverless, baixo volume): $50/mês. S3 (armazenamento de logs de diagnóstico e relatórios): $10/mês. CDN (CloudFront para assets do app): $15/mês. Banda de rede/API Gateway: $20/mês. Google Maps Distance Matrix API (10k requisições/mês): $50/mês. Firebase Cloud Messaging: gratuito até volume alto. Total estimado: aproximadamente $340/mês para uma base inicial (até ~5.000 usuários ativos).",
+    "custo_por_cliente": "Cada diagnóstico = $0.005 (consulta CatalogoDTC/DB) + $0.002 (armazenamento S3 do relatório) + $0.001 (CPU do AppService) = $0.008/diagnóstico. Cada recomendação de oficina = $0.005 (Google Maps Distance Matrix, ~$5/1000 chamadas) + $0.001 (query PostGIS) = $0.006/recomendação. Cliente médio com 3 diagnósticos/mês e 3 recomendações/mês = 3×$0.008 + 3×$0.006 = $0.042/mês em custo variável direto. Somando overhead de infraestrutura fixa rateado (~$340/5000 clientes ≈ $0.068/cliente), custo total aproximado por cliente ativo ≈ $0.11/mês.",
+    "monetizacao": "Modelo freemium + comissão: Tier Gratuito (leitura de 1 código DTC/mês, sem recomendação de oficina) — funciona como aquisição; Tier Motorista Premium ($4.99/mês) — diagnósticos ilimitados, histórico completo, alertas preditivos; Tier Frota ($29.99/mês por até 10 veículos) — dashboard de gestão para pequenas frotas; Comissão de marketplace — 8% sobre cada agendamento de reparo confirmado via app (ticket médio de reparo $250 → $20/agendamento). Métricas-alvo: CAC estimado $15 (aquisição via app stores + parcerias com oficinas), LTV estimado $85 para tier Premium (retenção média 17 meses × $4.99), relação LTV:CAC ≈ 5.6:1, saudável. MRR projetado com 5.000 usuários (70% free, 25% premium, 5% frota): 1.250×$4.99 + 250×$29.99 ≈ $13.735/mês apenas em assinaturas, mais receita variável de comissões de agendamento.",
+    "stack_sugerida": "Backend: Node.js/NestJS ou Kotlin/Spring Boot (injeção de dependência nativa favorece Ports & Adapters). Domínio: TypeScript puro ou Kotlin puro, sem dependências externas. Banco: PostgreSQL + extensão PostGIS. Cache: Redis. Mensageria: Kafka (ou AWS SQS/SNS para volume menor). Mobile: React Native ou Flutter com biblioteca BLE nativa para leitura OBD-II. Geolocalização: Google Maps Platform (ou Mapbox como alternativa). Pagamentos: Stripe Connect (repasse de comissão para oficinas). Infra: AWS (ECS/Fargate ou EKS) ou GCP equivalente, com Terraform para IaC. Observabilidade: Datadog ou Grafana + Prometheus."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T21:03:48+00:00",
+    "runner": "runner.py"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "ideia_idx": 27,
+  "ideia": "Plataforma de gestão de eventos corporativos híbridos",
+  "abordagem": "linha_base_simples",
+  "response": {
+    "o_que_construir": "Uma plataforma SaaS multi-tenant para gestão de eventos corporativos híbridos, cobrindo o ciclo completo: criação e configuração do evento, inscrição e emissão de credenciais (presencial e online), transmissão ao vivo e conteúdo sob demanda, interação (chat, Q&A, enquetes, networking com matchmaking), check-in físico (QR/NFC), agenda multi-trilha, patrocinadores/expositores com estandes virtuais, e dashboards de analytics/ROI para organizadores.",
+    "como_comecar": "MVP focado em um único fluxo ponta a ponta: criação de evento -> página de inscrição -> emissão de ingresso/credencial -> check-in presencial via QR -> sala de transmissão ao vivo com chat. Validar com 2-3 clientes piloto antes de expandir para módulos de patrocínio, networking avançado e analytics profundo.",
+    "tecnologias": "Frontend: React/Next.js com TypeScript, TailwindCSS. Mobile/check-in: app React Native ou PWA com leitura de QR. Backend: Node.js (NestJS) ou Go para serviços de alta concorrência (check-in, chat). Streaming: integração com Mux, Vonage/Agora ou AWS IVS para vídeo ao vivo. Mensageria em tempo real: WebSockets (Socket.io) ou serviço gerenciado (Ably/Pusher). Filas e eventos assíncronos: Kafka ou SQS/RabbitMQ. Autenticação: OAuth2/OIDC (Auth0 ou Clerk). Infraestrutura: containers em Kubernetes ou serviços gerenciados (ECS/Fargate) na AWS/GCP.",
+    "banco_dados": "PostgreSQL como banco relacional principal (multi-tenant via schema-per-tenant ou row-level security com tenant_id) para dados estruturados (eventos, inscrições, usuários, pagamentos). Redis para cache, sessões e filas de tempo real (presença no chat, contadores). Um banco orientado a documentos (MongoDB) ou Elasticsearch para dados de analytics/logs de engajamento e busca de conteúdo/expositores. Armazenamento de objetos (S3/GCS) para gravações, materiais e imagens.",
+    "interfaces": [
+      "Painel do organizador (criação/gestão de evento, agenda, patrocinadores, relatórios)",
+      "Portal do participante (inscrição, agenda pessoal, sala de transmissão, networking, chat)",
+      "App/PWA de check-in para equipe de credenciamento no local",
+      "Estande virtual do patrocinador/expositor com leads e materiais",
+      "Dashboard de analytics e ROI para organizadores e patrocinadores",
+      "API pública/webhooks para integrações com CRM, ERP e ferramentas de marketing"
+    ],
+    "usuarios": "Organizadores de eventos corporativos (empresas, agências de eventos, RH), participantes (presenciais e remotos), patrocinadores/expositores, palestrantes, e equipe operacional de credenciamento no local.",
+    "escalabilidade": "Sim: arquitetura multi-tenant com isolamento lógico, autoscaling horizontal dos serviços de API e streaming, CDN para conteúdo estático e vídeo, filas assíncronas para picos de check-in/inscrição simultânea, sharding ou read replicas no PostgreSQL para tenants grandes, e uso de serviços gerenciados de streaming para absorver picos de audiência ao vivo sem operar infraestrutura de vídeo própria.",
+    "custos": "Sim: principais custos variáveis são streaming/transmissão (cobrado por minuto/espectador), armazenamento de gravações, mensageria em tempo real e infraestrutura de banco de dados. Modelo de custo deve ser monitorado por evento (custo por participante ativo) para precificar planos com margem saudável; usar serviços gerenciados no início para evitar CAPEX de infraestrutura de vídeo/chat.",
+    "monetizacao": "Modelo de assinatura SaaS em camadas (Starter, Business, Enterprise) por número de eventos/participantes simultâneos, com add-ons pagos por streaming premium, participantes extras, módulos de patrocínio/estandes virtuais e white-label. Complementarmente, taxa por transação em cobrança de ingressos pagos (via Stripe Connect) e planos enterprise com contrato anual e suporte dedicado.",
+    "stack_sugerida": "Next.js + TypeScript (frontend), NestJS/Node.js (backend de domínio), Go (serviços críticos de check-in/tempo real), PostgreSQL + Redis (dados e cache), Mux/Agora (streaming), Socket.io/Ably (real-time), Kafka/SQS (mensageria assíncrona), AWS (ECS/Fargate, S3, CloudFront), Stripe/Stripe Connect (pagamentos), Auth0/Clerk (autenticação), Datadog/Grafana (observabilidade)."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "f40494e19d16",
+    "gerado_em": "2026-09-27T20:55:00+00:00",
+    "runner": "runner.py"
+  }
+}

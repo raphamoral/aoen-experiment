@@ -1,0 +1,50 @@
+{
+  "ideia_idx": 29,
+  "ideia": "Marketplace de profissionais de energia solar para residências",
+  "abordagem": "hexagonal_rico",
+  "response": {
+    "domain_core": "Núcleo com as entidades Cliente, ProfissionalEnergiaSolar, Projeto, Proposta, Contrato e Avaliacao, mais os value objects EnderecoInstalacao, FaixaDePotencia, Certificacao e Orcamento. Regras de negócio: um Profissional só pode enviar Proposta para Projetos dentro de sua AreaDeAtuacao e com Certificacao válida para o tipo de instalação; um Projeto muda de estado (Aberto → EmNegociacao → Contratado → Concluido → Avaliado) seguindo uma máquina de estados própria; a Proposta deve respeitar limites de prazo e faixa de preço definidos pelo Cliente; a nota de reputação do Profissional é recalculada a partir da média ponderada das Avaliacoes recentes; comissão da plataforma é calculada sobre o valor fechado do Contrato. Nenhuma dessas regras conhece HTTP, banco de dados, fila ou gateway de pagamento.",
+    "driving_ports": "SolicitarOrcamentoPort (cliente cria um Projeto com necessidades de instalação), BuscarProfissionaisPort (busca por região/especialidade), EnviarPropostaPort (profissional propõe para um Projeto), GerenciarPropostaPort (cliente aceita/recusa proposta), GerenciarContratoPort (avança estados do contrato), AvaliarProfissionalPort (cliente publica avaliação pós-instalação), CadastrarProfissionalPort (onboarding com certificações), AutenticarUsuarioPort (login de cliente ou profissional).",
+    "driven_ports": "RepositorioClientePort, RepositorioProfissionalPort, RepositorioProjetoPort, RepositorioContratoPort (persistência), NotificacaoPort (email/SMS/push), PagamentoPort (cobrança e repasse via marketplace), VerificacaoDocumentoPort (validação de CNPJ/certificações/KYC), GeolocalizacaoPort (geocodificação e cálculo de distância/área de atuação), CalculoIrradiacaoSolarPort (estimativa de geração/economia por CEP), ArmazenamentoArquivoPort (fotos do telhado, laudos, contratos assinados), PublicadorEventoPort (eventos de domínio como ProjetoCriado, PropostaAceita, ContratoFechado).",
+    "driving_adapters": "REST API (controllers Spring/NestJS expondo os driving ports para app web e mobile), Webhook Receiver do Stripe traduzido para GerenciarContratoPort quando pagamento é confirmado, CLI/Job Scheduler para tarefas administrativas (ex.: recalcular reputações), Painel Admin (backoffice) consumindo os mesmos ports para aprovar cadastro de profissionais.",
+    "driven_adapters": "PostgresRepositorioProfissionalAdapter/PostgresRepositorioProjetoAdapter (persistência via ORM), StripeConnectPagamentoAdapter (split payment plataforma/profissional), TwilioNotificacaoAdapter e SendGridNotificacaoAdapter, GoogleMapsGeolocalizacaoAdapter, NRELApiIrradiacaoAdapter (ou serviço equivalente de dados solares), S3ArmazenamentoAdapter, SQSPublicadorEventoAdapter, ServicoTerceiroKYCAdapter (ex. verificação de documentos de profissionais).",
+    "application_services": "OrcamentoAppService (orquestra criação de Projeto, dispara busca de profissionais elegíveis e notificação, sem decidir elegibilidade — isso é regra do domínio), NegociacaoAppService (coordena ciclo proposta→aceite→contrato, chamando PagamentoPort e PublicadorEventoPort), OnboardingProfissionalAppService (orquestra cadastro + VerificacaoDocumentoPort), AvaliacaoAppService (persiste avaliação e aciona recálculo de reputação do domínio). Cada serviço apenas invoca entidades de domínio e ports; a lógica de decisão fica nas entidades/value objects.",
+    "domain_isolation": "As entidades de domínio são POJOs/POCOs puros, sem anotações de ORM, sem imports de framework web ou SDK de pagamento. Toda comunicação com o exterior passa por interfaces (ports) definidas dentro do módulo de domínio/aplicação; adaptadores implementam essas interfaces em módulos externos e são injetados por inversão de dependência, nunca referenciados diretamente pelo núcleo.",
+    "test_doubles": "Cada driven port tem uma implementação in-memory para testes: RepositorioClienteEmMemoria, PagamentoFake (simula sucesso/falha sem chamar Stripe), NotificacaoSpy (captura mensagens enviadas para asserção), GeolocalizacaoStub (retorna distâncias fixas), IrradiacaoSolarStub. Os testes de aplicação usam esses fakes para validar orquestração; testes de domínio não precisam de dublês pois o domínio não depende de nada externo.",
+    "configuration_wiring": "Um composition root (ex. módulo de bootstrap/main.ts ou classe de configuração Spring) instancia os adaptadores concretos e os injeta nos serviços de aplicação via construtor, resolvendo as interfaces de driven ports em tempo de inicialização. Os driving adapters (controllers REST, webhook handler) recebem os serviços de aplicação já prontos, também via injeção, sem instanciá-los diretamente.",
+    "technology_substitution": "PagamentoPort pode trocar StripeConnectPagamentoAdapter por outro PSP (ex. Mercado Pago para expansão regional) com custo restrito ao novo adaptador e testes de contrato, sem tocar no domínio. RepositorioPort pode migrar de PostgreSQL para outro banco (custo médio: reescrever adaptadores de persistência e migrations, domínio intacto). Trocar REST por GraphQL afeta apenas os driving adapters. Trocar o provedor de irradiação solar (NREL por outro) é o de menor custo, pois é isolado atrás de uma única porta.",
+    "symmetry": "Tanto driving quanto driven ports são interfaces definidas pelo núcleo da aplicação; driving adapters (REST, webhook, CLI) chamam essas interfaces de fora para dentro, enquanto driven adapters (Postgres, Stripe, S3) implementam interfaces que o núcleo chama de dentro para fora — em ambos os casos o núcleo nunca depende da tecnologia concreta, apenas do contrato, preservando a simetria hexagonal.",
+    "interfaces": [
+      "SolicitarOrcamentoPort",
+      "BuscarProfissionaisPort",
+      "EnviarPropostaPort",
+      "GerenciarPropostaPort",
+      "GerenciarContratoPort",
+      "AvaliarProfissionalPort",
+      "CadastrarProfissionalPort",
+      "AutenticarUsuarioPort",
+      "RepositorioClientePort",
+      "RepositorioProfissionalPort",
+      "RepositorioProjetoPort",
+      "RepositorioContratoPort",
+      "NotificacaoPort",
+      "PagamentoPort",
+      "VerificacaoDocumentoPort",
+      "GeolocalizacaoPort",
+      "CalculoIrradiacaoSolarPort",
+      "ArmazenamentoArquivoPort",
+      "PublicadorEventoPort"
+    ],
+    "escalabilidade": "Escala horizontalmente pois os driving adapters são stateless atrás de load balancer; o matching de profissionais pode migrar de consulta síncrona para busca assíncrona via fila (PublicadorEventoPort) conforme o volume de projetos cresce. Read replicas de Postgres atendem buscas geográficas, cache (Redis) guarda resultados de geolocalização e irradiação solar por CEP para evitar chamadas repetidas a APIs externas. Sharding por região geográfica é viável no médio prazo, já que a maior parte das consultas é localizada.",
+    "custo_infra_estimado": "Servidor de aplicação (2x instâncias auto-scaling, ex. AWS Fargate/ECS): $80/mês. Banco de dados (RDS Postgres db.t3.medium com réplica): $120/mês. Cache Redis (ElastiCache pequeno): $25/mês. Armazenamento S3 (fotos, documentos, contratos): $15/mês. CDN (CloudFront) para assets e imagens: $10/mês. Fila (SQS): $5/mês. Provedores externos (Twilio SMS, SendGrid email, Google Maps API, dados de irradiação): $50/mês em uso moderado. Total estimado inicial: ~$305/mês para até alguns milhares de usuários ativos.",
+    "custo_por_cliente": "Cada solicitação de orçamento consome: geocodificação ($0.005/chamada Google Maps) + estimativa de irradiação solar ($0.01/chamada API) + notificação aos profissionais elegíveis (SMS $0.0075 x média 3 notificados = $0.0225, email quase $0) + armazenamento de fotos/documentos ($0.002/projeto) = aproximadamente $0.04/projeto criado. Um cliente que cria 1 projeto e recebe 3-5 propostas gera também custo de notificação por proposta (~$0.02 cada), totalizando cerca de $0.15-0.20 por cliente durante todo o ciclo de vida de um projeto (criação até contratação).",
+    "monetizacao": "Modelo híbrido: (1) Comissão de 8-12% sobre o valor fechado do Contrato, cobrada do profissional via split payment no PagamentoPort; (2) Plano de assinatura para profissionais — Básico gratuito (limite de propostas/mês), Pro $49/mês (propostas ilimitadas + destaque na busca), Premium $149/mês (leads exclusivos por região); (3) Taxa de lead avulsa de $5-15 para profissionais fora do plano pago que queiram enviar proposta extra. Métricas-chave: MRR somando assinaturas + comissões médias mensais; LTV estimado de um profissional Pro ~$1.200 (24 meses de retenção média x $49); CAC alvo abaixo de $150 por profissional adquirido via marketing de performance, mantendo LTV:CAC acima de 3:1.",
+    "stack_sugerida": "Backend em Node.js/NestJS ou Java/Spring Boot estruturado em módulos hexagonais (domain, application, adapters). PostgreSQL como banco principal, Redis para cache, SQS ou RabbitMQ para eventos assíncronos. Stripe Connect para pagamentos com split marketplace. S3 para armazenamento de arquivos, CloudFront como CDN. Frontend web em React/Next.js e app mobile em React Native. Infraestrutura em AWS (ECS/Fargate) ou equivalente, com Terraform para IaC e observabilidade via Datadog ou Grafana/Prometheus."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "b9fdc54a1699",
+    "gerado_em": "2026-09-27T20:56:24+00:00",
+    "runner": "runner.py"
+  }
+}

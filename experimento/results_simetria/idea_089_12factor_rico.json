@@ -1,0 +1,38 @@
+{
+  "ideia_idx": 89,
+  "ideia": "SaaS de planejamento de safra com dados climáticos e satelitais",
+  "abordagem": "12factor_rico",
+  "response": {
+    "codebase": "Repositório único (monorepo) versionado em Git com múltiplas implantações (dev, staging, produção). Módulos internos (API core, workers de ingestão climática/satelital, motor de recomendação agronômica) compartilham o mesmo codebase, versionados juntos, mas implantados como serviços independentes a partir da mesma base.",
+    "dependencies": "Dependências declaradas explicitamente via arquivos de manifesto (requirements.txt/poetry.lock para Python, package-lock.json para Node) e isoladas em containers Docker por serviço, sem dependência de pacotes do sistema operacional hospedeiro. Bibliotecas geoespaciais (GDAL, rasterio) e clientes de APIs climáticas/satelitais (Sentinel Hub, NASA POWER, INMET) são fixadas por versão exata.",
+    "config": "Configuração via variáveis de ambiente: chaves de APIs climáticas/satelitais, strings de conexão de banco, credenciais de storage de objetos, feature flags por plano de assinatura, domínios de tenant. Varia entre implantações: URLs de endpoints externos, limites de rate-limit por chave de API, região de armazenamento (data residency para compliance agrícola), nível de log.",
+    "backing_services": "Banco relacional (PostgreSQL + PostGIS), cache/fila (Redis), storage de objetos para imagens de satélite (S3/MinIO), serviço de fila de mensagens (SQS/RabbitMQ) e APIs externas de clima/satélite tratadas como recursos anexáveis via URL/credencial, substituíveis sem alteração de código (ex.: trocar provedor de imagens de satélite sem redeploy).",
+    "build_release_run": "Pipeline CI/CD com build (compilação de imagem Docker + testes), release (combinação do build com config de cada ambiente, versionado com tag imutável) e run (execução do container release em orquestrador, ex. Kubernetes/ECS), sem alterações de código em tempo de execução.",
+    "processes": "Processos stateless: API REST, workers de processamento de imagens satelitais e workers de ingestão de dados climáticos não mantêm estado em memória entre requisições. Estado persistente reside no PostgreSQL (dados de safra, talhões, usuários), storage de objetos (imagens raster) e cache Redis (apenas dados efêmeros/sessão).",
+    "port_binding": "Cada serviço expõe sua funcionalidade via bind de porta HTTP/HTTPS própria (API na porta 8080, serviço de tiles de mapas na 8081), autocontido, sem depender de servidor de aplicação externo injetado em runtime — via containers com Gunicorn/Uvicorn embutido.",
+    "concurrency": "Escala horizontal por tipo de processo: processos 'web' (API), processos 'worker' (ingestão climática, processamento de imagens NDVI/satélite), processos 'scheduler' (agendamento de rotinas diárias de coleta climática) e processos 'clock' (jobs periódicos de alerta de safra), cada um escalado independentemente conforme carga.",
+    "disposability": "Inicialização rápida (containers sobem em segundos, sem dependência de estado local), desligamento gracioso com handling de SIGTERM para finalizar processamento de imagens em andamento e devolver mensagens não processadas à fila, garantindo robustez a autoscaling e deploys frequentes.",
+    "dev_prod_parity": "Uso de Docker Compose local replicando os mesmos backing services de produção (Postgres/PostGIS, Redis, mock de APIs climáticas), deploys contínuos (múltiplos por dia) reduzindo divergência temporal, mesmos engenheiros do dev atuando no deploy (sem times separados de ops), e mesmas versões de dependências entre ambientes.",
+    "logs_admin": "Logs tratados como fluxo de eventos (stdout/stderr) agregados via stack de observabilidade (ex. Loki/ELK/Datadog), sem gestão de arquivos de log pela aplicação. Tarefas administrativas (migrations de schema, reprocessamento de imagens históricas, recálculo de índices agronômicos) executadas como processos pontuais (one-off) no mesmo ambiente de release, via CLI/management commands.",
+    "interfaces": [
+      "API REST/GraphQL para clientes web e mobile",
+      "Dashboard web de planejamento de safra",
+      "App mobile para produtores em campo",
+      "Webhooks para alertas climáticos e de pragas",
+      "Integração com APIs de satélite (Sentinel Hub, Planet Labs)",
+      "Integração com APIs meteorológicas (INMET, NASA POWER, OpenWeather)",
+      "Exportação de relatórios (PDF/CSV) e integração com ERPs agrícolas"
+    ],
+    "escalabilidade": "Escala horizontalmente adicionando instâncias dos processos web e worker conforme número de tenants/talhões cresce; processamento de imagens satelitais é particionado por região/data e distribuído em filas; banco de dados escala via read replicas e particionamento geoespacial (sharding por região); cache reduz chamadas repetidas às APIs climáticas externas.",
+    "custo_infra_estimado": "Servidor (API + workers, ex. 4 instâncias t3.medium): $150/mês, RDS PostgreSQL/PostGIS (db.t3.large + réplica): $180/mês, Redis (ElastiCache): $40/mês, S3 (armazenamento de imagens satelitais, ~2TB): $50/mês, CDN (CloudFront): $30/mês, banda/transferência de dados: $60/mês, filas (SQS): $10/mês. Total estimado: ~$520/mês para carga inicial (até ~500 clientes ativos).",
+    "custo_por_cliente": "Cada análise de safra (consulta clima + imagem satelital + processamento NDVI) = $0.03 (API clima) + $0.08 (imagem satelital) + $0.02 (storage) + $0.015 (CPU processamento) = $0.145/análise. Cliente médio com 20 análises/mês (1 por talhão/semana) = $2.90/mês em custo variável, mais custo fixo alocado de infraestrutura (~$520/mês ÷ 500 clientes = $1.04/cliente). Custo total por cliente ≈ $3.94/mês.",
+    "monetizacao": "Modelo SaaS por assinatura com tiers: Básico ($29/mês, até 5 talhões, dados climáticos básicos), Profissional ($99/mês, até 30 talhões, imagens satelitais NDVI, alertas de pragas), Enterprise ($299+/mês, talhões ilimitados, API própria, suporte dedicado, integração com ERP). Métricas-alvo: MRR inicial de $15.000 com 300 clientes (mix de tiers), CAC estimado em $120 via marketing digital agrícola e parcerias com cooperativas, LTV estimado em $1.800 (churn mensal de ~3%, ticket médio $60/mês), payback de CAC em ~2 meses.",
+    "stack_sugerida": "Backend: Python (FastAPI) para API e processamento geoespacial; PostgreSQL + PostGIS para dados de talhões; Redis para cache/filas; Celery para workers assíncronos; S3-compatible storage para imagens satelitais; Docker + Kubernetes para orquestração; Terraform para IaC; Frontend: React/Next.js com Mapbox/Leaflet para visualização geoespacial; React Native para app mobile; Observabilidade: Prometheus + Grafana + Loki; CI/CD: GitHub Actions."
+  },
+  "_meta": {
+    "modelo": "claude-sonnet-5",
+    "prompt_sha": "38cff5959617",
+    "gerado_em": "2026-09-27T21:05:39+00:00",
+    "runner": "runner.py"
+  }
+}
